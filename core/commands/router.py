@@ -2,6 +2,7 @@ from core.dashboard.api import DashboardAPI
 from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
+from core.logs.service import LogsService
 from core.task.registry import TaskRegistry
 
 
@@ -13,12 +14,14 @@ class CommandRouter:
         backup: BackupRegistry | None = None,
         registry: TaskRegistry | None = None,
         doctor: DoctorService | None = None,
+        logs: LogsService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
         self.backup = backup or BackupRegistry()
         self.registry = registry or TaskRegistry()
         self.doctor = doctor or DoctorService()
+        self.logs = logs or LogsService()
 
     def route(self, text: str) -> str:
         command = text.strip().lower()
@@ -37,6 +40,9 @@ class CommandRouter:
 
         if command == "/doctor":
             return self.doctor.format_text()
+
+        if command == "/logs":
+            return self.logs.format_text()
 
         if command == "/help":
             return self.help()
@@ -66,6 +72,7 @@ class CommandRouter:
 
     def storage_status(self) -> str:
         summary = self.storage.summary()
+
         lines = [
             "📦 Storage",
             f"Root: {summary['root']}",
@@ -76,15 +83,22 @@ class CommandRouter:
 
         for name, item in summary["categories"].items():
             marker = "✅" if item["exists"] else "❌"
-            empty = " empty" if item["file_count"] == 0 and item["directory_count"] == 0 else ""
+            empty = (
+                " empty"
+                if item["file_count"] == 0 and item["directory_count"] == 0
+                else ""
+            )
             lines.append(
-                f"- {marker} {name}: {item['directory_count']} dirs, {item['file_count']} files{empty}"
+                f"- {marker} {name}: "
+                f"{item['directory_count']} dirs, "
+                f"{item['file_count']} files{empty}"
             )
 
         return "\n".join(lines)
 
     def backup_status(self) -> str:
         summary = self.backup.summary()
+
         lines = [
             "💾 Backup",
             f"Root: {summary['root']}",
@@ -95,9 +109,15 @@ class CommandRouter:
 
         for name, item in summary["categories"].items():
             marker = "✅" if item["exists"] else "❌"
-            empty = " empty" if item["file_count"] == 0 and item["directory_count"] == 0 else ""
+            empty = (
+                " empty"
+                if item["file_count"] == 0 and item["directory_count"] == 0
+                else ""
+            )
             lines.append(
-                f"- {marker} {name}: {item['directory_count']} dirs, {item['file_count']} files{empty}"
+                f"- {marker} {name}: "
+                f"{item['directory_count']} dirs, "
+                f"{item['file_count']} files{empty}"
             )
 
         lines.append("")
@@ -126,6 +146,7 @@ class CommandRouter:
             "/backup  - Backup summary (read-only)",
             "/tasks   - Running tasks",
             "/doctor  - System diagnosis",
+            "/logs    - Recent logs",
             "/help    - Command list",
             "/ask <message> - Ask BrainAgent",
         ])
