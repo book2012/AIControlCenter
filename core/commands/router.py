@@ -1,6 +1,7 @@
 from core.dashboard.api import DashboardAPI
 from core.datacenter.backup_registry import BackupRegistry
 from core.backup.verify import BackupVerifyService
+from core.backup.plan import BackupPlanService
 from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.logs.service import LogsService
@@ -19,6 +20,7 @@ class CommandRouter:
         logs: LogsService | None = None,
         backup_verify: BackupVerifyService | None = None,
         worker_status: WorkerStatusService | None = None,
+        backup_plan: BackupPlanService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -28,6 +30,7 @@ class CommandRouter:
         self.logs = logs or LogsService()
         self.backup_verify = backup_verify or BackupVerifyService()
         self.worker_status = worker_status or WorkerStatusService()
+        self.backup_plan = backup_plan or BackupPlanService()
 
     def route(self, text: str) -> str:
         command = text.strip().lower()
@@ -40,6 +43,9 @@ class CommandRouter:
 
         if command == "/backup":
             return self.backup_status()
+
+        if command == "/backup plan":
+            return self.backup_plan.format_text()
 
         if command == "/backup verify":
             return self.backup_verify.format_text()
@@ -157,6 +163,7 @@ class CommandRouter:
             "/storage - Storage summary",
             "/backup  - Backup summary (read-only)",
             "/backup verify - Verify backup status",
+            "/backup plan - Show backup execution plan",
             "/tasks   - Running tasks",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
