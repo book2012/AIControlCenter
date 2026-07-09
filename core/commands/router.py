@@ -1,3 +1,4 @@
+from core.agent.planner_agent import PlannerAgent
 from core.backup.confirm import BackupConfirmService
 from core.backup.plan import BackupPlanService
 from core.backup.run import BackupRunService
@@ -33,6 +34,7 @@ class CommandRouter:
         memory: MemoryManager | None = None,
         project: ProjectStatusService | None = None,
         knowledge: KnowledgeSearch | None = None,
+        planner: PlannerAgent | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -49,6 +51,7 @@ class CommandRouter:
         self.memory = memory or MemoryManager()
         self.project = project or ProjectStatusService()
         self.knowledge = knowledge or KnowledgeSearch()
+        self.planner = planner or PlannerAgent()
 
     def route(self, text: str) -> str:
         command = text.strip()
@@ -96,6 +99,10 @@ class CommandRouter:
 
         if lowered == "/knowledge":
             return self.knowledge_status()
+
+        if lowered.startswith("/plan "):
+            goal = command.split(" ", 1)[1].strip()
+            return self.plan(goal)
 
         if lowered.startswith("/knowledge search "):
             query = command.split(" ", 2)[2].strip()
@@ -265,6 +272,25 @@ class CommandRouter:
 
         return "\n".join(lines)
 
+    def plan(self, goal: str) -> str:
+        plan = self.planner.create_plan(goal)
+
+        lines = [
+            "🧭 Plan",
+            f"Goal: {plan['goal']}",
+            f"Status: {plan['status']}",
+            f"Executable: {plan['executable']}",
+            "",
+            "Steps:",
+        ]
+
+        for step in plan["steps"]:
+            lines.append(
+                f"{step['order']}. {step['name']} [{step['action']}]"
+            )
+
+        return "\n".join(lines)
+
     def help(self) -> str:
         return "\n".join([
             "AIControlCenter Commands",
@@ -284,6 +310,7 @@ class CommandRouter:
             "/project - Project status",
             "/knowledge - Knowledge status",
             "/knowledge search <query> - Search knowledge",
+            "/plan <goal> - Create draft plan",
             "/memory search <query> - Search long-term memory",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
