@@ -1,8 +1,9 @@
+from core.backup.confirm import BackupConfirmService
+from core.backup.plan import BackupPlanService
+from core.backup.run import BackupRunService
+from core.backup.verify import BackupVerifyService
 from core.dashboard.api import DashboardAPI
 from core.datacenter.backup_registry import BackupRegistry
-from core.backup.verify import BackupVerifyService
-from core.backup.plan import BackupPlanService
-from core.backup.confirm import BackupConfirmService
 from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.logs.service import LogsService
@@ -23,6 +24,7 @@ class CommandRouter:
         worker_status: WorkerStatusService | None = None,
         backup_plan: BackupPlanService | None = None,
         backup_confirm: BackupConfirmService | None = None,
+        backup_run: BackupRunService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -34,41 +36,47 @@ class CommandRouter:
         self.worker_status = worker_status or WorkerStatusService()
         self.backup_plan = backup_plan or BackupPlanService()
         self.backup_confirm = backup_confirm or BackupConfirmService()
+        self.backup_run = backup_run or BackupRunService(self.backup_confirm)
 
     def route(self, text: str) -> str:
-        command = text.strip().lower()
+        command = text.strip()
+        lowered = command.lower()
 
-        if command == "/status":
+        if lowered == "/status":
             return self.status()
 
-        if command == "/storage":
+        if lowered == "/storage":
             return self.storage_status()
 
-        if command == "/backup":
+        if lowered == "/backup":
             return self.backup_status()
 
-        if command == "/backup plan":
+        if lowered == "/backup plan":
             return self.backup_plan.format_text()
 
-        if command == "/backup confirm":
+        if lowered == "/backup confirm":
             return self.backup_confirm.format_text()
 
-        if command == "/backup verify":
+        if lowered.startswith("/backup run "):
+            token = command.split(" ", 2)[2].strip()
+            return self.backup_run.format_text(token)
+
+        if lowered == "/backup verify":
             return self.backup_verify.format_text()
 
-        if command == "/tasks":
+        if lowered == "/tasks":
             return self.tasks_status()
 
-        if command == "/worker":
+        if lowered == "/worker":
             return self.worker_status.format_text()
 
-        if command == "/doctor":
+        if lowered == "/doctor":
             return self.doctor.format_text()
 
-        if command == "/logs":
+        if lowered == "/logs":
             return self.logs.format_text()
 
-        if command == "/help":
+        if lowered == "/help":
             return self.help()
 
         return self.help()
@@ -168,9 +176,10 @@ class CommandRouter:
             "/status  - Brain status",
             "/storage - Storage summary",
             "/backup  - Backup summary (read-only)",
-            "/backup verify - Verify backup status",
             "/backup plan - Show backup execution plan",
             "/backup confirm - Generate backup confirmation token",
+            "/backup run <token> - Validate token, execution disabled",
+            "/backup verify - Verify backup status",
             "/tasks   - Running tasks",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
