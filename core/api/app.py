@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from core.config.loader import ConfigLoader
 
-from core.api.routes import backup, brain, dashboard, health, providers, storage, tasks, workers
+from core.api.routes import agents, backup, brain, dashboard, health, providers, storage, tasks, workers
 
 
 def create_app() -> FastAPI:
@@ -14,6 +14,7 @@ def create_app() -> FastAPI:
     )
 
     app.include_router(health.router)
+    app.include_router(agents.router)
     app.include_router(brain.router)
     app.include_router(dashboard.router)
     app.include_router(storage.router)
