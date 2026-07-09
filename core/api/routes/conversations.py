@@ -2,11 +2,13 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from core.agent.brain_agent import BrainAgent
+from core.memory.sqlite_store import SQLiteConversationStore
 
 
 router = APIRouter()
 
 agent = BrainAgent()
+store = SQLiteConversationStore()
 
 
 class AskRequest(BaseModel):
@@ -16,21 +18,20 @@ class AskRequest(BaseModel):
 
 @router.post("/conversations")
 def create_conversation():
-    session = agent.memory.create()
-    return session.to_dict()
+    return store.create_session()
 
 
 @router.get("/conversations")
 def list_conversations():
     return {
-        "conversations": agent.memory.list()
+        "conversations": store.list_sessions()
     }
 
 
 @router.get("/conversations/{session_id}")
 def get_conversation(session_id: str):
     try:
-        return agent.memory.get(session_id).to_dict()
+        return store.get_session(session_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Conversation not found") from exc
 
@@ -38,10 +39,24 @@ def get_conversation(session_id: str):
 @router.post("/conversations/{session_id}/ask")
 def ask_conversation(session_id: str, request: AskRequest):
     try:
-        return agent.ask_with_memory(
-            prompt=request.prompt,
-            provider=request.provider,
-            session_id=session_id,
-        )
+        session = store.get_session(session_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Conversation not found") from exc
+
+    store.add_message(session["id"], "user", request.prompt)
+
+    response = agent.ask(
+        prompt=request.prompt,
+        provider=request.provider,
+    )
+
+    content = ""
+    if response.get("ok") and response.get("result"):
+        content = response["result"].get("content", "")
+
+    store.add_message(session["id"], "assistant", content)
+
+    return {
+        "session": store.get_session(session["id"]),
+        "response": response,
+    }
