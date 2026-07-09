@@ -2,6 +2,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from core.agent.planner_agent import PlannerAgent
+from core.agent.plan_review import PlanReviewService
 from core.agent.plan_store import PlanStore
 
 
@@ -9,6 +10,7 @@ router = APIRouter()
 
 planner = PlannerAgent()
 store = PlanStore()
+reviewer = PlanReviewService()
 
 
 class PlanRequest(BaseModel):
@@ -34,3 +36,13 @@ def get_plan(plan_id: str):
         return store.get(plan_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Plan not found") from exc
+
+
+@router.post("/planner/plans/{plan_id}/review")
+def review_plan(plan_id: str):
+    try:
+        plan = store.get(plan_id)
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Plan not found") from exc
+
+    return reviewer.review(plan)

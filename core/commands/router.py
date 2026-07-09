@@ -1,4 +1,5 @@
 from core.agent.planner_agent import PlannerAgent
+from core.agent.plan_review import PlanReviewService
 from core.backup.confirm import BackupConfirmService
 from core.backup.plan import BackupPlanService
 from core.backup.run import BackupRunService
@@ -35,6 +36,7 @@ class CommandRouter:
         project: ProjectStatusService | None = None,
         knowledge: KnowledgeSearch | None = None,
         planner: PlannerAgent | None = None,
+        plan_reviewer: PlanReviewService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -52,6 +54,7 @@ class CommandRouter:
         self.project = project or ProjectStatusService()
         self.knowledge = knowledge or KnowledgeSearch()
         self.planner = planner or PlannerAgent()
+        self.plan_reviewer = plan_reviewer or PlanReviewService()
 
     def route(self, text: str) -> str:
         command = text.strip()
