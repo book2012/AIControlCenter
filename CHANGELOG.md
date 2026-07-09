@@ -70,3 +70,12 @@ Added:
 - Telegram /plan
 - PlanStore
 - Plan Review
+
+## Automation Engine
+
+- AutomationExecutor
+- SafeExecutionPolicy
+- AutomationQueue
+- Automation API
+- Telegram /automation
+- Scheduler integration
