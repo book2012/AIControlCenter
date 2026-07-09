@@ -188,6 +188,7 @@ class CommandRouter:
             "🧠 Memory",
             f"Type: {status['type']}",
             f"Sessions: {status['sessions']}",
+            f"Working items: {status['working_items']}",
             f"Ready: {status['ready']}",
         ])
 
