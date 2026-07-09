@@ -79,6 +79,10 @@ class CommandRouter:
         if lowered == "/memory":
             return self.memory_status()
 
+        if lowered.startswith("/memory search "):
+            query = command.split(" ", 2)[2].strip()
+            return self.memory_search(query)
+
         if lowered == "/worker":
             return self.worker_status.format_text()
 
@@ -193,6 +197,25 @@ class CommandRouter:
             f"Ready: {status['ready']}",
         ])
 
+    def memory_search(self, query: str) -> str:
+        results = self.memory.search_long_term(query)
+
+        lines = [
+            "🧠 Memory Search",
+            f"Query: {query}",
+            f"Results: {len(results)}",
+            "",
+        ]
+
+        if not results:
+            lines.append("No matching memory found.")
+            return "\n".join(lines)
+
+        for item in results[:5]:
+            lines.append(f"- {item['content']}")
+
+        return "\n".join(lines)
+
     def help(self) -> str:
         return "\n".join([
             "AIControlCenter Commands",
@@ -207,6 +230,7 @@ class CommandRouter:
             "/tasks   - Running tasks",
             "/scheduler - Scheduler status",
             "/memory  - Memory status",
+            "/memory search <query> - Search long-term memory",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
             "/logs    - Recent logs",
