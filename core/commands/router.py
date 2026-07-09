@@ -1,6 +1,7 @@
 from core.dashboard.api import DashboardAPI
 from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.storage_registry import StorageRegistry
+from core.doctor.service import DoctorService
 from core.task.registry import TaskRegistry
 
 
@@ -11,11 +12,13 @@ class CommandRouter:
         storage: StorageRegistry | None = None,
         backup: BackupRegistry | None = None,
         registry: TaskRegistry | None = None,
+        doctor: DoctorService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
         self.backup = backup or BackupRegistry()
         self.registry = registry or TaskRegistry()
+        self.doctor = doctor or DoctorService()
 
     def route(self, text: str) -> str:
         command = text.strip().lower()
@@ -31,6 +34,9 @@ class CommandRouter:
 
         if command == "/tasks":
             return self.tasks_status()
+
+        if command == "/doctor":
+            return self.doctor.format_text()
 
         if command == "/help":
             return self.help()
@@ -119,6 +125,7 @@ class CommandRouter:
             "/storage - Storage summary",
             "/backup  - Backup summary (read-only)",
             "/tasks   - Running tasks",
+            "/doctor  - System diagnosis",
             "/help    - Command list",
             "/ask <message> - Ask BrainAgent",
         ])
