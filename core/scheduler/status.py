@@ -1,3 +1,4 @@
+from core.scheduler.defaults import create_default_jobs
 from core.scheduler.heartbeat import HeartbeatStore
 from core.scheduler.jobs import JobRegistry
 
@@ -9,7 +10,7 @@ class SchedulerStatusService:
         jobs: JobRegistry | None = None,
     ):
         self.heartbeat = heartbeat or HeartbeatStore()
-        self.jobs = jobs or JobRegistry()
+        self.jobs = jobs or create_default_jobs()
 
     def status(self):
         return {
@@ -37,5 +38,11 @@ class SchedulerStatusService:
 
         lines.append("")
         lines.append(f"Jobs: {len(jobs)}")
+
+        for job in jobs:
+            enabled = "ON" if job["enabled"] else "OFF"
+            lines.append(
+                f"- {job['name']} [{enabled}] every {job['interval_seconds']}s"
+            )
 
         return "\n".join(lines)

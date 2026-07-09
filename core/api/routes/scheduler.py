@@ -1,14 +1,14 @@
 from fastapi import APIRouter
 
+from core.scheduler.defaults import create_default_jobs
 from core.scheduler.heartbeat import HeartbeatStore
-from core.scheduler.jobs import JobRegistry
 from core.scheduler.loop import SchedulerLoop
 
 
 router = APIRouter()
 
 heartbeat = HeartbeatStore()
-jobs = JobRegistry()
+jobs = create_default_jobs()
 loop = SchedulerLoop(
     heartbeat=heartbeat,
     jobs=jobs,
