@@ -13,3 +13,23 @@ Added
 - SQLite
 - Storage Registry
 - Backup Registry
+
+## Unreleased
+
+### Planned
+
+- Brain Scheduler
+- Internal Heartbeat
+- Job Registry
+- Scheduler API
+- Automation Foundation
+
+
+## Scheduler Foundation
+
+- Heartbeat
+- Job Registry
+- Scheduler Loop
+- Job Runner
+- Scheduler API
+- Background Service
