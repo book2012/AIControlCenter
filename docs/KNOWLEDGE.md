@@ -2,22 +2,20 @@
 
 ## Status
 
-Sprint 23 planned.
+✅ Knowledge Registry
+✅ Markdown Loader
+✅ Knowledge Index
+✅ Knowledge Search
+✅ Telegram /knowledge
+✅ Knowledge API
+✅ BrainAgent Knowledge Context
+✅ Auto Discovery
 
-## Goal
+## Purpose
 
-Knowledge Layer allows AIControlCenter to understand project documents and operational knowledge.
+Knowledge Layer allows AIControlCenter to understand project documents.
 
-## Planned Components
-
-- Knowledge Registry
-- Markdown Loader
-- Knowledge Search
-- BrainAgent Knowledge Context
-- Knowledge API
-- Telegram /knowledge
-
-## Initial Documents
+## Sources
 
 - README.md
 - MASTER.md
@@ -25,6 +23,14 @@ Knowledge Layer allows AIControlCenter to understand project documents and opera
 - TODO.md
 - CHANGELOG.md
 - PROJECT_HISTORY.md
-- docs/ARCHITECTURE.md
-- docs/SCHEDULER.md
-- docs/MEMORY.md
+- docs/*.md
+
+## Commands
+
+/knowledge
+/knowledge search <query>
+
+## API
+
+GET /knowledge
+GET /knowledge/search?q=

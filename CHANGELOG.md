@@ -52,3 +52,13 @@ Added:
 - Telegram /memory
 - Memory Search
 - BrainAgent Memory Context
+
+## Knowledge Layer
+
+- Knowledge Registry
+- Markdown Loader
+- Knowledge Index
+- Knowledge Search
+- Telegram /knowledge
+- Knowledge API
+- BrainAgent Knowledge Context
