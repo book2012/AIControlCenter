@@ -1,55 +1,41 @@
 # AIControlCenter
 
-AIControlCenter is the Brain and Control Plane for AI Home Infrastructure.
+AIControlCenter is the Brain of the AI Home Datacenter.
 
-It orchestrates Workers, Agents, Tasks, Sessions, Scheduling, Monitoring, Power Policy, and Dashboard APIs.
+## Brain
+- Mac mini M4
+- AI Agents
+- FastAPI
+- Telegram
+- Provider Manager
+- BrainAgent
+- Command Router
 
-Ubuntu Storage Server is the first Worker, not the final goal.
+## Optional Worker
+- Ubuntu
+- Docker
+- Storage
+- Backup
+- Immich
+- Nextcloud
+- Plex
 
-## Architecture
+## Telegram Commands
 
-AIControlCenter
-→ Worker SDK
-→ WorkerFactory
-→ WorkerClient
-→ Runner
-→ Worker Protocol
-→ Workers
+/status
+/storage
+/backup
+/tasks
+/help
+/ask <message>
 
-## Current Worker
+## Current Status
 
-- Ubuntu Storage Server
+Core Platform is operational.
 
-## Future Workers
+Next Sprint
 
-- GPU Worker
-- Windows Worker
-- NAS
-- Raspberry Pi
-- Cloud Worker
-
-## Completed Core Modules
-
-- Worker SDK
-- Runner Interface
-- LocalRunner
-- SSHRunner
-- UbuntuWorkerClient
-- WorkerFactory
-- Worker Command API
-- Task Registry
-- Task Execution Manager
-- Multi-worker Session Manager
-- Scheduler Core
-- Power Manager
-- Agent Framework
-- Monitoring Snapshot
-- Dashboard API Core
-
-## Test Status
-
-23 tests passed.
-
-## Principle
-
-Control Center thinks. Workers execute.
+- Doctor
+- Logs
+- Backup Verify
+- Worker Health
