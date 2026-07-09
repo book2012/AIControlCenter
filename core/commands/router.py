@@ -10,6 +10,7 @@ from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.knowledge.search import KnowledgeSearch
+from core.homepage.status import HomepageStatusService
 from core.logs.service import LogsService
 from core.memory.manager import MemoryManager
 from core.project.status import ProjectStatusService
@@ -39,6 +40,7 @@ class CommandRouter:
         self.memory = memory or MemoryManager()
         self.project = ProjectStatusService()
         self.knowledge = KnowledgeSearch()
+        self.homepage = HomepageStatusService()
         self.planner = PlannerAgent()
         self.plan_reviewer = PlanReviewService()
         self.automation = automation or AutomationQueue()
@@ -85,6 +87,9 @@ class CommandRouter:
             return self.project.format_project()
         if lowered == "/knowledge":
             return self.knowledge_status()
+
+        if lowered == "/homepage":
+            return self.homepage_status()
         if lowered.startswith("/knowledge search "):
             query = command.split(" ", 2)[2].strip()
             return self.knowledge_search(query)
@@ -187,6 +192,21 @@ class CommandRouter:
             f"Blocked: {result['result'].get('blocked')}",
         ])
 
+    def homepage_status(self) -> str:
+        data = self.homepage.status()
+        brain = data["brain"]
+
+        return "\n".join([
+            "🏠 Homepage",
+            f"Brain: {brain['state']}",
+            f"Storage: {'OK' if data['storage']['exists'] else 'NO'}",
+            f"Backup: {'OK' if data['backup']['exists'] else 'NO'}",
+            f"Scheduler Jobs: {len(data['scheduler']['jobs'])}",
+            f"Memory Ready: {data['memory']['ready']}",
+            f"Knowledge Docs: {data['knowledge']['documents']}",
+            f"Workers: {len(data['workers'])}",
+        ])
+
     def help(self) -> str:
         return "\n".join([
             "AIControlCenter Commands",
@@ -208,6 +228,7 @@ class CommandRouter:
             "/agents",
             "/project",
             "/knowledge",
+            "/homepage",
             "/knowledge search <query>",
             "/plan <goal>",
             "/automation",
