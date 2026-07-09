@@ -1,3 +1,4 @@
+from core.memory.long_term import LongTermMemory
 from core.memory.sqlite_store import SQLiteConversationStore
 from core.memory.working import WorkingMemory
 
@@ -7,9 +8,11 @@ class MemoryManager:
         self,
         store: SQLiteConversationStore | None = None,
         working: WorkingMemory | None = None,
+        long_term: LongTermMemory | None = None,
     ):
         self.store = store or SQLiteConversationStore()
         self.working = working or WorkingMemory()
+        self.long_term = long_term or LongTermMemory()
 
     def create_session(self):
         return self.store.create_session()
@@ -35,13 +38,27 @@ class MemoryManager:
     def list_working(self):
         return self.working.list()
 
+    def add_long_term(self, content: str, source: str = "manual", metadata: dict | None = None):
+        return self.long_term.add(content, source=source, metadata=metadata)
+
+    def get_long_term(self, item_id: str):
+        return self.long_term.get(item_id)
+
+    def list_long_term(self):
+        return self.long_term.list()
+
+    def search_long_term(self, query: str):
+        return self.long_term.search(query)
+
     def status(self):
         sessions = self.list_sessions()
         working = self.working.status()
+        long_term = self.long_term.status()
 
         return {
-            "type": "sqlite+working",
+            "type": "sqlite+working+long_term",
             "sessions": len(sessions),
             "working_items": working["items"],
+            "long_term_items": long_term["items"],
             "ready": True,
         }

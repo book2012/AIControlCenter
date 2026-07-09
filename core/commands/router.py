@@ -189,6 +189,7 @@ class CommandRouter:
             f"Type: {status['type']}",
             f"Sessions: {status['sessions']}",
             f"Working items: {status['working_items']}",
+            f"Long-term items: {status['long_term_items']}",
             f"Ready: {status['ready']}",
         ])
 
