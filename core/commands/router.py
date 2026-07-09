@@ -7,6 +7,7 @@ from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.logs.service import LogsService
+from core.memory.manager import MemoryManager
 from core.scheduler.status import SchedulerStatusService
 from core.task.registry import TaskRegistry
 from core.worker_status.service import WorkerStatusService
@@ -27,6 +28,7 @@ class CommandRouter:
         backup_confirm: BackupConfirmService | None = None,
         backup_run: BackupRunService | None = None,
         scheduler_status: SchedulerStatusService | None = None,
+        memory: MemoryManager | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -40,6 +42,7 @@ class CommandRouter:
         self.backup_confirm = backup_confirm or BackupConfirmService()
         self.backup_run = backup_run or BackupRunService(self.backup_confirm)
         self.scheduler_status = scheduler_status or SchedulerStatusService()
+        self.memory = memory or MemoryManager()
 
     def route(self, text: str) -> str:
         command = text.strip()
@@ -72,6 +75,9 @@ class CommandRouter:
 
         if lowered == "/scheduler":
             return self.scheduler_status.format_text()
+
+        if lowered == "/memory":
+            return self.memory_status()
 
         if lowered == "/worker":
             return self.worker_status.format_text()
@@ -175,6 +181,16 @@ class CommandRouter:
 
         return "\n".join(lines)
 
+    def memory_status(self) -> str:
+        status = self.memory.status()
+
+        return "\n".join([
+            "🧠 Memory",
+            f"Type: {status['type']}",
+            f"Sessions: {status['sessions']}",
+            f"Ready: {status['ready']}",
+        ])
+
     def help(self) -> str:
         return "\n".join([
             "AIControlCenter Commands",
@@ -188,6 +204,7 @@ class CommandRouter:
             "/backup verify - Verify backup status",
             "/tasks   - Running tasks",
             "/scheduler - Scheduler status",
+            "/memory  - Memory status",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
             "/logs    - Recent logs",
