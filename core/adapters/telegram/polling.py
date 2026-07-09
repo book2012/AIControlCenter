@@ -5,6 +5,7 @@ import requests
 
 from core.adapters.telegram.brain_chat import TelegramBrainChat
 from core.adapters.telegram.bot import TelegramBotAdapter
+from core.commands.router import CommandRouter
 from core.config.loader import ConfigLoader
 
 
@@ -13,11 +14,13 @@ class TelegramPollingBot:
         self,
         bot: TelegramBotAdapter | None = None,
         chat: TelegramBrainChat | None = None,
+        commands: CommandRouter | None = None,
         interval: int = 3,
     ):
         ConfigLoader().load()
         self.bot = bot or TelegramBotAdapter()
         self.chat = chat or TelegramBrainChat(bot=self.bot)
+        self.commands = commands or CommandRouter()
         self.interval = interval
         self.offset = None
 
@@ -51,13 +54,17 @@ class TelegramPollingBot:
         self.bot.chat_id = str(chat_id)
 
         if text.startswith("/start"):
-            return self.bot.send_message("AIControlCenter Telegram Brain is online.")
+            return self.bot.send_message("AIControlCenter Telegram Brain is online. Use /help.")
 
         if text.startswith("/ask "):
             prompt = text.replace("/ask ", "", 1).strip()
+            self.bot.send_message("Thinking...")
             return self.chat.handle_message(prompt, provider="openai")
 
-        return self.bot.send_message("Use /ask <message>")
+        if text.startswith("/"):
+            return self.bot.send_message(self.commands.route(text))
+
+        return self.bot.send_message("Use /help or /ask <message>")
 
     def run_once(self):
         updates = self.get_updates()
