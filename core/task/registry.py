@@ -15,6 +15,18 @@ class Task:
     result: Any | None = None
     error: str | None = None
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "worker": self.worker,
+            "command": self.command,
+            "status": self.status,
+            "started": self.started.isoformat(),
+            "finished": self.finished.isoformat() if self.finished else None,
+            "result": self.result,
+            "error": self.error,
+        }
+
 
 class TaskRegistry:
     def __init__(self):

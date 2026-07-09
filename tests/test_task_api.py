@@ -23,6 +23,16 @@ def test_create_task_api():
     )
 
     assert response.status_code == 200
-    assert response.json()["worker"] == "missing-worker"
-    assert response.json()["command"] == "status"
-    assert response.json()["status"] in ["FINISHED", "FAILED"]
+
+    data = response.json()
+
+    assert data["worker"] == "missing-worker"
+    assert data["command"] == "status"
+    assert data["status"] in ["FINISHED", "FAILED"]
+    assert isinstance(data["started"], str)
+
+
+def test_get_missing_task_api():
+    response = client.get("/tasks/not-found")
+
+    assert response.status_code == 404

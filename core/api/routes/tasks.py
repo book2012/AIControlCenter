@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from core.task.executor import TaskExecutionManager
@@ -18,7 +18,7 @@ class TaskRequest(BaseModel):
 def list_tasks():
     return {
         "tasks": [
-            task.__dict__
+            task.to_dict()
             for task in manager.registry.tasks.values()
         ]
     }
@@ -26,7 +26,10 @@ def list_tasks():
 
 @router.get("/tasks/{task_id}")
 def get_task(task_id: str):
-    return manager.registry.get(task_id).__dict__
+    try:
+        return manager.registry.get(task_id).to_dict()
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Task not found") from exc
 
 
 @router.post("/tasks")
@@ -36,4 +39,4 @@ def create_task(request: TaskRequest):
         request.command,
     )
 
-    return task.__dict__
+    return task.to_dict()
