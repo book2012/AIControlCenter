@@ -19,3 +19,22 @@ Sprint 19
 Sprint 20
 
 - Backup Execute
+
+## Sprint 21
+
+- [ ] Scheduler
+- [ ] Heartbeat
+- [ ] Job Registry
+- [ ] Scheduler API
+- [ ] Job Runner
+- [ ] Scheduler Tests
+
+
+## Sprint 23
+
+- [ ] Knowledge Registry
+- [ ] Markdown Loader
+- [ ] Knowledge Search
+- [ ] Knowledge API
+- [ ] Telegram /knowledge
+- [ ] BrainAgent Knowledge Context

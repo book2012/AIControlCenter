@@ -7,16 +7,21 @@
 ✅ Scheduler Loop
 ✅ Job Runner
 ✅ Scheduler API
-✅ Telegram Command
-✅ Background Service
+✅ Telegram /scheduler
+✅ Background Scheduler Service
 
-Default Jobs
+## Default Jobs
 
 - heartbeat
 - doctor
 - provider-check
 - backup-verify
 
-Production Target
+## Commands
 
-Mac mini M4
+/scheduler
+
+## API
+
+GET /scheduler
+POST /scheduler/tick

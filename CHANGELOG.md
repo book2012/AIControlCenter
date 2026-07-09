@@ -33,3 +33,22 @@ Added
 - Job Runner
 - Scheduler API
 - Background Service
+
+## Sprint 21-22
+
+Added:
+
+- Scheduler Heartbeat
+- Job Registry
+- Scheduler Loop
+- Job Runner
+- Scheduler API
+- Telegram /scheduler
+- Background Scheduler Service
+- MemoryManager
+- Working Memory
+- Long-term Memory
+- Memory API
+- Telegram /memory
+- Memory Search
+- BrainAgent Memory Context
