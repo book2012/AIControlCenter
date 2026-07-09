@@ -34,3 +34,16 @@ def test_provider_chat_api():
 
     assert response.status_code == 200
     assert response.json()["provider"] == "openai"
+
+
+def test_provider_auto_chat_api():
+    response = client.post(
+        "/providers/chat",
+        json={
+            "prompt": "hello",
+            "provider": "missing",
+        },
+    )
+
+    assert response.status_code == 200
+    assert "attempts" in response.json()

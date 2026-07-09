@@ -11,6 +11,7 @@ manager = ProviderManager()
 
 class ChatRequest(BaseModel):
     prompt: str
+    provider: str | None = None
 
 
 @router.get("/providers")
@@ -32,3 +33,11 @@ def provider_chat(name: str, request: ChatRequest):
         return manager.get(name).chat(request.prompt)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Provider not found") from exc
+
+
+@router.post("/providers/chat")
+def provider_chat_auto(request: ChatRequest):
+    return manager.chat(
+        prompt=request.prompt,
+        provider=request.provider,
+    )
