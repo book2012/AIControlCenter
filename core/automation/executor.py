@@ -1,15 +1,20 @@
 from core.automation.policy import SafeExecutionPolicy
-from core.commands.router import CommandRouter
 
 
 class AutomationExecutor:
     def __init__(
         self,
-        router: CommandRouter | None = None,
+        router=None,
         policy: SafeExecutionPolicy | None = None,
     ):
-        self.router = router or CommandRouter()
+        self.router = router
         self.policy = policy or SafeExecutionPolicy()
+
+    def _router(self):
+        if self.router is None:
+            from core.commands.router import CommandRouter
+            self.router = CommandRouter()
+        return self.router
 
     def execute(self, action: str):
         decision = self.policy.check(action)
@@ -24,7 +29,7 @@ class AutomationExecutor:
 
         return {
             "action": action,
-            "result": self.router.route(action),
+            "result": self._router().route(action),
             "executed": True,
             "blocked": False,
         }

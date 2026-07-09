@@ -1,5 +1,6 @@
-from core.agent.planner_agent import PlannerAgent
 from core.agent.plan_review import PlanReviewService
+from core.agent.planner_agent import PlannerAgent
+from core.automation.queue import AutomationQueue
 from core.backup.confirm import BackupConfirmService
 from core.backup.plan import BackupPlanService
 from core.backup.run import BackupRunService
@@ -8,9 +9,9 @@ from core.dashboard.api import DashboardAPI
 from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
+from core.knowledge.search import KnowledgeSearch
 from core.logs.service import LogsService
 from core.memory.manager import MemoryManager
-from core.knowledge.search import KnowledgeSearch
 from core.project.status import ProjectStatusService
 from core.scheduler.status import SchedulerStatusService
 from core.task.registry import TaskRegistry
@@ -20,41 +21,27 @@ from core.worker_status.service import WorkerStatusService
 class CommandRouter:
     def __init__(
         self,
-        dashboard: DashboardAPI | None = None,
-        storage: StorageRegistry | None = None,
-        backup: BackupRegistry | None = None,
-        registry: TaskRegistry | None = None,
-        doctor: DoctorService | None = None,
-        logs: LogsService | None = None,
-        backup_verify: BackupVerifyService | None = None,
-        worker_status: WorkerStatusService | None = None,
-        backup_plan: BackupPlanService | None = None,
-        backup_confirm: BackupConfirmService | None = None,
-        backup_run: BackupRunService | None = None,
-        scheduler_status: SchedulerStatusService | None = None,
-        memory: MemoryManager | None = None,
-        project: ProjectStatusService | None = None,
-        knowledge: KnowledgeSearch | None = None,
-        planner: PlannerAgent | None = None,
-        plan_reviewer: PlanReviewService | None = None,
+        memory=None,
+        automation=None,
     ):
-        self.dashboard = dashboard or DashboardAPI()
-        self.storage = storage or StorageRegistry()
-        self.backup = backup or BackupRegistry()
-        self.registry = registry or TaskRegistry()
-        self.doctor = doctor or DoctorService()
-        self.logs = logs or LogsService()
-        self.backup_verify = backup_verify or BackupVerifyService()
-        self.worker_status = worker_status or WorkerStatusService()
-        self.backup_plan = backup_plan or BackupPlanService()
-        self.backup_confirm = backup_confirm or BackupConfirmService()
-        self.backup_run = backup_run or BackupRunService(self.backup_confirm)
-        self.scheduler_status = scheduler_status or SchedulerStatusService()
+        self.dashboard = DashboardAPI()
+        self.storage = StorageRegistry()
+        self.backup = BackupRegistry()
+        self.registry = TaskRegistry()
+        self.doctor = DoctorService()
+        self.logs = LogsService()
+        self.backup_verify = BackupVerifyService()
+        self.worker_status = WorkerStatusService()
+        self.backup_plan = BackupPlanService()
+        self.backup_confirm = BackupConfirmService()
+        self.backup_run = BackupRunService(self.backup_confirm)
+        self.scheduler_status = SchedulerStatusService()
         self.memory = memory or MemoryManager()
-        self.project = project or ProjectStatusService()
-        self.knowledge = knowledge or KnowledgeSearch()
-        self.planner = planner or PlannerAgent()
-        self.plan_reviewer = plan_reviewer or PlanReviewService()
+        self.project = ProjectStatusService()
+        self.knowledge = KnowledgeSearch()
+        self.planner = PlannerAgent()
+        self.plan_reviewer = PlanReviewService()
+        self.automation = automation or AutomationQueue()
 
     def route(self, text: str) -> str:
         command = text.strip()
@@ -62,68 +49,53 @@ class CommandRouter:
 
         if lowered == "/status":
             return self.status()
-
         if lowered == "/storage":
             return self.storage_status()
-
         if lowered == "/backup":
             return self.backup_status()
-
         if lowered == "/backup plan":
             return self.backup_plan.format_text()
-
         if lowered == "/backup confirm":
             return self.backup_confirm.format_text()
-
         if lowered.startswith("/backup run "):
             token = command.split(" ", 2)[2].strip()
             return self.backup_run.format_text(token)
-
         if lowered == "/backup verify":
             return self.backup_verify.format_text()
-
         if lowered == "/tasks":
             return self.tasks_status()
-
+        if lowered == "/worker":
+            return self.worker_status.format_text()
+        if lowered == "/doctor":
+            return self.doctor.format_text()
+        if lowered == "/logs":
+            return self.logs.format_text()
         if lowered == "/scheduler":
             return self.scheduler_status.format_text()
-
         if lowered == "/memory":
             return self.memory_status()
-
-        if lowered == "/sprint":
-            return self.project.format_sprint()
-
-        if lowered == "/agents":
-            return self.project.format_agents()
-
-        if lowered == "/project":
-            return self.project.format_project()
-
-        if lowered == "/knowledge":
-            return self.knowledge_status()
-
-        if lowered.startswith("/plan "):
-            goal = command.split(" ", 1)[1].strip()
-            return self.plan(goal)
-
-        if lowered.startswith("/knowledge search "):
-            query = command.split(" ", 2)[2].strip()
-            return self.knowledge_search(query)
-
         if lowered.startswith("/memory search "):
             query = command.split(" ", 2)[2].strip()
             return self.memory_search(query)
-
-        if lowered == "/worker":
-            return self.worker_status.format_text()
-
-        if lowered == "/doctor":
-            return self.doctor.format_text()
-
-        if lowered == "/logs":
-            return self.logs.format_text()
-
+        if lowered == "/sprint":
+            return self.project.format_sprint()
+        if lowered == "/agents":
+            return self.project.format_agents()
+        if lowered == "/project":
+            return self.project.format_project()
+        if lowered == "/knowledge":
+            return self.knowledge_status()
+        if lowered.startswith("/knowledge search "):
+            query = command.split(" ", 2)[2].strip()
+            return self.knowledge_search(query)
+        if lowered.startswith("/plan "):
+            goal = command.split(" ", 1)[1].strip()
+            return self.plan(goal)
+        if lowered == "/automation":
+            return self.automation_status()
+        if lowered.startswith("/automation run "):
+            action = command.split(" ", 2)[2].strip()
+            return self.automation_run(action)
         if lowered == "/help":
             return self.help()
 
@@ -152,172 +124,93 @@ class CommandRouter:
 
     def storage_status(self) -> str:
         summary = self.storage.summary()
-
-        lines = [
-            "📦 Storage",
-            f"Root: {summary['root']}",
-            f"Exists: {'OK' if summary['exists'] else 'NO'}",
-            "",
-            "Categories:",
-        ]
-
+        lines = ["📦 Storage", f"Root: {summary['root']}", f"Exists: {'OK' if summary['exists'] else 'NO'}", "", "Categories:"]
         for name, item in summary["categories"].items():
-            marker = "✅" if item["exists"] else "❌"
-            empty = (
-                " empty"
-                if item["file_count"] == 0 and item["directory_count"] == 0
-                else ""
-            )
-            lines.append(
-                f"- {marker} {name}: "
-                f"{item['directory_count']} dirs, "
-                f"{item['file_count']} files{empty}"
-            )
-
+            lines.append(f"- {name}: {item['directory_count']} dirs, {item['file_count']} files")
         return "\n".join(lines)
 
     def backup_status(self) -> str:
         summary = self.backup.summary()
-
-        lines = [
-            "💾 Backup",
-            f"Root: {summary['root']}",
-            f"Exists: {'OK' if summary['exists'] else 'NO'}",
-            "",
-            "Categories:",
-        ]
-
-        for name, item in summary["categories"].items():
-            marker = "✅" if item["exists"] else "❌"
-            empty = (
-                " empty"
-                if item["file_count"] == 0 and item["directory_count"] == 0
-                else ""
-            )
-            lines.append(
-                f"- {marker} {name}: "
-                f"{item['directory_count']} dirs, "
-                f"{item['file_count']} files{empty}"
-            )
-
-        lines.append("")
-        lines.append("Read-only mode. Use /backup only for status.")
-
+        lines = ["💾 Backup", f"Root: {summary['root']}", f"Exists: {'OK' if summary['exists'] else 'NO'}", "", "Read-only mode."]
         return "\n".join(lines)
 
     def tasks_status(self) -> str:
         running = self.registry.running()
-
         if not running:
             return "🧾 Tasks\nRunning: none"
-
-        lines = ["🧾 Tasks", "Running:"]
-        for task in running:
-            lines.append(f"- {task.worker}: {task.command} ({task.status})")
-
-        return "\n".join(lines)
+        return "\n".join(["🧾 Tasks"] + [f"- {t.worker}: {t.command} ({t.status})" for t in running])
 
     def memory_status(self) -> str:
-        status = self.memory.status()
-
+        s = self.memory.status()
         return "\n".join([
             "🧠 Memory",
-            f"Type: {status['type']}",
-            f"Sessions: {status['sessions']}",
-            f"Working items: {status['working_items']}",
-            f"Long-term items: {status['long_term_items']}",
-            f"Ready: {status['ready']}",
+            f"Type: {s['type']}",
+            f"Sessions: {s['sessions']}",
+            f"Working items: {s['working_items']}",
+            f"Long-term items: {s['long_term_items']}",
+            f"Ready: {s['ready']}",
         ])
 
     def memory_search(self, query: str) -> str:
         results = self.memory.search_long_term(query)
-
-        lines = [
-            "🧠 Memory Search",
-            f"Query: {query}",
-            f"Results: {len(results)}",
-            "",
-        ]
-
-        if not results:
-            lines.append("No matching memory found.")
-            return "\n".join(lines)
-
-        for item in results[:5]:
-            lines.append(f"- {item['content']}")
-
+        lines = ["🧠 Memory Search", f"Query: {query}", f"Results: {len(results)}", ""]
+        lines.extend([f"- {item['content']}" for item in results[:5]])
         return "\n".join(lines)
 
     def knowledge_status(self) -> str:
-        status = self.knowledge.status()
-        return "\n".join([
-            "📚 Knowledge",
-            f"Documents: {status['documents']}",
-            f"Ready: {status['ready']}",
-        ])
+        s = self.knowledge.status()
+        return "\n".join(["📚 Knowledge", f"Documents: {s['documents']}", f"Ready: {s['ready']}"])
 
     def knowledge_search(self, query: str) -> str:
         results = self.knowledge.search(query)
-
-        lines = [
-            "📚 Knowledge Search",
-            f"Query: {query}",
-            f"Results: {len(results)}",
-            "",
-        ]
-
-        if not results:
-            lines.append("No matching knowledge found.")
-            return "\n".join(lines)
-
-        for item in results[:5]:
-            lines.append(f"- {item['name']} score={item['score']}")
-
+        lines = ["📚 Knowledge Search", f"Query: {query}", f"Results: {len(results)}", ""]
+        lines.extend([f"- {item['name']} score={item['score']}" for item in results[:5]])
         return "\n".join(lines)
 
     def plan(self, goal: str) -> str:
         plan = self.planner.create_plan(goal)
-
-        lines = [
-            "🧭 Plan",
-            f"Goal: {plan['goal']}",
-            f"Status: {plan['status']}",
-            f"Executable: {plan['executable']}",
-            "",
-            "Steps:",
-        ]
-
-        for step in plan["steps"]:
-            lines.append(
-                f"{step['order']}. {step['name']} [{step['action']}]"
-            )
-
+        lines = ["🧭 Plan", f"Goal: {plan['goal']}", f"Status: {plan['status']}", f"Executable: {plan['executable']}", "", "Steps:"]
+        lines.extend([f"{s['order']}. {s['name']} [{s['action']}]" for s in plan["steps"]])
         return "\n".join(lines)
+
+    def automation_status(self) -> str:
+        return "\n".join(["⚙️ Automation", f"Items: {len(self.automation.list())}"])
+
+    def automation_run(self, action: str) -> str:
+        item = self.automation.submit(action)
+        result = self.automation.run(item["id"])
+        return "\n".join([
+            "⚙️ Automation Run",
+            f"Action: {result['action']}",
+            f"Status: {result['status']}",
+            f"Executed: {result['result'].get('executed')}",
+            f"Blocked: {result['result'].get('blocked')}",
+        ])
 
     def help(self) -> str:
         return "\n".join([
             "AIControlCenter Commands",
-            "",
-            "/status  - Brain status",
-            "/storage - Storage summary",
-            "/backup  - Backup summary (read-only)",
-            "/backup plan - Show backup execution plan",
-            "/backup confirm - Generate backup confirmation token",
-            "/backup run <token> - Validate token, execution disabled",
-            "/backup verify - Verify backup status",
-            "/tasks   - Running tasks",
-            "/scheduler - Scheduler status",
-            "/memory  - Memory status",
-            "/sprint  - Sprint status",
-            "/agents  - Agent roadmap",
-            "/project - Project status",
-            "/knowledge - Knowledge status",
-            "/knowledge search <query> - Search knowledge",
-            "/plan <goal> - Create draft plan",
-            "/memory search <query> - Search long-term memory",
-            "/worker  - Worker status",
-            "/doctor  - System diagnosis",
-            "/logs    - Recent logs",
-            "/help    - Command list",
-            "/ask <message> - Ask BrainAgent",
+            "/status",
+            "/storage",
+            "/backup",
+            "/backup plan",
+            "/backup confirm",
+            "/backup run <token>",
+            "/backup verify",
+            "/tasks",
+            "/worker",
+            "/doctor",
+            "/logs",
+            "/scheduler",
+            "/memory",
+            "/memory search <query>",
+            "/sprint",
+            "/agents",
+            "/project",
+            "/knowledge",
+            "/knowledge search <query>",
+            "/plan <goal>",
+            "/automation",
+            "/automation run <command>",
+            "/ask <message>",
         ])
