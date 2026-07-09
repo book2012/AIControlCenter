@@ -27,13 +27,21 @@ class LongTermMemory:
         return list(self.items.values())
 
     def search(self, query: str):
-        query_lower = query.lower()
-
-        return [
-            item
-            for item in self.items.values()
-            if query_lower in item["content"].lower()
+        words = [
+            word.lower()
+            for word in query.replace("/", " ").split()
+            if word.strip()
         ]
+
+        results = []
+
+        for item in self.items.values():
+            content = item["content"].lower()
+
+            if any(word in content for word in words):
+                results.append(item)
+
+        return results
 
     def status(self):
         return {

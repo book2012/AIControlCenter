@@ -1,5 +1,6 @@
 from core.agent.router import AgentActionRouter
 from core.memory.conversation import ConversationMemory
+from core.memory.manager import MemoryManager
 from core.providers.manager import ProviderManager
 
 
@@ -9,10 +10,12 @@ class BrainAgent:
         providers: ProviderManager | None = None,
         memory: ConversationMemory | None = None,
         router: AgentActionRouter | None = None,
+        memory_manager: MemoryManager | None = None,
     ):
         self.providers = providers or ProviderManager()
         self.memory = memory or ConversationMemory()
         self.router = router or AgentActionRouter()
+        self.memory_manager = memory_manager or MemoryManager()
 
     def ask(self, prompt: str, provider: str | None = None):
         action_result = self.router.route(prompt)
@@ -36,6 +39,35 @@ class BrainAgent:
             prompt=prompt,
             provider=provider,
         )
+
+    def ask_with_memory_context(
+        self,
+        prompt: str,
+        provider: str | None = None,
+    ):
+        memories = self.memory_manager.search_long_term(prompt)
+
+        memory_text = "\n".join(
+            f"- {item['content']}"
+            for item in memories[:5]
+        )
+
+        if memory_text:
+            enriched_prompt = (
+                "Use the following long-term memory when useful.\n\n"
+                f"{memory_text}\n\n"
+                f"User question:\n{prompt}"
+            )
+        else:
+            enriched_prompt = prompt
+
+        result = self.ask(enriched_prompt, provider=provider)
+
+        return {
+            "prompt": prompt,
+            "memory_count": len(memories),
+            "response": result,
+        }
 
     def ask_with_memory(
         self,
