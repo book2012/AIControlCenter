@@ -62,3 +62,11 @@ Added:
 - Telegram /knowledge
 - Knowledge API
 - BrainAgent Knowledge Context
+
+## Planner Agent
+
+- PlannerAgent
+- Planner API
+- Telegram /plan
+- PlanStore
+- Plan Review
