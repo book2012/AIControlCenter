@@ -1,7 +1,8 @@
 from datetime import datetime, timedelta
 
 from core.scheduler.heartbeat import HeartbeatStore
-from core.scheduler.jobs import JobRegistry, ScheduledJob
+from core.scheduler.jobs import JobRegistry
+from core.scheduler.runner import JobRunner
 
 
 class SchedulerLoop:
@@ -9,9 +10,11 @@ class SchedulerLoop:
         self,
         heartbeat: HeartbeatStore | None = None,
         jobs: JobRegistry | None = None,
+        runner: JobRunner | None = None,
     ):
         self.heartbeat = heartbeat or HeartbeatStore()
         self.jobs = jobs or JobRegistry()
+        self.runner = runner or JobRunner()
         self.last_run = {}
 
     def due_jobs(self):
@@ -37,9 +40,11 @@ class SchedulerLoop:
         beat = self.heartbeat.beat()
 
         due = self.due_jobs()
+        results = []
 
         for job in due:
             self.last_run[job.id] = datetime.utcnow()
+            results.append(self.runner.run(job))
 
         return {
             "heartbeat": beat,
@@ -47,4 +52,5 @@ class SchedulerLoop:
                 job.to_dict()
                 for job in due
             ],
+            "results": results,
         }

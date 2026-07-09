@@ -17,6 +17,7 @@ def test_scheduler_loop_tick(tmp_path):
 
     assert result["heartbeat"]["status"] == "ALIVE"
     assert len(result["due_jobs"]) == 1
+    assert len(result["results"]) == 1
 
 
 def test_scheduler_loop_disabled_job(tmp_path):
@@ -33,3 +34,4 @@ def test_scheduler_loop_disabled_job(tmp_path):
     result = loop.tick()
 
     assert result["due_jobs"] == []
+    assert result["results"] == []
