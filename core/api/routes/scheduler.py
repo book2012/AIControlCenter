@@ -3,6 +3,7 @@ from fastapi import APIRouter
 from core.scheduler.defaults import create_default_jobs
 from core.scheduler.heartbeat import HeartbeatStore
 from core.scheduler.loop import SchedulerLoop
+from core.scheduler.service import SchedulerService
 
 
 router = APIRouter()
@@ -13,17 +14,14 @@ loop = SchedulerLoop(
     heartbeat=heartbeat,
     jobs=jobs,
 )
+service = SchedulerService(loop=loop)
 
 
 @router.get("/scheduler")
 def scheduler_status():
-    latest = heartbeat.latest()
-
-    return {
-        "status": "ONLINE",
-        "heartbeat": latest,
-        "jobs": jobs.list(),
-    }
+    status = service.status()
+    status["status"] = "ONLINE"
+    return status
 
 
 @router.post("/scheduler/tick")
