@@ -15,15 +15,40 @@ class OpenAIProvider(AIProvider):
         }
 
     def chat(self, prompt: str) -> Dict[str, Any]:
-        if not os.getenv("OPENAI_API_KEY"):
+        api_key = os.getenv("OPENAI_API_KEY")
+
+        if not api_key:
             return {
                 "provider": self.name(),
                 "ok": False,
                 "error": "OPENAI_API_KEY is not configured",
             }
 
-        return {
-            "provider": self.name(),
-            "ok": False,
-            "error": "OpenAI chat execution is not implemented yet",
-        }
+        try:
+            from openai import OpenAI
+
+            client = OpenAI(api_key=api_key)
+
+            response = client.chat.completions.create(
+                model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ],
+            )
+
+            return {
+                "provider": self.name(),
+                "ok": True,
+                "model": response.model,
+                "content": response.choices[0].message.content,
+            }
+
+        except Exception as exc:
+            return {
+                "provider": self.name(),
+                "ok": False,
+                "error": str(exc),
+            }
