@@ -1,10 +1,10 @@
-from core.commands.router import CommandRouter
+from core.automation.executor import AutomationExecutor
 from core.scheduler.jobs import ScheduledJob
 
 
 class JobRunner:
-    def __init__(self, commands: CommandRouter | None = None):
-        self.commands = commands or CommandRouter()
+    def __init__(self, executor: AutomationExecutor | None = None):
+        self.executor = executor or AutomationExecutor()
 
     def run(self, job: ScheduledJob):
         if job.command == "heartbeat":
@@ -15,20 +15,11 @@ class JobRunner:
                 "result": "heartbeat handled by scheduler loop",
             }
 
-        try:
-            result = self.commands.route(job.command)
+        result = self.executor.execute(job.command)
 
-            return {
-                "job": job.name,
-                "command": job.command,
-                "ok": True,
-                "result": result,
-            }
-
-        except Exception as exc:
-            return {
-                "job": job.name,
-                "command": job.command,
-                "ok": False,
-                "error": str(exc),
-            }
+        return {
+            "job": job.name,
+            "command": job.command,
+            "ok": result.get("executed") is True,
+            "result": result,
+        }

@@ -6,9 +6,7 @@ def test_job_runner_heartbeat():
     registry = JobRegistry()
     job = registry.add("heartbeat", "heartbeat", 30)
 
-    runner = JobRunner()
-
-    result = runner.run(job)
+    result = JobRunner().run(job)
 
     assert result["ok"] is True
     assert result["job"] == "heartbeat"
@@ -18,9 +16,17 @@ def test_job_runner_command():
     registry = JobRegistry()
     job = registry.add("status", "/status", 60)
 
-    runner = JobRunner()
-
-    result = runner.run(job)
+    result = JobRunner().run(job)
 
     assert result["ok"] is True
-    assert "AIControlCenter" in result["result"]
+    assert result["result"]["executed"] is True
+
+
+def test_job_runner_blocks_unsafe():
+    registry = JobRegistry()
+    job = registry.add("backup-run", "/backup run token", 60)
+
+    result = JobRunner().run(job)
+
+    assert result["ok"] is False
+    assert result["result"]["blocked"] is True
