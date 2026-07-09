@@ -1,23 +1,25 @@
-import os
 from typing import Any, Dict
 
+from core.config.settings import OpenAISettings, load_settings
 from core.providers.base import AIProvider
 
 
 class OpenAIProvider(AIProvider):
+    def __init__(self, settings: OpenAISettings | None = None):
+        self.settings = settings or load_settings().openai
+
     def name(self) -> str:
         return "openai"
 
     def health(self) -> Dict[str, Any]:
         return {
             "provider": self.name(),
-            "configured": bool(os.getenv("OPENAI_API_KEY")),
+            "configured": bool(self.settings.api_key),
+            "model": self.settings.model,
         }
 
     def chat(self, prompt: str) -> Dict[str, Any]:
-        api_key = os.getenv("OPENAI_API_KEY")
-
-        if not api_key:
+        if not self.settings.api_key:
             return {
                 "provider": self.name(),
                 "ok": False,
@@ -27,10 +29,10 @@ class OpenAIProvider(AIProvider):
         try:
             from openai import OpenAI
 
-            client = OpenAI(api_key=api_key)
+            client = OpenAI(api_key=self.settings.api_key)
 
             response = client.chat.completions.create(
-                model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+                model=self.settings.model,
                 messages=[
                     {
                         "role": "user",

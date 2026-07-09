@@ -1,5 +1,6 @@
 from typing import Dict
 
+from core.config.settings import Settings, load_settings
 from core.providers.base import AIProvider
 from core.providers.claude_provider import ClaudeProvider
 from core.providers.google_provider import GoogleProvider
@@ -8,10 +9,12 @@ from core.providers.openai_provider import OpenAIProvider
 
 
 class ProviderManager:
-    def __init__(self):
+    def __init__(self, settings: Settings | None = None):
+        self.settings = settings or load_settings()
+
         self.providers: Dict[str, AIProvider] = {
-            "openai": OpenAIProvider(),
-            "google": GoogleProvider(),
+            "openai": OpenAIProvider(self.settings.openai),
+            "google": GoogleProvider(self.settings.google),
             "claude": ClaudeProvider(),
             "ollama": OllamaProvider(),
         }
