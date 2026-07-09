@@ -5,6 +5,7 @@ from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.logs.service import LogsService
 from core.task.registry import TaskRegistry
+from core.worker_status.service import WorkerStatusService
 
 
 class CommandRouter:
@@ -17,6 +18,7 @@ class CommandRouter:
         doctor: DoctorService | None = None,
         logs: LogsService | None = None,
         backup_verify: BackupVerifyService | None = None,
+        worker_status: WorkerStatusService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -25,6 +27,7 @@ class CommandRouter:
         self.doctor = doctor or DoctorService()
         self.logs = logs or LogsService()
         self.backup_verify = backup_verify or BackupVerifyService()
+        self.worker_status = worker_status or WorkerStatusService()
 
     def route(self, text: str) -> str:
         command = text.strip().lower()
@@ -43,6 +46,9 @@ class CommandRouter:
 
         if command == "/tasks":
             return self.tasks_status()
+
+        if command == "/worker":
+            return self.worker_status.format_text()
 
         if command == "/doctor":
             return self.doctor.format_text()
@@ -152,6 +158,7 @@ class CommandRouter:
             "/backup  - Backup summary (read-only)",
             "/backup verify - Verify backup status",
             "/tasks   - Running tasks",
+            "/worker  - Worker status",
             "/doctor  - System diagnosis",
             "/logs    - Recent logs",
             "/help    - Command list",
