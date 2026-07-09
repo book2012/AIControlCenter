@@ -8,6 +8,7 @@ from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.logs.service import LogsService
 from core.memory.manager import MemoryManager
+from core.project.status import ProjectStatusService
 from core.scheduler.status import SchedulerStatusService
 from core.task.registry import TaskRegistry
 from core.worker_status.service import WorkerStatusService
@@ -29,6 +30,7 @@ class CommandRouter:
         backup_run: BackupRunService | None = None,
         scheduler_status: SchedulerStatusService | None = None,
         memory: MemoryManager | None = None,
+        project: ProjectStatusService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -43,6 +45,7 @@ class CommandRouter:
         self.backup_run = backup_run or BackupRunService(self.backup_confirm)
         self.scheduler_status = scheduler_status or SchedulerStatusService()
         self.memory = memory or MemoryManager()
+        self.project = project or ProjectStatusService()
 
     def route(self, text: str) -> str:
         command = text.strip()
@@ -78,6 +81,15 @@ class CommandRouter:
 
         if lowered == "/memory":
             return self.memory_status()
+
+        if lowered == "/sprint":
+            return self.project.format_sprint()
+
+        if lowered == "/agents":
+            return self.project.format_agents()
+
+        if lowered == "/project":
+            return self.project.format_project()
 
         if lowered.startswith("/memory search "):
             query = command.split(" ", 2)[2].strip()
@@ -230,6 +242,9 @@ class CommandRouter:
             "/tasks   - Running tasks",
             "/scheduler - Scheduler status",
             "/memory  - Memory status",
+            "/sprint  - Sprint status",
+            "/agents  - Agent roadmap",
+            "/project - Project status",
             "/memory search <query> - Search long-term memory",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
