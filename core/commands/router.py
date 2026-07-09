@@ -8,6 +8,7 @@ from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.logs.service import LogsService
 from core.memory.manager import MemoryManager
+from core.knowledge.search import KnowledgeSearch
 from core.project.status import ProjectStatusService
 from core.scheduler.status import SchedulerStatusService
 from core.task.registry import TaskRegistry
@@ -31,6 +32,7 @@ class CommandRouter:
         scheduler_status: SchedulerStatusService | None = None,
         memory: MemoryManager | None = None,
         project: ProjectStatusService | None = None,
+        knowledge: KnowledgeSearch | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -46,6 +48,7 @@ class CommandRouter:
         self.scheduler_status = scheduler_status or SchedulerStatusService()
         self.memory = memory or MemoryManager()
         self.project = project or ProjectStatusService()
+        self.knowledge = knowledge or KnowledgeSearch()
 
     def route(self, text: str) -> str:
         command = text.strip()
@@ -90,6 +93,13 @@ class CommandRouter:
 
         if lowered == "/project":
             return self.project.format_project()
+
+        if lowered == "/knowledge":
+            return self.knowledge_status()
+
+        if lowered.startswith("/knowledge search "):
+            query = command.split(" ", 2)[2].strip()
+            return self.knowledge_search(query)
 
         if lowered.startswith("/memory search "):
             query = command.split(" ", 2)[2].strip()
@@ -228,6 +238,33 @@ class CommandRouter:
 
         return "\n".join(lines)
 
+    def knowledge_status(self) -> str:
+        status = self.knowledge.status()
+        return "\n".join([
+            "📚 Knowledge",
+            f"Documents: {status['documents']}",
+            f"Ready: {status['ready']}",
+        ])
+
+    def knowledge_search(self, query: str) -> str:
+        results = self.knowledge.search(query)
+
+        lines = [
+            "📚 Knowledge Search",
+            f"Query: {query}",
+            f"Results: {len(results)}",
+            "",
+        ]
+
+        if not results:
+            lines.append("No matching knowledge found.")
+            return "\n".join(lines)
+
+        for item in results[:5]:
+            lines.append(f"- {item['name']} score={item['score']}")
+
+        return "\n".join(lines)
+
     def help(self) -> str:
         return "\n".join([
             "AIControlCenter Commands",
@@ -245,6 +282,8 @@ class CommandRouter:
             "/sprint  - Sprint status",
             "/agents  - Agent roadmap",
             "/project - Project status",
+            "/knowledge - Knowledge status",
+            "/knowledge search <query> - Search knowledge",
             "/memory search <query> - Search long-term memory",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
