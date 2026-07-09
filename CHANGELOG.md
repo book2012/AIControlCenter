@@ -79,3 +79,9 @@ Added:
 - Automation API
 - Telegram /automation
 - Scheduler integration
+
+## Homepage Integration
+
+- HomepageStatusService
+- /homepage/status API
+- Telegram /homepage command
