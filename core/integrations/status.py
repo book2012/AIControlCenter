@@ -1,12 +1,12 @@
 import os
-from typing import Dict, Any
+from typing import Any, Dict
 
 
 class IntegrationStatus:
     def __init__(self):
         self.required = {
             "openai": "OPENAI_API_KEY",
-            "notion": "NOTION_TOKEN",
+            "notion": "NOTION_API_KEY",
             "github": "GITHUB_TOKEN",
         }
 

@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 
+from core.config.loader import ConfigLoader
+
 from core.api.routes import backup, brain, dashboard, health, providers, storage, tasks, workers
 
 
 def create_app() -> FastAPI:
+    ConfigLoader().load()
     app = FastAPI(
         title="AIControlCenter",
         description="AI Home Infrastructure Control Plane",
