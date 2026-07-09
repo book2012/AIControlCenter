@@ -6,6 +6,7 @@ def test_integration_status_shape():
 
     assert "integrations" in status
     assert "openai" in status["integrations"]
+    assert "google" in status["integrations"]
     assert "notion" in status["integrations"]
     assert "github" in status["integrations"]
 
@@ -14,3 +15,9 @@ def test_notion_uses_notion_api_key():
     status = IntegrationStatus().check()
 
     assert status["integrations"]["notion"]["env"] == "NOTION_API_KEY"
+
+
+def test_google_uses_google_api_key():
+    status = IntegrationStatus().check()
+
+    assert status["integrations"]["google"]["env"] == "GOOGLE_API_KEY"

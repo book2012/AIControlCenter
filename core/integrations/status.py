@@ -6,6 +6,7 @@ class IntegrationStatus:
     def __init__(self):
         self.required = {
             "openai": "OPENAI_API_KEY",
+            "google": "GOOGLE_API_KEY",
             "notion": "NOTION_API_KEY",
             "github": "GITHUB_TOKEN",
         }

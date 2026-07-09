@@ -2,6 +2,7 @@ from typing import Dict
 
 from core.providers.base import AIProvider
 from core.providers.claude_provider import ClaudeProvider
+from core.providers.google_provider import GoogleProvider
 from core.providers.ollama_provider import OllamaProvider
 from core.providers.openai_provider import OpenAIProvider
 
@@ -10,6 +11,7 @@ class ProviderManager:
     def __init__(self):
         self.providers: Dict[str, AIProvider] = {
             "openai": OpenAIProvider(),
+            "google": GoogleProvider(),
             "claude": ClaudeProvider(),
             "ollama": OllamaProvider(),
         }

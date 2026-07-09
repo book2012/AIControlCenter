@@ -8,6 +8,7 @@ def test_provider_manager_health():
 
     assert "providers" in health
     assert "openai" in health["providers"]
+    assert "google" in health["providers"]
     assert "claude" in health["providers"]
     assert "ollama" in health["providers"]
 
