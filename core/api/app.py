@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from core.api.routes import backup, brain, dashboard, health, storage, tasks, workers
+from core.api.routes import backup, brain, dashboard, health, providers, storage, tasks, workers
 
 
 def create_app() -> FastAPI:
@@ -15,6 +15,7 @@ def create_app() -> FastAPI:
     app.include_router(dashboard.router)
     app.include_router(storage.router)
     app.include_router(backup.router)
+    app.include_router(providers.router)
     app.include_router(tasks.router)
     app.include_router(workers.router)
 
