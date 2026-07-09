@@ -1,19 +1,31 @@
+from core.config.settings import OpenAISettings
 from core.providers.openai_provider import OpenAIProvider
 
 
 def test_openai_provider_health_shape():
-    provider = OpenAIProvider()
+    provider = OpenAIProvider(
+        settings=OpenAISettings(
+            api_key=None,
+            model="test-model",
+            embedding_model="test-embedding",
+        )
+    )
 
     health = provider.health()
 
     assert health["provider"] == "openai"
-    assert "configured" in health
+    assert health["configured"] is False
+    assert health["model"] == "test-model"
 
 
-def test_openai_provider_chat_without_key(monkeypatch):
-    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
-
-    provider = OpenAIProvider()
+def test_openai_provider_chat_without_key():
+    provider = OpenAIProvider(
+        settings=OpenAISettings(
+            api_key=None,
+            model="test-model",
+            embedding_model="test-embedding",
+        )
+    )
 
     result = provider.chat("hello")
 
