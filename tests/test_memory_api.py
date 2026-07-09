@@ -49,3 +49,22 @@ def test_working_memory_set_get_api():
 
     assert response.status_code == 200
     assert response.json()["value"] == "memory"
+
+
+def test_long_term_memory_add_search_api():
+    response = client.post(
+        "/memory/long-term",
+        json={
+            "content": "AIControlCenter uses long-term memory",
+            "source": "test",
+            "metadata": {},
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["source"] == "test"
+
+    response = client.get("/memory/long-term/search?q=long-term")
+
+    assert response.status_code == 200
+    assert len(response.json()["items"]) >= 1
