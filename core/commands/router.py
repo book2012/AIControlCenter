@@ -7,6 +7,7 @@ from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.storage_registry import StorageRegistry
 from core.doctor.service import DoctorService
 from core.logs.service import LogsService
+from core.scheduler.status import SchedulerStatusService
 from core.task.registry import TaskRegistry
 from core.worker_status.service import WorkerStatusService
 
@@ -25,6 +26,7 @@ class CommandRouter:
         backup_plan: BackupPlanService | None = None,
         backup_confirm: BackupConfirmService | None = None,
         backup_run: BackupRunService | None = None,
+        scheduler_status: SchedulerStatusService | None = None,
     ):
         self.dashboard = dashboard or DashboardAPI()
         self.storage = storage or StorageRegistry()
@@ -37,6 +39,7 @@ class CommandRouter:
         self.backup_plan = backup_plan or BackupPlanService()
         self.backup_confirm = backup_confirm or BackupConfirmService()
         self.backup_run = backup_run or BackupRunService(self.backup_confirm)
+        self.scheduler_status = scheduler_status or SchedulerStatusService()
 
     def route(self, text: str) -> str:
         command = text.strip()
@@ -66,6 +69,9 @@ class CommandRouter:
 
         if lowered == "/tasks":
             return self.tasks_status()
+
+        if lowered == "/scheduler":
+            return self.scheduler_status.format_text()
 
         if lowered == "/worker":
             return self.worker_status.format_text()
@@ -181,6 +187,7 @@ class CommandRouter:
             "/backup run <token> - Validate token, execution disabled",
             "/backup verify - Verify backup status",
             "/tasks   - Running tasks",
+            "/scheduler - Scheduler status",
             "/worker  - Worker status",
             "/doctor  - System diagnosis",
             "/logs    - Recent logs",
