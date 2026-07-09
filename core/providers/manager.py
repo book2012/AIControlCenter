@@ -2,22 +2,26 @@ from typing import Dict
 
 from core.config.settings import Settings, load_settings
 from core.providers.base import AIProvider
-from core.providers.claude_provider import ClaudeProvider
-from core.providers.google_provider import GoogleProvider
-from core.providers.ollama_provider import OllamaProvider
-from core.providers.openai_provider import OpenAIProvider
+from core.providers.registry import PROVIDER_REGISTRY
 
 
 class ProviderManager:
     def __init__(self, settings: Settings | None = None):
         self.settings = settings or load_settings()
+        self.providers: Dict[str, AIProvider] = self._load_providers()
 
-        self.providers: Dict[str, AIProvider] = {
-            "openai": OpenAIProvider(self.settings.openai),
-            "google": GoogleProvider(self.settings.google),
-            "claude": ClaudeProvider(),
-            "ollama": OllamaProvider(),
-        }
+    def _load_providers(self):
+        providers = {}
+
+        for name, provider_class in PROVIDER_REGISTRY.items():
+            if name == "openai":
+                providers[name] = provider_class(self.settings.openai)
+            elif name == "google":
+                providers[name] = provider_class(self.settings.google)
+            else:
+                providers[name] = provider_class()
+
+        return providers
 
     def list(self):
         return {
