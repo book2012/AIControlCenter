@@ -1,4 +1,5 @@
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel
 
 from core.memory.manager import MemoryManager
 
@@ -6,6 +7,11 @@ from core.memory.manager import MemoryManager
 router = APIRouter()
 
 memory = MemoryManager()
+
+
+class WorkingMemoryRequest(BaseModel):
+    key: str
+    value: str
 
 
 @router.get("/memory")
@@ -26,3 +32,28 @@ def memory_session(session_id: str):
         return memory.get_session(session_id)
     except KeyError as exc:
         raise HTTPException(status_code=404, detail="Session not found") from exc
+
+
+@router.get("/memory/working")
+def working_memory_list():
+    return {
+        "items": memory.list_working()
+    }
+
+
+@router.get("/memory/working/{key}")
+def working_memory_get(key: str):
+    item = memory.get_working(key)
+
+    if not item:
+        raise HTTPException(status_code=404, detail="Working memory key not found")
+
+    return item
+
+
+@router.post("/memory/working")
+def working_memory_set(request: WorkingMemoryRequest):
+    return memory.set_working(
+        key=request.key,
+        value=request.value,
+    )

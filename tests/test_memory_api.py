@@ -24,3 +24,28 @@ def test_memory_missing_session_api():
     response = client.get("/memory/sessions/missing")
 
     assert response.status_code == 404
+
+
+def test_working_memory_list_api():
+    response = client.get("/memory/working")
+
+    assert response.status_code == 200
+    assert "items" in response.json()
+
+
+def test_working_memory_set_get_api():
+    response = client.post(
+        "/memory/working",
+        json={
+            "key": "focus",
+            "value": "memory",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.json()["key"] == "focus"
+
+    response = client.get("/memory/working/focus")
+
+    assert response.status_code == 200
+    assert response.json()["value"] == "memory"
