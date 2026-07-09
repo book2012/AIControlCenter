@@ -1,6 +1,7 @@
 from core.agent.router import AgentActionRouter
 from core.memory.conversation import ConversationMemory
 from core.memory.manager import MemoryManager
+from core.knowledge.search import KnowledgeSearch
 from core.providers.manager import ProviderManager
 
 
@@ -11,11 +12,13 @@ class BrainAgent:
         memory: ConversationMemory | None = None,
         router: AgentActionRouter | None = None,
         memory_manager: MemoryManager | None = None,
+        knowledge: KnowledgeSearch | None = None,
     ):
         self.providers = providers or ProviderManager()
         self.memory = memory or ConversationMemory()
         self.router = router or AgentActionRouter()
         self.memory_manager = memory_manager or MemoryManager()
+        self.knowledge = knowledge or KnowledgeSearch()
 
     def ask(self, prompt: str, provider: str | None = None):
         action_result = self.router.route(prompt)
@@ -66,6 +69,35 @@ class BrainAgent:
         return {
             "prompt": prompt,
             "memory_count": len(memories),
+            "response": result,
+        }
+
+
+    def ask_with_knowledge_context(
+        self,
+        prompt: str,
+        provider: str | None = None,
+    ):
+        docs = self.knowledge.search(prompt)
+
+        context = "\n".join(
+            f"- {d['name']}"
+            for d in docs[:5]
+        )
+
+        enriched = prompt
+
+        if context:
+            enriched = (
+                "Relevant project knowledge:\n"
+                f"{context}\n\n"
+                f"{prompt}"
+            )
+
+        result = self.ask(enriched, provider=provider)
+
+        return {
+            "knowledge_count": len(docs),
             "response": result,
         }
 
