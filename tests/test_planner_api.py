@@ -14,3 +14,17 @@ def test_planner_api():
 
     assert response.status_code == 200
     assert response.json()["status"] == "draft"
+    assert "id" in response.json()
+
+
+def test_planner_list_api():
+    response = client.get("/planner/plans")
+
+    assert response.status_code == 200
+    assert "plans" in response.json()
+
+
+def test_planner_missing_plan_api():
+    response = client.get("/planner/plans/missing")
+
+    assert response.status_code == 404
