@@ -1,6 +1,9 @@
+import pytest
+
 from core.worker.factory import WorkerFactory
 
 
+@pytest.mark.integration
 def test_execute_status():
     worker = WorkerFactory().create("ubuntu-main")
 

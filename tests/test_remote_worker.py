@@ -1,9 +1,11 @@
+import pytest
+
 from core.worker.ssh_runner import SSHRunner
 from core.worker.ubuntu import UbuntuWorkerClient
 
 
+@pytest.mark.integration
 def test_remote_ready():
-
     runner = SSHRunner(
         host="localhost",
         user="han",

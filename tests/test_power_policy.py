@@ -1,3 +1,5 @@
+import pytest
+
 from core.power.manager import PowerManager
 from core.task.registry import TaskRegistry
 
@@ -14,6 +16,7 @@ def test_safe_shutdown_blocked_when_busy():
     assert result["reason"] == "running_tasks_exist"
 
 
+@pytest.mark.integration
 def test_safe_shutdown_approved_when_idle():
     registry = TaskRegistry()
     power = PowerManager(registry)
