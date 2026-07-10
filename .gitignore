@@ -9,3 +9,33 @@ reports/controlcenter-audit-*.txt
 data/*.db
 data/*.db-shm
 data/*.db-wal
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
+
+# Secrets
+.env
+.env.*
+!.env.example
+
+# Runtime databases
+data/*.db
+data/*.db-shm
+data/*.db-wal
