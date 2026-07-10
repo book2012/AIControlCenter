@@ -93,3 +93,28 @@ Added:
 - Configuration Validation
 - Graceful Shutdown
 - Operations Manual
+
+## v1.0.0
+
+### Added
+
+- Production-ready AIControlCenter Brain platform
+- FastAPI control plane
+- OpenAI and Google provider support
+- Provider fallback
+- BrainAgent and status actions
+- Scheduler and background jobs
+- Conversation, working, and long-term memory
+- Knowledge indexing and search
+- Planner Agent
+- Safe Automation Engine
+- Telegram operations interface
+- Homepage status API
+- systemd and launchd deployment templates
+- Installation, update, and readiness automation
+
+### Architecture
+
+- Mac mini M4 is the final Brain runtime
+- Ubuntu remains an optional storage and backup Worker
+- AIControlCenter operates standalone without Ubuntu
