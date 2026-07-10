@@ -85,3 +85,11 @@ Added:
 - HomepageStatusService
 - /homepage/status API
 - Telegram /homepage command
+
+## Production Hardening
+
+- systemd Services
+- Service Health
+- Configuration Validation
+- Graceful Shutdown
+- Operations Manual
