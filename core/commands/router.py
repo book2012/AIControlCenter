@@ -14,6 +14,7 @@ from core.homepage.status import HomepageStatusService
 from core.logs.service import LogsService
 from core.memory.manager import MemoryManager
 from core.project.status import ProjectStatusService
+from core.runtime.service_health import ServiceHealth
 from core.scheduler.status import SchedulerStatusService
 from core.task.registry import TaskRegistry
 from core.worker_status.service import WorkerStatusService
@@ -39,6 +40,7 @@ class CommandRouter:
         self.scheduler_status = SchedulerStatusService()
         self.memory = memory or MemoryManager()
         self.project = ProjectStatusService()
+        self.service_health = ServiceHealth()
         self.knowledge = KnowledgeSearch()
         self.homepage = HomepageStatusService()
         self.planner = PlannerAgent()
@@ -74,6 +76,9 @@ class CommandRouter:
             return self.logs.format_text()
         if lowered == "/scheduler":
             return self.scheduler_status.format_text()
+
+        if lowered == "/service-health":
+            return self.service_health.format_text()
         if lowered == "/memory":
             return self.memory_status()
         if lowered.startswith("/memory search "):
@@ -222,6 +227,7 @@ class CommandRouter:
             "/doctor",
             "/logs",
             "/scheduler",
+            "/service-health",
             "/memory",
             "/memory search <query>",
             "/sprint",
