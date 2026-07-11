@@ -24,7 +24,7 @@ def main() -> int:
     checks["env_template"] = EnvironmentTemplateValidator().validate()["valid"]
     checks["requirements"] = Path("requirements.txt").exists()
     checks["env_file"] = Path(".env").exists()
-    checks["tests"] = command_ok(["pytest", "-q"])
+    checks["tests"] = command_ok([sys.executable, "-m", "pytest", "-q"])
     checks["git_clean"] = command_ok(["git", "diff", "--quiet"])
 
     try:
