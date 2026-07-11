@@ -8,7 +8,7 @@ workers:
     user: han
     port: 22
 
-    scripts: scripts
+    scripts: /opt/aihomedatacenter/scripts
 
   ubuntu-remote:
     type: ubuntu
@@ -18,4 +18,4 @@ workers:
     user: han
     port: 22
 
-    scripts: /opt/controlcenter/scripts
+    scripts: /opt/aihomedatacenter/scripts
