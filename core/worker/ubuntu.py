@@ -41,6 +41,18 @@ class UbuntuWorkerClient(WorkerClient):
             "recovery": recovery,
         }
 
+    def storage_status(self) -> Dict[str, Any]:
+        return run_json_script(
+            self.runner,
+            self._script("commands/storage-agent-status.sh"),
+        )
+
+    def storage_db_status(self) -> Dict[str, Any]:
+        return run_json_script(
+            self.runner,
+            self._script("commands/storage-db-status.sh"),
+        )
+
     def execute(self, command: str) -> Dict[str, Any]:
         return run_worker_command(
             self.runner,
