@@ -27,3 +27,17 @@ Backup Verify
 Worker Health
 
 Backup Execute
+
+## Current Sprint
+
+Sprint 21
+
+Brain Scheduler
+
+Current Focus
+
+- Internal Scheduler
+- Heartbeat
+- Job Registry
+- Automation Foundation
+
