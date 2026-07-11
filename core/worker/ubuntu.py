@@ -59,6 +59,12 @@ class UbuntuWorkerClient(WorkerClient):
             self._script("commands/backup-status-json.sh"),
         )
 
+    def services_status(self) -> Dict[str, Any]:
+        return run_json_script(
+            self.runner,
+            self._script("commands/services-status-json.sh"),
+        )
+
     def execute(self, command: str) -> Dict[str, Any]:
         return run_worker_command(
             self.runner,
