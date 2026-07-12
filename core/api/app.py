@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from core.config.loader import ConfigLoader
 
-from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, notifications, planner, providers, runtime, scheduler, storage, tasks, workers
+from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, notifications, planner, providers, runtime, scheduler, shopping, storage, tasks, workers
 
 
 def create_app() -> FastAPI:
@@ -30,6 +30,7 @@ def create_app() -> FastAPI:
     app.include_router(conversations.router)
     app.include_router(brain.router)
     app.include_router(dashboard.router)
+    app.include_router(shopping.router)
     app.include_router(storage.router)
     app.include_router(backup.router)
     app.include_router(planner.router)

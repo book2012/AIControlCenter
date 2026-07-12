@@ -118,3 +118,36 @@ Added:
 - Mac mini M4 is the final Brain runtime
 - Ubuntu remains an optional storage and backup Worker
 - AIControlCenter operates standalone without Ubuntu
+
+<!-- AI_SHOPPING_PLATFORM_START -->
+## 2026-07-12 AI Shopping Platform Bootstrap
+
+### Added
+
+- AIControlCenter Shopping domain
+- Shopping health endpoint
+- Shopping readiness endpoint
+- Shopping capabilities endpoint
+- Shopping configuration
+- Shopping API schemas
+- Shopping tests
+- Shopping architecture documentation
+- Shopping API documentation
+- Shopping testing documentation
+- Shopping deployment documentation
+- Shopping runbook
+
+### Safety
+
+- Catalog writes disabled by default
+- AI execution disabled by default
+- Automation execution disabled by default
+- Human approval required by default
+- Production target set to Mac mini M4
+
+### Validation
+
+- Shopping targeted tests passing
+- Existing API regression tests passing
+- Shopping route smoke tests passing
+<!-- AI_SHOPPING_PLATFORM_END -->

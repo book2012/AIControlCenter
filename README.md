@@ -39,3 +39,29 @@ Next Sprint
 - Logs
 - Backup Verify
 - Worker Health
+
+<!-- AI_SHOPPING_PLATFORM_START -->
+## AI Shopping Platform
+
+AI Shopping Platform is a service layer inside AIControlCenter.
+
+Current status:
+
+- Development environment: Virtual
+- Production target: Mac mini M4
+- Frontend and CMS: WordPress
+- Commerce engine: WooCommerce
+- Business logic: AIControlCenter
+- AI operations: AI Agent
+- Automation execution: n8n
+- Current write mode: Read-only
+
+Shopping documentation:
+
+- docs/shopping/README.md
+- docs/shopping/ARCHITECTURE.md
+- docs/shopping/API.md
+- docs/shopping/TESTING.md
+- docs/shopping/DEPLOYMENT.md
+- docs/shopping/RUNBOOK.md
+<!-- AI_SHOPPING_PLATFORM_END -->

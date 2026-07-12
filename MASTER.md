@@ -41,3 +41,34 @@ Current Focus
 - Job Registry
 - Automation Foundation
 
+<!-- AI_SHOPPING_PLATFORM_START -->
+## Current Program
+
+Project: AI Shopping Platform
+
+Status: Active Development
+
+Current Sprint: Shopping Control Plane Bootstrap
+
+Development runtime: Virtual Environment
+
+Production target: Mac mini M4
+
+Current implementation:
+
+- Shopping domain
+- Shopping health API
+- Shopping readiness API
+- Shopping capabilities API
+- Safe read-only defaults
+- Shopping test suite
+- Shopping documentation
+
+Architecture ownership:
+
+- WordPress owns presentation and CMS
+- WooCommerce owns commerce records
+- AIControlCenter owns business and AI logic
+- n8n executes automation
+- Ubuntu remains an infrastructure worker
+<!-- AI_SHOPPING_PLATFORM_END -->
