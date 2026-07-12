@@ -13,3 +13,6 @@ class CommerceCatalogPort(Protocol):
 
     def get_product(self, product_id: str) -> Product | None:
         ...
+
+    def list_categories(self) -> list[dict]:
+        ...

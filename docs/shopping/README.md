@@ -74,3 +74,41 @@ Write operations will be introduced only after:
 3. Approval workflow is implemented.
 4. Audit logging is implemented.
 5. Rollback is validated.
+
+<!-- SHOPPING_M4_START -->
+
+## M4 — Live WooCommerce Control Plane
+
+Status: Implementation complete. Production Gate closeout in progress.
+
+### Runtime
+
+- Control Plane: AIControlCenter
+- CMS: WordPress
+- Commerce Engine: WooCommerce
+- Development runtime: Ubuntu virtual validation environment
+- Production target: Mac mini M4
+- External development URL: http://bokstory.iptime.org:58088
+- Commerce write mode: Read-only
+
+### Implemented
+
+- Shopping domain
+- Product list API
+- Product detail API
+- Category API
+- Integration status API
+- Mock Commerce Adapter
+- WooCommerce REST Adapter
+- Adapter Factory
+- Environment-driven Adapter selection
+- HTTP OAuth 1.0a development authentication
+- HTTPS Basic Authentication support
+- systemd EnvironmentFile integration
+- Docker Compose WordPress and MariaDB runtime
+
+### Architecture Rule
+
+WordPress and WooCommerce do not own AI or business logic.
+AIControlCenter remains the single Shopping Control Plane.
+<!-- SHOPPING_M4_END -->

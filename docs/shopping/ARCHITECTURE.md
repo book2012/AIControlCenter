@@ -87,3 +87,37 @@ to audit event
 - Approval required
 - AI execution disabled
 - Automation disabled
+
+<!-- SHOPPING_M4_START -->
+
+## M4 Architecture
+
+AIControlCenter
+    |
+    +-- ShoppingSettings
+    |
+    +-- ShoppingService
+    |
+    +-- Adapter Factory
+            |
+            +-- MockCommerceCatalogAdapter
+            |
+            +-- WooCommerceRESTAdapter
+                    |
+                    +-- WordPress and WooCommerce
+
+### URL Separation
+
+- Canonical signing URL: external WordPress URL
+- Internal connection URL: localhost WordPress port
+- External development UI: http://bokstory.iptime.org:58088
+- Internal REST connection: http://127.0.0.1:8088
+
+### Security
+
+- WooCommerce API Key is read-only.
+- Secret files are excluded from Git.
+- systemd runtime Secret permissions are 600 root:root.
+- Production requires a user-owned domain and HTTPS.
+- iptime.org CAA policy prevents certificate issuance for the current DDNS hostname.
+<!-- SHOPPING_M4_END -->

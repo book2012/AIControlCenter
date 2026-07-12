@@ -65,3 +65,22 @@ Shopping documentation:
 - docs/shopping/DEPLOYMENT.md
 - docs/shopping/RUNBOOK.md
 <!-- AI_SHOPPING_PLATFORM_END -->
+
+<!-- SHOPPING_M4_START -->
+
+## AI Shopping Platform — M4
+
+AI Shopping Platform is integrated as an AIControlCenter service layer.
+
+Implemented capabilities:
+
+- WordPress CMS runtime
+- WooCommerce Commerce Engine
+- Read-only product and category APIs
+- Mock and WooCommerce Adapter selection
+- systemd runtime configuration
+- Git-excluded Secret management
+- External HTTP development access
+
+Production HTTPS remains blocked until a user-owned domain is available.
+<!-- SHOPPING_M4_END -->

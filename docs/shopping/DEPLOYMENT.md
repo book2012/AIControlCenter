@@ -61,3 +61,32 @@ SHOPPING_AI_ENABLED=false
 - Secrets validation
 - Backup validation
 - Rollback validation
+
+<!-- SHOPPING_M4_START -->
+
+## M4 Deployment
+
+### Docker Runtime
+
+- WordPress host port: 8088
+- MariaDB host port: not exposed
+- Persistent database volume: ai-shopping-database
+- Persistent WordPress volume: ai-shopping-wordpress
+- Caddy is deferred until a user-owned domain is available
+
+### External Development Access
+
+WAN TCP 58088
+to Ubuntu 192.168.1.7 TCP 8088
+to shopping-wordpress TCP 80
+
+### systemd Runtime
+
+Environment file:
+
+/etc/aicontrolcenter/shopping.env
+
+Required permissions:
+
+600 root:root
+<!-- SHOPPING_M4_END -->

@@ -51,3 +51,30 @@ Detailed documentation:
 
 docs/shopping/ARCHITECTURE.md
 <!-- AI_SHOPPING_PLATFORM_END -->
+
+<!-- SHOPPING_M4_START -->
+
+## AI Shopping Platform Service Layer
+
+WordPress
+    CMS
+
+WooCommerce
+    Commerce Engine
+
+AIControlCenter
+    Business Logic
+    REST API
+    Adapter Factory
+    AI Services
+    Workflow and Approval
+
+Ubuntu
+    Temporary virtual deployment validation
+
+Mac mini M4
+    Final Control Plane and Production Runtime
+
+Ubuntu does not own Shopping business logic or AI application state.
+The final Shopping service runs under AIControlCenter on Mac mini M4.
+<!-- SHOPPING_M4_END -->

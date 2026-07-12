@@ -72,3 +72,22 @@ Architecture ownership:
 - n8n executes automation
 - Ubuntu remains an infrastructure worker
 <!-- AI_SHOPPING_PLATFORM_END -->
+
+<!-- SHOPPING_M4_START -->
+
+## Shopping Platform M4 Status
+
+Milestone: Live WooCommerce Control Plane
+
+State:
+
+- Architecture implemented
+- WordPress and MariaDB runtime healthy
+- WooCommerce REST Adapter implemented
+- Product and Category APIs implemented
+- Runtime Adapter selection implemented
+- Read-only policy enforced
+- Documentation and Git Gate in progress
+
+Next service milestone: Shopping Homepage and AI Product Generation.
+<!-- SHOPPING_M4_END -->

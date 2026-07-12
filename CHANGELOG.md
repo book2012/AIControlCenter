@@ -222,3 +222,38 @@ Added:
 - No WooCommerce write operations
 - No AI execution
 - No automation execution
+
+<!-- SHOPPING_M4_START -->
+
+## Shopping Platform M4 — Unreleased
+
+### Added
+
+- WooCommerce REST Adapter
+- HTTP OAuth 1.0a development authentication
+- HTTPS Basic Authentication support
+- Adapter Factory
+- Environment-driven Catalog Adapter selection
+- Shopping Integration Status API
+- Product Catalog API
+- Product Detail API
+- Category API
+- WordPress and MariaDB Docker Compose runtime
+- systemd Shopping EnvironmentFile support
+- Shopping deployment and operations documentation
+
+### Fixed
+
+- Duplicate API Router registration
+- WordPress Healthcheck variable escaping
+- WordPress WORDPRESS_CONFIG_EXTRA Parse Errors
+- Test environment leakage from live Shopping settings
+- Canonical WooCommerce signing URL and internal connection URL separation
+
+### Security
+
+- WooCommerce API integration is read-only
+- Secret files excluded from Git
+- systemd runtime Secret permissions restricted
+- Public HTTPS deferred until a user-owned domain is available
+<!-- SHOPPING_M4_END -->

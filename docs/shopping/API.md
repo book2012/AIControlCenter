@@ -108,3 +108,33 @@ The current implementation uses MockCommerceCatalogAdapter.
 
 The API contract will remain stable when the adapter is replaced by
 WooCommerceRESTCatalogAdapter.
+
+<!-- SHOPPING_M4_START -->
+
+## M4 Shopping API
+
+### Endpoints
+
+- GET /shopping/health
+- GET /shopping/readiness
+- GET /shopping/capabilities
+- GET /shopping/integrations
+- GET /shopping/products
+- GET /shopping/products/{product_id}
+- GET /shopping/categories
+
+### Product Query Parameters
+
+- page: minimum 1
+- page_size: 1 to 100
+
+### Adapter Selection
+
+- SHOPPING_CATALOG_ADAPTER=mock
+- SHOPPING_CATALOG_ADAPTER=woocommerce
+
+### Read-only Policy
+
+M4 exposes catalog read operations only.
+Product, category, order, customer, pricing, and inventory writes remain disabled.
+<!-- SHOPPING_M4_END -->

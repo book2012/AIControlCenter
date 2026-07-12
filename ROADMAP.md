@@ -121,3 +121,40 @@ Status: In Progress
 - Backup
 - Runbook
 <!-- AI_SHOPPING_PLATFORM_END -->
+
+<!-- SHOPPING_M4_START -->
+
+## Shopping Platform Roadmap
+
+### M4 — Live WooCommerce Control Plane
+
+- [x] Shopping domain bootstrap
+- [x] WordPress runtime
+- [x] WooCommerce runtime
+- [x] Product API
+- [x] Category API
+- [x] Integration API
+- [x] Adapter Factory
+- [x] systemd Secret integration
+- [ ] Final Production Gate and Git closeout
+
+### M5 — Shopping Experience
+
+- [ ] Shopping Homepage
+- [ ] Product detail experience
+- [ ] Shopping Dashboard widgets
+- [ ] Search and filtering
+
+### M6 — AI Commerce
+
+- [ ] AI Product Generator
+- [ ] AI SEO Writer
+- [ ] AI Category Generator
+- [ ] AI Price Recommendation
+- [ ] Approval workflow
+
+### Production Blocker
+
+A user-owned domain is required for public HTTPS.
+The current ipTIME DDNS hostname cannot receive a certificate because of its parent-domain CAA policy.
+<!-- SHOPPING_M4_END -->

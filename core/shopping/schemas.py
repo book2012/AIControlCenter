@@ -53,3 +53,22 @@ class ProductListResponse(BaseModel):
     total: int
     page: int = Field(ge=1)
     page_size: int = Field(ge=1, le=100)
+
+
+class ShoppingIntegrationResponse(BaseModel):
+    catalog_adapter: str
+    configured: bool
+    read_only: bool
+    source: str
+
+
+class ShoppingCategoryResponse(BaseModel):
+    id: str
+    name: str
+    slug: str
+    count: int
+
+
+class ShoppingCategoryListResponse(BaseModel):
+    items: list[ShoppingCategoryResponse]
+    total: int

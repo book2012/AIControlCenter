@@ -79,3 +79,25 @@ class MockCommerceCatalogAdapter:
                 return product
 
         return None
+
+    def list_categories(self) -> list[dict]:
+        categories: dict[str, int] = {}
+
+        for product in self._products:
+            categories[product.category] = (
+                categories.get(product.category, 0) + 1
+            )
+
+        return [
+            {
+                "id": str(index),
+                "name": name,
+                "slug": name.lower().replace(" ", "-"),
+                "count": count,
+            }
+            for index, (name, count) in enumerate(
+                sorted(categories.items()),
+                start=1,
+            )
+        ]
+

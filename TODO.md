@@ -101,3 +101,19 @@ Sprint 20
 - Completed product list and detail APIs
 - Next: WordPress and WooCommerce virtual environment
 - Next: WooCommerce read-only catalog adapter
+
+<!-- SHOPPING_M4_START -->
+
+## Shopping Platform Next Tasks
+
+- Complete M4 Production Gate
+- Commit M4 implementation and documentation
+- Build Shopping Homepage
+- Add product search and filtering
+- Add Shopping Dashboard summary
+- Design AI Product Generator
+- Implement draft and approval workflow
+- Acquire or connect a user-owned domain
+- Configure Production HTTPS
+- Validate ARM64 deployment on Mac mini M4
+<!-- SHOPPING_M4_END -->

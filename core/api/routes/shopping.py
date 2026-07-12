@@ -1,10 +1,12 @@
 from fastapi import APIRouter, HTTPException, Query, status
 
 from core.shopping.schemas import (
+    ShoppingCategoryListResponse,
     ProductListResponse,
     ProductResponse,
     ShoppingCapabilitiesResponse,
     ShoppingHealthResponse,
+    ShoppingIntegrationResponse,
     ShoppingReadinessResponse,
 )
 from core.shopping.service import (
@@ -43,6 +45,24 @@ def shopping_readiness():
 )
 def shopping_capabilities():
     return shopping.capabilities()
+
+
+
+@router.get(
+    "/integrations",
+    response_model=ShoppingIntegrationResponse,
+)
+def shopping_integrations():
+    return shopping.integration_status()
+
+
+
+@router.get(
+    "/categories",
+    response_model=ShoppingCategoryListResponse,
+)
+def shopping_categories():
+    return shopping.list_categories()
 
 
 @router.get(

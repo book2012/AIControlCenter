@@ -88,3 +88,16 @@ def test_disabled_shopping_service_reports_disabled():
     assert service.health()["status"] == "DISABLED"
     assert service.readiness()["ready"] is False
     assert service.capabilities()["read_catalog"] is False
+
+
+def test_shopping_integration_status():
+    response = client.get("/shopping/integrations")
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    assert data["catalog_adapter"] == "mock"
+    assert data["configured"] is True
+    assert data["read_only"] is True
+    assert data["source"] == "MockCommerceCatalogAdapter"

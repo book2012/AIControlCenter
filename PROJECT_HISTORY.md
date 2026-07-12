@@ -53,3 +53,19 @@ Development currently runs in a virtual environment.
 The same source code will later be deployed to Mac mini M4 using
 production-specific configuration.
 <!-- AI_SHOPPING_PLATFORM_END -->
+
+<!-- SHOPPING_M4_START -->
+
+## Shopping Platform M4 History
+
+AI Shopping Platform was introduced as a service layer on top of the completed AI Home Datacenter Platform.
+
+During M4:
+
+- WordPress and WooCommerce were deployed in the Ubuntu virtual validation environment.
+- AIControlCenter remained the sole business-logic and orchestration layer.
+- WooCommerce was connected through a read-only Adapter.
+- External HTTP development access was established through ipTIME DDNS and port forwarding.
+- Public TLS using the ipTIME hostname was rejected by the parent-domain CAA policy.
+- Production HTTPS was deferred until a user-owned domain is available.
+<!-- SHOPPING_M4_END -->
