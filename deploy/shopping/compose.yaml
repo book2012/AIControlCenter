@@ -45,9 +45,12 @@ services:
         define('DISALLOW_FILE_EDIT', true);
     volumes:
       - shopping_wordpress:/var/www/html
+      - ./wordpress/plugins/ai-shopping-storefront:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
     networks:
       - shopping_internal
       - shopping_external
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     healthcheck:
       test:
         - CMD-SHELL

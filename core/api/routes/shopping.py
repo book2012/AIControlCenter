@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, Query, status
 
 from core.shopping.schemas import (
+    ProductSearchResponse,
+    FeaturedProductListResponse,
     ShoppingCategoryListResponse,
     ProductListResponse,
     ProductResponse,
@@ -55,6 +57,85 @@ def shopping_capabilities():
 def shopping_integrations():
     return shopping.integration_status()
 
+
+
+
+
+@router.get(
+    "/search",
+    response_model=ProductSearchResponse,
+)
+def shopping_search(
+    q: str | None = Query(
+        default=None,
+        min_length=1,
+        max_length=200,
+    ),
+    category: str | None = Query(
+        default=None,
+        min_length=1,
+        max_length=100,
+    ),
+    minimum_price: float | None = Query(
+        default=None,
+        ge=0,
+    ),
+    maximum_price: float | None = Query(
+        default=None,
+        ge=0,
+    ),
+    in_stock: bool | None = Query(
+        default=None,
+    ),
+    page: int = Query(
+        default=1,
+        ge=1,
+    ),
+    page_size: int = Query(
+        default=20,
+        ge=1,
+        le=100,
+    ),
+):
+    if (
+        minimum_price is not None
+        and maximum_price is not None
+        and minimum_price > maximum_price
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail={
+                "code": "shopping_invalid_price_range",
+                "minimum_price": minimum_price,
+                "maximum_price": maximum_price,
+            },
+        )
+
+    return shopping.search_products(
+        query=q,
+        category=category,
+        minimum_price=minimum_price,
+        maximum_price=maximum_price,
+        in_stock=in_stock,
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.get(
+    "/featured-products",
+    response_model=FeaturedProductListResponse,
+)
+def shopping_featured_products(
+    limit: int = Query(
+        default=4,
+        ge=1,
+        le=20,
+    ),
+):
+    return shopping.list_featured_products(
+        limit=limit,
+    )
 
 
 @router.get(

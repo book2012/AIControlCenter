@@ -128,6 +128,82 @@ class ShoppingService:
         }
 
 
+
+
+    def search_products(
+        self,
+        *,
+        query: str | None,
+        category: str | None,
+        minimum_price: float | None,
+        maximum_price: float | None,
+        in_stock: bool | None,
+        page: int,
+        page_size: int,
+    ) -> dict:
+        products, total = self.catalog.search_products(
+            query=query,
+            category=category,
+            minimum_price=minimum_price,
+            maximum_price=maximum_price,
+            in_stock=in_stock,
+            page=page,
+            page_size=page_size,
+        )
+
+        return {
+            "items": [
+                asdict(product)
+                for product in products
+            ],
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+            "filters": {
+                "query": query,
+                "category": category,
+                "minimum_price": minimum_price,
+                "maximum_price": maximum_price,
+                "in_stock": in_stock,
+            },
+        }
+
+    def list_featured_products(
+        self,
+        limit: int = 4,
+    ) -> dict:
+        products, total = self.catalog.list_products(
+            page=1,
+            page_size=max(limit * 3, limit),
+        )
+
+        in_stock = [
+            product
+            for product in products
+            if product.in_stock
+        ]
+
+        out_of_stock = [
+            product
+            for product in products
+            if not product.in_stock
+        ]
+
+        selected = (
+            in_stock + out_of_stock
+        )[:limit]
+
+        return {
+            "items": [
+                asdict(product)
+                for product in selected
+            ],
+            "total": len(selected),
+            "available_catalog_total": total,
+            "limit": limit,
+            "strategy": "in_stock_first",
+        }
+
     def list_categories(self) -> dict:
         categories = self.catalog.list_categories()
 

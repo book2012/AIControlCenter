@@ -121,3 +121,54 @@ AIControlCenter
 - Production requires a user-owned domain and HTTPS.
 - iptime.org CAA policy prevents certificate issuance for the current DDNS hostname.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## M5 Storefront Architecture
+
+WooCommerce
+    |
+    v
+WooCommerceRESTAdapter
+    |
+    v
+ShoppingService
+    |
+    +-- Featured Products
+    +-- Search
+    +-- Categories
+    +-- Image URL normalization
+    |
+    v
+AIControlCenter REST API
+    |
+    v
+AI Shopping Storefront Plugin
+    |
+    +-- API Client
+    +-- Cache
+    +-- Shortcodes
+    +-- Renderer
+    +-- CSS
+    |
+    v
+WordPress Presentation Layer
+
+### WordPress Responsibilities
+
+- User input rendering
+- Input sanitization
+- API request forwarding
+- Short-lived response cache
+- HTML and CSS rendering
+- Error fallback messages
+
+### Forbidden WordPress Responsibilities
+
+- Product recommendation decisions
+- Price calculation
+- Inventory policies
+- AI provider calls
+- Order automation
+- Approval workflows
+<!-- SHOPPING_M5_END -->

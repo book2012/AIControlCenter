@@ -78,3 +78,18 @@ Mac mini M4
 Ubuntu does not own Shopping business logic or AI application state.
 The final Shopping service runs under AIControlCenter on Mac mini M4.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## Shopping Storefront Layer
+
+WooCommerce provides Commerce data.
+
+AIControlCenter consumes and normalizes Commerce data through the WooCommerce Adapter.
+
+AIControlCenter exposes Featured, Search, Category, and Product APIs.
+
+The WordPress AI Shopping Storefront Plugin consumes these APIs and renders the external customer-facing page.
+
+No Shopping recommendation, pricing, inventory, AI, or workflow logic is implemented inside WordPress.
+<!-- SHOPPING_M5_END -->

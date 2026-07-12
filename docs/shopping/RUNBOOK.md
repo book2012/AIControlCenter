@@ -73,3 +73,40 @@ docker compose down -v
 docker volume rm ai-shopping-database
 docker volume rm ai-shopping-wordpress
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## M5 Storefront Runbook
+
+### Check Plugin
+
+docker exec shopping-wordpress   test -f   /var/www/html/wp-content/plugins/ai-shopping-storefront/ai-shopping-storefront.php
+
+### Check External Page
+
+curl -I   http://bokstory.iptime.org:58088/ai-shopping/
+
+### Clear Storefront Cache
+
+wp transient delete --all
+
+Use the existing WordPress CLI container command and database environment.
+
+### Check WordPress Errors
+
+docker logs --since 5m shopping-wordpress
+
+Look for:
+
+- PHP Fatal
+- PHP Parse
+- Uncaught Exception
+- TypeError
+- ArgumentCountError
+
+### Safe Recovery
+
+Recreate only the WordPress service.
+
+Never remove the WordPress or MariaDB persistent volumes during routine recovery.
+<!-- SHOPPING_M5_END -->

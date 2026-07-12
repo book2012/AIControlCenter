@@ -69,3 +69,18 @@ During M4:
 - Public TLS using the ipTIME hostname was rejected by the parent-domain CAA policy.
 - Production HTTPS was deferred until a user-owned domain is available.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## Shopping Platform M5 History
+
+M5 introduced the first external AI Shopping Storefront.
+
+The Storefront was implemented as a modular WordPress Presentation Plugin.
+
+WordPress displays Featured Products, categories, search results, price filters, stock filters, pagination, and product images.
+
+AIControlCenter continues to own product selection, search validation, Commerce Adapter access, and future recommendation logic.
+
+The implementation was validated through the external ipTIME DDNS development address while Production HTTPS remains deferred to a user-owned domain.
+<!-- SHOPPING_M5_END -->

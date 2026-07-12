@@ -117,3 +117,19 @@ Sprint 20
 - Configure Production HTTPS
 - Validate ARM64 deployment on Mac mini M4
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## Shopping Platform Next Tasks
+
+- Complete M5 Git closeout
+- Define AI Product Draft schema
+- Implement AI Product Generator in read-only draft mode
+- Add approval state machine
+- Add audit event model
+- Design controlled WooCommerce write gate
+- Add Shopping Dashboard Storefront status
+- Acquire user-owned Production domain
+- Configure public HTTPS
+- Validate Mac mini M4 ARM64 deployment
+<!-- SHOPPING_M5_END -->

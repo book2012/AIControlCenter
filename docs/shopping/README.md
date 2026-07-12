@@ -112,3 +112,36 @@ Status: Implementation complete. Production Gate closeout in progress.
 WordPress and WooCommerce do not own AI or business logic.
 AIControlCenter remains the single Shopping Control Plane.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## M5 — AI Shopping Storefront Foundation
+
+Status: Implementation complete. Production Gate and Git closeout in progress.
+
+### Implemented
+
+- Featured Products API
+- Product Search API
+- Category navigation
+- Minimum and maximum price filters
+- Stock availability filter
+- Search pagination
+- Product image URL support
+- Image placeholder fallback
+- Modular WordPress Presentation Plugin
+- WordPress shortcode
+- AIControlCenter API client
+- WordPress transient cache
+- External Storefront page
+
+### Storefront URL
+
+http://bokstory.iptime.org:58088/ai-shopping/
+
+### Architecture Rule
+
+AIControlCenter owns product selection, search, filtering, validation, and future recommendation logic.
+
+WordPress only renders AIControlCenter responses.
+<!-- SHOPPING_M5_END -->

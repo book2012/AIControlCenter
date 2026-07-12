@@ -179,12 +179,22 @@ class WooCommerceRESTAdapter:
     @staticmethod
     def _to_product(data: dict[str, Any]) -> Product:
         categories = data.get("categories") or []
+        images = data.get("images") or []
 
         category = (
             categories[0].get("name", "Uncategorized")
             if categories
             else "Uncategorized"
         )
+
+        image_url = None
+
+        if images:
+            first_image = images[0] or {}
+            image_url = (
+                first_image.get("src")
+                or first_image.get("thumbnail")
+            )
 
         return Product(
             id=str(data["id"]),
@@ -196,6 +206,11 @@ class WooCommerceRESTAdapter:
             category=str(category),
             in_stock=data.get("stock_status") == "instock",
             source="woocommerce",
+            image_url=(
+                str(image_url)
+                if image_url
+                else None
+            ),
         )
 
     def health(self) -> dict:
@@ -279,3 +294,56 @@ class WooCommerceRESTAdapter:
             }
             for item in response.json()
         ]
+
+    def search_products(
+        self,
+        *,
+        query: str | None,
+        category: str | None,
+        minimum_price: float | None,
+        maximum_price: float | None,
+        in_stock: bool | None,
+        page: int,
+        page_size: int,
+    ) -> tuple[list[Product], int]:
+        params: dict[str, Any] = {
+            "page": page,
+            "per_page": page_size,
+            "status": "publish",
+        }
+
+        if query:
+            params["search"] = query
+
+        if category:
+            params["category"] = category
+
+        if minimum_price is not None:
+            params["min_price"] = str(minimum_price)
+
+        if maximum_price is not None:
+            params["max_price"] = str(maximum_price)
+
+        if in_stock is True:
+            params["stock_status"] = "instock"
+        elif in_stock is False:
+            params["stock_status"] = "outofstock"
+
+        response = self._request(
+            "/products",
+            params=params,
+        )
+
+        products = [
+            self._to_product(item)
+            for item in response.json()
+        ]
+
+        total = int(
+            response.headers.get(
+                "X-WP-Total",
+                len(products),
+            )
+        )
+
+        return products, total

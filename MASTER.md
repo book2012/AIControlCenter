@@ -91,3 +91,26 @@ State:
 
 Next service milestone: Shopping Homepage and AI Product Generation.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## Shopping Platform M5 Status
+
+Milestone:
+
+AI Shopping Storefront Foundation
+
+State:
+
+- Featured Product API implemented
+- Product Search API implemented
+- Product image contract implemented
+- Storefront Plugin active
+- External Storefront reachable
+- Search and filters connected to AIControlCenter
+- M5 Production Gate and Git closeout in progress
+
+Next milestone:
+
+M6 AI Product Generation and Approval Foundation
+<!-- SHOPPING_M5_END -->

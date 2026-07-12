@@ -101,3 +101,60 @@ class MockCommerceCatalogAdapter:
             )
         ]
 
+    def search_products(
+        self,
+        *,
+        query: str | None,
+        category: str | None,
+        minimum_price: float | None,
+        maximum_price: float | None,
+        in_stock: bool | None,
+        page: int,
+        page_size: int,
+    ) -> tuple[list[Product], int]:
+        products = list(self._products)
+
+        if query:
+            normalized = query.strip().lower()
+            products = [
+                product
+                for product in products
+                if normalized in product.name.lower()
+                or normalized in product.description.lower()
+                or normalized in product.slug.lower()
+            ]
+
+        if category:
+            normalized_category = category.strip().lower()
+            products = [
+                product
+                for product in products
+                if product.category.lower() == normalized_category
+            ]
+
+        if minimum_price is not None:
+            products = [
+                product
+                for product in products
+                if float(product.price) >= minimum_price
+            ]
+
+        if maximum_price is not None:
+            products = [
+                product
+                for product in products
+                if float(product.price) <= maximum_price
+            ]
+
+        if in_stock is not None:
+            products = [
+                product
+                for product in products
+                if product.in_stock is in_stock
+            ]
+
+        total = len(products)
+        start = (page - 1) * page_size
+        end = start + page_size
+
+        return products[start:end], total

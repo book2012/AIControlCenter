@@ -13,3 +13,4 @@ class Product:
     category: str
     in_stock: bool
     source: str
+    image_url: str | None = None

@@ -90,3 +90,46 @@ Required permissions:
 
 600 root:root
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## M5 Storefront Deployment
+
+### Plugin Bind Mount
+
+Host:
+
+deploy/shopping/wordpress/plugins/ai-shopping-storefront
+
+Container:
+
+/var/www/html/wp-content/plugins/ai-shopping-storefront
+
+The mount is read-only.
+
+### Host API Access
+
+WordPress uses:
+
+host.docker.internal
+
+Docker Compose must define:
+
+host.docker.internal:host-gateway
+
+### Deployment Target
+
+Current:
+
+Ubuntu virtual deployment validation environment
+
+Final:
+
+Mac mini M4 AIControlCenter Production Runtime
+
+### HTTPS
+
+Current ipTIME DDNS is development-only HTTP.
+
+A user-owned domain is required before public Production deployment.
+<!-- SHOPPING_M5_END -->

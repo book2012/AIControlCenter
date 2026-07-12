@@ -138,3 +138,52 @@ WooCommerceRESTCatalogAdapter.
 M4 exposes catalog read operations only.
 Product, category, order, customer, pricing, and inventory writes remain disabled.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## M5 Storefront APIs
+
+### Featured Products
+
+GET /shopping/featured-products
+
+Query:
+
+- limit: 1 to 20
+
+Response includes:
+
+- items
+- total
+- available_catalog_total
+- limit
+- strategy
+
+Current deterministic strategy:
+
+in_stock_first
+
+### Product Search
+
+GET /shopping/search
+
+Query parameters:
+
+- q
+- category
+- minimum_price
+- maximum_price
+- in_stock
+- page
+- page_size
+
+AIControlCenter validates price ranges and pagination.
+
+### Image Field
+
+Product responses include:
+
+image_url
+
+The value is null when WooCommerce has no representative image.
+<!-- SHOPPING_M5_END -->

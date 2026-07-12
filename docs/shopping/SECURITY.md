@@ -14,3 +14,17 @@
 - Production requires HTTPS and API Key rotation.
 - No real customer, payment, or order data is allowed in the HTTP development environment.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## M5 Storefront Security
+
+- WordPress API requests use the internal Docker host gateway.
+- WooCommerce Consumer credentials are not available to the WordPress Plugin.
+- The Plugin calls AIControlCenter public read endpoints only.
+- Search input is sanitized before forwarding.
+- Output is escaped before rendering.
+- API redirection is disabled in the Plugin client.
+- WordPress Presentation Cache stores only read responses.
+- No customer, order, payment, or write credentials are exposed to Storefront.
+<!-- SHOPPING_M5_END -->

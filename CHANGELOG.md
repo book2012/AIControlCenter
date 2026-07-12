@@ -257,3 +257,41 @@ Added:
 - systemd runtime Secret permissions restricted
 - Public HTTPS deferred until a user-owned domain is available
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## Shopping Platform M5 — Unreleased
+
+### Added
+
+- Featured Products API
+- Product Search API
+- Category, price, and stock filters
+- Search pagination
+- Product image URL contract
+- WooCommerce representative image mapping
+- Image placeholder fallback
+- Modular AI Shopping Storefront Plugin
+- WordPress AIControlCenter API client
+- WordPress Presentation Cache
+- Storefront shortcode
+- Responsive Storefront CSS
+- External AI Shopping page
+
+### Fixed
+
+- Storefront Renderer search UI integration
+- Search API client query serialization
+- Boolean stock parameter serialization
+- WooCommerce image mapping tests
+- Test helper contract inconsistencies
+- Trailing whitespace and blank-line issues
+
+### Security
+
+- Storefront does not receive WooCommerce credentials
+- WordPress calls read-only AIControlCenter endpoints
+- Search input is sanitized
+- Rendered output is escaped
+- Business Logic remains in AIControlCenter
+<!-- SHOPPING_M5_END -->

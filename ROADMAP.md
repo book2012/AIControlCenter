@@ -158,3 +158,42 @@ Status: In Progress
 A user-owned domain is required for public HTTPS.
 The current ipTIME DDNS hostname cannot receive a certificate because of its parent-domain CAA policy.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## Shopping Platform Service Roadmap
+
+### M5 — AI Shopping Storefront Foundation
+
+- [x] Featured Products API
+- [x] Product Search API
+- [x] Category Navigation
+- [x] Price Filters
+- [x] Stock Filter
+- [x] Pagination
+- [x] Product Image Support
+- [x] Placeholder Fallback
+- [x] WordPress Presentation Plugin
+- [x] External Storefront
+- [ ] Final Documentation and Git Closeout
+
+### M6 — AI Product Generation
+
+- [ ] Product Draft Model
+- [ ] AI Product Generator
+- [ ] AI Description Writer
+- [ ] AI SEO Writer
+- [ ] AI Category Suggestion
+- [ ] Approval Workflow
+- [ ] Controlled WooCommerce Write
+- [ ] Audit Log
+
+### M7 — Shopping Operations
+
+- [ ] Order Read Integration
+- [ ] Customer Read Integration
+- [ ] Inventory Monitoring
+- [ ] Shopping Dashboard
+- [ ] Notifications
+- [ ] n8n Automation
+<!-- SHOPPING_M5_END -->

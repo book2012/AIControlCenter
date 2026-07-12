@@ -84,3 +84,29 @@ Implemented capabilities:
 
 Production HTTPS remains blocked until a user-owned domain is available.
 <!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## AI Shopping Platform — M5 Storefront
+
+AI Shopping Platform now provides an external Storefront powered by AIControlCenter.
+
+Implemented:
+
+- Featured Products
+- Product Search
+- Category Filter
+- Price Filter
+- Stock Filter
+- Pagination
+- Product Image and Placeholder
+- Modular WordPress Presentation Plugin
+- External Storefront page
+
+Storefront:
+
+http://bokstory.iptime.org:58088/ai-shopping/
+
+WordPress remains the Presentation Layer.
+AIControlCenter owns all Shopping business logic.
+<!-- SHOPPING_M5_END -->

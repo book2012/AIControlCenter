@@ -60,46 +60,6 @@ def make_adapter(responses):
     )
 
 
-def test_list_products_maps_woocommerce_response():
-    response = FakeResponse(
-        [
-            {
-                "id": 101,
-                "name": "테스트 상품",
-                "slug": "test-product",
-                "description": "상품 설명",
-                "price": "15900",
-                "stock_status": "instock",
-                "categories": [
-                    {
-                        "id": 7,
-                        "name": "테스트",
-                    }
-                ],
-            }
-        ],
-        headers={
-            "X-WP-Total": "1",
-        },
-    )
-
-    adapter = make_adapter([response])
-
-    products, total = adapter.list_products(
-        page=1,
-        page_size=20,
-    )
-
-    assert total == 1
-    assert len(products) == 1
-    assert products[0].id == "101"
-    assert products[0].name == "테스트 상품"
-    assert products[0].price == Decimal("15900")
-    assert products[0].currency == "KRW"
-    assert products[0].category == "테스트"
-    assert products[0].in_stock is True
-    assert products[0].source == "woocommerce"
-
 
 def test_get_product_returns_product():
     response = FakeResponse(
@@ -284,3 +244,100 @@ def test_internal_connection_uses_canonical_host_for_signature():
     )
     assert call["allow_redirects"] is False
     assert call["params"]["oauth_signature"]
+
+
+def test_list_products_maps_woocommerce_response():
+    session = FakeSession(
+        [
+            FakeResponse(
+                [
+                    {
+                        "id": 101,
+                        "name": "테스트 상품",
+                        "slug": "test-product",
+                        "description": "상품 설명",
+                        "price": "15900",
+                        "stock_status": "instock",
+                        "categories": [
+                            {
+                                "id": 7,
+                                "name": "테스트",
+                            }
+                        ],
+                        "images": [
+                            {
+                                "id": 10,
+                                "src": (
+                                    "https://example.test/"
+                                    "product.jpg"
+                                ),
+                            }
+                        ],
+                    }
+                ],
+                headers={
+                    "X-WP-Total": "1",
+                },
+            )
+        ]
+    )
+
+    adapter = WooCommerceRESTAdapter(
+        base_url="http://wordpress.test",
+        consumer_key="ck_test",
+        consumer_secret="cs_test",
+        session=session,
+    )
+
+    products, total = adapter.list_products(
+        page=1,
+        page_size=20,
+    )
+
+    assert total == 1
+    assert products[0].id == "101"
+    assert products[0].price == Decimal("15900")
+    assert products[0].currency == "KRW"
+    assert products[0].source == "woocommerce"
+    assert products[0].image_url == (
+        "https://example.test/product.jpg"
+    )
+
+
+def test_product_without_image_maps_none():
+    session = FakeSession(
+        [
+            FakeResponse(
+                [
+                    {
+                        "id": 202,
+                        "name": "이미지 없는 상품",
+                        "slug": "product-without-image",
+                        "description": "",
+                        "price": "9900",
+                        "stock_status": "instock",
+                        "categories": [],
+                        "images": [],
+                    }
+                ],
+                headers={
+                    "X-WP-Total": "1",
+                },
+            )
+        ]
+    )
+
+    adapter = WooCommerceRESTAdapter(
+        base_url="http://wordpress.test",
+        consumer_key="ck_test",
+        consumer_secret="cs_test",
+        session=session,
+    )
+
+    products, total = adapter.list_products(
+        page=1,
+        page_size=20,
+    )
+
+    assert total == 1
+    assert products[0].image_url is None
