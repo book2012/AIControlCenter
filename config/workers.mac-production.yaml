@@ -1,0 +1,11 @@
+workers:
+
+  ubuntu-main:
+    type: ubuntu
+    mode: ssh
+
+    host: ${DATACENTER_HOST}
+    user: ${DATACENTER_SSH_USER}
+    port: ${DATACENTER_SSH_PORT}
+
+    scripts: /opt/aihomedatacenter/scripts

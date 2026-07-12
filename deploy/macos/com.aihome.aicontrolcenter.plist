@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC
+  "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.aihome.aicontrolcenter</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/opt/AIControlCenter/.venv/bin/python</string>
+        <string>-m</string>
+        <string>uvicorn</string>
+        <string>core.api.app:create_app</string>
+        <string>--factory</string>
+        <string>--host</string>
+        <string>127.0.0.1</string>
+        <string>--port</string>
+        <string>8000</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/opt/AIControlCenter</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>AICC_ENV</key>
+        <string>mac-production</string>
+        <key>PYTHONUNBUFFERED</key>
+        <string>1</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <key>StandardOutPath</key>
+    <string>/opt/AIControlCenter/var/log/aicontrolcenter.stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/opt/AIControlCenter/var/log/aicontrolcenter.stderr.log</string>
+</dict>
+</plist>
