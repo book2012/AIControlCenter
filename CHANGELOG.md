@@ -151,3 +151,17 @@ Added:
 - Existing API regression tests passing
 - Shopping route smoke tests passing
 <!-- AI_SHOPPING_PLATFORM_END -->
+
+## 2026-07-12 API Router Cleanup
+
+### Fixed
+
+- Removed duplicate FastAPI router registrations
+- Removed duplicate OpenAPI operation identifiers
+- Added API route uniqueness regression tests
+
+### Validation
+
+- Shopping API routes remain available
+- OpenAPI operation identifiers are unique
+- Full regression suite passes

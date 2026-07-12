@@ -74,3 +74,9 @@ Sprint 20
 - Review FastAPI TestClient deprecation warning
 - Handle dependency changes in a dedicated regression Sprint
 <!-- AI_SHOPPING_PLATFORM_END -->
+
+## API Quality
+
+- Completed duplicate router registration cleanup
+- Added route uniqueness regression protection
+- FastAPI TestClient deprecation warning remains a separate dependency task
