@@ -65,6 +65,12 @@ class UbuntuWorkerClient(WorkerClient):
             self._script("commands/services-status-json.sh"),
         )
 
+    def shutdown_plan(self) -> Dict[str, Any]:
+        return run_json_script(
+            self.runner,
+            self._script("commands/safe-shutdown-json.sh"),
+        )
+
     def execute(self, command: str) -> Dict[str, Any]:
         return run_worker_command(
             self.runner,
