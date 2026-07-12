@@ -1,19 +1,27 @@
-"""Application service for the AI Shopping Platform."""
+from dataclasses import asdict
 
+from core.shopping.adapters.mock_commerce import (
+    MockCommerceCatalogAdapter,
+)
 from core.shopping.config import (
     ShoppingSettings,
     load_shopping_settings,
 )
+from core.shopping.ports import CommerceCatalogPort
+
+
+class ProductNotFoundError(Exception):
+    pass
 
 
 class ShoppingService:
-    """Expose Shopping Platform status without external side effects."""
-
     def __init__(
         self,
         settings: ShoppingSettings | None = None,
+        catalog: CommerceCatalogPort | None = None,
     ):
         self.settings = settings or load_shopping_settings()
+        self.catalog = catalog or MockCommerceCatalogAdapter()
 
     def health(self) -> dict:
         return {
@@ -73,3 +81,28 @@ class ShoppingService:
             ),
             "approval_required": self.settings.approval_required,
         }
+
+    def list_products(
+        self,
+        page: int,
+        page_size: int,
+    ) -> dict:
+        products, total = self.catalog.list_products(
+            page=page,
+            page_size=page_size,
+        )
+
+        return {
+            "items": [asdict(product) for product in products],
+            "total": total,
+            "page": page,
+            "page_size": page_size,
+        }
+
+    def get_product(self, product_id: str) -> dict:
+        product = self.catalog.get_product(product_id)
+
+        if product is None:
+            raise ProductNotFoundError(product_id)
+
+        return asdict(product)

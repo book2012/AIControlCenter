@@ -1,13 +1,16 @@
-"""AI Shopping Platform API routes."""
-
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Query, status
 
 from core.shopping.schemas import (
+    ProductListResponse,
+    ProductResponse,
     ShoppingCapabilitiesResponse,
     ShoppingHealthResponse,
     ShoppingReadinessResponse,
 )
-from core.shopping.service import ShoppingService
+from core.shopping.service import (
+    ProductNotFoundError,
+    ShoppingService,
+)
 
 
 router = APIRouter(
@@ -40,3 +43,34 @@ def shopping_readiness():
 )
 def shopping_capabilities():
     return shopping.capabilities()
+
+
+@router.get(
+    "/products",
+    response_model=ProductListResponse,
+)
+def shopping_products(
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+):
+    return shopping.list_products(
+        page=page,
+        page_size=page_size,
+    )
+
+
+@router.get(
+    "/products/{product_id}",
+    response_model=ProductResponse,
+)
+def shopping_product(product_id: str):
+    try:
+        return shopping.get_product(product_id)
+    except ProductNotFoundError as error:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail={
+                "code": "shopping_product_not_found",
+                "product_id": str(error),
+            },
+        ) from error

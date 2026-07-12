@@ -1,6 +1,6 @@
-"""API schemas for the AI Shopping Platform."""
+from decimal import Decimal
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ShoppingHealthResponse(BaseModel):
@@ -34,3 +34,22 @@ class ShoppingCapabilitiesResponse(BaseModel):
     generate_ai_content: bool
     execute_automation: bool
     approval_required: bool
+
+
+class ProductResponse(BaseModel):
+    id: str
+    name: str
+    slug: str
+    description: str
+    price: Decimal
+    currency: str
+    category: str
+    in_stock: bool
+    source: str
+
+
+class ProductListResponse(BaseModel):
+    items: list[ProductResponse]
+    total: int
+    page: int = Field(ge=1)
+    page_size: int = Field(ge=1, le=100)

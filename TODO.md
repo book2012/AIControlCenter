@@ -80,3 +80,10 @@ Sprint 20
 - Completed duplicate router registration cleanup
 - Added route uniqueness regression protection
 - FastAPI TestClient deprecation warning remains a separate dependency task
+
+## Shopping Catalog
+
+- Completed Mock Product Catalog
+- Completed product list and detail APIs
+- Next: WordPress and WooCommerce virtual environment
+- Next: WooCommerce read-only catalog adapter

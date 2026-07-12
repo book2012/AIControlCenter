@@ -42,3 +42,25 @@ POST /shopping/sync/validate
 
 Write endpoints must not be enabled until authentication, approval,
 audit logging, idempotency and rollback controls are implemented.
+
+## Product Catalog Endpoints
+
+GET /shopping/products
+
+Query parameters:
+
+- page
+- page_size
+
+The endpoint returns paginated product records and total count.
+
+GET /shopping/products/{product_id}
+
+The endpoint returns one product record.
+
+Unknown product identifiers return HTTP 404.
+
+The current implementation uses MockCommerceCatalogAdapter.
+
+The API contract will remain stable when the adapter is replaced by
+WooCommerceRESTCatalogAdapter.
