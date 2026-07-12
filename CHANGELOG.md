@@ -184,3 +184,22 @@ Added:
 - No WooCommerce write operations
 - No AI execution
 - No automation execution
+
+## 2026-07-12 Read-only Mock Product Catalog
+
+### Added
+
+- Product domain model
+- Commerce Catalog Port
+- Mock Commerce Catalog Adapter
+- Paginated product list API
+- Product detail API
+- Product not-found response
+- Product catalog unit and API tests
+
+### Safety
+
+- Product catalog remains read-only
+- No WooCommerce write operations
+- No AI execution
+- No automation execution
