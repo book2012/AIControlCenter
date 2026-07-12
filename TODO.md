@@ -94,3 +94,10 @@ Sprint 20
 - Completed product list and detail APIs
 - Next: WordPress and WooCommerce virtual environment
 - Next: WooCommerce read-only catalog adapter
+
+## Shopping Catalog
+
+- Completed Mock Product Catalog
+- Completed product list and detail APIs
+- Next: WordPress and WooCommerce virtual environment
+- Next: WooCommerce read-only catalog adapter
