@@ -41,3 +41,121 @@ Current Focus
 - Job Registry
 - Automation Foundation
 
+<!-- AI_SHOPPING_PLATFORM_START -->
+## Current Program
+
+Project: AI Shopping Platform
+
+Status: Active Development
+
+Current Sprint: Shopping Control Plane Bootstrap
+
+Development runtime: Virtual Environment
+
+Production target: Mac mini M4
+
+Current implementation:
+
+- Shopping domain
+- Shopping health API
+- Shopping readiness API
+- Shopping capabilities API
+- Safe read-only defaults
+- Shopping test suite
+- Shopping documentation
+
+Architecture ownership:
+
+- WordPress owns presentation and CMS
+- WooCommerce owns commerce records
+- AIControlCenter owns business and AI logic
+- n8n executes automation
+- Ubuntu remains an infrastructure worker
+<!-- AI_SHOPPING_PLATFORM_END -->
+
+<!-- SHOPPING_M4_START -->
+
+## Shopping Platform M4 Status
+
+Milestone: Live WooCommerce Control Plane
+
+State:
+
+- Architecture implemented
+- WordPress and MariaDB runtime healthy
+- WooCommerce REST Adapter implemented
+- Product and Category APIs implemented
+- Runtime Adapter selection implemented
+- Read-only policy enforced
+- Documentation and Git Gate in progress
+
+Next service milestone: Shopping Homepage and AI Product Generation.
+<!-- SHOPPING_M4_END -->
+
+<!-- SHOPPING_M5_START -->
+
+## Shopping Platform M5 Status
+
+Milestone:
+
+AI Shopping Storefront Foundation
+
+State:
+
+- Featured Product API implemented
+- Product Search API implemented
+- Product image contract implemented
+- Storefront Plugin active
+- External Storefront reachable
+- Search and filters connected to AIControlCenter
+- M5 Production Gate and Git closeout in progress
+
+Next milestone:
+
+M6 AI Product Generation and Approval Foundation
+<!-- SHOPPING_M5_END -->
+
+---
+
+## Commit 19
+
+Status: Complete
+
+Implemented
+
+- Homepage Renderer
+- Homepage Curated Sections
+- NEW / BEST / TOP / DRESS / OUTER / BAG / SALE
+- Shopping Search API Integration
+- Multi-section Storefront Rendering
+
+UI Progress
+
+95%
+
+<!-- AI_SHOPPING_STOREFRONT_V016_MASTER -->
+## Shopping Platform Baseline
+
+Version: AI Shopping Storefront v0.16.0
+
+Status: Feature Complete / Production Validation Passed
+
+Git baseline:
+
+- Commit: `a4d6098`
+- Branch: `feature/shopping-platform-bootstrap`
+
+Validated:
+
+- Orange Coco v6 storefront
+- AIControlCenter Shopping API integration
+- Product detail page
+- Homepage HTTP 200
+- Product detail HTTP 200
+- Missing product HTTP 404
+- PHP 8.3 syntax validation
+- JavaScript syntax validation
+
+Next production milestone:
+
+- Mac mini Production Control Plane migration

@@ -39,3 +39,16 @@ data/*.db-wal
 data/*.db
 data/*.db-shm
 data/*.db-wal
+
+deploy/shopping/.env
+deploy/shopping/.env.admin
+deploy/shopping/.env.woocommerce
+
+# Local runtime secrets
+configs/secrets/*.env
+!configs/secrets/*.env.example
+
+
+*.bak
+*.old
+*~

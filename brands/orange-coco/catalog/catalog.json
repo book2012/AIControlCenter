@@ -1,0 +1,3049 @@
+{
+  "schema_version": 1,
+  "brand_id": "orange-coco",
+  "is_demo_catalog": true,
+  "demo_batch_id": "orange-coco-v1",
+  "product_count": 92,
+  "products": [
+    {
+      "id": "oc-demo-top-0001",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 린넨 블라우스",
+      "slug": "oc-demo-top-0001",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0001.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0001.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0001"
+    },
+    {
+      "id": "oc-demo-top-0002",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 코튼 셔츠",
+      "slug": "oc-demo-top-0002",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0002.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0002.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0002"
+    },
+    {
+      "id": "oc-demo-top-0003",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 카라 블라우스",
+      "slug": "oc-demo-top-0003",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0003.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0003.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0003"
+    },
+    {
+      "id": "oc-demo-top-0004",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 데일리 니트",
+      "slug": "oc-demo-top-0004",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0004.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0004.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "best",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0004"
+    },
+    {
+      "id": "oc-demo-top-0005",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 셔링 탑",
+      "slug": "oc-demo-top-0005",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0005.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0005.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "sale",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0005"
+    },
+    {
+      "id": "oc-demo-top-0006",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 오버핏 셔츠",
+      "slug": "oc-demo-top-0006",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0006.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0006.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0006"
+    },
+    {
+      "id": "oc-demo-top-0007",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 라운드 니트",
+      "slug": "oc-demo-top-0007",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0007.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0007.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0007"
+    },
+    {
+      "id": "oc-demo-top-0008",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 슬리브리스",
+      "slug": "oc-demo-top-0008",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0008.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0008.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "best",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0008"
+    },
+    {
+      "id": "oc-demo-top-0009",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "웨이브 블라우스",
+      "slug": "oc-demo-top-0009",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0009.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0009.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0009"
+    },
+    {
+      "id": "oc-demo-top-0010",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 코튼 티",
+      "slug": "oc-demo-top-0010",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0010.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0010.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "sale",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0010"
+    },
+    {
+      "id": "oc-demo-top-0011",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 린넨 블라우스 11",
+      "slug": "oc-demo-top-0011",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0011.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0011.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0011"
+    },
+    {
+      "id": "oc-demo-top-0012",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 코튼 셔츠 12",
+      "slug": "oc-demo-top-0012",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0012.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0012.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "best",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0012"
+    },
+    {
+      "id": "oc-demo-top-0013",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 카라 블라우스 13",
+      "slug": "oc-demo-top-0013",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0013.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0013.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0013"
+    },
+    {
+      "id": "oc-demo-top-0014",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 데일리 니트 14",
+      "slug": "oc-demo-top-0014",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0014.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0014.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0014"
+    },
+    {
+      "id": "oc-demo-top-0015",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 셔링 탑 15",
+      "slug": "oc-demo-top-0015",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0015.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0015.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "sale",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0015"
+    },
+    {
+      "id": "oc-demo-top-0016",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 오버핏 셔츠 16",
+      "slug": "oc-demo-top-0016",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0016.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0016.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "best",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0016"
+    },
+    {
+      "id": "oc-demo-top-0017",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 라운드 니트 17",
+      "slug": "oc-demo-top-0017",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0017.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0017.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0017"
+    },
+    {
+      "id": "oc-demo-top-0018",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 슬리브리스 18",
+      "slug": "oc-demo-top-0018",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0018.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0018.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0018"
+    },
+    {
+      "id": "oc-demo-top-0019",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "웨이브 블라우스 19",
+      "slug": "oc-demo-top-0019",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0019.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0019.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0019"
+    },
+    {
+      "id": "oc-demo-top-0020",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 코튼 티 20",
+      "slug": "oc-demo-top-0020",
+      "category": "top",
+      "category_label": "TOP",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0020.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/top/oc-demo-top-0020.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "best",
+        "sale",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-top-0020"
+    },
+    {
+      "id": "oc-demo-dress-0001",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 린넨 원피스",
+      "slug": "oc-demo-dress-0001",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0001.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0001.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0001"
+    },
+    {
+      "id": "oc-demo-dress-0002",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 플레어 드레스",
+      "slug": "oc-demo-dress-0002",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0002.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0002.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0002"
+    },
+    {
+      "id": "oc-demo-dress-0003",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 셔츠 원피스",
+      "slug": "oc-demo-dress-0003",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0003.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0003.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0003"
+    },
+    {
+      "id": "oc-demo-dress-0004",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 미디 드레스",
+      "slug": "oc-demo-dress-0004",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0004.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0004.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "new",
+        "best",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0004"
+    },
+    {
+      "id": "oc-demo-dress-0005",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "오트밀 롱 원피스",
+      "slug": "oc-demo-dress-0005",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0005.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0005.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0005"
+    },
+    {
+      "id": "oc-demo-dress-0006",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 슬립 드레스",
+      "slug": "oc-demo-dress-0006",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0006.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0006.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0006"
+    },
+    {
+      "id": "oc-demo-dress-0007",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 코튼 원피스",
+      "slug": "oc-demo-dress-0007",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0007.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0007.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0007"
+    },
+    {
+      "id": "oc-demo-dress-0008",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 스트랩 드레스",
+      "slug": "oc-demo-dress-0008",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0008.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0008.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0008"
+    },
+    {
+      "id": "oc-demo-dress-0009",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 셔링 원피스",
+      "slug": "oc-demo-dress-0009",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0009.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0009.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0009"
+    },
+    {
+      "id": "oc-demo-dress-0010",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 카라 드레스",
+      "slug": "oc-demo-dress-0010",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0010.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0010.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0010"
+    },
+    {
+      "id": "oc-demo-dress-0011",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 린넨 원피스 11",
+      "slug": "oc-demo-dress-0011",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0011.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0011.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0011"
+    },
+    {
+      "id": "oc-demo-dress-0012",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 플레어 드레스 12",
+      "slug": "oc-demo-dress-0012",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0012.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0012.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0012"
+    },
+    {
+      "id": "oc-demo-dress-0013",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 셔츠 원피스 13",
+      "slug": "oc-demo-dress-0013",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0013.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0013.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0013"
+    },
+    {
+      "id": "oc-demo-dress-0014",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 미디 드레스 14",
+      "slug": "oc-demo-dress-0014",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0014.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0014.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0014"
+    },
+    {
+      "id": "oc-demo-dress-0015",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "오트밀 롱 원피스 15",
+      "slug": "oc-demo-dress-0015",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0015.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0015.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0015"
+    },
+    {
+      "id": "oc-demo-dress-0016",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 슬립 드레스 16",
+      "slug": "oc-demo-dress-0016",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0016.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0016.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0016"
+    },
+    {
+      "id": "oc-demo-dress-0017",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 코튼 원피스 17",
+      "slug": "oc-demo-dress-0017",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0017.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0017.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0017"
+    },
+    {
+      "id": "oc-demo-dress-0018",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 스트랩 드레스 18",
+      "slug": "oc-demo-dress-0018",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0018.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0018.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0018"
+    },
+    {
+      "id": "oc-demo-dress-0019",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 셔링 원피스 19",
+      "slug": "oc-demo-dress-0019",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0019.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0019.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0019"
+    },
+    {
+      "id": "oc-demo-dress-0020",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 카라 드레스 20",
+      "slug": "oc-demo-dress-0020",
+      "category": "dress",
+      "category_label": "DRESS",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0020.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/dress/oc-demo-dress-0020.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BEIGE",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "best",
+        "sale",
+        "minimal",
+        "natural",
+        "weekend"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-dress-0020"
+    },
+    {
+      "id": "oc-demo-bottom-0001",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 와이드 팬츠",
+      "slug": "oc-demo-bottom-0001",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0001.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0001.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0001"
+    },
+    {
+      "id": "oc-demo-bottom-0002",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 밴딩 슬랙스",
+      "slug": "oc-demo-bottom-0002",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0002.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0002.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0002"
+    },
+    {
+      "id": "oc-demo-bottom-0003",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 플레어 스커트",
+      "slug": "oc-demo-bottom-0003",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0003.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0003.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0003"
+    },
+    {
+      "id": "oc-demo-bottom-0004",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 코튼 팬츠",
+      "slug": "oc-demo-bottom-0004",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0004.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0004.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0004"
+    },
+    {
+      "id": "oc-demo-bottom-0005",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 롱 스커트",
+      "slug": "oc-demo-bottom-0005",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0005.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0005.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0005"
+    },
+    {
+      "id": "oc-demo-bottom-0006",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 린넨 팬츠",
+      "slug": "oc-demo-bottom-0006",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0006.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0006.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0006"
+    },
+    {
+      "id": "oc-demo-bottom-0007",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 스트레이트 팬츠",
+      "slug": "oc-demo-bottom-0007",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0007.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0007.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0007"
+    },
+    {
+      "id": "oc-demo-bottom-0008",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "오트밀 밴딩 팬츠",
+      "slug": "oc-demo-bottom-0008",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0008.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0008.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0008"
+    },
+    {
+      "id": "oc-demo-bottom-0009",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 와이드 팬츠 9",
+      "slug": "oc-demo-bottom-0009",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0009.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0009.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0009"
+    },
+    {
+      "id": "oc-demo-bottom-0010",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 밴딩 슬랙스 10",
+      "slug": "oc-demo-bottom-0010",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0010.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0010.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0010"
+    },
+    {
+      "id": "oc-demo-bottom-0011",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 플레어 스커트 11",
+      "slug": "oc-demo-bottom-0011",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0011.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0011.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0011"
+    },
+    {
+      "id": "oc-demo-bottom-0012",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 코튼 팬츠 12",
+      "slug": "oc-demo-bottom-0012",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0012.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0012.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0012"
+    },
+    {
+      "id": "oc-demo-bottom-0013",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 롱 스커트 13",
+      "slug": "oc-demo-bottom-0013",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0013.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0013.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0013"
+    },
+    {
+      "id": "oc-demo-bottom-0014",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 린넨 팬츠 14",
+      "slug": "oc-demo-bottom-0014",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0014.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0014.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0014"
+    },
+    {
+      "id": "oc-demo-bottom-0015",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 스트레이트 팬츠 15",
+      "slug": "oc-demo-bottom-0015",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0015.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bottom/oc-demo-bottom-0015.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "BEIGE",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "weekend",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bottom-0015"
+    },
+    {
+      "id": "oc-demo-outer-0001",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 니트 가디건",
+      "slug": "oc-demo-outer-0001",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0001.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0001.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0001"
+    },
+    {
+      "id": "oc-demo-outer-0002",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 린넨 재킷",
+      "slug": "oc-demo-outer-0002",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0002.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0002.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0002"
+    },
+    {
+      "id": "oc-demo-outer-0003",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 데일리 아우터",
+      "slug": "oc-demo-outer-0003",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0003.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0003.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0003"
+    },
+    {
+      "id": "oc-demo-outer-0004",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 클래식 재킷",
+      "slug": "oc-demo-outer-0004",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0004.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0004.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0004"
+    },
+    {
+      "id": "oc-demo-outer-0005",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 오버핏 재킷",
+      "slug": "oc-demo-outer-0005",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0005.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0005.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "sale",
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0005"
+    },
+    {
+      "id": "oc-demo-outer-0006",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 숏 가디건",
+      "slug": "oc-demo-outer-0006",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0006.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0006.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0006"
+    },
+    {
+      "id": "oc-demo-outer-0007",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 트렌치 재킷",
+      "slug": "oc-demo-outer-0007",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0007.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0007.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0007"
+    },
+    {
+      "id": "oc-demo-outer-0008",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 니트 아우터",
+      "slug": "oc-demo-outer-0008",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0008.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0008.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0008"
+    },
+    {
+      "id": "oc-demo-outer-0009",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 니트 가디건 9",
+      "slug": "oc-demo-outer-0009",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0009.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0009.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0009"
+    },
+    {
+      "id": "oc-demo-outer-0010",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 린넨 재킷 10",
+      "slug": "oc-demo-outer-0010",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0010.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0010.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0010"
+    },
+    {
+      "id": "oc-demo-outer-0011",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 데일리 아우터 11",
+      "slug": "oc-demo-outer-0011",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0011.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0011.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0011"
+    },
+    {
+      "id": "oc-demo-outer-0012",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 클래식 재킷 12",
+      "slug": "oc-demo-outer-0012",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0012.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0012.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0012"
+    },
+    {
+      "id": "oc-demo-outer-0013",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 오버핏 재킷 13",
+      "slug": "oc-demo-outer-0013",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0013.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0013.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0013"
+    },
+    {
+      "id": "oc-demo-outer-0014",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 숏 가디건 14",
+      "slug": "oc-demo-outer-0014",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0014.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0014.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0014"
+    },
+    {
+      "id": "oc-demo-outer-0015",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 트렌치 재킷 15",
+      "slug": "oc-demo-outer-0015",
+      "category": "outer",
+      "category_label": "OUTER",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0015.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/outer/oc-demo-outer-0015.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "IVORY",
+        "CAMEL",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural",
+        "office"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-outer-0015"
+    },
+    {
+      "id": "oc-demo-bag-0001",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 숄더백",
+      "slug": "oc-demo-bag-0001",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0001.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0001.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0001"
+    },
+    {
+      "id": "oc-demo-bag-0002",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 데일리 토트백",
+      "slug": "oc-demo-bag-0002",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0002.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0002.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0002"
+    },
+    {
+      "id": "oc-demo-bag-0003",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 미니 크로스백",
+      "slug": "oc-demo-bag-0003",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0003.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0003.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0003"
+    },
+    {
+      "id": "oc-demo-bag-0004",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 스퀘어 백",
+      "slug": "oc-demo-bag-0004",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0004.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0004.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0004"
+    },
+    {
+      "id": "oc-demo-bag-0005",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 캔버스백",
+      "slug": "oc-demo-bag-0005",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0005.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0005.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0005"
+    },
+    {
+      "id": "oc-demo-bag-0006",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 미니백",
+      "slug": "oc-demo-bag-0006",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0006.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0006.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0006"
+    },
+    {
+      "id": "oc-demo-bag-0007",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 숄더백 7",
+      "slug": "oc-demo-bag-0007",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0007.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0007.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0007"
+    },
+    {
+      "id": "oc-demo-bag-0008",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 데일리 토트백 8",
+      "slug": "oc-demo-bag-0008",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0008.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0008.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0008"
+    },
+    {
+      "id": "oc-demo-bag-0009",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 미니 크로스백 9",
+      "slug": "oc-demo-bag-0009",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0009.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0009.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0009"
+    },
+    {
+      "id": "oc-demo-bag-0010",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 스퀘어 백 10",
+      "slug": "oc-demo-bag-0010",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0010.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0010.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "sale",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0010"
+    },
+    {
+      "id": "oc-demo-bag-0011",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "라이트 캔버스백 11",
+      "slug": "oc-demo-bag-0011",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0011.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0011.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0011"
+    },
+    {
+      "id": "oc-demo-bag-0012",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "크림 미니백 12",
+      "slug": "oc-demo-bag-0012",
+      "category": "bag",
+      "category_label": "BAG",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0012.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/bag/oc-demo-bag-0012.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "CREAM",
+        "BROWN",
+        "BLACK"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-bag-0012"
+    },
+    {
+      "id": "oc-demo-acc-0001",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 라인 네크리스",
+      "slug": "oc-demo-acc-0001",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0001.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0001.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0001"
+    },
+    {
+      "id": "oc-demo-acc-0002",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 실크 스카프",
+      "slug": "oc-demo-acc-0002",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0002.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0002.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0002"
+    },
+    {
+      "id": "oc-demo-acc-0003",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 링 이어링",
+      "slug": "oc-demo-acc-0003",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0003.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0003.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0003"
+    },
+    {
+      "id": "oc-demo-acc-0004",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 체인 브레이슬릿",
+      "slug": "oc-demo-acc-0004",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0004.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0004.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0004"
+    },
+    {
+      "id": "oc-demo-acc-0005",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 포인트 네크리스",
+      "slug": "oc-demo-acc-0005",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0005.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0005.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0005"
+    },
+    {
+      "id": "oc-demo-acc-0006",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "미니멀 라인 네크리스 6",
+      "slug": "oc-demo-acc-0006",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0006.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0006.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0006"
+    },
+    {
+      "id": "oc-demo-acc-0007",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "소프트 실크 스카프 7",
+      "slug": "oc-demo-acc-0007",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0007.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0007.jpg"
+      ],
+      "style_story": "부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.",
+      "style_tip": "아이보리와 베이지 계열을 함께 매치해 자연스러운 톤온톤 룩을 완성해보세요.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0007"
+    },
+    {
+      "id": "oc-demo-acc-0008",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "내추럴 링 이어링 8",
+      "slug": "oc-demo-acc-0008",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0008.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0008.jpg"
+      ],
+      "style_story": "과하지 않은 디테일과 차분한 분위기로 오래 즐기기 좋은 데일리 셀렉션입니다.",
+      "style_tip": "심플한 가방과 낮은 굽 슈즈를 더하면 차분한 데일리 스타일이 완성됩니다.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "sale",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0008"
+    },
+    {
+      "id": "oc-demo-acc-0009",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "클래식 체인 브레이슬릿 9",
+      "slug": "oc-demo-acc-0009",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0009.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0009.jpg"
+      ],
+      "style_story": "가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.",
+      "style_tip": "가벼운 액세서리 하나만 더해 미니멀한 포인트를 연출해보세요.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0009"
+    },
+    {
+      "id": "oc-demo-acc-0010",
+      "brand_id": "orange-coco",
+      "is_demo": true,
+      "demo_batch_id": "orange-coco-v1",
+      "name": "데일리 포인트 네크리스 10",
+      "slug": "oc-demo-acc-0010",
+      "category": "acc",
+      "category_label": "ACC",
+      "image_path": "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0010.jpg",
+      "gallery": [
+        "wp-content/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/products/acc/oc-demo-acc-0010.jpg"
+      ],
+      "style_story": "따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.",
+      "style_tip": "비슷한 명도의 뉴트럴 컬러와 함께 코디하면 더욱 부드러운 인상을 줍니다.",
+      "colors": [
+        "GOLD",
+        "SILVER",
+        "CREAM"
+      ],
+      "sizes": [
+        "FREE"
+      ],
+      "collections": [
+        "best",
+        "minimal",
+        "natural"
+      ],
+      "enabled": true,
+      "source_asset_id": "oc-demo-acc-0010"
+    }
+  ]
+}

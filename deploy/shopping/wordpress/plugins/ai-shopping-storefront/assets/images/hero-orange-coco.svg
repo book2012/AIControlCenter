@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 520">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1">
+      <stop offset="0" stop-color="#fff1e7"/>
+      <stop offset="0.55" stop-color="#f8d8c4"/>
+      <stop offset="1" stop-color="#fffaf6"/>
+    </linearGradient>
+    <linearGradient id="orange" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f5905e"/>
+      <stop offset="1" stop-color="#df7445"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="12" stdDeviation="14"
+        flood-color="#9c6448" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+
+  <rect width="1400" height="520" fill="url(#bg)"/>
+
+  <circle cx="1250" cy="70" r="190" fill="#fff" opacity="0.35"/>
+  <circle cx="1090" cy="470" r="240" fill="#fff" opacity="0.22"/>
+
+  <g transform="translate(760 72)" filter="url(#shadow)">
+    <rect x="0" y="0" width="420" height="12" rx="6" fill="#b87954"/>
+    <rect x="18" y="0" width="10" height="390" rx="5" fill="#b87954"/>
+    <rect x="392" y="0" width="10" height="390" rx="5" fill="#b87954"/>
+
+    <g transform="translate(45 18)">
+      <path d="M25 0 L5 25 H45 Z" fill="none" stroke="#b87954" stroke-width="5"/>
+      <path d="M0 25 H50 L66 220 H-16 Z" fill="#fff7f1"/>
+    </g>
+
+    <g transform="translate(105 18)">
+      <path d="M25 0 L5 25 H45 Z" fill="none" stroke="#b87954" stroke-width="5"/>
+      <path d="M0 25 H50 L66 220 H-16 Z" fill="#f8e3d4"/>
+    </g>
+
+    <g transform="translate(165 18)">
+      <path d="M25 0 L5 25 H45 Z" fill="none" stroke="#b87954" stroke-width="5"/>
+      <path d="M0 25 H50 L66 220 H-16 Z" fill="#fffaf5"/>
+    </g>
+
+    <g transform="translate(225 18)">
+      <path d="M25 0 L5 25 H45 Z" fill="none" stroke="#b87954" stroke-width="5"/>
+      <path d="M0 25 H50 L66 220 H-16 Z" fill="#f2c9ad"/>
+    </g>
+
+    <g transform="translate(285 18)">
+      <path d="M25 0 L5 25 H45 Z" fill="none" stroke="#b87954" stroke-width="5"/>
+      <path d="M0 25 H50 L66 220 H-16 Z" fill="url(#orange)"/>
+    </g>
+  </g>
+
+  <g transform="translate(1180 310)">
+    <ellipse cx="60" cy="150" rx="110" ry="30" fill="#dcbda9" opacity="0.42"/>
+    <rect x="5" y="35" width="110" height="120" rx="52" fill="#f5e4d8"/>
+    <path d="M60 40 C40 5, 95 -20, 105 -80" fill="none"
+      stroke="#a77c61" stroke-width="5"/>
+    <path d="M80 8 C120 -20, 132 -48, 140 -82" fill="none"
+      stroke="#a77c61" stroke-width="4"/>
+  </g>
+</svg>

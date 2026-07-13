@@ -1,0 +1,558 @@
+{
+  "schema_version": 1,
+  "brand_id": "orange-coco",
+  "prices": {
+    "oc-demo-top-0001": {
+      "currency": "KRW",
+      "regular_price": 29000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0002": {
+      "currency": "KRW",
+      "regular_price": 32000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0003": {
+      "currency": "KRW",
+      "regular_price": 35000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0004": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0005": {
+      "currency": "KRW",
+      "regular_price": 42000,
+      "sale_price": 32000,
+      "is_sale": true
+    },
+    "oc-demo-top-0006": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0007": {
+      "currency": "KRW",
+      "regular_price": 29000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0008": {
+      "currency": "KRW",
+      "regular_price": 32000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0009": {
+      "currency": "KRW",
+      "regular_price": 35000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0010": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": 30000,
+      "is_sale": true
+    },
+    "oc-demo-top-0011": {
+      "currency": "KRW",
+      "regular_price": 42000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0012": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0013": {
+      "currency": "KRW",
+      "regular_price": 29000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0014": {
+      "currency": "KRW",
+      "regular_price": 32000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0015": {
+      "currency": "KRW",
+      "regular_price": 35000,
+      "sale_price": 27000,
+      "is_sale": true
+    },
+    "oc-demo-top-0016": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0017": {
+      "currency": "KRW",
+      "regular_price": 42000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0018": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0019": {
+      "currency": "KRW",
+      "regular_price": 29000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-top-0020": {
+      "currency": "KRW",
+      "regular_price": 32000,
+      "sale_price": 24000,
+      "is_sale": true
+    },
+    "oc-demo-dress-0001": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0002": {
+      "currency": "KRW",
+      "regular_price": 52000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0003": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0004": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0005": {
+      "currency": "KRW",
+      "regular_price": 69000,
+      "sale_price": 53000,
+      "is_sale": true
+    },
+    "oc-demo-dress-0006": {
+      "currency": "KRW",
+      "regular_price": 79000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0007": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0008": {
+      "currency": "KRW",
+      "regular_price": 52000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0009": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0010": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": 50000,
+      "is_sale": true
+    },
+    "oc-demo-dress-0011": {
+      "currency": "KRW",
+      "regular_price": 69000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0012": {
+      "currency": "KRW",
+      "regular_price": 79000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0013": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0014": {
+      "currency": "KRW",
+      "regular_price": 52000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0015": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": 46000,
+      "is_sale": true
+    },
+    "oc-demo-dress-0016": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0017": {
+      "currency": "KRW",
+      "regular_price": 69000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0018": {
+      "currency": "KRW",
+      "regular_price": 79000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0019": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-dress-0020": {
+      "currency": "KRW",
+      "regular_price": 52000,
+      "sale_price": 40000,
+      "is_sale": true
+    },
+    "oc-demo-bottom-0001": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0002": {
+      "currency": "KRW",
+      "regular_price": 42000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0003": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0004": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0005": {
+      "currency": "KRW",
+      "regular_price": 52000,
+      "sale_price": 40000,
+      "is_sale": true
+    },
+    "oc-demo-bottom-0006": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0007": {
+      "currency": "KRW",
+      "regular_price": 42000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0008": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0009": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0010": {
+      "currency": "KRW",
+      "regular_price": 52000,
+      "sale_price": 40000,
+      "is_sale": true
+    },
+    "oc-demo-bottom-0011": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0012": {
+      "currency": "KRW",
+      "regular_price": 42000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0013": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0014": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bottom-0015": {
+      "currency": "KRW",
+      "regular_price": 52000,
+      "sale_price": 40000,
+      "is_sale": true
+    },
+    "oc-demo-outer-0001": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0002": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0003": {
+      "currency": "KRW",
+      "regular_price": 69000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0004": {
+      "currency": "KRW",
+      "regular_price": 79000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0005": {
+      "currency": "KRW",
+      "regular_price": 89000,
+      "sale_price": 69000,
+      "is_sale": true
+    },
+    "oc-demo-outer-0006": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0007": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0008": {
+      "currency": "KRW",
+      "regular_price": 69000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0009": {
+      "currency": "KRW",
+      "regular_price": 79000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0010": {
+      "currency": "KRW",
+      "regular_price": 89000,
+      "sale_price": 69000,
+      "is_sale": true
+    },
+    "oc-demo-outer-0011": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0012": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0013": {
+      "currency": "KRW",
+      "regular_price": 69000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0014": {
+      "currency": "KRW",
+      "regular_price": 79000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-outer-0015": {
+      "currency": "KRW",
+      "regular_price": 89000,
+      "sale_price": 69000,
+      "is_sale": true
+    },
+    "oc-demo-bag-0001": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0002": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0003": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0004": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0005": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": 50000,
+      "is_sale": true
+    },
+    "oc-demo-bag-0006": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0007": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0008": {
+      "currency": "KRW",
+      "regular_price": 49000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0009": {
+      "currency": "KRW",
+      "regular_price": 59000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0010": {
+      "currency": "KRW",
+      "regular_price": 65000,
+      "sale_price": 50000,
+      "is_sale": true
+    },
+    "oc-demo-bag-0011": {
+      "currency": "KRW",
+      "regular_price": 39000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-bag-0012": {
+      "currency": "KRW",
+      "regular_price": 45000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0001": {
+      "currency": "KRW",
+      "regular_price": 19000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0002": {
+      "currency": "KRW",
+      "regular_price": 22000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0003": {
+      "currency": "KRW",
+      "regular_price": 25000,
+      "sale_price": 19000,
+      "is_sale": true
+    },
+    "oc-demo-acc-0004": {
+      "currency": "KRW",
+      "regular_price": 29000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0005": {
+      "currency": "KRW",
+      "regular_price": 32000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0006": {
+      "currency": "KRW",
+      "regular_price": 19000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0007": {
+      "currency": "KRW",
+      "regular_price": 22000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0008": {
+      "currency": "KRW",
+      "regular_price": 25000,
+      "sale_price": 19000,
+      "is_sale": true
+    },
+    "oc-demo-acc-0009": {
+      "currency": "KRW",
+      "regular_price": 29000,
+      "sale_price": null,
+      "is_sale": false
+    },
+    "oc-demo-acc-0010": {
+      "currency": "KRW",
+      "regular_price": 32000,
+      "sale_price": null,
+      "is_sale": false
+    }
+  }
+}
