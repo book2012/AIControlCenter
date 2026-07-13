@@ -124,17 +124,40 @@ write_report() {
 }
 
 handle_error() {
-    local result_code="$?"
+    local result_code="${1:-$?}"
+
+    trap - ERR
+    set +e
 
     write_report \
       false \
       "$CURRENT_STEP" \
       "$result_code"
 
+    local report_status="$?"
+
+    if [[ "$report_status" -ne 0 ]]; then
+        jq -n \
+          --arg schema_version "1.0" \
+          --arg generated_at "$(date -u '+%Y-%m-%dT%H:%M:%SZ')" \
+          --arg failure_step "$CURRENT_STEP" \
+          --argjson result_code "$result_code" \
+          '{
+              schema_version: $schema_version,
+              generated_at: $generated_at,
+              production_runtime_gate_passed: false,
+              failure: {
+                  step: $failure_step,
+                  result_code: $result_code
+              },
+              report_generation_failed: true
+          }'
+    fi
+
     exit "$result_code"
 }
 
-trap handle_error ERR
+trap 'handle_error $?' ERR
 
 CURRENT_STEP="validate prerequisites"
 
@@ -302,22 +325,51 @@ TEST_COMMAND="$(
       "$CONTRACT"
 )"
 
-if [[ "$TEST_COMMAND" == "python -m pytest -q" ]]; then
-    (
-        cd "$ROOT"
+TEST_COMMAND_NORMALIZED="$(
+    printf '%s' "$TEST_COMMAND" \
+      | tr '
+	' '   ' \
+      | awk '{$1=$1; print}'
+)"
 
-        PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" \
-        "$PYTHON_PATH" -m pytest -q
-    ) >"$LOG_DIR/test-suite.log" 2>&1
+case "$TEST_COMMAND_NORMALIZED" in
+    "python -m pytest -q"|"python3 -m pytest -q")
+        if (
+            cd "$ROOT"
 
-    TEST_STATUS="passed"
-else
-    echo \
-      "Unsupported or missing test command: $TEST_COMMAND" \
-      >&2
+            PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" \
+            "$PYTHON_PATH" -m pytest -q
+        ) >"$LOG_DIR/test-suite.log" 2>&1
+        then
+            TEST_STATUS="passed"
+        else
+            TEST_RESULT="$?"
+            TEST_STATUS="failed"
 
-    false
-fi
+            handle_error "$TEST_RESULT"
+        fi
+        ;;
+
+    "")
+        echo \
+          "Missing test command in Runtime Contract" \
+          >&2
+
+        TEST_STATUS="failed"
+
+        handle_error 64
+        ;;
+
+    *)
+        echo \
+          "Unsupported test command: $TEST_COMMAND_NORMALIZED" \
+          >&2
+
+        TEST_STATUS="failed"
+
+        handle_error 64
+        ;;
+esac
 
 CURRENT_STEP="activate runtime"
 
