@@ -3,7 +3,7 @@
 ## Purpose
 
 Identify the existing AIControlCenter Python runtime structure before
-creating the production virtual environment or launchd services.
+creating a production virtual environment or launchd service.
 
 ## Safety
 
@@ -20,15 +20,16 @@ It does not:
 
 ## Inventory Scope
 
-- Python version
-- Git branch and commit
+- Python runtime
 - Dependency files
-- Candidate Python entrypoints
-- API framework indicators
+- Candidate entrypoints
+- Application frameworks
+- Health API indicators
 - Test structure
-- Docker and runtime configuration
+- Environment variable names
+- Runtime scripts
+- Docker configuration
 - Existing launchd definitions
-- Repository cleanliness
 
 ## Run
 
@@ -42,5 +43,5 @@ It does not:
 
 ## Production Rule
 
-No production virtual environment or launchd service is created until
-the runtime entrypoint and dependency source are explicitly identified.
+No production virtual environment is created until the dependency
+source and runtime entrypoint are explicitly identified.

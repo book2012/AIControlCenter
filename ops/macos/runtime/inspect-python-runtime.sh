@@ -5,7 +5,7 @@ set -Eeuo pipefail
 ROOT="${AICONTROLCENTER_ROOT:-$HOME/AIControlCenter}"
 
 if [[ ! -d "$ROOT/.git" ]]; then
-    echo "[ERROR] AIControlCenter Git repository not found: $ROOT" >&2
+    echo "[ERROR] Git repository not found: $ROOT" >&2
     exit 1
 fi
 
@@ -15,6 +15,7 @@ from __future__ import annotations
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -68,7 +69,7 @@ entrypoint_names = {
     "worker.py",
 }
 
-runtime_config_names = {
+runtime_names = {
     "Dockerfile",
     "Procfile",
     "Makefile",
@@ -81,25 +82,70 @@ runtime_config_names = {
 }
 
 framework_patterns = {
-    "fastapi": "FastAPI(",
-    "flask": "Flask(",
-    "django": "DJANGO_SETTINGS_MODULE",
-    "uvicorn": "uvicorn",
-    "gunicorn": "gunicorn",
-    "typer": "Typer(",
-    "click": "@click.",
-    "celery": "Celery(",
-    "pytest": "pytest",
+    "fastapi": (
+        "from fastapi",
+        "import fastapi",
+        "FastAPI(",
+    ),
+    "flask": (
+        "from flask",
+        "import flask",
+        "Flask(",
+    ),
+    "django": (
+        "DJANGO_SETTINGS_MODULE",
+        "from django",
+        "import django",
+    ),
+    "uvicorn": (
+        "uvicorn.run",
+        "import uvicorn",
+        "from uvicorn",
+    ),
+    "gunicorn": (
+        "gunicorn",
+    ),
+    "typer": (
+        "Typer(",
+        "import typer",
+        "from typer",
+    ),
+    "click": (
+        "@click.",
+        "import click",
+        "from click",
+    ),
+    "celery": (
+        "Celery(",
+        "import celery",
+        "from celery",
+    ),
+    "pytest": (
+        "import pytest",
+        "from pytest",
+    ),
 }
+
+environment_patterns = (
+    re.compile(
+        r"""os\.getenv\(\s*["']([A-Z][A-Z0-9_]*)["']"""
+    ),
+    re.compile(
+        r"""os\.environ\.get\(\s*["']([A-Z][A-Z0-9_]*)["']"""
+    ),
+    re.compile(
+        r"""os\.environ\[\s*["']([A-Z][A-Z0-9_]*)["']\s*\]"""
+    ),
+)
 
 
 def relative(path: Path) -> str:
     return str(path.relative_to(root))
 
 
-def run_git(*args: str) -> str:
+def run_git(*arguments: str) -> str:
     result = subprocess.run(
-        ["git", "-C", str(root), *args],
+        ["git", "-C", str(root), *arguments],
         check=False,
         capture_output=True,
         text=True,
@@ -134,123 +180,138 @@ def command_info(command: str) -> dict[str, str]:
 
 all_files: list[Path] = []
 
-for current_root, directories, files in os.walk(root):
+for current_root, directories, filenames in os.walk(root):
     directories[:] = [
         directory
         for directory in directories
         if directory not in ignored_directories
     ]
 
-    current = Path(current_root)
+    current_path = Path(current_root)
 
-    for filename in files:
-        all_files.append(current / filename)
+    for filename in filenames:
+        all_files.append(current_path / filename)
 
 dependency_files: list[str] = []
-entrypoints: list[str] = []
-runtime_configs: list[str] = []
-test_files: list[str] = []
+candidate_entrypoints: list[str] = []
+runtime_files: list[str] = []
 launchd_files: list[str] = []
 shell_scripts: list[str] = []
+test_files: list[str] = []
 python_files: list[Path] = []
 
 for path in all_files:
-    name = path.name
-    lower_name = name.lower()
-    rel = relative(path)
+    filename = path.name
+    filename_lower = filename.lower()
+    relative_path = relative(path)
 
     if (
-        name in dependency_names
+        filename in dependency_names
         or (
-            lower_name.startswith("requirements")
-            and lower_name.endswith(".txt")
+            filename_lower.startswith("requirements")
+            and filename_lower.endswith(".txt")
         )
     ):
-        dependency_files.append(rel)
+        dependency_files.append(relative_path)
 
-    if name in entrypoint_names:
-        entrypoints.append(rel)
+    if filename in entrypoint_names:
+        candidate_entrypoints.append(relative_path)
 
     if (
-        name in runtime_config_names
-        or lower_name.startswith("docker-compose")
-        or lower_name.startswith("compose.")
+        filename in runtime_names
+        or filename_lower.startswith("docker-compose")
+        or filename_lower.startswith("compose.")
     ):
-        runtime_configs.append(rel)
+        runtime_files.append(relative_path)
 
     if path.suffix == ".plist":
-        launchd_files.append(rel)
+        launchd_files.append(relative_path)
 
     if path.suffix == ".sh":
-        shell_scripts.append(rel)
+        shell_scripts.append(relative_path)
 
     if path.suffix == ".py":
         python_files.append(path)
 
-        parts = {
+        path_parts = {
             part.lower()
             for part in path.relative_to(root).parts
         }
 
         if (
-            "tests" in parts
-            or lower_name.startswith("test_")
-            or lower_name.endswith("_test.py")
+            "tests" in path_parts
+            or filename_lower.startswith("test_")
+            or filename_lower.endswith("_test.py")
         ):
-            test_files.append(rel)
+            test_files.append(relative_path)
 
 framework_indicators: dict[str, list[str]] = {
-    key: []
-    for key in framework_patterns
+    framework: []
+    for framework in framework_patterns
 }
 
 main_guard_files: list[str] = []
 health_indicator_files: list[str] = []
+environment_variable_names: set[str] = set()
+uvicorn_targets: set[str] = set()
+
+uvicorn_target_pattern = re.compile(
+    r"""uvicorn\.run\(\s*["']([^"']+)["']"""
+)
 
 for path in python_files:
     try:
         content = path.read_text(
             encoding="utf-8",
             errors="ignore",
-        )[:262144]
+        )[:524288]
     except OSError:
         continue
 
-    rel = relative(path)
+    relative_path = relative(path)
+    content_lower = content.lower()
 
     if 'if __name__ == "__main__"' in content:
-        main_guard_files.append(rel)
-
-    lowered = content.lower()
+        main_guard_files.append(relative_path)
 
     if (
-        "/health" in lowered
-        or "health_check" in lowered
-        or "healthcheck" in lowered
-        or "health status" in lowered
+        "/health" in content_lower
+        or "health_check" in content_lower
+        or "healthcheck" in content_lower
+        or "health status" in content_lower
+        or "readiness" in content_lower
+        or "liveness" in content_lower
     ):
-        health_indicator_files.append(rel)
+        health_indicator_files.append(relative_path)
 
-    for framework, pattern in framework_patterns.items():
-        if pattern.lower() in lowered:
-            framework_indicators[framework].append(rel)
+    for framework, patterns in framework_patterns.items():
+        if any(
+            pattern.lower() in content_lower
+            for pattern in patterns
+        ):
+            framework_indicators[framework].append(relative_path)
+
+    for pattern in environment_patterns:
+        environment_variable_names.update(
+            pattern.findall(content)
+        )
+
+    uvicorn_targets.update(
+        uvicorn_target_pattern.findall(content)
+    )
 
 framework_indicators = {
-    key: sorted(set(value))
-    for key, value in framework_indicators.items()
-    if value
+    framework: sorted(set(paths))
+    for framework, paths in framework_indicators.items()
+    if paths
 }
 
-root_directories = sorted(
-    path.name
-    for path in root.iterdir()
-    if path.is_dir()
-    and path.name not in ignored_directories
-)
-
-dirty_lines = [
+dirty_files = [
     line
-    for line in run_git("status", "--porcelain").splitlines()
+    for line in run_git(
+        "status",
+        "--porcelain",
+    ).splitlines()
     if line
 ]
 
@@ -258,30 +319,59 @@ result: dict[str, Any] = {
     "schema_version": "1.0",
     "repository": {
         "path": str(root),
-        "branch": run_git("branch", "--show-current"),
-        "commit": run_git("rev-parse", "HEAD"),
-        "remote": run_git("remote", "get-url", "origin"),
-        "dirty_file_count": len(dirty_lines),
-        "root_directories": root_directories,
+        "branch": run_git(
+            "branch",
+            "--show-current",
+        ),
+        "commit": run_git(
+            "rev-parse",
+            "HEAD",
+        ),
+        "remote": run_git(
+            "remote",
+            "get-url",
+            "origin",
+        ),
+        "dirty_file_count": len(dirty_files),
     },
     "python": {
         "python3": command_info("python3"),
         "python3_12": command_info("python3.12"),
         "python_file_count": len(python_files),
-        "dependency_files": sorted(set(dependency_files)),
-        "candidate_entrypoints": sorted(set(entrypoints)),
-        "main_guard_files": sorted(set(main_guard_files)),
+        "dependency_files": sorted(
+            set(dependency_files)
+        ),
+        "candidate_entrypoints": sorted(
+            set(candidate_entrypoints)
+        ),
+        "main_guard_files": sorted(
+            set(main_guard_files)
+        ),
         "framework_indicators": framework_indicators,
         "health_indicator_files": sorted(
             set(health_indicator_files)
         ),
+        "uvicorn_targets": sorted(
+            uvicorn_targets
+        ),
+        "environment_variable_names": sorted(
+            environment_variable_names
+        ),
         "test_file_count": len(test_files),
-        "test_files": sorted(set(test_files))[:100],
+        "test_files": sorted(
+            set(test_files)
+        )[:200],
     },
     "runtime": {
-        "configuration_files": sorted(set(runtime_configs)),
-        "launchd_files": sorted(set(launchd_files)),
-        "shell_scripts": sorted(set(shell_scripts)),
+        "configuration_files": sorted(
+            set(runtime_files)
+        ),
+        "launchd_files": sorted(
+            set(launchd_files)
+        ),
+        "shell_scripts": sorted(
+            set(shell_scripts)
+        ),
     },
     "safety": {
         "read_only": True,
