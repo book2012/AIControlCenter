@@ -17,17 +17,20 @@ final class AI_Shopping_Renderer
         ?>
         <section class="ai-shopping-storefront">
             <header class="ai-shopping-storefront__header">
-                <p class="ai-shopping-storefront__eyebrow">
-                    AI Home Datacenter Commerce
-                </p>
+                <div class="ai-shopping-storefront__hero-copy">
+                    <p class="ai-shopping-storefront__eyebrow">
+                        DAILY MOOD
+                    </p>
 
-                <h2>
-                    <?php echo esc_html($title); ?>
-                </h2>
+                    <h2>
+                        Simple, Natural,<br>
+                        Timeless.
+                    </h2>
 
-                <p>
-                    AIControlCenter가 선택하고 검색한 상품을 표시합니다.
-                </p>
+                    <p>
+                        매일 새롭게, 일상을 빛내는 스타일
+                    </p>
+                </div>
             </header>
 
             <?php
@@ -39,24 +42,21 @@ final class AI_Shopping_Renderer
                     '쇼핑 데이터를 불러오지 못했습니다.'
                 );
             } else {
+
+
                 echo $this->categories(
                     $categories['data']['items'] ?? []
-                );
-
-                echo $this->search_form(
-                    $categories['data']['items'] ?? [],
-                    $search_filters
                 );
 
                 if ($search_result !== null) {
                     echo $this->search_results(
                         $search_result
                     );
+                } else {
+                    echo $this->featured_section(
+                        $featured['data']['items'] ?? []
+                    );
                 }
-
-                echo $this->featured_section(
-                    $featured['data']['items'] ?? []
-                );
             }
             ?>
         </section>
@@ -72,12 +72,27 @@ final class AI_Shopping_Renderer
             return '';
         }
 
+        $active_category = isset(
+            $_GET['ai_shop_category']
+        )
+            ? sanitize_text_field(
+                wp_unslash(
+                    $_GET['ai_shop_category']
+                )
+            )
+            : '';
+
         ob_start();
         ?>
-        <nav
-            class="ai-shopping-storefront__categories"
-            aria-label="상품 카테고리"
-        >
+        <section class="ai-shopping-category-section">
+            <p class="ai-shopping-category-section__title">
+                CATEGORY
+            </p>
+
+            <nav
+                class="ai-shopping-storefront__categories ai-shopping-category-buttons"
+                aria-label="상품 카테고리"
+            >
             <?php foreach ($categories as $category) : ?>
                 <?php
                 $category_id = (string) (
@@ -93,7 +108,21 @@ final class AI_Shopping_Renderer
                 ?>
 
                 <a
-                    class="ai-shopping-storefront__category"
+                    class="<?php
+                    echo esc_attr(
+                        'ai-shopping-storefront__category'
+                        . (
+                            $category_id === $active_category
+                            ? ' is-active'
+                            : ''
+                        )
+                    );
+                    ?>"
+                    <?php if (
+                        $category_id === $active_category
+                    ) : ?>
+                        aria-current="page"
+                    <?php endif; ?>
                     href="<?php echo esc_url($url); ?>"
                 >
                     <?php
@@ -115,7 +144,8 @@ final class AI_Shopping_Renderer
                     </small>
                 </a>
             <?php endforeach; ?>
-        </nav>
+            </nav>
+        </section>
         <?php
 
         return (string) ob_get_clean();
@@ -146,7 +176,7 @@ final class AI_Shopping_Renderer
         ob_start();
         ?>
         <form
-            class="ai-shopping-search"
+            id="ai-shopping-search" class="ai-shopping-search"
             method="get"
             action=""
         >
@@ -332,13 +362,7 @@ final class AI_Shopping_Renderer
         ob_start();
         ?>
         <section class="ai-shopping-search-results">
-            <header class="ai-shopping-section-header">
-                <h3>검색 결과</h3>
 
-                <p>
-                    총 <?php echo esc_html((string) $total); ?>개
-                </p>
-            </header>
 
             <?php echo $this->products($items); ?>
 
@@ -360,9 +384,19 @@ final class AI_Shopping_Renderer
     ): string {
         ob_start();
         ?>
-        <section class="ai-shopping-featured">
+        <section id="ai-shopping-products" class="ai-shopping-featured">
             <header class="ai-shopping-section-header">
-                <h3>추천 상품</h3>
+                <div>
+                    <p class="ai-shopping-section-header__eyebrow">
+                        ORANGE COCO PICK
+                    </p>
+                    <div>
+                    <p class="ai-shopping-section-header__eyebrow">
+                        RECOMMEND
+                    </p>
+
+                </div>
+                </div>
             </header>
 
             <?php echo $this->products($products); ?>
@@ -376,9 +410,7 @@ final class AI_Shopping_Renderer
         array $products
     ): string {
         if (!$products) {
-            return $this->notice(
-                '표시할 상품이 없습니다.'
-            );
+            return $this->empty_products();
         }
 
         ob_start();
@@ -488,7 +520,35 @@ final class AI_Shopping_Renderer
 
         ob_start();
         ?>
+        <?php
+        $image_url = esc_url(
+            (string) (
+                $product['image_url'] ?? ''
+            )
+        );
+        ?>
+
         <article class="ai-shopping-product-card">
+            <div class="ai-shopping-product-card__media">
+                <?php if ($image_url !== '') : ?>
+                    <img
+                        src="<?php echo $image_url; ?>"
+                        alt="<?php
+                        echo esc_attr(
+                            (string) (
+                                $product['name'] ?? ''
+                            )
+                        );
+                        ?>"
+                        loading="lazy"
+                        decoding="async"
+                    >
+                <?php else : ?>
+                    <span class="ai-shopping-product-card__placeholder">
+                        orange coco
+                    </span>
+                <?php endif; ?>
+            </div>
             <p class="ai-shopping-product-card__category">
                 <?php
                 echo esc_html(
@@ -533,6 +593,27 @@ final class AI_Shopping_Renderer
         <?php
 
         return (string) ob_get_clean();
+    }
+
+    private function empty_products(): string
+    {
+        return '
+            <div class="ai-shopping-empty">
+                <div class="ai-shopping-empty__icon" aria-hidden="true">
+                    ✦
+                </div>
+                <p class="ai-shopping-empty__eyebrow">
+                    COMING SOON
+                </p>
+                <h3>새로운 상품을 준비하고 있어요</h3>
+                <p>
+                    곧 감각적인 여성 패션 상품을 만나볼 수 있습니다.
+                </p>
+                <a href="#ai-shopping-search">
+                    스타일 검색하기
+                </a>
+            </div>
+        ';
     }
 
     private function notice(

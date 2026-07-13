@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "brand_id": "orange-coco",
+  "hero": {
+    "title": "Dress beautifully. Live beautifully.",
+    "cta_label": "Explore Collection",
+    "cta_target": "#orange-coco-products"
+  },
+  "editorial": {
+    "enabled": false
+  },
+  "sections": [
+    {
+      "id": "new",
+      "type": "collection",
+      "title": "New Arrivals",
+      "limit": 8
+    },
+    {
+      "id": "best",
+      "type": "collection",
+      "title": "Best Sellers",
+      "limit": 8
+    },
+    {
+      "id": "lookbook",
+      "type": "lookbook",
+      "enabled": false
+    },
+    {
+      "id": "top",
+      "type": "category",
+      "title": "Top",
+      "limit": 8
+    },
+    {
+      "id": "dress",
+      "type": "category",
+      "title": "Dress",
+      "limit": 8
+    },
+    {
+      "id": "sale",
+      "type": "collection",
+      "title": "Sale",
+      "limit": 8
+    },
+    {
+      "id": "outer",
+      "type": "category",
+      "title": "Outer",
+      "limit": 8
+    },
+    {
+      "id": "bag",
+      "type": "category",
+      "title": "Bag",
+      "limit": 8
+    }
+  ]
+}

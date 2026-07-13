@@ -46,7 +46,7 @@ class ProductResponse(BaseModel):
     category: str
     in_stock: bool
     source: str
-
+    image_url: str | None = None
 
 class ProductListResponse(BaseModel):
     items: list[ProductResponse]

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from core.shopping.adapters.demo_commerce import (
+    DemoCommerceCatalogAdapter,
+)
 from core.shopping.adapters.mock_commerce import (
     MockCommerceCatalogAdapter,
 )
@@ -14,6 +17,7 @@ class ShoppingAdapterConfigurationError(ValueError):
 
 
 SUPPORTED_CATALOG_ADAPTERS = {
+    "demo",
     "mock",
     "woocommerce",
 }
@@ -29,6 +33,9 @@ def create_catalog_adapter(
     timeout_seconds: int = 10,
 ) -> CommerceCatalogPort:
     normalized_name = adapter_name.strip().lower()
+
+    if normalized_name == "demo":
+        return DemoCommerceCatalogAdapter()
 
     if normalized_name == "mock":
         return MockCommerceCatalogAdapter()

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AI Shopping Storefront
  * Description: Presentation adapter for the AIControlCenter Shopping API.
- * Version: 0.3.0
+ * Version: 0.13.1
  * Requires PHP: 8.1
  */
 
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 define(
     'AI_SHOPPING_STOREFRONT_VERSION',
-    '0.3.0'
+    '0.13.1'
 );
 
 define(
@@ -61,6 +61,23 @@ final class AI_Shopping_Storefront_Plugin
             'wp_enqueue_scripts',
             [self::class, 'enqueue_assets']
         );
+
+        add_filter(
+            'body_class',
+            [self::class, 'body_classes']
+        );
+
+        add_filter(
+            'template_include',
+            [self::class, 'front_page_template'],
+            99
+        );
+
+
+        add_action(
+            'template_redirect',
+            [self::class, 'redirect_legacy_storefront']
+        );
     }
 
     public static function activate(): void
@@ -99,6 +116,49 @@ final class AI_Shopping_Storefront_Plugin
         $shortcodes->register();
     }
 
+    public static function front_page_template(
+        string $template
+    ): string {
+        if (!is_front_page()) {
+            return $template;
+        }
+
+        $storefront_template =
+            AI_SHOPPING_STOREFRONT_DIR
+            . 'templates/storefront-front-page.php';
+
+        if (is_readable($storefront_template)) {
+            return $storefront_template;
+        }
+
+        return $template;
+    }
+
+    public static function body_classes(
+        array $classes
+    ): array {
+        if (is_front_page()) {
+            $classes[] = 'orange-coco-front-page';
+        }
+
+        return $classes;
+    }
+
+    public static function redirect_legacy_storefront(): void
+    {
+        if (
+            is_page('ai-shopping')
+            && !is_front_page()
+        ) {
+            wp_safe_redirect(
+                home_url('/'),
+                301
+            );
+
+            exit;
+        }
+    }
+
     public static function enqueue_assets(): void
     {
         wp_enqueue_style(
@@ -108,6 +168,33 @@ final class AI_Shopping_Storefront_Plugin
             [],
             AI_SHOPPING_STOREFRONT_VERSION
         );
+
+        wp_enqueue_script(
+            'ai-shopping-storefront-ui',
+            AI_SHOPPING_STOREFRONT_URL
+                . 'assets/storefront-ui.js',
+            [],
+            AI_SHOPPING_STOREFRONT_VERSION,
+            true
+        );
+
+        wp_enqueue_style(
+            'orange-coco-final-theme',
+            AI_SHOPPING_STOREFRONT_URL
+                . 'assets/orange-coco-final.css',
+            ['ai-shopping-storefront'],
+            AI_SHOPPING_STOREFRONT_VERSION
+        );
+
+        wp_enqueue_script(
+            'orange-coco-final-theme',
+            AI_SHOPPING_STOREFRONT_URL
+                . 'assets/orange-coco-final.js',
+            ['ai-shopping-storefront-ui'],
+            AI_SHOPPING_STOREFRONT_VERSION,
+            true
+        );
+
     }
 }
 

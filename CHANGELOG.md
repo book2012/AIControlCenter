@@ -295,3 +295,21 @@ Added:
 - Rendered output is escaped
 - Business Logic remains in AIControlCenter
 <!-- SHOPPING_M5_END -->
+
+## [2026-07-13] Commit 19 - Homepage Curated Sections
+
+### Added
+- Homepage curated shopping sections
+- NEW ARRIVALS
+- BEST SELLERS
+- TOP
+- DRESS
+- OUTER
+- BAG
+- SALE
+
+### Changed
+- Renderer supports multi-section homepage
+- Homepage sections powered by Shopping Search API
+- Homepage displays up to 8 products per section
+

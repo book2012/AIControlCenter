@@ -1,0 +1,56 @@
+{
+  "top": {
+    "count": 20,
+    "queries": [
+      "korean woman blouse minimal fashion",
+      "asian woman linen shirt neutral fashion",
+      "korean woman knit top fashion",
+      "asian woman ivory blouse outfit"
+    ]
+  },
+  "dress": {
+    "count": 20,
+    "queries": [
+      "korean woman minimal dress",
+      "asian woman linen dress fashion",
+      "korean woman long dress neutral",
+      "asian woman summer dress beige"
+    ]
+  },
+  "bottom": {
+    "count": 15,
+    "queries": [
+      "korean woman wide pants fashion",
+      "asian woman neutral trousers outfit",
+      "korean woman long skirt minimal",
+      "asian woman linen pants fashion"
+    ]
+  },
+  "outer": {
+    "count": 15,
+    "queries": [
+      "korean woman cardigan fashion",
+      "asian woman minimal jacket outfit",
+      "korean woman neutral trench coat",
+      "asian woman linen jacket fashion"
+    ]
+  },
+  "bag": {
+    "count": 12,
+    "queries": [
+      "korean woman shoulder bag outfit",
+      "asian woman minimal handbag fashion",
+      "neutral tote bag woman fashion",
+      "korean woman crossbody bag fashion"
+    ]
+  },
+  "acc": {
+    "count": 10,
+    "queries": [
+      "korean woman minimal jewelry fashion",
+      "asian woman fashion accessories neutral",
+      "minimal scarf woman fashion",
+      "asian woman necklace fashion portrait"
+    ]
+  }
+}

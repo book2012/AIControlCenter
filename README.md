@@ -110,3 +110,20 @@ http://bokstory.iptime.org:58088/ai-shopping/
 WordPress remains the Presentation Layer.
 AIControlCenter owns all Shopping business logic.
 <!-- SHOPPING_M5_END -->
+
+---
+
+## Orange Coco Homepage
+
+The storefront now renders curated homepage sections.
+
+- NEW ARRIVALS
+- BEST SELLERS
+- TOP
+- DRESS
+- OUTER
+- BAG
+- SALE
+
+Homepage collections are rendered from AIControlCenter Shopping API.
+
