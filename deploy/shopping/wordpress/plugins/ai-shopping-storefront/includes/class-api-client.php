@@ -85,6 +85,15 @@ final class AI_Shopping_API_Client
         );
     }
 
+
+    public function get_product(
+        string $product_id
+    ): array {
+        return $this->get(
+            '/shopping/products/' . rawurlencode($product_id)
+        );
+    }
+
     private function get(
         string $path,
         array $query = []

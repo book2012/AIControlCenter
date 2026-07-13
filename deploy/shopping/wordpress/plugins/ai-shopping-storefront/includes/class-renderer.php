@@ -24,12 +24,12 @@ final class AI_Shopping_Renderer
                     </p>
 
                     <h2>
-                        Simple, Natural,<br>
-                        Timeless.
+                        아름다운 인생,<br>
+                        더 아름답게
                     </h2>
 
                     <p>
-                        매일 새롭게, 일상을 빛내는 스타일
+                        매일의 순간을 더욱 아름답게 만드는 스타일
                     </p>
                 </div>
             </header>
@@ -586,7 +586,11 @@ final class AI_Shopping_Renderer
         ?>
 
         <article class="ai-shopping-product-card">
-            <div class="ai-shopping-product-card__media">
+            <a
+                href="<?php echo esc_url($url); ?>"
+                class="ai-shopping-product-card__image-link"
+            >
+                <div class="ai-shopping-product-card__media">
                 <?php if ($image_url !== '') : ?>
                     <img
                         src="<?php echo $image_url; ?>"
@@ -606,6 +610,8 @@ final class AI_Shopping_Renderer
                     </span>
                 <?php endif; ?>
             </div>
+            </a>
+
             <p class="ai-shopping-product-card__category">
                 <?php
                 echo esc_html(
