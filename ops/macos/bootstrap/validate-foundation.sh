@@ -130,8 +130,15 @@ STEALTH_RAW="$(
 
 STEALTH_ENABLED="false"
 
-if [[ "$STEALTH_RAW" == *"enabled"* ]] \
-    || [[ "$STEALTH_RAW" == *"enabled = 1"* ]]
+STEALTH_NORMALIZED="$(
+    printf '%s' "$STEALTH_RAW" \
+        | tr '[:upper:]' '[:lower:]'
+)"
+
+if [[ "$STEALTH_NORMALIZED" == *"is on"* ]] \
+    || [[ "$STEALTH_NORMALIZED" == *"enabled"* ]] \
+    || [[ "$STEALTH_NORMALIZED" == *"enabled = 1"* ]] \
+    || [[ "$STEALTH_NORMALIZED" == *"state = 1"* ]]
 then
     STEALTH_ENABLED="true"
 fi
