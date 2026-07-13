@@ -11,7 +11,8 @@ final class AI_Shopping_Renderer
         array $categories,
         string $title,
         array $search_filters = [],
-        ?array $search_result = null
+        ?array $search_result = null,
+        array $homepage_sections = []
     ): string {
         ob_start();
         ?>
@@ -51,6 +52,10 @@ final class AI_Shopping_Renderer
                 if ($search_result !== null) {
                     echo $this->search_results(
                         $search_result
+                    );
+                } elseif (!empty($homepage_sections)) {
+                    echo $this->homepage_sections(
+                        $homepage_sections
                     );
                 } else {
                     echo $this->featured_section(
@@ -402,6 +407,58 @@ final class AI_Shopping_Renderer
             <?php echo $this->products($products); ?>
         </section>
         <?php
+
+        return (string) ob_get_clean();
+    }
+
+    private function homepage_sections(
+        array $sections
+    ): string {
+        ob_start();
+
+        foreach ($sections as $section) {
+            $payload = $section['payload'] ?? [];
+            $items = $payload['data']['items'] ?? [];
+
+            if (
+                empty($payload['success'])
+                || empty($items)
+            ) {
+                continue;
+            }
+
+            $section_id = sanitize_html_class(
+                (string) (
+                    $section['id'] ?? 'section'
+                )
+            );
+
+            $title = (string) (
+                $section['title'] ?? ''
+            );
+            ?>
+            <section
+                id="orange-coco-<?php
+                echo esc_attr($section_id);
+                ?>"
+                class="orange-coco-home-section"
+                data-home-section="<?php
+                echo esc_attr($section_id);
+                ?>"
+            >
+                <header
+                    class="orange-coco-home-section__header"
+                >
+                    <h2>
+                        <?php echo esc_html($title); ?>
+                    </h2>
+                    <span aria-hidden="true"></span>
+                </header>
+
+                <?php echo $this->products($items); ?>
+            </section>
+            <?php
+        }
 
         return (string) ob_get_clean();
     }

@@ -7,7 +7,6 @@ if (!defined('ABSPATH')) {
 final class AI_Shopping_Shortcodes
 {
     private AI_Shopping_API_Client $client;
-
     private AI_Shopping_Renderer $renderer;
 
     public function __construct(
@@ -31,8 +30,8 @@ final class AI_Shopping_Shortcodes
     ): string {
         $attributes = shortcode_atts(
             [
-                'limit' => 6,
-                'title' => 'AI 추천 상품',
+                'limit' => 8,
+                'title' => '추천 상품',
             ],
             $attributes,
             'ai_shopping_storefront'
@@ -47,14 +46,17 @@ final class AI_Shopping_Shortcodes
         );
 
         $categories = $this->client->categories();
-
         $search_filters = $this->search_filters();
-
         $search_result = null;
+        $homepage_sections = [];
 
         if ($this->has_search_request()) {
             $search_result = $this->client->search(
                 $search_filters
+            );
+        } else {
+            $homepage_sections = $this->homepage_sections(
+                min(8, $limit)
             );
         }
 
@@ -67,8 +69,69 @@ final class AI_Shopping_Shortcodes
                 $attributes['title']
             ),
             $search_filters,
-            $search_result
+            $search_result,
+            $homepage_sections
         );
+    }
+
+    private function homepage_sections(
+        int $limit
+    ): array {
+        $definitions = [
+            [
+                'id' => 'new',
+                'title' => 'NEW ARRIVALS',
+                'category' => 'new',
+            ],
+            [
+                'id' => 'best',
+                'title' => 'BEST SELLERS',
+                'category' => 'best',
+            ],
+            [
+                'id' => 'top',
+                'title' => 'TOP',
+                'category' => 'women-tops',
+            ],
+            [
+                'id' => 'dress',
+                'title' => 'DRESS',
+                'category' => 'women-dresses',
+            ],
+            [
+                'id' => 'outer',
+                'title' => 'OUTER',
+                'category' => 'women-outer',
+            ],
+            [
+                'id' => 'bag',
+                'title' => 'BAG',
+                'category' => 'women-bags',
+            ],
+            [
+                'id' => 'sale',
+                'title' => 'SALE',
+                'category' => 'sale',
+            ],
+        ];
+
+        $sections = [];
+
+        foreach ($definitions as $definition) {
+            $sections[] = [
+                'id' => $definition['id'],
+                'title' => $definition['title'],
+                'payload' => $this->client->search(
+                    [
+                        'category' => $definition['category'],
+                        'page' => 1,
+                        'page_size' => $limit,
+                    ]
+                ),
+            ];
+        }
+
+        return $sections;
     }
 
     private function has_search_request(): bool
