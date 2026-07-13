@@ -133,3 +133,14 @@ Sprint 20
 - Configure public HTTPS
 - Validate Mac mini M4 ARM64 deployment
 <!-- SHOPPING_M5_END -->
+
+<!-- AI_SHOPPING_STOREFRONT_V016_TODO -->
+## Current Production Tasks
+
+- Push `feature/shopping-platform-bootstrap`
+- Review and merge the storefront baseline
+- Create the v0.16.0 release candidate tag after merge
+- Build Mac mini Production Control Plane
+- Migrate AIControlCenter from Ubuntu development runtime
+- Reconfigure the production WordPress URL
+- Add production HTTPS and operational monitoring

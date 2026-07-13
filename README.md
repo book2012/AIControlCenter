@@ -127,3 +127,28 @@ The storefront now renders curated homepage sections.
 
 Homepage collections are rendered from AIControlCenter Shopping API.
 
+<!-- AI_SHOPPING_STOREFRONT_V016_BASELINE -->
+## AI Shopping Storefront v0.16.0
+
+The AI Shopping Storefront is a presentation adapter for the
+AIControlCenter Shopping API.
+
+Runtime assets:
+
+- `assets/storefront.css`
+- `assets/orange-coco-v6.css`
+- `assets/storefront-ui.js`
+
+Product detail contract:
+
+- Existing product: `GET /product/{id}/` returns HTTP 200
+- Missing product: `GET /product/{id}/` returns HTTP 404
+- Product data is supplied by AIControlCenter
+- WordPress owns presentation, not shopping business logic
+
+Runtime validation:
+
+- WordPress PHP 8.3
+- Homepage HTTP 200
+- Product detail HTTP 200
+- Missing product HTTP 404

@@ -313,3 +313,34 @@ Added:
 - Homepage sections powered by Shopping Search API
 - Homepage displays up to 8 products per section
 
+<!-- AI_SHOPPING_STOREFRONT_V016_CHANGELOG -->
+## 2026-07-13 — AI Shopping Storefront v0.16.0
+
+### Added
+
+- API-driven product detail route
+- Product detail renderer and template
+- Orange Coco Home v5 icons and hero asset
+- Related product presentation
+
+### Changed
+
+- Established Orange Coco v6 as the canonical storefront UI
+- Updated the storefront plugin to version 0.16.0
+- Improved front-page structure and responsive layout
+
+### Fixed
+
+- Missing products now return HTTP 404
+- Product status is set before WordPress headers render
+
+### Removed
+
+- Legacy `orange-coco-final.css`
+- Legacy `orange-coco-final.js`
+- Unused Home v4 and Home v5 CSS files
+- Duplicate original hero image
+
+### Git
+
+- Feature commit: `a4d6098`

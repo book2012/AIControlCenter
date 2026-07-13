@@ -197,3 +197,27 @@ The current ipTIME DDNS hostname cannot receive a certificate because of its par
 - [ ] Notifications
 - [ ] n8n Automation
 <!-- SHOPPING_M5_END -->
+
+<!-- AI_SHOPPING_STOREFRONT_V016_ROADMAP -->
+## Shopping Platform Baseline
+
+Status: Completed
+
+Completed:
+
+- Orange Coco Storefront
+- Shopping API integration
+- Category, search and product APIs
+- Product detail page
+- Responsive homepage
+- HTTP 404 contract
+- Git baseline commit
+
+Next:
+
+- Mac mini Production Control Plane
+- WordPress and WooCommerce migration
+- AIControlCenter launchd runtime
+- Production domain and HTTPS
+- Wishlist and checkout improvements
+- AI recommendation and product creation

@@ -93,3 +93,18 @@ The WordPress AI Shopping Storefront Plugin consumes these APIs and renders the 
 
 No Shopping recommendation, pricing, inventory, AI, or workflow logic is implemented inside WordPress.
 <!-- SHOPPING_M5_END -->
+
+<!-- AI_SHOPPING_STOREFRONT_V016_ARCHITECTURE -->
+## Shopping Presentation Architecture
+
+Browser → WordPress Storefront Plugin → AIControlCenter Shopping API → WooCommerce
+
+Responsibilities:
+
+- AIControlCenter owns shopping business logic and orchestration.
+- WordPress owns CMS and storefront presentation.
+- WooCommerce acts as the commerce engine.
+- Product pages consume JSON APIs.
+- Missing products return HTTP 404.
+- Ubuntu remains an infrastructure worker.
+- Mac mini remains the Production Control Plane.

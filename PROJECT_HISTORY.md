@@ -84,3 +84,26 @@ AIControlCenter continues to own product selection, search validation, Commerce 
 
 The implementation was validated through the external ipTIME DDNS development address while Production HTTPS remains deferred to a user-owned domain.
 <!-- SHOPPING_M5_END -->
+
+<!-- AI_SHOPPING_STOREFRONT_V016_ADR -->
+## ADR — AI Shopping Storefront v0.16.0 Baseline
+
+Date: 2026-07-13
+
+Decision:
+
+Orange Coco v6 is the canonical Shopping Storefront presentation layer.
+
+The WordPress plugin remains a presentation adapter and does not own
+shopping business logic. Product detail pages retrieve product data
+through the AIControlCenter Shopping API.
+
+HTTP contract:
+
+- Existing products return HTTP 200.
+- Missing products return HTTP 404.
+
+Rationale:
+
+This preserves the headless architecture and keeps business logic
+inside the single AIControlCenter Control Plane.

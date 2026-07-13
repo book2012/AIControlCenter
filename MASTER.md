@@ -133,3 +133,29 @@ UI Progress
 
 95%
 
+<!-- AI_SHOPPING_STOREFRONT_V016_MASTER -->
+## Shopping Platform Baseline
+
+Version: AI Shopping Storefront v0.16.0
+
+Status: Feature Complete / Production Validation Passed
+
+Git baseline:
+
+- Commit: `a4d6098`
+- Branch: `feature/shopping-platform-bootstrap`
+
+Validated:
+
+- Orange Coco v6 storefront
+- AIControlCenter Shopping API integration
+- Product detail page
+- Homepage HTTP 200
+- Product detail HTTP 200
+- Missing product HTTP 404
+- PHP 8.3 syntax validation
+- JavaScript syntax validation
+
+Next production milestone:
+
+- Mac mini Production Control Plane migration
