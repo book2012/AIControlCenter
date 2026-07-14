@@ -290,3 +290,19 @@ Next:
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## Shadow Observation Sprint
+
+- [x] Headless reboot recovery
+- [x] Read-only observer architecture
+- [x] JSON Lines observation contract
+- [x] Five-minute sampling definition
+- [ ] Complete 24-hour observation window
+- [ ] Review CPU and RSS baseline
+- [ ] Review PID transitions
+- [ ] Review log growth
+- [ ] Approve or reject production cutover
+
+Configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->

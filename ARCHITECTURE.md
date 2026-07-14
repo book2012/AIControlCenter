@@ -164,3 +164,21 @@ Ubuntu AIControlCenter remains active until:
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## Shadow Observation Architecture
+
+A separate non-root system LaunchDaemon observes the
+AIControlCenter Shadow API.
+
+The observer performs read-only validation and does not
+own scheduling, business logic, application state, or
+Ubuntu infrastructure state.
+
+- Observer:
+  `com.aicontrolcenter.api.shadow.observer`
+- User: `kyouhan`
+- Interval: `300 seconds`
+- Data format: `JSON Lines`
+- Configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->

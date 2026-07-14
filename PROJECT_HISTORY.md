@@ -166,3 +166,14 @@ inside the single AIControlCenter Control Plane.
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## 2026-07-14 — Shadow Observation Sprint
+
+The Mac Control Plane entered its 24-hour read-only
+Shadow observation phase after Headless Reboot Recovery.
+
+No production cutover was performed.
+
+Configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->

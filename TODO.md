@@ -211,3 +211,25 @@ Sprint 20
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## Shadow Observation Tasks
+
+### P0
+
+- [ ] Collect at least 276 samples
+- [ ] Reach a minimum 23.5-hour window
+- [ ] Maintain at least 99.5% successful samples
+- [ ] Confirm no public listener exposure
+- [ ] Confirm no root application process
+- [ ] Generate final observation report
+
+### P1
+
+- [ ] Reconcile `manage-shadow-daemon.py`
+- [ ] Validate Ubuntu Worker JSON APIs
+- [ ] Complete cutover and rollback runbooks
+- [ ] Update Notion
+
+Configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->

@@ -421,3 +421,24 @@ Added:
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## Unreleased — Shadow Observation
+
+### Added
+
+- Five-minute Shadow observer
+- JSON Lines operational telemetry
+- CPU and RSS collection
+- Runtime and Git commit validation
+- Health and write-protection probes
+- Observation summary Gate
+
+### Pending
+
+- Complete the 24-hour observation window
+- Reconcile the canonical LaunchDaemon installer
+- Production cutover approval
+
+Configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->

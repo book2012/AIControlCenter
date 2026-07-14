@@ -138,3 +138,21 @@ The following field must be true:
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## Observer Integration
+
+The main Shadow Daemon is monitored by:
+
+`system/com.aicontrolcenter.api.shadow.observer`
+
+The observer runs as `kyouhan` every 300 seconds and
+stores JSON Lines in:
+
+`/var/log/aicontrolcenter/shadow-observation.jsonl`
+
+The observer is read-only and does not restart or modify
+the main service.
+
+Configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->

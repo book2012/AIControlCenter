@@ -238,3 +238,17 @@ Next production milestone:
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## Current Production Milestone
+
+The Headless Reboot Recovery milestone is complete.
+
+The current milestone is 24-Hour Shadow Observation.
+
+Production cutover remains blocked until the observation
+Gate, installer reconciliation, rollback validation, and
+documentation Gate all pass.
+
+Configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->

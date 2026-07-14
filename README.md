@@ -207,3 +207,16 @@ Runtime validation:
 - Health HTTP: `200`
 - Write probe HTTP: `405`
 <!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
+
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
+## 24-Hour Shadow Observation
+
+The Mac Control Plane is configured for a read-only
+24-hour Shadow observation.
+
+- Sample interval: `300 seconds`
+- Storage:
+  `/var/log/aicontrolcenter/shadow-observation.jsonl`
+- Production cutover: `blocked pending observation`
+- Observation configured: `2026-07-14T04:19:41+00:00`
+<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
