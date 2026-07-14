@@ -388,3 +388,36 @@ Added:
 - Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
 - Runtime commit: `db4d93a2652a`
 <!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
+
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
+## Unreleased — Headless Recovery
+
+            ### Added
+
+            - GUI-independent system LaunchDaemon recovery
+            - Headless reboot recovery JSON Gate
+            - System log path:
+              `/var/log/aicontrolcenter`
+
+            ### Fixed
+
+            - Replaced GUI-dependent supervision
+            - Recovered from launchd bootstrap error 5
+            - Verified non-root process ownership
+            - Verified Runtime and Git commit alignment
+
+            ### Pending
+
+            - Manager installer reconciliation
+            - 24-hour Shadow observation
+            - Production cutover decision
+
+            - Verified: `2026-07-14T04:11:33+00:00`
+- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
+- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
+- Pre-reboot PID: `875`
+- Post-reboot PID: `567`
+- Process user: `kyouhan`
+- Health HTTP: `200`
+- Write probe HTTP: `405`
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->

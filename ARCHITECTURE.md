@@ -126,3 +126,41 @@ Ubuntu AIControlCenter remains active until:
 - Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
 - Runtime commit: `db4d93a2652a`
 <!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
+
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
+## ADR: Headless LaunchDaemon Recovery
+
+            **Status:** Accepted and operationally verified.
+
+            AIControlCenter uses a system LaunchDaemon
+            as its Mac Control Plane supervisor.
+
+            The plist and runner are root-owned, while
+            the application process runs as `kyouhan`.
+
+            Runtime startup does not depend on:
+
+            - a GUI login
+            - GitHub availability
+            - an SSH agent
+            - the Ubuntu Worker
+
+            Operational logs use:
+
+            `/var/log/aicontrolcenter`
+
+            The API remains localhost-only and blocks
+            mutating HTTP requests during Shadow Mode.
+
+            Infrastructure-as-Code reconciliation of
+            the manager installer remains required.
+
+            - Verified: `2026-07-14T04:11:33+00:00`
+- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
+- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
+- Pre-reboot PID: `875`
+- Post-reboot PID: `567`
+- Process user: `kyouhan`
+- Health HTTP: `200`
+- Write probe HTTP: `405`
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->

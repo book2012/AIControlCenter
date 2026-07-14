@@ -182,3 +182,32 @@ Sprint 20
 - Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
 - Runtime commit: `db4d93a2652a`
 <!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
+
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
+## Next Production Tasks
+
+            ### P0
+
+            - [ ] Update `manage-shadow-daemon.py`
+              to reproduce the canonical plist
+            - [ ] Add installer regression tests
+            - [ ] Begin 24-hour Shadow observation
+            - [ ] Validate log rotation and growth limits
+
+            ### P1
+
+            - [ ] Connect Ubuntu Worker JSON APIs read-only
+            - [ ] Validate Dashboard Shadow integration
+            - [ ] Complete cutover runbook
+            - [ ] Complete rollback runbook
+            - [ ] Update Notion project status
+
+            - Verified: `2026-07-14T04:11:33+00:00`
+- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
+- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
+- Pre-reboot PID: `875`
+- Post-reboot PID: `567`
+- Process user: `kyouhan`
+- Health HTTP: `200`
+- Write probe HTTP: `405`
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->

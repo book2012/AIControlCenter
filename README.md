@@ -183,3 +183,27 @@ Runtime validation:
 - Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
 - Runtime commit: `db4d93a2652a`
 <!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
+
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
+## Mac Headless Control Plane Status
+
+            The AIControlCenter Shadow API recovered
+            automatically after a full system reboot
+            without requiring a GUI login.
+
+            - Supervisor:
+              `system/com.aicontrolcenter.api.shadow`
+            - Listener: `127.0.0.1:18100`
+            - Mode: `shadow-read-only`
+            - Headless reboot recovery: `passed`
+            - Ubuntu production cutover: `not started`
+
+            - Verified: `2026-07-14T04:11:33+00:00`
+- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
+- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
+- Pre-reboot PID: `875`
+- Post-reboot PID: `567`
+- Process user: `kyouhan`
+- Health HTTP: `200`
+- Write probe HTTP: `405`
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->

@@ -141,3 +141,28 @@ inside the single AIControlCenter Control Plane.
 - Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
 - Runtime commit: `db4d93a2652a`
 <!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
+
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
+## 2026-07-14 — Headless Recovery
+
+            The Mac Control Plane recovered its read-only
+            AIControlCenter API following a full reboot
+            without a GUI login.
+
+            The recovered service retained:
+
+            - non-root application execution
+            - commit-specific Runtime selection
+            - localhost-only networking
+            - read-only Shadow enforcement
+            - system LaunchDaemon supervision
+
+            - Verified: `2026-07-14T04:11:33+00:00`
+- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
+- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
+- Pre-reboot PID: `875`
+- Post-reboot PID: `567`
+- Process user: `kyouhan`
+- Health HTTP: `200`
+- Write probe HTTP: `405`
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->

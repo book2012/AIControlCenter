@@ -102,3 +102,39 @@ The following field must be true:
 - Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
 - Runtime commit: `db4d93a2652a`
 <!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
+
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
+## Headless Reboot Recovery
+
+            The system LaunchDaemon successfully recovered
+            after a full reboot without a GUI login.
+
+            ### Lifecycle
+
+            - `bootstrap` registers an unloaded service.
+            - `kickstart` restarts a loaded service.
+            - `bootout` removes the service registration.
+            - Port `18100` must be open during operation.
+            - Port `18100` must be released after bootout.
+
+            ### Canonical Runtime
+
+            - Service:
+              `system/com.aicontrolcenter.api.shadow`
+            - Application user: `kyouhan`
+            - Listener: `127.0.0.1:18100`
+            - Log directory:
+              `/var/log/aicontrolcenter`
+            - Allowed methods:
+              `GET`, `HEAD`, `OPTIONS`
+            - Mutating methods: blocked
+
+            - Verified: `2026-07-14T04:11:33+00:00`
+- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
+- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
+- Pre-reboot PID: `875`
+- Post-reboot PID: `567`
+- Process user: `kyouhan`
+- Health HTTP: `200`
+- Write probe HTTP: `405`
+<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
