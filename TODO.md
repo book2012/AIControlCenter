@@ -144,3 +144,41 @@ Sprint 20
 - Migrate AIControlCenter from Ubuntu development runtime
 - Reconfigure the production WordPress URL
 - Add production HTTPS and operational monitoring
+
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
+## Mac Control Plane Next Tasks
+
+            ### P0 — Production Gates
+
+            - [ ] Run Headless Reboot Recovery Gate
+            - [ ] Confirm LaunchDaemon before GUI login
+            - [ ] Confirm post-reboot PID change
+            - [ ] Confirm process user `kyouhan`
+            - [ ] Confirm Health HTTP `200`
+            - [ ] Confirm write probe HTTP `405`
+            - [ ] Confirm listener remains localhost-only
+            - [ ] Confirm Runtime matches Git HEAD
+
+            ### P1 — Shadow Observation
+
+            - [ ] Collect 24-hour Health results
+            - [ ] Collect CPU and memory metrics
+            - [ ] Collect restart count
+            - [ ] Measure stdout and stderr log growth
+            - [ ] Define warning budget
+            - [ ] Replace deprecated `datetime.utcnow()`
+
+            ### P2 — Integration
+
+            - [ ] Connect Ubuntu Worker JSON APIs read-only
+            - [ ] Connect Mac Dashboard to Shadow API
+            - [ ] Validate n8n read-only workflows
+            - [ ] Write Cutover runbook
+            - [ ] Write rollback runbook
+            - [ ] Update Notion project status
+
+            - Generated: `2026-07-14T03:31:53+00:00`
+- Branch: `sprint/mac-control-plane-foundation`
+- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
+- Runtime commit: `db4d93a2652a`
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->

@@ -344,3 +344,47 @@ Added:
 ### Git
 
 - Feature commit: `a4d6098`
+
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
+## Unreleased — Mac Control Plane
+
+            ### Added
+
+            - Non-root system LaunchDaemon supervisor
+            - Root-owned LaunchDaemon plist
+            - Root-owned immutable runner installation
+            - JSON-first supervisor status and lifecycle
+            - Read-only Shadow API on `127.0.0.1:18100`
+
+            ### Changed
+
+            - Replaced the GUI-dependent LaunchAgent
+              production design with a system LaunchDaemon.
+            - Defined normal running state as port `18100`
+              being owned by the active LaunchDaemon PID.
+            - Restricted port-release validation to
+              uninstall and bootout operations.
+
+            ### Verified
+
+            - Application user: `kyouhan`
+            - Health response: HTTP `200`
+            - Mutating request response: HTTP `405`
+            - Localhost-only listener
+            - Runtime and Git commit match
+            - Secure plist and runner ownership
+            - Automatic restart: `1661 → 1975`
+            - Full Test Suite:
+              313 passed, 5 deselected
+
+            ### Pending
+
+            - Headless reboot recovery
+            - 24-hour Shadow observation
+            - Ubuntu Worker read-only integration
+
+            - Generated: `2026-07-14T03:31:53+00:00`
+- Branch: `sprint/mac-control-plane-foundation`
+- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
+- Runtime commit: `db4d93a2652a`
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->

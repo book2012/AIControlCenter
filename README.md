@@ -152,3 +152,34 @@ Runtime validation:
 - Homepage HTTP 200
 - Product detail HTTP 200
 - Missing product HTTP 404
+
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
+## Mac Control Plane Runtime Status
+
+            The Mac mini now runs the AIControlCenter
+            read-only Shadow API under a headless,
+            non-root system LaunchDaemon.
+
+            - Supervisor:
+              `system/com.aicontrolcenter.api.shadow`
+            - Application user: `kyouhan`
+            - Process state: `running`
+            - Endpoint: `http://127.0.0.1:18100`
+            - Health contract: HTTP `200`
+            - Mutating request contract: HTTP `405`
+            - Runtime:
+              `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/0f1b4c5d8aba`
+            - Automatic restart:
+              `1661 → 1975`
+            - GUI login required: `false`
+            - Ubuntu Control Plane replaced: `false`
+            - Secret migration completed: `false`
+
+            Current production milestone:
+            Headless Reboot Recovery Gate.
+
+            - Generated: `2026-07-14T03:31:53+00:00`
+- Branch: `sprint/mac-control-plane-foundation`
+- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
+- Runtime commit: `db4d93a2652a`
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->

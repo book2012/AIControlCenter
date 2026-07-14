@@ -107,3 +107,37 @@ Rationale:
 
 This preserves the headless architecture and keeps business logic
 inside the single AIControlCenter Control Plane.
+
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
+## 2026-07-14 — Non-root LaunchDaemon Milestone
+
+            The Mac Control Plane Shadow Runtime completed
+            its non-root LaunchDaemon and automatic restart
+            production gates.
+
+            The earlier LaunchAgent design was rejected after
+            reboot testing demonstrated that a GUI bootstrap
+            domain was unavailable in the headless operating
+            environment.
+
+            The replacement system LaunchDaemon:
+
+            - starts without a GUI login
+            - runs the application as `kyouhan`
+            - binds only to `127.0.0.1:18100`
+            - returns HTTP `200` from `/health`
+            - blocks mutating requests with HTTP `405`
+            - uses a commit-specific Python runtime
+            - uses secure root-owned installation files
+            - recovered automatically:
+              `1661 → 1975`
+
+            Ubuntu remained unchanged and continues operating
+            until Mac Shadow observation and rollback gates
+            are complete.
+
+            - Generated: `2026-07-14T03:31:53+00:00`
+- Branch: `sprint/mac-control-plane-foundation`
+- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
+- Runtime commit: `db4d93a2652a`
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->

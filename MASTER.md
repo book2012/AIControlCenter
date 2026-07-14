@@ -159,3 +159,51 @@ Validated:
 Next production milestone:
 
 - Mac mini Production Control Plane migration
+
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
+## Mac Control Plane Master Status
+
+            ### Completed
+
+            - Mac Foundation Gate
+            - Runtime Contract discovery
+            - Commit-specific Python Runtime
+            - Production Runtime Gate
+            - Read-only Health Runtime Gate
+            - Shadow API write protection
+            - Non-root system LaunchDaemon
+            - Secure root-owned plist and runner
+            - Automatic process restart
+            - Localhost-only listener
+
+            ### Current State
+
+            - Service:
+              `system/com.aicontrolcenter.api.shadow`
+            - Runtime:
+              `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/0f1b4c5d8aba`
+            - Process user: `kyouhan`
+            - Endpoint: `127.0.0.1:18100`
+            - Health: HTTP `200`
+            - Mutating requests: HTTP `405`
+            - LaunchDaemon Gate: passed
+
+            ### Current Production Milestone
+
+            Headless Reboot Recovery Gate without a GUI
+            login session.
+
+            ### Cutover Rule
+
+            Ubuntu AIControlCenter must remain active until:
+
+            - headless reboot recovery passes
+            - 24-hour Shadow observation passes
+            - Ubuntu Worker JSON read-only integration passes
+            - rollback validation passes
+
+            - Generated: `2026-07-14T03:31:53+00:00`
+- Branch: `sprint/mac-control-plane-foundation`
+- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
+- Runtime commit: `db4d93a2652a`
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->

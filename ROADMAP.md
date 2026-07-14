@@ -221,3 +221,48 @@ Next:
 - Production domain and HTTPS
 - Wishlist and checkout improvements
 - AI recommendation and product creation
+
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
+## Mac Control Plane Roadmap
+
+            ### Completed
+
+            - [x] Mac Foundation Gate
+            - [x] Git and SSH control
+            - [x] Runtime Contract
+            - [x] Python 3.12 production runtime
+            - [x] Full Test Suite
+            - [x] Read-only Health Gate
+            - [x] Shadow read-only ASGI layer
+            - [x] LaunchAgent architecture evaluation
+            - [x] LaunchAgent rejected for headless production
+            - [x] Non-root system LaunchDaemon
+            - [x] Secure plist and runner ownership
+            - [x] Automatic restart validation
+            - [x] Localhost-only listener validation
+            - [x] Health HTTP `200`
+            - [x] Write probe HTTP `405`
+
+            ### Current Sprint
+
+            - [ ] Headless reboot recovery
+            - [ ] Verify service before GUI login
+            - [ ] Verify PID change after reboot
+            - [ ] Verify process user `kyouhan`
+            - [ ] Verify Runtime commit preservation
+
+            ### Next Sprint
+
+            - [ ] 24-hour Shadow observation
+            - [ ] CPU and memory baseline
+            - [ ] restart-count monitoring
+            - [ ] log-growth monitoring
+            - [ ] Ubuntu Worker JSON read-only connection
+            - [ ] Mac Dashboard Shadow connection
+            - [ ] Cutover and rollback runbook
+
+            - Generated: `2026-07-14T03:31:53+00:00`
+- Branch: `sprint/mac-control-plane-foundation`
+- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
+- Runtime commit: `db4d93a2652a`
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->

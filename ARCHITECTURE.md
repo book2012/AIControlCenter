@@ -71,3 +71,58 @@ Ubuntu AIControlCenter remains active until:
 - 24-hour Shadow observation passes
 - Ubuntu Worker JSON integration passes
 - Cutover and rollback validation pass
+
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
+## ADR: Headless Mac Control Plane Supervisor
+
+            **Status:** Accepted
+
+            ### Decision
+
+            AIControlCenter Shadow Runtime is supervised
+            by a system LaunchDaemon.
+
+            The LaunchDaemon plist and installed runner
+            are owned by `root:wheel`, while the Python
+            application runs as `kyouhan`.
+
+            ### Runtime Flow
+
+            `system launchd`
+            → `non-root runner`
+            → `commit-specific Python runtime`
+            → `core.api.shadow:app`
+            → `127.0.0.1:18100`
+
+            ### Security Boundaries
+
+            - GUI login is not required.
+            - The application process must not run as root.
+            - The API listens only on localhost.
+            - GET, HEAD, and OPTIONS are allowed.
+            - Mutating HTTP methods are blocked.
+            - Git HEAD and Runtime commit must match.
+            - A dirty Git repository prevents restart.
+            - Ubuntu remains an infrastructure worker.
+            - Business logic remains on the Mac Control Plane.
+
+            ### Rejected Alternative
+
+            A user LaunchAgent was rejected for production
+            because it requires an active GUI login domain
+            and failed the headless reboot recovery test.
+
+            ### Verified Gate
+
+            - LaunchDaemon loaded: passed
+            - Non-root process: passed
+            - Health HTTP `200`: passed
+            - Write probe HTTP `405`: passed
+            - Localhost-only listener: passed
+            - Automatic restart: `1661 → 1975`
+
+            - Generated: `2026-07-14T03:31:53+00:00`
+- Branch: `sprint/mac-control-plane-foundation`
+- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
+- Runtime commit: `db4d93a2652a`
+<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
