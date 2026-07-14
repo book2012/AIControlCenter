@@ -15,14 +15,14 @@ MODULE_PATH = (
     / "ops"
     / "macos"
     / "launchd"
-    / "manage-shadow-daemon-compat.py"
+    / "manage-shadow-daemon.py"
 )
 
 
 def load_module() -> ModuleType:
     specification = (
         importlib.util.spec_from_file_location(
-            "manage_shadow_daemon_compat",
+            "manage_shadow_daemon_entrypoint",
             MODULE_PATH,
         )
     )
@@ -41,7 +41,7 @@ def load_module() -> ModuleType:
     return module
 
 
-def test_compatibility_module_exists() -> None:
+def test_public_manager_entrypoint_exists() -> None:
     assert MODULE_PATH.is_file()
 
 
@@ -116,8 +116,17 @@ def test_legacy_command_preserves_arguments() -> None:
     )
 
     assert command[0]
+
+    assert command[1] == str(
+        module.LEGACY_MANAGER
+    )
+
     assert command[1].endswith(
-        "manage-shadow-daemon.py"
+        "_shadow_daemon_legacy.py"
+    )
+
+    assert not command[1].endswith(
+        "/manage-shadow-daemon.py"
     )
 
     assert command[2:] == [
@@ -177,3 +186,78 @@ def test_noncanonical_action_uses_legacy_path() -> None:
     )
 
     assert command[-1] == "status"
+
+
+def test_public_manager_is_single_cli_entrypoint() -> None:
+    public_manager = (
+        ROOT
+        / "ops"
+        / "macos"
+        / "launchd"
+        / "manage-shadow-daemon.py"
+    )
+
+    duplicate_manager = (
+        ROOT
+        / "ops"
+        / "macos"
+        / "launchd"
+        / "manage-shadow-daemon-compat.py"
+    )
+
+    internal_legacy = (
+        ROOT
+        / "ops"
+        / "macos"
+        / "launchd"
+        / "_shadow_daemon_legacy.py"
+    )
+
+    assert public_manager.is_file()
+    assert internal_legacy.is_file()
+    assert not duplicate_manager.exists()
+
+
+def test_public_manager_targets_internal_legacy() -> None:
+    module = load_module()
+
+    assert module.LEGACY_MANAGER.name == (
+        "_shadow_daemon_legacy.py"
+    )
+
+    assert module.LEGACY_MANAGER.is_file()
+
+
+def test_public_help_exposes_all_actions(
+    capsys,
+) -> None:
+    module = load_module()
+
+    result = module.main(
+        ["--help"]
+    )
+
+    captured = capsys.readouterr()
+
+    assert result == 0
+
+    assert (
+        "usage: manage-shadow-daemon.py"
+        in captured.out
+    )
+
+    for action in (
+        "status",
+        "install",
+        "preflight",
+        "uninstall",
+        "canonical-preflight",
+        "canonical-plan",
+        "canonical-dry-run",
+        "canonical-apply",
+    ):
+        assert action in captured.out
+
+    assert "_shadow_daemon_legacy.py" not in (
+        captured.out
+    )
