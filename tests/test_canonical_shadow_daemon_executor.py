@@ -198,9 +198,17 @@ def test_authorized_apply_uses_injected_runner() -> None:
         "write_operations_executed"
     ] is True
 
-    assert len(executed) == len(
-        result["commands"]
+    assert len(executed) == (
+        len(result["commands"]) + 1
     )
+
+    assert result["transaction"][
+        "snapshot_created"
+    ] is True
+
+    assert result["transaction"][
+        "rollback_attempted"
+    ] is False
 
 
 def test_apply_stops_on_first_required_failure() -> None:
@@ -240,4 +248,12 @@ def test_apply_stops_on_first_required_failure() -> None:
     ] is False
 
     assert result["failure"]["returncode"] == 1
-    assert calls == 1
+    assert calls >= 2
+
+    assert result["transaction"][
+        "snapshot_created"
+    ] is True
+
+    assert result["transaction"][
+        "rollback_attempted"
+    ] is True
