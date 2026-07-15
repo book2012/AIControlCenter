@@ -6,7 +6,9 @@ import argparse
 import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
+import tempfile
 import sys
 from typing import Any, Callable, Mapping, Sequence
 
@@ -20,7 +22,10 @@ if str(MODULE_DIRECTORY) not in sys.path:
     )
 
 from canonical_shadow_daemon import (  # noqa: E402
+    INSTALLED_PLIST,
+    INSTALLED_RUNNER,
     LABEL,
+    SERVICE,
     build_install_plan,
 )
 
@@ -248,6 +253,272 @@ def default_runner(
     )
 
 
+
+def create_transaction_snapshot(
+    *,
+    runner: CommandRunner,
+) -> dict[str, Any]:
+    snapshot_root = Path(
+        tempfile.mkdtemp(
+            prefix="aicontrolcenter-shadow-transaction-"
+        )
+    )
+
+    assets: dict[str, dict[str, Any]] = {}
+
+    contracts = (
+        ("plist", INSTALLED_PLIST, "0644"),
+        ("runner", INSTALLED_RUNNER, "0755"),
+    )
+
+    for name, installed_path, mode in contracts:
+        existed = installed_path.is_file()
+        backup_path = snapshot_root / f"{name}.backup"
+
+        if existed:
+            shutil.copy2(
+                installed_path,
+                backup_path,
+            )
+
+        assets[name] = {
+            "installed_path": str(installed_path),
+            "backup_path": str(backup_path),
+            "existed": existed,
+            "mode": mode,
+        }
+
+    service_probe = runner(
+        [
+            "/bin/launchctl",
+            "print",
+            SERVICE,
+        ]
+    )
+
+    return {
+        "snapshot_root": str(snapshot_root),
+        "assets": assets,
+        "service_was_loaded": (
+            service_probe.returncode == 0
+        ),
+        "service_probe": {
+            "returncode": service_probe.returncode,
+            "stdout": service_probe.stdout,
+            "stderr": service_probe.stderr,
+        },
+    }
+
+
+def compile_rollback_commands(
+    snapshot: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    commands: list[dict[str, Any]] = [
+        {
+            "step": "rollback_bootout",
+            "argv": [
+                "/bin/launchctl",
+                "bootout",
+                SERVICE,
+            ],
+            "allow_nonzero": True,
+        }
+    ]
+
+    assets = snapshot["assets"]
+
+    for name in ("runner", "plist"):
+        asset = assets[name]
+        installed_path = str(asset["installed_path"])
+
+        if asset["existed"]:
+            commands.append(
+                {
+                    "step": f"rollback_restore_{name}",
+                    "argv": [
+                        "/usr/bin/install",
+                        "-o",
+                        "root",
+                        "-g",
+                        "wheel",
+                        "-m",
+                        str(asset["mode"]),
+                        str(asset["backup_path"]),
+                        installed_path,
+                    ],
+                    "allow_nonzero": False,
+                }
+            )
+        else:
+            commands.append(
+                {
+                    "step": f"rollback_remove_{name}",
+                    "argv": [
+                        "/bin/rm",
+                        "-f",
+                        installed_path,
+                    ],
+                    "allow_nonzero": False,
+                }
+            )
+
+    if snapshot["service_was_loaded"]:
+        commands.extend(
+            [
+                {
+                    "step": "rollback_bootstrap",
+                    "argv": [
+                        "/bin/launchctl",
+                        "bootstrap",
+                        "system",
+                        str(INSTALLED_PLIST),
+                    ],
+                    "allow_nonzero": False,
+                },
+                {
+                    "step": "rollback_enable",
+                    "argv": [
+                        "/bin/launchctl",
+                        "enable",
+                        SERVICE,
+                    ],
+                    "allow_nonzero": False,
+                },
+                {
+                    "step": "rollback_kickstart",
+                    "argv": [
+                        "/bin/launchctl",
+                        "kickstart",
+                        "-k",
+                        SERVICE,
+                    ],
+                    "allow_nonzero": False,
+                },
+            ]
+        )
+
+    return commands
+
+
+def execute_rollback(
+    *,
+    snapshot: Mapping[str, Any],
+    runner: CommandRunner,
+) -> dict[str, Any]:
+    commands = compile_rollback_commands(snapshot)
+    results: list[dict[str, Any]] = []
+    rollback_gate = True
+    failure: dict[str, Any] | None = None
+
+    for index, command in enumerate(commands, start=1):
+        completed = runner(command["argv"])
+
+        command_result = {
+            "index": index,
+            "step": command["step"],
+            "argv": command["argv"],
+            "returncode": completed.returncode,
+            "stdout": completed.stdout,
+            "stderr": completed.stderr,
+            "allow_nonzero": command["allow_nonzero"],
+        }
+
+        results.append(command_result)
+
+        if (
+            completed.returncode != 0
+            and
+            not command["allow_nonzero"]
+        ):
+            rollback_gate = False
+            failure = {
+                "step": command["step"],
+                "returncode": completed.returncode,
+                "stderr": completed.stderr,
+            }
+            break
+
+    payload: dict[str, Any] = {
+        "rollback_attempted": True,
+        "rollback_gate_passed": rollback_gate,
+        "commands": commands,
+        "results": results,
+    }
+
+    if failure is not None:
+        payload["failure"] = failure
+
+    return payload
+
+
+def cleanup_transaction_snapshot(
+    snapshot: Mapping[str, Any],
+) -> None:
+    shutil.rmtree(
+        Path(str(snapshot["snapshot_root"])),
+        ignore_errors=True,
+    )
+
+
+def execute_rollback(
+    *,
+    snapshot: Mapping[str, Any],
+    runner: CommandRunner,
+) -> dict[str, Any]:
+    commands = compile_rollback_commands(snapshot)
+    results: list[dict[str, Any]] = []
+    rollback_gate = True
+    failure: dict[str, Any] | None = None
+
+    for index, command in enumerate(commands, start=1):
+        completed = runner(command["argv"])
+
+        command_result = {
+            "index": index,
+            "step": command["step"],
+            "argv": command["argv"],
+            "returncode": completed.returncode,
+            "stdout": completed.stdout,
+            "stderr": completed.stderr,
+            "allow_nonzero": command["allow_nonzero"],
+        }
+
+        results.append(command_result)
+
+        if (
+            completed.returncode != 0
+            and
+            not command["allow_nonzero"]
+        ):
+            rollback_gate = False
+            failure = {
+                "step": command["step"],
+                "returncode": completed.returncode,
+                "stderr": completed.stderr,
+            }
+            break
+
+    payload: dict[str, Any] = {
+        "rollback_attempted": True,
+        "rollback_gate_passed": rollback_gate,
+        "commands": commands,
+        "results": results,
+    }
+
+    if failure is not None:
+        payload["failure"] = failure
+
+    return payload
+
+
+def cleanup_transaction_snapshot(
+    snapshot: Mapping[str, Any],
+) -> None:
+    shutil.rmtree(
+        Path(str(snapshot["snapshot_root"])),
+        ignore_errors=True,
+    )
+
 def execute(
     *,
     root: Path,
@@ -359,6 +630,30 @@ def execute(
             },
         }
 
+    try:
+        transaction_snapshot = create_transaction_snapshot(
+            runner=runner,
+        )
+    except (OSError, shutil.Error) as error:
+        return {
+            "schema_version": "1.0",
+            "canonical_executor_gate_passed": False,
+            "canonical_contract_gate_passed": True,
+            "write_operations_executed": False,
+            "authorization": authorization,
+            "commands": commands,
+            "results": results,
+            "failure": {
+                "step": "transaction_snapshot",
+                "detail": str(error),
+            },
+            "transaction": {
+                "snapshot_created": False,
+                "rollback_attempted": False,
+                "rollback_gate_passed": False,
+            },
+        }
+
     execution_gate = True
     failure: dict[str, Any] | None = None
 
@@ -431,10 +726,37 @@ def execute(
         "results": results,
         "installation":
             plan["installation"],
+        "transaction": {
+            "snapshot_created": True,
+            "service_was_loaded":
+                transaction_snapshot[
+                    "service_was_loaded"
+                ],
+            "rollback_attempted": False,
+            "rollback_gate_passed": False,
+        },
     }
 
     if failure is not None:
         result["failure"] = failure
+
+        rollback = execute_rollback(
+            snapshot=transaction_snapshot,
+            runner=runner,
+        )
+
+        result["transaction"] = {
+            "snapshot_created": True,
+            "service_was_loaded":
+                transaction_snapshot[
+                    "service_was_loaded"
+                ],
+            **rollback,
+        }
+
+    cleanup_transaction_snapshot(
+        transaction_snapshot
+    )
 
     return result
 
