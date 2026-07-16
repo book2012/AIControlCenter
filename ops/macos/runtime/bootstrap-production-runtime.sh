@@ -371,6 +371,53 @@ case "$TEST_COMMAND_NORMALIZED" in
         ;;
 esac
 
+CURRENT_STEP="generate runtime metadata"
+
+PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" \
+"$PYTHON_PATH" - \
+  "$VENV_PATH" \
+  "$GIT_COMMIT" \
+  "$GIT_SHORT" \
+  >"$LOG_DIR/runtime-metadata.log" \
+  2>&1 <<'PY'
+from __future__ import annotations
+
+import json
+import sys
+from pathlib import Path
+
+from core.runtime.metadata import RuntimeMetadata
+from core.runtime.metadata_generator import (
+    RuntimeMetadataGenerator,
+)
+
+runtime_dir = Path(sys.argv[1])
+commit = sys.argv[2]
+short_commit = sys.argv[3]
+
+generator = RuntimeMetadataGenerator(
+    runtime_dir=runtime_dir,
+    commit=commit,
+    short_commit=short_commit,
+    runtime_mode="shadow",
+)
+
+metadata_path = generator.write()
+metadata = RuntimeMetadata(metadata_path).status()
+
+if metadata["available"] is not True:
+    raise SystemExit(
+        json.dumps(metadata, sort_keys=True)
+    )
+
+print(
+    json.dumps(
+        metadata,
+        sort_keys=True,
+    )
+)
+PY
+
 CURRENT_STEP="activate runtime"
 
 ln -sfn \
