@@ -2,6 +2,7 @@ from typing import Any, Dict
 
 from core.worker.health import (
     decide_worker_status,
+    parse_health_json,
     run_json_script,
     run_worker_command,
 )
@@ -26,6 +27,15 @@ class UbuntuWorkerClient(WorkerClient):
 
     def recovery(self) -> Dict[str, Any]:
         return run_json_script(self.runner, self._script("worker-recovery.sh"))
+
+    def health_status(self) -> Dict[str, Any]:
+        output = self.runner.run(
+            [
+                "bash",
+                self._script("commands/worker-health-json.sh"),
+            ]
+        )
+        return parse_health_json(output)
 
     def status(self) -> Dict[str, Any]:
         ready = self.ready()
