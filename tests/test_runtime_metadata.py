@@ -53,3 +53,127 @@ def test_runtime_metadata_rejects_non_object_json(tmp_path: Path) -> None:
 
     assert data["available"] is False
     assert data["error"]["type"] == "invalid_metadata_shape"
+
+def test_runtime_metadata_rejects_missing_required_field(
+    tmp_path: Path,
+) -> None:
+    metadata_path = tmp_path / "metadata.json"
+    metadata_path.write_text(
+        json.dumps({
+            "schema_version": 1,
+            "short_commit": "67e617ebc469",
+            "runtime_mode": "shadow",
+            "created_at": "2026-07-16T13:18:00Z",
+        }),
+        encoding="utf-8",
+    )
+
+    data = RuntimeMetadata(metadata_path).status()
+
+    assert data["available"] is False
+    assert data["error"]["type"] == "invalid_metadata_schema"
+    assert "commit" in data["error"]["message"]
+
+def test_runtime_metadata_rejects_unknown_schema_version(
+    tmp_path: Path,
+) -> None:
+    metadata_path = tmp_path / "metadata.json"
+    metadata_path.write_text(
+        json.dumps({
+            "schema_version": 2,
+            "commit": "67e617ebc469e36daa82e060c547bed78aec441c",
+            "short_commit": "67e617ebc469",
+            "runtime_mode": "shadow",
+            "created_at": "2026-07-16T13:18:00Z",
+        }),
+        encoding="utf-8",
+    )
+
+    data = RuntimeMetadata(metadata_path).status()
+
+    assert data["available"] is False
+    assert data["error"]["type"] == "invalid_metadata_schema"
+
+def test_runtime_metadata_rejects_invalid_commit(
+    tmp_path: Path,
+) -> None:
+    metadata_path = tmp_path / "metadata.json"
+    metadata_path.write_text(
+        json.dumps({
+            "schema_version": 1,
+            "commit": "not-a-git-commit",
+            "short_commit": "not-a-git-co",
+            "runtime_mode": "shadow",
+            "created_at": "2026-07-16T13:18:00Z",
+        }),
+        encoding="utf-8",
+    )
+
+    data = RuntimeMetadata(metadata_path).status()
+
+    assert data["available"] is False
+    assert data["error"]["type"] == "invalid_metadata_schema"
+    assert "commit" in data["error"]["message"]
+
+def test_runtime_metadata_rejects_short_commit_mismatch(
+    tmp_path: Path,
+) -> None:
+    metadata_path = tmp_path / "metadata.json"
+    metadata_path.write_text(
+        json.dumps({
+            "schema_version": 1,
+            "commit": "67e617ebc469e36daa82e060c547bed78aec441c",
+            "short_commit": "000000000000",
+            "runtime_mode": "shadow",
+            "created_at": "2026-07-16T13:18:00Z",
+        }),
+        encoding="utf-8",
+    )
+
+    data = RuntimeMetadata(metadata_path).status()
+
+    assert data["available"] is False
+    assert data["error"]["type"] == "invalid_metadata_schema"
+    assert "short_commit" in data["error"]["message"]
+
+def test_runtime_metadata_rejects_invalid_runtime_mode(
+    tmp_path: Path,
+) -> None:
+    metadata_path = tmp_path / "metadata.json"
+    metadata_path.write_text(
+        json.dumps({
+            "schema_version": 1,
+            "commit": "67e617ebc469e36daa82e060c547bed78aec441c",
+            "short_commit": "67e617ebc469",
+            "runtime_mode": "production-write",
+            "created_at": "2026-07-16T13:18:00Z",
+        }),
+        encoding="utf-8",
+    )
+
+    data = RuntimeMetadata(metadata_path).status()
+
+    assert data["available"] is False
+    assert data["error"]["type"] == "invalid_metadata_schema"
+    assert "runtime_mode" in data["error"]["message"]
+
+def test_runtime_metadata_rejects_empty_created_at(
+    tmp_path: Path,
+) -> None:
+    metadata_path = tmp_path / "metadata.json"
+    metadata_path.write_text(
+        json.dumps({
+            "schema_version": 1,
+            "commit": "67e617ebc469e36daa82e060c547bed78aec441c",
+            "short_commit": "67e617ebc469",
+            "runtime_mode": "shadow",
+            "created_at": "",
+        }),
+        encoding="utf-8",
+    )
+
+    data = RuntimeMetadata(metadata_path).status()
+
+    assert data["available"] is False
+    assert data["error"]["type"] == "invalid_metadata_schema"
+    assert "created_at" in data["error"]["message"]

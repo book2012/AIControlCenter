@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any
 
@@ -23,6 +24,10 @@ def default_runtime_metadata_path() -> Path:
     )
 
 class RuntimeMetadata:
+    SUPPORTED_SCHEMA_VERSION = 1
+    SUPPORTED_RUNTIME_MODES = {"shadow"}
+    COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
+
     def __init__(
         self,
         path: str | Path | None = None,
@@ -52,6 +57,48 @@ class RuntimeMetadata:
             },
         }
 
+    def _validate(self, data: dict[str, Any]) -> str | None:
+        required_fields = (
+            "schema_version",
+            "commit",
+            "short_commit",
+            "runtime_mode",
+            "created_at",
+        )
+        for field in required_fields:
+            if field not in data:
+                return f"Missing required field: {field}"
+
+        if data["schema_version"] != self.SUPPORTED_SCHEMA_VERSION:
+            return "Unsupported schema_version"
+
+        commit = data["commit"]
+        if (
+            not isinstance(commit, str)
+            or self.COMMIT_PATTERN.fullmatch(commit) is None
+        ):
+            return "Invalid commit format"
+
+        short_commit = data["short_commit"]
+        if (
+            not isinstance(short_commit, str)
+            or short_commit != commit[:12]
+        ):
+            return "Invalid short_commit"
+
+        runtime_mode = data["runtime_mode"]
+        if runtime_mode not in self.SUPPORTED_RUNTIME_MODES:
+            return "Invalid runtime_mode"
+
+        created_at = data["created_at"]
+        if (
+            not isinstance(created_at, str)
+            or not created_at.strip()
+        ):
+            return "Invalid created_at"
+
+        return None
+
     def status(self) -> dict[str, Any]:
         try:
             raw = self.path.read_text(encoding="utf-8")
@@ -78,6 +125,13 @@ class RuntimeMetadata:
             return self._unavailable(
                 "invalid_metadata_shape",
                 "Runtime metadata must be a JSON object.",
+            )
+
+        validation_error = self._validate(data)
+        if validation_error is not None:
+            return self._unavailable(
+                "invalid_metadata_schema",
+                validation_error,
             )
 
         return {
