@@ -194,3 +194,43 @@ Control Plane implementation is complete.
 Production write cutover remains blocked pending
 an explicit Production approval.
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
+## Dashboard Shadow Control Plane
+
+AIControlCenter exposes a read-only Control Plane status contract through the Mac mini Shadow API.
+
+Runtime endpoint:
+
+- Listener: `127.0.0.1:18100`
+- Health: `GET /health`
+- Dashboard: `GET /dashboard`
+- Write requests: rejected with HTTP `405`
+
+The Dashboard response includes:
+
+- Control Plane service identity
+- Shadow operating mode
+- Read-only enforcement state
+- Local listener address
+- Commit-specific Runtime metadata
+- Runtime metadata validation status
+
+Runtime identity is loaded from an immutable `metadata.json` file generated during the commit-specific Runtime build.
+
+Dashboard requests do not execute Git, `launchctl`, or shell commands.
+
+Runtime activation is allowed only after:
+
+1. Dependency installation succeeds.
+2. Application import succeeds.
+3. The test suite succeeds.
+4. Runtime metadata is generated.
+5. Runtime metadata schema validation succeeds.
+
+Current validated PI-001 Runtime:
+
+- Commit: `ba8d2c9772577863c3c040d01654c4f011e2d45e`
+- Short commit: `ba8d2c977257`
+- Health status: HTTP `200`
+- Dashboard status: HTTP `200`
+- Write probe: HTTP `405`

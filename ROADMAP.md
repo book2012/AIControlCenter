@@ -248,7 +248,7 @@ Next:
             - [ ] Verify service before GUI login
             - [ ] Verify PID change after reboot
             - [ ] Verify process user `kyouhan`
-            - [ ] Verify Runtime commit preservation
+            - [x] Verify Runtime commit preservation
 
             ### Next Sprint
 
@@ -257,7 +257,7 @@ Next:
             - [ ] restart-count monitoring
             - [ ] log-growth monitoring
             - [ ] Ubuntu Worker JSON read-only connection
-            - [ ] Mac Dashboard Shadow connection
+            - [x] Mac Dashboard Shadow connection
             - [ ] Cutover and rollback runbook
 
             - Generated: `2026-07-14T03:31:53+00:00`
@@ -328,9 +328,22 @@ Status: **Complete**
 ### Next Program Phase
 
 - [ ] AIControlCenter REST API consolidation
-- [ ] Dashboard integration
+- [x] Dashboard integration
 - [ ] Homepage integration
 - [ ] Ubuntu Worker read-only JSON APIs
 - [ ] n8n read-only workflows
 - [ ] Production cutover design and approval
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
+### PI-001 Dashboard Shadow API Integration
+
+- [x] Dashboard Control Plane JSON contract
+- [x] Immutable Runtime metadata
+- [x] Runtime metadata schema validation
+- [x] Metadata-gated Runtime activation
+- [x] `GET /health` returns HTTP `200`
+- [x] `GET /dashboard` returns HTTP `200`
+- [x] `POST /dashboard` returns HTTP `405`
+- [x] Runtime commit matches Git HEAD
+
+Production Runtime: `ba8d2c977257`

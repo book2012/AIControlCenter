@@ -117,3 +117,99 @@ Ownership boundaries:
 - Production writes remain disabled until a
   separate cutover Gate is approved.
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
+## Dashboard Shadow Control Plane
+
+The Mac mini is the AI Home Datacenter Control Plane.
+
+AIControlCenter owns Control Plane status, policy, orchestration, authorization and runtime observability.
+
+### Request Architecture
+
+```text
+Mac mini
+  -> AIControlCenter Shadow API
+  -> GET /dashboard
+  -> DashboardAPI
+  -> ControlPlaneStatus
+  -> RuntimeMetadata
+  -> immutable metadata.json
+```
+
+The Dashboard consumes normalized JSON. It does not parse human-readable shell output.
+
+### Runtime Metadata Architecture
+
+Each commit-specific Runtime contains an immutable metadata file:
+
+```text
+~/Library/Application Support/AIControlCenter/runtime/
+  current
+  venvs/
+    <12-character-commit>/
+      bin/python
+      metadata.json
+```
+
+Runtime metadata schema version 1 contains:
+
+- Full 40-character Git commit
+- 12-character short commit
+- Runtime mode
+- UTC creation timestamp
+
+The metadata provider validates:
+
+- Supported schema version
+- Full commit format
+- Short commit consistency
+- Supported Runtime mode
+- Required timestamp
+
+Invalid, missing or unreadable metadata is returned as normalized JSON with `available: false`.
+
+Invalid metadata does not crash the Dashboard API.
+
+### Runtime Activation Gate
+
+The canonical Runtime bootstrap performs:
+
+```text
+Runtime Contract validation
+  -> repository commit validation
+  -> clean Git validation
+  -> commit-specific virtual environment
+  -> dependency installation
+  -> application import validation
+  -> test suite
+  -> metadata generation
+  -> metadata schema validation
+  -> runtime/current activation
+```
+
+Metadata generation and validation occur before the `runtime/current` symlink is changed.
+
+A metadata failure prevents Runtime activation.
+
+### Safety Policy
+
+The Shadow API is read-only.
+
+Allowed methods:
+
+- GET
+- HEAD
+- OPTIONS
+
+Write requests are rejected with HTTP `405`.
+
+Dashboard requests must not execute:
+
+- Git commands
+- `launchctl`
+- Runtime symlink mutation
+- Infrastructure write operations
+
+Ubuntu remains a stateless infrastructure worker.
+
+Ubuntu is not involved in Control Plane business logic or AI workloads.

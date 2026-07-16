@@ -187,3 +187,41 @@ Next program milestone:
 AIControlCenter Platform Integration using the
 completed Mac Control Plane baseline.
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
+## PI-001 Production Baseline
+
+Status: COMPLETE
+
+Validated on: 2026-07-16
+
+Production Runtime:
+
+- Commit: `ba8d2c9772577863c3c040d01654c4f011e2d45e`
+- Short commit: `ba8d2c977257`
+- Listener: `127.0.0.1:18100`
+- Runtime mode: shadow
+- Runtime metadata: available
+- Runtime metadata schema: version 1
+
+Operational validation:
+
+- `GET /health`: HTTP `200`
+- `GET /dashboard`: HTTP `200`
+- `POST /dashboard`: HTTP `405`
+- Shadow API read-only policy: enforced
+- Runtime commit matches Git HEAD
+- Runtime activation gated by metadata validation
+
+Architecture status:
+
+- Mac mini remains the always-on Control Plane.
+- AIControlCenter remains the single orchestration layer.
+- Ubuntu remains a stateless infrastructure worker.
+- Dashboard requests do not execute Git, launchctl or shell commands.
+- Runtime identity is consumed through immutable JSON metadata.
+
+Next Production Milestone:
+
+- Complete PI-001 documentation closeout.
+- Merge the feature branch after final review.
+- Define the next read-only Control Plane integration.

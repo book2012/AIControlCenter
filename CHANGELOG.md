@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 2026-07-16 — PI-001 Dashboard Shadow API Integration
+
+### Added
+
+- Added the Dashboard Control Plane JSON contract.
+- Added immutable runtime metadata with schema validation.
+- Added commit-specific runtime metadata generation.
+- Added runtime metadata to the Dashboard response.
+- Added metadata-gated runtime activation.
+
+### Validated
+
+- `GET /health` returns HTTP 200.
+- `GET /dashboard` returns HTTP 200.
+- `POST /dashboard` returns HTTP 405.
+- Runtime commit matches Git HEAD.
+- Shadow API remains read-only on `127.0.0.1:18100`.
+
+
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
 ## 2026-07-16 — Mac Control Plane Baseline
 

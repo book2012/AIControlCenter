@@ -205,3 +205,33 @@ The Control Plane implementation is complete.
 Ubuntu remains a stateless infrastructure worker.
 Production write cutover is intentionally deferred.
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
+## 2026-07-16 — PI-001 Dashboard Shadow API Integration
+
+Status: COMPLETE
+
+Implemented:
+
+- Dashboard Control Plane JSON contract
+- Shadow read-only enforcement
+- Immutable Runtime metadata provider
+- Runtime metadata schema validation
+- Commit-specific Runtime metadata generation
+- Metadata-gated Runtime activation
+
+Validated:
+
+- Runtime commit: `ba8d2c9772577863c3c040d01654c4f011e2d45e`
+- Runtime short commit: `ba8d2c977257`
+- `GET /health`: HTTP `200`
+- `GET /dashboard`: HTTP `200`
+- `POST /dashboard`: HTTP `405`
+- Listener: `127.0.0.1:18100`
+- Runtime commit matches Git HEAD
+
+Architecture result:
+
+- Mac mini remains the Control Plane.
+- AIControlCenter remains the orchestration layer.
+- Ubuntu remains a stateless infrastructure worker.
+- Dashboard requests do not execute Git, launchctl or shell commands.

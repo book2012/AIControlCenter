@@ -69,8 +69,10 @@ Sprint 20
 
 ### Technical Debt
 
+- [ ] TECH-002 Replace `datetime.utcnow()` with timezone-aware UTC timestamps
+
 - Review duplicated router registrations in core/api/app.py
-- Review FastAPI TestClient deprecation warning
+- [ ] TECH-003 Review FastAPI and Starlette TestClient compatibility
 - Handle dependency changes in a dedicated regression Sprint
 <!-- AI_SHOPPING_PLATFORM_END -->
 
@@ -158,12 +160,25 @@ Status: **Complete**
 - [x] Final restart validation
 - [x] Documentation closeout
 
+
+### PI-001 Dashboard Shadow API Integration
+
+- [x] Dashboard Control Plane JSON contract
+- [x] Shadow read-only enforcement
+- [x] Immutable Runtime metadata
+- [x] Runtime metadata schema validation
+- [x] Metadata-gated Runtime activation
+- [x] Production Runtime commit verification
+- [x] Health endpoint HTTP 200
+- [x] Dashboard endpoint HTTP 200
+- [x] Dashboard write probe HTTP 405
+
 ## Next Sprint — AIControlCenter Platform
 
 ### P0
 
 - [ ] Consolidate AIControlCenter REST contracts
-- [ ] Connect Dashboard to the Mac Control Plane
+- [x] Connect Dashboard to the Mac Control Plane
 - [ ] Connect Homepage to Dashboard APIs
 - [ ] Define Ubuntu Worker read-only JSON APIs
 - [ ] Add Worker health monitoring

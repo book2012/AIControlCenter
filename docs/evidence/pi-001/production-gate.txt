@@ -1,0 +1,8 @@
+PI-001 Production Gate
+branch=feature/pi-001-dashboard-shadow-api
+git_head=ba8d2c9772577863c3c040d01654c4f011e2d45e
+runtime=/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/ba8d2c977257
+runtime_commit=ba8d2c9772577863c3c040d01654c4f011e2d45e
+health_status=200
+dashboard_status=200
+write_status=405
