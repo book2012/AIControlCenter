@@ -29,7 +29,6 @@ Sprint 20
 - [ ] Job Runner
 - [ ] Scheduler Tests
 
-
 ## Sprint 23
 
 - [ ] Knowledge Registry
@@ -145,91 +144,38 @@ Sprint 20
 - Reconfigure the production WordPress URL
 - Add production HTTPS and operational monitoring
 
-<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
-## Mac Control Plane Next Tasks
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
+## Mac Control Plane
 
-            ### P0 — Production Gates
+Status: **Complete**
 
-            - [ ] Run Headless Reboot Recovery Gate
-            - [ ] Confirm LaunchDaemon before GUI login
-            - [ ] Confirm post-reboot PID change
-            - [ ] Confirm process user `kyouhan`
-            - [ ] Confirm Health HTTP `200`
-            - [ ] Confirm write probe HTTP `405`
-            - [ ] Confirm listener remains localhost-only
-            - [ ] Confirm Runtime matches Git HEAD
+- [x] Headless reboot recovery
+- [x] 24-hour Shadow observation
+- [x] Canonical manager reconciliation
+- [x] Transactional apply and rollback
+- [x] launchd settle policy
+- [x] Final apply validation
+- [x] Final restart validation
+- [x] Documentation closeout
 
-            ### P1 — Shadow Observation
-
-            - [ ] Collect 24-hour Health results
-            - [ ] Collect CPU and memory metrics
-            - [ ] Collect restart count
-            - [ ] Measure stdout and stderr log growth
-            - [ ] Define warning budget
-            - [ ] Replace deprecated `datetime.utcnow()`
-
-            ### P2 — Integration
-
-            - [ ] Connect Ubuntu Worker JSON APIs read-only
-            - [ ] Connect Mac Dashboard to Shadow API
-            - [ ] Validate n8n read-only workflows
-            - [ ] Write Cutover runbook
-            - [ ] Write rollback runbook
-            - [ ] Update Notion project status
-
-            - Generated: `2026-07-14T03:31:53+00:00`
-- Branch: `sprint/mac-control-plane-foundation`
-- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
-- Runtime commit: `db4d93a2652a`
-<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
-
-<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
-## Next Production Tasks
-
-            ### P0
-
-            - [ ] Update `manage-shadow-daemon.py`
-              to reproduce the canonical plist
-            - [ ] Add installer regression tests
-            - [ ] Begin 24-hour Shadow observation
-            - [ ] Validate log rotation and growth limits
-
-            ### P1
-
-            - [ ] Connect Ubuntu Worker JSON APIs read-only
-            - [ ] Validate Dashboard Shadow integration
-            - [ ] Complete cutover runbook
-            - [ ] Complete rollback runbook
-            - [ ] Update Notion project status
-
-            - Verified: `2026-07-14T04:11:33+00:00`
-- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
-- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
-- Pre-reboot PID: `875`
-- Post-reboot PID: `567`
-- Process user: `kyouhan`
-- Health HTTP: `200`
-- Write probe HTTP: `405`
-<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
-
-<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
-## Shadow Observation Tasks
+## Next Sprint — AIControlCenter Platform
 
 ### P0
 
-- [ ] Collect at least 276 samples
-- [ ] Reach a minimum 23.5-hour window
-- [ ] Maintain at least 99.5% successful samples
-- [ ] Confirm no public listener exposure
-- [ ] Confirm no root application process
-- [ ] Generate final observation report
+- [ ] Consolidate AIControlCenter REST contracts
+- [ ] Connect Dashboard to the Mac Control Plane
+- [ ] Connect Homepage to Dashboard APIs
+- [ ] Define Ubuntu Worker read-only JSON APIs
+- [ ] Add Worker health monitoring
+- [ ] Add Backup Verify monitoring
 
 ### P1
 
-- [ ] Reconcile `manage-shadow-daemon.py`
-- [ ] Validate Ubuntu Worker JSON APIs
-- [ ] Complete cutover and rollback runbooks
-- [ ] Update Notion
+- [ ] Connect n8n read-only workflows
+- [ ] Add Notion project synchronization
+- [ ] Define Production write approval Gate
+- [ ] Define Production cutover and rollback runbooks
 
-Configured: `2026-07-14T04:19:41+00:00`
-<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
+Production writes remain disabled until monitoring
+and validation are stable.
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->

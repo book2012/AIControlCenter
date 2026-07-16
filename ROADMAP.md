@@ -36,7 +36,6 @@ Mac mini Production
 - [ ] Scheduler API
 - [ ] Job Runner
 
-
 ## Sprint 22
 
 - [x] Memory Manager
@@ -306,3 +305,32 @@ Next:
 
 Configured: `2026-07-14T04:19:41+00:00`
 <!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
+
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
+## Mac Control Plane Foundation
+
+Status: **Complete**
+
+- [x] Commit-specific Runtime
+- [x] Non-root system LaunchDaemon
+- [x] Headless reboot recovery
+- [x] Read-only Shadow API
+- [x] Localhost-only listener
+- [x] 24-hour observation
+- [x] Canonical installation manager
+- [x] Transactional apply
+- [x] Transactional rollback
+- [x] launchd settle policy
+- [x] Final apply validation
+- [x] Final restart validation
+- [x] Documentation closeout
+
+### Next Program Phase
+
+- [ ] AIControlCenter REST API consolidation
+- [ ] Dashboard integration
+- [ ] Homepage integration
+- [ ] Ubuntu Worker read-only JSON APIs
+- [ ] n8n read-only workflows
+- [ ] Production cutover design and approval
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->

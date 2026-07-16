@@ -153,70 +153,44 @@ Runtime validation:
 - Product detail HTTP 200
 - Missing product HTTP 404
 
-<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
-## Mac Control Plane Runtime Status
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
+## Mac Control Plane Production Baseline
 
-            The Mac mini now runs the AIControlCenter
-            read-only Shadow API under a headless,
-            non-root system LaunchDaemon.
+The Mac mini M4 is the always-on Brain and the
+single AIControlCenter Control Plane.
 
-            - Supervisor:
-              `system/com.aicontrolcenter.api.shadow`
-            - Application user: `kyouhan`
-            - Process state: `running`
-            - Endpoint: `http://127.0.0.1:18100`
-            - Health contract: HTTP `200`
-            - Mutating request contract: HTTP `405`
-            - Runtime:
-              `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/0f1b4c5d8aba`
-            - Automatic restart:
-              `1661 → 1975`
-            - GUI login required: `false`
-            - Ubuntu Control Plane replaced: `false`
-            - Secret migration completed: `false`
+Current validated baseline:
 
-            Current production milestone:
-            Headless Reboot Recovery Gate.
-
-            - Generated: `2026-07-14T03:31:53+00:00`
 - Branch: `sprint/mac-control-plane-foundation`
-- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
-- Runtime commit: `db4d93a2652a`
-<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
+- Commit: `1e102c001c28108bee9583294abee77ce7d43643`
+- Runtime commit: `1e102c001c28`
+- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/1e102c001c28`
+- Supervisor:
+  `system/com.aicontrolcenter.api.shadow`
+- Application user: `kyouhan`
+- Listener: `127.0.0.1:18100`
+- Health contract: HTTP `200`
+- Mutating request contract: HTTP `405`
+- Mode: `shadow-read-only`
+- GUI login required: `false`
+- Transactional canonical apply: implemented
+- Transactional rollback: implemented
+- launchd bootout settle policy: 2 seconds
+- Final restart: `19761 → 19842`
 
-<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
-## Mac Headless Control Plane Status
+Shadow observation:
 
-            The AIControlCenter Shadow API recovered
-            automatically after a full system reboot
-            without requiring a GUI login.
+- Duration: `23.535` hours
+- Samples: `283/283` passed
+- Failed samples: `0`
+- Success ratio: `100.0%`
+- PID transitions: `0`
+- Observation SHA-256:
+  `a1c79121ff04699d0ee717d72aa158e81c954fe84387c0689a1c5c08fb83519d`
+- Summary SHA-256:
+  `c980df46e94b40b0b72086a55501f2cad4f748ad98d4f6ec7ceea9c15a02c8de`
 
-            - Supervisor:
-              `system/com.aicontrolcenter.api.shadow`
-            - Listener: `127.0.0.1:18100`
-            - Mode: `shadow-read-only`
-            - Headless reboot recovery: `passed`
-            - Ubuntu production cutover: `not started`
-
-            - Verified: `2026-07-14T04:11:33+00:00`
-- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
-- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
-- Pre-reboot PID: `875`
-- Post-reboot PID: `567`
-- Process user: `kyouhan`
-- Health HTTP: `200`
-- Write probe HTTP: `405`
-<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
-
-<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
-## 24-Hour Shadow Observation
-
-The Mac Control Plane is configured for a read-only
-24-hour Shadow observation.
-
-- Sample interval: `300 seconds`
-- Storage:
-  `/var/log/aicontrolcenter/shadow-observation.jsonl`
-- Production cutover: `blocked pending observation`
-- Observation configured: `2026-07-14T04:19:41+00:00`
-<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
+Control Plane implementation is complete.
+Production write cutover remains blocked pending
+an explicit Production approval.
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->

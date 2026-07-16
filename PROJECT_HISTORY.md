@@ -177,3 +177,31 @@ No production cutover was performed.
 
 Configured: `2026-07-14T04:19:41+00:00`
 <!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
+
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
+## 2026-07-16 — Mac Control Plane Completed
+
+The Mac mini M4 Control Plane completed its
+foundation and operational validation program.
+
+Milestones:
+
+- Headless system LaunchDaemon recovery
+- Non-root AIControlCenter execution
+- Commit-specific Runtime enforcement
+- `23.535`-hour Shadow observation
+- `283/283` successful observations
+- Canonical manager reconciliation
+- Transactional apply and rollback
+- launchd settle policy
+- Final canonical apply
+- Final restart:
+  `19761 → 19842`
+- Health HTTP `200`
+- Write protection HTTP `405`
+- Localhost-only listener `127.0.0.1:18100`
+
+The Control Plane implementation is complete.
+Ubuntu remains a stateless infrastructure worker.
+Production write cutover is intentionally deferred.
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->

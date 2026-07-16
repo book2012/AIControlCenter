@@ -160,95 +160,30 @@ Next production milestone:
 
 - Mac mini Production Control Plane migration
 
-<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:START -->
-## Mac Control Plane Master Status
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
+## Mac Control Plane Baseline
 
-            ### Completed
+Status: **Implementation Complete**
 
-            - Mac Foundation Gate
-            - Runtime Contract discovery
-            - Commit-specific Python Runtime
-            - Production Runtime Gate
-            - Read-only Health Runtime Gate
-            - Shadow API write protection
-            - Non-root system LaunchDaemon
-            - Secure root-owned plist and runner
-            - Automatic process restart
-            - Localhost-only listener
+- Final commit: `1e102c001c28108bee9583294abee77ce7d43643`
+- Runtime commit: `1e102c001c28`
+- Service:
+  `system/com.aicontrolcenter.api.shadow`
+- Application user: `kyouhan`
+- Health: HTTP `200`
+- Write protection: HTTP `405`
+- Listener: `127.0.0.1:18100`
+- Final restart: `19761 → 19842`
+- Observation:
+  `283/283` successful samples
+- Observation duration:
+  `23.535` hours
+- Transactional apply: complete
+- Transactional rollback: complete
+- Production write cutover: not approved
 
-            ### Current State
+Next program milestone:
 
-            - Service:
-              `system/com.aicontrolcenter.api.shadow`
-            - Runtime:
-              `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/0f1b4c5d8aba`
-            - Process user: `kyouhan`
-            - Endpoint: `127.0.0.1:18100`
-            - Health: HTTP `200`
-            - Mutating requests: HTTP `405`
-            - LaunchDaemon Gate: passed
-
-            ### Current Production Milestone
-
-            Headless Reboot Recovery Gate without a GUI
-            login session.
-
-            ### Cutover Rule
-
-            Ubuntu AIControlCenter must remain active until:
-
-            - headless reboot recovery passes
-            - 24-hour Shadow observation passes
-            - Ubuntu Worker JSON read-only integration passes
-            - rollback validation passes
-
-            - Generated: `2026-07-14T03:31:53+00:00`
-- Branch: `sprint/mac-control-plane-foundation`
-- Commit: `db4d93a2652a704dfa9a7e149623064adb961504`
-- Runtime commit: `db4d93a2652a`
-<!-- AICONTROLCENTER:MAC_SHADOW_DAEMON:END -->
-
-<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:START -->
-## Mac Control Plane Milestone
-
-            ### Completed
-
-            - Non-root system LaunchDaemon
-            - Automatic process restart
-            - Localhost-only Shadow API
-            - Health and write-protection contracts
-            - GUI-independent reboot recovery
-            - Commit-specific Runtime recovery
-
-            ### Current Production Gate
-
-            Reconcile the repository installer with the
-            canonical plist, then complete the 24-hour
-            Shadow observation.
-
-            Ubuntu remains the active infrastructure and
-            fallback platform until cutover approval.
-
-            - Verified: `2026-07-14T04:11:33+00:00`
-- Commit: `aadb42089642a17f54825b850626bd43d5e22015`
-- Runtime: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/aadb42089642`
-- Pre-reboot PID: `875`
-- Post-reboot PID: `567`
-- Process user: `kyouhan`
-- Health HTTP: `200`
-- Write probe HTTP: `405`
-<!-- AICONTROLCENTER:HEADLESS_REBOOT_RECOVERY:END -->
-
-<!-- AICONTROLCENTER:SHADOW_OBSERVATION:START -->
-## Current Production Milestone
-
-The Headless Reboot Recovery milestone is complete.
-
-The current milestone is 24-Hour Shadow Observation.
-
-Production cutover remains blocked until the observation
-Gate, installer reconciliation, rollback validation, and
-documentation Gate all pass.
-
-Configured: `2026-07-14T04:19:41+00:00`
-<!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
+AIControlCenter Platform Integration using the
+completed Mac Control Plane baseline.
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->

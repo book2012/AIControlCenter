@@ -108,3 +108,34 @@ Responsibilities:
 - Missing products return HTTP 404.
 - Ubuntu remains an infrastructure worker.
 - Mac mini remains the Production Control Plane.
+
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
+## Mac Control Plane Runtime
+
+Mac mini M4
+
+- Supervisor:
+  `system/com.aicontrolcenter.api.shadow`
+- Runner ownership: `root:wheel`
+- Application user: `kyouhan`
+- Runtime commit: `1e102c001c28`
+- Runtime path: `/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/venvs/1e102c001c28`
+- Endpoint: `127.0.0.1:18100`
+- Mode: `shadow-read-only`
+
+Operational contracts:
+
+- Repository commit:
+  `1e102c001c28108bee9583294abee77ce7d43643`
+- Health: HTTP `200`
+- Mutating methods: HTTP `405`
+- Automatic restart:
+  `19761 → 19842`
+- Transactional canonical apply: enabled
+- Transactional rollback: enabled
+- launchd bootout settle interval: 2 seconds
+
+Ubuntu remains an optional stateless worker and
+does not own AIControlCenter business logic or
+application state.
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->

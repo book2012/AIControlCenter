@@ -1,5 +1,42 @@
 # CHANGELOG
 
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:START -->
+## 2026-07-16 — Mac Control Plane Baseline
+
+### Added
+
+- Commit-specific Mac Runtime
+- Non-root system LaunchDaemon
+- Canonical launchd manager and executor
+- Transactional canonical apply
+- Transactional rollback
+- launchd bootout settle policy
+- Restart and recovery validation
+- Read-only Shadow API monitoring
+
+### Validation
+
+- Final commit: `1e102c001c28108bee9583294abee77ce7d43643`
+- Runtime: `1e102c001c28`
+- Observation:
+  `283/283` samples passed
+- Observation duration:
+  `23.535` hours
+- Health: HTTP `200`
+- Write protection: HTTP `405`
+- Listener: `127.0.0.1:18100`
+- Final restart:
+  `19761 → 19842`
+
+### Safety
+
+- AIControlCenter runs as `kyouhan`.
+- Installed plist and runner remain root-owned.
+- The API remains localhost-only.
+- Mutating requests remain blocked.
+- Production write cutover remains disabled.
+<!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
 ## v0.9.0
 
 Added
@@ -23,7 +60,6 @@ Added
 - Job Registry
 - Scheduler API
 - Automation Foundation
-
 
 ## Scheduler Foundation
 
