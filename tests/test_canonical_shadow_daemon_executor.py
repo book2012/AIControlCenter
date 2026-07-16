@@ -257,3 +257,38 @@ def test_apply_stops_on_first_required_failure() -> None:
     assert result["transaction"][
         "rollback_attempted"
     ] is True
+def test_bootout_includes_settle_delay() -> None:
+    module = load_module()
+
+    result = module.execute(
+        root=ROOT,
+        apply=False,
+    )
+
+    commands = result["commands"]
+
+    bootout_index = next(
+        index
+        for index, command in enumerate(commands)
+        if (
+            command["step"]
+            == "launchctl_bootout_if_loaded"
+            and
+            command.get("phase") == "bootout"
+        )
+    )
+
+    settle_command = commands[
+        bootout_index + 1
+    ]
+
+    assert settle_command["step"] == (
+        "launchctl_bootout_if_loaded"
+    )
+
+    assert settle_command["phase"] == "settle"
+
+    assert settle_command["argv"] == [
+        "/bin/sleep",
+        "2",
+    ]
