@@ -32,7 +32,10 @@ class MonitoringSnapshot:
                     "status": "OPTIONAL_UNAVAILABLE",
                     "optional": True,
                 }
-                error = str(exc)
+                error = {
+                    "type": type(exc).__name__,
+                    "message": str(exc),
+                }
 
             data[worker_name] = {
                 "worker": worker_status,
