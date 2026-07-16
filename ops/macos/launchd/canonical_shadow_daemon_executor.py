@@ -121,13 +121,23 @@ def compile_step(
         return [
             {
                 "step": step_type,
+                "phase": "bootout",
                 "argv": [
                     "/bin/launchctl",
                     "bootout",
                     str(step["service"]),
                 ],
                 "allow_nonzero": True,
-            }
+            },
+            {
+                "step": step_type,
+                "phase": "settle",
+                "argv": [
+                    "/bin/sleep",
+                    "2",
+                ],
+                "allow_nonzero": False,
+            },
         ]
 
     if step_type == "launchctl_bootstrap":
@@ -316,13 +326,23 @@ def compile_rollback_commands(
     commands: list[dict[str, Any]] = [
         {
             "step": "rollback_bootout",
+            "phase": "bootout",
             "argv": [
                 "/bin/launchctl",
                 "bootout",
                 SERVICE,
             ],
             "allow_nonzero": True,
-        }
+        },
+        {
+            "step": "rollback_bootout",
+            "phase": "settle",
+            "argv": [
+                "/bin/sleep",
+                "2",
+            ],
+            "allow_nonzero": False,
+        },
     ]
 
     assets = snapshot["assets"]
