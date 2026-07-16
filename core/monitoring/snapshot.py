@@ -24,7 +24,10 @@ class MonitoringSnapshot:
         for worker_name in workers:
             try:
                 worker = self.worker_factory.create(worker_name)
-                worker_status = worker.status()
+                if hasattr(worker, "health_status"):
+                    worker_status = worker.health_status()
+                else:
+                    worker_status = worker.status()
                 error = None
             except Exception as exc:
                 worker_status = {
