@@ -1,21 +1,19 @@
 workers:
-
   ubuntu-main:
     type: ubuntu
     mode: local
-
     host: localhost
     user: han
     port: 22
-
     scripts: /opt/aihomedatacenter/scripts
-
+    timeout_seconds: 10
+    connect_timeout_seconds: 5
   ubuntu-remote:
     type: ubuntu
     mode: ssh
-
     host: 192.168.1.7
     user: han
     port: 22
-
     scripts: /opt/aihomedatacenter/scripts
+    timeout_seconds: 10
+    connect_timeout_seconds: 5

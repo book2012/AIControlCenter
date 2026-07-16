@@ -21,8 +21,11 @@ class WorkerFactory:
         else:
             runner = SSHRunner(
                 host=cfg["host"],
-                user=cfg["user"],
-                port=cfg["port"],
+                user=cfg.get("user"),
+                port=cfg.get("port"),
+                identity_file=cfg.get("identity_file"),
+                timeout_seconds=cfg.get("timeout_seconds", 10),
+                connect_timeout_seconds=cfg.get("connect_timeout_seconds", 5),
             )
 
         return UbuntuWorkerClient(

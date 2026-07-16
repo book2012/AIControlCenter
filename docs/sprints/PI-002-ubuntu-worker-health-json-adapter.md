@@ -41,3 +41,10 @@ Required fields:
 - `available`: boolean
 
 Invalid JSON, non-object payloads, missing fields and unsupported schema versions are rejected.
+
+## SSH Transport Contract
+
+- SSH uses non-interactive `BatchMode=yes`.
+- SSH connection establishment has a bounded timeout.
+- Remote command execution has a bounded subprocess timeout.
+- Timeout failures are normalized as `ssh_command_timeout`.

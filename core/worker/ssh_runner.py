@@ -11,11 +11,15 @@ class SSHRunner(Runner):
         user=None,
         port=None,
         identity_file=None,
+        timeout_seconds=10,
+        connect_timeout_seconds=5,
     ):
         self.host = host
         self.user = user
         self.port = port
         self.identity_file = identity_file
+        self.timeout_seconds = timeout_seconds
+        self.connect_timeout_seconds = connect_timeout_seconds
 
     def run(self, command):
 
@@ -27,7 +31,13 @@ class SSHRunner(Runner):
         if self.user:
             target = f"{self.user}@{self.host}"
 
-        ssh = ["ssh"]
+        ssh = [
+            "ssh",
+            "-o",
+            "BatchMode=yes",
+            "-o",
+            f"ConnectTimeout={self.connect_timeout_seconds}",
+        ]
 
         if self.port:
             ssh.extend(["-p", str(self.port)])
@@ -43,12 +53,15 @@ class SSHRunner(Runner):
             )
 
         ssh.extend([target, command])
-
-        result = subprocess.run(
-            ssh,
-            capture_output=True,
-            text=True,
-            check=True,
-        )
+        try:
+            result = subprocess.run(
+                ssh,
+                capture_output=True,
+                text=True,
+                check=True,
+                timeout=self.timeout_seconds,
+            )
+        except subprocess.TimeoutExpired as exc:
+            raise TimeoutError("ssh_command_timeout") from exc
 
         return result.stdout.strip()
