@@ -31,3 +31,14 @@ def test_dashboard_route_exposes_control_plane_status() -> None:
     assert data["control_plane"]["mode"] == "shadow"
     assert data["control_plane"]["read_only"] is True
     assert data["control_plane"]["listener"] == "127.0.0.1:18100"
+
+def test_dashboard_control_plane_includes_runtime_status() -> None:
+    data = DashboardAPI().status(
+        include_datacenter=False
+    )
+
+    assert "runtime" in data["control_plane"]
+    assert "available" in data["control_plane"]["runtime"]
+    assert "commit" in data["control_plane"]["runtime"]
+    assert "short_commit" in data["control_plane"]["runtime"]
+    assert "error" in data["control_plane"]["runtime"]
