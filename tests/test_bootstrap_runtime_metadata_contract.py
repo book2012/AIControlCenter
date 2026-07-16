@@ -28,3 +28,23 @@ def test_bootstrap_validates_metadata_before_switch() -> None:
     assert "RuntimeMetadataGenerator" in content
     assert "RuntimeMetadata" in content
     assert 'metadata["available"] is not True' in content
+
+def test_bootstrap_uses_fail_closed_error_handling() -> None:
+    content = SCRIPT.read_text(encoding="utf-8")
+
+    assert "set -Eeuo pipefail" in content
+    assert "trap 'handle_error $?' ERR" in content
+
+def test_metadata_validation_precedes_symlink_activation() -> None:
+    content = SCRIPT.read_text(encoding="utf-8")
+
+    metadata_validation = content.index(
+        'if metadata["available"] is not True:'
+    )
+    activation_step = content.index(
+        'CURRENT_STEP="activate runtime"'
+    )
+    symlink_switch = content.index("ln -sfn")
+
+    assert metadata_validation < activation_step
+    assert activation_step < symlink_switch
