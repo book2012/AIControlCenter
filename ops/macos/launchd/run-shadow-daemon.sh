@@ -1,5 +1,32 @@
 #!/usr/bin/env bash
 
+set -eu
+
+WORKER_ENV_FILE="${AICONTROLCENTER_WORKER_ENV_FILE:-/Library/Application Support/AIControlCenter/worker.env}"
+
+if [ -f "$WORKER_ENV_FILE" ]; then
+  OWNER="$(stat -f "%Su" "$WORKER_ENV_FILE")"
+  MODE="$(stat -f "%OLp" "$WORKER_ENV_FILE")"
+
+  if [ "$OWNER" != "root" ]; then
+    echo "[FAIL] Worker environment must be owned by root" >&2
+    exit 1
+  fi
+
+  case "$MODE" in
+    600|400)
+      ;;
+    *)
+      echo "[FAIL] Worker environment permissions must be 600 or 400" >&2
+      exit 1
+      ;;
+  esac
+
+  set -a
+  . "$WORKER_ENV_FILE"
+  set +a
+fi
+
 set -Eeuo pipefail
 
 umask 077
