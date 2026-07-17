@@ -225,3 +225,31 @@ Next Production Milestone:
 - Complete PI-001 documentation closeout.
 - Merge the feature branch after final review.
 - Define the next read-only Control Plane integration.
+
+<!-- AICONTROLCENTER:PI-002:START -->
+## PI-002 Production Status
+
+Status: **Production Gate Passed**
+
+Completed:
+
+- Ubuntu worker health JSON contract
+- Read-only SSH adapter
+- Production worker configuration
+- Dashboard worker monitoring
+- Structured optional failure continuity
+- system LaunchDaemon environment integration
+- Immutable runtime validation
+- Full regression validation
+
+Production state:
+
+- Mac mini owns orchestration and monitoring.
+- Ubuntu remains an optional stateless worker.
+- Worker unavailability does not interrupt the Control Plane.
+- Production writes remain disabled.
+
+Next operational milestone:
+
+- Establish successful dedicated-key SSH health collection from the LaunchDaemon.
+<!-- AICONTROLCENTER:PI-002:END -->

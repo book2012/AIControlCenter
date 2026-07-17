@@ -347,3 +347,24 @@ Status: **Complete**
 - [x] Runtime commit matches Git HEAD
 
 Production Runtime: `ba8d2c977257`
+
+<!-- AICONTROLCENTER:PI-002:START -->
+### PI-002 Ubuntu Worker Health JSON Adapter
+
+Status: **Complete — Structured Monitoring Gate**
+
+- [x] Define worker health JSON schema
+- [x] Implement bounded SSH transport
+- [x] Implement Ubuntu health JSON adapter
+- [x] Add Production worker configuration
+- [x] Add structured failure continuity
+- [x] Connect `ubuntu-main` to the Production Dashboard
+- [x] Validate immutable runtime deployment
+- [x] Validate system LaunchDaemon operation
+- [x] Validate Health and Dashboard HTTP `200`
+- [x] Validate full regression suite
+- [ ] Configure dedicated SSH identity for the service process
+- [ ] Validate successful remote worker telemetry
+
+Next milestone: Ubuntu Worker Healthy Telemetry.
+<!-- AICONTROLCENTER:PI-002:END -->

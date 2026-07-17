@@ -235,3 +235,40 @@ Architecture result:
 - AIControlCenter remains the orchestration layer.
 - Ubuntu remains a stateless infrastructure worker.
 - Dashboard requests do not execute Git, launchctl or shell commands.
+
+<!-- AICONTROLCENTER:PI-002:START -->
+## 2026-07-17 — PI-002 Ubuntu Worker Health JSON Adapter
+
+PI-002 established the first Production read-only integration between the Mac mini Control Plane and the Ubuntu infrastructure worker.
+
+Implemented:
+
+- Worker health JSON schema and validation
+- SSH transport timeouts and error handling
+- Production worker configuration selection
+- Worker monitoring through `MonitoringSnapshot`
+- Dashboard worker JSON integration
+- system LaunchDaemon worker environment loading
+- `root:staff 640` environment permission contract
+- Default `ubuntu-main` monitoring on `GET /dashboard`
+
+Production validation:
+
+- Implementation commit: `39dc5c3db72c9ac1592fc3920012aba3eacd23cd`
+- Immutable implementation runtime: `39dc5c3db72c`
+- LaunchDaemon PID during validation: `32297`
+- Health HTTP: `200`
+- Dashboard HTTP: `200`
+- Worker count: `1`
+- Worker JSON contract: valid
+- Full regression: `412 passed, 5 deselected`
+
+The remote SSH command returned exit status `255`. AIControlCenter correctly represented this as an optional structured worker error while preserving Dashboard availability.
+
+Architecture result:
+
+- AIControlCenter remains the single Control Plane.
+- Mac mini remains the always-on Brain.
+- Ubuntu remains a stateless optional infrastructure worker.
+- Infrastructure failure does not migrate business logic or state to Ubuntu.
+<!-- AICONTROLCENTER:PI-002:END -->

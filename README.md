@@ -234,3 +234,28 @@ Current validated PI-001 Runtime:
 - Health status: HTTP `200`
 - Dashboard status: HTTP `200`
 - Write probe: HTTP `405`
+
+<!-- AICONTROLCENTER:PI-002:START -->
+## Ubuntu Worker Monitoring
+
+AIControlCenter exposes Ubuntu worker monitoring through the Mac mini Control Plane.
+
+Production endpoints:
+
+- `GET /health` — Control Plane availability
+- `GET /dashboard` — integrated Control Plane and worker status
+- `GET /workers` — worker monitoring data
+
+The Production Dashboard monitors `ubuntu-main` by default.
+
+Worker transport failures are represented as structured JSON with `OPTIONAL_UNAVAILABLE` status. The Dashboard remains available with HTTP `200`.
+
+Production baseline:
+
+- Implementation commit: `39dc5c3db72c9ac1592fc3920012aba3eacd23cd`
+- Immutable implementation runtime: `39dc5c3db72c`
+- Supervisor: system LaunchDaemon
+- Worker configuration: `config/workers.mac-production.yaml`
+- Worker environment contract: `root:staff 640`
+- Regression result: `412 passed, 5 deselected`
+<!-- AICONTROLCENTER:PI-002:END -->

@@ -497,3 +497,41 @@ Added:
 
 Configured: `2026-07-14T04:19:41+00:00`
 <!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
+
+<!-- AICONTROLCENTER:PI-002:START -->
+## 2026-07-17 — PI-002 Ubuntu Worker Health JSON Adapter
+
+### Added
+
+- Versioned Ubuntu worker health JSON contract
+- Bounded SSH worker transport
+- Ubuntu worker health adapter
+- Production worker configuration selection
+- Structured worker monitoring errors
+- Dashboard worker health JSON integration
+- Production worker environment loader
+- Immutable runtime Production Gate evidence
+
+### Changed
+
+- `GET /dashboard` now monitors `ubuntu-main` by default.
+- The canonical runner validates worker environment ownership, group and mode.
+- The worker environment contract is `root:staff 640`.
+
+### Verified
+
+- Implementation commit: `39dc5c3db72c9ac1592fc3920012aba3eacd23cd`
+- Runtime commit matched the implementation Git HEAD.
+- system LaunchDaemon ran as `kyouhan:staff`.
+- `GET /health` returned HTTP `200`.
+- `GET /dashboard` returned HTTP `200`.
+- Dashboard returned one `ubuntu-main` worker object.
+- Worker errors were returned as structured JSON.
+- Full regression: `412 passed, 5 deselected`.
+
+### Pending
+
+- Configure the dedicated SSH identity for the LaunchDaemon worker adapter.
+- Validate a successful remote `worker-health-json.sh` response.
+- Resolve Python and Starlette deprecation warnings.
+<!-- AICONTROLCENTER:PI-002:END -->

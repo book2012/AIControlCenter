@@ -213,3 +213,44 @@ Dashboard requests must not execute:
 Ubuntu remains a stateless infrastructure worker.
 
 Ubuntu is not involved in Control Plane business logic or AI workloads.
+
+<!-- AICONTROLCENTER:PI-002:START -->
+## PI-002 Ubuntu Worker Health JSON Adapter
+
+AIControlCenter monitors the Ubuntu infrastructure worker through a read-only JSON adapter.
+
+Production execution path:
+
+```text
+system LaunchDaemon
+→ canonical Mac runner
+→ root-owned worker environment
+→ production worker configuration
+→ SSH transport adapter
+→ Ubuntu worker health JSON script
+→ MonitoringSnapshot
+→ Dashboard JSON
+```
+
+Production contracts:
+
+- Mac mini remains the Control Plane.
+- Ubuntu remains a stateless infrastructure worker.
+- Ubuntu does not own platform business logic or application state.
+- Worker integrations are read-only.
+- Worker transport is bounded by connection and command timeouts.
+- Worker failures return structured optional-error JSON.
+- Worker failure does not make the Control Plane API unavailable.
+- `GET /dashboard` monitors `ubuntu-main` by default.
+
+Runtime configuration:
+
+- Supervisor: `system/com.aicontrolcenter.api.shadow`
+- Runtime user and group: `kyouhan:staff`
+- Worker environment: `/Library/Application Support/AIControlCenter/worker.env`
+- Worker environment ownership and mode: `root:staff 640`
+- Production worker config: `config/workers.mac-production.yaml`
+- Local listener: `127.0.0.1:18100`
+
+The worker environment contains configuration only. SSH private keys and passwords are not stored in it.
+<!-- AICONTROLCENTER:PI-002:END -->

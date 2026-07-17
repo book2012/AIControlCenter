@@ -194,3 +194,24 @@ Status: **Complete**
 Production writes remain disabled until monitoring
 and validation are stable.
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
+<!-- AICONTROLCENTER:PI-002:START -->
+## PI-002 Follow-up Tasks
+
+### Completed
+
+- [x] Define Ubuntu worker read-only JSON API contract
+- [x] Add Worker health monitoring
+- [x] Add Production Dashboard worker integration
+- [x] Add structured worker failure continuity
+- [x] Validate system LaunchDaemon and immutable runtime
+
+### Next Sprint
+
+- [ ] Configure the dedicated SSH key for non-interactive LaunchDaemon access
+- [ ] Verify host-key configuration for `192.168.1.7`
+- [ ] Validate `/opt/aihomedatacenter/scripts/commands/worker-health-json.sh` remotely
+- [ ] Confirm healthy worker JSON in `GET /dashboard`
+- [ ] Replace deprecated `datetime.utcnow()` usage
+- [ ] Review Starlette and httpx compatibility warnings
+<!-- AICONTROLCENTER:PI-002:END -->
