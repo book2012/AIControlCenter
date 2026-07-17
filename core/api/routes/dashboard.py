@@ -7,4 +7,4 @@ router = APIRouter()
 
 @router.get("/dashboard")
 def dashboard():
-    return DashboardAPI().status()
+    return DashboardAPI().status(["ubuntu-main"])
