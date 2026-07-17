@@ -6,6 +6,7 @@ WORKER_ENV_FILE="${AICONTROLCENTER_WORKER_ENV_FILE:-/Library/Application Support
 
 if [ -f "$WORKER_ENV_FILE" ]; then
   OWNER="$(stat -f "%Su" "$WORKER_ENV_FILE")"
+  GROUP="$(stat -f "%Sg" "$WORKER_ENV_FILE")"
   MODE="$(stat -f "%OLp" "$WORKER_ENV_FILE")"
 
   if [ "$OWNER" != "root" ]; then
@@ -13,14 +14,15 @@ if [ -f "$WORKER_ENV_FILE" ]; then
     exit 1
   fi
 
-  case "$MODE" in
-    600|400)
-      ;;
-    *)
-      echo "[FAIL] Worker environment permissions must be 600 or 400" >&2
-      exit 1
-      ;;
-  esac
+  if [ "$GROUP" != "staff" ]; then
+    echo "[FAIL] Worker environment group must be staff" >&2
+    exit 1
+  fi
+
+  if [ "$MODE" != "640" ]; then
+    echo "[FAIL] Worker environment permissions must be 640" >&2
+    exit 1
+  fi
 
   set -a
   . "$WORKER_ENV_FILE"
