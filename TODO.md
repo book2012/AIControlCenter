@@ -215,3 +215,33 @@ and validation are stable.
 - [ ] Replace deprecated `datetime.utcnow()` usage
 - [ ] Review Starlette and httpx compatibility warnings
 <!-- AICONTROLCENTER:PI-002:END -->
+
+<!-- AICONTROLCENTER:PI-003:START -->
+## PI-003 Closure and PI-004 Priorities
+
+### PI-003 Completed
+
+- [x] Ubuntu boot recovery validation
+- [x] Immich automatic activation
+- [x] Nextcloud automatic activation
+- [x] Mac standalone health validation
+- [x] Optional worker failure continuity
+
+### PI-004 P0
+
+- [ ] Inventory all Mac mini services and ports
+- [ ] Validate AIControlCenter after Mac reboot
+- [ ] Deploy and validate Mac Homepage
+- [ ] Validate Ollama and AI provider health
+- [ ] Validate n8n deployment status
+- [ ] Define service manifest and ownership
+- [ ] Automate install, update, restart and rollback
+
+### Ubuntu Backlog
+
+- [ ] BACKLOG-U01 Dedicated SSH identity
+- [ ] BACKLOG-U02 Healthy Ubuntu telemetry
+- [ ] BACKLOG-U03 Detailed storage monitoring
+- [ ] BACKLOG-U04 Backup verification
+- [ ] BACKLOG-U05 Worker lifecycle automation
+<!-- AICONTROLCENTER:PI-003:END -->

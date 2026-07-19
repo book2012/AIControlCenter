@@ -253,3 +253,26 @@ Next operational milestone:
 
 - Establish successful dedicated-key SSH health collection from the LaunchDaemon.
 <!-- AICONTROLCENTER:PI-002:END -->
+
+<!-- AICONTROLCENTER:PI-003:START -->
+## PI-003 Production Status
+
+Status: **Complete**
+
+Primary platform milestone:
+
+- Mac mini standalone Production Control Plane
+
+Ubuntu status:
+
+- Optional infrastructure extension
+- May remain powered off
+- Immich and Nextcloud recover automatically after Ubuntu boot
+- Detailed Ubuntu integration deferred
+
+Production result:
+
+- AIControlCenter operates independently of Ubuntu.
+- Optional worker failure does not interrupt the platform.
+- Mac mini service deployment is now the primary program focus.
+<!-- AICONTROLCENTER:PI-003:END -->

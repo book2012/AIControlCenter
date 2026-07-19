@@ -368,3 +368,32 @@ Status: **Complete — Structured Monitoring Gate**
 
 Next milestone: Ubuntu Worker Healthy Telemetry.
 <!-- AICONTROLCENTER:PI-002:END -->
+
+<!-- AICONTROLCENTER:PI-003:START -->
+### PI-003 Ubuntu Worker Minimum Closure
+
+Status: **Complete**
+
+- [x] Confirm Ubuntu is an optional worker
+- [x] Confirm Docker boot activation
+- [x] Confirm Immich automatic recovery
+- [x] Confirm Nextcloud automatic recovery
+- [x] Confirm `unless-stopped` restart policies
+- [x] Power off Ubuntu after validation
+- [x] Validate Mac Control Plane standalone operation
+- [x] Validate Health HTTP `200`
+- [x] Validate Dashboard HTTP `200`
+- [x] Validate structured optional-worker failure
+
+### PI-004 Mac Standalone Production Baseline
+
+Status: **Next**
+
+- [ ] Inventory Mac mini services
+- [ ] Validate Mac reboot recovery
+- [ ] Define service deployment manifest
+- [ ] Deploy Homepage on the Mac mini
+- [ ] Validate local AI runtime and provider health
+- [ ] Validate automation service deployment
+- [ ] Add install, update and rollback automation
+<!-- AICONTROLCENTER:PI-003:END -->

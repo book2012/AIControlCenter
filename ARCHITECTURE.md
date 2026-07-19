@@ -254,3 +254,27 @@ Runtime configuration:
 
 The worker environment contains configuration only. SSH private keys and passwords are not stored in it.
 <!-- AICONTROLCENTER:PI-002:END -->
+
+<!-- AICONTROLCENTER:PI-003:START -->
+## PI-003 Ubuntu Worker Minimum Closure
+
+The Mac mini Control Plane must remain fully operational when the Ubuntu worker is powered off or unavailable.
+
+Architecture contract:
+
+- Mac mini is the mandatory always-on Control Plane.
+- Ubuntu is an optional on-demand infrastructure worker.
+- Ubuntu does not own AI workloads, platform business logic or Control Plane state.
+- Ubuntu unavailability must not interrupt AIControlCenter health or Dashboard availability.
+- Worker failures are represented as structured optional JSON errors.
+- Immich and Nextcloud are Ubuntu-local infrastructure services.
+- Ubuntu-local containers recover through `docker.service` and `restart: unless-stopped`.
+
+Validated standalone behavior:
+
+- AIControlCenter remained `ONLINE` with Ubuntu powered off.
+- `GET /health` returned HTTP `200`.
+- `GET /dashboard` returned HTTP `200`.
+- `ubuntu-main` returned `OPTIONAL_UNAVAILABLE`.
+- The Control Plane continued operating without Ubuntu.
+<!-- AICONTROLCENTER:PI-003:END -->

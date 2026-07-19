@@ -272,3 +272,33 @@ Architecture result:
 - Ubuntu remains a stateless optional infrastructure worker.
 - Infrastructure failure does not migrate business logic or state to Ubuntu.
 <!-- AICONTROLCENTER:PI-002:END -->
+
+<!-- AICONTROLCENTER:PI-003:START -->
+## 2026-07-19 — PI-003 Ubuntu Worker Minimum Closure
+
+PI-003 closed the initial Ubuntu integration program and shifted platform priority to the Mac mini standalone Production environment.
+
+Ubuntu boot validation confirmed:
+
+- `docker.service` was enabled and active.
+- Immich containers started automatically.
+- Nextcloud containers started automatically.
+- Required containers used `restart: unless-stopped`.
+- Immich returned HTTP `200` before shutdown.
+- Nextcloud returned the expected login redirect.
+
+Mac standalone validation confirmed after Ubuntu shutdown:
+
+- AIControlCenter Control Plane health: `ONLINE`
+- Health endpoint: HTTP `200`
+- Dashboard endpoint: HTTP `200`
+- Ubuntu worker status: `OPTIONAL_UNAVAILABLE`
+- Optional worker errors remained structured JSON.
+- Validated implementation runtime: `85e0d2186dcd`
+
+Architecture decision:
+
+- Ubuntu may remain powered off until infrastructure services are required.
+- Mac mini standalone service deployment is the next Production priority.
+- Detailed Ubuntu telemetry and lifecycle automation were moved to backlog.
+<!-- AICONTROLCENTER:PI-003:END -->

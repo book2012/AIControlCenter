@@ -535,3 +535,33 @@ Configured: `2026-07-14T04:19:41+00:00`
 - Validate a successful remote `worker-health-json.sh` response.
 - Resolve Python and Starlette deprecation warnings.
 <!-- AICONTROLCENTER:PI-002:END -->
+
+<!-- AICONTROLCENTER:PI-003:START -->
+## 2026-07-19 — PI-003 Ubuntu Worker Minimum Closure
+
+### Changed
+
+- Reclassified Ubuntu as an optional on-demand infrastructure worker.
+- Prioritized Mac mini standalone Production operation.
+- Deferred detailed Ubuntu telemetry and lifecycle automation.
+
+### Verified
+
+- Ubuntu reboot automatically activated Docker.
+- Immich automatically restarted after Ubuntu boot.
+- Nextcloud automatically restarted after Ubuntu boot.
+- Required containers use `restart: unless-stopped`.
+- Ubuntu was powered off after service recovery validation.
+- AIControlCenter remained `ONLINE`.
+- Health endpoint returned HTTP `200`.
+- Dashboard endpoint returned HTTP `200`.
+- `ubuntu-main` returned structured `OPTIONAL_UNAVAILABLE` status.
+- Validated implementation runtime commit: `85e0d2186dcd9338dea4288e629092bd62f882e8`.
+
+### Deferred
+
+- Dedicated LaunchDaemon SSH identity
+- Healthy Ubuntu telemetry
+- Detailed storage and backup monitoring
+- Worker lifecycle automation
+<!-- AICONTROLCENTER:PI-003:END -->

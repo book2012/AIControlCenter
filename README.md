@@ -259,3 +259,26 @@ Production baseline:
 - Worker environment contract: `root:staff 640`
 - Regression result: `412 passed, 5 deselected`
 <!-- AICONTROLCENTER:PI-002:END -->
+
+<!-- AICONTROLCENTER:PI-003:START -->
+## Mac Standalone and Optional Ubuntu Worker
+
+AIControlCenter runs independently on the Mac mini when the Ubuntu worker is offline.
+
+Validated behavior:
+
+- Control Plane health remains `ONLINE`.
+- `GET /health` remains HTTP `200`.
+- `GET /dashboard` remains HTTP `200`.
+- The offline Ubuntu worker is reported as `OPTIONAL_UNAVAILABLE`.
+- Worker errors remain structured JSON.
+
+Ubuntu service recovery:
+
+- Docker is enabled and active after boot.
+- Immich containers start automatically.
+- Nextcloud containers start automatically.
+- Required containers use `restart: unless-stopped`.
+
+Ubuntu may remain powered off until its infrastructure services are required.
+<!-- AICONTROLCENTER:PI-003:END -->
