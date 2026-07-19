@@ -1,0 +1,93 @@
+{
+  "schema_version": "1.0",
+  "profile": "mac-standalone-production",
+  "control_plane": {
+    "host_role": "brain",
+    "required": true,
+    "ubuntu_dependency": false
+  },
+  "services": [
+    {
+      "service_id": "aicontrolcenter-api",
+      "role": "control-plane",
+      "owner": "aicontrolcenter",
+      "required": true,
+      "production_status": "PRODUCTION",
+      "runtime": "python-immutable-venv",
+      "supervisor": "system-launchdaemon",
+      "launchd_label": "com.aicontrolcenter.api.shadow",
+      "listen_host": "127.0.0.1",
+      "port": 18100,
+      "health_endpoint": "/health",
+      "dashboard_endpoint": "/dashboard",
+      "ubuntu_dependency": false,
+      "state_policy": "control-plane-owned"
+    },
+    {
+      "service_id": "homepage-api",
+      "role": "presentation-api",
+      "owner": "aicontrolcenter",
+      "required": true,
+      "production_status": "PRODUCTION",
+      "runtime": "embedded-aicontrolcenter-api",
+      "supervisor": "system-launchdaemon",
+      "launchd_label": "com.aicontrolcenter.api.shadow",
+      "listen_host": "127.0.0.1",
+      "port": 18100,
+      "health_endpoint": "/homepage/status",
+      "ubuntu_dependency": false,
+      "state_policy": "read-only-projection"
+    },
+    {
+      "service_id": "ubuntu-main",
+      "role": "optional-infrastructure-worker",
+      "owner": "ubuntu-worker",
+      "required": false,
+      "production_status": "OPTIONAL_UNAVAILABLE_ALLOWED",
+      "runtime": "external-host",
+      "supervisor": "external",
+      "ubuntu_dependency": true,
+      "state_policy": "stateless-worker",
+      "powered_off_allowed": true
+    },
+    {
+      "service_id": "ollama",
+      "role": "local-ai-runtime",
+      "owner": "aicontrolcenter-adapter",
+      "required": false,
+      "production_status": "NOT_RUNNING",
+      "runtime": "native-macos",
+      "supervisor": "UNASSIGNED",
+      "listen_host": "127.0.0.1",
+      "port": 11434,
+      "health_endpoint": "/api/tags",
+      "ubuntu_dependency": false,
+      "state_policy": "replaceable-provider"
+    },
+    {
+      "service_id": "n8n",
+      "role": "workflow-executor",
+      "owner": "aicontrolcenter-adapter",
+      "required": false,
+      "production_status": "NOT_DEPLOYED",
+      "runtime": "UNASSIGNED",
+      "supervisor": "UNASSIGNED",
+      "listen_host": "127.0.0.1",
+      "port": 5678,
+      "health_endpoint": "/healthz",
+      "ubuntu_dependency": false,
+      "state_policy": "execution-only"
+    },
+    {
+      "service_id": "openclaw",
+      "role": "personal-assistant-interface",
+      "owner": "aicontrolcenter-adapter",
+      "required": false,
+      "production_status": "NOT_DEPLOYED",
+      "runtime": "UNASSIGNED",
+      "supervisor": "UNASSIGNED",
+      "ubuntu_dependency": false,
+      "state_policy": "interface-only"
+    }
+  ]
+}
