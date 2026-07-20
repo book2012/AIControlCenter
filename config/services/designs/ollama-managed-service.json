@@ -1,0 +1,78 @@
+{
+  "schema_version": "1.0",
+  "service_id": "ollama",
+  "title": "Ollama Managed macOS Service",
+  "status": "DESIGN_ONLY",
+  "control_plane_owner": "AIControlCenter",
+  "component_role": "replaceable-local-model-runtime",
+  "ubuntu_dependency": false,
+  "deployment": {
+    "platform": "macos",
+    "runtime": "native-binary",
+    "installation_method": "homebrew-or-official-package",
+    "preferred_binary_path": "/opt/homebrew/bin/ollama",
+    "supervisor": "system-launchdaemon",
+    "launchd_label": "com.aicontrolcenter.ollama",
+    "service_user": "kyouhan",
+    "service_group": "staff"
+  },
+  "network": {
+    "listen_host": "127.0.0.1",
+    "port": 11434,
+    "health_endpoint": "/api/tags",
+    "external_exposure_allowed": false
+  },
+  "storage": {
+    "models_path": "/Users/kyouhan/Library/Application Support/Ollama/models",
+    "repository_owned": false,
+    "immutable_runtime_owned": false,
+    "backup_policy": "metadata-first-model-cache-optional"
+  },
+  "environment": {
+    "contract_path": "/Library/Application Support/AIControlCenter/ollama.env",
+    "owner": "root",
+    "group": "staff",
+    "mode": "0640",
+    "allowed_variables": [
+      "OLLAMA_HOST",
+      "OLLAMA_MODELS",
+      "OLLAMA_KEEP_ALIVE"
+    ],
+    "secret_values_allowed": false
+  },
+  "health": {
+    "startup_timeout_seconds": 30,
+    "request_timeout_seconds": 5,
+    "success_http_codes": [
+      200
+    ],
+    "model_inventory_required": true
+  },
+  "install_plan": [
+    "validate-design",
+    "inspect-existing-installation",
+    "install-native-binary",
+    "create-external-environment-contract",
+    "install-system-launchdaemon",
+    "start-service",
+    "validate-health",
+    "validate-model-inventory",
+    "generate-evidence"
+  ],
+  "rollback_plan": [
+    "stop-system-launchdaemon",
+    "restore-previous-plist",
+    "restore-previous-environment-contract",
+    "restore-previous-binary-version",
+    "restart-previous-service",
+    "validate-health",
+    "generate-rollback-evidence"
+  ],
+  "safety": {
+    "write_execution_enabled": false,
+    "human_approval_required": true,
+    "dry_run_required": true,
+    "rollback_required": true,
+    "model_download_requires_separate_approval": true
+  }
+}
