@@ -6,7 +6,7 @@ def apply_standalone_contract(
     homepage_status: dict[str, Any],
     dashboard_status: dict[str, Any],
 ) -> dict[str, Any]:
-    """Apply the Mac standalone status contract without mutating inputs."""
+    """Return a read-only Mac standalone projection."""
 
     result = deepcopy(homepage_status)
     dashboard = deepcopy(dashboard_status)
@@ -16,14 +16,21 @@ def apply_standalone_contract(
 
     result["workers"] = dashboard.get("workers", {})
 
-    for component_name in ("storage", "backup"):
-        component = result.get(component_name)
-        if not isinstance(component, dict):
-            component = {}
-        component["required"] = False
-        component["scope"] = "external-worker"
-        component["available"] = bool(component.get("exists", False))
-        result[component_name] = component
+    storage = result.get("storage")
+    if not isinstance(storage, dict):
+        storage = {}
+    storage["required"] = False
+    storage["scope"] = "external-worker"
+    storage["available"] = bool(storage.get("exists", False))
+    result["storage"] = storage
+
+    backup = result.get("backup")
+    if not isinstance(backup, dict):
+        backup = {}
+    backup["required"] = False
+    backup["scope"] = "external-worker"
+    backup["available"] = bool(backup.get("exists", False))
+    result["backup"] = backup
 
     datacenter = dashboard.get("datacenter", {})
     optional_available = (
