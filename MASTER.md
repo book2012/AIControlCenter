@@ -276,3 +276,20 @@ Production result:
 - Optional worker failure does not interrupt the platform.
 - Mac mini service deployment is now the primary program focus.
 <!-- AICONTROLCENTER:PI-003:END -->
+
+<!-- AICONTROLCENTER:PI-004:START -->
+## PI-004 Production Status
+
+Status: **Complete**
+
+Current Production baseline:
+
+- Mac mini standalone Control Plane
+- AIControlCenter system LaunchDaemon
+- immutable commit-specific runtime
+- embedded Homepage API
+- Ubuntu optional and powered-off permitted
+- reboot recovery validated
+
+Next milestone: PI-005 Mac Service Deployment Platform.
+<!-- AICONTROLCENTER:PI-004:END -->

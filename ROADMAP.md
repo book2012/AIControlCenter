@@ -397,3 +397,29 @@ Status: **Next**
 - [ ] Validate automation service deployment
 - [ ] Add install, update and rollback automation
 <!-- AICONTROLCENTER:PI-003:END -->
+
+<!-- AICONTROLCENTER:PI-004:START -->
+### PI-004 Mac Standalone Production Baseline
+
+Status: **Complete**
+
+- [x] Inventory Mac services
+- [x] Create Mac Production service manifest
+- [x] Confirm Homepage as embedded API
+- [x] Align Homepage optional-worker contract
+- [x] Validate immutable runtime deployment
+- [x] Validate Mac reboot recovery
+- [x] Run full test suite
+- [x] Generate Production evidence
+
+### PI-005 Mac Service Deployment Platform
+
+Status: **Next**
+
+- [ ] Define reusable service manifest schema
+- [ ] Define install, update, restart and rollback interfaces
+- [ ] Deploy Ollama as a managed Mac service
+- [ ] Integrate Ollama health and model inventory
+- [ ] Define n8n deployment contract
+- [ ] Define OpenClaw adapter boundary
+<!-- AICONTROLCENTER:PI-004:END -->

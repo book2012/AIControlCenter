@@ -245,3 +245,23 @@ and validation are stable.
 - [ ] BACKLOG-U04 Backup verification
 - [ ] BACKLOG-U05 Worker lifecycle automation
 <!-- AICONTROLCENTER:PI-003:END -->
+
+<!-- AICONTROLCENTER:PI-004:START -->
+## PI-004 Closure and PI-005 Priorities
+
+### PI-004 Completed
+
+- [x] Mac service inventory
+- [x] Mac standalone service manifest
+- [x] Homepage Production contract alignment
+- [x] LaunchDaemon reboot recovery
+- [x] Production Gate and evidence
+
+### PI-005 P0
+
+- [ ] Service manifest schema validation
+- [ ] Reusable deployment command interface
+- [ ] Ollama native macOS supervisor contract
+- [ ] Ollama health and model inventory API
+- [ ] Deployment rollback validation
+<!-- AICONTROLCENTER:PI-004:END -->

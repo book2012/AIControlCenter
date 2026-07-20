@@ -565,3 +565,22 @@ Configured: `2026-07-14T04:19:41+00:00`
 - Detailed storage and backup monitoring
 - Worker lifecycle automation
 <!-- AICONTROLCENTER:PI-003:END -->
+
+<!-- AICONTROLCENTER:PI-004:START -->
+## 2026-07-20 — PI-004 Mac Standalone Production Baseline
+
+### Added
+
+- Mac standalone Production service manifest.
+- Homepage standalone projection contract.
+- Explicit optional storage and backup metadata.
+
+### Verified
+
+- system LaunchDaemon automatic recovery after Mac reboot.
+- immutable runtime and Git commit alignment.
+- Health, Dashboard and Homepage HTTP `200`.
+- Platform status `ONLINE` without Ubuntu.
+- Full test suite passed.
+- Final PI-004 Production evidence generated.
+<!-- AICONTROLCENTER:PI-004:END -->

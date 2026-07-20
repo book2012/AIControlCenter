@@ -282,3 +282,17 @@ Ubuntu service recovery:
 
 Ubuntu may remain powered off until its infrastructure services are required.
 <!-- AICONTROLCENTER:PI-003:END -->
+
+<!-- AICONTROLCENTER:PI-004:START -->
+## Mac Standalone Production Baseline
+
+PI-004 validated AIControlCenter as an independent Mac mini Production platform.
+
+- `/health` returned HTTP `200`.
+- `/dashboard` returned HTTP `200`.
+- `/homepage/status` returned HTTP `200`.
+- Platform status remained `ONLINE`.
+- Ubuntu remained optional and powered off.
+- Storage and backup were reported as optional external capabilities.
+- LaunchDaemon recovery after Mac reboot was validated.
+<!-- AICONTROLCENTER:PI-004:END -->

@@ -302,3 +302,22 @@ Architecture decision:
 - Mac mini standalone service deployment is the next Production priority.
 - Detailed Ubuntu telemetry and lifecycle automation were moved to backlog.
 <!-- AICONTROLCENTER:PI-003:END -->
+
+<!-- AICONTROLCENTER:PI-004:START -->
+## 2026-07-20 — PI-004 Mac Standalone Production Baseline
+
+PI-004 established the Mac mini as an independent Production Control Plane.
+
+Validated capabilities:
+
+- system LaunchDaemon supervision
+- immutable runtime deployment
+- Health, Dashboard and Homepage API availability
+- Homepage read-only standalone projection
+- Ubuntu optional-worker continuity
+- optional external storage and backup semantics
+- automatic service recovery after Mac reboot
+- full test suite and Production evidence
+
+The program now shifts to reusable Mac service deployment, starting with Ollama.
+<!-- AICONTROLCENTER:PI-004:END -->

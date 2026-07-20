@@ -278,3 +278,16 @@ Validated standalone behavior:
 - `ubuntu-main` returned `OPTIONAL_UNAVAILABLE`.
 - The Control Plane continued operating without Ubuntu.
 <!-- AICONTROLCENTER:PI-003:END -->
+
+<!-- AICONTROLCENTER:PI-004:START -->
+## PI-004 Mac Standalone Production Baseline
+
+- Mac mini is the mandatory standalone Control Plane.
+- Ubuntu is an optional infrastructure worker.
+- AIControlCenter runs through a system LaunchDaemon.
+- Production uses an immutable commit-specific Python runtime.
+- Homepage is an embedded read-only API at `/homepage/status`.
+- Homepage reuses the Dashboard optional-worker contract.
+- Storage and backup are optional external-worker capabilities.
+- Mac reboot recovery was validated without Ubuntu.
+<!-- AICONTROLCENTER:PI-004:END -->
