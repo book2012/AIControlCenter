@@ -14,15 +14,17 @@ INSTALL_COMMAND="${INSTALL_COMMAND:-install}"
 LAUNCHCTL_COMMAND="${LAUNCHCTL_COMMAND:-launchctl}"
 CURL_COMMAND="${CURL_COMMAND:-curl}"
 PYTHON="${PYTHON:-python3}"
+EXECUTION_GATE_MODULE="${EXECUTION_GATE_MODULE:-core.deployment.execution_gate}"
+BACKUP_GENERATOR="${BACKUP_GENERATOR:-ops/macos/ollama/generate-rollback-backup.py}"
 
 PLIST_SOURCE="ops/macos/ollama/com.aicontrolcenter.ollama.plist"
 ENV_SOURCE="ops/macos/ollama/ollama.env.example"
-PLIST_TARGET="/Library/LaunchDaemons/com.aicontrolcenter.ollama.plist"
-ENV_TARGET="/Library/Application Support/AIControlCenter/ollama.env"
-MODELS_TARGET="/Users/kyouhan/Library/Application Support/Ollama/models"
-LOG_TARGET="/Users/kyouhan/Library/Logs/AIControlCenter"
-SERVICE="system/com.aicontrolcenter.ollama"
-HEALTH_URL="http://127.0.0.1:11434/api/tags"
+PLIST_TARGET="${PLIST_TARGET:-/Library/LaunchDaemons/com.aicontrolcenter.ollama.plist}"
+ENV_TARGET="${ENV_TARGET:-/Library/Application Support/AIControlCenter/ollama.env}"
+MODELS_TARGET="${MODELS_TARGET:-/Users/kyouhan/Library/Application Support/Ollama/models}"
+LOG_TARGET="${LOG_TARGET:-/Users/kyouhan/Library/Logs/AIControlCenter}"
+SERVICE="${SERVICE:-system/com.aicontrolcenter.ollama}"
+HEALTH_URL="${HEALTH_URL:-http://127.0.0.1:11434/api/tags}"
 
 usage() {
   echo "Usage:"
@@ -84,7 +86,7 @@ do
 done
 
 validate_gate() {
-  "$PYTHON" -m core.deployment.execution_gate \
+  "$PYTHON" -m "$EXECUTION_GATE_MODULE" \
     "$APPROVAL" \
     "$PLAN" \
     "$SNAPSHOT" \
@@ -169,7 +171,7 @@ fi
 
 BACKUP_RESULT="/tmp/pi006-ollama-apply-backup.json"
 
-"$PYTHON" ops/macos/ollama/generate-rollback-backup.py \
+"$PYTHON" "$BACKUP_GENERATOR" \
   --output-root "$BACKUP_ROOT" \
   --write-backup \
   > "$BACKUP_RESULT"
