@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from core.config.loader import ConfigLoader
 
 from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, notifications, planner, providers, runtime, scheduler, shopping, storage, tasks, workers
+from core.api.routes.ollama import router as ollama_router
 
 
 def create_app() -> FastAPI:
@@ -34,6 +35,7 @@ def create_app() -> FastAPI:
     app.include_router(workers.router)
     app.include_router(datacenter.router)
 
+    app.include_router(ollama_router)
     return app
 
 
