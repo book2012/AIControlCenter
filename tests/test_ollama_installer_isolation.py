@@ -28,3 +28,15 @@ def test_gate_and_backup_implementations_are_injectable():
     assert "BACKUP_GENERATOR=" in text
     assert '-m "$EXECUTION_GATE_MODULE"' in text
     assert '"$PYTHON" "$BACKUP_GENERATOR"' in text
+
+def test_binary_target_is_overridable():
+    text = INSTALLER.read_text()
+
+    assert (
+        "${OLLAMA_BINARY_TARGET:-/opt/homebrew/bin/ollama}"
+        in text
+    )
+    assert (
+        '"$OLLAMA_BINARY_TARGET" || true'
+        in text
+    )

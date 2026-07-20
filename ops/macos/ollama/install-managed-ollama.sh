@@ -19,6 +19,7 @@ BACKUP_GENERATOR="${BACKUP_GENERATOR:-ops/macos/ollama/generate-rollback-backup.
 
 PLIST_SOURCE="ops/macos/ollama/com.aicontrolcenter.ollama.plist"
 ENV_SOURCE="ops/macos/ollama/ollama.env.example"
+OLLAMA_BINARY_TARGET="${OLLAMA_BINARY_TARGET:-/opt/homebrew/bin/ollama}"
 PLIST_TARGET="${PLIST_TARGET:-/Library/LaunchDaemons/com.aicontrolcenter.ollama.plist}"
 ENV_TARGET="${ENV_TARGET:-/Library/Application Support/AIControlCenter/ollama.env}"
 MODELS_TARGET="${MODELS_TARGET:-/Users/kyouhan/Library/Application Support/Ollama/models}"
@@ -119,7 +120,7 @@ rollback() {
   if [ -f "$ROLLBACK_DIRECTORY/binary/ollama" ]; then
     "$INSTALL_COMMAND" -m 0755 \
       "$ROLLBACK_DIRECTORY/binary/ollama" \
-      /opt/homebrew/bin/ollama || true
+      "$OLLAMA_BINARY_TARGET" || true
   fi
 
   echo "[PASS] Automatic rollback completed"

@@ -156,6 +156,7 @@ def build_environment(
         "models": tmp_path / "targets/models",
         "logs": tmp_path / "targets/logs",
         "backup": tmp_path / "backups",
+        "binary": tmp_path / "targets/bin/ollama",
     }
 
     env = os.environ.copy()
@@ -174,6 +175,7 @@ def build_environment(
             "INSTALL_COMMAND": str(commands["install"]),
             "LAUNCHCTL_COMMAND": str(commands["launchctl"]),
             "CURL_COMMAND": str(commands["curl"]),
+            "OLLAMA_BINARY_TARGET": str(targets["binary"]),
             "PLIST_TARGET": str(targets["plist"]),
             "ENV_TARGET": str(targets["env"]),
             "MODELS_TARGET": str(targets["models"]),
@@ -262,6 +264,7 @@ def test_mocked_health_failure_triggers_rollback(tmp_path: Path):
 
     assert targets["plist"].read_text() == "previous-plist\n"
     assert targets["env"].read_text() == "PREVIOUS_ENV=true\n"
+    assert targets["binary"].read_text() == "previous-binary\n"
 
     command_log = commands["log"].read_text()
     assert "launchctl bootout" in command_log
