@@ -130,6 +130,11 @@ exit 1
     )
 
     curl_exit = 0 if health_success else 1
+    privilege = write_executable(
+        command_dir / "privilege",
+        f'echo "privilege $*" >> "{command_log}"\nexec "$@"',
+    )
+
     curl = write_executable(
         command_dir / "curl",
         f'echo "curl $*" >> "{command_log}"\nexit {curl_exit}',
@@ -140,6 +145,7 @@ exit 1
         "install": install,
         "launchctl": launchctl,
         "curl": curl,
+        "privilege": privilege,
         "log": command_log,
     }
 
@@ -175,6 +181,7 @@ def build_environment(
             "INSTALL_COMMAND": str(commands["install"]),
             "LAUNCHCTL_COMMAND": str(commands["launchctl"]),
             "CURL_COMMAND": str(commands["curl"]),
+            "PRIVILEGE_COMMAND": str(commands["privilege"]),
             "OLLAMA_BINARY_TARGET": str(targets["binary"]),
             "PLIST_TARGET": str(targets["plist"]),
             "ENV_TARGET": str(targets["env"]),

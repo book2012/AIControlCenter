@@ -40,3 +40,14 @@ def test_binary_target_is_overridable():
         '"$OLLAMA_BINARY_TARGET" || true'
         in text
     )
+
+def test_privileged_operations_are_injectable():
+    text = INSTALLER.read_text()
+
+    assert "${PRIVILEGE_COMMAND:-sudo}" in text
+    assert "run_privileged()" in text
+    assert (
+        "run_privileged \"$LAUNCHCTL_COMMAND\" "
+        "bootstrap system"
+        in text
+    )

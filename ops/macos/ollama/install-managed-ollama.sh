@@ -13,6 +13,7 @@ BREW_COMMAND="${BREW_COMMAND:-brew}"
 INSTALL_COMMAND="${INSTALL_COMMAND:-install}"
 LAUNCHCTL_COMMAND="${LAUNCHCTL_COMMAND:-launchctl}"
 CURL_COMMAND="${CURL_COMMAND:-curl}"
+PRIVILEGE_COMMAND="${PRIVILEGE_COMMAND:-sudo}"
 PYTHON="${PYTHON:-python3}"
 EXECUTION_GATE_MODULE="${EXECUTION_GATE_MODULE:-core.deployment.execution_gate}"
 BACKUP_GENERATOR="${BACKUP_GENERATOR:-ops/macos/ollama/generate-rollback-backup.py}"
@@ -94,31 +95,35 @@ validate_gate() {
     --execution-token "$EXECUTION_TOKEN"
 }
 
+run_privileged() {
+  "$PRIVILEGE_COMMAND" "$@"
+}
+
 rollback() {
   ROLLBACK_DIRECTORY="$1"
 
   echo "[INFO] Starting automatic rollback"
 
-  "$LAUNCHCTL_COMMAND" bootout "$SERVICE" >/dev/null 2>&1 || true
+  run_privileged "$LAUNCHCTL_COMMAND" bootout "$SERVICE" >/dev/null 2>&1 || true
 
   if [ -f "$ROLLBACK_DIRECTORY/launchd/com.aicontrolcenter.ollama.plist" ]; then
-    "$INSTALL_COMMAND" -m 0644 \
+    run_privileged "$INSTALL_COMMAND" -m 0644 \
       "$ROLLBACK_DIRECTORY/launchd/com.aicontrolcenter.ollama.plist" \
       "$PLIST_TARGET" || true
   else
-    rm -f "$PLIST_TARGET"
+    run_privileged rm -f "$PLIST_TARGET"
   fi
 
   if [ -f "$ROLLBACK_DIRECTORY/environment/ollama.env" ]; then
-    "$INSTALL_COMMAND" -m 0640 \
+    run_privileged "$INSTALL_COMMAND" -m 0640 \
       "$ROLLBACK_DIRECTORY/environment/ollama.env" \
       "$ENV_TARGET" || true
   else
-    rm -f "$ENV_TARGET"
+    run_privileged rm -f "$ENV_TARGET"
   fi
 
   if [ -f "$ROLLBACK_DIRECTORY/binary/ollama" ]; then
-    "$INSTALL_COMMAND" -m 0755 \
+    run_privileged "$INSTALL_COMMAND" -m 0755 \
       "$ROLLBACK_DIRECTORY/binary/ollama" \
       "$OLLAMA_BINARY_TARGET" || true
   fi
@@ -205,28 +210,28 @@ if [ "$APPLY_CODE" -eq 0 ]; then
 fi
 
 if [ "$APPLY_CODE" -eq 0 ]; then
-  "$INSTALL_COMMAND" -d "/Library/Application Support/AIControlCenter" || APPLY_CODE=1
+  run_privileged "$INSTALL_COMMAND" -d "/Library/Application Support/AIControlCenter" || APPLY_CODE=1
 fi
 
 if [ "$APPLY_CODE" -eq 0 ]; then
-  "$INSTALL_COMMAND" -m 0640 "$ENV_SOURCE" "$ENV_TARGET" || APPLY_CODE=1
+  run_privileged "$INSTALL_COMMAND" -m 0640 "$ENV_SOURCE" "$ENV_TARGET" || APPLY_CODE=1
 fi
 
 if [ "$APPLY_CODE" -eq 0 ]; then
-  "$INSTALL_COMMAND" -m 0644 "$PLIST_SOURCE" "$PLIST_TARGET" || APPLY_CODE=1
+  run_privileged "$INSTALL_COMMAND" -m 0644 "$PLIST_SOURCE" "$PLIST_TARGET" || APPLY_CODE=1
 fi
 
 if [ "$APPLY_CODE" -eq 0 ]; then
-  "$LAUNCHCTL_COMMAND" bootout "$SERVICE" >/dev/null 2>&1 || true
-  "$LAUNCHCTL_COMMAND" bootstrap system "$PLIST_TARGET" || APPLY_CODE=1
+  run_privileged "$LAUNCHCTL_COMMAND" bootout "$SERVICE" >/dev/null 2>&1 || true
+  run_privileged "$LAUNCHCTL_COMMAND" bootstrap system "$PLIST_TARGET" || APPLY_CODE=1
 fi
 
 if [ "$APPLY_CODE" -eq 0 ]; then
-  "$LAUNCHCTL_COMMAND" enable "$SERVICE" || APPLY_CODE=1
+  run_privileged "$LAUNCHCTL_COMMAND" enable "$SERVICE" || APPLY_CODE=1
 fi
 
 if [ "$APPLY_CODE" -eq 0 ]; then
-  "$LAUNCHCTL_COMMAND" kickstart -k "$SERVICE" || APPLY_CODE=1
+  run_privileged "$LAUNCHCTL_COMMAND" kickstart -k "$SERVICE" || APPLY_CODE=1
 fi
 
 HEALTH_CODE=1
