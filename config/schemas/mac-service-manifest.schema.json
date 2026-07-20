@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aicontrolcenter.local/schemas/mac-service-manifest.schema.json",
+  "title": "AIControlCenter Mac Service Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "profile",
+    "control_plane",
+    "services"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "profile": {
+      "type": "string",
+      "minLength": 1
+    },
+    "control_plane": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "host_role",
+        "required",
+        "ubuntu_dependency"
+      ],
+      "properties": {
+        "host_role": {
+          "type": "string",
+          "const": "brain"
+        },
+        "required": {
+          "type": "boolean",
+          "const": true
+        },
+        "ubuntu_dependency": {
+          "type": "boolean",
+          "const": false
+        }
+      }
+    },
+    "services": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/service"
+      }
+    }
+  },
+  "$defs": {
+    "service": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "service_id",
+        "role",
+        "owner",
+        "required",
+        "production_status",
+        "runtime",
+        "supervisor",
+        "ubuntu_dependency",
+        "state_policy"
+      ],
+      "properties": {
+        "service_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$"
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "production_status": {
+          "type": "string",
+          "enum": [
+            "PRODUCTION",
+            "OPTIONAL_UNAVAILABLE_ALLOWED",
+            "NOT_RUNNING",
+            "NOT_DEPLOYED"
+          ]
+        },
+        "runtime": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supervisor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "launchd_label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "listen_host": {
+          "type": "string",
+          "minLength": 1
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 65535
+        },
+        "health_endpoint": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "ubuntu_dependency": {
+          "type": "boolean"
+        },
+        "state_policy": {
+          "type": "string",
+          "minLength": 1
+        },
+        "powered_off_allowed": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}
