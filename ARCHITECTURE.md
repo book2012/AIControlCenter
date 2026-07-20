@@ -291,3 +291,19 @@ Validated standalone behavior:
 - Storage and backup are optional external-worker capabilities.
 - Mac reboot recovery was validated without Ubuntu.
 <!-- AICONTROLCENTER:PI-004:END -->
+
+<!-- AICONTROLCENTER:PI-005:START -->
+## PI-005 — Mac Service Deployment Platform
+
+AIControlCenter owns Mac service deployment governance, validation, inspection, approval policy, and audit evidence.
+
+The deployment pipeline is JSON-first and separates read-only operations from write operations:
+
+`Manifest → Validate → Plan → Inspect → Diff → Dry-run → Approval → Future Executor`
+
+Ollama is defined as a replaceable native macOS model runtime. It has no platform-wide business logic and has no Ubuntu dependency.
+
+The canonical Ollama network contract is loopback-only at `127.0.0.1:11434`, with model inventory health at `/api/tags`.
+
+PI-005 does not install Ollama, create a LaunchDaemon, download models, or enable deployment execution.
+<!-- AICONTROLCENTER:PI-005:END -->

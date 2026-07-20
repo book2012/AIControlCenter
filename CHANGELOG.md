@@ -584,3 +584,19 @@ Configured: `2026-07-14T04:19:41+00:00`
 - Full test suite passed.
 - Final PI-004 Production evidence generated.
 <!-- AICONTROLCENTER:PI-004:END -->
+
+<!-- AICONTROLCENTER:PI-005:START -->
+## PI-005 — Mac Service Deployment Platform
+
+### Added
+
+- Reusable Mac service manifest schema and dependency-free validator.
+- Read-only deployment plan, service inspector, and desired/actual diff JSON interfaces.
+- Ollama managed-service design and rollback-aware dry-run.
+- SHA-256-bound approval request with expiry and action allowlist validation.
+
+### Safety
+
+- Ollama installation and model download remain disabled.
+- All write operations require future approval and execution tooling.
+<!-- AICONTROLCENTER:PI-005:END -->

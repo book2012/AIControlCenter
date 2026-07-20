@@ -293,3 +293,13 @@ Current Production baseline:
 
 Next milestone: PI-005 Mac Service Deployment Platform.
 <!-- AICONTROLCENTER:PI-004:END -->
+
+<!-- AICONTROLCENTER:PI-005:START -->
+## PI-005 Status
+
+**Complete — Mac Service Deployment Platform baseline**
+
+Production evidence confirms the full test suite and all PI-005 JSON gates passed with deployment execution disabled.
+
+Next production milestone: approved native Ollama deployment on the Mac mini.
+<!-- AICONTROLCENTER:PI-005:END -->

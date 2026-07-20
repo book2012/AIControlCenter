@@ -423,3 +423,19 @@ Status: **Next**
 - [ ] Define n8n deployment contract
 - [ ] Define OpenClaw adapter boundary
 <!-- AICONTROLCENTER:PI-004:END -->
+
+<!-- AICONTROLCENTER:PI-005:START -->
+## PI-005 — Complete
+
+- [x] Service manifest schema
+- [x] JSON manifest validator
+- [x] Read-only deployment plan
+- [x] Mac service inspector
+- [x] Desired/actual deployment diff
+- [x] Ollama managed-service design
+- [x] Dry-run and rollback plan
+- [x] Installation approval gate
+- [x] Full test and Production evidence
+
+Next: PI-006 approved Ollama native deployment.
+<!-- AICONTROLCENTER:PI-005:END -->

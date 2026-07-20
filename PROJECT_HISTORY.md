@@ -321,3 +321,13 @@ Validated capabilities:
 
 The program now shifts to reusable Mac service deployment, starting with Ollama.
 <!-- AICONTROLCENTER:PI-004:END -->
+
+<!-- AICONTROLCENTER:PI-005:START -->
+## PI-005 — Mac Service Deployment Platform Baseline
+
+AIControlCenter introduced a reusable JSON-first deployment governance layer for native Mac services.
+
+The Sprint delivered validation, planning, inspection, desired/actual comparison, rollback-aware dry-run generation, and an expiring approval contract.
+
+No Ollama binary, service, model, or write executor was deployed during this Sprint.
+<!-- AICONTROLCENTER:PI-005:END -->

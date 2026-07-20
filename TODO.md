@@ -265,3 +265,16 @@ and validation are stable.
 - [ ] Ollama health and model inventory API
 - [ ] Deployment rollback validation
 <!-- AICONTROLCENTER:PI-004:END -->
+
+<!-- AICONTROLCENTER:PI-005:START -->
+## PI-005
+
+- [x] Close Mac Service Deployment Platform baseline.
+- [x] Keep all deployment execution disabled.
+- [x] Preserve Ollama as a replaceable Mac-only runtime.
+
+## Next Priority
+
+- [ ] PI-006: approved Ollama installation and system LaunchDaemon deployment.
+- [ ] Add Ollama health and model inventory adapter to AIControlCenter.
+<!-- AICONTROLCENTER:PI-005:END -->

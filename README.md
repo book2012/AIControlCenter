@@ -296,3 +296,11 @@ PI-004 validated AIControlCenter as an independent Mac mini Production platform.
 - Storage and backup were reported as optional external capabilities.
 - LaunchDaemon recovery after Mac reboot was validated.
 <!-- AICONTROLCENTER:PI-004:END -->
+
+<!-- AICONTROLCENTER:PI-005:START -->
+## Mac Service Deployment Platform
+
+PI-005 provides dependency-free JSON interfaces for service manifest validation, read-only planning, Mac service inspection, desired/actual diff, Ollama dry-run generation, and installation approval requests.
+
+Ollama remains uninstalled and execution remains disabled. Actual installation requires a separate approved Sprint.
+<!-- AICONTROLCENTER:PI-005:END -->
