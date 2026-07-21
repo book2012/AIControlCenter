@@ -278,3 +278,22 @@ and validation are stable.
 - [ ] PI-006: approved Ollama installation and system LaunchDaemon deployment.
 - [ ] Add Ollama health and model inventory adapter to AIControlCenter.
 <!-- AICONTROLCENTER:PI-005:END -->
+
+<!-- PI-009:START -->
+## PI-009 Remaining Operational Tasks
+
+- [x] Implement governance operations domain.
+- [x] Implement append-only SQLite adapter.
+- [x] Implement application projection service.
+- [x] Implement GET-only operations API.
+- [x] Implement fail-soft Dashboard panel.
+- [x] Complete targeted and full regression.
+- [x] Verify production database content hash is unchanged.
+- [x] Prepare Production Activation Gate.
+- [x] Prepare Notion handoff document.
+- [ ] Synchronize handoff into Notion.
+- [ ] Obtain explicit production migration approval.
+- [ ] Obtain explicit scheduler activation approval.
+- [ ] Perform post-activation operational validation.
+- [ ] Confirm rollback procedure and observation window.
+<!-- PI-009:END -->

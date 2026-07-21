@@ -449,3 +449,27 @@ Active Production release:
 - source commit: `b9ad351a7241e521c8964218f59724fcb04db93c`
 - runtime release: `b9ad351a7241`
 - rollback release: `0352e396f329`
+
+<!-- PI-009:START -->
+## PI-009 — Governance Audit Operations Visibility
+
+Status: **Implementation Complete / Production Activation Pending**
+
+AIControlCenter owns governance audit operations policy, scheduling,
+projection, API presentation, Dashboard composition and operational
+authorization.
+
+The implementation provides:
+
+- an append-only governance operations domain and SQLite adapter;
+- an application-layer operational projection;
+- a strict GET-only read API;
+- a panel-local fail-soft Dashboard projection;
+- lowercase presentation vocabulary at the API boundary;
+- no automatic migration, retry, restore or remediation;
+- no Ubuntu business logic or application-state ownership.
+
+The production database remained unchanged during implementation and
+validation. Production migration and scheduler activation require the
+separate PI-009 Production Activation Gate.
+<!-- PI-009:END -->

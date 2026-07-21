@@ -411,3 +411,26 @@ Validation:
 - governance write methods: `0`
 - audit database: outside runtime
 - append-only SQLite triggers: valid
+
+<!-- PI-009:START -->
+## PI-009 Governance Audit Operations
+
+PI-009 adds read-only operational visibility for governance audit
+snapshot and SQLite online-backup verification workflows.
+
+Key behavior:
+
+- router-level GET `/operations` presentation;
+- Dashboard key `governance_audit_operations`;
+- strict API errors and panel-local Dashboard fail-soft behavior;
+- missing database or schema produces an UNKNOWN read-only projection;
+- no write actions are exposed;
+- production migration and scheduler activation remain disabled.
+
+Validated baseline:
+
+- 17 targeted tests passed;
+- 710 tests passed, 5 deselected;
+- production database SHA-256 remained unchanged;
+- WAL content remained unchanged.
+<!-- PI-009:END -->

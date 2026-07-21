@@ -540,3 +540,28 @@ Next production milestone:
 PI-009 should focus on operational observability for governance audit history, bounded Dashboard latency, backup verification, and alerting while preserving the read-only-first policy.
 
 Write operations remain out of scope until monitoring, audit history, backup, and operational alerting are stable.
+
+<!-- PI-009:START -->
+## PI-009 Roadmap Status
+
+### Completed
+
+- Domain and event contracts.
+- SQLite persistence adapter.
+- Application service and projections.
+- GET-only API integration.
+- Fail-soft Dashboard integration.
+- Regression and database-safety validation.
+- Repository documentation handoff.
+
+### Pending Production Gate
+
+- Review and approve production migration.
+- Review and approve scheduler activation.
+- Synchronize the PI-009 Notion handoff.
+- Execute post-activation operational validation.
+- Confirm rollback readiness.
+
+PI-010 must not depend on activated PI-009 scheduling until these
+production gates are complete.
+<!-- PI-009:END -->

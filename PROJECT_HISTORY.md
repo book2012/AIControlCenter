@@ -475,3 +475,27 @@ A metadata bridge runner restored Production safely. The bridge behavior was the
 - audit database: Mac mini application data root
 - SQLite append-only enforcement: validated
 - Ubuntu AI workload and audit state: none
+
+<!-- PI-009:START -->
+## 2026-07-22 — PI-009 Governance Audit Operations
+
+PI-009 implemented freshness-aware, read-only operational visibility
+for governance audit snapshots and SQLite online-backup verification.
+
+Implementation commit:
+
+`e1d46099427321a3ba7a150aad589320c8f1261a`
+
+Final implementation validation:
+
+- 17 targeted tests passed;
+- 710 tests passed, 5 deselected, 427 warnings;
+- production database SHA-256:
+  `435857ee9e5940fc4ab18d164a63144d422955724e8c818f33529264b792663c`;
+- production database content unchanged;
+- WAL content unchanged;
+- repository clean.
+
+Production migration and scheduler activation were intentionally not
+performed.
+<!-- PI-009:END -->

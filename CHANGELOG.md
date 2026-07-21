@@ -719,3 +719,29 @@ Deferred technical debt:
 - rollback runtime: `0352e396f329`
 - full suite: `636 passed, 5 deselected`
 - Production closure gate: passed
+
+<!-- PI-009:START -->
+## PI-009 — Governance Audit Operations Visibility
+
+### Added
+
+- Governance operations domain, event model and projection policy.
+- Append-only SQLite operations event repository.
+- Read-only governance operations presentation service.
+- GET-only governance operations API route.
+- Fail-soft Dashboard operations panel.
+- Missing-schema and missing-database UNKNOWN projections.
+- Production activation and Notion handoff documents.
+
+### Changed
+
+- Governance audit leakage assertions are scoped to the
+  `model_governance_audit` panel so unrelated operation identifiers do
+  not produce false positives.
+
+### Safety
+
+- No write API was added.
+- No automatic migration, retry, restore or remediation was added.
+- Production database content and WAL content remained unchanged.
+<!-- PI-009:END -->
