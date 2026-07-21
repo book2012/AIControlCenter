@@ -109,6 +109,57 @@ cd "$ROOT"
 
 export PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}"
 
+AICONTROLCENTER_APPLICATION_ROOT="${AICONTROLCENTER_APPLICATION_ROOT:-$HOME/Library/Application Support/AIControlCenter}"
+AICONTROLCENTER_RUNTIME_LINK="${AICONTROLCENTER_RUNTIME_LINK:-$AICONTROLCENTER_APPLICATION_ROOT/runtime/current}"
+AICONTROLCENTER_DATA_ROOT="${AICONTROLCENTER_DATA_ROOT:-$AICONTROLCENTER_APPLICATION_ROOT/data}"
+
+AICONTROLCENTER_CURRENT_RELEASE="$(
+  python3 -c \
+    'import os,sys; print(os.path.realpath(sys.argv[1]))' \
+    "$AICONTROLCENTER_RUNTIME_LINK"
+)"
+
+AICONTROLCENTER_RUNTIME_RELEASE="$(
+  basename "$AICONTROLCENTER_CURRENT_RELEASE"
+)"
+
+AICONTROLCENTER_SOURCE_COMMIT_FILE="$AICONTROLCENTER_CURRENT_RELEASE/.aicontrolcenter-source-commit"
+
+if [ ! -f "$AICONTROLCENTER_SOURCE_COMMIT_FILE" ]; then
+  echo "AIControlCenter source commit metadata is missing" >&2
+  return 78 2>/dev/null || false
+fi
+
+AICONTROLCENTER_SOURCE_COMMIT="$(
+  tr -d '\r\n[:space:]' \
+    < "$AICONTROLCENTER_SOURCE_COMMIT_FILE"
+)"
+
+if ! printf '%s\n' "$AICONTROLCENTER_SOURCE_COMMIT" |
+  grep -Eq '^[0-9a-f]{40}$'
+then
+  echo "AIControlCenter source commit metadata is invalid" >&2
+  return 78 2>/dev/null || false
+fi
+
+case "$AICONTROLCENTER_RUNTIME_RELEASE" in
+  ""|*[!0-9a-f]*)
+    echo "AIControlCenter runtime release identity is invalid" >&2
+    return 78 2>/dev/null || false
+    ;;
+esac
+
+if [ ! -d "$AICONTROLCENTER_CURRENT_RELEASE" ]; then
+  echo "AIControlCenter current release is unavailable" >&2
+  return 78 2>/dev/null || false
+fi
+
+mkdir -p "$AICONTROLCENTER_DATA_ROOT"
+
+export AICONTROLCENTER_SOURCE_COMMIT
+export AICONTROLCENTER_RUNTIME_RELEASE
+export AICONTROLCENTER_DATA_ROOT
+
 exec "$PYTHON_PATH" \
   -m uvicorn \
   core.api.shadow:app \
