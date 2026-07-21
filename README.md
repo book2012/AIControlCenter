@@ -380,3 +380,34 @@ Operational check:
 The API supports `GET` only. Model pull, create, copy, and delete operations are
 outside the approved PI-007 scope and remain denied.
 <!-- AICONTROLCENTER:PI-007:END -->
+
+## PI-008 — Model Governance Audit and Dashboard Integration
+
+PI-008 is complete and active in Production.
+
+Capabilities:
+
+- immutable governance audit snapshots
+- append-only SQLite persistence
+- historical compliance comparison
+- read-only audit query services
+- GET-only audit APIs
+- Dashboard governance audit integration
+- metadata-backed Production runtime identity
+- Git-independent Production restart and rollback compatibility
+
+Production identity:
+
+- commit: `b9ad351a7241e521c8964218f59724fcb04db93c`
+- active runtime: `b9ad351a7241`
+- rollback runtime: `0352e396f329`
+
+Validation:
+
+- full suite: `636 passed, 5 deselected`
+- Production health: online
+- Dashboard: online and read-only
+- Ollama models: `0`
+- governance write methods: `0`
+- audit database: outside runtime
+- append-only SQLite triggers: valid

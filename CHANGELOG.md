@@ -683,3 +683,39 @@ Deferred technical debt:
 - Existing timezone-naive `datetime.utcnow()` warnings remain.
 - These warnings did not block PI-007 and require a separate maintenance task.
 <!-- AICONTROLCENTER:PI-007:END -->
+
+## PI-008 — Model Governance Audit and Dashboard Integration
+
+### Added
+
+- canonical immutable governance audit snapshots
+- deterministic SHA-256 snapshot identity
+- SQLite migration and schema controls
+- append-only audit repository
+- audit snapshot service
+- historical audit comparison service
+- read-only audit query service
+- GET-only governance audit API
+- Dashboard governance audit read model
+- Production runtime provenance environment
+
+### Changed
+
+- Production runner now uses release metadata instead of mutable Git HEAD
+- Production restart no longer requires a clean Git working tree
+- Dashboard now exposes `model_governance_audit`
+
+### Fixed
+
+- rollback failure caused by runtime commit and Git HEAD coupling
+- unsafe symlink replacement procedure
+- false-negative Dashboard validation caused by a 5-second timeout
+- invalid direct diagnostic helper import
+
+### Production
+
+- active commit: `b9ad351a7241e521c8964218f59724fcb04db93c`
+- active runtime: `b9ad351a7241`
+- rollback runtime: `0352e396f329`
+- full suite: `636 passed, 5 deselected`
+- Production closure gate: passed

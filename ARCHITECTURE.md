@@ -380,3 +380,72 @@ own platform governance or business logic. Ubuntu remains a stateless
 infrastructure worker and must not run AI workloads, store AI models, or own
 model-governance state.
 <!-- AICONTROLCENTER:PI-007:END -->
+
+## PI-008: Model Governance Audit and Dashboard Integration
+
+PI-008 establishes a read-only model-governance audit subsystem owned by AIControlCenter.
+
+### Ownership
+
+AIControlCenter owns:
+
+- canonical governance audit snapshot schema
+- audit orchestration
+- immutable snapshot identity
+- SQLite audit persistence
+- historical comparison
+- read-only audit APIs
+- Dashboard audit read model
+- deployment provenance and runtime identity
+
+Ollama provides observed model inventory only.
+
+Ubuntu remains a stateless infrastructure worker and owns no AI workload, model state, audit application state, or platform business logic.
+
+### Persistence
+
+Audit state is stored on the Mac mini at:
+
+`~/Library/Application Support/AIControlCenter/data/model-governance-audit.sqlite3`
+
+The database is outside the runtime directory and uses:
+
+- SQLite WAL mode
+- schema versioning
+- append-only snapshot storage
+- update-denied triggers
+- delete-denied triggers
+- no automatic deletion
+- no automatic compaction
+- online backup only
+
+### Read-only API
+
+PI-008 exposes GET-only endpoints:
+
+- `/api/governance/audit/latest`
+- `/api/governance/audit/snapshots`
+- `/api/governance/audit/snapshots/{snapshot_id}`
+- `/api/governance/audit/comparison`
+
+No model pull, create, copy, delete, remediation, or other write operations are permitted.
+
+### Dashboard
+
+`/dashboard` includes the `model_governance_audit` read model.
+
+The Dashboard integration is fail-soft and exposes governance status without owning audit persistence or remediation logic.
+
+### Runtime provenance
+
+Production runtime identity is derived from immutable release metadata:
+
+`.aicontrolcenter-source-commit`
+
+The Production runner no longer depends on mutable Git HEAD or Git working-tree cleanliness.
+
+Active Production release:
+
+- source commit: `b9ad351a7241e521c8964218f59724fcb04db93c`
+- runtime release: `b9ad351a7241`
+- rollback release: `0352e396f329`

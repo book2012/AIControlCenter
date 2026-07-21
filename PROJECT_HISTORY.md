@@ -423,3 +423,55 @@ Validation notes:
 - Two validation gates produced false negatives because they assumed literal
   runner paths in process output. Corrected gates passed.
 <!-- AICONTROLCENTER:PI-007:END -->
+
+## PI-008 — Model Governance Audit and Dashboard Integration
+
+PI-008 introduced a Production-ready, read-only audit layer for approved model governance.
+
+### Delivery timeline
+
+The sprint delivered:
+
+- canonical audit snapshot contracts
+- SQLite migrations and append-only enforcement
+- immutable repository operations
+- audit snapshot generation
+- compliance comparison
+- bounded read-only query services
+- governance audit APIs
+- Dashboard integration
+- deployment provenance
+
+### Production incident
+
+During the initial deployment, the legacy runner compared the active runtime directory name with mutable Git HEAD.
+
+After the repository advanced while the previous runtime remained active, LaunchDaemon repeatedly exited with:
+
+`Runtime commit does not match Git HEAD`
+
+Recovery established the following operational rules:
+
+- use `os.replace()` for atomic symlink replacement
+- never depend on mutable Git HEAD for Production restart
+- store provenance inside each release
+- validate runner and runtime as one deployment contract
+- gate endpoint validation behind health checks
+- use bounded Dashboard timeouts greater than the observed normal latency
+- distinguish diagnostic script failures from application failures
+
+A metadata bridge runner restored Production safely. The bridge behavior was then canonicalized in the repository and committed as:
+
+`b9ad351a7241e521c8964218f59724fcb04db93c`
+
+### Final Production state
+
+- active runtime: `b9ad351a7241`
+- rollback runtime: `0352e396f329`
+- full suite: `636 passed, 5 deselected`
+- Production closure gate: passed
+- Ollama model count: `0`
+- governance mode: read-only
+- audit database: Mac mini application data root
+- SQLite append-only enforcement: validated
+- Ubuntu AI workload and audit state: none

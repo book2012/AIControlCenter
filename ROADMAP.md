@@ -517,3 +517,26 @@ Deferred beyond PI-007:
 Any write-capable model lifecycle feature requires a separate Product Increment
 and explicit Production approval.
 <!-- AICONTROLCENTER:PI-007:END -->
+
+## PI-008 — COMPLETE
+
+Model Governance Audit and Dashboard Integration has completed the Production gate.
+
+Completed scope:
+
+- audit schema and immutable snapshots
+- SQLite append-only persistence
+- comparison and query services
+- read-only API
+- Dashboard integration
+- runtime provenance
+- Git-independent Production runner
+- Production deployment
+- rollback compatibility
+- documentation closure
+
+Next production milestone:
+
+PI-009 should focus on operational observability for governance audit history, bounded Dashboard latency, backup verification, and alerting while preserving the read-only-first policy.
+
+Write operations remain out of scope until monitoring, audit history, backup, and operational alerting are stable.
