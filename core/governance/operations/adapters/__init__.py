@@ -1,0 +1,1 @@
+"""Governance operations infrastructure adapters."""
