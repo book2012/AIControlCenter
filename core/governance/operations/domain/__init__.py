@@ -1,0 +1,81 @@
+"""Public governance audit operations domain API."""
+
+from .events import (
+    CONTROL_PLANE_PRODUCER,
+    SCHEMA_VERSION,
+    TERMINAL_EVENT_TYPES,
+    DomainValidationError,
+    ErrorInfo,
+    EventType,
+    ExecutionEvent,
+    Operation,
+    failed_event,
+    missed_event,
+    scheduled_event,
+    started_event,
+    succeeded_event,
+)
+from .health import (
+    FreshnessState,
+    HealthState,
+    OperationalHealthInput,
+    calculate_health,
+)
+from .metrics import (
+    duration_ms,
+    observation_age_ms,
+    scheduling_latency_ms,
+)
+from .severity import (
+    NotificationSignal,
+    OperationalCondition,
+    Severity,
+    build_signal,
+    classify_severity,
+)
+from .state import (
+    DuplicateTerminalEventError,
+    ExecutionState,
+    InvalidEventSequenceError,
+    detect_missed_run,
+    last_failure,
+    last_success,
+    project_execution_state,
+    validate_event_sequence,
+)
+
+__all__ = [
+    "CONTROL_PLANE_PRODUCER",
+    "SCHEMA_VERSION",
+    "TERMINAL_EVENT_TYPES",
+    "DomainValidationError",
+    "DuplicateTerminalEventError",
+    "ErrorInfo",
+    "EventType",
+    "ExecutionEvent",
+    "ExecutionState",
+    "FreshnessState",
+    "HealthState",
+    "InvalidEventSequenceError",
+    "NotificationSignal",
+    "Operation",
+    "OperationalCondition",
+    "OperationalHealthInput",
+    "Severity",
+    "build_signal",
+    "calculate_health",
+    "classify_severity",
+    "detect_missed_run",
+    "duration_ms",
+    "failed_event",
+    "last_failure",
+    "last_success",
+    "missed_event",
+    "observation_age_ms",
+    "project_execution_state",
+    "scheduled_event",
+    "scheduling_latency_ms",
+    "started_event",
+    "succeeded_event",
+    "validate_event_sequence",
+]
