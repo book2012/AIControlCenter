@@ -600,3 +600,52 @@ Configured: `2026-07-14T04:19:41+00:00`
 - Ollama installation and model download remain disabled.
 - All write operations require future approval and execution tooling.
 <!-- AICONTROLCENTER:PI-005:END -->
+
+<!-- AICONTROLCENTER:PI-006:START -->
+## PI-006 — Approved Ollama Native Deployment Complete
+
+PI-006 established Ollama 0.32.1 as an approved native macOS runtime on the Mac mini M4 Control Plane.
+
+Production baseline:
+
+- AIControlCenter remains the single Control Plane.
+- Ollama is a replaceable local model runtime and owns no platform business logic.
+- Ubuntu remains a stateless infrastructure worker and runs no AI workloads.
+- Ollama service: `system/com.aicontrolcenter.ollama`
+- Ollama endpoint: `127.0.0.1:11434`
+- AIControlCenter service: `system/com.aicontrolcenter.api.shadow`
+- AIControlCenter endpoint: `127.0.0.1:18100`
+- Read-only API: `GET /api/services/ollama`
+- Production runtime: `3679588b760c`
+- Rollback runtime: `7cb2e7a400a6`
+- Model inventory: `0`
+- AIControlCenter and Ollama listeners: loopback-only
+- Operational gate: passed
+- Git state at operational validation: clean
+
+Validation:
+
+- Full suite: 481 passed, 5 deselected, 423 warnings.
+- AIControlCenter health: ONLINE.
+- Ollama health: ONLINE.
+- Runtime metadata gate: passed.
+- Deployment summary validation code: 0.
+
+Production evidence:
+
+`~/Library/Application Support/AIControlCenter/runtime/evidence/pi-006/api-release-3679588b760c-20260720T235541Z`
+
+Safety corrections completed during PI-006:
+
+- Isolated mocked Ollama binary targets from `/opt/homebrew/bin/ollama`.
+- Separated Homebrew user operations from privileged system operations.
+- Restored and correctly registered the Ollama API router inside `create_app`.
+- Distinguished the active system LaunchDaemon architecture from the legacy GUI LaunchAgent manager.
+- Revalidated the final operational gate using a Python assertion after a pasted shell assertion was damaged.
+
+Deferred technical debt:
+
+- Replace deprecated `datetime.utcnow()` usage with timezone-aware UTC values.
+- Resolve remaining Python, Starlette, and dependency deprecation warnings.
+- Approve model acquisition, checksum, retention, resource, and removal policies before downloading a model.
+<!-- AICONTROLCENTER:PI-006:END -->
