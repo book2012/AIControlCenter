@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "service": "model-governance",
+  "mode": "read-only",
+  "control_plane": "AIControlCenter",
+  "runtime": {
+    "type": "ollama",
+    "endpoint": "http://127.0.0.1:11434",
+    "inventory_endpoint": "/api/tags"
+  },
+  "registry": {
+    "source_of_truth": "AIControlCenter",
+    "default_policy": "DENY",
+    "models": []
+  },
+  "approval_status_values": [
+    "PROPOSED",
+    "APPROVED",
+    "SUSPENDED",
+    "REVOKED"
+  ],
+  "compliance_status_values": [
+    "COMPLIANT",
+    "UNAPPROVED",
+    "MISSING",
+    "DIGEST_MISMATCH",
+    "RESOURCE_POLICY_VIOLATION"
+  ],
+  "write_boundary": {
+    "pull": "DENIED",
+    "create": "DENIED",
+    "copy": "DENIED",
+    "delete": "DENIED",
+    "approval_required": true
+  },
+  "worker_policy": {
+    "ubuntu_ai_workloads_allowed": false,
+    "ubuntu_model_storage_allowed": false,
+    "ubuntu_business_logic_allowed": false
+  }
+}
