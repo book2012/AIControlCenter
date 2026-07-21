@@ -158,11 +158,32 @@ def test_runner_does_not_depend_on_git_checkout() -> None:
 
     forbidden = {
         "git rev-parse",
+        "rev-parse --short=12 HEAD",
         "git describe",
         ".git/HEAD",
+        "status --porcelain",
+        "Runtime commit does not match Git HEAD",
+        "Git working tree is not clean",
+        "AIControlCenter repository not found",
     }
 
     assert forbidden.isdisjoint(source)
+
+
+def test_runner_uses_exit_for_fail_closed_guards() -> None:
+    source = runner_source()
+
+    assert "return 78" not in source
+    assert source.count("exit 78") >= 4
+
+
+def test_runner_can_restart_independently_of_git_head() -> None:
+    source = runner_source()
+
+    assert "EXPECTED_COMMIT=" not in source
+    assert "rev-parse --short=12 HEAD" not in source
+    assert ".aicontrolcenter-source-commit" in source
+
 
 
 def test_runner_shell_syntax_is_valid() -> None:

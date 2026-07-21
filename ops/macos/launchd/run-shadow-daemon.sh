@@ -54,11 +54,6 @@ then
     exit 78
 fi
 
-if [[ ! -d "$ROOT/.git" ]]
-then
-    echo "AIControlCenter repository not found" >&2
-    exit 78
-fi
 
 if [[ ! -L "$CURRENT_RUNTIME" ]]
 then
@@ -83,27 +78,6 @@ then
     exit 78
 fi
 
-EXPECTED_COMMIT="$(
-    /usr/bin/git \
-      -C "$ROOT" \
-      rev-parse --short=12 HEAD
-)"
-
-if [[ "${RUNTIME_TARGET##*/}" != "$EXPECTED_COMMIT" ]]
-then
-    echo "Runtime commit does not match Git HEAD" >&2
-    exit 78
-fi
-
-if [[ -n "$(
-    /usr/bin/git \
-      -C "$ROOT" \
-      status --porcelain
-)" ]]
-then
-    echo "Git working tree is not clean" >&2
-    exit 78
-fi
 
 cd "$ROOT"
 
@@ -127,7 +101,7 @@ AICONTROLCENTER_SOURCE_COMMIT_FILE="$AICONTROLCENTER_CURRENT_RELEASE/.aicontrolc
 
 if [ ! -f "$AICONTROLCENTER_SOURCE_COMMIT_FILE" ]; then
   echo "AIControlCenter source commit metadata is missing" >&2
-  return 78 2>/dev/null || false
+  exit 78
 fi
 
 AICONTROLCENTER_SOURCE_COMMIT="$(
@@ -139,19 +113,19 @@ if ! printf '%s\n' "$AICONTROLCENTER_SOURCE_COMMIT" |
   grep -Eq '^[0-9a-f]{40}$'
 then
   echo "AIControlCenter source commit metadata is invalid" >&2
-  return 78 2>/dev/null || false
+  exit 78
 fi
 
 case "$AICONTROLCENTER_RUNTIME_RELEASE" in
   ""|*[!0-9a-f]*)
     echo "AIControlCenter runtime release identity is invalid" >&2
-    return 78 2>/dev/null || false
+    exit 78
     ;;
 esac
 
 if [ ! -d "$AICONTROLCENTER_CURRENT_RELEASE" ]; then
   echo "AIControlCenter current release is unavailable" >&2
-  return 78 2>/dev/null || false
+  exit 78
 fi
 
 mkdir -p "$AICONTROLCENTER_DATA_ROOT"
