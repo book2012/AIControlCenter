@@ -488,3 +488,32 @@ Deferred technical debt:
 - Resolve remaining Python, Starlette, and dependency deprecation warnings.
 - Approve model acquisition, checksum, retention, resource, and removal policies before downloading a model.
 <!-- AICONTROLCENTER:PI-006:END -->
+
+<!-- AICONTROLCENTER:PI-007:START -->
+## PI-007 — Approved Model Lifecycle Monitoring and Governance
+
+Status: **Production Complete — Final Documentation Commit Pending**
+
+Completed milestones:
+
+- architecture and ownership boundary
+- canonical default-deny registry
+- read-only registry loader
+- governance evaluator
+- read-only governance API
+- full test suite and immutable runtime deployment
+- Production operational validation
+- rollback-readiness validation
+
+Deferred beyond PI-007:
+
+- approved model onboarding
+- model download or deletion workflows
+- write-operation authorization
+- resource enforcement
+- automated remediation
+- model lifecycle audit UI
+
+Any write-capable model lifecycle feature requires a separate Product Increment
+and explicit Production approval.
+<!-- AICONTROLCENTER:PI-007:END -->

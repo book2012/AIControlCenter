@@ -380,3 +380,46 @@ Deferred technical debt:
 - Resolve remaining Python, Starlette, and dependency deprecation warnings.
 - Approve model acquisition, checksum, retention, resource, and removal policies before downloading a model.
 <!-- AICONTROLCENTER:PI-006:END -->
+
+<!-- AICONTROLCENTER:PI-007:START -->
+## PI-007 — Approved Model Lifecycle Monitoring and Governance
+
+PI-007 established AIControlCenter as the source of truth for approved model
+policy and compliance evaluation.
+
+Implementation history:
+
+- Added the canonical model-governance registry.
+- Added a strict read-only registry loader.
+- Added registry-versus-Ollama inventory evaluation.
+- Added `GET /api/governance/models`.
+- Verified that OpenAPI exposes only `GET` for the governance endpoint.
+- Completed focused and full-suite validation.
+- Deployed immutable runtime `39fe04e3330e`.
+- Validated Production health, Ollama inventory, governance output, and Git
+  cleanliness.
+- Validated rollback readiness using previous runtime `3679588b760c` without
+  switching the live runtime.
+
+Operational validation confirmed:
+
+- health status `ONLINE`
+- Ollama status `ONLINE`
+- governance mode `read-only`
+- default policy `DENY`
+- approved model count `0`
+- observed model count `0`
+- violation count `0`
+- write operations disabled
+
+Validation notes:
+
+- LaunchDaemon uses `/bin/bash` as `ProgramArguments[0]` and the installed
+  runner as the following argument.
+- The runner source and installed copy have matching hashes.
+- No fixed immutable release ID is embedded in the runner.
+- macOS process output resolves the virtual-environment Python executable to
+  its underlying Homebrew Python path; this is not a runtime-binding failure.
+- Two validation gates produced false negatives because they assumed literal
+  runner paths in process output. Corrected gates passed.
+<!-- AICONTROLCENTER:PI-007:END -->

@@ -649,3 +649,37 @@ Deferred technical debt:
 - Resolve remaining Python, Starlette, and dependency deprecation warnings.
 - Approve model acquisition, checksum, retention, resource, and removal policies before downloading a model.
 <!-- AICONTROLCENTER:PI-006:END -->
+
+<!-- AICONTROLCENTER:PI-007:START -->
+## PI-007 — Approved Model Lifecycle Monitoring and Governance
+
+### Added
+
+- Canonical model-governance registry at
+  `config/model-governance.json`.
+- Default-deny, read-only registry loader.
+- Immutable model-governance evaluation objects.
+- Compliance evaluation for approved, missing, unapproved, digest-mismatch,
+  and resource-policy states.
+- Read-only `GET /api/governance/models` endpoint.
+- Focused registry, evaluator, Ollama adapter, and API tests.
+
+### Production
+
+- Source commit:
+  `39fe04e3330e398f38567efa58bddb39b9893756`
+- Runtime release: `39fe04e3330e`
+- Previous rollback release: `3679588b760c`
+- Production health: `ONLINE`
+- Ollama health: `ONLINE`
+- Governance mode: `read-only`
+- Default policy: `DENY`
+- Write operations allowed: `false`
+- Rollback readiness validated without performing an actual rollback.
+
+### Technical Debt
+
+- Existing Starlette/httpx test-client deprecation warning remains.
+- Existing timezone-naive `datetime.utcnow()` warnings remain.
+- These warnings did not block PI-007 and require a separate maintenance task.
+<!-- AICONTROLCENTER:PI-007:END -->

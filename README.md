@@ -353,3 +353,30 @@ Deferred technical debt:
 - Resolve remaining Python, Starlette, and dependency deprecation warnings.
 - Approve model acquisition, checksum, retention, resource, and removal policies before downloading a model.
 <!-- AICONTROLCENTER:PI-006:END -->
+
+<!-- AICONTROLCENTER:PI-007:START -->
+## Model Governance
+
+AIControlCenter exposes a read-only model-governance endpoint:
+
+`GET /api/governance/models`
+
+The endpoint compares the AIControlCenter-approved model registry with the
+inventory observed from Ollama.
+
+Current Production baseline:
+
+- mode: `read-only`
+- default policy: `DENY`
+- approved models: `0`
+- observed models: `0`
+- violations: `0`
+- write operations allowed: `false`
+
+Operational check:
+
+`curl -fsS http://127.0.0.1:18100/api/governance/models`
+
+The API supports `GET` only. Model pull, create, copy, and delete operations are
+outside the approved PI-007 scope and remain denied.
+<!-- AICONTROLCENTER:PI-007:END -->

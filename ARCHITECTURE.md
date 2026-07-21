@@ -356,3 +356,27 @@ Deferred technical debt:
 - Resolve remaining Python, Starlette, and dependency deprecation warnings.
 - Approve model acquisition, checksum, retention, resource, and removal policies before downloading a model.
 <!-- AICONTROLCENTER:PI-006:END -->
+
+<!-- AICONTROLCENTER:PI-007:START -->
+## PI-007 — Approved Model Lifecycle Monitoring and Governance
+
+AIControlCenter is the sole control plane and source of truth for model
+approval, lifecycle policy, compliance evaluation, audit, and API exposure.
+
+The model-governance flow is:
+
+1. `config/model-governance.json` defines the approved registry.
+2. `core/governance/model_registry.py` validates the registry using a
+   default-deny, read-only contract.
+3. Ollama provides observed local inventory only.
+4. `core/governance/model_evaluator.py` compares approved and observed models.
+5. `GET /api/governance/models` exposes the evaluation as JSON.
+
+Supported compliance states include `COMPLIANT`, `UNAPPROVED`, `MISSING`,
+`DIGEST_MISMATCH`, and `RESOURCE_POLICY_VIOLATION`.
+
+Model pull, create, copy, and delete operations remain denied. Ollama does not
+own platform governance or business logic. Ubuntu remains a stateless
+infrastructure worker and must not run AI workloads, store AI models, or own
+model-governance state.
+<!-- AICONTROLCENTER:PI-007:END -->
