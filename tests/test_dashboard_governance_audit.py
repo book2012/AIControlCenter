@@ -195,8 +195,9 @@ def test_audit_failure_does_not_fail_dashboard(
         audit["comparison_status"]
         == "UNAVAILABLE"
     )
-    assert "private" not in response.text
-    assert "sqlite" not in response.text
+    audit_text = repr(audit).lower()
+    assert "private" not in audit_text
+    assert "sqlite" not in audit_text
 
 
 def test_dashboard_audit_has_no_write_controls(

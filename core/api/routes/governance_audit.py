@@ -13,6 +13,7 @@ from core.governance.audit_query import (
     AuditQueryService,
     AuditSnapshotNotFoundError,
 )
+from core.api.services.governance_audit_operations import build_governance_audit_operations_payload
 
 
 router = APIRouter(tags=["governance-audit"])
@@ -152,3 +153,8 @@ def compare_audit_snapshots(
         ) from error
     except AuditQueryError as error:
         raise _service_unavailable() from error
+
+
+@router.get("/operations")
+def get_governance_audit_operations() -> dict[str, object]:
+    return build_governance_audit_operations_payload()

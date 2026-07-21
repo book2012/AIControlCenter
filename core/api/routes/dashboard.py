@@ -6,6 +6,7 @@ from fastapi import Depends
 from core.api.dependencies.audit import get_audit_query_service
 from core.dashboard.governance_audit import build_governance_audit_dashboard_read_model
 from core.governance.audit_query import AuditQueryService
+from core.api.services.governance_audit_operations import build_governance_audit_operations_dashboard_payload
 
 router = APIRouter()
 
@@ -23,4 +24,5 @@ def dashboard(
             audit_service
         ).to_dict()
     )
+    payload["governance_audit_operations"] = build_governance_audit_operations_dashboard_payload()
     return payload
