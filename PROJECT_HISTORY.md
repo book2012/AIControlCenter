@@ -525,3 +525,14 @@ Automated cadence inference was rejected. Execution
 capability and scheduling policy were deliberately split,
 and activation moved to PI-010.
 <!-- PI-009-OPERATIONS-FINAL:END -->
+
+<!-- PI-010-HEADLESS-PRODUCTION-CLOSE-2026-07-23 -->
+## 2026-07-23 — PI-010 Closed
+
+PI-010 delivered Production governance scheduling on the Mac mini Control Plane.
+
+Direct launchctl and GUI-dependent activation paths were rejected during operational validation. The selected Production deployment is the managed user crontab adapter.
+
+Immutable snapshot serialization was corrected in commit fee92a7b091d53201fd923ef42b7e1e75edd00be. Capability boundaries were finalized in commit 88f548fcc7b7cf849fdc9e9897993576e3bf68c0. Dedicated semantic capabilities were added in commit 3a7033aaee56145928bfd5fa2fdaaab318ecf77a.
+
+Both Production operations reached run_succeeded, rollback passed, the scheduler remained active, and the full regression suite passed.

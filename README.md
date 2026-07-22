@@ -482,3 +482,16 @@ Validation baseline:
 Cadence policy and controlled launchd activation are
 deferred to PI-010.
 <!-- PI-009-OPERATIONS-FINAL:END -->
+
+<!-- PI-010-HEADLESS-PRODUCTION-CLOSE-2026-07-23 -->
+## PI-010 Production Governance Scheduler
+
+PI-010 closed on 2026-07-23.
+
+The Mac mini Control Plane runs AIControlCenter governance operations through a managed headless user crontab adapter.
+
+Governance audit snapshots run daily at 03:10 Asia/Seoul. SQLite online backup verification runs Sunday at 04:10 Asia/Seoul.
+
+The snapshot capability performs read-only database validation and creates an immutable JSON evidence artifact. The backup capability uses the SQLite online backup API and validates quick_check, row counts, and the resulting artifact hash.
+
+Automatic retry, catch-up, remediation, and restore remain disabled. Ubuntu remains a stateless infrastructure worker.

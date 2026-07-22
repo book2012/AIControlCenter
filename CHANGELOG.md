@@ -772,3 +772,12 @@ Deferred technical debt:
 - launchd installation and activation.
 - First scheduled-run observation.
 <!-- PI-009-OPERATIONS-FINAL:END -->
+
+<!-- PI-010-HEADLESS-PRODUCTION-CLOSE-2026-07-23 -->
+## 2026-07-23 — PI-010 Production Scheduler
+
+Added explicit governance cadence, managed headless cron deployment, append-only Production audit validation, rollback backups, and uninstall/reinstall validation.
+
+Added GovernanceAuditSnapshotExecutor for read-only JSON audit snapshots and SQLiteOnlineBackupVerifier for SQLite online backup, quick_check, row-count, and SHA-256 validation.
+
+Both governed Production operations reached run_succeeded. The managed cron adapter remained active after rollback validation, and the full regression suite passed.

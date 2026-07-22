@@ -497,3 +497,12 @@ logic is placed on Ubuntu.
 External schedulers may invoke the one-shot interface
 only after a separate controlled activation gate.
 <!-- PI-009-OPERATIONS-FINAL:END -->
+
+<!-- PI-010-HEADLESS-PRODUCTION-CLOSE-2026-07-23 -->
+## PI-010 Headless Scheduler Architecture
+
+AIControlCenter owns governance cadence, policy, execution, JSON output, audit correlation, authorization, and deployment control.
+
+The managed user crontab is a replaceable Mac mini operating-system adapter. Governance run identity and scheduled time remain inside the application and audit boundary.
+
+Dedicated parameterless capabilities implement governance audit snapshot generation and SQLite online backup verification. No governance scheduling, AI workload, application state, or business logic runs on Ubuntu.
