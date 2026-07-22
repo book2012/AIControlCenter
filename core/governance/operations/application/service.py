@@ -156,7 +156,6 @@ class OperationsApplicationService:
             ):
                 execution_result = (
                     self.snapshot_executor.execute(
-                        run_id=run_id,
                         scheduled_for=(
                             command.scheduled_for
                         ),
@@ -168,7 +167,6 @@ class OperationsApplicationService:
             ):
                 execution_result = (
                     self.backup_verifier.verify(
-                        run_id=run_id,
                         scheduled_for=(
                             command.scheduled_for
                         ),

@@ -62,12 +62,10 @@ class FakeSnapshotExecutor:
     def execute(
         self,
         *,
-        run_id,
         scheduled_for,
     ):
         self.calls.append(
             {
-                "run_id": run_id,
                 "scheduled_for": scheduled_for,
             }
         )
@@ -97,12 +95,10 @@ class FakeBackupVerifier:
     def verify(
         self,
         *,
-        run_id,
         scheduled_for,
     ):
         self.calls.append(
             {
-                "run_id": run_id,
                 "scheduled_for": scheduled_for,
             }
         )
