@@ -155,22 +155,14 @@ class OperationsApplicationService:
                 is Operation.GOVERNANCE_AUDIT_SNAPSHOT
             ):
                 execution_result = (
-                    self.snapshot_executor.execute(
-                        scheduled_for=(
-                            command.scheduled_for
-                        ),
-                    )
+                    self.snapshot_executor.execute()
                 )
             elif (
                 command.operation
                 is Operation.SQLITE_ONLINE_BACKUP_VERIFICATION
             ):
                 execution_result = (
-                    self.backup_verifier.verify(
-                        scheduled_for=(
-                            command.scheduled_for
-                        ),
-                    )
+                    self.backup_verifier.verify()
                 )
             else:
                 raise RuntimeError(

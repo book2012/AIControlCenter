@@ -25,7 +25,7 @@ def _tree(path: Path) -> ast.Module:
     )
 
 
-def test_application_capability_calls_only_receive_scheduled_for() -> None:
+def test_application_invokes_capabilities_without_arguments() -> None:
     calls = [
         node
         for node in ast.walk(_tree(SERVICE))
@@ -41,14 +41,12 @@ def test_application_capability_calls_only_receive_scheduled_for() -> None:
         for node in calls
     } == TARGET_METHODS
 
-    for node in calls:
-        assert {
-            keyword.arg
-            for keyword in node.keywords
-        } == {"scheduled_for"}
+    for call in calls:
+        assert call.args == []
+        assert call.keywords == []
 
 
-def test_application_doubles_match_capability_boundary() -> None:
+def test_application_doubles_match_parameterless_contract() -> None:
     methods = {
         node.name: node
         for node in ast.walk(_tree(HELPERS))
@@ -70,5 +68,6 @@ def test_application_doubles_match_capability_boundary() -> None:
             )
         }
 
-        assert "run_id" not in parameters
-        assert "scheduled_for" in parameters
+        assert parameters == {"self"}
+        assert method.args.vararg is None
+        assert method.args.kwarg is None

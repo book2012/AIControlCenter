@@ -59,14 +59,9 @@ class FakeSnapshotExecutor:
         self.error = error
         self.calls = []
 
-    def execute(
-        self,
-        *,
-        scheduled_for,
-    ):
+    def execute(self):
         self.calls.append(
             {
-                "scheduled_for": scheduled_for,
             }
         )
 
@@ -92,14 +87,9 @@ class FakeBackupVerifier:
         self.error = error
         self.calls = []
 
-    def verify(
-        self,
-        *,
-        scheduled_for,
-    ):
+    def verify(self):
         self.calls.append(
             {
-                "scheduled_for": scheduled_for,
             }
         )
 
