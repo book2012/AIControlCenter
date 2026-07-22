@@ -297,3 +297,30 @@ and validation are stable.
 - [ ] Perform post-activation operational validation.
 - [ ] Confirm rollback procedure and observation window.
 <!-- PI-009:END -->
+
+<!-- PI-009-OPERATIONS-FINAL:BEGIN -->
+## PI-009 Close Checklist
+
+- [x] Production operation schema migrated
+- [x] Production database backup verified
+- [x] Manual operation validated
+- [x] Production UTC clock implemented
+- [x] JSON-first runner implemented
+- [x] Per-operation lock implemented
+- [x] Automatic retry disabled
+- [x] Automatic catch-up disabled
+- [x] Automatic remediation disabled
+- [x] Automatic restore disabled
+- [x] Full regression passed
+- [x] Git implementation state clean
+- [x] Documentation updated
+
+## PI-010 Next Operational Work
+
+- [ ] Define explicit operation cadence
+- [ ] Review disabled launchd definitions
+- [ ] Approve scheduler installation
+- [ ] Activate under controlled gate
+- [ ] Observe initial scheduled executions
+- [ ] Verify unload and rollback procedure
+<!-- PI-009-OPERATIONS-FINAL:END -->

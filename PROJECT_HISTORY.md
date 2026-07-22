@@ -499,3 +499,29 @@ Final implementation validation:
 Production migration and scheduler activation were intentionally not
 performed.
 <!-- PI-009:END -->
+
+<!-- PI-009-OPERATIONS-FINAL:BEGIN -->
+## 2026-07-22 — PI-009 Governance Operations Closed
+
+PI-009 completed the governance operation execution
+platform.
+
+Evidence:
+
+- Production migration followed a verified byte-identical
+  backup.
+- Manual SQLite backup verification completed.
+- SystemUTCClock was added in commit
+  58fca02274bc516933508f6a3fa48fc0a046d174.
+- The JSON-first runner was added in commit
+  d1072aa35fb5034c1097923fd7f6d7643132460b.
+- Runner implementation passed 14 targeted tests.
+- Full regression passed 717 tests with 5 deselected and
+  the existing 427-warning baseline.
+- Production database and WAL were unchanged.
+- No scheduler was installed or activated.
+
+Automated cadence inference was rejected. Execution
+capability and scheduling policy were deliberately split,
+and activation moved to PI-010.
+<!-- PI-009-OPERATIONS-FINAL:END -->

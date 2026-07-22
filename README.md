@@ -434,3 +434,51 @@ Validated baseline:
 - production database SHA-256 remained unchanged;
 - WAL content remained unchanged.
 <!-- PI-009:END -->
+
+<!-- PI-009-OPERATIONS-FINAL:BEGIN -->
+## PI-009 Governance Operations — Closed
+
+PI-009 was closed on 2026-07-22 with a JSON-first,
+one-shot governance operation runner owned by
+AIControlCenter.
+
+Supported operations:
+
+- governance_audit_snapshot
+- sqlite_online_backup_verification
+
+Runner interface:
+
+    .venv/bin/python -m core.governance.operations.scheduler       --operation <operation> --once --json
+
+Production composition:
+
+- SQLiteOperationsEventRepository
+- SystemUTCClock
+- AutomationExecutor
+- BackupVerifyService
+- OperationsApplicationService
+
+Safety boundaries:
+
+- no automatic retry
+- no automatic catch-up
+- no automatic remediation
+- no automatic restore
+- no launchd activation
+- no scheduling policy embedded in the runner
+- Mac mini remains the Control Plane
+- Ubuntu remains a stateless infrastructure worker
+
+Validation baseline:
+
+- implementation commit:
+  d1072aa35fb5034c1097923fd7f6d7643132460b
+- targeted tests: 14 passed
+- full regression:
+  717 passed, 5 deselected, 427 warnings
+- Production database and WAL unchanged
+
+Cadence policy and controlled launchd activation are
+deferred to PI-010.
+<!-- PI-009-OPERATIONS-FINAL:END -->

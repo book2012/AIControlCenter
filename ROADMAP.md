@@ -565,3 +565,32 @@ Write operations remain out of scope until monitoring, audit history, backup, an
 PI-010 must not depend on activated PI-009 scheduling until these
 production gates are complete.
 <!-- PI-009:END -->
+
+<!-- PI-009-OPERATIONS-FINAL:BEGIN -->
+## PI-009 Completion and PI-010 Transition
+
+### PI-009 — Governance Operations
+
+- [x] Domain contracts
+- [x] SQLite append-only repository
+- [x] Application dispatch service
+- [x] Read-only API and Dashboard projection
+- [x] Production schema migration
+- [x] Verified Production backup
+- [x] Manual operation validation
+- [x] Production UTC clock adapter
+- [x] JSON-first one-shot runner
+- [x] Full regression
+- [x] Documentation close
+
+### PI-010 — Controlled Scheduler Policy and Activation
+
+- [ ] Approve explicit cadence for each operation
+- [ ] Render disabled launchd definitions
+- [ ] Validate temporary plist artifacts
+- [ ] Obtain explicit installation approval
+- [ ] Install and activate under controlled gate
+- [ ] Observe the first operation executions
+- [ ] Validate audit projection and logs
+- [ ] Document unload and rollback procedures
+<!-- PI-009-OPERATIONS-FINAL:END -->

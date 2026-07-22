@@ -745,3 +745,30 @@ Deferred technical debt:
 - No automatic migration, retry, restore or remediation was added.
 - Production database content and WAL content remained unchanged.
 <!-- PI-009:END -->
+
+<!-- PI-009-OPERATIONS-FINAL:BEGIN -->
+## 2026-07-22 — PI-009 Governance Operations Final Close
+
+### Added
+
+- Production UTC-aware SystemUTCClock adapter.
+- JSON-first one-shot governance operation runner.
+- Explicit Production dependency composition.
+- Per-operation non-blocking execution locks.
+- Ephemeral-path composition tests.
+
+### Validated
+
+- 14 targeted tests passed.
+- 717 full-suite tests passed.
+- 5 tests remained intentionally deselected.
+- 427 warnings remained at the existing baseline.
+- Production database and WAL were unchanged.
+- No LaunchAgent was written or activated.
+
+### Deferred to PI-010
+
+- Explicit automated cadence policy.
+- launchd installation and activation.
+- First scheduled-run observation.
+<!-- PI-009-OPERATIONS-FINAL:END -->

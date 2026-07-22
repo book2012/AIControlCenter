@@ -473,3 +473,27 @@ The production database remained unchanged during implementation and
 validation. Production migration and scheduler activation require the
 separate PI-009 Production Activation Gate.
 <!-- PI-009:END -->
+
+<!-- PI-009-OPERATIONS-FINAL:BEGIN -->
+## PI-009 Final Architecture Decision
+
+Governance operation execution is separated from
+scheduling policy.
+
+    JSON CLI
+      -> OperationsApplicationService
+           -> SQLiteOperationsEventRepository
+           -> SystemUTCClock
+           -> AutomationExecutor
+           -> BackupVerifyService
+
+AIControlCenter owns composition, policy validation,
+locking, JSON output and audit dispatch.
+
+The runner does not own cadence, retry, catch-up,
+remediation or restore policy. No governance business
+logic is placed on Ubuntu.
+
+External schedulers may invoke the one-shot interface
+only after a separate controlled activation gate.
+<!-- PI-009-OPERATIONS-FINAL:END -->

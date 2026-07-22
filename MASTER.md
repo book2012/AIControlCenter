@@ -442,3 +442,39 @@ Remaining gates:
 3. Explicit scheduler activation authorization.
 4. Post-activation observation and rollback validation.
 <!-- PI-009:END -->
+
+<!-- PI-009-OPERATIONS-FINAL:BEGIN -->
+## Current Production Milestone
+
+PI-009 Governance Operations: CLOSED
+
+Completed:
+
+- operation domain and application contracts
+- append-only SQLite operation event storage
+- Production schema migration and verified backup
+- manual backup verification operation
+- Production UTC clock adapter
+- JSON-first one-shot operation runner
+- full regression and Git-clean implementation gate
+
+Final implementation commit:
+
+    d1072aa35fb5034c1097923fd7f6d7643132460b
+
+Operational state:
+
+- runner available
+- scheduler inactive
+- LaunchAgents not installed
+- cadence policy deferred
+- Production database protected
+
+Next Production milestone:
+
+PI-010 Controlled Scheduler Policy and Activation
+
+This section is the repository-backed Notion handoff
+source. External Notion synchronization is not performed
+by this Git task.
+<!-- PI-009-OPERATIONS-FINAL:END -->
