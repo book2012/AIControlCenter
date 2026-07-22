@@ -1,1 +1,76 @@
-{"composition":{"backup_verifier":{"bindings":{"keyword":{},"positional":[]},"class":"BackupVerifyService","module":"core.backup.verify"},"clock":{"bindings":{"keyword":{},"positional":[]},"class":"SystemUTCClock","module":"core.governance.operations.adapters.system_clock"},"repository":{"bindings":{"keyword":{"database_path":"production_database"},"positional":[]},"class":"SQLiteOperationsEventRepository","module":"core.governance.operations.adapters.sqlite.repository"},"snapshot_executor":{"bindings":{"keyword":{},"positional":[]},"class":"AutomationExecutor","module":"core.automation.executor"}},"dispatch":{"command":{"class":"DispatchCommand","module":"core.governance.operations.application.models"},"operation_enum":{"class":"Operation","module":"core.governance.operations.domain.events"},"service":{"bindings":{"backup_verifier":"backup_verifier","clock":"clock","repository":"repository","snapshot_executor":"snapshot_executor"},"class":"OperationsApplicationService","module":"core.governance.operations.application.service"}},"operations":["governance_audit_snapshot","sqlite_online_backup_verification"],"owner":"AIControlCenter","paths":{"production_database_default":"~/Library/Application Support/AIControlCenter/data/model-governance-audit.sqlite3","production_database_environment":"AICONTROLCENTER_GOVERNANCE_AUDIT_DB"},"safety":{"automatic_catch_up":false,"automatic_remediation":false,"automatic_restore":false,"automatic_retry":false,"launchd_activation_enabled":false,"scheduling_enabled":false},"schema_version":1}
+{
+  "composition": {
+    "backup_verifier": {
+      "bindings": {
+        "keyword": {},
+        "positional": []
+      },
+      "class": "SQLiteOnlineBackupVerifier",
+      "module": "core.governance.operations.runtime_capabilities"
+    },
+    "clock": {
+      "bindings": {
+        "keyword": {},
+        "positional": []
+      },
+      "class": "SystemUTCClock",
+      "module": "core.governance.operations.adapters.system_clock"
+    },
+    "repository": {
+      "bindings": {
+        "keyword": {
+          "database_path": "production_database"
+        },
+        "positional": []
+      },
+      "class": "SQLiteOperationsEventRepository",
+      "module": "core.governance.operations.adapters.sqlite.repository"
+    },
+    "snapshot_executor": {
+      "bindings": {
+        "keyword": {},
+        "positional": []
+      },
+      "class": "GovernanceAuditSnapshotExecutor",
+      "module": "core.governance.operations.runtime_capabilities"
+    }
+  },
+  "dispatch": {
+    "command": {
+      "class": "DispatchCommand",
+      "module": "core.governance.operations.application.models"
+    },
+    "operation_enum": {
+      "class": "Operation",
+      "module": "core.governance.operations.domain.events"
+    },
+    "service": {
+      "bindings": {
+        "backup_verifier": "backup_verifier",
+        "clock": "clock",
+        "repository": "repository",
+        "snapshot_executor": "snapshot_executor"
+      },
+      "class": "OperationsApplicationService",
+      "module": "core.governance.operations.application.service"
+    }
+  },
+  "operations": [
+    "governance_audit_snapshot",
+    "sqlite_online_backup_verification"
+  ],
+  "owner": "AIControlCenter",
+  "paths": {
+    "production_database_default": "~/Library/Application Support/AIControlCenter/data/model-governance-audit.sqlite3",
+    "production_database_environment": "AICONTROLCENTER_GOVERNANCE_AUDIT_DB"
+  },
+  "safety": {
+    "automatic_catch_up": false,
+    "automatic_remediation": false,
+    "automatic_restore": false,
+    "automatic_retry": false,
+    "launchd_activation_enabled": false,
+    "scheduling_enabled": false
+  },
+  "schema_version": 1
+}
