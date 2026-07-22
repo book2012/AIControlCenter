@@ -1,4 +1,5 @@
 from __future__ import annotations
+from collections.abc import Mapping
 
 import argparse
 import dataclasses
@@ -206,9 +207,18 @@ def build_service(
 
 def _normalize(value: Any) -> Any:
     if dataclasses.is_dataclass(value):
-        return _normalize(
-            dataclasses.asdict(value)
-        )
+        return {
+            field.name: _normalize(
+                getattr(value, field.name)
+            )
+            for field in dataclasses.fields(value)
+        }
+
+    if isinstance(value, Mapping):
+        return {
+            key: _normalize(item)
+            for key, item in value.items()
+        }
 
     if isinstance(value, enum.Enum):
         return _normalize(value.value)
