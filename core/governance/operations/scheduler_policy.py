@@ -50,6 +50,20 @@ def validate_policy(
             "timezone must be Asia/Seoul"
         )
 
+    expected_deployment = {
+        "domain": "system",
+        "home": "/Users/kyouhan",
+        "install_directory": (
+            "/Library/LaunchDaemons"
+        ),
+        "run_as_user": "kyouhan",
+    }
+
+    if document.get("deployment") != expected_deployment:
+        raise SchedulerPolicyError(
+            "unsupported scheduler deployment"
+        )
+
     expected_safety = {
         "automatic_catch_up": False,
         "automatic_remediation": False,
@@ -63,6 +77,15 @@ def validate_policy(
     if document.get("safety") != expected_safety:
         raise SchedulerPolicyError(
             "unsafe scheduler policy"
+        )
+
+    runner = document.get("runner", {})
+
+    if runner.get("module") != (
+        "core.governance.operations.scheduler"
+    ):
+        raise SchedulerPolicyError(
+            "unsupported runner module"
         )
 
     definitions = document.get("definitions")
@@ -110,13 +133,11 @@ def validate_policy(
                 "calendar must be an object"
             )
 
-        allowed_keys = {
+        if not set(calendar) <= {
             "Weekday",
             "Hour",
             "Minute",
-        }
-
-        if not set(calendar) <= allowed_keys:
+        }:
             raise SchedulerPolicyError(
                 "unsupported calendar field"
             )
@@ -181,9 +202,7 @@ def validate_policy(
         )
 
 
-def activation_directory(
-    path: Path,
-) -> bool:
+def activation_directory(path: Path) -> bool:
     resolved = path.expanduser().resolve()
 
     protected = (
@@ -227,6 +246,7 @@ def render_documents(
             "Python executable does not exist"
         )
 
+    deployment = document["deployment"]
     rendered: dict[
         str,
         dict[str, Any],
@@ -237,13 +257,12 @@ def render_documents(
         operation = definition["operation"]
 
         rendered[label] = {
-            "Disabled": True,
             "EnvironmentVariables": {
+                "HOME": deployment["home"],
                 "PYTHONDONTWRITEBYTECODE": "1",
             },
             "KeepAlive": False,
             "Label": label,
-            "ProcessType": "Background",
             "ProgramArguments": [
                 str(
                     python_executable.resolve()
@@ -267,6 +286,9 @@ def render_documents(
             "StartCalendarInterval": (
                 definition["calendar"]
             ),
+            "UserName": deployment[
+                "run_as_user"
+            ],
             "WorkingDirectory": str(
                 repository_root.resolve()
             ),
@@ -343,11 +365,9 @@ def write_documents(
                 handle.flush()
                 os.fsync(handle.fileno())
 
-            parsed = plistlib.loads(
+            if plistlib.loads(
                 temporary.read_bytes()
-            )
-
-            if parsed != plist_document:
+            ) != plist_document:
                 raise SchedulerPolicyError(
                     "rendered plist verification "
                     "failed"

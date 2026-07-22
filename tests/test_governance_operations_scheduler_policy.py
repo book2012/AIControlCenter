@@ -23,15 +23,22 @@ POLICY_PATH = (
 )
 
 
-def test_explicit_cadence_policy():
+def test_explicit_cadence_and_deployment():
     policy = load_policy(POLICY_PATH)
-
     definitions = {
         item["operation"]: item
         for item in policy["definitions"]
     }
 
     assert policy["timezone"] == "Asia/Seoul"
+    assert policy["deployment"] == {
+        "domain": "system",
+        "home": "/Users/kyouhan",
+        "install_directory": (
+            "/Library/LaunchDaemons"
+        ),
+        "run_as_user": "kyouhan",
+    }
     assert definitions[
         "governance_audit_snapshot"
     ]["calendar"] == {
@@ -61,7 +68,7 @@ def test_policy_disables_unsafe_automation():
     }
 
 
-def test_rendered_definitions_are_disabled(
+def test_rendered_system_daemons_are_safe(
     tmp_path: Path,
 ):
     policy = load_policy(POLICY_PATH)
@@ -78,9 +85,16 @@ def test_rendered_definitions_are_disabled(
     assert len(rendered) == 2
 
     for document in rendered.values():
-        assert document["Disabled"] is True
+        assert "Disabled" not in document
+        assert document["UserName"] == "kyouhan"
         assert document["RunAtLoad"] is False
         assert document["KeepAlive"] is False
+        assert (
+            document["EnvironmentVariables"][
+                "HOME"
+            ]
+            == "/Users/kyouhan"
+        )
         assert (
             "StartCalendarInterval"
             in document
@@ -89,15 +103,17 @@ def test_rendered_definitions_are_disabled(
             "StartInterval"
             not in document
         )
-        assert "--once" in (
-            document["ProgramArguments"]
+        assert (
+            "--once"
+            in document["ProgramArguments"]
         )
-        assert "--json" in (
-            document["ProgramArguments"]
+        assert (
+            "--json"
+            in document["ProgramArguments"]
         )
 
 
-def test_temporary_rendered_plists_parse(
+def test_temporary_plists_parse(
     tmp_path: Path,
 ):
     policy = load_policy(POLICY_PATH)
@@ -121,14 +137,11 @@ def test_temporary_rendered_plists_parse(
             path.read_bytes()
         )
 
-        assert document["Disabled"] is True
-        assert (
-            document["WorkingDirectory"]
-            == str(REPOSITORY_ROOT)
-        )
+        assert document["UserName"] == "kyouhan"
+        assert "Disabled" not in document
 
 
-def test_renderer_refuses_launchagents():
+def test_renderer_refuses_production_directory():
     policy = load_policy(POLICY_PATH)
 
     with pytest.raises(
@@ -137,9 +150,8 @@ def test_renderer_refuses_launchagents():
     ):
         write_documents(
             policy,
-            output_directory=(
-                Path.home()
-                / "Library/LaunchAgents"
+            output_directory=Path(
+                "/Library/LaunchDaemons"
             ),
             repository_root=REPOSITORY_ROOT,
             python_executable=(
