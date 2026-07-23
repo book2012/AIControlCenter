@@ -801,3 +801,30 @@ Both governed Production operations reached run_succeeded. The managed cron adap
 - Ubuntu remains a stateless infrastructure worker.
 - No Shopping write capability was enabled.
 <!-- END AICONTROLCENTER SPF-002 CHANGELOG -->
+
+<!-- SPF-003:START -->
+## 2026-07-23 — SPF-003 Shopping Read-Only Port Foundation
+
+### Added
+
+- Import-safe Shopping package boundaries.
+- Seven transport-neutral read-only or compute-only Protocol interfaces.
+- Provisional JSON-first Shopping contract aliases.
+- Import, typing, signature, compatibility, write-deny, and side-effect tests.
+
+### Changed
+
+- Migrated `core/shopping/ports.py` to `core/shopping/ports/__init__.py` byte-for-byte.
+- Preserved the existing `CommerceCatalogPort` import contract.
+
+### Validation and Safety
+
+- Targeted tests: 6 passed.
+- Full regression: 747 passed with 5 deselected.
+- Production infrastructure was not modified.
+- Shopping write operations remain disabled.
+
+Next milestone: **SPF-004 — Canonical JSON Schema v1**.
+
+Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
+<!-- SPF-003:END -->

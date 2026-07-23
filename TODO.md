@@ -373,3 +373,14 @@ Sprint tasks completed: 2 of 10
 Sprint tasks remaining: 8
 Shopping write operations enabled: No
 <!-- END AICONTROLCENTER SPF-002 TODO -->
+
+<!-- SPF-003:START -->
+## Current Shopping Task State
+
+- [x] SPF-003 — Import-safe package and read-only port foundation
+- [ ] SPF-004 — Canonical JSON Schema v1
+
+SPF-003 validation: 6 targeted tests and 747 full regression tests passed.
+
+Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
+<!-- SPF-003:END -->

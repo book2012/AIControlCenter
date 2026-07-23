@@ -507,3 +507,18 @@ Milestone: Shopping Platform Foundation
 
 Next task: SPF-003 Shopping package and read-only port skeleton.
 <!-- END AICONTROLCENTER SPF-002 MASTER -->
+
+<!-- SPF-003:START -->
+## SPF-003 Closure Record
+
+- Status: CLOSED
+- Milestone: Shopping Platform Foundation
+- Scope: package boundaries, compatibility migration, provisional contracts, seven read-only ports, and validation
+- Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`
+- Targeted validation: 6 passed
+- Full regression: 747 passed with 5 deselected
+- Production modified: false
+- Ubuntu modified: false
+- Write operations enabled: false
+- Next task: **SPF-004 — Canonical JSON Schema v1**
+<!-- SPF-003:END -->

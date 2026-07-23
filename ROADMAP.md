@@ -625,3 +625,20 @@ Status: In Progress
 Write progression:
 Monitoring → Validation → Reconciliation → Approval → Dry Run → Canary Write → Production Write.
 <!-- END AICONTROLCENTER SPF-002 ROADMAP -->
+
+<!-- SPF-003:START -->
+## Shopping Platform Foundation Progress — 2026-07-23
+
+- [x] SPF-001 Repository and branch baseline
+- [x] SPF-002 Architecture foundation
+- [x] SPF-003 Package and read-only port skeleton
+- [ ] SPF-004 Canonical JSON Schema v1
+- [ ] SPF-005 Capability registry deny-by-default
+- [ ] SPF-006 Read adapter contracts
+- [ ] SPF-007 Adapter health monitoring
+- [ ] SPF-008 Read-only snapshots
+- [ ] SPF-009 Validation and schema drift
+- [ ] SPF-010 Regression, operational validation, and documentation closure
+
+SPF-003 implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
+<!-- SPF-003:END -->

@@ -554,3 +554,15 @@ Monitoring must stabilize before validation.
 Validation must stabilize before approved write operations.
 Write interfaces are intentionally absent during Sprint 1.
 <!-- END AICONTROLCENTER SPF-002 PROJECT_HISTORY -->
+
+<!-- SPF-003:START -->
+## 2026-07-23 — SPF-003 Closed
+
+SPF-003 established the Shopping bounded-context package structure, migrated the legacy ports module to a package without changing its bytes, preserved `CommerceCatalogPort`, introduced seven read-only or compute-only Protocol interfaces, added provisional JSON-first contracts, and validated import safety and deny-by-default write governance.
+
+Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
+
+Validation: 6 targeted tests and 747 full regression tests passed with 5 deselected.
+
+Next production milestone: **SPF-004 — Canonical JSON Schema v1**.
+<!-- SPF-003:END -->

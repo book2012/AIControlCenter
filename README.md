@@ -518,3 +518,15 @@ Architecture documentation:
 
 Next gated task: SPF-003 Shopping package and read-only port skeleton.
 <!-- END AICONTROLCENTER SPF-002 README -->
+
+<!-- SPF-003:START -->
+## Shopping Platform Foundation Status
+
+SPF-003 is closed. The repository contains an import-safe Shopping package foundation, seven asynchronous keyword-only read or compute ports, provisional JSON-first contracts, legacy `CommerceCatalogPort` compatibility, and deny-by-default write governance.
+
+Validation: 6 targeted tests passed; 747 full regression tests passed with 5 deselected.
+
+Next milestone: **SPF-004 — Canonical JSON Schema v1**.
+
+Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
+<!-- SPF-003:END -->

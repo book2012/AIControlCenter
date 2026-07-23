@@ -526,3 +526,18 @@ Governance, authorization, audit, workflow, and policy remain in AIControlCenter
 
 Canonical detail: `docs/architecture/shopping-platform-foundation.md`
 <!-- END AICONTROLCENTER SPF-002 ARCHITECTURE -->
+
+<!-- SPF-003:START -->
+## SPF-003 — Shopping Read-Only Port Foundation
+
+Status: **Closed** on 2026-07-23.
+
+- `core.shopping` is the application-owned Shopping bounded context.
+- Seven transport-neutral ports expose read-only or compute-only capabilities.
+- `CommerceCatalogPort` remains compatible through the byte-preserving `ports.py` to `ports/__init__.py` migration.
+- Provisional JSON-first contracts remain isolated in `core.shopping.contracts.provisional`.
+- Commerce, CMS, webhook, snapshot-persistence, and audit-append writes remain disabled.
+- Canonical contract freezing is assigned to **SPF-004 — Canonical JSON Schema v1**.
+
+Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
+<!-- SPF-003:END -->
