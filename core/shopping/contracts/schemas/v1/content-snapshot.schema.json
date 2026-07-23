@@ -1,0 +1,65 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:content-snapshot",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Canonical read-only CMS content projection.",
+  "properties": {
+    "body": {
+      "type": "string"
+    },
+    "content_id": {
+      "$ref": "common.schema.json#/$defs/Identifier"
+    },
+    "content_type": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "published": {
+      "type": "boolean"
+    },
+    "published_at": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/UtcDateTime"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "slug": {
+      "maxLength": 256,
+      "minLength": 1,
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "type": "string"
+    },
+    "title": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "updated_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "url": {
+      "anyOf": [
+        {
+          "format": "uri",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "body",
+    "content_id",
+    "content_type",
+    "published",
+    "published_at",
+    "slug",
+    "title",
+    "updated_at"
+  ],
+  "title": "ContentSnapshot",
+  "type": "object"
+}

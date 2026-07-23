@@ -1,0 +1,32 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:read-context",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Context attached to a Shopping read operation.",
+  "properties": {
+    "actor_id": {
+      "$ref": "common.schema.json#/$defs/Identifier"
+    },
+    "correlation_id": {
+      "$ref": "common.schema.json#/$defs/CorrelationId"
+    },
+    "locale": {
+      "pattern": "^[a-z]{2}(?:-[A-Z]{2})?$",
+      "type": "string"
+    },
+    "requested_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    }
+  },
+  "required": [
+    "actor_id",
+    "correlation_id",
+    "requested_at",
+    "source"
+  ],
+  "title": "ReadContext",
+  "type": "object"
+}

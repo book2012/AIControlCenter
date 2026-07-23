@@ -1,0 +1,49 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:read-policy-request",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Fail-closed request for a read policy decision.",
+  "properties": {
+    "action": {
+      "const": "read",
+      "type": "string"
+    },
+    "capability": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "context": {
+      "$ref": "read-context.schema.json"
+    },
+    "requested_fields": {
+      "items": {
+        "$ref": "common.schema.json#/$defs/NonEmptyString"
+      },
+      "maxItems": 100,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "resource_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resource_type": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    }
+  },
+  "required": [
+    "action",
+    "capability",
+    "context",
+    "requested_fields",
+    "resource_id",
+    "resource_type"
+  ],
+  "title": "ReadPolicyRequest",
+  "type": "object"
+}

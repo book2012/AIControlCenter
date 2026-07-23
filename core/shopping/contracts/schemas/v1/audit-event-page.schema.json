@@ -1,0 +1,28 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:audit-event-page",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Cursor-based canonical page for AuditEvent items.",
+  "properties": {
+    "has_more": {
+      "type": "boolean"
+    },
+    "items": {
+      "items": {
+        "$ref": "audit-event.schema.json"
+      },
+      "maxItems": 100,
+      "type": "array"
+    },
+    "next_cursor": {
+      "$ref": "common.schema.json#/$defs/Cursor"
+    }
+  },
+  "required": [
+    "has_more",
+    "items",
+    "next_cursor"
+  ],
+  "title": "AuditEventPage",
+  "type": "object"
+}

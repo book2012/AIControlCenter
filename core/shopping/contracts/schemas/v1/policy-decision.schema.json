@@ -1,0 +1,47 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:policy-decision",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Fail-closed decision for a Shopping read capability.",
+  "properties": {
+    "allowed": {
+      "type": "boolean"
+    },
+    "capability": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "correlation_id": {
+      "$ref": "common.schema.json#/$defs/CorrelationId"
+    },
+    "decision_id": {
+      "$ref": "common.schema.json#/$defs/Identifier"
+    },
+    "evaluated_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "reason_code": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "reason_message": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/NonEmptyString"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "required": [
+    "allowed",
+    "capability",
+    "correlation_id",
+    "decision_id",
+    "evaluated_at",
+    "reason_code",
+    "reason_message"
+  ],
+  "title": "PolicyDecision",
+  "type": "object"
+}

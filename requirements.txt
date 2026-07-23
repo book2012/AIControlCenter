@@ -31,3 +31,7 @@ typing-inspection==0.4.2
 typing_extensions==4.16.0
 urllib3==2.7.0
 uvicorn==0.51.0
+
+# SPF-004 canonical JSON Schema runtime
+jsonschema==4.26.0
+referencing==0.37.0

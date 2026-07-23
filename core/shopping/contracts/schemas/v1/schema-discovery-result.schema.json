@@ -1,0 +1,35 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:schema-discovery-result",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Explicit schema identity and version discovery result.",
+  "properties": {
+    "contract_name": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "discovered_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "draft": {
+      "const": "https://json-schema.org/draft/2020-12/schema",
+      "type": "string"
+    },
+    "schema_id": {
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema_version": {
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "contract_name",
+    "discovered_at",
+    "draft",
+    "schema_id",
+    "schema_version"
+  ],
+  "title": "SchemaDiscoveryResult",
+  "type": "object"
+}

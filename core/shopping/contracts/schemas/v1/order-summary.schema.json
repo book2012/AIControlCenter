@@ -1,0 +1,47 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:order-summary",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Canonical read-only order summary.",
+  "properties": {
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "customer_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "item_count": {
+      "minimum": 0,
+      "type": "integer"
+    },
+    "order_id": {
+      "$ref": "common.schema.json#/$defs/Identifier"
+    },
+    "status": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "total": {
+      "$ref": "common.schema.json#/$defs/Money"
+    },
+    "updated_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    }
+  },
+  "required": [
+    "created_at",
+    "item_count",
+    "order_id",
+    "status",
+    "total",
+    "updated_at"
+  ],
+  "title": "OrderSummary",
+  "type": "object"
+}

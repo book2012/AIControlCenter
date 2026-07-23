@@ -1,0 +1,184 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:snapshot-envelope",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "contract_name": {
+            "const": "AdapterHealth"
+          }
+        },
+        "required": [
+          "contract_name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "adapter-health.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "contract_name": {
+            "const": "AuditEvent"
+          }
+        },
+        "required": [
+          "contract_name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "audit-event.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "contract_name": {
+            "const": "ContentSnapshot"
+          }
+        },
+        "required": [
+          "contract_name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "content-snapshot.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "contract_name": {
+            "const": "OrderSummary"
+          }
+        },
+        "required": [
+          "contract_name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "order-summary.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "contract_name": {
+            "const": "PolicyDecision"
+          }
+        },
+        "required": [
+          "contract_name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "policy-decision.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "contract_name": {
+            "const": "ProductSnapshot"
+          }
+        },
+        "required": [
+          "contract_name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "product-snapshot.schema.json"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "contract_name": {
+            "const": "SchemaDiscoveryResult"
+          }
+        },
+        "required": [
+          "contract_name"
+        ]
+      },
+      "then": {
+        "properties": {
+          "payload": {
+            "$ref": "schema-discovery-result.schema.json"
+          }
+        }
+      }
+    }
+  ],
+  "description": "Versioned envelope for a canonical Shopping read snapshot.",
+  "properties": {
+    "captured_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "contract_name": {
+      "enum": [
+        "AdapterHealth",
+        "AuditEvent",
+        "ContentSnapshot",
+        "OrderSummary",
+        "PolicyDecision",
+        "ProductSnapshot",
+        "SchemaDiscoveryResult"
+      ],
+      "type": "string"
+    },
+    "payload": {},
+    "schema_id": {
+      "pattern": "^urn:aicontrolcenter:shopping:contract:v1:[a-z0-9-]+$",
+      "type": "string"
+    },
+    "schema_version": {
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "type": "string"
+    },
+    "snapshot_id": {
+      "$ref": "common.schema.json#/$defs/Identifier"
+    },
+    "source": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    }
+  },
+  "required": [
+    "captured_at",
+    "contract_name",
+    "payload",
+    "schema_id",
+    "schema_version",
+    "snapshot_id",
+    "source"
+  ],
+  "title": "SnapshotEnvelope",
+  "type": "object"
+}

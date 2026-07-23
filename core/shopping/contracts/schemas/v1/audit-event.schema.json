@@ -1,0 +1,76 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:audit-event",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Read-only canonical audit event projection.",
+  "properties": {
+    "action": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "actor_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "correlation_id": {
+      "$ref": "common.schema.json#/$defs/CorrelationId"
+    },
+    "event_id": {
+      "$ref": "common.schema.json#/$defs/Identifier"
+    },
+    "message": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/NonEmptyString"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "occurred_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "outcome": {
+      "enum": [
+        "allowed",
+        "denied",
+        "error",
+        "observed",
+        "succeeded"
+      ],
+      "type": "string"
+    },
+    "resource_id": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/Identifier"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "resource_type": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    }
+  },
+  "required": [
+    "action",
+    "actor_id",
+    "correlation_id",
+    "event_id",
+    "message",
+    "occurred_at",
+    "outcome",
+    "resource_id",
+    "resource_type"
+  ],
+  "title": "AuditEvent",
+  "type": "object"
+}

@@ -1,0 +1,187 @@
+{
+  "contracts": {
+    "AdapterHealth": {
+      "path": "adapter-health.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:adapter-health",
+      "schema_version": "1.0.0"
+    },
+    "AuditEvent": {
+      "path": "audit-event.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:audit-event",
+      "schema_version": "1.0.0"
+    },
+    "AuditEventPage": {
+      "path": "audit-event-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:audit-event-page",
+      "schema_version": "1.0.0"
+    },
+    "ContentSnapshot": {
+      "path": "content-snapshot.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:content-snapshot",
+      "schema_version": "1.0.0"
+    },
+    "ContentSnapshotPage": {
+      "path": "content-snapshot-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:content-snapshot-page",
+      "schema_version": "1.0.0"
+    },
+    "OrderSummary": {
+      "path": "order-summary.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:order-summary",
+      "schema_version": "1.0.0"
+    },
+    "PageRequest": {
+      "path": "page-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:page-request",
+      "schema_version": "1.0.0"
+    },
+    "PolicyDecision": {
+      "path": "policy-decision.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:policy-decision",
+      "schema_version": "1.0.0"
+    },
+    "ProductSnapshot": {
+      "path": "product-snapshot.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:product-snapshot",
+      "schema_version": "1.0.0"
+    },
+    "ProductSnapshotPage": {
+      "path": "product-snapshot-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:product-snapshot-page",
+      "schema_version": "1.0.0"
+    },
+    "ReadContext": {
+      "path": "read-context.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:read-context",
+      "schema_version": "1.0.0"
+    },
+    "ReadPolicyRequest": {
+      "path": "read-policy-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:read-policy-request",
+      "schema_version": "1.0.0"
+    },
+    "SchemaDiscoveryResult": {
+      "path": "schema-discovery-result.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:schema-discovery-result",
+      "schema_version": "1.0.0"
+    },
+    "SnapshotEnvelope": {
+      "path": "snapshot-envelope.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:snapshot-envelope",
+      "schema_version": "1.0.0"
+    },
+    "SnapshotEnvelopePage": {
+      "path": "snapshot-envelope-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:snapshot-envelope-page",
+      "schema_version": "1.0.0"
+    }
+  },
+  "draft": "https://json-schema.org/draft/2020-12/schema",
+  "manifest_version": 1,
+  "network_resolution": false,
+  "resources": [
+    {
+      "kind": "contract",
+      "name": "AdapterHealth",
+      "path": "adapter-health.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:adapter-health"
+    },
+    {
+      "kind": "contract",
+      "name": "AuditEvent",
+      "path": "audit-event.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:audit-event"
+    },
+    {
+      "kind": "contract",
+      "name": "AuditEventPage",
+      "path": "audit-event-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:audit-event-page"
+    },
+    {
+      "kind": "contract",
+      "name": "ContentSnapshot",
+      "path": "content-snapshot.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:content-snapshot"
+    },
+    {
+      "kind": "contract",
+      "name": "ContentSnapshotPage",
+      "path": "content-snapshot-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:content-snapshot-page"
+    },
+    {
+      "kind": "contract",
+      "name": "OrderSummary",
+      "path": "order-summary.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:order-summary"
+    },
+    {
+      "kind": "contract",
+      "name": "PageRequest",
+      "path": "page-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:page-request"
+    },
+    {
+      "kind": "contract",
+      "name": "PolicyDecision",
+      "path": "policy-decision.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:policy-decision"
+    },
+    {
+      "kind": "contract",
+      "name": "ProductSnapshot",
+      "path": "product-snapshot.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:product-snapshot"
+    },
+    {
+      "kind": "contract",
+      "name": "ProductSnapshotPage",
+      "path": "product-snapshot-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:product-snapshot-page"
+    },
+    {
+      "kind": "contract",
+      "name": "ReadContext",
+      "path": "read-context.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:read-context"
+    },
+    {
+      "kind": "contract",
+      "name": "ReadPolicyRequest",
+      "path": "read-policy-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:read-policy-request"
+    },
+    {
+      "kind": "contract",
+      "name": "SchemaDiscoveryResult",
+      "path": "schema-discovery-result.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:schema-discovery-result"
+    },
+    {
+      "kind": "contract",
+      "name": "SnapshotEnvelope",
+      "path": "snapshot-envelope.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:snapshot-envelope"
+    },
+    {
+      "kind": "contract",
+      "name": "SnapshotEnvelopePage",
+      "path": "snapshot-envelope-page.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:snapshot-envelope-page"
+    },
+    {
+      "kind": "shared",
+      "name": "Common",
+      "path": "common.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:common"
+    },
+    {
+      "kind": "shared",
+      "name": "ErrorEnvelope",
+      "path": "error-envelope.schema.json",
+      "schema_id": "urn:aicontrolcenter:shopping:contract:v1:error-envelope"
+    }
+  ],
+  "schema_version": "1.0.0"
+}

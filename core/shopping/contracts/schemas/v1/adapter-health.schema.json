@@ -1,0 +1,53 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:adapter-health",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Read-only health projection for an external adapter.",
+  "properties": {
+    "adapter": {
+      "$ref": "common.schema.json#/$defs/NonEmptyString"
+    },
+    "checked_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "latency_ms": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "message": {
+      "anyOf": [
+        {
+          "$ref": "common.schema.json#/$defs/NonEmptyString"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "enum": [
+        "degraded",
+        "healthy",
+        "unavailable",
+        "unknown"
+      ],
+      "type": "string"
+    }
+  },
+  "required": [
+    "adapter",
+    "checked_at",
+    "latency_ms",
+    "message",
+    "status"
+  ],
+  "title": "AdapterHealth",
+  "type": "object"
+}

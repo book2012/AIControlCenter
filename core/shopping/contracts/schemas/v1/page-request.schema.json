@@ -1,0 +1,20 @@
+{
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:page-request",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "description": "Cursor-based request for a canonical Shopping page.",
+  "properties": {
+    "cursor": {
+      "$ref": "common.schema.json#/$defs/Cursor"
+    },
+    "limit": {
+      "$ref": "common.schema.json#/$defs/PageLimit"
+    }
+  },
+  "required": [
+    "cursor",
+    "limit"
+  ],
+  "title": "PageRequest",
+  "type": "object"
+}

@@ -1,0 +1,87 @@
+{
+  "$defs": {
+    "CorrelationId": {
+      "$ref": "#/$defs/Identifier",
+      "description": "Platform correlation identifier."
+    },
+    "CurrencyCode": {
+      "description": "Uppercase ISO 4217 currency code.",
+      "pattern": "^[A-Z]{3}$",
+      "type": "string"
+    },
+    "Cursor": {
+      "description": "Opaque pagination cursor or null when no cursor is present.",
+      "minLength": 1,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "CursorPageMetadata": {
+      "$comment": "Compositional definition. Final page schemas must enforce unevaluatedProperties=false.",
+      "properties": {
+        "has_more": {
+          "type": "boolean"
+        },
+        "next_cursor": {
+          "$ref": "#/$defs/Cursor"
+        }
+      },
+      "required": [
+        "has_more",
+        "next_cursor"
+      ],
+      "type": "object"
+    },
+    "Identifier": {
+      "allOf": [
+        {
+          "$ref": "#/$defs/NonEmptyString"
+        },
+        {
+          "maxLength": 256
+        }
+      ],
+      "description": "Opaque platform or vendor identifier."
+    },
+    "Money": {
+      "additionalProperties": false,
+      "description": "Monetary value represented in integer minor units.",
+      "properties": {
+        "amount_minor": {
+          "description": "Amount in the minor unit of the currency.",
+          "type": "integer"
+        },
+        "currency": {
+          "$ref": "#/$defs/CurrencyCode"
+        }
+      },
+      "required": [
+        "amount_minor",
+        "currency"
+      ],
+      "type": "object"
+    },
+    "NonEmptyString": {
+      "minLength": 1,
+      "pattern": "\\S",
+      "type": "string"
+    },
+    "PageLimit": {
+      "default": 25,
+      "maximum": 100,
+      "minimum": 1,
+      "type": "integer"
+    },
+    "UtcDateTime": {
+      "description": "RFC 3339 timestamp normalized to UTC.",
+      "format": "date-time",
+      "pattern": "Z$",
+      "type": "string"
+    }
+  },
+  "$id": "urn:aicontrolcenter:shopping:contract:v1:common",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Shared canonical definitions for Shopping JSON contracts.",
+  "title": "Shopping Common Definitions"
+}
