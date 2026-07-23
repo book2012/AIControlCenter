@@ -536,3 +536,21 @@ Direct launchctl and GUI-dependent activation paths were rejected during operati
 Immutable snapshot serialization was corrected in commit fee92a7b091d53201fd923ef42b7e1e75edd00be. Capability boundaries were finalized in commit 88f548fcc7b7cf849fdc9e9897993576e3bf68c0. Dedicated semantic capabilities were added in commit 3a7033aaee56145928bfd5fa2fdaaab318ecf77a.
 
 Both Production operations reached run_succeeded, rollback passed, the scheduler remained active, and the full regression suite passed.
+
+<!-- BEGIN AICONTROLCENTER SPF-002 PROJECT_HISTORY -->
+## Shopping Platform Foundation Decision
+
+Date: 2026-07-23
+
+Shopping Platform was established as an AIControlCenter bounded domain.
+It is not a WordPress plugin and it is not an Ubuntu application.
+
+WordPress remains a replaceable headless CMS.
+WooCommerce remains a replaceable commerce engine.
+
+External components cannot own platform policy, authorization, recommendations, audit, workflow, customer automation, or deployment control.
+
+Monitoring must stabilize before validation.
+Validation must stabilize before approved write operations.
+Write interfaces are intentionally absent during Sprint 1.
+<!-- END AICONTROLCENTER SPF-002 PROJECT_HISTORY -->

@@ -603,3 +603,25 @@ Status: CLOSED — 2026-07-23
 Completed explicit cadence, JSON one-shot execution, dedicated governance runtime capabilities, headless Production scheduling, authoritative run_succeeded validation, rollback protection, regression, and documentation close.
 
 Next milestone: Shopping Platform Foundation.
+
+<!-- BEGIN AICONTROLCENTER SPF-002 ROADMAP -->
+## Shopping Platform Foundation
+
+Status: In Progress
+
+| Task | Scope | Status |
+| --- | --- | --- |
+| SPF-001 | Repository and branch baseline | CLOSED |
+| SPF-002 | Architecture and ownership foundation | CLOSED |
+| SPF-003 | Package and read-only port skeleton | NEXT |
+| SPF-004 | Canonical JSON Schema v1 | QUEUED |
+| SPF-005 | Deny-by-default capability registry | QUEUED |
+| SPF-006 | Read adapter contracts | QUEUED |
+| SPF-007 | Adapter health monitoring | QUEUED |
+| SPF-008 | Read-only snapshot retrieval | QUEUED |
+| SPF-009 | Validation and schema drift detection | QUEUED |
+| SPF-010 | Regression and operational close | QUEUED |
+
+Write progression:
+Monitoring → Validation → Reconciliation → Approval → Dry Run → Canary Write → Production Write.
+<!-- END AICONTROLCENTER SPF-002 ROADMAP -->

@@ -506,3 +506,23 @@ AIControlCenter owns governance cadence, policy, execution, JSON output, audit c
 The managed user crontab is a replaceable Mac mini operating-system adapter. Governance run identity and scheduled time remain inside the application and audit boundary.
 
 Dedicated parameterless capabilities implement governance audit snapshot generation and SQLite online backup verification. No governance scheduling, AI workload, application state, or business logic runs on Ubuntu.
+
+<!-- BEGIN AICONTROLCENTER SPF-002 ARCHITECTURE -->
+## Shopping Platform Foundation
+
+Status: SPF-002 CLOSED
+
+- Control Plane: AIControlCenter
+- Package root: `core/shopping`
+- WordPress role: Headless CMS only
+- WooCommerce role: Replaceable commerce engine only
+- Ubuntu role: Stateless infrastructure worker
+- Sprint 1 mode: Read-only
+- Shopping write operations: Disabled
+
+WordPress and WooCommerce integrate through REST/JSON adapters.
+Direct external database access is prohibited.
+Governance, authorization, audit, workflow, and policy remain in AIControlCenter.
+
+Canonical detail: `docs/architecture/shopping-platform-foundation.md`
+<!-- END AICONTROLCENTER SPF-002 ARCHITECTURE -->

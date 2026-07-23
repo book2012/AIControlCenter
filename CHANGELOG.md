@@ -781,3 +781,23 @@ Added explicit governance cadence, managed headless cron deployment, append-only
 Added GovernanceAuditSnapshotExecutor for read-only JSON audit snapshots and SQLiteOnlineBackupVerifier for SQLite online backup, quick_check, row-count, and SHA-256 validation.
 
 Both governed Production operations reached run_succeeded. The managed cron adapter remained active after rollback validation, and the full regression suite passed.
+
+<!-- BEGIN AICONTROLCENTER SPF-002 CHANGELOG -->
+## 2026-07-23 — Shopping Platform Foundation
+
+### Added
+
+- Shopping bounded-context architecture.
+- AIControlCenter, WordPress, WooCommerce, and Ubuntu ownership matrix.
+- Read-only adapter boundaries.
+- Canonical `shopping.v1` JSON contract.
+- SG-0 through SG-9 security gates.
+
+### Safety
+
+- AIControlCenter remains the Shopping Control Plane.
+- WordPress remains a headless CMS.
+- WooCommerce remains a replaceable commerce engine.
+- Ubuntu remains a stateless infrastructure worker.
+- No Shopping write capability was enabled.
+<!-- END AICONTROLCENTER SPF-002 CHANGELOG -->

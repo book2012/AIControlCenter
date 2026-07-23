@@ -495,3 +495,26 @@ Governance audit snapshots run daily at 03:10 Asia/Seoul. SQLite online backup v
 The snapshot capability performs read-only database validation and creates an immutable JSON evidence artifact. The backup capability uses the SQLite online backup API and validates quick_check, row counts, and the resulting artifact hash.
 
 Automatic retry, catch-up, remediation, and restore remain disabled. Ubuntu remains a stateless infrastructure worker.
+
+<!-- BEGIN AICONTROLCENTER SPF-002 README -->
+## Shopping Platform Foundation
+
+Status: Architecture Foundation complete
+
+Shopping is a governed AIControlCenter domain.
+WordPress provides headless CMS capabilities.
+WooCommerce provides replaceable commerce capabilities.
+
+Sprint 1 remains read-only.
+Product, customer, order, price, inventory, and publish writes are disabled.
+
+Architecture documentation:
+
+- `docs/architecture/shopping-platform-foundation.md`
+- `docs/architecture/shopping-context-map.md`
+- `docs/architecture/shopping-ownership-matrix.md`
+- `docs/security/shopping-write-approval-gates.md`
+- `docs/contracts/shopping-json-v1.md`
+
+Next gated task: SPF-003 Shopping package and read-only port skeleton.
+<!-- END AICONTROLCENTER SPF-002 README -->

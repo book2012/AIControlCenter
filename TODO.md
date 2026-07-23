@@ -346,3 +346,30 @@ and validation are stable.
 - [ ] Start Shopping Platform Foundation
 - [ ] Define WordPress and WooCommerce read-only adapters
 - [ ] Define AIControlCenter shopping domain boundaries
+
+<!-- BEGIN AICONTROLCENTER SPF-002 TODO -->
+## Shopping Platform Foundation Sprint 1
+
+Completed:
+
+- [x] SPF-001 Repository and branch baseline
+- [x] SPF-002 Architecture Foundation
+
+Next:
+
+- [ ] SPF-003 Shopping package and read-only port skeleton
+
+Queued:
+
+- [ ] SPF-004 Canonical JSON Schema v1
+- [ ] SPF-005 Deny-by-default capability registry
+- [ ] SPF-006 Read adapter contracts
+- [ ] SPF-007 Adapter health monitoring
+- [ ] SPF-008 Read-only snapshot retrieval
+- [ ] SPF-009 Validation and schema drift detection
+- [ ] SPF-010 Regression and operational close
+
+Sprint tasks completed: 2 of 10
+Sprint tasks remaining: 8
+Shopping write operations enabled: No
+<!-- END AICONTROLCENTER SPF-002 TODO -->

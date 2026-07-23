@@ -489,3 +489,21 @@ Production governance scheduling is active on the Mac mini Control Plane through
 Production execution, semantic capability evidence, append-only audit correlation, backup protection, rollback, regression, Git cleanliness, and documentation gates passed.
 
 Next Production milestone: Shopping Platform Foundation.
+
+<!-- BEGIN AICONTROLCENTER SPF-002 MASTER -->
+## Current Production Milestone
+
+Milestone: Shopping Platform Foundation
+
+- PI-010: CLOSED
+- SPF-001: CLOSED
+- SPF-002: CLOSED
+- Architecture commit: `9e4476abfe53cad9b19c0c5c472028f6c91f82e5`
+- Regression baseline: 741 passed, 5 deselected, 427 warnings
+- Production governance scheduler: Active
+- Governance database quick check: Passing
+- Shopping writes: Disabled
+- Ubuntu Shopping state and business logic: Prohibited
+
+Next task: SPF-003 Shopping package and read-only port skeleton.
+<!-- END AICONTROLCENTER SPF-002 MASTER -->
