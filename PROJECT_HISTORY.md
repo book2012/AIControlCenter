@@ -566,3 +566,42 @@ Validation: 6 targeted tests and 747 full regression tests passed with 5 deselec
 
 Next production milestone: **SPF-004 — Canonical JSON Schema v1**.
 <!-- SPF-003:END -->
+
+
+<!-- AICONTROLCENTER-SPF-004-CLOSED -->
+## 2026-07-23 — SPF-004 Canonical JSON Schema v1 Closed
+
+SPF-004 established the first versioned canonical Shopping contract layer in AIControlCenter.
+
+Delivered:
+
+- Draft 2020-12 JSON Schema contract set
+- 15 canonical contract bindings
+- 17 schema resources
+- `registry.json`
+- explicit local schema registry loader
+- fail-closed Python validator
+- pinned runtime dependencies
+- permanent contract validation tests
+
+Validation:
+
+- targeted: 6 passed
+- full regression: 753 passed
+
+Safety:
+
+- production unchanged
+- Ubuntu unchanged
+- remote schema resolution disabled
+- Shopping write operations disabled
+
+During gate development three test-harness defects were identified without production impact:
+
+1. `TEST_ASSERTION_FALSE_POSITIVE_GLOBAL_PATH_BLOCK`
+2. `TEST_ASSERTION_FALSE_POSITIVE_STRING_PREFIX_COUNT`
+3. `TEST_HARNESS_EMBEDDED_NEWLINE_DEDENT_DEFECT`
+
+The resulting gate policy now favors semantic validation, AST parsing, exact Git scope, byte comparison, and public runtime behavior instead of brittle textual assertions.
+
+Implementation commit: `7a436a62fbaa2c176e877297d88b810b255f2776`

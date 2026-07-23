@@ -522,3 +522,26 @@ Next task: SPF-003 Shopping package and read-only port skeleton.
 - Write operations enabled: false
 - Next task: **SPF-004 — Canonical JSON Schema v1**
 <!-- SPF-003:END -->
+
+
+<!-- AICONTROLCENTER-SPF-004-CLOSED -->
+## Shopping Platform Foundation Status — SPF-004
+
+SPF-004 Canonical JSON Schema v1: **CLOSED**
+
+Authoritative state:
+
+- Shopping Sprint completed tasks: 4/10
+- Shopping Sprint remaining tasks: 6/10
+- canonical contract schemas: 15
+- schema resources: 17
+- schema assets including registry: 18
+- targeted schema tests: 6 passed
+- full regression: 753 passed
+- production modified: false
+- Ubuntu modified: false
+- Shopping writes enabled: false
+
+Implementation commit: `7a436a62fbaa2c176e877297d88b810b255f2776`
+
+Next task: **SPF-005 Capability Registry — deny by default**.

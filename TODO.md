@@ -384,3 +384,20 @@ SPF-003 validation: 6 targeted tests and 747 full regression tests passed.
 
 Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
 <!-- SPF-003:END -->
+
+
+<!-- AICONTROLCENTER-SPF-004-CLOSED -->
+## Shopping Platform Foundation Task State
+
+- [x] SPF-004 Canonical JSON Schema v1
+- [ ] SPF-005 Capability Registry — deny by default
+
+SPF-004 closure validation:
+
+- [x] 15 canonical contracts registered
+- [x] local-only registry loading
+- [x] fail-closed validation
+- [x] targeted suite: 6 passed
+- [x] full regression: 753 passed
+- [x] production unchanged
+- [x] writes disabled

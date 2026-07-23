@@ -530,3 +530,25 @@ Next milestone: **SPF-004 — Canonical JSON Schema v1**.
 
 Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
 <!-- SPF-003:END -->
+
+
+<!-- AICONTROLCENTER-SPF-004-CLOSED -->
+## Shopping Platform Foundation — SPF-004
+
+SPF-004 Canonical JSON Schema v1 is complete.
+
+Current Shopping foundation capabilities:
+
+- 15 canonical read-contract schemas
+- versioned schema registry
+- explicit local-only schema loading
+- Draft 2020-12 runtime validation
+- fail-closed unknown-contract behavior
+- strict unknown-field rejection
+- schema discriminator validation for snapshots
+- targeted schema suite: 6 passed
+- full regression suite: 753 passed
+
+Production and Shopping write operations remain disabled.
+
+Next foundation task: **SPF-005 Capability Registry — deny by default**.

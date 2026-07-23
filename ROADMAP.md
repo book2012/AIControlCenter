@@ -642,3 +642,29 @@ Monitoring → Validation → Reconciliation → Approval → Dry Run → Canary
 
 SPF-003 implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
 <!-- SPF-003:END -->
+
+
+<!-- AICONTROLCENTER-SPF-004-CLOSED -->
+## Shopping Platform Foundation Progress
+
+Completed:
+
+- SPF-001 Repository and branch baseline
+- SPF-002 Architecture foundation
+- SPF-003 Package and read-only port skeleton
+- SPF-004 Canonical JSON Schema v1
+
+Next production task:
+
+- **SPF-005 Capability Registry — deny by default**
+
+Remaining after SPF-004:
+
+- SPF-005 Capability Registry
+- SPF-006 Read Adapter Contracts
+- SPF-007 Adapter Health Monitoring
+- SPF-008 Read-Only Snapshots
+- SPF-009 Validation and Schema Drift
+- SPF-010 Regression, Operational Validation and Documentation Closure
+
+An internal read-only Homepage Preview is now architecturally unblocked, but it must remain fixture or controlled read-only until the required adapter and monitoring gates are complete.

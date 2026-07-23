@@ -828,3 +828,34 @@ Next milestone: **SPF-004 — Canonical JSON Schema v1**.
 
 Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
 <!-- SPF-003:END -->
+
+
+<!-- AICONTROLCENTER-SPF-004-CLOSED -->
+## 2026-07-23 — SPF-004 Canonical JSON Schema v1
+
+### Added
+
+- 15 canonical Shopping contract schemas.
+- shared schema definitions and error envelope.
+- versioned `registry.json`.
+- explicit Python schema registry loader.
+- fail-closed contract payload validator.
+- pinned `jsonschema==4.26.0` and `referencing==0.37.0`.
+- six canonical schema validation tests.
+
+### Validation
+
+- targeted tests: 6 passed.
+- full regression: 753 passed.
+- remote schema references denied.
+- automatic schema JSON loading during import denied.
+
+### Fixed
+
+Gate-harness false positives encountered during SPF-004 were classified and corrected:
+
+- `TEST_ASSERTION_FALSE_POSITIVE_GLOBAL_PATH_BLOCK`
+- `TEST_ASSERTION_FALSE_POSITIVE_STRING_PREFIX_COUNT`
+- `TEST_HARNESS_EMBEDDED_NEWLINE_DEDENT_DEFECT`
+
+No production defect was attributed to these harness failures.

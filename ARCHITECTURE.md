@@ -541,3 +541,29 @@ Status: **Closed** on 2026-07-23.
 
 Implementation commit: `fd52aad1d9af9d056d80d8f7d6170605ea0d11b2`.
 <!-- SPF-003:END -->
+
+
+<!-- AICONTROLCENTER-SPF-004-CLOSED -->
+## SPF-004 Canonical JSON Schema v1
+
+Status: CLOSED
+
+Shopping contracts now use a versioned, vendor-neutral canonical JSON contract layer owned by AIControlCenter.
+
+- JSON Schema dialect: Draft 2020-12
+- Contract schema version: `1.0.0`
+- Canonical contract bindings: 15
+- Schema resources: 17
+- Registry asset: `core/shopping/contracts/schemas/v1/registry.json`
+- Explicit loader: `core.shopping.contracts.schema_registry.load_schema_registry`
+- Runtime validation: `Draft202012Validator`
+- Unknown contracts fail closed.
+- Unknown payload fields are rejected by canonical strict objects.
+- Remote and network schema resolution are prohibited.
+- Schema assets are not loaded automatically during module import.
+- Vendor DTOs remain adapter-private.
+- Shopping write operations remain disabled.
+
+Canonical contract validation belongs to the Mac mini AIControlCenter Control Plane. Ubuntu remains a stateless infrastructure worker and does not own Shopping contracts, state, business logic, or validation policy.
+
+Implementation commit: `7a436a62fbaa2c176e877297d88b810b255f2776`
