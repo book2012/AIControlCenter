@@ -859,3 +859,33 @@ Gate-harness false positives encountered during SPF-004 were classified and corr
 - `TEST_HARNESS_EMBEDDED_NEWLINE_DEDENT_DEFECT`
 
 No production defect was attributed to these harness failures.
+
+<!-- SPF-005-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-005 Capability Registry deny-by-default
+
+### Added
+- Static immutable Shopping capability registry owned by AIControlCenter.
+- Eleven canonical READ capabilities with vendor-neutral identifiers.
+- Read authorization orchestration through `PolicyDecisionPort`.
+- Denial and compatibility tests covering all registered reads and reserved writes.
+
+### Security
+- Unknown capabilities deny by default.
+- Reserved WRITE capabilities are non-executable and denied before policy evaluation.
+- Request and policy decision capability mismatches fail closed.
+- Policy evaluation exceptions are normalized to `shopping.policy.evaluation_error`.
+- Vendor exception messages are not exposed through authorization errors.
+
+### Validation
+- 22 targeted Shopping capability tests passed.
+- 775 full regression tests passed.
+- Production unchanged.
+- Ubuntu unchanged.
+- Shopping write operations remain disabled.
+
+### Recovery Notes
+- `TEST_HARNESS_LITERAL_INDENTATION_MISMATCH` affected an SPF-005-05 patch harness only and was recovered with AST-based source targeting.
+- `POLICY_EXCEPTION_FAIL_CLOSED_HARDENING` is the actual security hardening introduced by SPF-005-05.
+
+Implementation commit: `f807cc0dfb8a27d2bf387bdc3dd897e4fe331953`.
+<!-- SPF-005-CLOSE:END -->

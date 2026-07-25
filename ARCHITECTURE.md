@@ -567,3 +567,30 @@ Shopping contracts now use a versioned, vendor-neutral canonical JSON contract l
 Canonical contract validation belongs to the Mac mini AIControlCenter Control Plane. Ubuntu remains a stateless infrastructure worker and does not own Shopping contracts, state, business logic, or validation policy.
 
 Implementation commit: `7a436a62fbaa2c176e877297d88b810b255f2776`
+
+<!-- SPF-005-CLOSE:BEGIN -->
+## SPF-005 Capability Governance — CLOSED
+
+AIControlCenter owns Shopping capability governance and read authorization orchestration.
+
+- Capability registry is static, immutable, vendor-neutral, and controlled by AIControlCenter.
+- Eleven Shopping READ capabilities are registered.
+- Nine WRITE capability identifiers are reserved but are not executable.
+- Unknown capabilities fail closed.
+- WRITE capabilities fail closed before policy evaluation.
+- Known READ capabilities require `PolicyDecisionPort.evaluate_read`.
+- Request and decision capability mismatches fail closed.
+- Policy evaluation exceptions are normalized to `shopping.policy.evaluation_error`.
+- Raw vendor or adapter exception messages are not exposed through authorization denial.
+- No adapter execution, production registration, Ubuntu business logic, or Shopping write operation was enabled by SPF-005.
+
+Authorization flow:
+
+`Capability Registry -> READ classification -> PolicyDecisionPort -> explicit allow -> authorized read`
+
+Implementation commit: `f807cc0dfb8a27d2bf387bdc3dd897e4fe331953`
+
+Validation baseline: 22 targeted tests passed; 775 full regression tests passed.
+
+Next architecture task: SPF-006 Read Adapter Contracts.
+<!-- SPF-005-CLOSE:END -->

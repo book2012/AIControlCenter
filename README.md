@@ -552,3 +552,23 @@ Current Shopping foundation capabilities:
 Production and Shopping write operations remain disabled.
 
 Next foundation task: **SPF-005 Capability Registry — deny by default**.
+
+<!-- SPF-005-CLOSE:BEGIN -->
+## Shopping Platform Foundation — SPF-005 CLOSED
+
+SPF-005 establishes deny-by-default capability governance inside AIControlCenter.
+
+- 11 executable READ capabilities
+- 9 reserved non-executable WRITE capabilities
+- immutable capability registry
+- policy evaluation required for registered reads
+- unknown and write capabilities denied before policy execution
+- policy exceptions fail closed without leaking vendor messages
+- 22 targeted tests passed
+- 775 full regression tests passed
+- Shopping writes remain disabled
+
+Shopping Platform Foundation progress: **5/10** after SPF-005 closure.
+
+Next: **SPF-006 Read Adapter Contracts**.
+<!-- SPF-005-CLOSE:END -->

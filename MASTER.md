@@ -545,3 +545,27 @@ Authoritative state:
 Implementation commit: `7a436a62fbaa2c176e877297d88b810b255f2776`
 
 Next task: **SPF-005 Capability Registry — deny by default**.
+
+<!-- SPF-005-CLOSE:BEGIN -->
+## Shopping Platform Foundation Status — SPF-005 CLOSED
+
+Current sprint progress: **5/10 tasks complete**.
+
+Closed:
+- SPF-001 Repository and branch baseline
+- SPF-002 Architecture foundation
+- SPF-003 Package and read-only port skeleton
+- SPF-004 Canonical JSON Schema v1
+- SPF-005 Capability Registry deny-by-default
+
+SPF-005 production invariants:
+- AIControlCenter owns capability governance.
+- Default authorization behavior is DENY.
+- Shopping WRITE capabilities are not executable.
+- Ubuntu remains a stateless infrastructure worker.
+- WordPress and WooCommerce do not own platform authorization or business logic.
+
+Next task: **SPF-006 Read Adapter Contracts**.
+
+Remaining Shopping Platform Foundation work: **5/10 tasks**.
+<!-- SPF-005-CLOSE:END -->

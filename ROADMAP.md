@@ -668,3 +668,22 @@ Remaining after SPF-004:
 - SPF-010 Regression, Operational Validation and Documentation Closure
 
 An internal read-only Homepage Preview is now architecturally unblocked, but it must remain fixture or controlled read-only until the required adapter and monitoring gates are complete.
+
+<!-- SPF-005-CLOSE:BEGIN -->
+## Shopping Platform Foundation Progress
+
+- [x] SPF-001 Repository and branch baseline
+- [x] SPF-002 Architecture foundation
+- [x] SPF-003 Package and read-only port skeleton
+- [x] SPF-004 Canonical JSON Schema v1
+- [x] SPF-005 Capability Registry deny-by-default
+- [ ] SPF-006 Read Adapter Contracts
+- [ ] SPF-007 Adapter Health Monitoring
+- [ ] SPF-008 Read-only Snapshots
+- [ ] SPF-009 Validation and Schema Drift
+- [ ] SPF-010 Regression, Operational Validation, and Documentation Closure
+
+Current completion: **5/10 — 50%**.
+
+Next production milestone: SPF-006 establishes replaceable read adapter contracts without enabling Shopping writes.
+<!-- SPF-005-CLOSE:END -->

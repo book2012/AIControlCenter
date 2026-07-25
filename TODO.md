@@ -401,3 +401,15 @@ SPF-004 closure validation:
 - [x] full regression: 753 passed
 - [x] production unchanged
 - [x] writes disabled
+
+<!-- SPF-005-CLOSE:BEGIN -->
+## Shopping Platform Foundation
+
+- [x] Close SPF-005 Capability Registry deny-by-default.
+- [x] Verify 11 READ capabilities and 9 reserved WRITE capability identifiers.
+- [x] Verify fail-closed unknown, write, mismatch, malformed decision, and policy exception behavior.
+- [x] Pass 22 targeted tests and 775 full regression tests.
+- [ ] Implement SPF-006 Read Adapter Contracts.
+- [ ] Keep all Shopping write operations disabled.
+- [ ] Preserve Ubuntu as a stateless infrastructure worker.
+<!-- SPF-005-CLOSE:END -->

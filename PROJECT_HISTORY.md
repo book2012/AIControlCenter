@@ -605,3 +605,34 @@ During gate development three test-harness defects were identified without produ
 The resulting gate policy now favors semantic validation, AST parsing, exact Git scope, byte comparison, and public runtime behavior instead of brittle textual assertions.
 
 Implementation commit: `7a436a62fbaa2c176e877297d88b810b255f2776`
+
+<!-- SPF-005-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-005 Capability Registry deny-by-default
+
+SPF-005 introduced AIControlCenter-owned capability governance for the Shopping Platform Foundation.
+
+Final implementation:
+- static immutable capability registry
+- 11 registered READ capabilities
+- 9 reserved non-executable WRITE capability identifiers
+- `authorize_read` application orchestration
+- `PolicyDecisionPort` integration
+- fail-closed request and decision capability validation
+- fail-closed policy exception normalization
+- vendor exception message leak prevention
+
+Validation:
+- targeted: 22 passed
+- full regression: 775 passed
+- production modified: false
+- Ubuntu modified: false
+- write operations enabled: false
+
+Implementation commit: `f807cc0dfb8a27d2bf387bdc3dd897e4fe331953`.
+
+Harness recovery classification: `TEST_HARNESS_LITERAL_INDENTATION_MISMATCH`.
+
+Security hardening classification: `POLICY_EXCEPTION_FAIL_CLOSED_HARDENING`.
+
+Next task: SPF-006 Read Adapter Contracts.
+<!-- SPF-005-CLOSE:END -->
