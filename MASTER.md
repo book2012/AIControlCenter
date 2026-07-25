@@ -569,3 +569,28 @@ Next task: **SPF-006 Read Adapter Contracts**.
 
 Remaining Shopping Platform Foundation work: **5/10 tasks**.
 <!-- SPF-005-CLOSE:END -->
+
+<!-- SPF-006-CLOSE:BEGIN -->
+## Shopping Platform Foundation Status — SPF-006 CLOSED
+
+Current sprint progress: **6/10 tasks complete — 60%**.
+
+Closed:
+- SPF-001 Repository and branch baseline
+- SPF-002 Architecture foundation
+- SPF-003 Package and read-only port skeleton
+- SPF-004 Canonical JSON Schema v1
+- SPF-005 Capability Registry deny-by-default
+- SPF-006 Read Adapter Contracts
+
+Current production invariants:
+- AIControlCenter owns all Shopping business logic and governance.
+- Adapters remain replaceable and vendor-neutral at the platform boundary.
+- WordPress and WooCommerce do not own platform-wide authorization or business logic.
+- Ubuntu remains a stateless infrastructure worker.
+- Shopping WRITE operations remain disabled.
+
+Next task: **SPF-007 Adapter Health Monitoring**.
+
+Remaining Shopping Platform Foundation work: **4/10 tasks**.
+<!-- SPF-006-CLOSE:END -->

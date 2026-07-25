@@ -572,3 +572,24 @@ Shopping Platform Foundation progress: **5/10** after SPF-005 closure.
 
 Next: **SPF-006 Read Adapter Contracts**.
 <!-- SPF-005-CLOSE:END -->
+
+<!-- SPF-006-CLOSE:BEGIN -->
+## Shopping Platform Foundation — SPF-006 CLOSED
+
+SPF-006 establishes replaceable read adapter contract boundaries inside AIControlCenter.
+
+- Commerce and CMS ports remain authoritative.
+- Adapter contracts are vendor-neutral.
+- Canonical Shopping contracts are required at the adapter boundary.
+- Commerce and CMS capability bindings remain isolated.
+- Vendor DTO escape is prohibited.
+- Business logic and policy ownership inside adapters are prohibited.
+- Shopping WRITE methods remain prohibited.
+- Live vendor connections remain disabled.
+- 28 targeted tests passed.
+- 803 full regression tests passed.
+
+Shopping Platform Foundation progress after SPF-006: **6/10 — 60%**.
+
+Next: **SPF-007 Adapter Health Monitoring**.
+<!-- SPF-006-CLOSE:END -->

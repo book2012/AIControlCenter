@@ -594,3 +594,26 @@ Validation baseline: 22 targeted tests passed; 775 full regression tests passed.
 
 Next architecture task: SPF-006 Read Adapter Contracts.
 <!-- SPF-005-CLOSE:END -->
+
+<!-- SPF-006-CLOSE:BEGIN -->
+## SPF-006 Read Adapter Contracts — CLOSED
+
+AIControlCenter owns the authoritative Shopping read ports and adapter contract boundaries.
+
+- `CommerceReadPort` remains the authoritative callable Commerce interface.
+- `CmsReadPort` remains the authoritative callable CMS interface.
+- Adapter contract modules validate exact async method conformance against those ports.
+- Commerce canonical returns are `ProductSnapshot`, `ProductSnapshotPage`, and `OrderSummary`.
+- CMS canonical returns are `ContentSnapshot` and `ContentSnapshotPage`.
+- SPF-005 capability bindings remain authoritative and are consumed rather than duplicated.
+- Commerce and CMS capability sets are isolated.
+- Vendor DTO escape, adapter-owned business logic, adapter-owned policy evaluation, and WRITE methods are prohibited.
+- No live WooCommerce or WordPress network connection is enabled by SPF-006.
+- Live vendor integration and adapter health monitoring remain deferred to SPF-007.
+
+Implementation commit: `fd1bbe2ff212e9eeb442562ffeed32bed97c1072`.
+
+Validation baseline: 28 targeted tests passed; 803 full regression tests passed.
+
+Next architecture task: SPF-007 Adapter Health Monitoring.
+<!-- SPF-006-CLOSE:END -->

@@ -889,3 +889,33 @@ No production defect was attributed to these harness failures.
 
 Implementation commit: `f807cc0dfb8a27d2bf387bdc3dd897e4fe331953`.
 <!-- SPF-005-CLOSE:END -->
+
+<!-- SPF-006-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-006 Read Adapter Contracts
+
+### Added
+- Commerce adapter contract conformance validation.
+- CMS adapter contract conformance validation.
+- JSON-first Commerce and CMS contract manifests.
+- Commerce/CMS isolation and compatibility tests.
+
+### Architecture
+- `CommerceReadPort` and `CmsReadPort` remain the authoritative callable interfaces.
+- Adapter implementations may not redefine platform business contracts.
+- SPF-005 capability registry remains authoritative for capability bindings.
+- Canonical AIControlCenter domain contracts are required across adapter boundaries.
+
+### Safety
+- Vendor DTO escape is prohibited.
+- Adapter-owned policy evaluation is prohibited.
+- Adapter-owned business logic is prohibited.
+- WRITE-like public adapter methods are prohibited.
+- Live WooCommerce and WordPress connections remain disabled.
+- Production and Ubuntu were not modified.
+
+### Validation
+- Targeted: 28 passed.
+- Full regression: 803 passed.
+
+Implementation commit: `fd1bbe2ff212e9eeb442562ffeed32bed97c1072`.
+<!-- SPF-006-CLOSE:END -->

@@ -636,3 +636,31 @@ Security hardening classification: `POLICY_EXCEPTION_FAIL_CLOSED_HARDENING`.
 
 Next task: SPF-006 Read Adapter Contracts.
 <!-- SPF-005-CLOSE:END -->
+
+<!-- SPF-006-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-006 Read Adapter Contracts
+
+SPF-006 established vendor-neutral read adapter contract boundaries owned by AIControlCenter.
+
+Implemented:
+- Commerce adapter conformance contract
+- CMS adapter conformance contract
+- JSON-first contract manifests
+- exact async port signature validation
+- canonical return contract validation
+- SPF-005 capability binding reuse
+- Commerce/CMS isolation validation
+- WRITE-like public method rejection
+
+Validation:
+- targeted: 28 passed
+- full regression: 803 passed
+- production modified: false
+- Ubuntu modified: false
+- write operations enabled: false
+- live vendor connection enabled: false
+
+Implementation commit: `fd1bbe2ff212e9eeb442562ffeed32bed97c1072`.
+
+Next task: SPF-007 Adapter Health Monitoring.
+<!-- SPF-006-CLOSE:END -->

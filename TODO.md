@@ -413,3 +413,17 @@ SPF-004 closure validation:
 - [ ] Keep all Shopping write operations disabled.
 - [ ] Preserve Ubuntu as a stateless infrastructure worker.
 <!-- SPF-005-CLOSE:END -->
+
+<!-- SPF-006-CLOSE:BEGIN -->
+## Shopping Platform Foundation
+
+- [x] Close SPF-006 Read Adapter Contracts.
+- [x] Preserve CommerceReadPort and CmsReadPort as authoritative interfaces.
+- [x] Verify Commerce/CMS capability isolation.
+- [x] Verify vendor-neutral import and dependency boundaries.
+- [x] Pass 28 targeted tests.
+- [x] Pass 803 full regression tests.
+- [ ] Implement SPF-007 Adapter Health Monitoring.
+- [ ] Keep Shopping WRITE operations disabled.
+- [ ] Keep Ubuntu stateless and free of Shopping business logic.
+<!-- SPF-006-CLOSE:END -->
