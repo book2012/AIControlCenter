@@ -706,3 +706,22 @@ Current completion: **6/10 — 60%**.
 
 Next production milestone: SPF-007 introduces observable adapter health and controlled live read integration without enabling Shopping writes.
 <!-- SPF-006-CLOSE:END -->
+
+<!-- SPF-007-CLOSE:BEGIN -->
+## Shopping Platform Foundation Progress
+
+- [x] SPF-001 Repository and branch baseline
+- [x] SPF-002 Architecture foundation
+- [x] SPF-003 Package and read-only port skeleton
+- [x] SPF-004 Canonical JSON Schema v1
+- [x] SPF-005 Capability Registry deny-by-default
+- [x] SPF-006 Read Adapter Contracts
+- [x] SPF-007 Adapter Health Monitoring
+- [ ] SPF-008 Read-only Snapshots
+- [ ] SPF-009 Validation and Schema Drift
+- [ ] SPF-010 Regression, Operational Validation, and Documentation Closure
+
+Current completion: **7/10 — 70%**.
+
+Next production milestone: SPF-008 introduces controlled read-only snapshot boundaries without enabling Shopping writes or moving application state to Ubuntu.
+<!-- SPF-007-CLOSE:END -->

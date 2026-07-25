@@ -617,3 +617,29 @@ Validation baseline: 28 targeted tests passed; 803 full regression tests passed.
 
 Next architecture task: SPF-007 Adapter Health Monitoring.
 <!-- SPF-006-CLOSE:END -->
+
+<!-- SPF-007-CLOSE:BEGIN -->
+## SPF-007 Adapter Health Monitoring — CLOSED
+
+AIControlCenter owns Shopping adapter health semantics, monitoring aggregation, routing signals, and operational governance.
+
+- `AdapterHealthPort` remains the authoritative health read port.
+- Health states are `HEALTHY`, `DEGRADED`, and `UNAVAILABLE`.
+- Failure taxonomy is vendor-neutral and fail-closed.
+- Timeout, transport, authentication, authorization, invalid payload, schema mismatch, dependency, configuration, and unknown failures resolve to unavailable health.
+- Latency and rate-limit conditions resolve to degraded health.
+- Health is not authorization and does not bypass SPF-005 capability or policy governance.
+- Probe normalization rejects raw vendor error text and credential-bearing metadata.
+- Health aggregation is deterministic and stateless.
+- Overall precedence is `UNAVAILABLE > DEGRADED > HEALTHY`.
+- Empty aggregation input resolves to `UNAVAILABLE`.
+- Probe-layer retry, persistence, scheduler ownership, business writes, and adapter-owned policy decisions are prohibited.
+- Live WooCommerce and WordPress transport remains disabled by SPF-007.
+- Ubuntu remains a stateless infrastructure worker.
+
+Implementation commit: `63263b734ead4eb083f9b91923f4b41c3b644e34`.
+
+Validation baseline: 34 targeted tests passed; 837 full regression tests passed.
+
+Next architecture task: SPF-008 Read-only Snapshots.
+<!-- SPF-007-CLOSE:END -->

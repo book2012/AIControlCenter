@@ -664,3 +664,31 @@ Implementation commit: `fd1bbe2ff212e9eeb442562ffeed32bed97c1072`.
 
 Next task: SPF-007 Adapter Health Monitoring.
 <!-- SPF-006-CLOSE:END -->
+
+<!-- SPF-007-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-007 Adapter Health Monitoring
+
+SPF-007 established the AIControlCenter-owned health monitoring boundary for Shopping adapters.
+
+Implemented:
+- canonical health probe normalization
+- HEALTHY, DEGRADED, and UNAVAILABLE semantics
+- vendor-neutral failure taxonomy
+- sanitized failure detail codes
+- deterministic stateless health aggregation
+- fail-closed empty monitoring state
+- JSON-compatible monitoring snapshots
+- timeout and failure compatibility validation
+
+Validation:
+- targeted: 34 passed
+- full regression: 837 passed
+- production modified: false
+- Ubuntu modified: false
+- write operations enabled: false
+- live vendor connection enabled: false
+
+Implementation commit: `63263b734ead4eb083f9b91923f4b41c3b644e34`.
+
+Next task: SPF-008 Read-only Snapshots.
+<!-- SPF-007-CLOSE:END -->

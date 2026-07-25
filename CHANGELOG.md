@@ -919,3 +919,36 @@ Implementation commit: `f807cc0dfb8a27d2bf387bdc3dd897e4fe331953`.
 
 Implementation commit: `fd1bbe2ff212e9eeb442562ffeed32bed97c1072`.
 <!-- SPF-006-CLOSE:END -->
+
+<!-- SPF-007-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-007 Adapter Health Monitoring
+
+### Added
+- Vendor-neutral health probe normalization.
+- Health states for healthy, degraded, and unavailable adapters.
+- Vendor-neutral health failure taxonomy.
+- Sanitized health failure detail codes.
+- Stateless deterministic health aggregation.
+- JSON-compatible monitoring snapshots.
+- End-to-end timeout and failure compatibility tests.
+
+### Architecture
+- AIControlCenter owns adapter monitoring and routing signals.
+- Health remains separate from authorization and policy evaluation.
+- Aggregation precedence is UNAVAILABLE, then DEGRADED, then HEALTHY.
+- Empty aggregation input fails closed as UNAVAILABLE.
+- Probe retry, scheduler ownership, and persistent health state remain outside the health normalization layer.
+
+### Safety
+- Raw vendor exception text is rejected from monitoring metadata.
+- Credential-bearing error payloads are prohibited.
+- Shopping WRITE methods remain disabled.
+- Live vendor transport remains disabled.
+- Production and Ubuntu were not modified.
+
+### Validation
+- Targeted: 34 passed.
+- Full regression: 837 passed.
+
+Implementation commit: `63263b734ead4eb083f9b91923f4b41c3b644e34`.
+<!-- SPF-007-CLOSE:END -->

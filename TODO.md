@@ -427,3 +427,18 @@ SPF-004 closure validation:
 - [ ] Keep Shopping WRITE operations disabled.
 - [ ] Keep Ubuntu stateless and free of Shopping business logic.
 <!-- SPF-006-CLOSE:END -->
+
+<!-- SPF-007-CLOSE:BEGIN -->
+## Shopping Platform Foundation
+
+- [x] Close SPF-007 Adapter Health Monitoring.
+- [x] Establish vendor-neutral health states and failure taxonomy.
+- [x] Enforce fail-closed timeout and dependency behavior.
+- [x] Reject raw vendor error metadata.
+- [x] Implement deterministic stateless health aggregation.
+- [x] Pass 34 targeted health tests.
+- [x] Pass 837 full regression tests.
+- [ ] Implement SPF-008 Read-only Snapshots.
+- [ ] Keep Shopping WRITE operations disabled.
+- [ ] Keep Ubuntu stateless and free of Shopping business logic.
+<!-- SPF-007-CLOSE:END -->

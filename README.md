@@ -593,3 +593,25 @@ Shopping Platform Foundation progress after SPF-006: **6/10 — 60%**.
 
 Next: **SPF-007 Adapter Health Monitoring**.
 <!-- SPF-006-CLOSE:END -->
+
+<!-- SPF-007-CLOSE:BEGIN -->
+## Shopping Platform Foundation — SPF-007 CLOSED
+
+SPF-007 establishes vendor-neutral, read-only adapter health monitoring inside AIControlCenter.
+
+- Health probe normalization is JSON-safe and sanitized.
+- Health states are HEALTHY, DEGRADED, and UNAVAILABLE.
+- Health aggregation is deterministic and stateless.
+- UNAVAILABLE has highest aggregation precedence.
+- Empty adapter input fails closed as UNAVAILABLE.
+- Probe-layer retry and persistence are disabled.
+- Health does not replace capability authorization or policy evaluation.
+- Shopping WRITE operations remain disabled.
+- Live vendor transport remains disabled.
+- 34 targeted tests passed.
+- 837 full regression tests passed.
+
+Shopping Platform Foundation progress after SPF-007: **7/10 — 70%**.
+
+Next: **SPF-008 Read-only Snapshots**.
+<!-- SPF-007-CLOSE:END -->

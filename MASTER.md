@@ -594,3 +594,31 @@ Next task: **SPF-007 Adapter Health Monitoring**.
 
 Remaining Shopping Platform Foundation work: **4/10 tasks**.
 <!-- SPF-006-CLOSE:END -->
+
+<!-- SPF-007-CLOSE:BEGIN -->
+## Shopping Platform Foundation Status — SPF-007 CLOSED
+
+Current sprint progress: **7/10 tasks complete — 70%**.
+
+Closed:
+- SPF-001 Repository and branch baseline
+- SPF-002 Architecture foundation
+- SPF-003 Package and read-only port skeleton
+- SPF-004 Canonical JSON Schema v1
+- SPF-005 Capability Registry deny-by-default
+- SPF-006 Read Adapter Contracts
+- SPF-007 Adapter Health Monitoring
+
+Current production invariants:
+- AIControlCenter remains the single Shopping control plane.
+- Adapter health is monitoring data, not authorization.
+- Health normalization and aggregation remain read-only and stateless.
+- WordPress and WooCommerce do not own platform-wide business logic.
+- Live vendor transport remains disabled.
+- Ubuntu remains a stateless infrastructure worker.
+- Shopping WRITE operations remain disabled.
+
+Next task: **SPF-008 Read-only Snapshots**.
+
+Remaining Shopping Platform Foundation work: **3/10 tasks**.
+<!-- SPF-007-CLOSE:END -->
