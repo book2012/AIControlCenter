@@ -725,3 +725,22 @@ Current completion: **7/10 — 70%**.
 
 Next production milestone: SPF-008 introduces controlled read-only snapshot boundaries without enabling Shopping writes or moving application state to Ubuntu.
 <!-- SPF-007-CLOSE:END -->
+
+<!-- SPF-008-CLOSE:BEGIN -->
+## Shopping Platform Foundation Progress
+
+- [x] SPF-001 Repository and branch baseline
+- [x] SPF-002 Architecture foundation
+- [x] SPF-003 Package and read-only port skeleton
+- [x] SPF-004 Canonical JSON Schema v1
+- [x] SPF-005 Capability Registry deny-by-default
+- [x] SPF-006 Read Adapter Contracts
+- [x] SPF-007 Adapter Health Monitoring
+- [x] SPF-008 Read-only Snapshots
+- [ ] SPF-009 Validation and Schema Drift
+- [ ] SPF-010 Regression, Operational Validation, and Documentation Closure
+
+Current completion: **8/10 — 80%**.
+
+Next production milestone: SPF-009 validates canonical contracts and detects schema drift without enabling Shopping writes or moving application state to Ubuntu.
+<!-- SPF-008-CLOSE:END -->

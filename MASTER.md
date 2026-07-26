@@ -622,3 +622,32 @@ Next task: **SPF-008 Read-only Snapshots**.
 
 Remaining Shopping Platform Foundation work: **3/10 tasks**.
 <!-- SPF-007-CLOSE:END -->
+
+<!-- SPF-008-CLOSE:BEGIN -->
+## Shopping Platform Foundation Status — SPF-008 CLOSED
+
+Current sprint progress: **8/10 tasks complete — 80%**.
+
+Closed:
+- SPF-001 Repository and branch baseline
+- SPF-002 Architecture foundation
+- SPF-003 Package and read-only port skeleton
+- SPF-004 Canonical JSON Schema v1
+- SPF-005 Capability Registry deny-by-default
+- SPF-006 Read Adapter Contracts
+- SPF-007 Adapter Health Monitoring
+- SPF-008 Read-only Snapshots
+
+Current production invariants:
+- AIControlCenter remains the single Shopping control plane.
+- Snapshot queries remain read-only.
+- Snapshot creation and persistence remain disabled.
+- Authorization occurs before snapshot repository access.
+- WordPress and WooCommerce do not own platform-wide business logic.
+- Ubuntu remains a stateless infrastructure worker.
+- Shopping WRITE operations remain disabled.
+
+Next task: **SPF-009 Validation and Schema Drift**.
+
+Remaining Shopping Platform Foundation work: **2/10 tasks**.
+<!-- SPF-008-CLOSE:END -->

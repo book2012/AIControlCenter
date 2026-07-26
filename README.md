@@ -615,3 +615,25 @@ Shopping Platform Foundation progress after SPF-007: **7/10 — 70%**.
 
 Next: **SPF-008 Read-only Snapshots**.
 <!-- SPF-007-CLOSE:END -->
+
+<!-- SPF-008-CLOSE:BEGIN -->
+## Shopping Platform Foundation — SPF-008 CLOSED
+
+SPF-008 establishes read-only snapshot normalization and query orchestration inside AIControlCenter.
+
+- Canonical snapshot payloads are normalized deterministically.
+- Snapshot read models are immutable and detached from source mutation.
+- Snapshot queries are authorized before repository access.
+- Denied or failed authorization produces zero repository calls.
+- Snapshot repository failures are sanitized.
+- No snapshot creation or persistence is enabled.
+- No vendor refresh is performed by snapshot queries.
+- Shopping WRITE operations remain disabled.
+- Production live registration remains disabled.
+- 35 targeted tests passed.
+- 872 full regression tests passed.
+
+Shopping Platform Foundation progress after SPF-008: **8/10 — 80%**.
+
+Next: **SPF-009 Validation and Schema Drift**.
+<!-- SPF-008-CLOSE:END -->

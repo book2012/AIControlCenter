@@ -643,3 +643,29 @@ Validation baseline: 34 targeted tests passed; 837 full regression tests passed.
 
 Next architecture task: SPF-008 Read-only Snapshots.
 <!-- SPF-007-CLOSE:END -->
+
+<!-- SPF-008-CLOSE:BEGIN -->
+## SPF-008 Read-only Snapshots — CLOSED
+
+AIControlCenter owns Shopping snapshot governance and read orchestration.
+
+- `SnapshotRepositoryPort` remains the authoritative snapshot read boundary.
+- Supported repository operations remain `get_latest_snapshot` and `list_snapshots`.
+- Snapshot creation, persistence, update, replacement, deletion, and retention cleanup are classified as application-state writes and remain outside SPF-008.
+- Snapshot normalization accepts canonical JSON-compatible data only.
+- Normalization is deterministic and returns an immutable read model.
+- Snapshot query authorization occurs before repository access.
+- Authorization denial or authorization failure prevents repository execution.
+- Repository and policy failures are sanitized before exposure.
+- Snapshot queries do not refresh vendor data.
+- Schema validation and schema drift governance remain owned by SPF-009.
+- No new database or filesystem persistence is introduced.
+- Production live vendor registration remains disabled.
+- Ubuntu remains a stateless infrastructure worker.
+
+Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
+
+Validation baseline: 35 targeted tests passed and 872 full regression tests passed.
+
+Next architecture task: SPF-009 Validation and Schema Drift.
+<!-- SPF-008-CLOSE:END -->

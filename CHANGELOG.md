@@ -952,3 +952,34 @@ Implementation commit: `fd1bbe2ff212e9eeb442562ffeed32bed97c1072`.
 
 Implementation commit: `63263b734ead4eb083f9b91923f4b41c3b644e34`.
 <!-- SPF-007-CLOSE:END -->
+
+<!-- SPF-008-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-008 Read-only Snapshots
+
+### Added
+- Canonical snapshot normalization contract.
+- Deterministic canonical JSON serialization.
+- Immutable snapshot read representation.
+- Read-only snapshot query orchestration.
+- Authorization-before-repository enforcement.
+- Isolation and immutability validation.
+
+### Architecture
+- AIControlCenter owns snapshot governance and read orchestration.
+- `SnapshotRepositoryPort` remains the authoritative repository boundary.
+- Snapshot creation and persistence remain classified as writes.
+- Schema validation remains deferred to SPF-009.
+- Ubuntu remains free of Shopping application state.
+
+### Safety
+- Authorization denial prevents repository access.
+- Authorization failures fail closed.
+- Repository failures are sanitized.
+- Vendor refresh, persistence, production registration, and Shopping writes remain disabled.
+
+### Validation
+- Targeted: 35 passed.
+- Full regression: 872 passed.
+
+Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
+<!-- SPF-008-CLOSE:END -->

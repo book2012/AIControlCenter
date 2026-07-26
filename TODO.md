@@ -442,3 +442,19 @@ SPF-004 closure validation:
 - [ ] Keep Shopping WRITE operations disabled.
 - [ ] Keep Ubuntu stateless and free of Shopping business logic.
 <!-- SPF-007-CLOSE:END -->
+
+<!-- SPF-008-CLOSE:BEGIN -->
+## Shopping Platform Foundation
+
+- [x] Close SPF-008 Read-only Snapshots.
+- [x] Implement deterministic canonical snapshot normalization.
+- [x] Enforce immutable snapshot read models.
+- [x] Enforce authorization before repository access.
+- [x] Verify fail-closed authorization behavior.
+- [x] Verify no persistence, vendor refresh, or write surface.
+- [x] Pass 35 targeted snapshot tests.
+- [x] Pass 872 full regression tests.
+- [ ] Implement SPF-009 Validation and Schema Drift.
+- [ ] Keep Shopping WRITE operations disabled.
+- [ ] Keep Ubuntu stateless and free of Shopping business logic.
+<!-- SPF-008-CLOSE:END -->

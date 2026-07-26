@@ -692,3 +692,31 @@ Implementation commit: `63263b734ead4eb083f9b91923f4b41c3b644e34`.
 
 Next task: SPF-008 Read-only Snapshots.
 <!-- SPF-007-CLOSE:END -->
+
+<!-- SPF-008-CLOSE:BEGIN -->
+## 2026-07-23 — SPF-008 Read-only Snapshots
+
+SPF-008 established the AIControlCenter-owned read-only snapshot boundary for Shopping.
+
+Implemented:
+- deterministic canonical snapshot normalization
+- immutable and detached snapshot read models
+- authorization-before-repository query orchestration
+- fail-closed authorization behavior
+- sanitized repository failure handling
+- read-only snapshot capability enforcement
+- isolation and immutability regression coverage
+
+Validation:
+- targeted: 35 passed
+- full regression: 872 passed
+- production modified: false
+- Ubuntu modified: false
+- write operations enabled: false
+- snapshot persistence enabled: false
+- vendor refresh enabled: false
+
+Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
+
+Next task: SPF-009 Validation and Schema Drift.
+<!-- SPF-008-CLOSE:END -->
