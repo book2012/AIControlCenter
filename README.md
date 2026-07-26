@@ -648,3 +648,22 @@ Next: **SPF-009 Validation and Schema Drift**.
 - Implementation commit: `3fa21878e72cdb9608a728a1c676e70fb70b5717`.
 - No production, Ubuntu, vendor-write, schema-write, or application-state changes were enabled.
 - Next foundation task: **SPF-010 regression, operational validation, documentation and production-readiness closure**.
+
+<!-- AICONTROLCENTER:SPF-010:CLOSED -->
+## SPF-010 Closure — Shopping Platform Foundation
+
+- Status: CLOSED
+- Shopping Platform Foundation: 10/10 (100%)
+- Production Readiness Gate: PASSED for the read-only Foundation.
+- AIControlCenter remains the single Control Plane on Mac mini M4.
+- Ubuntu Server remains a stateless infrastructure worker only.
+- AI workloads, business logic, and application state remain outside Ubuntu.
+- Production write operations remain disabled.
+- Automatic schema adoption and automatic schema migration remain disabled.
+- Any future mutation or write capability requires a separate sprint and explicit production gate.
+- Shopping regression: 233 passed.
+- Full regression: 930 or more passed, 5 deselected, 0 failed, 0 errors.
+- Read-only operational smoke validation: PASSED.
+- Release blockers at final audit: 0.
+- Current milestone: Shopping Platform Foundation 10/10 CLOSED — Production Readiness Gate Passed.
+- Next milestone: post-Foundation read-only external integration and monitoring planning.

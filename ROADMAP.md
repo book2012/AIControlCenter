@@ -755,3 +755,23 @@ Next production milestone: SPF-009 validates canonical contracts and detects sch
   - Negative/isolation/full regression CLOSED at 930 passed, 5 deselected.
 - [ ] SPF-010 — Regression, operational validation and documentation closure.
 - Foundation progress after SPF-009: **9/10 = 90%**.
+
+<!-- AICONTROLCENTER:SPF-010:CLOSED -->
+## SPF-010 Closure — Shopping Platform Foundation
+
+- Status: CLOSED
+- Shopping Platform Foundation: 10/10 (100%)
+- Production Readiness Gate: PASSED for the read-only Foundation.
+- AIControlCenter remains the single Control Plane on Mac mini M4.
+- Ubuntu Server remains a stateless infrastructure worker only.
+- AI workloads, business logic, and application state remain outside Ubuntu.
+- Production write operations remain disabled.
+- Automatic schema adoption and automatic schema migration remain disabled.
+- Any future mutation or write capability requires a separate sprint and explicit production gate.
+- Shopping regression: 233 passed.
+- Full regression: 930 or more passed, 5 deselected, 0 failed, 0 errors.
+- Read-only operational smoke validation: PASSED.
+- Release blockers at final audit: 0.
+- Foundation roadmap milestone: COMPLETE.
+- Next production milestone: post-Foundation read-only external integration and monitoring.
+- Write enablement is not part of Foundation closure and requires a future explicit milestone.

@@ -1000,3 +1000,19 @@ Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
 - 58 SPF-009 targeted tests passed.
 - 930 full-regression tests passed with 5 deselected.
 - Production, Ubuntu and platform write operations remained unchanged and disabled.
+
+<!-- AICONTROLCENTER:SPF-010:CLOSED -->
+## SPF-010 — Shopping Platform Foundation Production Readiness Closure
+
+- Status: CLOSED
+- Shopping Platform Foundation: 10/10 (100%)
+- Production Readiness Gate: PASSED for the read-only Foundation.
+- Closed SPF-010 and the Shopping Platform Foundation.
+- Validated 233 Shopping tests.
+- Full regression: 930 or more passed, 5 deselected, 0 failed, 0 errors.
+- Read-only operational smoke validation: PASSED.
+- AIControlCenter remains the single Control Plane on Mac mini M4.
+- Ubuntu Server remains a stateless infrastructure worker only.
+- Production write operations remain disabled.
+- Automatic schema adoption and automatic schema migration remain disabled.
+- Any future mutation or write capability requires a separate sprint and explicit production gate.

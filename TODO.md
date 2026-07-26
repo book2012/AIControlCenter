@@ -469,3 +469,23 @@ SPF-004 closure validation:
 - [x] Validate fail-closed, sanitization, immutability and isolation behavior.
 - [x] Pass 58 targeted tests and 930 full-regression tests with 5 deselected.
 - [ ] Execute SPF-010 final production-readiness and operational closure.
+
+<!-- AICONTROLCENTER:SPF-010:CLOSED -->
+## SPF-010 Closure — Shopping Platform Foundation
+
+- Status: CLOSED
+- Shopping Platform Foundation: 10/10 (100%)
+- Production Readiness Gate: PASSED for the read-only Foundation.
+- AIControlCenter remains the single Control Plane on Mac mini M4.
+- Ubuntu Server remains a stateless infrastructure worker only.
+- AI workloads, business logic, and application state remain outside Ubuntu.
+- Production write operations remain disabled.
+- Automatic schema adoption and automatic schema migration remain disabled.
+- Any future mutation or write capability requires a separate sprint and explicit production gate.
+- Shopping regression: 233 passed.
+- Full regression: 930 or more passed, 5 deselected, 0 failed, 0 errors.
+- Read-only operational smoke validation: PASSED.
+- Release blockers at final audit: 0.
+- SPF-010 final closure: COMPLETE.
+- Foundation remaining tasks: 0.
+- Next planning task: define post-Foundation read-only integration scope before any mutation capability.
