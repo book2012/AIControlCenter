@@ -458,3 +458,14 @@ SPF-004 closure validation:
 - [ ] Keep Shopping WRITE operations disabled.
 - [ ] Keep Ubuntu stateless and free of Shopping business logic.
 <!-- SPF-008-CLOSE:END -->
+
+<!-- AICONTROLCENTER:SPF-009:CLOSED -->
+## SPF-009 Validation and Schema Drift Closure
+
+- [x] Close SPF-009 runtime JSON Schema validation.
+- [x] Close SPF-009 conservative schema drift classification.
+- [x] Enforce authorization-before-schema-discovery.
+- [x] Preserve `discover_schema(*, context, adapter_name)` as the authoritative read contract.
+- [x] Validate fail-closed, sanitization, immutability and isolation behavior.
+- [x] Pass 58 targeted tests and 930 full-regression tests with 5 deselected.
+- [ ] Execute SPF-010 final production-readiness and operational closure.

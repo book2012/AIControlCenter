@@ -983,3 +983,20 @@ Implementation commit: `63263b734ead4eb083f9b91923f4b41c3b644e34`.
 
 Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
 <!-- SPF-008-CLOSE:END -->
+
+<!-- AICONTROLCENTER:SPF-009:CLOSED -->
+## SPF-009 Validation and Schema Drift Closure
+
+### Added
+
+- Canonical Draft 2020-12 runtime schema validator with deterministic `VALID`, `INVALID`, and `ERROR` results.
+- Local-only `referencing.Registry` schema resolution with remote-reference rejection.
+- Consumer-safety schema drift classifier with four explicit drift states.
+- Read-only schema drift monitor using authorization-before-discovery and the authoritative `context` plus `adapter_name` discovery contract.
+- Negative, isolation, immutability, sanitization, compatibility, and full-regression coverage.
+
+### Validation
+
+- 58 SPF-009 targeted tests passed.
+- 930 full-regression tests passed with 5 deselected.
+- Production, Ubuntu and platform write operations remained unchanged and disabled.

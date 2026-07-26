@@ -637,3 +637,14 @@ Shopping Platform Foundation progress after SPF-008: **8/10 — 80%**.
 
 Next: **SPF-009 Validation and Schema Drift**.
 <!-- SPF-008-CLOSE:END -->
+
+<!-- AICONTROLCENTER:SPF-009:CLOSED -->
+## SPF-009 Validation and Schema Drift Closure
+
+- Shopping Platform Foundation progress: **9/10 tasks complete (90%)**.
+- SPF-009 adds canonical runtime schema validation, deterministic fail-closed validation results, conservative schema drift classification, and authorization-first read-only drift monitoring.
+- Validation targeted suite: **58 passed**.
+- Full regression: **930 passed, 5 deselected**.
+- Implementation commit: `3fa21878e72cdb9608a728a1c676e70fb70b5717`.
+- No production, Ubuntu, vendor-write, schema-write, or application-state changes were enabled.
+- Next foundation task: **SPF-010 regression, operational validation, documentation and production-readiness closure**.

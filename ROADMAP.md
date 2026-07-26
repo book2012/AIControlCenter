@@ -744,3 +744,14 @@ Current completion: **8/10 — 80%**.
 
 Next production milestone: SPF-009 validates canonical contracts and detects schema drift without enabling Shopping writes or moving application state to Ubuntu.
 <!-- SPF-008-CLOSE:END -->
+
+<!-- AICONTROLCENTER:SPF-009:CLOSED -->
+## SPF-009 Validation and Schema Drift Closure
+
+- [x] SPF-009 — Validation and Schema Drift.
+  - Runtime validator CLOSED.
+  - Drift classifier CLOSED.
+  - Authorization-first read-only schema drift monitoring CLOSED.
+  - Negative/isolation/full regression CLOSED at 930 passed, 5 deselected.
+- [ ] SPF-010 — Regression, operational validation and documentation closure.
+- Foundation progress after SPF-009: **9/10 = 90%**.

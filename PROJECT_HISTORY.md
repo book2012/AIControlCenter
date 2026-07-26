@@ -720,3 +720,15 @@ Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
 
 Next task: SPF-009 Validation and Schema Drift.
 <!-- SPF-008-CLOSE:END -->
+
+<!-- AICONTROLCENTER:SPF-009:CLOSED -->
+## SPF-009 Validation and Schema Drift Closure
+
+- Closure date: 2026-07-23.
+- Implementation commit: `3fa21878e72cdb9608a728a1c676e70fb70b5717` (`feat(shopping): add schema validation and drift monitoring`).
+- SPF-009 introduced canonical runtime validation, local-only schema resolution, conservative drift detection, and read-only drift monitoring.
+- Recovery history: the discovery integration verifier was corrected to honor the authoritative `context` and `adapter_name` port contract; the monitor test harness was made independent of optional pytest async plugins.
+- Final targeted validation: 58 passed.
+- Final full regression: 930 passed, 5 deselected.
+- Production modified: false; Ubuntu modified: false; application write operations enabled: false.
+- Next milestone: SPF-010.

@@ -651,3 +651,15 @@ Next task: **SPF-009 Validation and Schema Drift**.
 
 Remaining Shopping Platform Foundation work: **2/10 tasks**.
 <!-- SPF-008-CLOSE:END -->
+
+<!-- AICONTROLCENTER:SPF-009:CLOSED -->
+## SPF-009 Validation and Schema Drift Closure
+
+- Project state: SPF-009 CLOSED, Shopping Platform Foundation **9/10**.
+- Implementation commit: `3fa21878e72cdb9608a728a1c676e70fb70b5717`.
+- Runtime schema validation and schema drift monitoring are read-only control-plane capabilities owned by AIControlCenter.
+- Validation gate: 58 targeted tests passed; full regression 930 passed and 5 deselected.
+- Production mutation: false.
+- Ubuntu application state: false.
+- Write operations enabled: false.
+- Next production milestone: SPF-010 final regression, operational and documentation closure.

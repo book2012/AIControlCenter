@@ -669,3 +669,17 @@ Validation baseline: 35 targeted tests passed and 872 full regression tests pass
 
 Next architecture task: SPF-009 Validation and Schema Drift.
 <!-- SPF-008-CLOSE:END -->
+
+<!-- AICONTROLCENTER:SPF-009:CLOSED -->
+## SPF-009 Validation and Schema Drift Closure
+
+- Status: CLOSED on 2026-07-23.
+- AIControlCenter remains the single control plane and owns schema governance, authorization, validation, drift policy, monitoring, and audit boundaries.
+- Canonical contract source remains `core/shopping/contracts/schemas/v1` using JSON Schema Draft 2020-12.
+- Runtime validation statuses are `VALID`, `INVALID`, and `ERROR`; only `VALID` is accepted and all operational uncertainty fails closed.
+- Schema resolution is local-only. Remote HTTP schema resolution and automatic fetch are forbidden.
+- Drift statuses are `NO_DRIFT`, `COMPATIBLE_DRIFT`, `BREAKING_DRIFT`, and `UNKNOWN_DRIFT` from the canonical-consumer-safety perspective.
+- `UNKNOWN_DRIFT` is fail-closed and no drift result automatically changes the canonical contract.
+- Schema discovery remains read-only and authorization occurs before `SchemaDiscoveryPort.discover_schema(*, context, adapter_name)`.
+- Schema ID and adapter name are separate concerns; no vendor DTO owns the canonical contract.
+- Automatic schema adoption, migration, application-state persistence, vendor writes, production registration, and Ubuntu application state remain disabled.
