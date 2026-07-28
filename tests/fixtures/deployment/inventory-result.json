@@ -3,6 +3,10 @@
   "items": [
     {
       "component_id": "control-plane",
+      "component_type": "control-plane-profile",
+      "details": {},
+      "errors": [],
+      "evidence": [],
       "observed": true,
       "state": "present"
     }

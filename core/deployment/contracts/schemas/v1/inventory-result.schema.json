@@ -18,6 +18,52 @@
           "component_id": {
             "$ref": "common.schema.json#/$defs/Identifier"
           },
+          "component_type": {
+            "$ref": "common.schema.json#/$defs/Identifier"
+          },
+          "details": {
+            "type": "object"
+          },
+          "errors": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "code": {
+                  "$ref": "common.schema.json#/$defs/Identifier"
+                },
+                "message": {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                }
+              },
+              "required": [
+                "code",
+                "message"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
+          "evidence": {
+            "items": {
+              "additionalProperties": false,
+              "properties": {
+                "kind": {
+                  "$ref": "common.schema.json#/$defs/Identifier"
+                },
+                "reference": {
+                  "$ref": "common.schema.json#/$defs/PackagePath"
+                }
+              },
+              "required": [
+                "kind",
+                "reference"
+              ],
+              "type": "object"
+            },
+            "type": "array"
+          },
           "observed": {
             "type": "boolean"
           },
@@ -25,14 +71,20 @@
             "enum": [
               "present",
               "absent",
-              "unknown"
+              "unknown",
+              "degraded",
+              "unavailable"
             ]
           }
         },
         "required": [
           "component_id",
+          "component_type",
           "observed",
-          "state"
+          "state",
+          "details",
+          "evidence",
+          "errors"
         ],
         "type": "object"
       },
