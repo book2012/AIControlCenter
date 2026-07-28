@@ -9,6 +9,12 @@ from .repository import (
     RepositoryFileReader,
     RuntimeMetadataFileAdapter,
 )
+from .ingress import (
+    CaddyIngressAdapter,
+    ColimaIngressAdapter,
+    ComposeIngressAdapter,
+    IngressContractFileAdapter,
+)
 
 __all__ = (
     "CaddyFileAdapter",
@@ -18,4 +24,8 @@ __all__ = (
     "LaunchdDesiredStateAdapter",
     "RepositoryFileReader",
     "RuntimeMetadataFileAdapter",
+    "CaddyIngressAdapter",
+    "ColimaIngressAdapter",
+    "ComposeIngressAdapter",
+    "IngressContractFileAdapter",
 )

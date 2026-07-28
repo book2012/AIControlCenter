@@ -21,6 +21,8 @@ FIXTURES = Path(__file__).parents[1] / "fixtures" / "deployment"
 CONTRACT_FIXTURES = {
     "ImmutableDeploymentPackage": "immutable-deployment-package.json",
     "InventoryResult": "inventory-result.json",
+    "IngressContract": "ingress-contract.json",
+    "IngressReadinessReport": "ingress-readiness-report.json",
     "ValidationReport": "validation-report.json",
     "DesiredCurrentDiff": "desired-current-diff.json",
     "DeterministicDryRunPlan": "deterministic-dry-run-plan.json",
@@ -46,7 +48,7 @@ def test_registry_discovery_and_meta_schema() -> None:
     registry = load_schema_registry()
     assert set(registry.contracts) == set(CONTRACT_FIXTURES)
     assert registry.manifest["network_resolution"] is False
-    assert len(registry.schemas_by_id) == 8
+    assert len(registry.schemas_by_id) == 10
     for schema in registry.schemas_by_id.values():
         Draft202012Validator.check_schema(dict(schema))
 

@@ -1,0 +1,36 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:ingress-readiness-report",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IngressReadinessReport",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "read_only": {"const": true},
+    "overall_status": {"enum": ["READY", "NOT_READY", "DEGRADED", "UNAVAILABLE", "INVALID"]},
+    "evaluated_components": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "normalized_endpoint_identities": {
+      "type": "object", "additionalProperties": {"type": "string"}
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "properties": {
+          "check_id": {"type": "string", "minLength": 1},
+          "status": {"enum": ["PASS", "FAIL", "UNKNOWN"]},
+          "message": {"type": "string", "minLength": 1},
+          "evidence_references": {"type": "array", "items": {"type": "string"}}
+        },
+        "required": ["check_id", "status", "message", "evidence_references"]
+      }
+    },
+    "mismatch_reasons": {"type": "array", "items": {"type": "string"}},
+    "evidence_references": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+    "errors": {"type": "array", "items": {"type": "string"}},
+    "warnings": {"type": "array", "items": {"type": "string"}},
+    "production_writes": {"const": 0},
+    "ubuntu_changes": {"const": 0}
+  },
+  "required": ["schema_version", "read_only", "overall_status", "evaluated_components", "normalized_endpoint_identities", "checks", "mismatch_reasons", "evidence_references", "errors", "warnings", "production_writes", "ubuntu_changes"]
+}

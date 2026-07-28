@@ -25,6 +25,16 @@
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:inventory-result",
       "schema_version": "dpl/v1"
     },
+    "IngressContract": {
+      "path": "ingress-contract.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:ingress-contract",
+      "schema_version": "dpl/v1"
+    },
+    "IngressReadinessReport": {
+      "path": "ingress-readiness-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:ingress-readiness-report",
+      "schema_version": "dpl/v1"
+    },
     "ReadinessReport": {
       "path": "readiness-report.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:readiness-report",
@@ -57,6 +67,18 @@
       "name": "InventoryResult",
       "path": "inventory-result.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:inventory-result"
+    },
+    {
+      "kind": "contract",
+      "name": "IngressContract",
+      "path": "ingress-contract.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:ingress-contract"
+    },
+    {
+      "kind": "contract",
+      "name": "IngressReadinessReport",
+      "path": "ingress-readiness-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:ingress-readiness-report"
     },
     {
       "kind": "contract",

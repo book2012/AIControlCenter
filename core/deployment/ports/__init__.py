@@ -10,6 +10,7 @@ from .inventory import (
     LaunchdObservationPort,
     RuntimeMetadataPort,
 )
+from .ingress import IngressContractPort, IngressEvidencePort
 
 __all__ = (
     "CaddyDesiredStatePort",
@@ -20,4 +21,6 @@ __all__ = (
     "GitIdentityPort",
     "LaunchdObservationPort",
     "RuntimeMetadataPort",
+    "IngressContractPort",
+    "IngressEvidencePort",
 )

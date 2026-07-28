@@ -1,0 +1,57 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:ingress-contract",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "IngressContract",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "read_only": {"const": true},
+    "public_edge": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "owner": {"const": "host-caddy"},
+        "sole_public_edge": {"const": true},
+        "direct_public_application_ports": {"const": false}
+      },
+      "required": ["owner", "sole_public_edge", "direct_public_application_ports"]
+    },
+    "runtime": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "owner": {"const": "mac-control-plane"},
+        "ubuntu_runtime_allowed": {"const": false}
+      },
+      "required": ["owner", "ubuntu_runtime_allowed"]
+    },
+    "engines": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "cms": {"const": "wordpress"},
+        "commerce": {"const": "woocommerce"},
+        "business_logic_owner": {"const": "aicontrolcenter"}
+      },
+      "required": ["cms", "commerce", "business_logic_owner"]
+    },
+    "upstream": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "host": {"enum": ["127.0.0.1", "localhost", "::1"]},
+        "port_source": {"const": "SHOPPING_WORDPRESS_PORT"},
+        "port": {"type": "integer", "minimum": 1, "maximum": 65535}
+      },
+      "required": ["host", "port_source", "port"]
+    },
+    "database": {
+      "type": "object", "additionalProperties": false,
+      "properties": {
+        "engine": {"const": "mariadb"},
+        "public_exposure": {"const": false},
+        "host_published_port": {"const": false}
+      },
+      "required": ["engine", "public_exposure", "host_published_port"]
+    },
+    "production_writes": {"const": false}
+  },
+  "required": ["schema_version", "read_only", "public_edge", "runtime", "engines", "upstream", "database", "production_writes"]
+}

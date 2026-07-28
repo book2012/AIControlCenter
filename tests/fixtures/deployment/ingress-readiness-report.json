@@ -1,0 +1,18 @@
+{
+  "schema_version": "dpl/v1",
+  "read_only": true,
+  "overall_status": "READY",
+  "evaluated_components": ["caddy", "colima-commerce", "compose-commerce", "ingress-contract"],
+  "normalized_endpoint_identities": {
+    "caddy": "127.0.0.1:58081",
+    "colima-commerce": "127.0.0.1:58081",
+    "compose-commerce": "127.0.0.1:58081"
+  },
+  "checks": [],
+  "mismatch_reasons": [],
+  "evidence_references": ["config/deployment/ingress.json"],
+  "errors": [],
+  "warnings": [],
+  "production_writes": 0,
+  "ubuntu_changes": 0
+}
