@@ -1,4 +1,6 @@
-"""Typed read-only ports for DPL inventory collection."""
+"""Typed read-only ports for DPL composition."""
+
+from .audit import AuditEvidenceSinkPort
 
 from .inventory import (
     CaddyDesiredStatePort,
@@ -13,6 +15,7 @@ from .inventory import (
 from .ingress import IngressContractPort, IngressEvidencePort
 
 __all__ = (
+    "AuditEvidenceSinkPort",
     "CaddyDesiredStatePort",
     "ClockPort",
     "ColimaContractPort",

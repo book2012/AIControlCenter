@@ -771,7 +771,8 @@ Future writes require explicit architecture review, authorization, audit evidenc
 ### DPL status
 
 - DPL-01 Inventory and Architecture Assessment: COMPLETE
-- DPL-02 Read-only Package Contract and Validation: NEXT
+- DPL-02 Read-only Package Contract and Validation: COMPLETE (M1)
+- DPL-03 Read/Plan/Apply Dependency Separation: NEXT
 - Production activation: NOT AUTHORIZED
 
 DPL preserves AIControlCenter ownership, the Mac mini M4 single Control Plane,

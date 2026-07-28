@@ -1,0 +1,31 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:audit-evidence",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DeploymentAuditEvidence",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "event_id": {"type": "string", "pattern": "^dpl-[0-9a-f]{64}$"},
+    "operation": {"type": "string", "enum": ["schema-discovery", "package-inspection", "mac-inventory", "ingress-readiness"]},
+    "actor_identity": {"type": "string", "minLength": 1, "maxLength": 128},
+    "context_identity": {"type": "string", "minLength": 1, "maxLength": 128},
+    "request_identity": {"type": "string", "minLength": 1, "maxLength": 128},
+    "subject_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+    "result_classification": {"type": "string", "enum": ["SUCCESS", "INVALID", "DEGRADED", "UNAVAILABLE", "NOT_READY"]},
+    "timestamp": {"$ref": "common.schema.json#/$defs/UtcDateTime"},
+    "read_only": {"const": true},
+    "production_writes": {"const": 0},
+    "ubuntu_changes": {"const": 0},
+    "error": {
+      "type": ["object", "null"],
+      "additionalProperties": false,
+      "properties": {
+        "code": {"$ref": "common.schema.json#/$defs/Identifier"},
+        "message": {"type": "string", "minLength": 1, "maxLength": 200}
+      },
+      "required": ["code", "message"]
+    }
+  },
+  "required": ["schema_version", "event_id", "operation", "actor_identity", "context_identity", "request_identity", "subject_digest", "result_classification", "timestamp", "read_only", "production_writes", "ubuntu_changes", "error"]
+}

@@ -1,0 +1,15 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:api-response",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DeploymentApiResponse",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "read_only": {"const": true},
+    "operation": {"type": "string", "enum": ["schema-discovery", "package-inspection", "mac-inventory", "ingress-readiness"]},
+    "result": {"type": "object"},
+    "audit_evidence": {"$ref": "audit-evidence.schema.json"}
+  },
+  "required": ["schema_version", "read_only", "operation", "result", "audit_evidence"]
+}

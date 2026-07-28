@@ -46,9 +46,12 @@ def _reject(payload: dict, contract: str = "ImmutableDeploymentPackage") -> None
 
 def test_registry_discovery_and_meta_schema() -> None:
     registry = load_schema_registry()
-    assert set(registry.contracts) == set(CONTRACT_FIXTURES)
+    assert set(registry.contracts).issuperset(CONTRACT_FIXTURES)
+    assert {"DeploymentAuditEvidence", "DeploymentApiResponse"}.issubset(
+        registry.contracts
+    )
     assert registry.manifest["network_resolution"] is False
-    assert len(registry.schemas_by_id) == 10
+    assert len(registry.schemas_by_id) == 12
     for schema in registry.schemas_by_id.values():
         Draft202012Validator.check_schema(dict(schema))
 

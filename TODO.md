@@ -569,15 +569,19 @@ baseline is `984 passed, 5 deselected`.
 - [x] Define DPL-01 through DPL-08.
 - [x] Preserve production-write and activation prohibition.
 
-### Next — DPL-02
+### Complete — DPL-02 / M1
 
-- [ ] Define canonical versioned DPL package/report JSON Schemas and registry.
-- [ ] Implement read-only inventory, manifest validation and policy validation.
-- [ ] Implement diff, dry-run plan, readiness reporting and audit.
-- [ ] Exclude `UbuntuWorkerClient.execute`.
-- [ ] Activate no Ubuntu adapter.
-- [ ] Establish strict read/plan versus apply dependency boundaries.
-- [ ] Define one canonical Host Caddy to Commerce ingress contract.
+- [x] Define canonical versioned DPL package/report JSON Schemas and registry.
+- [x] Implement read-only inventory, validation, readiness, GET composition,
+  and audit-ready evidence.
+- [x] Exclude `UbuntuWorkerClient.execute`.
+- [x] Activate no Ubuntu adapter.
+- [x] Define one canonical Host Caddy to Commerce ingress contract.
+- [x] Deny POST, PUT, PATCH, and DELETE across DPL API routes.
+
+### Next — DPL-03
+
+- [ ] Enforce read/plan/apply package and dependency separation.
 
 Production activation remains NOT AUTHORIZED.
 <!-- AICONTROLCENTER:DPL-01:END -->

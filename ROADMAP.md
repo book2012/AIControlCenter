@@ -833,7 +833,7 @@ Codex performs implementation under Architect-owned specifications and acceptanc
 
 - [x] DPL-01 — Inventory, ownership, architecture decisions, blockers and
   sprint plan.
-- [ ] DPL-02 — Versioned package/report JSON Schemas and registry; read-only
+- [x] DPL-02 — Versioned package/report JSON Schemas and registry; read-only
   inventory, validation, diff, dry-run, readiness and audit.
 - [ ] DPL-03 — Enforced read/plan/apply package and dependency separation.
 - [ ] DPL-04 — Launchd-native Mac inventory and health inspection.

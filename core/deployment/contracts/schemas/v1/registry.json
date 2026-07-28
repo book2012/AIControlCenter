@@ -15,6 +15,16 @@
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:error-envelope",
       "schema_version": "dpl/v1"
     },
+    "DeploymentAuditEvidence": {
+      "path": "audit-evidence.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:audit-evidence",
+      "schema_version": "dpl/v1"
+    },
+    "DeploymentApiResponse": {
+      "path": "api-response.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:api-response",
+      "schema_version": "dpl/v1"
+    },
     "ImmutableDeploymentPackage": {
       "path": "deployment-package.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-package",
@@ -55,6 +65,18 @@
       "name": "Common",
       "path": "common.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:common"
+    },
+    {
+      "kind": "contract",
+      "name": "DeploymentAuditEvidence",
+      "path": "audit-evidence.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:audit-evidence"
+    },
+    {
+      "kind": "contract",
+      "name": "DeploymentApiResponse",
+      "path": "api-response.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:api-response"
     },
     {
       "kind": "contract",
