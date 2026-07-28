@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-report",
+  "title": "DependencyBoundaryReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_digest", "repository_root_identity", "analyzed_files", "classified_modules", "allowed_imports", "violations", "quarantine_findings", "warnings", "overall_result", "production_authorized", "production_writes", "ubuntu_changes"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "policy_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "repository_root_identity": {"type": "string", "minLength": 1},
+    "analyzed_files": {"type": "array", "items": {"type": "string"}},
+    "classified_modules": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["module", "path", "zone"], "properties": {"module": {"type": "string"}, "path": {"type": "string"}, "zone": {"type": "string"}}}},
+    "allowed_imports": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["importer", "imported_module", "symbols"], "properties": {"importer": {"type": "string"}, "imported_module": {"type": "string"}, "symbols": {"type": "array", "items": {"type": "string"}}}}},
+    "violations": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["importer", "imported_module", "rule_id", "severity", "detail"], "properties": {"importer": {"type": "string"}, "imported_module": {"type": "string"}, "rule_id": {"type": "string"}, "severity": {"enum": ["ERROR", "WARNING"]}, "detail": {"type": "string"}}}},
+    "quarantine_findings": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["module", "classification", "reason", "sensitive_imports", "production_authorized"], "properties": {"module": {"type": "string"}, "classification": {"const": "LEGACY_UNSUPPORTED"}, "reason": {"type": "string"}, "sensitive_imports": {"type": "array", "items": {"type": "string"}}, "production_authorized": {"const": false}}}},
+    "warnings": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["module", "warning"], "properties": {"module": {"type": "string"}, "warning": {"type": "string"}}}},
+    "overall_result": {"enum": ["PASS", "FAIL", "INVALID", "INCOMPLETE"]},
+    "production_authorized": {"const": false},
+    "production_writes": {"const": 0},
+    "ubuntu_changes": {"const": 0}
+  }
+}

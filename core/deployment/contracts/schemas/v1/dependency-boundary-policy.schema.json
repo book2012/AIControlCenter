@@ -1,0 +1,100 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-policy",
+  "title": "DependencyBoundaryPolicy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "policy_version", "architecture_zones", "allowed_dependency_directions", "dependency_rules", "prohibited_external_modules", "prohibited_symbols", "legacy_quarantine", "production_authorization_effect"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "policy_version": {"type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"},
+    "architecture_zones": {
+      "type": "array", "minItems": 10,
+      "items": {"$ref": "#/$defs/zone"}
+    },
+    "dependency_rules": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/rule"}
+    },
+    "allowed_dependency_directions": {
+      "type": "array", "minItems": 1,
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["from_zone", "to_zones"],
+        "properties": {
+          "from_zone": {"type": "string"},
+          "to_zones": {"type": "array", "items": {"type": "string"}}
+        }
+      }
+    },
+    "prohibited_external_modules": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/externalRule"}
+    },
+    "prohibited_symbols": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/symbolRule"}
+    },
+    "legacy_quarantine": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/quarantine"}
+    },
+    "production_authorization_effect": {"const": "NONE"}
+  },
+  "$defs": {
+    "selector": {
+      "type": "object", "additionalProperties": false, "minProperties": 1,
+      "properties": {"module_prefix": {"type": "string", "minLength": 1}, "path_glob": {"type": "string", "minLength": 1}}
+    },
+    "zone": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "responsibility", "selectors"],
+      "properties": {
+        "id": {"enum": ["contracts", "read_ports", "read_adapters", "read_application", "plan_services", "apply_services", "api_composition", "audit_evidence", "legacy_unsupported", "worker_infrastructure"]},
+        "responsibility": {"type": "string", "minLength": 1},
+        "selectors": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/selector"}}
+      }
+    },
+    "rule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "from_zones", "to_zones", "severity"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^DPL-[A-Z]+-[0-9]{3}$"},
+        "from_zones": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "to_zones": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "severity": {"enum": ["ERROR", "WARNING"]}
+      }
+    },
+    "externalRule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "zones", "modules", "severity"],
+      "properties": {
+        "id": {"type": "string"}, "zones": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "modules": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "severity": {"enum": ["ERROR", "WARNING"]}
+      }
+    },
+    "symbolRule": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "zones", "symbols", "severity"],
+      "properties": {
+        "id": {"type": "string"}, "zones": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "symbols": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "severity": {"enum": ["ERROR", "WARNING"]}
+      }
+    },
+    "quarantine": {
+      "type": "object", "additionalProperties": false,
+      "required": ["module", "reason", "allowed_consumers", "prohibited_consumers", "production_authorized", "migration_target", "review_by"],
+      "properties": {
+        "module": {"type": "string", "pattern": "^core\\.deployment\\.[A-Za-z0-9_.]+$"},
+        "reason": {"type": "string", "minLength": 8},
+        "allowed_consumers": {"type": "array", "maxItems": 0},
+        "prohibited_consumers": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+        "production_authorized": {"const": false},
+        "migration_target": {"type": "string", "minLength": 1},
+        "review_by": {"type": "string", "format": "date"}
+      }
+    }
+  }
+}

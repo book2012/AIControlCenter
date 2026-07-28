@@ -51,7 +51,7 @@ def test_registry_discovery_and_meta_schema() -> None:
         registry.contracts
     )
     assert registry.manifest["network_resolution"] is False
-    assert len(registry.schemas_by_id) == 12
+    assert len(registry.schemas_by_id) == 1 + len(registry.contracts)
     for schema in registry.schemas_by_id.values():
         Draft202012Validator.check_schema(dict(schema))
 

@@ -1,0 +1,191 @@
+{
+  "schema_version": "dpl/v1",
+  "policy_version": "1.0.0",
+  "architecture_zones": [
+    {
+      "id": "contracts",
+      "responsibility": "Immutable schemas, canonical models and validation contracts.",
+      "selectors": [
+        {"module_prefix": "core.deployment.contracts"},
+        {"path_glob": "core/deployment/__init__.py"}
+      ]
+    },
+    {
+      "id": "read_ports",
+      "responsibility": "Capability-specific interfaces for read-only observations.",
+      "selectors": [{"module_prefix": "core.deployment.ports"}]
+    },
+    {
+      "id": "read_adapters",
+      "responsibility": "Repository-local implementations of read ports.",
+      "selectors": [{"module_prefix": "core.deployment.adapters"}]
+    },
+    {
+      "id": "read_application",
+      "responsibility": "Read-only inventory and readiness orchestration.",
+      "selectors": [
+        {"module_prefix": "core.deployment.application.mac_inventory"},
+        {"module_prefix": "core.deployment.application.ingress_readiness"},
+        {"path_glob": "core/deployment/application/*.py"}
+      ]
+    },
+    {
+      "id": "plan_services",
+      "responsibility": "Pure desired-state planning without activation.",
+      "selectors": [{"module_prefix": "core.deployment.policy"}]
+    },
+    {
+      "id": "apply_services",
+      "responsibility": "Future explicitly authorized apply boundary; absent from default composition.",
+      "selectors": [{"module_prefix": "core.deployment.apply"}]
+    },
+    {
+      "id": "api_composition",
+      "responsibility": "GET-only DPL route, dependency wiring and response composition.",
+      "selectors": [
+        {"module_prefix": "core.api.routes.deployment"},
+        {"module_prefix": "core.api.dependencies.deployment"},
+        {"module_prefix": "core.deployment.application.api_composition"},
+        {"path_glob": "core/deployment/application/__init__.py"}
+      ]
+    },
+    {
+      "id": "audit_evidence",
+      "responsibility": "Non-persistent read-only evidence contracts and ports.",
+      "selectors": [{"module_prefix": "core.deployment.ports.audit"}]
+    },
+    {
+      "id": "legacy_unsupported",
+      "responsibility": "Explicitly quarantined pre-DPL deployment modules.",
+      "selectors": [{"module_prefix": "core.deployment.legacy_unsupported"}]
+    },
+    {
+      "id": "worker_infrastructure",
+      "responsibility": "Optional stateless infrastructure worker, unreachable from DPL read and plan.",
+      "selectors": [{"module_prefix": "core.worker"}]
+    }
+  ],
+  "allowed_dependency_directions": [
+    {"from_zone": "contracts", "to_zones": ["contracts"]},
+    {"from_zone": "read_ports", "to_zones": ["contracts", "read_ports"]},
+    {"from_zone": "read_adapters", "to_zones": ["contracts", "read_ports", "read_adapters"]},
+    {"from_zone": "read_application", "to_zones": ["contracts", "read_ports", "read_application"]},
+    {"from_zone": "plan_services", "to_zones": ["contracts", "read_ports", "read_application", "plan_services"]},
+    {"from_zone": "api_composition", "to_zones": ["contracts", "read_ports", "read_adapters", "read_application", "plan_services", "api_composition", "audit_evidence"]},
+    {"from_zone": "audit_evidence", "to_zones": ["contracts", "audit_evidence"]}
+  ],
+  "dependency_rules": [
+    {
+      "id": "DPL-DIRECTION-001",
+      "from_zones": ["contracts"],
+      "to_zones": ["api_composition", "read_adapters", "worker_infrastructure", "apply_services"],
+      "severity": "ERROR"
+    },
+    {
+      "id": "DPL-DIRECTION-002",
+      "from_zones": ["read_ports"],
+      "to_zones": ["api_composition", "read_adapters", "read_application", "plan_services", "apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "severity": "ERROR"
+    },
+    {
+      "id": "DPL-DIRECTION-003",
+      "from_zones": ["read_application"],
+      "to_zones": ["read_adapters", "api_composition", "apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "severity": "ERROR"
+    },
+    {
+      "id": "DPL-DIRECTION-004",
+      "from_zones": ["plan_services"],
+      "to_zones": ["apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "severity": "ERROR"
+    },
+    {
+      "id": "DPL-DIRECTION-005",
+      "from_zones": ["api_composition"],
+      "to_zones": ["apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "severity": "ERROR"
+    }
+  ],
+  "prohibited_external_modules": [
+    {
+      "id": "DPL-EXTERNAL-001",
+      "zones": ["read_application", "plan_services", "api_composition"],
+      "modules": ["subprocess", "socket", "paramiko", "fabric"],
+      "severity": "ERROR"
+    }
+  ],
+  "prohibited_symbols": [
+    {
+      "id": "DPL-SYMBOL-001",
+      "zones": ["read_application", "plan_services", "api_composition"],
+      "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
+      "severity": "ERROR"
+    }
+  ],
+  "legacy_quarantine": [
+    {
+      "module": "core.deployment.inspect",
+      "reason": "Pre-DPL inspector performs socket, HTTP and launchctl print observations through subprocess.",
+      "allowed_consumers": [],
+      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "production_authorized": false,
+      "migration_target": "DPL-03B capability-specific read ports",
+      "review_by": "2026-10-31"
+    },
+    {
+      "module": "core.deployment.diff",
+      "reason": "Pre-DPL diff transitively reaches the legacy runtime inspector.",
+      "allowed_consumers": [],
+      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "production_authorized": false,
+      "migration_target": "DPL-03B pure plan composition",
+      "review_by": "2026-10-31"
+    },
+    {
+      "module": "core.deployment.plan",
+      "reason": "Pre-DPL planner models mutation actions outside the DPL v1 contracts.",
+      "allowed_consumers": [],
+      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "production_authorized": false,
+      "migration_target": "DPL-03B pure plan composition",
+      "review_by": "2026-10-31"
+    },
+    {
+      "module": "core.deployment.dry_run",
+      "reason": "Pre-DPL dry run models installation, launchd mutation and rollback commands.",
+      "allowed_consumers": [],
+      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "production_authorized": false,
+      "migration_target": "DPL-03B pure plan composition",
+      "review_by": "2026-10-31"
+    },
+    {
+      "module": "core.deployment.approval",
+      "reason": "Pre-DPL approval format references installation and rollback actions.",
+      "allowed_consumers": [],
+      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "production_authorized": false,
+      "migration_target": "Future separately authorized apply milestone",
+      "review_by": "2026-10-31"
+    },
+    {
+      "module": "core.deployment.execution_gate",
+      "reason": "Pre-DPL execution gating belongs to a future apply boundary.",
+      "allowed_consumers": [],
+      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "production_authorized": false,
+      "migration_target": "Future separately authorized apply milestone",
+      "review_by": "2026-10-31"
+    },
+    {
+      "module": "core.deployment.manifest",
+      "reason": "Pre-DPL manifest and CLI contract is outside the immutable DPL v1 registry.",
+      "allowed_consumers": [],
+      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "production_authorized": false,
+      "migration_target": "DPL v1 contract registry",
+      "review_by": "2026-10-31"
+    }
+  ],
+  "production_authorization_effect": "NONE"
+}

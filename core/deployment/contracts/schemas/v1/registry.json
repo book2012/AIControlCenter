@@ -1,5 +1,15 @@
 {
   "contracts": {
+    "DependencyBoundaryPolicy": {
+      "path": "dependency-boundary-policy.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-policy",
+      "schema_version": "dpl/v1"
+    },
+    "DependencyBoundaryReport": {
+      "path": "dependency-boundary-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-report",
+      "schema_version": "dpl/v1"
+    },
     "DesiredCurrentDiff": {
       "path": "desired-current-diff.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:desired-current-diff",
@@ -65,6 +75,18 @@
       "name": "Common",
       "path": "common.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:common"
+    },
+    {
+      "kind": "contract",
+      "name": "DependencyBoundaryPolicy",
+      "path": "dependency-boundary-policy.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-policy"
+    },
+    {
+      "kind": "contract",
+      "name": "DependencyBoundaryReport",
+      "path": "dependency-boundary-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-report"
     },
     {
       "kind": "contract",
