@@ -1,0 +1,36 @@
+{
+  "ai_workloads_allowed": false,
+  "allowed_workloads": [
+    "wordpress",
+    "woocommerce",
+    "database",
+    "wordpress-cli"
+  ],
+  "architecture": "aarch64",
+  "auto_activate": false,
+  "cpus": 4,
+  "disk_gib": 80,
+  "docker_context": "colima-aicontrolcenter-commerce",
+  "kubernetes": false,
+  "memory_gib": 6,
+  "mount_policy": "explicit-compose-bind-allowlist",
+  "mount_type": "virtiofs",
+  "mounts": [
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront",
+      "writable": false
+    }
+  ],
+  "network_address": false,
+  "network_mode": "shared",
+  "port_forwarder": "ssh",
+  "profile": "aicontrolcenter-commerce",
+  "public_ingress_owner": "host-caddy",
+  "purpose": "shopping-commerce-runtime",
+  "runtime": "docker",
+  "schema_version": 1,
+  "ssh_agent": false,
+  "ubuntu_runtime_allowed": false,
+  "vm_type": "vz",
+  "wordpress_host_binding": "127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80"
+}

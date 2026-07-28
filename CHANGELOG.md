@@ -1016,3 +1016,67 @@ Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
 - Production write operations remain disabled.
 - Automatic schema adoption and automatic schema migration remain disabled.
 - Any future mutation or write capability requires a separate sprint and explicit production gate.
+
+<!-- BEGIN AICONTROLCENTER:SRI-03 -->
+## Unreleased — SRI-03 External Read Integration
+
+### Added
+
+- Canonical WooCommerce CommerceReadPort integration.
+- Lossless raw WooCommerce read path for canonical normalization.
+- ProductSnapshot and OrderSummary canonical normalization and schema validation.
+- GET-only bounded WooCommerce read transport.
+- Caddy ingress configuration on the Mac Control Plane.
+
+### Validated
+
+- Caddy runtime and Mac LAN ingress.
+- DDNS and public IPv4 consistency.
+- External WAN TCP 80 through an LTE or 5G request returning HTTP 200.
+- DNS A, AAAA, CNAME, and CAA issuance state.
+- Authoritative ipTIME parent CAA restriction.
+
+### Architecture decisions
+
+- Provider-owned DDNS is not the production canonical TLS identity.
+- Root cause: `PARENT_CAA_PROHIBITS_PUBLIC_CA_ISSUANCE`.
+- Production TLS requires a platform-controlled DNS namespace.
+
+### Safety
+
+- Shopping writes remain disabled.
+- Production ACME retries against the blocked ipTIME hostname are stopped.
+- No Ubuntu Shopping business logic or application state was introduced.
+<!-- END AICONTROLCENTER:SRI-03 -->
+
+<!-- SRI-06B-R1:CHANGELOG -->
+## Shopping External Read Integration Closure
+
+### Added
+
+- Production WooCommerce GET-only integration with protected read credential.
+- Generic core/cms boundary and WordPress published post and page adapter.
+- Canonical CMS models and normalization.
+- ExternalReadObserver with Health, Schema, Snapshot and Drift.
+- Sanitized persisted JSON operational evidence.
+
+### Production validation
+
+- WooCommerce products: 0.
+- WooCommerce orders: 0.
+- WordPress published posts: 1.
+- WordPress published pages: 5.
+- Full repository regression: 984 passed and 5 deselected.
+
+### Failure prevention ledger
+
+- F25 CLOSED: lifecycle semantics replace physical invocation count assumptions.
+- F26 CLOSED: launchd authority does not require a fixed plist installation path.
+- F27 CLOSED: health route ownership is explicit.
+- F28 CLOSED: shared namespace permissions are not the per-service secret boundary.
+- F29 CLOSED: annotation symbols are not assumed to be runtime exports.
+- F30 CLOSED: domain snapshot normalization is not used for generic cross-domain observations.
+- F31 CLOSED: secret absence is checked before local secret references are cleared.
+- F32 CLOSED: credential prefix substrings are not treated as complete credential values.
+- F33 CLOSED: staged diff hygiene is authoritative because unstaged diff checks do not include untracked file content.
+<!-- END SRI-06B-R1 -->

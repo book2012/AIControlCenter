@@ -489,3 +489,66 @@ SPF-004 closure validation:
 - SPF-010 final closure: COMPLETE.
 - Foundation remaining tasks: 0.
 - Next planning task: define post-Foundation read-only integration scope before any mutation capability.
+
+<!-- BEGIN AICONTROLCENTER:SRI-03 -->
+## Active — SRI-03 External Read Integration
+
+### Completed
+
+- [x] Canonical WooCommerce read wrapper
+- [x] Canonical normalization and validation
+- [x] GET-only bounded read transport
+- [x] Caddy runtime validation
+- [x] Mac LAN ingress validation
+- [x] External WAN HTTP 80 validation
+- [x] DDNS and public IPv4 validation
+- [x] Authoritative ipTIME CAA blocker analysis
+
+### Controlled Production DNS
+
+- [ ] Inventory a platform-controlled domain and DNS provider
+- [ ] Select the canonical Shopping production hostname
+- [ ] Configure or validate the production A record
+- [ ] Keep AAAA absent until IPv6 ingress is validated
+- [ ] Validate CAA issuance policy
+- [ ] Validate staging TLS
+- [ ] Perform one controlled Production TLS issuance
+
+### SRI-03 closure
+
+- [ ] Make Caddy reboot-safe
+- [ ] Confirm the WooCommerce upstream
+- [ ] Create a dedicated WooCommerce READ-only credential
+- [ ] Execute one production canonical GET
+- [ ] Validate canonical schema output
+- [ ] Run Shopping regression
+- [ ] Run full regression
+- [ ] Verify Git status and exact scope
+- [ ] Finalize README CHANGELOG MASTER ROADMAP PROJECT_HISTORY and TODO
+- [ ] Produce Notion handoff
+- [ ] Commit and push SRI-03 closure
+<!-- END AICONTROLCENTER:SRI-03 -->
+
+<!-- SRI-06B-R1:TODO -->
+## Post-SRI Execution Queue
+
+### DPL preparation
+
+- Define deployment package architecture and immutable artifact contract.
+- Define Codex task templates with scope, acceptance criteria, tests and rollback rules.
+- Preserve Host Caddy as the sole public edge.
+- Preserve protected credentials outside Git.
+
+### Operational hardening
+
+- Implement reusable recovery and forward-reconciliation modules in AIControlCenter.
+- Add persisted evidence schema validators.
+- Add scheduled read-only Health, Schema, Snapshot and Drift execution.
+- Add route ownership tests for /healthz and WordPress fallback.
+
+### Restrictions
+
+- No Shopping business write until a separately approved write sprint.
+- No AI workload or application business logic on Ubuntu.
+- No architecture change through Codex without Architect approval.
+<!-- END SRI-06B-R1 -->

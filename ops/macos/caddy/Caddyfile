@@ -1,0 +1,21 @@
+{
+    http_port 58080
+    https_port 58443
+}
+
+bokstory.duckdns.org {
+    header {
+        X-Content-Type-Options nosniff
+        Referrer-Policy strict-origin-when-cross-origin
+        -Server
+    }
+
+    respond /__aicontrolcenter_ingress_health "ok" 200
+    handle /healthz {
+        respond "ok" 200
+    }
+
+    handle {
+        reverse_proxy 127.0.0.1:58081
+    }
+}

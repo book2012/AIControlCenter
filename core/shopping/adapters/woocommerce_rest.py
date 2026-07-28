@@ -233,6 +233,67 @@ class WooCommerceRESTAdapter:
             ),
         }
 
+    def get_product_raw(
+        self,
+        product_id: str,
+    ) -> dict[str, Any] | None:
+        try:
+            response = self._request(
+                "/products/" + str(product_id),
+                params={"context": "view"},
+            )
+        except WooCommerceAPIError as error:
+            if "HTTP 404" in str(error):
+                return None
+            raise
+        payload = response.json()
+        if not isinstance(payload, dict):
+            raise WooCommerceAPIError("invalid product payload")
+        return dict(payload)
+
+    def list_products_raw(
+        self,
+        page: int,
+        page_size: int,
+    ) -> tuple[list[dict[str, Any]], int]:
+        response = self._request(
+            "/products",
+            params={
+                "context": "view",
+                "status": "publish",
+                "page": page,
+                "per_page": page_size,
+            },
+        )
+        payload = response.json()
+        if not isinstance(payload, list):
+            raise WooCommerceAPIError("invalid product list payload")
+        items = []
+        for item in payload:
+            if not isinstance(item, dict):
+                raise WooCommerceAPIError("invalid product list item")
+            items.append(dict(item))
+        total = int(response.headers.get("X-WP-Total", len(items)))
+        return items, total
+
+    def get_order_summary_raw(
+        self,
+        order_id: str,
+    ) -> dict[str, Any] | None:
+        try:
+            response = self._request(
+                "/orders/" + str(order_id),
+                params={"context": "view"},
+            )
+        except WooCommerceAPIError as error:
+            if "HTTP 404" in str(error):
+                return None
+            raise
+        payload = response.json()
+        if not isinstance(payload, dict):
+            raise WooCommerceAPIError("invalid order payload")
+        return dict(payload)
+
     def list_products(
         self,
         page: int,

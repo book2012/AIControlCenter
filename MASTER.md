@@ -683,3 +683,76 @@ Remaining Shopping Platform Foundation work: **2/10 tasks**.
 - Master project status: SPF-010 CLOSED.
 - Shopping Platform Foundation status: COMPLETE.
 - Next phase must preserve read-only-first governance and adapter boundaries.
+
+<!-- BEGIN AICONTROLCENTER:SRI-03 -->
+## Shopping External Read Integration — Authoritative State
+
+**Program:** SRI — Shopping External Read Integration
+**Branch:** `feature/shopping-external-read-integration`
+
+### Progress
+
+- SRI-01 — CLOSED
+- SRI-02 — CLOSED
+- SRI-03 — IN PROGRESS
+- SRI-04 — PENDING
+- SRI-05 — PENDING
+- SRI-06 — PENDING
+
+**Program closure:** 2/6 CLOSED
+
+### SRI-03 completed
+
+- Canonical WooCommerce read wrapper
+- Canonical normalization and schema validation
+- GET-only bounded read transport
+- Caddy runtime validation
+- Mac LAN ingress validation
+- External WAN HTTP 80 validation
+- DDNS and public IPv4 validation
+- Authoritative parent CAA root-cause confirmation
+
+### Current blocker
+
+Controlled Production DNS and trusted HTTPS are required before the first real canonical WooCommerce production READ.
+
+### Safety state
+
+- Shopping writes: DISABLED
+- Production ACME on `bokstory.iptime.org`: STOPPED
+- Ubuntu business logic changes: NONE
+
+### Next production milestone
+
+Trusted HTTPS on a platform-controlled production hostname followed by one controlled canonical WooCommerce READ.
+<!-- END AICONTROLCENTER:SRI-03 -->
+
+<!-- SRI-06B-R1:MASTER -->
+## Production Contracts Established by SRI
+
+### Platform invariants
+
+- AIControlCenter is the single Control Plane.
+- Mac mini M4 owns orchestration, AI, business logic and application state.
+- Ubuntu remains a stateless infrastructure worker.
+- External components integrate through replaceable adapters and APIs.
+
+### External READ governance
+
+- Read-only monitoring precedes validation and write operations.
+- Persisted JSON evidence is authoritative.
+- Credential values must not appear in Git, console output or evidence.
+- Generic monitoring owns orchestration and domain logic remains in its domain.
+
+### Production write gate
+
+No production write is authorized by SRI.
+Future writes require explicit architecture review, authorization, audit evidence, rollback design and production validation.
+
+### Codex execution governance
+
+- AI Home Datacenter Architect remains architecture and production authority.
+- Codex is an implementation executor.
+- Codex must preserve approved scope, run tests and update documentation.
+- Codex must not change architecture or infrastructure ownership implicitly.
+<!-- END SRI-06B-R1 -->

@@ -1,0 +1,5 @@
+**
+!bootstrap/
+!bootstrap/**
+!cache/
+!cache/woocommerce.zip

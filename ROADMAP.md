@@ -775,3 +775,55 @@ Next production milestone: SPF-009 validates canonical contracts and detects sch
 - Foundation roadmap milestone: COMPLETE.
 - Next production milestone: post-Foundation read-only external integration and monitoring.
 - Write enablement is not part of Foundation closure and requires a future explicit milestone.
+
+<!-- BEGIN AICONTROLCENTER:SRI-03 -->
+## SRI — Shopping External Read Integration
+
+### Current sprint — SRI-03
+
+SRI-03 implements the real external WooCommerce READ path while AIControlCenter remains the single Control Plane.
+
+### Next milestone — Controlled Production DNS
+
+1. Inventory a platform-controlled domain and DNS provider.
+2. Select the canonical Shopping production hostname.
+3. Configure or validate the A record against the current public IPv4.
+4. Keep AAAA absent until IPv6 ingress is validated.
+5. Validate CAA permits the selected public CA.
+6. Reconfirm external HTTP ingress.
+7. Validate staging TLS.
+8. Perform one controlled Production TLS issuance.
+9. Make Caddy reboot-safe with certificate storage continuity.
+10. Connect the real WooCommerce upstream.
+11. Create a dedicated WooCommerce READ-only credential.
+12. Execute one canonical production GET.
+13. Run Shopping and full regression suites.
+14. Complete Git documentation and Notion closure.
+
+### Following milestones
+
+- SRI-04 — WordPress CMS real READ adapter
+- SRI-05 — Health Schema Snapshot and Drift operational integration
+- SRI-06 — Final regression and operational closure
+
+After SRI closes the next program is DPL — Deployment Package.
+<!-- END AICONTROLCENTER:SRI-03 -->
+
+<!-- SRI-06B-R1:ROADMAP -->
+## SRI Closure and Next Program
+
+### Shopping External Read Integration
+
+- SRI-01 external integration inventory: CLOSED.
+- SRI-02 production read policy: CLOSED.
+- SRI-03 WooCommerce production READ integration: CLOSED.
+- SRI-04 WordPress CMS production READ integration: CLOSED.
+- SRI-05 Health, Schema, Snapshot and Drift integration: CLOSED.
+- SRI-06 regression, documentation, Git and handoff closure: final release baseline.
+
+### Next program
+
+DPL, Deployment Package, is the next production program.
+DPL consumes the SRI architecture without moving business logic or application state to Ubuntu.
+Codex performs implementation under Architect-owned specifications and acceptance gates.
+<!-- END SRI-06B-R1 -->

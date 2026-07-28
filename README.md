@@ -667,3 +667,28 @@ Next: **SPF-009 Validation and Schema Drift**.
 - Release blockers at final audit: 0.
 - Current milestone: Shopping Platform Foundation 10/10 CLOSED — Production Readiness Gate Passed.
 - Next milestone: post-Foundation read-only external integration and monitoring planning.
+
+<!-- SRI-06B-R1:README -->
+## SRI Production Baseline and Codex Workflow
+
+Shopping External Read Integration is the production READ baseline for AIControlCenter.
+
+- Mac mini M4 remains the always-on Control Plane.
+- Ubuntu remains a stateless on-demand infrastructure worker.
+- WooCommerce is the Commerce Engine.
+- WordPress is the CMS Engine.
+- AIControlCenter owns policy, orchestration, normalization, evidence and operational decisions.
+- Production products and orders remain zero and no business fixture was introduced.
+
+### Runtime READ paths
+
+- WooCommerceReadTransportSession to WooCommerceRESTAdapter to canonical commerce models.
+- WordPressRESTAdapter to ContentSnapshot and ContentSnapshotPage.
+- ExternalReadObserver executes Health, Schema, Snapshot and Drift.
+
+### Development execution model
+
+AI Home Datacenter Architect retains architecture and production authority.
+Codex acts as implementation executor for approved repository tasks.
+Architecture changes, production writes and scope expansion require explicit Architect review.
+<!-- END SRI-06B-R1 -->

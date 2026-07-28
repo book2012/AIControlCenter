@@ -2,7 +2,7 @@ name: ai-shopping
 
 services:
   database:
-    image: mariadb:11.4.12
+    image: mariadb:11.4.12@sha256:a794d9eb009e20de605858a11f32f63b4075cbd197c650436f0e3b457e4caed7
     container_name: shopping-db
     restart: unless-stopped
     environment:
@@ -26,14 +26,14 @@ services:
       start_period: 30s
 
   wordpress:
-    image: wordpress:php8.3-apache
+    image: wordpress:php8.3-apache@sha256:9fac4d47b61186131ffefb5d966f0045d0eea94bfd7bd40cafae29b78a709d1b
     container_name: shopping-wordpress
     restart: unless-stopped
     depends_on:
       database:
         condition: service_healthy
     ports:
-      - "${SHOPPING_WORDPRESS_PORT}:80"
+      - "127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80"
     environment:
       WORDPRESS_DB_HOST: database:3306
       WORDPRESS_DB_NAME: ${SHOPPING_DB_NAME}
@@ -61,41 +61,36 @@ services:
       start_period: 60s
 
   wordpress-cli:
-    image: wordpress:cli
-    profiles:
-      - tools
+    build:
+      context: .
+      dockerfile: bootstrap/Dockerfile
+    image: aicontrolcenter/wordpress-cli-bootstrap:local
+    pull_policy: build
+    user: "33:33"
+    working_dir: /var/www/html
+    restart: "no"
     depends_on:
       database:
         condition: service_healthy
-    environment:
-      WORDPRESS_DB_HOST: database:3306
-      WORDPRESS_DB_NAME: ${SHOPPING_DB_NAME}
-      WORDPRESS_DB_USER: ${SHOPPING_DB_USER}
-      WORDPRESS_DB_PASSWORD: ${SHOPPING_DB_PASSWORD}
-    volumes:
-      - shopping_wordpress:/var/www/html
-    networks:
-      - shopping_internal
-      - shopping_external
-
-  caddy:
-    image: caddy:2-alpine
-    container_name: shopping-caddy
-    restart: unless-stopped
-    depends_on:
       wordpress:
         condition: service_healthy
-    ports:
-      - "8081:80"
-      - "8443:443"
-      - "8443:443/udp"
+    environment:
+      HOME: "/tmp"
+      WORDPRESS_DB_HOST: "database:3306"
+      WORDPRESS_DB_NAME: "${SHOPPING_DB_NAME}"
+      WORDPRESS_DB_PASSWORD: "${SHOPPING_DB_PASSWORD}"
+      WORDPRESS_DB_USER: "${SHOPPING_DB_USER}"
+      SHOPPING_SITE_URL: "${SHOPPING_SITE_URL}"
+      SHOPPING_SITE_TITLE: "${SHOPPING_SITE_TITLE}"
+      SHOPPING_ADMIN_USER: "${SHOPPING_ADMIN_USER}"
+      SHOPPING_ADMIN_PASSWORD: "${SHOPPING_ADMIN_PASSWORD}"
+      SHOPPING_ADMIN_EMAIL: "${SHOPPING_ADMIN_EMAIL}"
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - shopping_caddy_data:/data
-      - shopping_caddy_config:/config
+      - shopping_wordpress:/var/www/html
+      - ./wordpress/plugins/ai-shopping-storefront:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
     networks:
       - shopping_external
-
+      - shopping_internal
 networks:
   shopping_internal:
     name: ai-shopping-internal
@@ -110,9 +105,3 @@ volumes:
 
   shopping_wordpress:
     name: ai-shopping-wordpress
-
-  shopping_caddy_data:
-    name: ai-shopping-caddy-data
-
-  shopping_caddy_config:
-    name: ai-shopping-caddy-config

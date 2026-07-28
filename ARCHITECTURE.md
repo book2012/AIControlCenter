@@ -702,3 +702,69 @@ Next architecture task: SPF-009 Validation and Schema Drift.
 - Release blockers at final audit: 0.
 - Architecture state: Foundation boundaries are frozen for production-readiness closure.
 - External commerce and CMS components remain replaceable behind adapters and APIs.
+
+<!-- BEGIN AICONTROLCENTER:SRI-03 -->
+## SRI-03 External Read Production Architecture
+
+AIControlCenter on the Mac mini M4 remains the single Control Plane.
+Ubuntu remains a stateless infrastructure worker and owns no Shopping business logic, application state, AI workload, or ingress policy.
+
+### Headless Shopping boundary
+
+- WordPress is the CMS.
+- WooCommerce is a replaceable Commerce Engine.
+- AIControlCenter owns policy, orchestration, normalization, validation, audit, authorization, workflow, and Shopping business logic.
+- External components integrate through adapters and JSON or REST contracts.
+
+### Caddy production ingress
+
+- Caddy runs on the Mac Control Plane.
+- WAN TCP 80 forwards to Mac TCP 58080.
+- WAN TCP 443 forwards to Mac TCP 58443.
+- Caddy owns transport ingress only and contains no Shopping business logic.
+
+### Production TLS identity
+
+`bokstory.iptime.org` is an operational DDNS locator only.
+It is not the production canonical TLS identity.
+
+Authoritative DNS evidence classified the hostname as `PARENT_CAA_PROHIBITS_PUBLIC_CA_ISSUANCE`.
+Production HTTPS therefore requires a platform-controlled DNS namespace.
+AAAA remains absent until IPv6 ingress is separately validated.
+
+### Evidence
+
+- SRI-03D3A3-D8 confirmed external LTE or 5G HTTP ingress and HTTP 200.
+- SRI-03D3A3-D9 discovered the inherited CAA restriction.
+- SRI-03D3A3-D10 confirmed the parent CAA restriction on authoritative ipTIME nameservers.
+<!-- END AICONTROLCENTER:SRI-03 -->
+
+<!-- SRI-06B-R1:ARCHITECTURE -->
+## SRI External READ and Observability Architecture
+
+### Ownership
+
+- core/cms owns generic CMS models, ports and WordPress normalization.
+- core/cms must not import core/shopping.
+- core/shopping owns commerce schema, snapshot and drift semantics.
+- core/monitoring owns generic operational observation orchestration.
+- ExternalReadObserver receives domain dependencies through injection and owns no network client.
+
+### Public edge
+
+- Host Caddy is the sole public edge.
+- /healthz is an explicit infrastructure health route.
+- Remaining application traffic falls back to WordPress at 127.0.0.1:58081.
+
+### Operational evidence
+
+- Stage order is Health, Schema, Snapshot and Drift.
+- Persisted JSON is authoritative and console summaries are human-only.
+- Generic observations use sanitized generic JSON snapshots.
+- Shopping snapshot normalization is reserved for Shopping domain snapshots.
+- Contract drift is a failure condition and business-data drift is observed separately.
+
+### Recovery
+
+Recovery requires immutable snapshot, scratch restore, structural validation, semantic validation, explicit authorization, production restore and production validation.
+<!-- END SRI-06B-R1 -->

@@ -751,3 +751,34 @@ Next task: SPF-009 Validation and Schema Drift.
 - Release blockers at final audit: 0.
 - Historical milestone: Shopping Platform Foundation reached 10/10 and passed its production-readiness gate.
 - SPF-010 completed without enabling vendor writes, Ubuntu application state, or Ubuntu business logic.
+
+<!-- SRI-06B-R1:PROJECT-HISTORY -->
+## Shopping External Read Integration
+
+SRI established the first production external READ plane for the AI Home Datacenter.
+
+### Milestones
+
+- SRI-01 and SRI-02 established inventory and GET-only policy.
+- SRI-03 opened the public edge and validated WooCommerce READ integration.
+- SRI-04 introduced core/cms and validated canonical WordPress reads.
+- SRI-05 introduced ExternalReadObserver and validated production operational evidence.
+- SRI-06 validated the repository and prepared the Codex handoff.
+
+### Closure evidence
+
+- SRI-03: 2197eac7020c7b6901e7a3454b83155c1ed2a0dd44ccd7297e8e6fc633a16f09
+- SRI-04: 9d12681647aa7f65bc9924dbd31d8c3be6b493dd6f7a742881592989520542d3
+- SRI-05: da98aad81e845357b4611b6ed694dde48cf0346ecd3191d534826019865ef797
+- SRI-06A: 27f94520d0b83c1af36a476ff3580a87cb5ec9307567e446b2bad5b5c9bd39fa
+
+### Final observed production state
+
+- Products: 0.
+- Orders: 0.
+- Published posts: 1.
+- Published pages: 5.
+- Credential permission: read.
+- Production business writes: 0.
+- Ubuntu business logic changes: 0.
+<!-- END SRI-06B-R1 -->
