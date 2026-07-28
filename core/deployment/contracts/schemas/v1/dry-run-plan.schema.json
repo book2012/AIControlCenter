@@ -1,0 +1,70 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:dry-run-plan",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "common.schema.json#/$defs/ReadOnlyHeader"
+    }
+  ],
+  "properties": {
+    "execution_enabled": {
+      "const": false
+    },
+    "package_digest": {
+      "$ref": "common.schema.json#/$defs/Digest"
+    },
+    "plan_digest": {
+      "$ref": "common.schema.json#/$defs/Digest"
+    },
+    "read_only": {
+      "const": true
+    },
+    "schema_version": {
+      "const": "dpl/v1"
+    },
+    "steps": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "component_id": {
+            "$ref": "common.schema.json#/$defs/Identifier"
+          },
+          "operation": {
+            "enum": [
+              "inspect",
+              "compare",
+              "validate",
+              "verify"
+            ]
+          },
+          "order": {
+            "minimum": 1,
+            "type": "integer"
+          },
+          "write": {
+            "const": false
+          }
+        },
+        "required": [
+          "order",
+          "operation",
+          "component_id",
+          "write"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema_version",
+    "read_only",
+    "execution_enabled",
+    "package_digest",
+    "plan_digest",
+    "steps"
+  ],
+  "title": "DeterministicDryRunPlan",
+  "type": "object"
+}

@@ -1,0 +1,61 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:readiness-report",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "common.schema.json#/$defs/ReadOnlyHeader"
+    }
+  ],
+  "properties": {
+    "checks": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "check_id": {
+            "$ref": "common.schema.json#/$defs/Identifier"
+          },
+          "message": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "ready",
+              "not-ready",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "check_id",
+          "status",
+          "message"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "package_digest": {
+      "$ref": "common.schema.json#/$defs/Digest"
+    },
+    "read_only": {
+      "const": true
+    },
+    "ready": {
+      "type": "boolean"
+    },
+    "schema_version": {
+      "const": "dpl/v1"
+    }
+  },
+  "required": [
+    "schema_version",
+    "read_only",
+    "package_digest",
+    "ready",
+    "checks"
+  ],
+  "title": "ReadinessReport",
+  "type": "object"
+}

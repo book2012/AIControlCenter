@@ -1,0 +1,9 @@
+{
+  "error": {
+    "code": "dpl.invalid",
+    "message": "The package is invalid.",
+    "path": "/package"
+  },
+  "read_only": true,
+  "schema_version": "dpl/v1"
+}

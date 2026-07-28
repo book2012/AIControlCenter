@@ -1,0 +1,138 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:deployment-package",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "common.schema.json#/$defs/ReadOnlyHeader"
+    }
+  ],
+  "properties": {
+    "artifact_digest": {
+      "$ref": "common.schema.json#/$defs/Digest"
+    },
+    "components": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "artifact_digest": {
+            "$ref": "common.schema.json#/$defs/Digest"
+          },
+          "artifact_path": {
+            "$ref": "common.schema.json#/$defs/PackagePath"
+          },
+          "component_id": {
+            "$ref": "common.schema.json#/$defs/Identifier"
+          },
+          "image_reference": {
+            "pattern": "^[^@\\s]+@sha256:[0-9a-f]{64}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "component_id",
+          "artifact_path",
+          "artifact_digest"
+        ],
+        "type": "object"
+      },
+      "minItems": 1,
+      "type": "array"
+    },
+    "created_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "package_id": {
+      "$ref": "common.schema.json#/$defs/Identifier"
+    },
+    "package_version": {
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "type": "string"
+    },
+    "policies": {
+      "additionalProperties": false,
+      "properties": {
+        "activation_allowed": {
+          "const": false
+        },
+        "direct_public_application_ports": {
+          "const": false
+        },
+        "production_writes_allowed": {
+          "const": false
+        },
+        "public_edge_owner": {
+          "const": "host-caddy"
+        }
+      },
+      "required": [
+        "activation_allowed",
+        "production_writes_allowed",
+        "direct_public_application_ports",
+        "public_edge_owner"
+      ],
+      "type": "object"
+    },
+    "public_edge": {
+      "additionalProperties": false,
+      "properties": {
+        "direct_application_ports": {
+          "const": false
+        },
+        "owner": {
+          "const": "host-caddy"
+        }
+      },
+      "required": [
+        "owner",
+        "direct_application_ports"
+      ],
+      "type": "object"
+    },
+    "read_only": {
+      "const": true
+    },
+    "schema_version": {
+      "const": "dpl/v1"
+    },
+    "source": {
+      "additionalProperties": false,
+      "properties": {
+        "branch": {
+          "minLength": 1,
+          "type": "string"
+        },
+        "git_commit": {
+          "$ref": "common.schema.json#/$defs/GitCommit"
+        },
+        "repository": {
+          "$ref": "common.schema.json#/$defs/Identifier"
+        }
+      },
+      "required": [
+        "repository",
+        "git_commit",
+        "branch"
+      ],
+      "type": "object"
+    },
+    "target": {
+      "$ref": "common.schema.json#/$defs/Target"
+    }
+  },
+  "required": [
+    "schema_version",
+    "package_id",
+    "package_version",
+    "created_at",
+    "source",
+    "target",
+    "read_only",
+    "public_edge",
+    "components",
+    "artifact_digest",
+    "policies"
+  ],
+  "title": "ImmutableDeploymentPackage",
+  "type": "object"
+}

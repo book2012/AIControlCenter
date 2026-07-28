@@ -1,0 +1,35 @@
+{
+  "artifact_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "components": [
+    {
+      "artifact_digest": "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "artifact_path": "artifacts/control-plane.json",
+      "component_id": "control-plane"
+    }
+  ],
+  "created_at": "2026-07-28T00:00:00Z",
+  "package_id": "dpl-02a",
+  "package_version": "1.0.0",
+  "policies": {
+    "activation_allowed": false,
+    "direct_public_application_ports": false,
+    "production_writes_allowed": false,
+    "public_edge_owner": "host-caddy"
+  },
+  "public_edge": {
+    "direct_application_ports": false,
+    "owner": "host-caddy"
+  },
+  "read_only": true,
+  "schema_version": "dpl/v1",
+  "source": {
+    "branch": "feature/deployment-package",
+    "git_commit": "6b4b0b4d7ee6051f9e3d3cc8fd97185ea9744511",
+    "repository": "AIControlCenter"
+  },
+  "target": {
+    "platform": "macos",
+    "profile": "mac-standalone-production",
+    "role": "control-plane"
+  }
+}

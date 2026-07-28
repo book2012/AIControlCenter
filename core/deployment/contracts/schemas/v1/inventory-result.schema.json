@@ -1,0 +1,60 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:inventory-result",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "common.schema.json#/$defs/ReadOnlyHeader"
+    }
+  ],
+  "properties": {
+    "captured_at": {
+      "$ref": "common.schema.json#/$defs/UtcDateTime"
+    },
+    "items": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "component_id": {
+            "$ref": "common.schema.json#/$defs/Identifier"
+          },
+          "observed": {
+            "type": "boolean"
+          },
+          "state": {
+            "enum": [
+              "present",
+              "absent",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "component_id",
+          "observed",
+          "state"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "read_only": {
+      "const": true
+    },
+    "schema_version": {
+      "const": "dpl/v1"
+    },
+    "target": {
+      "$ref": "common.schema.json#/$defs/Target"
+    }
+  },
+  "required": [
+    "schema_version",
+    "read_only",
+    "captured_at",
+    "target",
+    "items"
+  ],
+  "title": "InventoryResult",
+  "type": "object"
+}

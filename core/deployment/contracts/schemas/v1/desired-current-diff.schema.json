@@ -1,0 +1,68 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:desired-current-diff",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "$ref": "common.schema.json#/$defs/ReadOnlyHeader"
+    }
+  ],
+  "properties": {
+    "changes": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "component_id": {
+            "$ref": "common.schema.json#/$defs/Identifier"
+          },
+          "current_digest": {
+            "oneOf": [
+              {
+                "$ref": "common.schema.json#/$defs/Digest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "desired_digest": {
+            "$ref": "common.schema.json#/$defs/Digest"
+          },
+          "status": {
+            "enum": [
+              "unchanged",
+              "missing",
+              "different",
+              "unknown"
+            ]
+          }
+        },
+        "required": [
+          "component_id",
+          "status",
+          "desired_digest",
+          "current_digest"
+        ],
+        "type": "object"
+      },
+      "type": "array"
+    },
+    "package_digest": {
+      "$ref": "common.schema.json#/$defs/Digest"
+    },
+    "read_only": {
+      "const": true
+    },
+    "schema_version": {
+      "const": "dpl/v1"
+    }
+  },
+  "required": [
+    "schema_version",
+    "read_only",
+    "package_digest",
+    "changes"
+  ],
+  "title": "DesiredCurrentDiff",
+  "type": "object"
+}

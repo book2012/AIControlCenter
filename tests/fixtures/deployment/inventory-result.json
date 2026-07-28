@@ -1,0 +1,17 @@
+{
+  "captured_at": "2026-07-28T00:00:00Z",
+  "items": [
+    {
+      "component_id": "control-plane",
+      "observed": true,
+      "state": "present"
+    }
+  ],
+  "read_only": true,
+  "schema_version": "dpl/v1",
+  "target": {
+    "platform": "macos",
+    "profile": "mac-standalone-production",
+    "role": "control-plane"
+  }
+}

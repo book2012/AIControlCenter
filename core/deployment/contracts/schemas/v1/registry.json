@@ -1,0 +1,93 @@
+{
+  "contracts": {
+    "DesiredCurrentDiff": {
+      "path": "desired-current-diff.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:desired-current-diff",
+      "schema_version": "dpl/v1"
+    },
+    "DeterministicDryRunPlan": {
+      "path": "dry-run-plan.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dry-run-plan",
+      "schema_version": "dpl/v1"
+    },
+    "ErrorEnvelope": {
+      "path": "error-envelope.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:error-envelope",
+      "schema_version": "dpl/v1"
+    },
+    "ImmutableDeploymentPackage": {
+      "path": "deployment-package.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-package",
+      "schema_version": "dpl/v1"
+    },
+    "InventoryResult": {
+      "path": "inventory-result.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:inventory-result",
+      "schema_version": "dpl/v1"
+    },
+    "ReadinessReport": {
+      "path": "readiness-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:readiness-report",
+      "schema_version": "dpl/v1"
+    },
+    "ValidationReport": {
+      "path": "validation-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:validation-report",
+      "schema_version": "dpl/v1"
+    }
+  },
+  "draft": "https://json-schema.org/draft/2020-12/schema",
+  "manifest_version": 1,
+  "network_resolution": false,
+  "resources": [
+    {
+      "kind": "shared",
+      "name": "Common",
+      "path": "common.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:common"
+    },
+    {
+      "kind": "contract",
+      "name": "ImmutableDeploymentPackage",
+      "path": "deployment-package.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-package"
+    },
+    {
+      "kind": "contract",
+      "name": "InventoryResult",
+      "path": "inventory-result.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:inventory-result"
+    },
+    {
+      "kind": "contract",
+      "name": "ValidationReport",
+      "path": "validation-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:validation-report"
+    },
+    {
+      "kind": "contract",
+      "name": "DesiredCurrentDiff",
+      "path": "desired-current-diff.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:desired-current-diff"
+    },
+    {
+      "kind": "contract",
+      "name": "DeterministicDryRunPlan",
+      "path": "dry-run-plan.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dry-run-plan"
+    },
+    {
+      "kind": "contract",
+      "name": "ReadinessReport",
+      "path": "readiness-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:readiness-report"
+    },
+    {
+      "kind": "contract",
+      "name": "ErrorEnvelope",
+      "path": "error-envelope.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:error-envelope"
+    }
+  ],
+  "schema_version": "dpl/v1"
+}

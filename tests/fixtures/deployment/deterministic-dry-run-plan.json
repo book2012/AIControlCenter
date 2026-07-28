@@ -1,0 +1,15 @@
+{
+  "execution_enabled": false,
+  "package_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "plan_digest": "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "read_only": true,
+  "schema_version": "dpl/v1",
+  "steps": [
+    {
+      "component_id": "control-plane",
+      "operation": "inspect",
+      "order": 1,
+      "write": false
+    }
+  ]
+}

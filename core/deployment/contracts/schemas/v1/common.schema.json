@@ -1,0 +1,102 @@
+{
+  "$defs": {
+    "Digest": {
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "GitCommit": {
+      "pattern": "^[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "Identifier": {
+      "maxLength": 200,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._/-]*$",
+      "type": "string"
+    },
+    "PackagePath": {
+      "allOf": [
+        {
+          "not": {
+            "pattern": "(^/|(^|/)\\.\\.(/|$))"
+          }
+        },
+        {
+          "minLength": 1,
+          "type": "string"
+        }
+      ]
+    },
+    "ReadOnlyHeader": {
+      "properties": {
+        "read_only": {
+          "const": true
+        },
+        "schema_version": {
+          "const": "dpl/v1"
+        }
+      },
+      "required": [
+        "schema_version",
+        "read_only"
+      ],
+      "type": "object"
+    },
+    "Target": {
+      "oneOf": [
+        {
+          "additionalProperties": false,
+          "properties": {
+            "platform": {
+              "const": "macos"
+            },
+            "profile": {
+              "const": "mac-standalone-production"
+            },
+            "role": {
+              "const": "control-plane"
+            }
+          },
+          "required": [
+            "platform",
+            "role",
+            "profile"
+          ],
+          "type": "object"
+        },
+        {
+          "additionalProperties": false,
+          "properties": {
+            "optional": {
+              "const": true
+            },
+            "platform": {
+              "const": "ubuntu"
+            },
+            "profile": {
+              "const": "observation-only"
+            },
+            "role": {
+              "const": "observation-target"
+            }
+          },
+          "required": [
+            "platform",
+            "role",
+            "profile",
+            "optional"
+          ],
+          "type": "object"
+        }
+      ]
+    },
+    "UtcDateTime": {
+      "format": "date-time",
+      "pattern": "Z$",
+      "type": "string"
+    }
+  },
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:common",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "DPL v1 Common Definitions"
+}

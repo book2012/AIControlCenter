@@ -1,0 +1,13 @@
+{
+  "checks": [
+    {
+      "check_id": "contract-valid",
+      "message": "Contract validation passed.",
+      "status": "ready"
+    }
+  ],
+  "package_digest": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "read_only": true,
+  "ready": true,
+  "schema_version": "dpl/v1"
+}
