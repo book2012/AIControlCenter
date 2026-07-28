@@ -782,3 +782,32 @@ SRI established the first production external READ plane for the AI Home Datacen
 - Production business writes: 0.
 - Ubuntu business logic changes: 0.
 <!-- END SRI-06B-R1 -->
+
+<!-- AICONTROLCENTER:DPL-01:START -->
+## 2026-07-28 — DPL-01 Deployment Package Decisions
+
+DPL began after SRI established the production external READ baseline. The
+program was deliberately constrained to immutable desired-state and observation
+contracts because deployment intent must be reviewable without becoming
+execution authority.
+
+The Mac mini M4 remains the always-on Brain and single Control Plane so
+governance, authorization, approval, audit and orchestration have one owner.
+Ubuntu remains optional and stateless because moving business logic,
+application state or generic execution there would split authority and weaken
+auditability.
+
+Read, plan and apply were separated because existing deployment and remote
+worker code exposes mutation surfaces near inspection and planning. DPL-02
+therefore contains no apply path and activates no Ubuntu adapter.
+`UbuntuWorkerClient.execute` is excluded; any later SSH use must sit behind
+fixed typed read-only actions.
+
+Host Caddy remains the sole public edge to avoid competing ingress ownership.
+The Caddy, Colima, Compose and Commerce host-port path will receive one
+canonical end-to-end validation contract. Mac production supervision is
+launchd; inherited Linux systemd Control Plane artifacts are retained for
+history but classified `LEGACY_UNSUPPORTED` and production-prohibited.
+
+Production activation and production writes were not authorized.
+<!-- AICONTROLCENTER:DPL-01:END -->

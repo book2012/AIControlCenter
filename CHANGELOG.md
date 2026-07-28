@@ -1080,3 +1080,24 @@ Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
 - F32 CLOSED: credential prefix substrings are not treated as complete credential values.
 - F33 CLOSED: staged diff hygiene is authoritative because unstaged diff checks do not include untracked file content.
 <!-- END SRI-06B-R1 -->
+
+<!-- AICONTROLCENTER:DPL-01:START -->
+## 2026-07-28 — DPL-01 Architecture and Documentation
+
+### Added
+
+- Canonical DPL-01 inventory, assessment, blockers and sprint plan.
+- DPL architecture decision covering ownership, immutable contracts,
+  read/plan/apply separation, platform boundaries and legacy Linux policy.
+- Repository agent instructions preserving the approved architecture and
+  production-write prohibition.
+
+### Documented
+
+- DPL bounded context and lifecycle.
+- SRI closure baseline and current DPL program state.
+- DPL-01 through DPL-08 roadmap and production authorization milestones.
+
+No code, configuration, Compose, schema, test, runtime or production change was
+performed.
+<!-- AICONTROLCENTER:DPL-01:END -->

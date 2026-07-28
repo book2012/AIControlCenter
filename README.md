@@ -692,3 +692,21 @@ AI Home Datacenter Architect retains architecture and production authority.
 Codex acts as implementation executor for approved repository tasks.
 Architecture changes, production writes and scope expansion require explicit Architect review.
 <!-- END SRI-06B-R1 -->
+
+<!-- AICONTROLCENTER:DPL-01:START -->
+## Deployment Package Lifecycle
+
+DPL is the current program after SRI closure.
+
+`inventory → validate → diff → dry-run plan → readiness → audit`
+
+DPL v1 uses immutable, versioned JSON desired-state packages and observation
+reports. DPL-02 is read-only and does not apply, install, restart, bootstrap,
+execute rollback, write to production or run generic Ubuntu commands.
+
+The Mac mini M4 remains the single Control Plane, Host Caddy remains the only
+public edge, and Ubuntu remains an optional stateless worker. Production
+activation is not authorized.
+
+See `docs/deployment/DPL-01-INVENTORY-ASSESSMENT.md`.
+<!-- AICONTROLCENTER:DPL-01:END -->

@@ -552,3 +552,32 @@ SPF-004 closure validation:
 - No AI workload or application business logic on Ubuntu.
 - No architecture change through Codex without Architect approval.
 <!-- END SRI-06B-R1 -->
+
+<!-- AICONTROLCENTER:DPL-01:START -->
+## Active — DPL Deployment Package
+
+The earlier `Active — SRI-03 External Read Integration` section is historical
+and superseded. SRI is COMPLETE at
+`ba6fdb6a69ee9398b44fdd0810102b078c38c7f8`; its final recorded regression
+baseline is `984 passed, 5 deselected`.
+
+### DPL-01
+
+- [x] Inventory deployment and platform artifacts.
+- [x] Record ownership and architecture decisions.
+- [x] Register DPL-B01 through DPL-B06.
+- [x] Define DPL-01 through DPL-08.
+- [x] Preserve production-write and activation prohibition.
+
+### Next — DPL-02
+
+- [ ] Define canonical versioned DPL package/report JSON Schemas and registry.
+- [ ] Implement read-only inventory, manifest validation and policy validation.
+- [ ] Implement diff, dry-run plan, readiness reporting and audit.
+- [ ] Exclude `UbuntuWorkerClient.execute`.
+- [ ] Activate no Ubuntu adapter.
+- [ ] Establish strict read/plan versus apply dependency boundaries.
+- [ ] Define one canonical Host Caddy to Commerce ingress contract.
+
+Production activation remains NOT AUTHORIZED.
+<!-- AICONTROLCENTER:DPL-01:END -->

@@ -768,3 +768,42 @@ AAAA remains absent until IPv6 ingress is separately validated.
 
 Recovery requires immutable snapshot, scratch restore, structural validation, semantic validation, explicit authorization, production restore and production validation.
 <!-- END SRI-06B-R1 -->
+
+<!-- AICONTROLCENTER:DPL-01:START -->
+## DPL Deployment Package Bounded Context
+
+DPL is an AIControlCenter-owned bounded context for immutable desired-state
+packages and observed-state reports. It preserves the Mac mini M4 as the
+always-on Brain and single Control Plane.
+
+### Ownership and dependencies
+
+- AIControlCenter owns DPL governance, policy, orchestration, approval,
+  authorization, audit and deployment control.
+- DPL read observes inventory and state.
+- DPL plan validates policy, computes diff and emits a dry-run plan.
+- Apply is a separate future boundary; read and plan must not import or invoke
+  mutating executors.
+- DPL v1 uses versioned JSON Schemas and a registry.
+- A DPL package is immutable and Git-identifiable; it never grants activation
+  authority.
+
+### Platform boundary
+
+- Mac production services use launchd.
+- Host Caddy is the only public edge.
+- WordPress is the CMS Engine and WooCommerce is the Commerce Engine.
+- AIControlCenter owns all business logic.
+- Ubuntu remains optional, stateless and on demand.
+- DPL-02 activates no Ubuntu adapter and excludes
+  `UbuntuWorkerClient.execute`.
+- Linux systemd Control Plane artifacts are `LEGACY_UNSUPPORTED`,
+  production-prohibited and excluded from DPL.
+
+DPL-02 is limited to inventory, manifest and policy validation, diff, dry-run
+planning, readiness reporting and audit. Apply, install, restart, bootstrap,
+rollback execution, production writes and generic Ubuntu command execution are
+prohibited. Production activation is not authorized.
+
+Canonical details: `docs/architecture/dpl-deployment-package.md`.
+<!-- AICONTROLCENTER:DPL-01:END -->

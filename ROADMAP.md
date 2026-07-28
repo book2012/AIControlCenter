@@ -827,3 +827,34 @@ DPL, Deployment Package, is the next production program.
 DPL consumes the SRI architecture without moving business logic or application state to Ubuntu.
 Codex performs implementation under Architect-owned specifications and acceptance gates.
 <!-- END SRI-06B-R1 -->
+
+<!-- AICONTROLCENTER:DPL-01:START -->
+## DPL — Deployment Package Program
+
+- [x] DPL-01 — Inventory, ownership, architecture decisions, blockers and
+  sprint plan.
+- [ ] DPL-02 — Versioned package/report JSON Schemas and registry; read-only
+  inventory, validation, diff, dry-run, readiness and audit.
+- [ ] DPL-03 — Enforced read/plan/apply package and dependency separation.
+- [ ] DPL-04 — Launchd-native Mac inventory and health inspection.
+- [ ] DPL-05 — Canonical Host Caddy, Colima, Compose and Commerce ingress
+  validation.
+- [ ] DPL-06 — Typed Ubuntu read-only action contract and deny-by-default
+  policy; activation separately gated.
+- [ ] DPL-07 — Immutable evidence, compatibility and release-candidate
+  validation.
+- [ ] DPL-08 — Regression, operational documentation and production
+  authorization review.
+
+### Production milestones
+
+1. Read-only contract milestone: DPL-02 schemas and reports accepted.
+2. Architecture boundary milestone: DPL-03 dependency rules enforced.
+3. Mac readiness milestone: DPL-04 and DPL-05 pass without mutation.
+4. Optional worker contract milestone: DPL-06 typed allowlist accepted.
+5. Release candidate milestone: DPL-07 evidence and compatibility pass.
+6. Authorization milestone: DPL-08 review completes.
+
+No milestone itself authorizes production activation. Apply and production
+writes require a separate explicit authorization.
+<!-- AICONTROLCENTER:DPL-01:END -->

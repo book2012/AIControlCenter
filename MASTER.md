@@ -756,3 +756,26 @@ Future writes require explicit architecture review, authorization, audit evidenc
 - Codex must preserve approved scope, run tests and update documentation.
 - Codex must not change architecture or infrastructure ownership implicitly.
 <!-- END SRI-06B-R1 -->
+
+<!-- AICONTROLCENTER:DPL-01:START -->
+## Current Program — DPL Deployment Package
+
+### SRI baseline
+
+- Status: COMPLETE
+- Final SRI commit:
+  `ba6fdb6a69ee9398b44fdd0810102b078c38c7f8`
+- Final regression baseline: `984 passed, 5 deselected`
+- Production business writes: `0`
+
+### DPL status
+
+- DPL-01 Inventory and Architecture Assessment: COMPLETE
+- DPL-02 Read-only Package Contract and Validation: NEXT
+- Production activation: NOT AUTHORIZED
+
+DPL preserves AIControlCenter ownership, the Mac mini M4 single Control Plane,
+Host Caddy as the sole public edge, and Ubuntu as an optional stateless worker.
+DPL-02 is restricted to inventory, validation, diff, dry-run planning,
+readiness and audit.
+<!-- AICONTROLCENTER:DPL-01:END -->
