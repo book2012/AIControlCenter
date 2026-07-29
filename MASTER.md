@@ -1,5 +1,13 @@
 # MASTER
 
+## M3-A1A Closure
+
+M3-A1A is CLOSED after validation. SQLite read-only integrity inspection and
+the future Mac application-state path policy are AVAILABLE. The operational
+database was NOT CREATED; persistent writes are NOT ENABLED; migrations were
+NOT EXECUTED; Production activation is `NOT_AUTHORIZED`. M2 controlled pilot
+validation remains CLOSED. Next: M3-A1B Append-Only SQLite Audit Writer.
+
 ## M2-P3 Closure
 
 M2 controlled pilot validation is CLOSED. DPL-04 is CLOSED, readiness is

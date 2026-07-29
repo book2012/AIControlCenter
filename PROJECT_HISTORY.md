@@ -1,5 +1,14 @@
 # Project History
 
+## 2026-07-29 — M3-A1A SQLite Read-Only Integrity
+
+AIControlCenter closed M3-A1A after adding a Mac-owned read-only SQLite
+inspection boundary with deterministic integrity, chain and privacy reports.
+The future application-state location is policy only: no operational database
+was created, persistent audit writes remain disabled, migrations were not
+executed and Production activation remains `NOT_AUTHORIZED`. M2 controlled
+pilot validation is closed. M3-A1B Append-Only SQLite Audit Writer is next.
+
 ## 2026-07-29 — M2-P3 Pilot Evidence and Rollback Validation
 
 M2-P3 closed with canonical tamper detection, fixed evidence-derived rollback

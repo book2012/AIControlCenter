@@ -8,12 +8,13 @@
 - [x] M2-P1 controlled non-production sandbox pilot authorization
 - [x] M2-P2 controlled sandbox pilot activation and evidence
 - [x] M2-P3 pilot evidence and rollback validation
-- [ ] M3-A1 Durable SQLite Audit Adapter
+- [x] M3-A1A SQLite read-only integrity foundation
+- [ ] M3-A1B Append-Only SQLite Audit Writer
 
-M2 readiness is accepted, M2-P1 and M2-P2 are closed, and exactly one
-test-owned controlled pilot completed under a pytest temporary root. Persistent
-host sandbox activation has not started. The persistent SQLite audit adapter is
-not implemented and production activation is `NOT_AUTHORIZED`.
+M2 controlled pilot validation and M3-A1A are closed. The read-only integrity
+foundation is available, but the operational audit database was not created,
+persistent writes are disabled, migrations were not executed and Production
+activation is `NOT_AUTHORIZED`.
 
 Sprint 16
 

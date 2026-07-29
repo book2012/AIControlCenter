@@ -21,6 +21,11 @@
       "selectors": [{"module_prefix": "core.deployment.audit_contracts"}]
     },
     {
+      "id": "audit_sqlite_read_only",
+      "responsibility": "Mac-only SQLite URI read-only audit integrity inspection; no append, creation, migration or repair.",
+      "selectors": [{"module_prefix": "core.deployment.audit_sqlite"}]
+    },
+    {
       "id": "m2_readiness",
       "responsibility": "Pure immutable evidence-driven M2 readiness contracts and deterministic gate; no runtime probing or activation.",
       "selectors": [{"module_prefix": "core.deployment.m2_readiness"}]
@@ -121,6 +126,7 @@
   "allowed_dependency_directions": [
     {"from_zone": "contracts", "to_zones": ["contracts"]},
     {"from_zone": "audit_contracts", "to_zones": ["contracts", "audit_contracts"]},
+    {"from_zone": "audit_sqlite_read_only", "to_zones": ["contracts", "audit_contracts", "audit_sqlite_read_only"]},
     {"from_zone": "m2_readiness", "to_zones": ["contracts", "plan_services", "authorization", "simulation", "executor_contracts", "executor_ports", "audit_contracts", "m2_readiness"]},
     {"from_zone": "pilot_authorization", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "audit_contracts", "pilot_authorization"]},
     {"from_zone": "pilot_activation", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "executor_ports", "audit_contracts", "pilot_authorization", "pilot_activation"]},
@@ -210,7 +216,7 @@
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "audit_sqlite_read_only", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

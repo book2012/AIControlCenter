@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-07-29 — M3-A1A SQLite Read-Only Integrity Foundation
+
+- Added explicit Mac application-state path policy and deterministic,
+  canonical, read-only SQLite integrity reports.
+- Added schema, metadata, integrity, sequence, hash-chain, privacy and
+  Production-authorization inspection without append behavior.
+- Closed M3-A1A with zero operational databases, writes, migrations, repairs,
+  commands, network access, Ubuntu changes or Production activations.
+- Next: M3-A1B Append-Only SQLite Audit Writer.
+
 ## 2026-07-29 — M2-P3 Pilot Evidence and Rollback Validation
 
 - Added immutable deterministic evidence and rollback contracts.
