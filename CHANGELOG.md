@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A3A Read-Only Operational Monitoring
+
+- Added immutable explicit-threshold monitoring config, evidence, dimension,
+  finding, decision, snapshot and alert-candidate contracts.
+- Added deterministic PRE_ACTIVATION monitoring and candidate evaluation with
+  stable canonical JSON, IDs, digests and deduplication keys.
+- Added complete freshness, integrity, recovery, concurrency, readiness,
+  regression, Git, safety and production-contradiction validation.
+- Closed M3-A3A with no persistence, database, external alert dispatch,
+  notification, operational writer or Production activation.
+- Next: M3-A3B Alert Routing and Deduplication.
+
 ## 2026-07-30 — M3-A2C Replay-State Backup and Recovery
 
 - Added immutable recovery contracts, replaceable ports, explicit-path online

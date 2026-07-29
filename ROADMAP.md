@@ -946,4 +946,12 @@ Production activation remains `NOT_AUTHORIZED`.
 M3-A2C validation used pytest temporary databases only and proved
 post-recovery concurrency. Operational replay DB, backup schedule, restore and
 writer activation remain absent; raw nonce writes remain zero. Production
-activation is `NOT_AUTHORIZED`. Next: M3-A3 Operational Monitoring and Alerts.
+activation is `NOT_AUTHORIZED`.
+
+- [x] M3-A3A — Read-only operational monitoring foundation.
+- [ ] M3-A3B — Alert routing and deduplication.
+
+M3-A3A provides deterministic PRE_ACTIVATION monitoring snapshots and immutable
+alert candidates. External dispatch and monitoring persistence are not
+implemented; operational databases and writers remain inactive. Production
+activation is `NOT_AUTHORIZED`. Next: M3-A3B Alert Routing and Deduplication.

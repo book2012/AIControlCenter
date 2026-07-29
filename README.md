@@ -33,6 +33,15 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### M3-A3A
+
+M3-A1 and M3-A2 are closed. M3-A3A deterministic read-only PRE_ACTIVATION
+monitoring snapshots and immutable alert-candidate evaluation are available.
+External alert dispatch and monitoring persistence are not implemented.
+Operational databases were not created, operational writers were not
+activated, and Production activation is `NOT_AUTHORIZED`. Next: M3-A3B Alert
+Routing and Deduplication.
+
 ### M3-A2A
 
 M2 controlled pilot validation, M3-A1 and M3-A2A are closed. Deterministic

@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-30 — M3-A3A Closed
+
+AIControlCenter closed M3-A3A with a pure deterministic PRE_ACTIVATION
+monitoring boundary and immutable alert candidates. M3-A1 and M3-A2 remain
+closed. Read-only monitoring snapshots and candidate evaluation are available;
+external dispatch and monitoring persistence are not implemented. Operational
+databases were not created, operational writers were not activated, and
+Production activation remains `NOT_AUTHORIZED`. M3-A3B Alert Routing and
+Deduplication is next.
+
 ## 2026-07-30 — M3-A2C Closed
 
 M3-A2C added explicit-path online replay-state backup, canonical manifests,

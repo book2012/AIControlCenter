@@ -71,6 +71,11 @@
       "selectors": [{"module_prefix": "core.deployment.pilot_evidence"}]
     },
     {
+      "id": "operational_monitoring",
+      "responsibility": "Pure immutable M3-A3A read-only operational monitoring and alert-candidate evaluation; no persistence, dispatch, commands, adapters or production activation.",
+      "selectors": [{"module_prefix": "core.deployment.operational_monitoring"}]
+    },
+    {
       "id": "executor_ports",
       "responsibility": "Typed non-production executor ports and deny-only default composition.",
       "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
@@ -161,6 +166,7 @@
     {"from_zone": "pilot_authorization", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "audit_contracts", "pilot_authorization"]},
     {"from_zone": "pilot_activation", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "executor_ports", "audit_contracts", "pilot_authorization", "pilot_activation"]},
     {"from_zone": "pilot_evidence", "to_zones": ["contracts", "executor_contracts", "audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence"]},
+    {"from_zone": "operational_monitoring", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "m2_readiness", "pilot_evidence", "operational_monitoring"]},
     {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
     {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},
@@ -238,7 +244,7 @@
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "modules": ["sqlite3", "subprocess", "socket", "requests", "paramiko", "fabric"],
       "severity": "ERROR"
     }
@@ -246,7 +252,7 @@
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

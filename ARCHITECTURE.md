@@ -1,5 +1,17 @@
 # AI Home Datacenter Architecture
 
+## M3-A3A Operational Monitoring Boundary
+
+`core.deployment.operational_monitoring` is the pure, read-only monitoring
+authority owned by AIControlCenter on the Mac Control Plane. It consumes
+immutable public evidence, explicit timestamps and explicit thresholds and
+returns deterministic PRE_ACTIVATION snapshots plus alert candidates. It has
+no clock, persistence, database, adapter, command, network, notification,
+API-worker or Ubuntu dependency. Alert dispatch and monitoring persistence are
+not implemented. M3-A1, M3-A2 and M3-A3A are closed; operational databases and
+writers remain inactive and Production activation is `NOT_AUTHORIZED`. M3-A3B
+Alert Routing and Deduplication is next.
+
 ## M3-A2C Permit and Replay Recovery Boundary
 
 The Mac Control Plane owns authoritative replay state. M3-A2A read-only
