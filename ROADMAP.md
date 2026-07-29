@@ -936,3 +936,13 @@ M2-P1 is CLOSED and pilot authorization policy is AVAILABLE. The next milestone
 is M2-P2 Controlled Sandbox Pilot Activation and Evidence. Persistent SQLite
 audit implementation is required before any broader mutable deployment.
 Production activation remains `NOT_AUTHORIZED`.
+
+## M3 Permit Replay
+
+- [x] M3-A2A — Read-only permit/replay foundation.
+- [x] M3-A2B — Durable reservation, consumption and failed-closed writer.
+- [ ] M3-A2C — Replay-state backup, recovery and concurrency validation.
+
+M3-A2B validation used pytest temporary databases only. Operational replay
+state and writer activation remain absent. Production activation is
+`NOT_AUTHORIZED`.

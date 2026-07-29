@@ -892,3 +892,12 @@ owns no governance or audit. DPL-04 is CLOSED with
 `M2 READINESS_ACCEPTED`, `M2 ACTIVATION_NOT_STARTED`, and Production activation
 `NOT_AUTHORIZED`. M2-P1 policy is available but grants no execution or
 activation; M2-P2 remains the next separately controlled boundary.
+
+## M3 Permit Replay Write Boundary
+
+M3-A2A remains the read-only inspector. M3-A2B adds a separate Mac Control
+Plane-owned existing-file SQLite writer using explicit configuration,
+`mode=rw`, preconfigured WAL and serialized append-only transactions. It owns
+permit reservation, terminal disposition and replay integrity; Ubuntu owns
+none of this state. No operational database, migration, repair, audit write or
+Production activation is composed.

@@ -904,3 +904,12 @@ DPL-04D closed DPL-04 with a pure evidence-driven gate. The canonical fixture
 accepted M2 readiness for a separately authorized Mac-only non-production
 sandbox. No pilot or production activation occurred. Persistent SQLite
 deployment audit remains required before broader mutable deployment.
+
+## 2026-07-29 — M3-A2B Closed
+
+M3-A2B added the Mac Control Plane-owned durable permit reservation and
+terminal-state writer without modifying the M3-A2A read-only foundation.
+Temporary pytest databases validated atomicity, hash chains, idempotency and
+concurrency. The operational replay database was not created, the writer was
+not activated, raw nonce writes remained disabled and Production activation
+remained `NOT_AUTHORIZED`. M3-A2C is next.

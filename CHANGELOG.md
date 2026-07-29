@@ -1238,3 +1238,18 @@ DPL-04A through DPL-04D and DPL-04 are CLOSED. The canonical passing fixture
 records `M2 READINESS_ACCEPTED`; `M2 ACTIVATION_NOT_STARTED`. No executor,
 Ubuntu, runtime, API, persistent audit, production write or activation was
 performed. Production activation remains `NOT_AUTHORIZED`.
+
+## 2026-07-29 — M3-A2B Durable Permit Reservation and Consumption
+
+### Added
+
+- Separate existing-file SQLite permit replay writer and immutable contracts.
+- Atomic reservation, consumed and failed-closed transitions.
+- Full-chain validation, deterministic receipts, idempotency and concurrency tests.
+- M3-A2B operations, state-machine and closure documentation.
+
+### Safety
+
+All writable validation used pytest temporary databases. No operational replay
+database, migration, repair, audit write, raw nonce write, Ubuntu change or
+Production activation occurred.

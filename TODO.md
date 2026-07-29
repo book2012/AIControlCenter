@@ -616,3 +616,13 @@ Production activation remains NOT AUTHORIZED.
       deployment.
 
 M2 activation has not started. Production activation is not authorized.
+
+## M3 Permit Replay Queue
+
+- [x] Close M3-A2A read-only permit/replay foundation.
+- [x] Close M3-A2B durable reservation, consumption and failed-closed writer.
+- [ ] Start M3-A2C replay-state backup, recovery and concurrency validation
+      only after M3-A2B validation and Git closure.
+
+Operational replay database creation and writer activation remain prohibited.
+Production activation remains `NOT_AUTHORIZED`.

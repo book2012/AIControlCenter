@@ -875,3 +875,13 @@ readiness and audit.
 - Production activation: NOT_AUTHORIZED
 - Next: M2-P2 Controlled Sandbox Pilot Activation and Evidence
 - Broader mutable deployment prerequisite: persistent SQLite audit adapter
+
+## M3-A2B Status
+
+- M3-A2A: CLOSED
+- M3-A2B: CLOSED
+- Durable permit writer: IMPLEMENTED, NOT OPERATIONALLY ACTIVATED
+- Operational replay database: NOT CREATED
+- Raw nonce persistence: NOT ENABLED
+- Production activation: NOT_AUTHORIZED
+- Next: M3-A2C
