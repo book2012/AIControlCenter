@@ -36,6 +36,11 @@
       "selectors": [{"module_prefix": "core.deployment.audit_sqlite_recovery"}]
     },
     {
+      "id": "permit_replay_sqlite_read_only",
+      "responsibility": "Mac-owned SQLite URI read-only permit/replay integrity inspection; no reservation, consumption, creation, migration or repair.",
+      "selectors": [{"module_prefix": "core.deployment.permit_replay_sqlite"}]
+    },
+    {
       "id": "m2_readiness",
       "responsibility": "Pure immutable evidence-driven M2 readiness contracts and deterministic gate; no runtime probing or activation.",
       "selectors": [{"module_prefix": "core.deployment.m2_readiness"}]
@@ -139,6 +144,7 @@
     {"from_zone": "audit_sqlite_read_only", "to_zones": ["contracts", "audit_contracts", "audit_sqlite_read_only"]},
     {"from_zone": "audit_sqlite_writer", "to_zones": ["contracts", "audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer"]},
     {"from_zone": "audit_sqlite_recovery", "to_zones": ["contracts", "audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery"]},
+    {"from_zone": "permit_replay_sqlite_read_only", "to_zones": ["contracts", "pilot_authorization", "pilot_activation", "authorization", "permit_replay_sqlite_read_only"]},
     {"from_zone": "m2_readiness", "to_zones": ["contracts", "plan_services", "authorization", "simulation", "executor_contracts", "executor_ports", "audit_contracts", "m2_readiness"]},
     {"from_zone": "pilot_authorization", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "audit_contracts", "pilot_authorization"]},
     {"from_zone": "pilot_activation", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "executor_ports", "audit_contracts", "pilot_authorization", "pilot_activation"]},
@@ -228,7 +234,7 @@
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

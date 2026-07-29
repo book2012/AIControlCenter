@@ -33,6 +33,15 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### M3-A2A
+
+M2 controlled pilot validation, M3-A1 and M3-A2A are closed. Deterministic
+read-only permit/replay SQLite inspection is available for an explicitly
+injected Mac application-state path. The operational permit/replay database
+was not created; durable reservation, consumption and persistent nonce writes
+are not enabled; Production activation is `NOT_AUTHORIZED`. Next: M3-A2B
+Durable Permit Reservation and Consumption.
+
 ### M3-A1C
 
 M2 controlled pilot validation and M3-A1A through M3-A1C are closed. SQLite

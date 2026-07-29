@@ -1,5 +1,13 @@
 # Roadmap
 
+## M3-A2A Closure and M3-A2B
+
+M2 controlled pilot validation, M3-A1 and M3-A2A are closed. Read-only
+permit/replay integrity inspection is available, while the operational
+database, durable reservation, consumption and persistent nonce writes remain
+absent. Production activation is `NOT_AUTHORIZED`. Next: M3-A2B Durable Permit
+Reservation and Consumption.
+
 ## M3-A1C Closure and M3-A2
 
 M2 controlled pilot validation and M3-A1A through M3-A1C are closed after

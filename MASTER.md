@@ -1,5 +1,14 @@
 # MASTER
 
+## M3-A2A Closure
+
+M2 controlled pilot validation, M3-A1 and M3-A2A are CLOSED. Permit/replay
+read-only inspection is AVAILABLE. The future Mac application-state path and
+event-based schema are defined, but the operational permit/replay database was
+NOT CREATED. Durable reservation and consumption and persistent nonce writes
+are NOT ENABLED. Production activation is `NOT_AUTHORIZED`. Next: M3-A2B
+Durable Permit Reservation and Consumption.
+
 ## M3-A1C Closure
 
 M2 controlled pilot validation and M3-A1A through M3-A1C are CLOSED. SQLite

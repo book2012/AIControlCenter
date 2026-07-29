@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-07-29 — M3-A2A Permit and Replay Read-Only Foundation
+
+- Added immutable permit/replay configuration, path, schema, finding, report,
+  event-type and derived-state contracts.
+- Added deterministic URI `mode=ro` inspection for replay lifecycles,
+  hash-chain integrity, privacy, Production denial and Ubuntu ownership denial.
+- Defined but did not create the future Mac application-state database path.
+- Closed M3-A2A with no operational database, reservations, consumptions,
+  persistent nonce writes, migrations, repairs or Production activation.
+- Next: M3-A2B Durable Permit Reservation and Consumption.
+
 ## 2026-07-29 — M3-A1C SQLite Backup, Restore and Recovery
 
 - Added immutable backup, restore, manifest, receipt, finding and recovery

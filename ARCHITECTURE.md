@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## M3-A2A Permit and Replay State Boundary
+
+`core.deployment.permit_replay_sqlite` is an AIControlCenter-owned Mac Control
+Plane read-only boundary. It defines the future explicit application-state
+path and durable event schema without creating or mutating a database.
+Deterministic inspection validates replay lifecycles, hash-chain integrity,
+privacy and Production denial and derives permit states. Ubuntu owns no
+authoritative permit, nonce or replay state. M2, M3-A1 and M3-A2A are closed;
+durable reservation, consumption and nonce writes remain disabled, and
+Production activation is `NOT_AUTHORIZED`. M3-A2B is next.
+
 ## M3-A1C SQLite Audit Recovery Boundary
 
 `core.deployment.audit_sqlite_recovery` is a separate Mac Control Plane

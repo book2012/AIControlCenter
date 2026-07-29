@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-29 — M3-A2A Permit and Replay Read-Only Foundation
+
+AIControlCenter closed M3-A2A with a separate Mac-owned, explicit-path,
+read-only SQLite integrity boundary for future durable permit and replay state.
+It deterministically validates event lifecycles, binding, hash-chain, privacy
+and Production restrictions and derives redacted permit states. Validation
+used only pytest temporary databases. The operational permit/replay database
+was not created; durable reservation, consumption and persistent nonce writes
+remain disabled; Production activation is `NOT_AUTHORIZED`. M3-A2B is next.
+
 ## 2026-07-29 — M3-A1C SQLite Backup, Restore and Recovery
 
 AIControlCenter closed M3-A1C with explicit-path SQLite online backup,

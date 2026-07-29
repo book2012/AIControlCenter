@@ -11,14 +11,14 @@
 - [x] M3-A1A SQLite read-only integrity foundation
 - [x] M3-A1B Append-Only SQLite Audit Writer
 - [x] M3-A1C Backup, Restore and Recovery Validation
-- [ ] M3-A2 Durable Permit and Replay State
+- [x] M3-A2A Durable Permit and Replay State Read-Only Foundation
+- [ ] M3-A2B Durable Permit Reservation and Consumption
 
-M2 controlled pilot validation and M3-A1A through M3-A1C are closed.
-Validation used only pytest temporary databases. The operational audit
-database was not created, the operational backup schedule was not activated,
-an operational restore was not performed, operational writer activation is
-not started, persistent Production writes are disabled and Production
-activation is `NOT_AUTHORIZED`.
+M2 controlled pilot validation, M3-A1 and M3-A2A are closed. Validation used
+only pytest temporary databases. The operational audit and permit/replay
+databases were not created. Durable permit reservation, consumption and
+persistent nonce writes are not enabled. Production activation is
+`NOT_AUTHORIZED`.
 
 Sprint 16
 
