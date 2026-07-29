@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## M3-A3C Monitoring and Alert Drill Boundary
+
+`core.deployment.monitoring_alert_drill` consumes only public M3-A3A and M3-A3B
+contracts. It deterministically validates the complete monitoring-to-routing
+flow and simulates logical receipts in an injected object-scoped sink. It has
+no filesystem, database, network, subprocess, API, worker, Ubuntu, external
+adapter, or production composition dependency. M3-A3C and the M3-A3 track are
+closed. External dispatch and persistence remain unimplemented; operational
+monitoring remains inactive and Production activation is `NOT_AUTHORIZED`.
+Next: M3-A4 Controlled Operational Activation Gate.
+
 ## M3-A3B Alert Routing Boundary
 
 `core.deployment.alert_routing` is a collision-free pure policy package owned

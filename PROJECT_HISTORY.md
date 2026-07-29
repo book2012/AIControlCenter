@@ -1,5 +1,14 @@
 # Project History
 
+## 2026-07-30 — M3-A3C and M3-A3 Track Closed
+
+AIControlCenter validated the deterministic monitoring-to-logical-routing drill
+using only immutable evidence and an object-scoped in-memory simulator. All
+M3-A3 stages and the Monitoring and Alert Track are closed. External dispatch
+and persistence remain unimplemented; operational monitoring and databases
+remain inactive; Production activation remains `NOT_AUTHORIZED`. M3-A4
+Controlled Operational Activation Gate is next.
+
 ## 2026-07-30 — M3-A3B Closed
 
 AIControlCenter closed M3-A3B with pure deterministic logical routing,

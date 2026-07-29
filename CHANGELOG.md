@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A3C Monitoring and Alert Operational Drill
+
+- Added immutable drill, envelope, receipt, plan, finding, and report contracts.
+- Added deterministic end-to-end M3-A3A/M3-A3B validation and an injected,
+  object-scoped in-memory simulated sink with controlled failure injection.
+- Validated all drill scenarios, canonical bindings, exact counts, and zero
+  dispatch, delivery, notification, network, database, and persistence effects.
+- Closed M3-A3C and the M3-A3 Monitoring and Alert Track. External dispatch and
+  alert persistence remain not implemented; operational monitoring remains
+  inactive and Production activation remains `NOT_AUTHORIZED`.
+- Next: M3-A4 Controlled Operational Activation Gate.
+
 ## 2026-07-30 — M3-A3B Alert Routing and Deduplication
 
 - Added immutable routing config, history, finding, decision and plan contracts.

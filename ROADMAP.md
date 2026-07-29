@@ -950,9 +950,12 @@ activation is `NOT_AUTHORIZED`.
 
 - [x] M3-A3A — Read-only operational monitoring foundation.
 - [x] M3-A3B — Alert routing and deduplication.
+- [x] M3-A3C — Monitoring and Alert Operational Drill.
 
-M3-A3B provides deterministic logical routing, deduplication, reminders,
+M3-A3A, M3-A3B and M3-A3C are closed, and the M3-A3 Monitoring and Alert Track
+is closed. The end-to-end monitoring drill and simulated logical delivery are
+validated. M3-A3B provides deterministic logical routing, deduplication, reminders,
 recurrence and severity escalation. External dispatch and alert-routing
 persistence are not implemented; operational monitoring, databases and writers
-remain inactive. Production activation is `NOT_AUTHORIZED`. Next: M3-A3C
-Monitoring and Alert Operational Drill.
+remain inactive. Production activation is `NOT_AUTHORIZED`. Next: M3-A4
+Controlled Operational Activation Gate.

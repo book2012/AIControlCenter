@@ -33,6 +33,16 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### M3-A3C
+
+M3-A1, M3-A2, M3-A3A, M3-A3B and M3-A3C are closed; the M3-A3 Monitoring and
+Alert Track is closed. The deterministic end-to-end monitoring drill and
+simulated logical delivery are validated using only an object-scoped in-memory
+sink. External dispatch and alert persistence are not implemented. Operational
+monitoring is not activated, operational databases were not created, and
+Production activation is `NOT_AUTHORIZED`. Next: M3-A4 Controlled Operational
+Activation Gate.
+
 ### M3-A3B
 
 M3-A1, M3-A2, M3-A3A and M3-A3B are closed. Logical alert routing,
