@@ -1,5 +1,25 @@
 {
   "contracts": {
+    "DeploymentPlan": {
+      "path": "deployment-plan.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan",
+      "schema_version": "dpl/v1"
+    },
+    "DeploymentPlanAction": {
+      "path": "deployment-plan-action.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan-action",
+      "schema_version": "dpl/v1"
+    },
+    "DeploymentPlanReport": {
+      "path": "deployment-plan-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan-report",
+      "schema_version": "dpl/v1"
+    },
+    "DeploymentTargetProfile": {
+      "path": "deployment-target-profile.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-target-profile",
+      "schema_version": "dpl/v1"
+    },
     "DependencyBoundaryPolicy": {
       "path": "dependency-boundary-policy.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-policy",
@@ -87,6 +107,30 @@
       "name": "DependencyBoundaryReport",
       "path": "dependency-boundary-report.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-report"
+    },
+    {
+      "kind": "contract",
+      "name": "DeploymentPlan",
+      "path": "deployment-plan.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan"
+    },
+    {
+      "kind": "contract",
+      "name": "DeploymentPlanAction",
+      "path": "deployment-plan-action.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan-action"
+    },
+    {
+      "kind": "contract",
+      "name": "DeploymentPlanReport",
+      "path": "deployment-plan-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan-report"
+    },
+    {
+      "kind": "contract",
+      "name": "DeploymentTargetProfile",
+      "path": "deployment-target-profile.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-target-profile"
     },
     {
       "kind": "contract",

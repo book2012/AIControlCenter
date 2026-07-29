@@ -32,7 +32,10 @@
     {
       "id": "plan_services",
       "responsibility": "Pure desired-state planning without activation.",
-      "selectors": [{"module_prefix": "core.deployment.policy"}]
+      "selectors": [
+        {"module_prefix": "core.deployment.policy"},
+        {"module_prefix": "core.deployment.planning"}
+      ]
     },
     {
       "id": "apply_services",

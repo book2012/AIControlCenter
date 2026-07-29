@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:deployment-target-profile",
+  "title": "DeploymentTargetProfile",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["target_id", "platform", "role", "profile", "control_plane_owner", "public_edge_owner", "cms_owner", "commerce_owner"],
+  "properties": {
+    "target_id": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "platform": {"enum": ["macos", "ubuntu"]},
+    "role": {"enum": ["control-plane", "cms", "commerce"]},
+    "profile": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "control_plane_owner": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "public_edge_owner": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "cms_owner": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "commerce_owner": {"$ref": "common.schema.json#/$defs/Identifier"}
+  }
+}

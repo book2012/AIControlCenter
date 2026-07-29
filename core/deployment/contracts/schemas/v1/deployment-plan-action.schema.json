@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan-action",
+  "title": "DeploymentPlanAction",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["action_id", "action_type", "target", "dependency_ids", "prerequisite_state", "result_expectation", "risk", "approval_required", "execution_authorized", "evidence_references"],
+  "properties": {
+    "action_id": {"type": "string", "pattern": "^act-[0-9a-f]{24}$"},
+    "action_type": {"enum": ["VALIDATE_PACKAGE", "VERIFY_DEPENDENCY_POLICY", "VERIFY_MAC_INVENTORY", "VERIFY_INGRESS_READINESS", "VERIFY_TARGET_PROFILE", "PREPARE_AUDIT_EVIDENCE", "REQUIRE_APPROVAL", "RECORD_BLOCKER"]},
+    "target": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "dependency_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^act-[0-9a-f]{24}$"}},
+    "prerequisite_state": {"enum": ["SATISFIED", "BLOCKED", "UNKNOWN"]},
+    "result_expectation": {"type": "string", "minLength": 1, "maxLength": 500},
+    "risk": {"enum": ["LOW", "MEDIUM", "HIGH", "CRITICAL"]},
+    "approval_required": {"type": "boolean"},
+    "execution_authorized": {"const": false},
+    "evidence_references": {"type": "array", "uniqueItems": true, "items": {"type": "string", "enum": ["dependency_policy", "ingress_readiness", "mac_inventory"]}}
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan-report",
+  "title": "DeploymentPlanReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "read_only", "dry_run", "plan", "overall_status", "blocking_reasons", "warnings", "production_writes", "ubuntu_changes"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "read_only": {"const": true},
+    "dry_run": {"const": true},
+    "plan": {"$ref": "deployment-plan.schema.json"},
+    "overall_status": {"enum": ["READY_FOR_APPROVAL", "BLOCKED", "NOT_READY", "INVALID", "INCOMPLETE"]},
+    "blocking_reasons": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "warnings": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "production_writes": {"const": 0},
+    "ubuntu_changes": {"const": 0}
+  }
+}
