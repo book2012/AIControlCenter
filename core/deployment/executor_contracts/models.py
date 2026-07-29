@@ -226,24 +226,36 @@ def validate_executor_request(
 def create_executor_result(
     *, request: Mapping[str, Any], capability: Mapping[str, Any],
     status: str, reason_codes: Sequence[str], result_timestamp: str,
+    evidence_digests: Sequence[str] = (),
+    operation_statuses: Mapping[str, str] | None = None,
 ) -> dict[str, Any]:
     _security_check({"request": request, "capability": capability})
     _validate_timestamp(result_timestamp)
     _validate("ExecutorRequest", request)
     _validate("ExecutorCapability", capability)
+    statuses = operation_statuses or {}
     semantic = {
         "schema_version": "dpl/v1",
         "request_id": request["request_id"],
         "capability_id": capability["capability_id"],
         "status": status,
         "executor_type": capability["executor_type"],
+        "adapter_type": (
+            "mac-sandbox"
+            if capability["executor_type"] == "mac-sandbox"
+            else "deny-only"
+        ),
+        "target_identity": request["target_identity"],
+        "target_owner": request["target_owner"],
+        "environment": request["environment"],
         "operation_results": [
-            {"operation": operation, "status": status}
+            {"operation": operation, "status": statuses.get(operation, status)}
             for operation in sorted(request["operation_scope"])
         ],
-        "evidence_digests": [],
+        "evidence_digests": sorted(set(evidence_digests)),
         "reason_codes": sorted(set(reason_codes)),
         "production_authorized": False,
+        "repository_writes": 0,
         "production_writes": 0,
         "ubuntu_changes": 0,
         "network_accesses": 0,

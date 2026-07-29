@@ -1,5 +1,12 @@
 # Project History
 
+## DPL-04B
+
+AIControlCenter added a Mac-only, explicit-root sandbox adapter for
+deterministic non-production manifest and evidence materialization. It
+introduced no commands, network access, durable audit, Ubuntu ownership or
+production authorization. DPL-04C became the next gated deployment task.
+
 AIControlCenter became the Brain.
 
 Ubuntu became an optional Worker.

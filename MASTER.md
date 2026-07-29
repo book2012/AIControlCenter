@@ -1,5 +1,14 @@
 # MASTER
 
+## DPL-04B Closure
+
+The Mac Control Plane now has an explicit-root sandbox-only implementation of
+the DPL-04A non-production executor port. It supports sandbox verification,
+preparation and evidence collection through canonical JSON artifacts only.
+Root confinement, authorization rebinding and default denial preserve zero
+production, repository, Ubuntu, network and runtime-command effects. No
+durable audit or production activation is enabled. DPL-04C is next.
+
 ## DPL-04A Status
 
 Status: COMPLETE

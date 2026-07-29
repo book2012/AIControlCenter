@@ -1,5 +1,10 @@
 # TODO
 
+## Deployment Package Lifecycle
+
+- [x] DPL-04B Mac-only sandbox adapter
+- [ ] DPL-04C
+
 Sprint 16
 
 - Doctor

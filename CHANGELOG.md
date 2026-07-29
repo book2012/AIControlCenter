@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-07-29 — DPL-04B Mac-Only Sandbox Adapter
+
+- Added an explicit-root, non-production `MacSandboxAdapter` implementing the
+  DPL-04A executor port for safe sandbox verification, preparation and
+  evidence collection.
+- Added canonical immutable JSON materialization, same-root atomic replacement,
+  digest read-back, deterministic/idempotent results and strict symlink/path,
+  secret and executable-payload rejection.
+- Preserved zero commands, network, Ubuntu, repository and production writes;
+  durable audit and production activation remain unavailable.
+
 ## 2026-07-29 — DPL-04A Typed Non-Production Executor Ports
 
 - Added schema-validated executor capability, request, validation-report and

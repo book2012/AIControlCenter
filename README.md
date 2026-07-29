@@ -33,17 +33,18 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
-### DPL-04A
+### DPL-04B
 
-Typed non-production executor contracts and dependency-injected ports are
-complete. Execution is restricted to development, test and staging on the Mac
-Control Plane, with a typed operation allowlist and deny-only default
-composition. No real executor, API route, runtime command, Ubuntu ownership or
-production write is included. Production activation remains unauthorized.
+The Mac-only sandbox adapter implements the typed non-production executor port
+for development, test and staging. Its root must be explicitly injected; the
+default remains deny-only. It writes only canonical JSON manifest/evidence
+files below that confined root and performs no command, network, service,
+Ubuntu, repository or production operation. Evidence is not durably persisted
+as audit state, and production activation remains unauthorized.
 
 Next Sprint
 
-- DPL-04B
+- DPL-04C
 
 <!-- AI_SHOPPING_PLATFORM_START -->
 ## AI Shopping Platform

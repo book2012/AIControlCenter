@@ -1,5 +1,12 @@
 # Roadmap
 
+## DPL-04B Closure
+
+DPL-04B is complete. The Mac-only adapter can materialize deterministic
+manifest and evidence JSON only under an explicit, confined non-production
+sandbox root. Default composition remains deny-only; command execution,
+durable audit and production activation remain prohibited. DPL-04C is next.
+
 ## DPL-04A Closure
 
 DPL-04A is complete. Typed executor contracts and ports are limited to

@@ -1,5 +1,15 @@
 # AI Home Datacenter Architecture
 
+## DPL Mac Sandbox Boundary
+
+`core.deployment.sandbox_adapter` is a Mac Control Plane adapter implementing
+the typed non-production executor port. It depends inward on DPL contracts and
+ports only. Planning, authorization, GET-only API composition and workers
+cannot import it. The adapter requires an injected non-repository sandbox root,
+confines canonical JSON artifacts beneath it, and has no command, network,
+runtime-service, Ubuntu or production capability. Missing-root composition is
+deny-only, and evidence is not durably persisted.
+
 ## Platform Goal
 
 AI Home Datacenter is a production-ready,
