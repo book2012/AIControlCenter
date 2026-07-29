@@ -33,16 +33,15 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
-### M2-P1
+### M2-P2
 
-M2-P1 is closed. The pure `pilot_authorization` package makes controlled
-development, test and staging pilot authorization policy available on the Mac
-Control Plane. A deterministic one-use permit requires valid DPL-03C execution
-authorization, accepted DPL-04D readiness evidence, exact digest/identity/scope
-bindings and requester/operator/approver separation. Pilot activation has not
-started, persistent SQLite audit is not implemented, and Production activation
-is `NOT_AUTHORIZED`. Next: M2-P2 Controlled Sandbox Pilot Activation and
-Evidence.
+M2-P2 is closed. The dependency-injected `pilot_activation` package reserves a
+validated one-use M2-P1 permit before executing the fixed verify, prepare and
+collect-evidence sequence through the typed non-production executor port.
+Exactly one controlled pilot was exercised only in a pytest-owned temporary
+sandbox. Persistent host sandbox activation is not started, persistent SQLite
+audit is not implemented, and Production activation is `NOT_AUTHORIZED`.
+Next: M2-P3 Pilot Evidence and Rollback Validation.
 
 ### DPL-04C
 

@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## M2 Pilot Activation Boundary
+
+`core.deployment.pilot_activation` is an AIControlCenter-owned Mac Control
+Plane orchestration boundary. It receives the typed executor, capability and
+one-use registry by injection and never constructs a concrete sandbox adapter.
+The process-local registry reserves a permit before the fixed verify, prepare
+and evidence sequence and fails closed on replay or adapter failure. It is
+test-only protection, not durable deployment state. One controlled pilot ran
+only below a pytest temporary root; persistent host and Production activation
+remain unavailable.
+
 ## M2 Pilot Authorization Boundary
 
 `core.deployment.pilot_authorization` is a pure AIControlCenter-owned policy

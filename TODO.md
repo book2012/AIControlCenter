@@ -6,11 +6,13 @@
 - [x] DPL-04C durable audit architecture decision
 - [x] DPL-04D M2 operational readiness
 - [x] M2-P1 controlled non-production sandbox pilot authorization
-- [ ] M2-P2 controlled sandbox pilot activation and evidence
+- [x] M2-P2 controlled sandbox pilot activation and evidence
+- [ ] M2-P3 pilot evidence and rollback validation
 
-M2 readiness is accepted and pilot authorization policy is available. Pilot
-activation has not started. The persistent SQLite audit adapter is not
-implemented and production activation is `NOT_AUTHORIZED`.
+M2 readiness is accepted, M2-P1 and M2-P2 are closed, and exactly one
+test-owned controlled pilot completed under a pytest temporary root. Persistent
+host sandbox activation has not started. The persistent SQLite audit adapter is
+not implemented and production activation is `NOT_AUTHORIZED`.
 
 Sprint 16
 

@@ -2,8 +2,9 @@
 
 ## Scope
 
-This runbook prepares a separately authorized Mac-only non-production sandbox
-pilot. It does not authorize or perform activation.
+This runbook governs a separately authorized Mac-only non-production sandbox
+pilot. M2-P2 permits only a test-owned activation below a pytest temporary
+root; it does not authorize persistent host or Production activation.
 
 ## Procedure
 
@@ -19,13 +20,20 @@ pilot. It does not authorize or perform activation.
    new report.
 6. Use the M2-P1 policy only to validate exact bindings, separation of duties,
    typed operation scope, one-use lifetime and zero safety counters.
-7. Treat an authorized permit as policy evidence only. M2-P2 requires separate
-   authorization before any activation or evidence collection.
+7. Inject the typed executor, capability and permit-use registry; never
+   construct an adapter inside the activation service.
+8. Reserve the permit before invocation, then execute only verify target,
+   prepare sandbox and collect evidence in that order.
+9. Stop on any invalid, denied, unavailable, incomplete, malformed, mismatched
+   or nonzero-safety result. A failed attempt remains consumed.
+10. Confine canonical manifest and evidence artifacts to the pytest-owned
+    temporary sandbox and retain the immutable activation receipt.
 
 The operator must preserve a non-repository sandbox root, Mac Control Plane
 ownership, zero Ubuntu/runtime/network/production activity, and zero real
 executor invocations. Persistent SQLite audit must be implemented and
 separately authorized before any broader mutable deployment.
 
-M2-P1 is closed and pilot authorization policy is available. Pilot activation
-has not started. Production activation remains `NOT_AUTHORIZED`.
+M2-P1 and M2-P2 are closed. Exactly one controlled pilot was exercised only in
+a pytest-owned temporary sandbox. Persistent host sandbox activation has not
+started. Production activation remains `NOT_AUTHORIZED`.

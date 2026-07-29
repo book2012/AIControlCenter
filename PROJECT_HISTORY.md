@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-29 — M2-P2 Controlled Sandbox Pilot Activation
+
+M2-P2 closed after exactly one successful controlled pilot executed through an
+injected Mac sandbox adapter inside a pytest-owned temporary directory. The new
+activation boundary reserves one-use permits before invocation, denies replay
+after success or failure, fixes typed operation order, and emits immutable
+audit-ready receipts. No persistent host sandbox, persistent audit adapter,
+Production activation, Ubuntu change, network access or runtime command was
+performed. M2-P3 Pilot Evidence and Rollback Validation is next.
+
 ## 2026-07-29 — M2-P1 Pilot Authorization Closed
 
 AIControlCenter added a pure, deterministic and default-deny policy for a

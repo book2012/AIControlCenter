@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-29 — M2-P2 Controlled Sandbox Pilot Activation
+
+- Added immutable activation contracts, deterministic canonical receipts and a
+  dependency-injected activation service.
+- Added fixed typed operation ordering and fail-closed one-use permit
+  reservation with replay denial after success or failure.
+- Validated exactly one controlled pilot in a pytest-owned temporary sandbox.
+- Added six safe fixtures plus failure, binding, safety, boundary and
+  compatibility coverage.
+- Closed M2-P2 without persistent host activation, durable audit persistence,
+  Ubuntu access or Production authorization.
+
 ## 2026-07-29 — M2-P1 Controlled Sandbox Pilot Authorization
 
 ### Added
