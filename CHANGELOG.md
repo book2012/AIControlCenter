@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-07-29 — M3-A1B Append-Only SQLite Audit Writer
+
+- Added a separate existing-file-only SQLite writer with serialized append,
+  full-chain validation, deterministic receipts and idempotent retry.
+- Enforced preconfigured WAL, schema/index/trigger validation, read-back
+  verification and rollback on failure without creation, migration or repair.
+- Closed M3-A1B using only pytest temporary databases; no operational database
+  or Production write was created or enabled.
+- Next: M3-A1C Backup, Restore and Recovery Validation.
+
 ## 2026-07-29 — M3-A1A SQLite Read-Only Integrity Foundation
 
 - Added explicit Mac application-state path policy and deterministic,

@@ -9,12 +9,14 @@
 - [x] M2-P2 controlled sandbox pilot activation and evidence
 - [x] M2-P3 pilot evidence and rollback validation
 - [x] M3-A1A SQLite read-only integrity foundation
-- [ ] M3-A1B Append-Only SQLite Audit Writer
+- [x] M3-A1B Append-Only SQLite Audit Writer
+- [ ] M3-A1C Backup, Restore and Recovery Validation
 
-M2 controlled pilot validation and M3-A1A are closed. The read-only integrity
-foundation is available, but the operational audit database was not created,
-persistent writes are disabled, migrations were not executed and Production
-activation is `NOT_AUTHORIZED`.
+M2 controlled pilot validation, M3-A1A and M3-A1B are closed. The writer was
+verified only with pytest temporary databases. The operational audit database
+was not created, operational writer activation is not started, persistent
+Production writes are disabled and Production activation is
+`NOT_AUTHORIZED`.
 
 Sprint 16
 

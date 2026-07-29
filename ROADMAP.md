@@ -1,12 +1,13 @@
 # Roadmap
 
-## M3-A1A Closure and M3-A1B
+## M3-A1B Closure and M3-A1C
 
-M2 controlled pilot validation and M3-A1A are CLOSED. Read-only SQLite
-integrity inspection is AVAILABLE, but the operational database does not exist,
-persistent audit writes are not enabled and migrations have not run.
-Production activation remains `NOT_AUTHORIZED`. Next: M3-A1B Append-Only SQLite
-Audit Writer.
+M2 controlled pilot validation, M3-A1A and M3-A1B are CLOSED. The append-only
+SQLite writer is implemented and validated only with pytest temporary
+databases. The operational database does not exist, operational writer
+activation is not started, persistent Production audit writes are not enabled,
+and Production activation remains `NOT_AUTHORIZED`. Next: M3-A1C Backup,
+Restore and Recovery Validation.
 
 ## M2-P3 Closure and M3-A1
 

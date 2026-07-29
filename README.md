@@ -33,13 +33,14 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
-### M3-A1A
+### M3-A1B
 
-M2 controlled pilot validation and M3-A1A are closed. The SQLite read-only
-integrity foundation is available for an explicitly injected Mac
-application-state path. No operational database was created, persistent audit
-writes are not enabled, migrations were not executed and Production activation
-is `NOT_AUTHORIZED`. Next: M3-A1B Append-Only SQLite Audit Writer.
+M2 controlled pilot validation, M3-A1A and M3-A1B are closed. The separate
+append-only SQLite writer is implemented and verified only with pytest-owned
+temporary databases. No operational database was created, operational writer
+activation is not started, persistent Production audit writes are not enabled,
+and Production activation is `NOT_AUTHORIZED`. Next: M3-A1C Backup, Restore
+and Recovery Validation.
 
 ### M2-P3
 

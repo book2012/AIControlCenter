@@ -1,14 +1,15 @@
 # AI Home Datacenter Architecture
 
-## M3-A1A SQLite Read-Only Integrity Boundary
+## M3-A1B Append-Only SQLite Audit Writer Boundary
 
-`core.deployment.audit_sqlite` is an AIControlCenter-owned Mac Control Plane
-inspection adapter. It consumes canonical audit contracts through a distinct
-read-only port and never implements append behavior. Its configured
-application-state path is explicit and outside Git; runtime cannot create,
-migrate, repair or modify SQLite. Ubuntu cannot own authoritative audit state.
-M2 and M3-A1A are closed, while persistent writes and Production activation
-remain prohibited. M3-A1B is next.
+`core.deployment.audit_sqlite_writer` is a separate AIControlCenter-owned Mac
+Control Plane adapter that appends canonical audit events to an explicitly
+injected, pre-existing SQLite ledger. It cannot create, migrate or repair a
+database and does not weaken `core.deployment.audit_sqlite`, which remains
+read-only. WAL, schema, append-only triggers and the full hash chain are
+validated before each serialized append. M2, M3-A1A and M3-A1B are closed.
+Only pytest temporary databases were used; operational activation and
+Production writes remain prohibited. M3-A1C is next.
 
 ## M2 Pilot Evidence and Rollback Boundary
 

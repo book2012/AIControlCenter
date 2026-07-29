@@ -1,12 +1,13 @@
 # MASTER
 
-## M3-A1A Closure
+## M3-A1B Closure
 
-M3-A1A is CLOSED after validation. SQLite read-only integrity inspection and
-the future Mac application-state path policy are AVAILABLE. The operational
-database was NOT CREATED; persistent writes are NOT ENABLED; migrations were
-NOT EXECUTED; Production activation is `NOT_AUTHORIZED`. M2 controlled pilot
-validation remains CLOSED. Next: M3-A1B Append-Only SQLite Audit Writer.
+M2 controlled pilot validation, M3-A1A and M3-A1B are CLOSED. The append-only
+SQLite audit writer is IMPLEMENTED and verified only against pytest temporary
+databases. The operational database was NOT CREATED, operational writer
+activation is NOT STARTED, persistent Production audit writes are NOT ENABLED,
+and Production activation is `NOT_AUTHORIZED`. Next: M3-A1C Backup, Restore
+and Recovery Validation.
 
 ## M2-P3 Closure
 

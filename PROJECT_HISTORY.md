@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-29 — M3-A1B Append-Only SQLite Audit Writer
+
+AIControlCenter closed M3-A1B with a separate Mac-owned SQLite append adapter.
+It requires an explicit pre-existing database, validates WAL, schema controls
+and the complete hash chain, and performs one atomic read-back-verified append
+or a zero-write idempotent retry. Validation used only pytest temporary
+databases. The operational database was not created, operational activation is
+not started, persistent Production writes are not enabled, and Production
+activation remains `NOT_AUTHORIZED`. M3-A1C is next.
+
 ## 2026-07-29 — M3-A1A SQLite Read-Only Integrity
 
 AIControlCenter closed M3-A1A after adding a Mac-owned read-only SQLite
