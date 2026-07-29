@@ -18,12 +18,14 @@
 - [x] M3-A3B Alert Routing and Deduplication
 - [x] M3-A3C Monitoring and Alert Operational Drill
 - [x] M3-A4A Read-Only Operational Activation Readiness Gate
-- [ ] M3-A4B Controlled Mac Operational Bootstrap
+- [x] M3-A4B1 Controlled Bootstrap Authorization Package
+- [ ] M3-A4B2 Controlled Mac Operational Bootstrap
 
-M2, M3-A1, M3-A2, M3-A3 and M3-A4A are closed. The activation readiness gate
-and controlled bootstrap plan are available. Operational databases are not
-created; writers and monitoring are not activated; external dispatch is not
-implemented; bootstrap authorization is not granted; Production activation is
+M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are closed. Bootstrap
+authorization capability is available and synthetic permit issuance is
+validated. No operational permit was issued; operational bootstrap
+authorization was not granted; directories and databases were not created;
+writers and monitoring were not activated; Production activation is
 `NOT_AUTHORIZED`.
 
 Sprint 16

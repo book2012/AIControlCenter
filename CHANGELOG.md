@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A4B1 Controlled Bootstrap Authorization
+
+- Added immutable request, approval, restriction, target, schema, plan, safety,
+  decision, permit, validation, and use-claim contracts.
+- Added deterministic controlled-non-production authorization and validation
+  services plus an injected atomic single-use registry port.
+- Preserved the exact 427-warning remediation restriction and enforced
+  independent operator and approver acknowledgement.
+- Validated synthetic permits and claims only; no operational permit,
+  authorization, bootstrap, path, database, writer, monitoring, dispatch,
+  Ubuntu, command, API-write, or Production effect occurred.
+- Closed M3-A4B1. Next: M3-A4B2 Controlled Mac Operational Bootstrap.
+
 ## 2026-07-30 — M3-A4A Operational Activation Readiness Gate
 
 - Added immutable evidence, stage, path, permission, bootstrap, rollback,

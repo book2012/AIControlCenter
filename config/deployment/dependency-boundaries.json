@@ -91,6 +91,11 @@
       "selectors": [{"module_prefix": "core.deployment.operational_activation_gate"}]
     },
     {
+      "id": "operational_bootstrap_authorization",
+      "responsibility": "Pure immutable M3-A4B1 controlled non-production bootstrap authorization and injected single-use port; no execution, persistence or activation.",
+      "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_authorization"}]
+    },
+    {
       "id": "executor_ports",
       "responsibility": "Typed non-production executor ports and deny-only default composition.",
       "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
@@ -185,6 +190,7 @@
     {"from_zone": "alert_routing", "to_zones": ["contracts", "operational_monitoring", "alert_routing"]},
     {"from_zone": "monitoring_alert_drill", "to_zones": ["contracts", "operational_monitoring", "alert_routing", "monitoring_alert_drill"]},
     {"from_zone": "operational_activation_gate", "to_zones": ["contracts", "m2_readiness", "pilot_evidence", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate"]},
+    {"from_zone": "operational_bootstrap_authorization", "to_zones": ["contracts", "audit_sqlite_read_only", "permit_replay_sqlite_read_only", "operational_activation_gate", "operational_bootstrap_authorization"]},
     {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
     {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},

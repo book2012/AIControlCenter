@@ -1,5 +1,17 @@
 # AI Home Datacenter Architecture
 
+## M3-A4B1 Controlled Bootstrap Authorization Boundary
+
+`core.deployment.operational_bootstrap_authorization` is a pure, deterministic
+Mac Control Plane authorization boundary over public M3-A4A readiness
+contracts. It binds exact Git, readiness, restriction, target, schema, plan,
+safety, identity, approval, and validity evidence into a canonical one-use
+controlled-non-production permit. Only an injected registry protocol exists;
+there is no persistence or bootstrap executor. M3-A4B1 is closed after
+synthetic validation. No operational permit was issued, no bootstrap was
+authorized or executed, operational paths remain absent, writers remain
+inactive, and Production activation is `NOT_AUTHORIZED`. Next: M3-A4B2.
+
 ## M3-A4A Operational Activation Readiness Boundary
 
 `core.deployment.operational_activation_gate` is a collision-free, pure,

@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-30 — M3-A4B1 Closed
+
+AIControlCenter added the deterministic controlled non-production bootstrap
+authorization contracts, exact M3-A4A restriction acknowledgements, canonical
+one-use permits, validation, and an injected registry port. Synthetic permits
+and claims were validated in memory only. No operational permit was issued,
+bootstrap was not authorized or executed, operational paths remain absent,
+writers remain inactive, and Production activation remains `NOT_AUTHORIZED`.
+M3-A4B2 Controlled Mac Operational Bootstrap is next.
+
 ## 2026-07-30 — M3-A4A Closed
 
 AIControlCenter closed M3-A4A with a deterministic, evidence-only

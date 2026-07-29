@@ -33,6 +33,16 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### M3-A4B1
+
+M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are closed. Controlled
+non-production bootstrap authorization contracts and a single-use registry
+port are available; synthetic permit issuance is validated. No operational
+permit was issued, bootstrap authorization was not granted, bootstrap was not
+executed, operational paths were not created, writers were not activated, and
+Production activation is `NOT_AUTHORIZED`. Next: M3-A4B2 Controlled Mac
+Operational Bootstrap.
+
 ### M3-A4A
 
 M2, M3-A1, M3-A2, M3-A3 and M3-A4A are closed. The pure activation readiness

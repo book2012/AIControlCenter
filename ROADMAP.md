@@ -1,5 +1,13 @@
 # Roadmap
 
+## M3-A4B1 Closure and M3-A4B2
+
+M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are closed. Controlled bootstrap
+authorization capability is available and synthetic one-use permit validation
+is complete. No operational permit was issued, bootstrap was not authorized or
+executed, operational targets remain absent, and Production activation is
+`NOT_AUTHORIZED`. Next: M3-A4B2 Controlled Mac Operational Bootstrap.
+
 ## M3-A2A Closure and M3-A2B
 
 M2 controlled pilot validation, M3-A1 and M3-A2A are closed. Read-only

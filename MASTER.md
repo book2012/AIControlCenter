@@ -1,5 +1,15 @@
 # MASTER
 
+## M3-A4B1 Closure
+
+M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are CLOSED. Controlled bootstrap
+authorization capability is AVAILABLE and synthetic permit issuance plus
+single-use claiming are VALIDATED. No operational permit was issued,
+operational authorization was not granted, bootstrap was not executed,
+operational directories and databases were NOT CREATED, writers were NOT
+ACTIVATED, and Production activation is `NOT_AUTHORIZED`. Next: M3-A4B2
+Controlled Mac Operational Bootstrap.
+
 ## M3-A2A Closure
 
 M2 controlled pilot validation, M3-A1 and M3-A2A are CLOSED. Permit/replay
