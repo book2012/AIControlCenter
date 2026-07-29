@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:executor-capability",
+  "title": "ExecutorCapability",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "capability_id", "executor_type", "environment", "target_owner", "operation_scope", "capability_timestamp", "production_authorized"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "capability_id": {"type": "string", "pattern": "^exc-[0-9a-f]{32}$"},
+    "executor_type": {"enum": ["deny-only-non-production"]},
+    "environment": {"enum": ["development", "test", "staging"]},
+    "target_owner": {"const": "mac-control-plane"},
+    "operation_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["VERIFY_SANDBOX_TARGET", "VALIDATE_DEPLOYMENT_PACKAGE", "VALIDATE_DEPLOYMENT_PLAN", "VALIDATE_AUTHORIZATION", "PREPARE_SANDBOX", "SIMULATE_EXECUTION", "COLLECT_EXECUTION_EVIDENCE"]}},
+    "capability_timestamp": {"type": "string", "format": "date-time"},
+    "production_authorized": {"const": false}
+  }
+}

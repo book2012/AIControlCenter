@@ -11,6 +11,16 @@
       ]
     },
     {
+      "id": "executor_contracts",
+      "responsibility": "Pure immutable non-production executor contracts; no adapter or execution.",
+      "selectors": [{"module_prefix": "core.deployment.executor_contracts"}]
+    },
+    {
+      "id": "executor_ports",
+      "responsibility": "Typed non-production executor ports and deny-only default composition.",
+      "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
+    },
+    {
       "id": "read_ports",
       "responsibility": "Capability-specific interfaces for read-only observations.",
       "selectors": [{"module_prefix": "core.deployment.ports"}]
@@ -80,12 +90,14 @@
   ],
   "allowed_dependency_directions": [
     {"from_zone": "contracts", "to_zones": ["contracts"]},
+    {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
+    {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "read_ports", "to_zones": ["contracts", "read_ports"]},
     {"from_zone": "read_adapters", "to_zones": ["contracts", "read_ports", "read_adapters"]},
     {"from_zone": "read_application", "to_zones": ["contracts", "read_ports", "read_application"]},
     {"from_zone": "plan_services", "to_zones": ["contracts", "read_ports", "read_application", "plan_services"]},
     {"from_zone": "authorization", "to_zones": ["contracts", "plan_services", "authorization"]},
-    {"from_zone": "simulation", "to_zones": ["contracts", "plan_services", "authorization", "simulation"]},
+    {"from_zone": "simulation", "to_zones": ["contracts", "plan_services", "authorization", "executor_contracts", "executor_ports", "simulation"]},
     {"from_zone": "api_composition", "to_zones": ["contracts", "read_ports", "read_adapters", "read_application", "plan_services", "api_composition", "audit_evidence"]},
     {"from_zone": "audit_evidence", "to_zones": ["contracts", "audit_evidence"]}
   ],
@@ -131,12 +143,24 @@
       "from_zones": ["simulation"],
       "to_zones": ["api_composition", "read_adapters", "read_application", "apply_services", "worker_infrastructure", "legacy_unsupported"],
       "severity": "ERROR"
+    },
+    {
+      "id": "DPL-DIRECTION-008",
+      "from_zones": ["plan_services", "api_composition", "worker_infrastructure"],
+      "to_zones": ["executor_contracts", "executor_ports"],
+      "severity": "ERROR"
+    },
+    {
+      "id": "DPL-DIRECTION-009",
+      "from_zones": ["authorization"],
+      "to_zones": ["executor_ports"],
+      "severity": "ERROR"
     }
   ],
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["executor_contracts", "executor_ports", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "modules": ["subprocess", "socket", "requests", "paramiko", "fabric"],
       "severity": "ERROR"
     }
@@ -144,7 +168,7 @@
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["executor_contracts", "executor_ports", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

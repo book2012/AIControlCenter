@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:executor-result",
+  "title": "ExecutorResult",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "result_digest", "request_id", "capability_id", "status", "executor_type", "operation_results", "evidence_digests", "reason_codes", "result_timestamp", "production_authorized", "production_writes", "ubuntu_changes", "network_accesses", "runtime_commands", "real_executor_invocations"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "result_digest": {"$ref": "common.schema.json#/$defs/Digest"},
+    "request_id": {"type": "string", "pattern": "^exr-[0-9a-f]{32}$"},
+    "capability_id": {"type": "string", "pattern": "^exc-[0-9a-f]{32}$"},
+    "status": {"enum": ["ALLOWED", "DENIED", "INVALID", "UNAVAILABLE", "INCOMPLETE"]},
+    "executor_type": {"enum": ["deny-only-non-production"]},
+    "operation_results": {"type": "array", "items": {"type": "object", "additionalProperties": false, "required": ["operation", "status"], "properties": {"operation": {"enum": ["VERIFY_SANDBOX_TARGET", "VALIDATE_DEPLOYMENT_PACKAGE", "VALIDATE_DEPLOYMENT_PLAN", "VALIDATE_AUTHORIZATION", "PREPARE_SANDBOX", "SIMULATE_EXECUTION", "COLLECT_EXECUTION_EVIDENCE"]}, "status": {"enum": ["ALLOWED", "DENIED", "INVALID", "UNAVAILABLE", "INCOMPLETE"]}}}},
+    "evidence_digests": {"type": "array", "uniqueItems": true, "items": {"$ref": "common.schema.json#/$defs/Digest"}},
+    "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"}},
+    "result_timestamp": {"type": "string", "format": "date-time"},
+    "production_authorized": {"const": false},
+    "production_writes": {"const": 0},
+    "ubuntu_changes": {"const": 0},
+    "network_accesses": {"const": 0},
+    "runtime_commands": {"const": 0},
+    "real_executor_invocations": {"const": 0}
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:executor-validation-report",
+  "title": "ExecutorValidationReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "report_id", "request_id", "capability_id", "status", "reason_codes", "validation_timestamp", "production_authorized"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "report_id": {"type": "string", "pattern": "^exv-[0-9a-f]{32}$"},
+    "request_id": {"type": "string", "pattern": "^exr-[0-9a-f]{32}$"},
+    "capability_id": {"type": "string", "pattern": "^exc-[0-9a-f]{32}$"},
+    "status": {"enum": ["ALLOWED", "DENIED", "INVALID", "UNAVAILABLE", "INCOMPLETE"]},
+    "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"}},
+    "validation_timestamp": {"type": "string", "format": "date-time"},
+    "production_authorized": {"const": false}
+  }
+}

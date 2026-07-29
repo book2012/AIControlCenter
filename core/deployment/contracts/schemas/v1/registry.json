@@ -65,6 +65,26 @@
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:execution-authorization",
       "schema_version": "dpl/v1"
     },
+    "ExecutorCapability": {
+      "path": "executor-capability.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-capability",
+      "schema_version": "dpl/v1"
+    },
+    "ExecutorRequest": {
+      "path": "executor-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-request",
+      "schema_version": "dpl/v1"
+    },
+    "ExecutorResult": {
+      "path": "executor-result.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-result",
+      "schema_version": "dpl/v1"
+    },
+    "ExecutorValidationReport": {
+      "path": "executor-validation-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-validation-report",
+      "schema_version": "dpl/v1"
+    },
     "SimulationExecutionReceipt": {
       "path": "simulation-execution-receipt.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-receipt",
@@ -149,6 +169,30 @@
       "name": "ExecutionAuthorization",
       "path": "execution-authorization.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:execution-authorization"
+    },
+    {
+      "kind": "contract",
+      "name": "ExecutorCapability",
+      "path": "executor-capability.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-capability"
+    },
+    {
+      "kind": "contract",
+      "name": "ExecutorRequest",
+      "path": "executor-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-request"
+    },
+    {
+      "kind": "contract",
+      "name": "ExecutorResult",
+      "path": "executor-result.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-result"
+    },
+    {
+      "kind": "contract",
+      "name": "ExecutorValidationReport",
+      "path": "executor-validation-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-validation-report"
     },
     {
       "kind": "contract",
