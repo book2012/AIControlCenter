@@ -38,6 +38,11 @@
       ]
     },
     {
+      "id": "authorization",
+      "responsibility": "Pure approval evidence validation and bounded non-production authorization; no execution.",
+      "selectors": [{"module_prefix": "core.deployment.authorization"}]
+    },
+    {
       "id": "apply_services",
       "responsibility": "Future explicitly authorized apply boundary; absent from default composition.",
       "selectors": [{"module_prefix": "core.deployment.apply"}]
@@ -74,6 +79,7 @@
     {"from_zone": "read_adapters", "to_zones": ["contracts", "read_ports", "read_adapters"]},
     {"from_zone": "read_application", "to_zones": ["contracts", "read_ports", "read_application"]},
     {"from_zone": "plan_services", "to_zones": ["contracts", "read_ports", "read_application", "plan_services"]},
+    {"from_zone": "authorization", "to_zones": ["contracts", "plan_services", "authorization"]},
     {"from_zone": "api_composition", "to_zones": ["contracts", "read_ports", "read_adapters", "read_application", "plan_services", "api_composition", "audit_evidence"]},
     {"from_zone": "audit_evidence", "to_zones": ["contracts", "audit_evidence"]}
   ],
@@ -107,20 +113,26 @@
       "from_zones": ["api_composition"],
       "to_zones": ["apply_services", "worker_infrastructure", "legacy_unsupported"],
       "severity": "ERROR"
+    },
+    {
+      "id": "DPL-DIRECTION-006",
+      "from_zones": ["authorization"],
+      "to_zones": ["api_composition", "read_adapters", "read_application", "apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "severity": "ERROR"
     }
   ],
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["read_application", "plan_services", "api_composition"],
-      "modules": ["subprocess", "socket", "paramiko", "fabric"],
+      "zones": ["read_application", "plan_services", "authorization", "api_composition"],
+      "modules": ["subprocess", "socket", "requests", "paramiko", "fabric"],
       "severity": "ERROR"
     }
   ],
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["read_application", "plan_services", "api_composition"],
+      "zones": ["read_application", "plan_services", "authorization", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

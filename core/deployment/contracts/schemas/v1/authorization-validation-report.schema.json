@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:authorization-validation-report",
+  "title": "AuthorizationValidationReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "reason_codes", "request_id", "decision_id", "authorization_id", "authorization_digest", "execution_authorized", "production_authorized", "executor_invoked", "production_writes", "ubuntu_changes"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "status": {"enum": ["AUTHORIZED", "DENIED", "EXPIRED", "REPLAYED", "INVALID", "INCOMPLETE"]},
+    "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z0-9_]+$"}},
+    "request_id": {"type": "string", "pattern": "^apr-[0-9a-f]{32}$"},
+    "decision_id": {"type": ["string", "null"], "pattern": "^apd-[0-9a-f]{32}$"},
+    "authorization_id": {"type": ["string", "null"], "pattern": "^exa-[0-9a-f]{32}$"},
+    "authorization_digest": {"anyOf": [{"$ref": "common.schema.json#/$defs/Digest"}, {"type": "null"}]},
+    "execution_authorized": {"type": "boolean"},
+    "production_authorized": {"const": false},
+    "executor_invoked": {"const": false},
+    "production_writes": {"const": 0},
+    "ubuntu_changes": {"const": 0}
+  },
+  "allOf": [
+    {"if": {"properties": {"status": {"const": "AUTHORIZED"}}}, "then": {"properties": {"execution_authorized": {"const": true}, "authorization_id": {"type": "string"}, "authorization_digest": {"$ref": "common.schema.json#/$defs/Digest"}}}},
+    {"if": {"properties": {"status": {"not": {"const": "AUTHORIZED"}}}}, "then": {"properties": {"execution_authorized": {"const": false}, "authorization_id": {"type": "null"}, "authorization_digest": {"type": "null"}}}}
+  ]
+}

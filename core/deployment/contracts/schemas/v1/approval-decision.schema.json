@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:approval-decision",
+  "title": "ApprovalDecision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "request_id", "decision_id", "package_digest", "plan_digest", "target_identity", "environment", "action_scope", "requester_identity", "approver_identity", "decision", "decision_reason", "issued_timestamp", "expiry_timestamp", "nonce", "maximum_uses", "production_authorized", "execution_authorized"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "request_id": {"type": "string", "pattern": "^apr-[0-9a-f]{32}$"},
+    "decision_id": {"type": "string", "pattern": "^apd-[0-9a-f]{32}$"},
+    "package_digest": {"$ref": "common.schema.json#/$defs/Digest"},
+    "plan_digest": {"$ref": "common.schema.json#/$defs/Digest"},
+    "target_identity": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "environment": {"enum": ["development", "test", "staging", "sandbox"]},
+    "action_scope": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^act-[0-9a-f]{24}$"}},
+    "requester_identity": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "approver_identity": {"$ref": "common.schema.json#/$defs/Identifier"},
+    "decision": {"enum": ["APPROVED", "REJECTED"]},
+    "decision_reason": {"type": "string", "minLength": 1, "maxLength": 500},
+    "issued_timestamp": {"type": "string", "format": "date-time"},
+    "expiry_timestamp": {"type": "string", "format": "date-time"},
+    "nonce": {"type": "string", "minLength": 16, "maxLength": 128, "pattern": "^[A-Za-z0-9._:-]+$"},
+    "maximum_uses": {"const": 1},
+    "production_authorized": {"const": false},
+    "execution_authorized": {"const": false}
+  }
+}

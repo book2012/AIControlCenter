@@ -1,5 +1,20 @@
 {
   "contracts": {
+    "ApprovalDecision": {
+      "path": "approval-decision.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:approval-decision",
+      "schema_version": "dpl/v1"
+    },
+    "ApprovalRequest": {
+      "path": "approval-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:approval-request",
+      "schema_version": "dpl/v1"
+    },
+    "AuthorizationValidationReport": {
+      "path": "authorization-validation-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:authorization-validation-report",
+      "schema_version": "dpl/v1"
+    },
     "DeploymentPlan": {
       "path": "deployment-plan.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-plan",
@@ -43,6 +58,11 @@
     "ErrorEnvelope": {
       "path": "error-envelope.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:error-envelope",
+      "schema_version": "dpl/v1"
+    },
+    "ExecutionAuthorization": {
+      "path": "execution-authorization.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:execution-authorization",
       "schema_version": "dpl/v1"
     },
     "DeploymentAuditEvidence": {
@@ -95,6 +115,30 @@
       "name": "Common",
       "path": "common.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:common"
+    },
+    {
+      "kind": "contract",
+      "name": "ApprovalDecision",
+      "path": "approval-decision.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:approval-decision"
+    },
+    {
+      "kind": "contract",
+      "name": "ApprovalRequest",
+      "path": "approval-request.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:approval-request"
+    },
+    {
+      "kind": "contract",
+      "name": "AuthorizationValidationReport",
+      "path": "authorization-validation-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:authorization-validation-report"
+    },
+    {
+      "kind": "contract",
+      "name": "ExecutionAuthorization",
+      "path": "execution-authorization.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:execution-authorization"
     },
     {
       "kind": "contract",
