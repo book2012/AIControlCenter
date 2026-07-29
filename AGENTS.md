@@ -28,3 +28,19 @@
 - Do not access production or Ubuntu unless a task explicitly authorizes it.
 - Verify the Git baseline and working-tree scope before and after changes.
 
+## AUTONOMOUS CODEX GIT WORKFLOW
+
+- Codex performs architecture, implementation, tests, documentation, staging,
+  commit, push and final Git verification.
+- Automatic Git operations are allowed only on approved feature branches.
+  Direct pushes to `main`, `master` and production branches are prohibited.
+- Force push, `reset --hard`, `clean`, `stash`, `rebase` and `merge` are
+  prohibited unless separately authorized.
+- Unexpected dirty files are a blocker, and failed tests are a commit blocker.
+- README, CHANGELOG, MASTER, ROADMAP and applicable architecture documentation
+  must be updated before sprint closure.
+- A Git commit must contain only current-task files.
+- Every push must be followed by repository-clean and upstream-sync
+  validation.
+- Credentials and secrets must never be printed.
+- Production activation requires a separate authorization gate.

@@ -33,12 +33,17 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### DPL-04A
+
+Typed non-production executor contracts and dependency-injected ports are
+complete. Execution is restricted to development, test and staging on the Mac
+Control Plane, with a typed operation allowlist and deny-only default
+composition. No real executor, API route, runtime command, Ubuntu ownership or
+production write is included. Production activation remains unauthorized.
+
 Next Sprint
 
-- Doctor
-- Logs
-- Backup Verify
-- Worker Health
+- DPL-04B
 
 <!-- AI_SHOPPING_PLATFORM_START -->
 ## AI Shopping Platform

@@ -1,5 +1,19 @@
 # MASTER
 
+## DPL-04A Status
+
+Status: COMPLETE
+
+- Typed non-production executor contracts and ports
+- Development, test and staging allowlist
+- Mac Control Plane ownership
+- Typed operation allowlist
+- Default-deny composition
+- No real executor, API route, runtime command, Ubuntu change or production
+  write
+
+Next deployment-package task: DPL-04B.
+
 ## Completed
 
 - Brain Runtime

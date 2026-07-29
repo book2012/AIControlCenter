@@ -22,3 +22,7 @@ back to execution.
 Production authorization remains false. DPL-04A does not complete DPL-04 or M2.
 DPL-04B is the next separately reviewed step and must preserve explicit
 authorization, non-production-only scope, typed operations and default denial.
+
+Closure documentation is recorded in README, CHANGELOG, MASTER and ROADMAP.
+Repository automation follows the feature-branch-only autonomous Git workflow
+defined in `AGENTS.md`.

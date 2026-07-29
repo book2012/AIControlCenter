@@ -1,5 +1,12 @@
 # Roadmap
 
+## DPL-04A Closure
+
+DPL-04A is complete. Typed executor contracts and ports are limited to
+non-production Mac Control Plane targets and use a deny-only default
+composition. No concrete real executor or production activation is authorized.
+DPL-04B is next.
+
 ## DPL-03 Closure
 
 DPL-03A through DPL-03D are complete subject to repository validation.

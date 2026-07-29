@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-07-29 — DPL-04A Typed Non-Production Executor Ports
+
+- Added schema-validated executor capability, request, validation-report and
+  result contracts plus typed executor, capability-provider and policy ports.
+- Restricted ownership to the Mac Control Plane and environments to
+  development, test and staging; production and Ubuntu ownership are rejected.
+- Added a typed operation allowlist and deny-only default composition without a
+  concrete real executor, API route, runtime command or production write.
+
 ## 2026-07-29 — DPL-03D Simulation-Only Apply Composition
 
 - Added deterministic non-production simulation, a process-local replay
