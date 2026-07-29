@@ -887,3 +887,11 @@ Codex performs implementation under Architect-owned specifications and acceptanc
 No milestone itself authorizes production activation. Apply and production
 writes require a separate explicit authorization.
 <!-- AICONTROLCENTER:DPL-01:END -->
+
+## DPL-04 Closure and Next Milestone
+
+DPL-04A through DPL-04D are CLOSED and DPL-04 is CLOSED.
+M2 is `READINESS_ACCEPTED`; activation is `ACTIVATION_NOT_STARTED`.
+The next milestone is a controlled, separately authorized non-production
+sandbox pilot. Persistent SQLite audit implementation is required before any
+broader mutable deployment. Production activation remains `NOT_AUTHORIZED`.

@@ -828,3 +828,13 @@ prohibited. Production activation is not authorized.
 
 Canonical details: `docs/architecture/dpl-deployment-package.md`.
 <!-- AICONTROLCENTER:DPL-01:END -->
+
+## DPL M2 Readiness Boundary
+
+`core.deployment.m2_readiness` is a pure evidence-consumer owned by
+AIControlCenter on the Mac Control Plane. It imports no API, worker, runtime
+adapter, command, network or persistence implementation. Its accepted result
+is sandbox-only and non-production-only; it performs no activation. Ubuntu
+owns no governance or audit. DPL-04 is CLOSED with
+`M2 READINESS_ACCEPTED`, `M2 ACTIVATION_NOT_STARTED`, and Production activation
+`NOT_AUTHORIZED`.

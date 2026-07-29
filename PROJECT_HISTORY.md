@@ -828,3 +828,10 @@ history but classified `LEGACY_UNSUPPORTED` and production-prohibited.
 
 Production activation and production writes were not authorized.
 <!-- AICONTROLCENTER:DPL-01:END -->
+
+## 2026-07-29 — DPL-04D Readiness Accepted
+
+DPL-04D closed DPL-04 with a pure evidence-driven gate. The canonical fixture
+accepted M2 readiness for a separately authorized Mac-only non-production
+sandbox. No pilot or production activation occurred. Persistent SQLite
+deployment audit remains required before broader mutable deployment.

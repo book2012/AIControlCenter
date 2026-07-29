@@ -594,3 +594,14 @@ baseline is `984 passed, 5 deselected`.
 
 Production activation remains NOT AUTHORIZED.
 <!-- AICONTROLCENTER:DPL-01:END -->
+
+## DPL-04 Closed / M2 Next Action
+
+- [x] Close DPL-04A, DPL-04B, DPL-04C and DPL-04D.
+- [x] Accept M2 readiness from the canonical passing fixture.
+- [ ] Obtain separate operator authorization for a controlled non-production
+      sandbox pilot.
+- [ ] Implement persistent SQLite deployment audit before broader mutable
+      deployment.
+
+M2 activation has not started. Production activation is not authorized.

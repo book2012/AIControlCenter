@@ -1138,3 +1138,18 @@ Implementation commit: `d8859a3706a087f88be513e32097b22c9a8ec3d6`.
 No code, configuration, Compose, schema, test, runtime or production change was
 performed.
 <!-- AICONTROLCENTER:DPL-01:END -->
+
+## 2026-07-29 — DPL-04D M2 Operational Readiness
+
+### Added
+
+- Immutable M2 evidence, check, finding, report and decision contracts.
+- Pure deterministic thirteen-category readiness gate and four safe fixtures.
+- M2 non-production sandbox runbook and go/no-go checklist.
+
+### Status and safety
+
+DPL-04A through DPL-04D and DPL-04 are CLOSED. The canonical passing fixture
+records `M2 READINESS_ACCEPTED`; `M2 ACTIVATION_NOT_STARTED`. No executor,
+Ubuntu, runtime, API, persistent audit, production write or activation was
+performed. Production activation remains `NOT_AUTHORIZED`.

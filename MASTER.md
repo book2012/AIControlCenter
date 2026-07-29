@@ -813,3 +813,16 @@ Host Caddy as the sole public edge, and Ubuntu as an optional stateless worker.
 DPL-02 is restricted to inventory, validation, diff, dry-run planning,
 readiness and audit.
 <!-- AICONTROLCENTER:DPL-01:END -->
+
+## DPL-04 / M2 Readiness Status
+
+- DPL-04A: CLOSED
+- DPL-04B: CLOSED
+- DPL-04C: CLOSED
+- DPL-04D: CLOSED
+- DPL-04: CLOSED
+- M2: READINESS_ACCEPTED
+- M2 activation: ACTIVATION_NOT_STARTED
+- Production activation: NOT_AUTHORIZED
+- Next: separately authorized controlled non-production sandbox pilot
+- Broader mutable deployment prerequisite: persistent SQLite audit adapter

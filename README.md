@@ -726,3 +726,12 @@ activation is not authorized.
 
 See `docs/deployment/DPL-01-INVENTORY-ASSESSMENT.md`.
 <!-- AICONTROLCENTER:DPL-01:END -->
+
+## DPL-04D M2 Operational Readiness
+
+DPL-04A, DPL-04B, DPL-04C, DPL-04D and DPL-04 are CLOSED. The pure injected-
+evidence gate accepted the canonical sandbox fixture:
+`M2 READINESS_ACCEPTED`. This is not deployment: `M2 ACTIVATION_NOT_STARTED`
+and Production activation is `NOT_AUTHORIZED`. The next milestone is a
+separately authorized controlled non-production sandbox pilot. Persistent
+SQLite deployment audit is required before broader mutable deployment.
