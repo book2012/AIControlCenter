@@ -15,13 +15,14 @@
 - [x] M3-A2B Durable Permit Reservation and Consumption
 - [x] M3-A2C Replay-State Backup, Recovery and Concurrency Validation
 - [x] M3-A3A Read-Only Operational Monitoring Foundation
-- [ ] M3-A3B Alert Routing and Deduplication
+- [x] M3-A3B Alert Routing and Deduplication
+- [ ] M3-A3C Monitoring and Alert Operational Drill
 
-M2 controlled pilot validation, M3-A1, M3-A2 and M3-A3A are closed.
-Read-only monitoring snapshots and alert-candidate evaluation are available.
-External dispatch and monitoring persistence are not implemented. Operational
-databases were not created, writers were not activated and Production
-activation is `NOT_AUTHORIZED`.
+M2 controlled pilot validation, M3-A1, M3-A2, M3-A3A and M3-A3B are closed.
+Logical alert routing, deterministic deduplication and severity escalation are
+available. External dispatch and alert-routing persistence are not implemented.
+Operational monitoring and databases remain inactive; Production activation is
+`NOT_AUTHORIZED`.
 
 Sprint 16
 
@@ -626,7 +627,8 @@ M2 activation has not started. Production activation is not authorized.
 - [x] Close M3-A2B durable reservation, consumption and failed-closed writer.
 - [x] Close M3-A2C replay-state backup, recovery and concurrency validation.
 - [x] Close M3-A3A read-only operational monitoring foundation.
-- [ ] Start M3-A3B alert routing and deduplication.
+- [x] Close M3-A3B alert routing and deduplication.
+- [ ] Start M3-A3C monitoring and alert operational drill.
 
 Operational replay database creation, backup scheduling, restore and writer
 activation remain prohibited. Raw nonce writes remain zero.

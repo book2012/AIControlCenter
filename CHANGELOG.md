@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A3B Alert Routing and Deduplication
+
+- Added immutable routing config, history, finding, decision and plan contracts.
+- Added deterministic logical routes, cooldown and duplicate suppression,
+  reminders, severity escalation bypass and recurrence handling.
+- Added fail-closed history, binding, destination, secret and authorization
+  validation with zero dispatch, notification and persistence activity.
+- Closed M3-A3B without operational monitoring activation, databases, external
+  dispatch, routing persistence or Production activation.
+- Next: M3-A3C Monitoring and Alert Operational Drill.
+
 ## 2026-07-30 — M3-A3A Read-Only Operational Monitoring
 
 - Added immutable explicit-threshold monitoring config, evidence, dimension,

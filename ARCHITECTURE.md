@@ -1,5 +1,17 @@
 # AI Home Datacenter Architecture
 
+## M3-A3B Alert Routing Boundary
+
+`core.deployment.alert_routing` is a collision-free pure policy package owned
+by AIControlCenter on the Mac Control Plane. It consumes only immutable M3-A3A
+public contracts, explicit configuration, history, snapshot binding and
+timestamps. It deterministically returns logical routes, suppression and
+escalation decisions without dispatch, persistence, acknowledgement, clock,
+database, command, network, API, worker or Ubuntu dependencies. M3-A1, M3-A2,
+M3-A3A and M3-A3B are closed. Operational monitoring remains inactive,
+operational databases remain uncreated and Production activation is
+`NOT_AUTHORIZED`. M3-A3C Monitoring and Alert Operational Drill is next.
+
 ## M3-A3A Operational Monitoring Boundary
 
 `core.deployment.operational_monitoring` is the pure, read-only monitoring
@@ -9,8 +21,7 @@ returns deterministic PRE_ACTIVATION snapshots plus alert candidates. It has
 no clock, persistence, database, adapter, command, network, notification,
 API-worker or Ubuntu dependency. Alert dispatch and monitoring persistence are
 not implemented. M3-A1, M3-A2 and M3-A3A are closed; operational databases and
-writers remain inactive and Production activation is `NOT_AUTHORIZED`. M3-A3B
-Alert Routing and Deduplication is next.
+writers remain inactive and Production activation is `NOT_AUTHORIZED`.
 
 ## M3-A2C Permit and Replay Recovery Boundary
 

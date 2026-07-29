@@ -949,9 +949,10 @@ writer activation remain absent; raw nonce writes remain zero. Production
 activation is `NOT_AUTHORIZED`.
 
 - [x] M3-A3A — Read-only operational monitoring foundation.
-- [ ] M3-A3B — Alert routing and deduplication.
+- [x] M3-A3B — Alert routing and deduplication.
 
-M3-A3A provides deterministic PRE_ACTIVATION monitoring snapshots and immutable
-alert candidates. External dispatch and monitoring persistence are not
-implemented; operational databases and writers remain inactive. Production
-activation is `NOT_AUTHORIZED`. Next: M3-A3B Alert Routing and Deduplication.
+M3-A3B provides deterministic logical routing, deduplication, reminders,
+recurrence and severity escalation. External dispatch and alert-routing
+persistence are not implemented; operational monitoring, databases and writers
+remain inactive. Production activation is `NOT_AUTHORIZED`. Next: M3-A3C
+Monitoring and Alert Operational Drill.

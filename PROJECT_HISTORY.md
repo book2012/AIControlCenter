@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-30 — M3-A3B Closed
+
+AIControlCenter closed M3-A3B with pure deterministic logical routing,
+deduplication, reminders, recurrence and severity escalation over immutable
+M3-A3A candidates and explicit history. M3-A1, M3-A2 and M3-A3A remain closed.
+External dispatch and alert-routing persistence are not implemented;
+operational monitoring and databases remain inactive. Production activation
+remains `NOT_AUTHORIZED`. M3-A3C Monitoring and Alert Operational Drill is
+next.
+
 ## 2026-07-30 — M3-A3A Closed
 
 AIControlCenter closed M3-A3A with a pure deterministic PRE_ACTIVATION
