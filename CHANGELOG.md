@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-29 — DPL-03D Simulation-Only Apply Composition
+
+- Added deterministic non-production simulation, a process-local replay
+  guard, typed fake executor, and versioned receipt/report contracts.
+- Closed DPL-03 without real deployment, API, production, Ubuntu, network,
+  subprocess, or persistent-state capability. M2 remains open.
+
 ## 2026-07-16 — PI-001 Dashboard Shadow API Integration
 
 ### Added

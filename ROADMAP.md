@@ -1,5 +1,12 @@
 # Roadmap
 
+## DPL-03 Closure
+
+DPL-03A through DPL-03D are complete subject to repository validation.
+DPL-03D is simulation-only and does not authorize or perform production
+deployment. M2 remains incomplete; DPL-04 is the next separately gated
+milestone.
+
 ## Complete
 
 - Core Runtime

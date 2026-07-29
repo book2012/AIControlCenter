@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-report",
+  "title": "SimulationExecutionReport",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "reason_codes", "authorization_id", "receipt_id", "receipt_digest", "execution_mode", "executor_type", "nonce_consumed", "production_authorized", "production_writes", "ubuntu_changes", "network_accesses", "runtime_commands", "executor_invocations"],
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "status": {"enum": ["SIMULATED", "DENIED", "EXPIRED", "REPLAYED", "INVALID", "FAILED"]},
+    "reason_codes": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-Z0-9_]+$"}},
+    "authorization_id": {"type": ["string", "null"], "pattern": "^exa-[0-9a-f]{32}$"},
+    "receipt_id": {"type": ["string", "null"], "pattern": "^sim-[0-9a-f]{32}$"},
+    "receipt_digest": {"anyOf": [{"$ref": "common.schema.json#/$defs/Digest"}, {"type": "null"}]},
+    "execution_mode": {"const": "simulation"},
+    "executor_type": {"const": "fake"},
+    "nonce_consumed": {"type": "boolean"},
+    "production_authorized": {"const": false},
+    "production_writes": {"const": 0},
+    "ubuntu_changes": {"const": 0},
+    "network_accesses": {"const": 0},
+    "runtime_commands": {"const": 0},
+    "executor_invocations": {"type": "integer", "minimum": 0, "maximum": 1}
+  }
+}

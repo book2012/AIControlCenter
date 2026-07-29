@@ -65,6 +65,16 @@
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:execution-authorization",
       "schema_version": "dpl/v1"
     },
+    "SimulationExecutionReceipt": {
+      "path": "simulation-execution-receipt.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-receipt",
+      "schema_version": "dpl/v1"
+    },
+    "SimulationExecutionReport": {
+      "path": "simulation-execution-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-report",
+      "schema_version": "dpl/v1"
+    },
     "DeploymentAuditEvidence": {
       "path": "audit-evidence.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:audit-evidence",
@@ -139,6 +149,18 @@
       "name": "ExecutionAuthorization",
       "path": "execution-authorization.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:execution-authorization"
+    },
+    {
+      "kind": "contract",
+      "name": "SimulationExecutionReceipt",
+      "path": "simulation-execution-receipt.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-receipt"
+    },
+    {
+      "kind": "contract",
+      "name": "SimulationExecutionReport",
+      "path": "simulation-execution-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-report"
     },
     {
       "kind": "contract",
