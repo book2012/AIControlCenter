@@ -1,15 +1,15 @@
 # AI Home Datacenter Architecture
 
-## M3-A2A Permit and Replay State Boundary
+## M3-A2C Permit and Replay Recovery Boundary
 
-`core.deployment.permit_replay_sqlite` is an AIControlCenter-owned Mac Control
-Plane read-only boundary. It defines the future explicit application-state
-path and durable event schema without creating or mutating a database.
-Deterministic inspection validates replay lifecycles, hash-chain integrity,
-privacy and Production denial and derives permit states. Ubuntu owns no
-authoritative permit, nonce or replay state. M2, M3-A1 and M3-A2A are closed;
-durable reservation, consumption and nonce writes remain disabled, and
-Production activation is `NOT_AUTHORIZED`. M3-A2B is next.
+The Mac Control Plane owns authoritative replay state. M3-A2A read-only
+inspection remains intact, M3-A2B writing remains operationally disabled, and
+M3-A2C adds separate explicit-path online backup, restore, exact recovery and
+concurrency validation. Ubuntu owns no permit, nonce, replay, backup or
+recovery state. All writable validation used pytest temporary paths. M3-A1 and
+M3-A2A through M3-A2C are closed; no operational database, backup schedule,
+restore or writer is active, and Production activation is `NOT_AUTHORIZED`.
+M3-A3 Operational Monitoring and Alerts is next.
 
 ## M3-A1C SQLite Audit Recovery Boundary
 
@@ -901,3 +901,11 @@ Plane-owned existing-file SQLite writer using explicit configuration,
 permit reservation, terminal disposition and replay integrity; Ubuntu owns
 none of this state. No operational database, migration, repair, audit write or
 Production activation is composed.
+
+## M3 Permit Replay Recovery Boundary
+
+Recovery depends only on M3-A2A public inspection/path/state contracts, M3-A2B
+public writer contracts, deployment contracts and Python SQLite. Verified
+temporary outputs are atomically published only after byte, canonical manifest,
+ordered-ledger and derived-state equality checks. A restored file is never
+automatically selected as operational.

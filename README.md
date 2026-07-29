@@ -774,11 +774,11 @@ authorization policy is AVAILABLE. The next milestone is M2-P2 Controlled
 Sandbox Pilot Activation and Evidence. Persistent SQLite deployment audit is
 required before broader mutable deployment.
 
-## M3-A2B Durable Permit Replay
+## M3-A2C Replay-State Recovery
 
-M3-A2A and M3-A2B are CLOSED. The separate Mac-owned SQLite writer supports
-durable `RESERVED`, `CONSUMED` and `FAILED_CLOSED` events with hash-chain
-validation, idempotency and serialized concurrency. Validation used only
-pytest temporary databases. No operational replay database was created or
-activated, raw nonce writes remain disabled, and Production activation is
-`NOT_AUTHORIZED`. Next: M3-A2C.
+M3-A1 and M3-A2A through M3-A2C are CLOSED. Explicit-path online SQLite backup,
+canonical manifest, restore, exact recovery and post-recovery concurrency were
+validated only with pytest temporary databases. The operational replay DB was
+not created; no backup schedule, restore or writer was activated; raw nonce
+writes remain zero; and Production activation is `NOT_AUTHORIZED`. Next:
+M3-A3 Operational Monitoring and Alerts.

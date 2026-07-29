@@ -941,8 +941,9 @@ Production activation remains `NOT_AUTHORIZED`.
 
 - [x] M3-A2A — Read-only permit/replay foundation.
 - [x] M3-A2B — Durable reservation, consumption and failed-closed writer.
-- [ ] M3-A2C — Replay-state backup, recovery and concurrency validation.
+- [x] M3-A2C — Replay-state backup, recovery and concurrency validation.
 
-M3-A2B validation used pytest temporary databases only. Operational replay
-state and writer activation remain absent. Production activation is
-`NOT_AUTHORIZED`.
+M3-A2C validation used pytest temporary databases only and proved
+post-recovery concurrency. Operational replay DB, backup schedule, restore and
+writer activation remain absent; raw nonce writes remain zero. Production
+activation is `NOT_AUTHORIZED`. Next: M3-A3 Operational Monitoring and Alerts.

@@ -876,12 +876,17 @@ readiness and audit.
 - Next: M2-P2 Controlled Sandbox Pilot Activation and Evidence
 - Broader mutable deployment prerequisite: persistent SQLite audit adapter
 
-## M3-A2B Status
+## M3-A2C Status
 
+- M3-A1: CLOSED
 - M3-A2A: CLOSED
 - M3-A2B: CLOSED
+- M3-A2C: CLOSED
 - Durable permit writer: IMPLEMENTED, NOT OPERATIONALLY ACTIVATED
 - Operational replay database: NOT CREATED
-- Raw nonce persistence: NOT ENABLED
+- Operational backup schedule: NOT ACTIVATED
+- Operational restore: NOT PERFORMED
+- Post-recovery concurrency: VALIDATED under pytest temporary paths
+- Raw nonce writes: ZERO
 - Production activation: NOT_AUTHORIZED
-- Next: M3-A2C
+- Next: M3-A3 Operational Monitoring and Alerts

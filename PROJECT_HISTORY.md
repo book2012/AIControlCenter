@@ -1,5 +1,14 @@
 # Project History
 
+## 2026-07-30 — M3-A2C Closed
+
+M3-A2C added explicit-path online replay-state backup, canonical manifests,
+verified restore, exact recovery and post-recovery concurrency validation.
+Only pytest temporary databases were used. M3-A1 and M3-A2A through M3-A2C are
+closed; the operational replay DB was not created, no schedule, restore or
+writer was activated, raw nonce writes remained zero and Production activation
+remained `NOT_AUTHORIZED`. M3-A3 Operational Monitoring and Alerts is next.
+
 ## 2026-07-29 — M3-A2A Permit and Replay Read-Only Foundation
 
 AIControlCenter closed M3-A2A with a separate Mac-owned, explicit-path,

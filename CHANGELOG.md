@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A2C Replay-State Backup and Recovery
+
+- Added immutable recovery contracts, replaceable ports, explicit-path online
+  SQLite backup/restore services and canonical digest-bound manifests.
+- Added exact event/state recovery plus post-recovery replay and independent
+  connection concurrency validation.
+- Added corruption, mismatch, path-security, cleanup and transaction rollback
+  tests using pytest temporary databases only.
+- Closed M3-A2C without an operational replay DB, backup schedule, restore,
+  writer activation or raw nonce write. Production remains `NOT_AUTHORIZED`.
+- Next: M3-A3 Operational Monitoring and Alerts.
+
 ## 2026-07-29 — M3-A2A Permit and Replay Read-Only Foundation
 
 - Added immutable permit/replay configuration, path, schema, finding, report,
