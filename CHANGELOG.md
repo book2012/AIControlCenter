@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-07-29 — M3-A1C SQLite Backup, Restore and Recovery
+
+- Added immutable backup, restore, manifest, receipt, finding and recovery
+  report contracts.
+- Added explicit-path SQLite online backup, separate-target restore and
+  deterministic complete-ledger validation.
+- Added fail-closed tamper, idempotency, path, compatibility and dependency
+  validation plus deployment and operations documentation.
+- Used only pytest temporary databases; no operational database, backup
+  schedule or restore was created or performed.
+- Persistent writer activation is not started and Production activation is
+  `NOT_AUTHORIZED`. Next: M3-A2 Durable Permit and Replay State.
+
 ## 2026-07-29 — M3-A1B Append-Only SQLite Audit Writer
 
 - Added a separate existing-file-only SQLite writer with serialized append,

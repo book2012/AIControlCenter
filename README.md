@@ -33,6 +33,16 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### M3-A1C
+
+M2 controlled pilot validation and M3-A1A through M3-A1C are closed. SQLite
+online backup, separate-target restore and deterministic recovery validation
+were verified only with pytest temporary databases. The operational audit
+database was not created, an operational backup schedule was not activated,
+an operational restore was not performed, persistent audit writer activation
+is not started, and Production activation is `NOT_AUTHORIZED`. Next: M3-A2
+Durable Permit and Replay State.
+
 ### M3-A1B
 
 M2 controlled pilot validation, M3-A1A and M3-A1B are closed. The separate

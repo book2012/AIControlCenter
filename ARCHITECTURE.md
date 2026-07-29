@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## M3-A1C SQLite Audit Recovery Boundary
+
+`core.deployment.audit_sqlite_recovery` is a separate Mac Control Plane
+boundary over M3-A1A inspection and M3-A1B schema contracts. Explicit-path
+SQLite online backup, canonical manifest binding, separate-target restore and
+deterministic recovery comparison are fail-closed and operationally disabled.
+Ubuntu owns no authoritative backup or recovery state. M2 and M3-A1A through
+M3-A1C are closed after pytest-only validation; no operational database,
+backup schedule or restore exists, persistent writer activation is not
+started, and Production activation is `NOT_AUTHORIZED`. M3-A2 is next.
+
 ## M3-A1B Append-Only SQLite Audit Writer Boundary
 
 `core.deployment.audit_sqlite_writer` is a separate AIControlCenter-owned Mac

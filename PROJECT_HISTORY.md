@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-29 — M3-A1C SQLite Backup, Restore and Recovery
+
+AIControlCenter closed M3-A1C with explicit-path SQLite online backup,
+canonical manifest binding, separate-target restore and deterministic complete
+ledger comparison. Validation used only pytest temporary databases. No
+operational audit database, backup schedule or restore was created or
+performed; persistent writer activation is not started and Production
+activation remains `NOT_AUTHORIZED`. M3-A2 Durable Permit and Replay State is
+next.
+
 ## 2026-07-29 — M3-A1B Append-Only SQLite Audit Writer
 
 AIControlCenter closed M3-A1B with a separate Mac-owned SQLite append adapter.

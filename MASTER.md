@@ -1,5 +1,15 @@
 # MASTER
 
+## M3-A1C Closure
+
+M2 controlled pilot validation and M3-A1A through M3-A1C are CLOSED. SQLite
+audit backup, restore and deterministic recovery validation are IMPLEMENTED
+and verified only with pytest temporary databases. The operational audit
+database was NOT CREATED, the operational backup schedule was NOT ACTIVATED,
+an operational restore was NOT PERFORMED, persistent writer activation is NOT
+STARTED and Production activation is `NOT_AUTHORIZED`. Next: M3-A2 Durable
+Permit and Replay State.
+
 ## M3-A1B Closure
 
 M2 controlled pilot validation, M3-A1A and M3-A1B are CLOSED. The append-only
