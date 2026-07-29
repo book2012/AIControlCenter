@@ -36,6 +36,11 @@
       "selectors": [{"module_prefix": "core.deployment.pilot_activation"}]
     },
     {
+      "id": "pilot_evidence",
+      "responsibility": "M2-P3 pure immutable activation evidence validation and injected pytest-owned rollback orchestration; no concrete adapter or persistence.",
+      "selectors": [{"module_prefix": "core.deployment.pilot_evidence"}]
+    },
+    {
       "id": "executor_ports",
       "responsibility": "Typed non-production executor ports and deny-only default composition.",
       "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
@@ -119,6 +124,7 @@
     {"from_zone": "m2_readiness", "to_zones": ["contracts", "plan_services", "authorization", "simulation", "executor_contracts", "executor_ports", "audit_contracts", "m2_readiness"]},
     {"from_zone": "pilot_authorization", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "audit_contracts", "pilot_authorization"]},
     {"from_zone": "pilot_activation", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "executor_ports", "audit_contracts", "pilot_authorization", "pilot_activation"]},
+    {"from_zone": "pilot_evidence", "to_zones": ["contracts", "executor_contracts", "audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence"]},
     {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
     {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},
@@ -196,7 +202,7 @@
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "modules": ["sqlite3", "subprocess", "socket", "requests", "paramiko", "fabric"],
       "severity": "ERROR"
     }
@@ -204,7 +210,7 @@
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

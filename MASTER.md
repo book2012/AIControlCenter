@@ -1,14 +1,13 @@
 # MASTER
 
-## M2-P2 Closure
+## M2-P3 Closure
 
-M2-P2 is CLOSED after validation. Exactly one controlled test-owned Mac
-sandbox pilot executed in a pytest temporary directory through the injected
-typed adapter. Permit reservation is fail-closed before invocation and replay
-after success or failure is denied. DPL-04 is CLOSED, M2 readiness is ACCEPTED,
-and M2-P1 is CLOSED. Persistent host activation is NOT STARTED, persistent
-SQLite audit is NOT IMPLEMENTED, and Production activation is
-`NOT_AUTHORIZED`. Next: M2-P3 Pilot Evidence and Rollback Validation.
+M2 controlled pilot validation is CLOSED. DPL-04 is CLOSED, readiness is
+ACCEPTED, and M2-P1 through M2-P3 are CLOSED. Exactly one pytest-owned
+controlled activation and rollback were validated. Persistent host activation
+is NOT STARTED, persistent host rollback and SQLite audit are NOT IMPLEMENTED,
+and Production activation is `NOT_AUTHORIZED`. Next: M3-A1 Durable SQLite
+Audit Adapter.
 
 ## M2-P1 Closure
 

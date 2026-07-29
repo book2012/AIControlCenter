@@ -1,15 +1,14 @@
 # AI Home Datacenter Architecture
 
-## M2 Pilot Activation Boundary
+## M2 Pilot Evidence and Rollback Boundary
 
-`core.deployment.pilot_activation` is an AIControlCenter-owned Mac Control
-Plane orchestration boundary. It receives the typed executor, capability and
-one-use registry by injection and never constructs a concrete sandbox adapter.
-The process-local registry reserves a permit before the fixed verify, prepare
-and evidence sequence and fails closed on replay or adapter failure. It is
-test-only protection, not durable deployment state. One controlled pilot ran
-only below a pytest temporary root; persistent host and Production activation
-remain unavailable.
+`core.deployment.pilot_activation` and `pilot_evidence` are AIControlCenter-
+owned Mac Control Plane boundaries. M2-P3 validates immutable activation
+evidence and derives fixed rollback steps before an injected test-only port can
+act. Production code has no filesystem rollback adapter. One controlled
+activation and rollback ran only below pytest temporary roots; persistent host
+activation is not started, persistent host rollback is not implemented and
+Production activation remains `NOT_AUTHORIZED`.
 
 ## M2 Pilot Authorization Boundary
 

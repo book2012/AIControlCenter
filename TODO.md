@@ -7,7 +7,8 @@
 - [x] DPL-04D M2 operational readiness
 - [x] M2-P1 controlled non-production sandbox pilot authorization
 - [x] M2-P2 controlled sandbox pilot activation and evidence
-- [ ] M2-P3 pilot evidence and rollback validation
+- [x] M2-P3 pilot evidence and rollback validation
+- [ ] M3-A1 Durable SQLite Audit Adapter
 
 M2 readiness is accepted, M2-P1 and M2-P2 are closed, and exactly one
 test-owned controlled pilot completed under a pytest temporary root. Persistent

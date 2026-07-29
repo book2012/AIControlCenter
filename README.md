@@ -33,15 +33,14 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
-### M2-P2
+### M2-P3
 
-M2-P2 is closed. The dependency-injected `pilot_activation` package reserves a
-validated one-use M2-P1 permit before executing the fixed verify, prepare and
-collect-evidence sequence through the typed non-production executor port.
-Exactly one controlled pilot was exercised only in a pytest-owned temporary
-sandbox. Persistent host sandbox activation is not started, persistent SQLite
-audit is not implemented, and Production activation is `NOT_AUTHORIZED`.
-Next: M2-P3 Pilot Evidence and Rollback Validation.
+M2-P3 is closed. Immutable activation evidence is validated before a fixed,
+evidence-derived plan can reach an injected test-only rollback port. Exactly
+one controlled activation and rollback were validated only in pytest-owned
+temporary sandboxes. Persistent host activation is not started, persistent
+host rollback and persistent SQLite audit are not implemented, and Production
+activation is `NOT_AUTHORIZED`. Next: M3-A1 Durable SQLite Audit Adapter.
 
 ### DPL-04C
 

@@ -28,12 +28,20 @@ root; it does not authorize persistent host or Production activation.
    or nonzero-safety result. A failed attempt remains consumed.
 10. Confine canonical manifest and evidence artifacts to the pytest-owned
     temporary sandbox and retain the immutable activation receipt.
+11. Validate M2-P3 evidence against the exact activation bindings, results,
+    manifests, artifacts and zero safety counters.
+12. Derive rollback only from valid evidence, reserve it before invocation and
+    use an explicitly injected test-only adapter.
+13. Execute the fixed rollback steps below the exact pytest temporary root,
+    restore the pre-activation digest and deny every replay.
 
 The operator must preserve a non-repository sandbox root, Mac Control Plane
 ownership, zero Ubuntu/runtime/network/production activity, and zero real
 executor invocations. Persistent SQLite audit must be implemented and
 separately authorized before any broader mutable deployment.
 
-M2-P1 and M2-P2 are closed. Exactly one controlled pilot was exercised only in
-a pytest-owned temporary sandbox. Persistent host sandbox activation has not
-started. Production activation remains `NOT_AUTHORIZED`.
+M2-P1, M2-P2 and M2-P3 are closed. Exactly one controlled activation and one
+controlled rollback were exercised only in pytest-owned temporary sandboxes.
+Persistent host activation has not started, persistent host rollback is not
+implemented, and Production activation remains `NOT_AUTHORIZED`. Next: M3-A1
+Durable SQLite Audit Adapter.

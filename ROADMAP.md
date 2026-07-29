@@ -1,13 +1,12 @@
 # Roadmap
 
-## M2-P2 Closure and M2-P3
+## M2-P3 Closure and M3-A1
 
-M2-P2 is CLOSED after exactly one controlled test-owned activation below a
-pytest temporary root. Fail-closed permit reservation, deterministic typed
-operation ordering and replay denial are validated. Persistent host activation
-is NOT STARTED, persistent SQLite audit is NOT IMPLEMENTED and Production
-activation remains `NOT_AUTHORIZED`. Next: M2-P3 Pilot Evidence and Rollback
-Validation.
+M2-P1 through M2-P3 are CLOSED after one controlled pytest activation and one
+controlled pytest rollback. Persistent host activation is NOT STARTED,
+persistent host rollback and persistent SQLite audit are NOT IMPLEMENTED and
+Production activation remains `NOT_AUTHORIZED`. Next: M3-A1 Durable SQLite
+Audit Adapter.
 
 ## M2-P1 Closure and M2-P2
 

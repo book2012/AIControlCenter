@@ -1,5 +1,12 @@
 # Project History
 
+## 2026-07-29 — M2-P3 Pilot Evidence and Rollback Validation
+
+M2-P3 closed with canonical tamper detection, fixed evidence-derived rollback
+planning and one pytest-owned rollback restoring the pre-activation digest.
+Persistent host activation is not started, persistent host rollback and SQLite
+audit are not implemented, and Production activation is `NOT_AUTHORIZED`.
+
 ## 2026-07-29 — M2-P2 Controlled Sandbox Pilot Activation
 
 M2-P2 closed after exactly one successful controlled pilot executed through an

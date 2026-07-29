@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-07-29 — M2-P3 Pilot Evidence and Rollback Validation
+
+- Added immutable deterministic evidence and rollback contracts.
+- Added fail-closed validation, evidence-derived planning and an injected
+  rollback port with replay denial.
+- Validated exactly one rollback in a pytest-owned temporary sandbox.
+- Closed M2 without persistent-host, Production, Ubuntu, network, command,
+  database or audit writes.
+
 ## 2026-07-29 — M2-P2 Controlled Sandbox Pilot Activation
 
 - Added immutable activation contracts, deterministic canonical receipts and a
