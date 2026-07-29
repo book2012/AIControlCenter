@@ -1,5 +1,12 @@
 # Roadmap
 
+## M2-P1 Closure and M2-P2
+
+M2-P1 Controlled Non-Production Sandbox Pilot Authorization is CLOSED. Pilot
+authorization policy is AVAILABLE; pilot activation is NOT STARTED. Persistent
+SQLite audit is NOT IMPLEMENTED and Production activation remains
+`NOT_AUTHORIZED`. Next: M2-P2 Controlled Sandbox Pilot Activation and Evidence.
+
 ## DPL-04C Closure
 
 DPL-04C is complete. The Mac Control Plane owns durable deployment audit, with
@@ -892,6 +899,7 @@ writes require a separate explicit authorization.
 
 DPL-04A through DPL-04D are CLOSED and DPL-04 is CLOSED.
 M2 is `READINESS_ACCEPTED`; activation is `ACTIVATION_NOT_STARTED`.
-The next milestone is a controlled, separately authorized non-production
-sandbox pilot. Persistent SQLite audit implementation is required before any
-broader mutable deployment. Production activation remains `NOT_AUTHORIZED`.
+M2-P1 is CLOSED and pilot authorization policy is AVAILABLE. The next milestone
+is M2-P2 Controlled Sandbox Pilot Activation and Evidence. Persistent SQLite
+audit implementation is required before any broader mutable deployment.
+Production activation remains `NOT_AUTHORIZED`.

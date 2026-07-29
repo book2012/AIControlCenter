@@ -1,5 +1,15 @@
 # AI Home Datacenter Architecture
 
+## M2 Pilot Authorization Boundary
+
+`core.deployment.pilot_authorization` is a pure AIControlCenter-owned policy
+boundary on the Mac Control Plane. It composes public DPL-03C authorization,
+DPL-04D readiness and typed executor contracts without importing an adapter,
+API, worker, persistence, network or command implementation. Permits are
+deterministic, one-use, non-production and exact-scope bound. They do not start
+the pilot. Ubuntu owns no authorization or audit. Persistent SQLite audit is
+not implemented and Production activation is `NOT_AUTHORIZED`.
+
 ## DPL Durable Audit Boundary
 
 AIControlCenter owns authoritative durable deployment audit on the Mac Control
@@ -837,4 +847,5 @@ adapter, command, network or persistence implementation. Its accepted result
 is sandbox-only and non-production-only; it performs no activation. Ubuntu
 owns no governance or audit. DPL-04 is CLOSED with
 `M2 READINESS_ACCEPTED`, `M2 ACTIVATION_NOT_STARTED`, and Production activation
-`NOT_AUTHORIZED`.
+`NOT_AUTHORIZED`. M2-P1 policy is available but grants no execution or
+activation; M2-P2 remains the next separately controlled boundary.

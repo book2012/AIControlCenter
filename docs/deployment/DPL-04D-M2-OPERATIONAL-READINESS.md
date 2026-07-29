@@ -28,3 +28,9 @@ DPL-04A, DPL-04B, DPL-04C, DPL-04D and DPL-04 are closed after validation.
 The canonical passing fixture establishes `M2 READINESS_ACCEPTED`, not
 deployment or completion. `M2 ACTIVATION_NOT_STARTED` and Production
 activation is `NOT_AUTHORIZED`.
+
+M2-P1 is now CLOSED and its pilot authorization policy is AVAILABLE. This does
+not change the DPL-04D readiness decision: pilot activation remains NOT
+STARTED, persistent SQLite audit remains NOT IMPLEMENTED, and Production
+activation remains `NOT_AUTHORIZED`. Next: M2-P2 Controlled Sandbox Pilot
+Activation and Evidence.

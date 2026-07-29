@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-07-29 — M2-P1 Controlled Sandbox Pilot Authorization
+
+### Added
+
+- Immutable pilot request, operator approval, decision, permit, validation
+  report and restriction contracts.
+- Deterministic default-deny authorization service with exact DPL-03C and
+  DPL-04D evidence binding, typed safe operations, separation of duties and a
+  bounded one-use permit.
+- Six secret-free fixtures and operator/deployment authorization guidance.
+
+### Status and safety
+
+DPL-04 is CLOSED, M2 readiness is ACCEPTED and M2-P1 is CLOSED. Pilot
+authorization policy is AVAILABLE; pilot activation is NOT STARTED. No
+executor, adapter, persistent audit/nonce, sandbox artifact, network, Ubuntu,
+service, API write or activation operation was performed. Persistent SQLite
+audit is NOT IMPLEMENTED and Production activation remains `NOT_AUTHORIZED`.
+Next: M2-P2 Controlled Sandbox Pilot Activation and Evidence.
+
 ## 2026-07-29 — DPL-04C Durable Audit Architecture Decision
 
 - Added immutable audit event, envelope, append, integrity and read-only query

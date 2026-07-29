@@ -4,10 +4,13 @@
 
 - [x] DPL-04B Mac-only sandbox adapter
 - [x] DPL-04C durable audit architecture decision
-- [ ] DPL-04D
+- [x] DPL-04D M2 operational readiness
+- [x] M2-P1 controlled non-production sandbox pilot authorization
+- [ ] M2-P2 controlled sandbox pilot activation and evidence
 
-M2 is not complete. The persistent audit adapter is not implemented and
-production activation is `NOT_AUTHORIZED`.
+M2 readiness is accepted and pilot authorization policy is available. Pilot
+activation has not started. The persistent SQLite audit adapter is not
+implemented and production activation is `NOT_AUTHORIZED`.
 
 Sprint 16
 
@@ -599,8 +602,8 @@ Production activation remains NOT AUTHORIZED.
 
 - [x] Close DPL-04A, DPL-04B, DPL-04C and DPL-04D.
 - [x] Accept M2 readiness from the canonical passing fixture.
-- [ ] Obtain separate operator authorization for a controlled non-production
-      sandbox pilot.
+- [x] Implement M2-P1 controlled non-production pilot authorization policy.
+- [ ] Complete M2-P2 controlled sandbox pilot activation and evidence.
 - [ ] Implement persistent SQLite deployment audit before broader mutable
       deployment.
 

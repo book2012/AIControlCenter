@@ -1,5 +1,18 @@
 # Project History
 
+## 2026-07-29 — M2-P1 Pilot Authorization Closed
+
+AIControlCenter added a pure, deterministic and default-deny policy for a
+separately controlled Mac-only non-production sandbox pilot. The one-use permit
+binds accepted M2 readiness, valid DPL-03C execution authorization, exact
+digests, identities, scope, sandbox-root identity and explicit validity while
+enforcing separation of duties. No pilot was executed or activated.
+
+DPL-04 is CLOSED, M2 readiness is ACCEPTED, M2-P1 is CLOSED and pilot
+authorization policy is AVAILABLE. Pilot activation is NOT STARTED, persistent
+SQLite audit is NOT IMPLEMENTED and Production activation is
+`NOT_AUTHORIZED`. Next: M2-P2 Controlled Sandbox Pilot Activation and Evidence.
+
 ## DPL-04C
 
 On 2026-07-29, AIControlCenter accepted the durable deployment audit

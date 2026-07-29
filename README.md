@@ -33,6 +33,17 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### M2-P1
+
+M2-P1 is closed. The pure `pilot_authorization` package makes controlled
+development, test and staging pilot authorization policy available on the Mac
+Control Plane. A deterministic one-use permit requires valid DPL-03C execution
+authorization, accepted DPL-04D readiness evidence, exact digest/identity/scope
+bindings and requester/operator/approver separation. Pilot activation has not
+started, persistent SQLite audit is not implemented, and Production activation
+is `NOT_AUTHORIZED`. Next: M2-P2 Controlled Sandbox Pilot Activation and
+Evidence.
+
 ### DPL-04C
 
 DPL-04C is closed. AIControlCenter owns durable deployment audit on the Mac
@@ -732,6 +743,7 @@ See `docs/deployment/DPL-01-INVENTORY-ASSESSMENT.md`.
 DPL-04A, DPL-04B, DPL-04C, DPL-04D and DPL-04 are CLOSED. The pure injected-
 evidence gate accepted the canonical sandbox fixture:
 `M2 READINESS_ACCEPTED`. This is not deployment: `M2 ACTIVATION_NOT_STARTED`
-and Production activation is `NOT_AUTHORIZED`. The next milestone is a
-separately authorized controlled non-production sandbox pilot. Persistent
-SQLite deployment audit is required before broader mutable deployment.
+and Production activation is `NOT_AUTHORIZED`. M2-P1 is CLOSED and pilot
+authorization policy is AVAILABLE. The next milestone is M2-P2 Controlled
+Sandbox Pilot Activation and Evidence. Persistent SQLite deployment audit is
+required before broader mutable deployment.

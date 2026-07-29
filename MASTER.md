@@ -1,5 +1,15 @@
 # MASTER
 
+## M2-P1 Closure
+
+M2-P1 is CLOSED and controlled non-production sandbox pilot authorization
+policy is AVAILABLE. DPL-04 is CLOSED and M2 readiness is ACCEPTED. The policy
+issues only deterministic one-use, Mac-only, non-production permits after
+exact evidence binding and separation-of-duty checks. Pilot activation is NOT
+STARTED, persistent SQLite audit is NOT IMPLEMENTED, and Production activation
+is `NOT_AUTHORIZED`. Next: M2-P2 Controlled Sandbox Pilot Activation and
+Evidence.
+
 ## DPL-04C Closure
 
 DPL-04C is closed with pure immutable audit contracts, deterministic canonical
@@ -823,6 +833,8 @@ readiness and audit.
 - DPL-04: CLOSED
 - M2: READINESS_ACCEPTED
 - M2 activation: ACTIVATION_NOT_STARTED
+- M2-P1: CLOSED
+- Pilot authorization policy: AVAILABLE
 - Production activation: NOT_AUTHORIZED
-- Next: separately authorized controlled non-production sandbox pilot
+- Next: M2-P2 Controlled Sandbox Pilot Activation and Evidence
 - Broader mutable deployment prerequisite: persistent SQLite audit adapter
