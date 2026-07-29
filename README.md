@@ -33,6 +33,16 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### DPL-04C
+
+DPL-04C is closed. AIControlCenter owns durable deployment audit on the Mac
+Control Plane. Pure immutable audit contracts define canonical JSON, stable
+digests and tamper-evident hash-chain verification behind a replaceable
+`DurableAuditPort`. The selected future adapter is an append-only SQLite ledger;
+no adapter, database, persistence or API write path is implemented. DPL-04A,
+DPL-04B and DPL-04C are closed; DPL-04D is ready, M2 is not complete and
+production activation is `NOT_AUTHORIZED`.
+
 ### DPL-04B
 
 The Mac-only sandbox adapter implements the typed non-production executor port
@@ -44,7 +54,7 @@ as audit state, and production activation remains unauthorized.
 
 Next Sprint
 
-- DPL-04C
+- DPL-04D
 
 <!-- AI_SHOPPING_PLATFORM_START -->
 ## AI Shopping Platform

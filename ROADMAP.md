@@ -1,5 +1,13 @@
 # Roadmap
 
+## DPL-04C Closure
+
+DPL-04C is complete. The Mac Control Plane owns durable deployment audit, with
+pure canonical event and hash-chain contracts behind a replaceable port. The
+future append-only SQLite adapter is selected but not implemented. DPL-04A,
+DPL-04B and DPL-04C are closed; DPL-04D is ready. M2 remains incomplete and
+production activation is `NOT_AUTHORIZED`.
+
 ## DPL-04B Closure
 
 DPL-04B is complete. The Mac-only adapter can materialize deterministic

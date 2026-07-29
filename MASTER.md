@@ -1,5 +1,15 @@
 # MASTER
 
+## DPL-04C Closure
+
+DPL-04C is closed with pure immutable audit contracts, deterministic canonical
+JSON digests and hash-chain verification behind `DurableAuditPort`.
+AIControlCenter and the Mac Control Plane own durable audit; the selected future
+adapter is an append-only SQLite ledger outside Git. No adapter, database,
+persistence or API write path exists. DPL-04A through DPL-04C are closed,
+DPL-04D is ready, M2 is not complete and production activation is
+`NOT_AUTHORIZED`.
+
 ## DPL-04B Closure
 
 The Mac Control Plane now has an explicit-root sandbox-only implementation of

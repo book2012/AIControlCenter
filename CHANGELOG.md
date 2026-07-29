@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-07-29 — DPL-04C Durable Audit Architecture Decision
+
+- Added immutable audit event, envelope, append, integrity and read-only query
+  contracts plus the replaceable `DurableAuditPort`.
+- Defined deterministic canonical JSON identities and tamper-evident hash-chain
+  verification without persistence.
+- Accepted a future Mac-only append-only SQLite adapter; no database, migration,
+  audit write, nonce write or production activation was added.
+- Closed DPL-04C and marked DPL-04D ready while M2 remains incomplete.
+
 ## 2026-07-29 — DPL-04B Mac-Only Sandbox Adapter
 
 - Added an explicit-root, non-production `MacSandboxAdapter` implementing the

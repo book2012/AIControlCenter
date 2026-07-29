@@ -3,7 +3,11 @@
 ## Deployment Package Lifecycle
 
 - [x] DPL-04B Mac-only sandbox adapter
-- [ ] DPL-04C
+- [x] DPL-04C durable audit architecture decision
+- [ ] DPL-04D
+
+M2 is not complete. The persistent audit adapter is not implemented and
+production activation is `NOT_AUTHORIZED`.
 
 Sprint 16
 

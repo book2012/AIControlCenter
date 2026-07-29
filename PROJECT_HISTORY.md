@@ -1,5 +1,15 @@
 # Project History
 
+## DPL-04C
+
+On 2026-07-29, AIControlCenter accepted the durable deployment audit
+architecture. The Mac Control Plane owns the authoritative ledger domain;
+canonical JSON, stable digests and hash-chain linkage provide deterministic
+tamper evidence through pure contracts and `DurableAuditPort`. A future
+append-only SQLite adapter was selected but not implemented. DPL-04C closed,
+DPL-04D became ready, M2 remained incomplete and production activation remained
+`NOT_AUTHORIZED`.
+
 ## DPL-04B
 
 AIControlCenter added a Mac-only, explicit-root sandbox adapter for

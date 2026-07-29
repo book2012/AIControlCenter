@@ -16,6 +16,11 @@
       "selectors": [{"module_prefix": "core.deployment.executor_contracts"}]
     },
     {
+      "id": "audit_contracts",
+      "responsibility": "Pure immutable durable-audit domain contracts and replaceable port; no persistence adapter.",
+      "selectors": [{"module_prefix": "core.deployment.audit_contracts"}]
+    },
+    {
       "id": "executor_ports",
       "responsibility": "Typed non-production executor ports and deny-only default composition.",
       "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
@@ -95,6 +100,7 @@
   ],
   "allowed_dependency_directions": [
     {"from_zone": "contracts", "to_zones": ["contracts"]},
+    {"from_zone": "audit_contracts", "to_zones": ["contracts", "audit_contracts"]},
     {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
     {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},
@@ -172,15 +178,15 @@
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
-      "modules": ["subprocess", "socket", "requests", "paramiko", "fabric"],
+      "zones": ["audit_contracts", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "modules": ["sqlite3", "subprocess", "socket", "requests", "paramiko", "fabric"],
       "severity": "ERROR"
     }
   ],
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

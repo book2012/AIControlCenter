@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## DPL Durable Audit Boundary
+
+AIControlCenter owns authoritative durable deployment audit on the Mac Control
+Plane. The audit domain is canonical JSON with stable IDs, deterministic
+digests and tamper-evident hash-chain linkage behind a replaceable
+`DurableAuditPort`. The selected future adapter is an append-only SQLite ledger
+stored outside Git; SQLite is not the domain model and is not implemented in
+DPL-04C. Ubuntu cannot own audit policy or state. Query integration is
+read-only-first; retention, deletion, compaction and production activation are
+not authorized.
+
 ## DPL Mac Sandbox Boundary
 
 `core.deployment.sandbox_adapter` is a Mac Control Plane adapter implementing
