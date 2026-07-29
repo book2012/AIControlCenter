@@ -86,6 +86,11 @@
       "selectors": [{"module_prefix": "core.deployment.monitoring_alert_drill"}]
     },
     {
+      "id": "operational_activation_gate",
+      "responsibility": "Pure immutable M3-A4A pre-activation readiness, path, permission, bootstrap and rollback planning; no probing, execution, persistence or authorization.",
+      "selectors": [{"module_prefix": "core.deployment.operational_activation_gate"}]
+    },
+    {
       "id": "executor_ports",
       "responsibility": "Typed non-production executor ports and deny-only default composition.",
       "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
@@ -179,6 +184,7 @@
     {"from_zone": "operational_monitoring", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "m2_readiness", "pilot_evidence", "operational_monitoring"]},
     {"from_zone": "alert_routing", "to_zones": ["contracts", "operational_monitoring", "alert_routing"]},
     {"from_zone": "monitoring_alert_drill", "to_zones": ["contracts", "operational_monitoring", "alert_routing", "monitoring_alert_drill"]},
+    {"from_zone": "operational_activation_gate", "to_zones": ["contracts", "m2_readiness", "pilot_evidence", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate"]},
     {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
     {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},
@@ -256,7 +262,7 @@
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "modules": ["sqlite3", "subprocess", "socket", "requests", "paramiko", "fabric"],
       "severity": "ERROR"
     }

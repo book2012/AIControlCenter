@@ -17,13 +17,13 @@
 - [x] M3-A3A Read-Only Operational Monitoring Foundation
 - [x] M3-A3B Alert Routing and Deduplication
 - [x] M3-A3C Monitoring and Alert Operational Drill
-- [ ] M3-A4 Controlled Operational Activation Gate
+- [x] M3-A4A Read-Only Operational Activation Readiness Gate
+- [ ] M3-A4B Controlled Mac Operational Bootstrap
 
-M2 controlled pilot validation, M3-A1, M3-A2, M3-A3A, M3-A3B and M3-A3C are
-closed; the M3-A3 Monitoring and Alert Track is closed.
-Logical alert routing, deterministic deduplication and severity escalation are
-available. External dispatch and alert-routing persistence are not implemented.
-Operational monitoring and databases remain inactive; Production activation is
+M2, M3-A1, M3-A2, M3-A3 and M3-A4A are closed. The activation readiness gate
+and controlled bootstrap plan are available. Operational databases are not
+created; writers and monitoring are not activated; external dispatch is not
+implemented; bootstrap authorization is not granted; Production activation is
 `NOT_AUTHORIZED`.
 
 Sprint 16
@@ -631,7 +631,8 @@ M2 activation has not started. Production activation is not authorized.
 - [x] Close M3-A3A read-only operational monitoring foundation.
 - [x] Close M3-A3B alert routing and deduplication.
 - [x] Close M3-A3C monitoring and alert operational drill.
-- [ ] Start M3-A4 controlled operational activation gate.
+- [x] Close M3-A4A read-only operational activation readiness gate.
+- [ ] Start M3-A4B controlled Mac operational bootstrap.
 
 Operational replay database creation, backup scheduling, restore and writer
 activation remain prohibited. Raw nonce writes remain zero.

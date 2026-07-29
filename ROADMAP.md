@@ -959,3 +959,12 @@ recurrence and severity escalation. External dispatch and alert-routing
 persistence are not implemented; operational monitoring, databases and writers
 remain inactive. Production activation is `NOT_AUTHORIZED`. Next: M3-A4
 Controlled Operational Activation Gate.
+
+- [x] M3-A4A — Read-Only Operational Activation Readiness Gate.
+- [ ] M3-A4B — Controlled Mac Operational Bootstrap.
+
+M3-A4A is closed. The activation readiness gate and controlled bootstrap plan
+are available without authorization or execution. Operational databases are
+not created; writers and monitoring are not activated; external dispatch is
+not implemented; bootstrap authorization is not granted; Production activation
+is `NOT_AUTHORIZED`.

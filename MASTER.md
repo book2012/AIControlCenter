@@ -876,6 +876,23 @@ readiness and audit.
 - Next: M2-P2 Controlled Sandbox Pilot Activation and Evidence
 - Broader mutable deployment prerequisite: persistent SQLite audit adapter
 
+## M3-A4A Status
+
+- M2: CLOSED
+- M3-A1: CLOSED
+- M3-A2: CLOSED
+- M3-A3: CLOSED
+- M3-A4A: CLOSED
+- Activation readiness gate: AVAILABLE
+- Controlled bootstrap plan: AVAILABLE
+- Operational databases: NOT CREATED
+- Operational writers: NOT ACTIVATED
+- Operational monitoring: NOT ACTIVATED
+- External alert dispatch: NOT IMPLEMENTED
+- Bootstrap authorization: NOT GRANTED
+- Production activation: NOT_AUTHORIZED
+- Next: M3-A4B Controlled Mac Operational Bootstrap
+
 ## M3-A3C Status
 
 - M3-A1: CLOSED

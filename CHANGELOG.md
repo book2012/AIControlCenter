@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A4A Operational Activation Readiness Gate
+
+- Added immutable evidence, stage, path, permission, bootstrap, rollback,
+  check, finding, restriction and canonical report contracts.
+- Added deterministic evidence-only readiness and plan validation with
+  warnings-only restrictions and default-deny contradictions.
+- Closed M3-A4A with zero writes, created paths/databases, activated writers or
+  monitoring, dispatch, network, Ubuntu or Production effects.
+- Bootstrap authorization remains not granted and Production activation
+  remains `NOT_AUTHORIZED`.
+- Next: M3-A4B Controlled Mac Operational Bootstrap.
+
 ## 2026-07-30 — M3-A3C Monitoring and Alert Operational Drill
 
 - Added immutable drill, envelope, receipt, plan, finding, and report contracts.

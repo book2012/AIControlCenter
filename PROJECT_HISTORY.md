@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-30 — M3-A4A Closed
+
+AIControlCenter closed M3-A4A with a deterministic, evidence-only
+`PRE_ACTIVATION_READINESS` gate and validated future path, permission,
+bootstrap and rollback plans. M2, M3-A1, M3-A2 and M3-A3 remain closed.
+Operational databases were not created; writers and monitoring were not
+activated; external dispatch was not implemented; bootstrap authorization was
+not granted; Production activation remains `NOT_AUTHORIZED`. M3-A4B Controlled
+Mac Operational Bootstrap is next.
+
 ## 2026-07-30 — M3-A3C and M3-A3 Track Closed
 
 AIControlCenter validated the deterministic monitoring-to-logical-routing drill

@@ -1,5 +1,18 @@
 # AI Home Datacenter Architecture
 
+## M3-A4A Operational Activation Readiness Boundary
+
+`core.deployment.operational_activation_gate` is a collision-free, pure,
+immutable and evidence-only Mac Control Plane boundary. It validates closure,
+test, Git, safety, recovery, monitoring, future path/permission, bootstrap and
+rollback evidence without clocks, probes, persistence, commands, network,
+executors, API, worker or Ubuntu dependencies. Its readiness result is not an
+authorization. M2, M3-A1, M3-A2, M3-A3 and M3-A4A are closed; operational
+databases remain uncreated, writers and monitoring remain inactive, external
+dispatch remains unimplemented, bootstrap authorization is not granted and
+Production activation is `NOT_AUTHORIZED`. Next: M3-A4B Controlled Mac
+Operational Bootstrap.
+
 ## M3-A3C Monitoring and Alert Drill Boundary
 
 `core.deployment.monitoring_alert_drill` consumes only public M3-A3A and M3-A3B
