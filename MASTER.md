@@ -979,3 +979,8 @@ VALIDATED in tests. Controlled operational mode: NOT EXECUTED. Operational
 targets/databases: NOT CREATED. Writers/monitoring: NOT ACTIVATED. Production:
 NOT_AUTHORIZED. Next: M3-A4B2B2B Fresh Permit and Authorized Mac Bootstrap
 Execution.
+# M3-A4B2B2B-R1 CLOSED
+
+Existing safe shared-parent compatibility and failure recovery are validated
+only under injected temporary roots. Actual bootstrap is NOT EXECUTED; fresh
+approval and permit are required. Production is NOT_AUTHORIZED.

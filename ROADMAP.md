@@ -1,5 +1,11 @@
 # Roadmap
 
+## M3-A4B2B2B-R1 closure
+
+Existing safe parent compatibility is complete. Shared siblings remain outside
+deployment ownership. Next: M3-A4B2B2B fresh approval and authorized Mac
+bootstrap; Production remains `NOT_AUTHORIZED`.
+
 ## Current milestone
 
 - M3-A4A CLOSED

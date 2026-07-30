@@ -13,6 +13,11 @@ account database to:
 
 The only targets are `audit/audit-ledger.sqlite3`, `audit/backups`,
 `security/permit-replay.sqlite3`, `security/backups`, and `monitoring`.
+The parent may safely preexist and is shared application state. Never chmod,
+chown, remove or recursively inspect it or its unrelated siblings. Accept it
+only under the shared-parent policy with every managed subtree absent. Record
+pre-existing mode `0755` as `EXISTING_SHARED_PARENT_MODE_NOT_0700`; require
+`0700` on newly created managed directories and `0600` on managed files.
 
 Invoke the narrow module with one canonical JSON request:
 

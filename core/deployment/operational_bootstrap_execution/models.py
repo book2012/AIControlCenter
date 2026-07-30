@@ -187,6 +187,21 @@ class OperationalBootstrapTargetRevalidationEvidence:
 
 
 @dataclass(frozen=True, slots=True)
+class OperationalBootstrapSharedParentEvidence:
+    application_state_parent_preexisting: bool
+    application_state_parent_owned_by_bootstrap: bool
+    application_state_parent_mode: int | None
+    application_state_parent_owner_uid: int | None
+    application_state_parent_symlink: bool
+    application_state_parent_group_world_write: bool
+    existing_unmanaged_sibling_count: int
+    existing_unmanaged_sibling_identity_digests: tuple[str, ...]
+    managed_targets_absent: bool
+    shared_parent_restrictions: tuple[str, ...]
+    existing_parent_modified: bool = False
+
+
+@dataclass(frozen=True, slots=True)
 class OperationalBootstrapClaimRequest:
     permit_id: str
     permit_digest: str

@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A4B2B2B-R1 Existing Safe Parent Compatibility
+
+- Corrected the application-state parent from exclusive to shared ownership.
+- Added immutable parent/sibling evidence and strict managed-target absence.
+- Preserved existing parent metadata and siblings during success and cleanup.
+- Performed no real permit issuance, claim, bootstrap or Production activation.
+
 ## M3-A4B2B1A
 
 - Added immutable deterministic issuance-review contracts, gate, builder and validator.

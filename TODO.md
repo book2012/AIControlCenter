@@ -1,5 +1,14 @@
 # TODO
 
+## M3-A4B2B2B recovery
+
+- [x] Support an existing safe shared Mac application-state parent.
+- [x] Preserve unrelated siblings and parent metadata.
+- [ ] Obtain fresh approval and permit bound to the new commit.
+- [ ] Execute separately authorized controlled Mac bootstrap.
+
+Production activation remains `NOT_AUTHORIZED`.
+
 ## Next
 
 - [ ] M3-A4B2B1B Operator Approval and Operational Permit Issuance

@@ -1012,3 +1012,10 @@ home determines the exact Application Support root. Ubuntu, workers, CMS,
 commerce and n8n cannot participate. M3-A4B2B2A makes the controlled
 non-production capability available in code without executing it or
 authorizing production.
+# M3-A4B2B2B-R1 shared application-state boundary
+
+The Mac application-state parent is shared infrastructure. Deployment control
+never assumes exclusive ownership and manages only `audit`, `security`, and
+`monitoring`. Existing siblings are opaque and immutable to bootstrap.
+Pre-existing safe `0755` parents carry a nonblocking restriction; newly created
+managed directories require `0700`.

@@ -46,20 +46,19 @@ class OperationalMacBootstrapExecutionCoordinator:
             live=live, issuance=issuance_contract, request=request)
         if permit_findings:
             raise OperationalBootstrapExecutionError(permit_findings[0].code)
-        if any(path.exists() for path in (
-                paths.audit_database, paths.audit_backups, paths.replay_database,
-                paths.replay_backups, paths.monitoring)):
+        if any(path.exists() or path.is_symlink() for path in paths.managed_targets):
             raise OperationalBootstrapExecutionError("TARGET_ALREADY_EXISTS")
         claim_request = OperationalBootstrapClaimRequest(
             permit["permit_id"], live.permit_digest, request.branch, request.commit,
             request.operator_identity, request.claim_at, request.request_id)
         claim = self.claim_registry.claim(request.permit_path, claim_request)
-        if any(path.exists() for path in (
-                paths.audit_database, paths.audit_backups, paths.replay_database,
-                paths.replay_backups, paths.monitoring)):
+        revalidated_paths = self.path_policy.resolve(test_only=test_only)
+        if revalidated_paths.root != paths.root:
+            raise OperationalBootstrapExecutionError("TARGET_BINDING_INVALID")
+        if any(path.exists() or path.is_symlink() for path in revalidated_paths.managed_targets):
             raise OperationalBootstrapExecutionError("TARGET_APPEARED_AFTER_CLAIM")
         receipt = self.adapter.execute(
-            request=request, paths=paths, claim=claim, plan=plan)
+            request=request, paths=revalidated_paths, claim=claim, plan=plan)
         receipt_digest = canonical_digest(receipt.as_dict())
         content = {"receipt_digest": receipt_digest, "claim_digest": claim.claim_digest,
                    "plan_digest": plan.plan_digest}

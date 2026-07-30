@@ -1009,3 +1009,9 @@ M3-A4B2B1C issued one operational permit. It remained unclaimed and was not
 read, changed or deleted by this increment. It expires or will expire unused
 and becomes invalid after the M3-A4B2B2A commit. M3-A4B2B2A closed after
 test-only validation; controlled operational execution did not occur.
+# M3-A4B2B2B-R1
+
+The initial attempt stopped before permit issuance. Read-only recovery found
+`ROOT_EXISTS_SAFE_PARENT_CANDIDATE`. Compatibility now preserves the existing
+shared parent and unrelated siblings while retaining strict managed-target
+absence. No operational execution occurred; fresh approval is required.

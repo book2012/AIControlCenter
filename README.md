@@ -1,5 +1,15 @@
 # AIControlCenter
 
+## M3-A4B2B2B-R1 closure
+
+Existing safe Mac application-state parents are compatible with controlled
+bootstrap without changing parent metadata or unrelated siblings. Deployment
+control owns only absent `audit`, `security` and `monitoring` children. Mode
+`0755` is accepted with an explicit restriction; managed directories remain
+`0700` and managed files `0600`. Recovery was read-only: no operational permit,
+claim or bootstrap occurred. Fresh approval is required and Production remains
+`NOT_AUTHORIZED`.
+
 ## M3-A4B2B1A closure
 
 The deterministic operational permit issuance review package is AVAILABLE.

@@ -16,3 +16,11 @@ This procedure does not authorize macOS Application Support execution. Do not
 substitute an operational root, issue an operational permit, activate writers
 or monitoring, dispatch alerts, invoke Ubuntu, or run infrastructure commands.
 M3-A4B2B is the separate next authorization and execution task.
+# M3-A4B2B2B-R1 recovery compatibility
+
+The application-state parent is shared and may preexist under the strict
+shared-parent policy. Deployment bootstrap owns only absent `audit`,
+`security`, and `monitoring` children. Existing siblings and parent metadata
+must remain unchanged. The recovery inspection result is
+`ROOT_EXISTS_SAFE_PARENT_CANDIDATE`; operational bootstrap remains not
+executed and requires fresh approval and permit.

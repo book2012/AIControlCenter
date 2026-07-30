@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import os
-import shutil
 from dataclasses import asdict
 from pathlib import Path
 
@@ -41,39 +40,47 @@ class _RuntimeAdapter:
                         created.append(parent)
                     for path in (paths.root, paths.audit_database.parent, paths.audit_backups,
                                  paths.replay_database.parent, paths.replay_backups, paths.monitoring):
+                        if path.exists():
+                            if path == paths.root and paths.shared_parent_evidence.application_state_parent_preexisting:
+                                continue
+                            raise OperationalBootstrapExecutionError("MANAGED_TARGET_ALREADY_EXISTS")
                         path.mkdir()
                         os.chmod(path, 0o700)
                         created.append(path)
                 elif step.code == "BOOTSTRAP_AUDIT_SQLITE_DATABASE":
+                    created.append(paths.audit_database)
                     MacSQLiteBootstrapAdapter.create(
                         paths.audit_database, MacSQLiteBootstrapAdapter.AUDIT_DDL,
                         "audit_ledger_meta", "dpl/audit-sqlite/v1", 2000)
-                    created.append(paths.audit_database)
                 elif step.code == "BOOTSTRAP_REPLAY_SQLITE_DATABASE":
+                    created.append(paths.replay_database)
                     MacSQLiteBootstrapAdapter.create(
                         paths.replay_database, MacSQLiteBootstrapAdapter.REPLAY_DDL,
                         "permit_replay_meta", "dpl/permit-replay-sqlite/v1", 2000)
-                    created.append(paths.replay_database)
                 elif step.code == "CREATE_AND_VALIDATE_BASELINE_AUDIT_BACKUP":
                     backup = paths.audit_backups / "baseline.sqlite3"
                     manifest = paths.audit_backups / "baseline.manifest.json"
-                    MacSQLiteBootstrapAdapter.backup(paths.audit_database, backup, manifest)
                     created.extend((backup, manifest))
+                    MacSQLiteBootstrapAdapter.backup(paths.audit_database, backup, manifest)
                     restore = paths.audit_backups / ".restore-validation.sqlite3"
+                    restore_manifest = paths.audit_backups / ".restore.manifest.json"
+                    created.extend((restore, restore_manifest))
                     MacSQLiteBootstrapAdapter.backup(backup, restore,
-                                                     paths.audit_backups / ".restore.manifest.json")
+                                                     restore_manifest)
                     restore.unlink()
-                    (paths.audit_backups / ".restore.manifest.json").unlink()
+                    restore_manifest.unlink()
                 elif step.code == "CREATE_AND_VALIDATE_BASELINE_REPLAY_BACKUP":
                     backup = paths.replay_backups / "baseline.sqlite3"
                     manifest = paths.replay_backups / "baseline.manifest.json"
-                    MacSQLiteBootstrapAdapter.backup(paths.replay_database, backup, manifest)
                     created.extend((backup, manifest))
+                    MacSQLiteBootstrapAdapter.backup(paths.replay_database, backup, manifest)
                     restore = paths.replay_backups / ".restore-validation.sqlite3"
+                    restore_manifest = paths.replay_backups / ".restore.manifest.json"
+                    created.extend((restore, restore_manifest))
                     MacSQLiteBootstrapAdapter.backup(backup, restore,
-                                                     paths.replay_backups / ".restore.manifest.json")
+                                                     restore_manifest)
                     restore.unlink()
-                    (paths.replay_backups / ".restore.manifest.json").unlink()
+                    restore_manifest.unlink()
                 receipts.append(OperationalBootstrapRuntimeStepReceipt(
                     step.sequence, step.code, True, canonical_digest(asdict(step))))
             content = {"request_id": request.request_id, "permit_id": claim.request.permit_id,
@@ -92,7 +99,7 @@ class _RuntimeAdapter:
                 request.claim_at, tuple(receipts), (), (),)
         except Exception:
             for path in reversed(created):
-                if path.is_file():
+                if path.is_file() or path.is_symlink():
                     path.unlink()
                 elif path.is_dir() and not any(path.iterdir()):
                     path.rmdir()
