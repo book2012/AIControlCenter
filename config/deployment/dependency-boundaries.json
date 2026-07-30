@@ -101,6 +101,11 @@
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap"}]
     },
     {
+      "id": "operational_activation_authorization",
+      "responsibility": "Pure immutable reviewed controlled non-production activation authorization; no persistence, execution, network or production authorization.",
+      "selectors": [{"module_prefix": "core.deployment.operational_activation_authorization"}]
+    },
+    {
       "id": "operational_bootstrap_execution",
       "responsibility": "M3-A4B2B2A authorized Mac bootstrap execution capability with live permit validation, atomic claim, fail-closed runtime adapters and no production activation.",
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_execution"}]
@@ -217,10 +222,11 @@
     {"from_zone": "operational_activation_gate", "to_zones": ["contracts", "m2_readiness", "pilot_evidence", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate"]},
     {"from_zone": "operational_bootstrap_authorization", "to_zones": ["contracts", "audit_sqlite_read_only", "permit_replay_sqlite_read_only", "operational_activation_gate", "operational_bootstrap_authorization"]},
     {"from_zone": "operational_bootstrap", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap"]},
-    {"from_zone": "operational_bootstrap_execution", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_permit_issuance", "operational_permit_approval", "operational_bootstrap_execution"]},
+    {"from_zone": "operational_activation_authorization", "to_zones": ["contracts", "operational_activation_authorization"]},
+    {"from_zone": "operational_bootstrap_execution", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution"]},
     {"from_zone": "operational_bootstrap_preflight", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight"]},
     {"from_zone": "operational_permit_issuance", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance"]},
-    {"from_zone": "operational_permit_approval", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_permit_approval"]},
+    {"from_zone": "operational_permit_approval", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_activation_authorization", "operational_permit_approval"]},
     {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
     {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},

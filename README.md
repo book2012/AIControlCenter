@@ -877,3 +877,8 @@ controlled operational mode was not executed, no operational targets or
 databases were created, writers and monitoring remain inactive, and production
 activation is `NOT_AUTHORIZED`. A fresh preflight and fresh permit are required
 for M3-A4B2B2B.
+# M3-A4B2B2B-R2
+
+The controlled non-production operational activation authorization boundary is
+implemented and validated as a default-deny capability. No real permit, claim
+or Mac operational bootstrap was performed; production remains unauthorized.

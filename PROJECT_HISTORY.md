@@ -1015,3 +1015,8 @@ The initial attempt stopped before permit issuance. Read-only recovery found
 `ROOT_EXISTS_SAFE_PARENT_CANDIDATE`. Compatibility now preserves the existing
 shared parent and unrelated siblings while retaining strict managed-target
 absence. No operational execution occurred; fresh approval is required.
+# M3-A4B2B2B-R2
+
+The prior attempt stopped `BLOCKED_PRE_PERMIT`; both blockers were retained as
+default-deny protections and resolved through an explicit reviewed activation
+authorization boundary. Actual operational state remains unchanged.

@@ -665,3 +665,8 @@ separate authorization gate. M3-A4B2B1B does not authorize or perform it.
 - M3-A4B2B2B — Fresh Permit and Authorized Mac Bootstrap Execution.
 - Requires fresh preflight and a fresh exact-commit permit.
 - Production activation remains `NOT_AUTHORIZED`.
+# Deployment
+
+- Obtain fresh independent approval bound to the R2 commit before any
+  authorized Mac bootstrap attempt.
+- Keep production activation unauthorized.

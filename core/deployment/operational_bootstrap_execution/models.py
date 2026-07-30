@@ -124,6 +124,8 @@ class OperationalBootstrapRuntimeRequest:
     issuance_evidence_path: Path
     evidence_directory: Path
     metadata: Mapping[str, Any]
+    activation_authorization_digest: str | None = None
+    production_authorized: bool = False
 
     def __post_init__(self) -> None:
         if not self.request_id or not _COMMIT.fullmatch(self.commit):
@@ -137,6 +139,11 @@ class OperationalBootstrapRuntimeRequest:
             object.__setattr__(self, name, value)
         validate_safe(self.metadata)
         object.__setattr__(self, "metadata", dict(sorted(self.metadata.items())))
+        if self.activation_authorization_digest is not None and not _DIGEST.fullmatch(
+                self.activation_authorization_digest):
+            raise OperationalBootstrapExecutionError("ACTIVATION_AUTHORIZATION_DIGEST_INVALID")
+        if self.production_authorized:
+            raise OperationalBootstrapExecutionError("PRODUCTION_AUTHORIZATION_REJECTED")
 
     def as_dict(self) -> dict[str, Any]:
         return _jsonable(asdict(self))

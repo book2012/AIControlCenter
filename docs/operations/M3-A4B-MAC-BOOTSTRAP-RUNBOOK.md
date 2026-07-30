@@ -24,3 +24,8 @@ shared-parent policy. Deployment bootstrap owns only absent `audit`,
 must remain unchanged. The recovery inspection result is
 `ROOT_EXISTS_SAFE_PARENT_CANDIDATE`; operational bootstrap remains not
 executed and requires fresh approval and permit.
+## R2 prerequisite
+
+Do not run the controlled operational bootstrap without fresh independent
+approval and a valid exact-commit activation authorization. R2 validated only
+pytest-owned roots; it did not execute the actual Mac bootstrap.

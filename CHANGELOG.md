@@ -1377,3 +1377,9 @@ Production activation occurred.
 - Reused validated M3-A4B2A audit/replay bootstrap capability.
 - Added confined tests and operations documentation. No operational execution,
   target creation, activation or production authorization occurred.
+# Unreleased
+
+- Added M3-A4B2B2B-R2 immutable controlled operational activation
+  authorization, live issuance gate and controlled runner gate.
+- Preserved default deny and test/operational adapter separation; no actual
+  operational execution occurred.

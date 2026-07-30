@@ -30,3 +30,9 @@ review prerequisites, not implementation defects. Identical semantic inputs
 produce identical ordered content, IDs, canonical JSON and digests.
 
 Next task: M3-A4B2B1B Operator Approval and Operational Permit Issuance.
+## R2 activation boundary
+
+Non-synthetic issuance is no longer controlled by removing the validation
+prohibition. It requires the separately reviewed M3-A4B2B2B-R2 activation
+authorization. Missing, synthetic, tampered, expired or mismatched
+authorization remains blocked.

@@ -984,3 +984,7 @@ Execution.
 Existing safe shared-parent compatibility and failure recovery are validated
 only under injected temporary roots. Actual bootstrap is NOT EXECUTED; fresh
 approval and permit are required. Production is NOT_AUTHORIZED.
+# M3-A4B2B2B-R2
+
+Controlled operational activation boundary: implemented and capability
+validated. Fresh independent approval is required for the next exact commit.

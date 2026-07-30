@@ -6,6 +6,15 @@ import os
 from dataclasses import asdict
 from pathlib import Path
 
+from core.deployment.operational_activation_authorization import (
+    OperationalActivationAuthorizationConfig,
+    OperationalActivationAuthorizationPermit,
+    OperationalActivationAuthorizationStatus,
+    OperationalActivationAuthorizationValidator,
+)
+
+from .adapters import (MacOperationalBootstrapRuntimeAdapter,
+                       TestOnlyOperationalBootstrapRuntimeAdapter)
 from .models import *
 from .validation import OperationalBootstrapLivePermitValidator, OperationalBootstrapRuntimeValidator
 
@@ -19,7 +28,9 @@ class OperationalMacBootstrapExecutionCoordinator:
         self.path_policy = path_policy
         self.adapter = runtime_adapter
 
-    def execute(self, *, request, host, target) -> OperationalBootstrapRuntimeEvidenceBundle:
+    def execute(self, *, request, host, target,
+                activation_authorization: OperationalActivationAuthorizationPermit | None = None
+                ) -> OperationalBootstrapRuntimeEvidenceBundle:
         plan = OperationalBootstrapRuntimePlan.build()
         findings = OperationalBootstrapRuntimeValidator().validate(
             config=self.config, request=request, host=host, target=target)
@@ -30,6 +41,8 @@ class OperationalMacBootstrapExecutionCoordinator:
         if paths.root != target.operational_root:
             raise OperationalBootstrapExecutionError("TARGET_BINDING_INVALID")
         if test_only:
+            if not isinstance(self.adapter, TestOnlyOperationalBootstrapRuntimeAdapter):
+                raise OperationalBootstrapExecutionError("TEST_ADAPTER_REQUIRED")
             allowed = Path(os.environ.get("AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_ROOT", "")).resolve()
             try:
                 request.permit_path.resolve().relative_to(allowed)
@@ -37,6 +50,20 @@ class OperationalMacBootstrapExecutionCoordinator:
                     Path(os.environ["AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_HOME"]).resolve())
             except (KeyError, ValueError):
                 raise OperationalBootstrapExecutionError("TEST_CONFINEMENT_INVALID")
+        else:
+            if not isinstance(self.adapter, MacOperationalBootstrapRuntimeAdapter):
+                raise OperationalBootstrapExecutionError("OPERATIONAL_ADAPTER_REQUIRED")
+            if activation_authorization is None:
+                raise OperationalBootstrapExecutionError("ACTIVATION_AUTHORIZATION_REQUIRED")
+            if request.activation_authorization_digest != activation_authorization.authorization_digest:
+                raise OperationalBootstrapExecutionError("ACTIVATION_AUTHORIZATION_DIGEST_MISMATCH")
+            activation = OperationalActivationAuthorizationValidator().validate(
+                config=OperationalActivationAuthorizationConfig(
+                    request.branch, request.commit, paths.root),
+                permit=activation_authorization, validated_at=request.requested_at,
+                operator_identity=request.operator_identity)
+            if activation.status is not OperationalActivationAuthorizationStatus.AUTHORIZED:
+                raise OperationalBootstrapExecutionError(activation.reason_codes[0])
         permit_raw, permit = self.reader.read(request.permit_path)
         issuance_raw, issuance = self.reader.read(request.issuance_evidence_path)
         live = OperationalBootstrapLivePermitEvidence(

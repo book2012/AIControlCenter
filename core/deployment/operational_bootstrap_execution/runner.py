@@ -22,14 +22,18 @@ def main(argv: list[str] | None = None) -> int:
         payload = json.loads(raw)
         if not isinstance(payload, dict) or canonical_json(payload) != raw:
             raise OperationalBootstrapExecutionError("STRICT_CANONICAL_JSON_REQUIRED")
-        expected = {field.name for field in __import__("dataclasses").fields(
-            OperationalBootstrapRuntimeRequest)}
-        if set(payload) != expected:
+        fields = __import__("dataclasses").fields(OperationalBootstrapRuntimeRequest)
+        expected = {field.name for field in fields}
+        required = {field.name for field in fields
+                    if field.default is __import__("dataclasses").MISSING}
+        if not required <= set(payload) or not set(payload) <= expected:
             raise OperationalBootstrapExecutionError("REQUEST_FIELDS_INVALID")
         payload["mode"] = OperationalBootstrapRuntimeMode(payload["mode"])
         request = OperationalBootstrapRuntimeRequest(**payload)
         if request.mode is not OperationalBootstrapRuntimeMode.TEST_ONLY_OPERATIONAL_EXECUTION_VALIDATION:
-            raise OperationalBootstrapExecutionError("CONTROLLED_MODE_NOT_INVOKED_BY_VALIDATION_RUNNER")
+            if not request.activation_authorization_digest:
+                raise OperationalBootstrapExecutionError("ACTIVATION_AUTHORIZATION_REQUIRED")
+            raise OperationalBootstrapExecutionError("CONTROLLED_EXECUTION_REQUIRES_COORDINATOR")
         print(canonical_json({"request_id": request.request_id, "status": "VALIDATED",
                               "production_authorized": False}))
         return 0

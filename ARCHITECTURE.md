@@ -1019,3 +1019,9 @@ never assumes exclusive ownership and manages only `audit`, `security`, and
 `monitoring`. Existing siblings are opaque and immutable to bootstrap.
 Pre-existing safe `0755` parents carry a nonblocking restriction; newly created
 managed directories require `0700`.
+# Controlled operational activation boundary
+
+Operational permit issuance and controlled Mac execution require a separate,
+immutable, exact-commit activation authorization. Flags and environment
+variables cannot grant this authority. Test and Mac operational adapters remain
+strictly separated.

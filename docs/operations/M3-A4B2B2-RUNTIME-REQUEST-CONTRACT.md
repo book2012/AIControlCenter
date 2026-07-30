@@ -23,3 +23,10 @@ shell, command, argv, script or URL material.
 The request cannot contain arbitrary commands. The Python implementation uses
 no subprocess, network, API route or generic command runner. Canonical IDs and
 digests are stable for identical semantic inputs and timestamps.
+## R2 controlled request
+
+A controlled request binds a valid activation authorization digest, explicit
+timestamp, exact branch and commit, trusted operational path, live permit and
+issuance evidence, controlled non-production scope and
+`production_authorized=false`. Environment-only and CLI-only activation are
+invalid.

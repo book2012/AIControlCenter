@@ -1021,3 +1021,7 @@ is `NOT_AUTHORIZED`.
 - CLOSED: authorized Mac bootstrap execution capability and atomic test claim.
 - NOT EXECUTED: controlled operational bootstrap.
 - NEXT: M3-A4B2B2B Fresh Permit and Authorized Mac Bootstrap Execution.
+# Next deployment task
+
+M3-A4B2B2B Fresh Approval and Authorized Mac Bootstrap. Production activation
+remains `NOT_AUTHORIZED`.

@@ -14,6 +14,12 @@ from core.deployment.operational_permit_issuance import (
     OperationalPermitIssuanceValidator,
     parse_timestamp,
 )
+from core.deployment.operational_activation_authorization import (
+    OperationalActivationAuthorizationConfig,
+    OperationalActivationAuthorizationPermit,
+    OperationalActivationAuthorizationStatus,
+    OperationalActivationAuthorizationValidator,
+)
 
 from .models import *
 
@@ -163,7 +169,8 @@ class OperationalPermitIssuanceCoordinator:
     def issue(self, *, config: OperationalPermitApprovalConfig,
               request: OperationalPermitIssuanceRequest, adapter: object | None = None,
               filesystem_adapter: object | None = None, database_adapter: object | None = None,
-              registry_adapter: object | None = None, notification_adapter: object | None = None
+              registry_adapter: object | None = None, notification_adapter: object | None = None,
+              activation_authorization: OperationalActivationAuthorizationPermit | None = None,
               ) -> OperationalPermitIssuanceResult:
         if any(item is not None for item in (
                 adapter, filesystem_adapter, database_adapter, registry_adapter,
@@ -177,14 +184,32 @@ class OperationalPermitIssuanceCoordinator:
         if report.status is not OperationalPermitApprovalStatus.PASS:
             return OperationalPermitIssuanceResult(report, None, None)
         identities = request.approval_input
-        if not all(item.synthetic for item in (
-                identities.requester, identities.mac_operator, identities.independent_approver)):
-            return OperationalPermitIssuanceResult(
-                replace(report, status=OperationalPermitApprovalStatus.BLOCKED,
-                        decision=OperationalPermitApprovalDecision.BLOCKED,
-                        findings=report.findings + (
-                            OperationalPermitApprovalFinding("LIVE_ISSUANCE_PROHIBITED"),)),
-                None, None)
+        synthetic_approval = all(item.synthetic for item in (
+            identities.requester, identities.mac_operator, identities.independent_approver))
+        if not synthetic_approval:
+            reason = None
+            if activation_authorization is None:
+                reason = "ACTIVATION_AUTHORIZATION_REQUIRED"
+            elif activation_authorization.request.identity.synthetic:
+                reason = "SYNTHETIC_ACTIVATION_AUTHORIZATION_REJECTED"
+            else:
+                activation = OperationalActivationAuthorizationValidator().validate(
+                    config=OperationalActivationAuthorizationConfig(
+                        config.approved_branch, config.approved_commit,
+                        activation_authorization.request.operational_target_path),
+                    permit=activation_authorization, validated_at=request.issued_at,
+                    approval_report_id=report.report_id,
+                    approval_report_digest=report.report_digest,
+                    operator_identity=identities.mac_operator.identity_id)
+                if activation.status is not OperationalActivationAuthorizationStatus.AUTHORIZED:
+                    reason = activation.reason_codes[0]
+            if reason:
+                return OperationalPermitIssuanceResult(
+                    replace(report, status=OperationalPermitApprovalStatus.BLOCKED,
+                            decision=OperationalPermitApprovalDecision.BLOCKED,
+                            findings=report.findings + (
+                                OperationalPermitApprovalFinding(reason),)),
+                    None, None)
         auth_request = request.authorization_request
         if (auth_request.branch != config.approved_branch
                 or auth_request.commit != config.approved_commit
