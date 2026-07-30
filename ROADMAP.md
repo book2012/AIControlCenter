@@ -1,5 +1,14 @@
 # Roadmap
 
+## Current milestone
+
+- M3-A4A CLOSED
+- M3-A4B1 CLOSED
+- M3-A4B2A CLOSED
+- M3-A4B2B0 CLOSED
+- M3-A4B2B1A CLOSED after validation
+- Next: M3-A4B2B1B Operator Approval and Operational Permit Issuance
+
 ## M3-A4B2B0 Closure and M3-A4B2B1
 
 M3-A4B2B0 is closed after deterministic read-only Mac host preflight

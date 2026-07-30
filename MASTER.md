@@ -1,5 +1,12 @@
 # MASTER
 
+## M3-A4B2B1A
+
+CLOSED after validation. Review package AVAILABLE; human operator, independent
+approver and restriction acknowledgements NOT PROVIDED. Permit NOT
+ISSUED/CLAIMED, bootstrap NOT AUTHORIZED/EXECUTED, targets NOT CREATED,
+production NOT_AUTHORIZED. Next: M3-A4B2B1B.
+
 ## M3-A4B2B0 Closure
 
 M3-A4A, M3-A4B1, M3-A4B2A and M3-A4B2B0 are `CLOSED`. Read-only Mac host

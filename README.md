@@ -1,5 +1,14 @@
 # AIControlCenter
 
+## M3-A4B2B1A closure
+
+The deterministic operational permit issuance review package is AVAILABLE.
+M3-A4A, M3-A4B1, M3-A4B2A, M3-A4B2B0 and M3-A4B2B1A are CLOSED after
+validation. Human identities and restriction acknowledgements are NOT PROVIDED.
+No permit is issued or claimed, no bootstrap is authorized or executed, no
+operational target is created, and production remains NOT_AUTHORIZED. Next:
+M3-A4B2B1B.
+
 AIControlCenter is the Brain of the AI Home Datacenter.
 
 ## Brain

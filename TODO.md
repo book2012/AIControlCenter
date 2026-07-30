@@ -1,5 +1,13 @@
 # TODO
 
+## Next
+
+- [ ] M3-A4B2B1B Operator Approval and Operational Permit Issuance
+
+M3-A4B2B1A is CLOSED after validation. Operator/approver identities and
+restriction acknowledgements remain NOT PROVIDED; permit and bootstrap remain
+NOT ISSUED, NOT CLAIMED, NOT AUTHORIZED and NOT EXECUTED.
+
 ## Deployment Package Lifecycle
 
 - [x] DPL-04B Mac-only sandbox adapter

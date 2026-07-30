@@ -1,5 +1,11 @@
 # Project History
 
+## M3-A4B2B1A — closed after validation
+
+The review-only operational permit issuance control package is available.
+Identities and acknowledgements remain not provided and every operational
+action remains at zero. Production activation remains NOT_AUTHORIZED.
+
 ## 2026-07-30 — M3-A4B2B0 Closed
 
 AIControlCenter added deterministic read-only Mac operational bootstrap host

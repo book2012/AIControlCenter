@@ -106,6 +106,11 @@
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_preflight"}]
     },
     {
+      "id": "operational_permit_issuance",
+      "responsibility": "M3-A4B2B1A pure deterministic operational permit issuance review package; no identity synthesis, acknowledgement, issuance, claim, persistence, execution or production authorization.",
+      "selectors": [{"module_prefix": "core.deployment.operational_permit_issuance"}]
+    },
+    {
       "id": "executor_ports",
       "responsibility": "Typed non-production executor ports and deny-only default composition.",
       "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
@@ -203,6 +208,7 @@
     {"from_zone": "operational_bootstrap_authorization", "to_zones": ["contracts", "audit_sqlite_read_only", "permit_replay_sqlite_read_only", "operational_activation_gate", "operational_bootstrap_authorization"]},
     {"from_zone": "operational_bootstrap", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap"]},
     {"from_zone": "operational_bootstrap_preflight", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight"]},
+    {"from_zone": "operational_permit_issuance", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance"]},
     {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
     {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
     {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},

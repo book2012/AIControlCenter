@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## M3-A4B2B1A
+
+- Added immutable deterministic issuance-review contracts, gate, builder and validator.
+- Bound readiness, authorization, executor, preflight, target/schema/plan,
+  restriction, Git, test and all-zero safety evidence.
+- Retained the 427-warning restriction without acknowledgement and reported
+  human approvals missing.
+- Performed no permit, claim, bootstrap, operational write or production authorization.
+
 ## 2026-07-30 — M3-A4B2B0 Read-Only Mac Host Preflight
 
 - Added immutable host, target, filesystem, capacity, closure, check, finding,

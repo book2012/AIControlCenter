@@ -1,5 +1,12 @@
 # AI Home Datacenter Architecture
 
+## Operational permit issuance review boundary
+
+M3-A4B2B1A is a pure Mac Control Plane review package binding existing M3-A4
+evidence by canonical digest. It has no adapter, persistence, executor, network,
+API or worker dependency and grants no authorization. Ubuntu cannot authorize,
+issue, claim or execute a permit. Production remains NOT_AUTHORIZED.
+
 ## M3-A4B2B0 Read-Only Host Preflight Boundary
 
 `core.deployment.operational_bootstrap_preflight` is a Mac Control Plane-owned,
