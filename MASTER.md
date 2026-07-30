@@ -1,5 +1,13 @@
 # MASTER
 
+## M3-A4B2B0 Closure
+
+M3-A4A, M3-A4B1, M3-A4B2A and M3-A4B2B0 are `CLOSED`. Read-only Mac host
+preflight is `AVAILABLE`. Operational permit `NOT ISSUED`; operational
+authorization `NOT GRANTED`; bootstrap `NOT EXECUTED`; operational directories
+and databases `NOT CREATED`; Production activation `NOT_AUTHORIZED`. Next:
+M3-A4B2B1 Operational Permit Issuance.
+
 ## M3-A4B2A Closure
 
 M3-A4A, M3-A4B1 and M3-A4B2A are `CLOSED`. The controlled Mac bootstrap

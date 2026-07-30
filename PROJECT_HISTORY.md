@@ -1,5 +1,13 @@
 # Project History
 
+## 2026-07-30 — M3-A4B2B0 Closed
+
+AIControlCenter added deterministic read-only Mac operational bootstrap host
+preflight and exact future-target inventory validation. No operational permit
+was issued or claimed, authorization was not granted, bootstrap was not
+executed, operational state was not created, and Production remained
+`NOT_AUTHORIZED`. M3-A4B2B1 Operational Permit Issuance is next.
+
 ## 2026-07-30 — M3-A4B2A Closed
 
 AIControlCenter validated the controlled Mac bootstrap executor only beneath

@@ -20,12 +20,13 @@
 - [x] M3-A4A Read-Only Operational Activation Readiness Gate
 - [x] M3-A4B1 Controlled Bootstrap Authorization Package
 - [x] M3-A4B2A Controlled Mac Bootstrap Executor Validation
-- [ ] M3-A4B2B Authorized Mac Operational Bootstrap Execution
+- [x] M3-A4B2B0 Read-Only Mac Operational Bootstrap Host Preflight
+- [ ] M3-A4B2B1 Operational Permit Issuance
 
-M3-A4A, M3-A4B1 and M3-A4B2A are closed. The executor is validated only in
-pytest temporary paths. No operational permit was issued; operational
-bootstrap was not executed; operational state was not created; writers and
-monitoring were not activated; Production activation is `NOT_AUTHORIZED`.
+M3-A4A, M3-A4B1, M3-A4B2A and M3-A4B2B0 are closed. Read-only host preflight
+is available. No operational permit was issued; authorization was not granted;
+bootstrap was not executed; operational directories and databases were not
+created; Production activation is `NOT_AUTHORIZED`.
 
 Sprint 16
 

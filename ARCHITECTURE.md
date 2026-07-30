@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## M3-A4B2B0 Read-Only Host Preflight Boundary
+
+`core.deployment.operational_bootstrap_preflight` is a Mac Control Plane-owned,
+read-only evidence and deterministic policy boundary. It validates the Darwin
+host, exact Git/test/safety state, absent future targets, filesystem locality,
+capacity, permission feasibility and closed-track evidence without a clock,
+write adapter, database writer, executor, permit registry, subprocess, network,
+API, worker or Ubuntu dependency. M3-A4B2B0 is closed; no permit,
+authorization, bootstrap, target creation or Production activation occurred.
+Next: M3-A4B2B1 Operational Permit Issuance.
+
 ## M3-A4B2A Controlled Bootstrap Validation Boundary
 
 `core.deployment.operational_bootstrap` is the Mac Control Plane-owned

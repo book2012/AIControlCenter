@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A4B2B0 Read-Only Mac Host Preflight
+
+- Added immutable host, target, filesystem, capacity, closure, check, finding,
+  restriction and report contracts.
+- Added deterministic default-deny policy and a separate standard-library
+  read-only Mac collector.
+- Closed M3-A4B2B0 with zero permit, authorization, bootstrap, filesystem,
+  database, Ubuntu, runtime, activation or Production effects.
+- Next: M3-A4B2B1 Operational Permit Issuance.
+
 ## 2026-07-30 — M3-A4B2A Controlled Mac Bootstrap Executor Validation
 
 - Added immutable test-only bootstrap contracts, executor/adapter ports and

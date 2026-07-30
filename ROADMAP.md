@@ -1,5 +1,12 @@
 # Roadmap
 
+## M3-A4B2B0 Closure and M3-A4B2B1
+
+M3-A4B2B0 is closed after deterministic read-only Mac host preflight
+validation. Operational permit and authorization remain absent, bootstrap has
+not executed, targets remain uncreated, and Production remains
+`NOT_AUTHORIZED`. Next: M3-A4B2B1 Operational Permit Issuance.
+
 ## M3-A4B2A Closure and M3-A4B2B
 
 M3-A4B2A is closed after controlled executor validation beneath pytest-owned
