@@ -1019,3 +1019,10 @@ chain, single consumed permit/claim, `HEALTHY` zero-event audit and replay
 state, baseline backups, and isolated restores are validated. Writers,
 monitoring, dispatch, Ubuntu, and production remain inactive/unauthorized.
 Next: `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.
+
+# M3-A4C CLOSED — M3 CLOSED
+
+Readiness is validated at `0f23abdf362965c09db5f4f35483cbff47853643`
+against the bootstrap at `f7a81b73b86c170300bb6b80f437dbb753362f7e`.
+Operational state is unchanged; writers, monitoring, dispatch, Ubuntu, and
+production remain false. Next: `M4_CONTROLLED_ACTIVATION_ARCHITECTURE`.

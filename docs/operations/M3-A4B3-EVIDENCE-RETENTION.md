@@ -15,3 +15,7 @@ rewrite the consumed claim, and never represent the permit as reusable.
 Documentation uses a generic operational-root notation. The completed chain is
 bound to commit `f7a81b73b86c170300bb6b80f437dbb753362f7e`; writers,
 monitoring, dispatch, Ubuntu, and production authorization remain false.
+
+M3-A4C binds this retained chain to
+`0f23abdf362965c09db5f4f35483cbff47853643`. Preserve successful evidence
+unchanged. The closeout report is not authorization or a reusable permit.

@@ -47,3 +47,9 @@ production counters as zero. Require fresh approval for the R4 commit.
   files; require public inspector `HEALTHY`, current schema, and zero events.
 - Compare source hash, size, and mtime before/after.
 - Never restore into operational state. Production remains `NOT_AUTHORIZED`.
+
+# M3-A4C retention
+
+The isolated drills are bound to M3-A4B3 commit
+`0f23abdf362965c09db5f4f35483cbff47853643`. M3-A4C performs no restore
+and treats failed recovery validation as a hard blocker.

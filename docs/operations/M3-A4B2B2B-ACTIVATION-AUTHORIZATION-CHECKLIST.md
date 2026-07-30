@@ -44,3 +44,9 @@ Its permit `m3-a4b2b2b-r4-permit-a72d2e43cc42cf05150884e95919d4b7`
 was consumed by claim
 `m3-a4b2b2a-claim-ef74c0c861feb6868e45999396e6f6db`. It cannot authorize a
 second claim, runtime writers, monitoring, dispatch, Ubuntu, or production.
+
+# M3-A4C closeout rule
+
+M3-A4C does not extend this consumed authorization. Future activation requires
+new independent approval, bounded TTL, explicit capabilities, a single-use
+permit, and atomic claim. Every capability defaults false.

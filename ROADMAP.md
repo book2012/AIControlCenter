@@ -1054,3 +1054,10 @@ authorized current-user Mac bootstrap; M3-A4B3 remains blocked until success.
 - INACTIVE: writers, monitoring, dispatch, and Ubuntu.
 - `NOT_AUTHORIZED`: production.
 - NEXT: `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.
+
+# M3-A4C — CLOSED
+
+- Decision: `READY_FOR_SEPARATELY_AUTHORIZED_CONTROLLED_ACTIVATION`.
+- No writer, monitoring, dispatch, Ubuntu, or production activation.
+- Next: `M4_CONTROLLED_ACTIVATION_ARCHITECTURE` with a separate gate.
+- Separate backlog: the existing 427 deprecation warnings.

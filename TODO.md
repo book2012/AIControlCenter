@@ -695,3 +695,10 @@ separate authorization gate. M3-A4B2B1B does not authorize or perform it.
 - Proceed to `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.
 - Keep writers, monitoring, dispatch, Ubuntu, and production inactive unless a
   separate future authorization gate explicitly changes their state.
+
+# After M3-A4C
+
+- Design `M4_CONTROLLED_ACTIVATION_ARCHITECTURE` with a separate independent
+  authorization gate and per-capability default deny.
+- Do not activate from the M3-A4C readiness report.
+- Track the existing 427 deprecation warnings separately.

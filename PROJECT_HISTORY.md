@@ -1059,3 +1059,11 @@ at `f7a81b73b86c170300bb6b80f437dbb753362f7e`. Authorization
 Audit and replay are `HEALTHY` with zero events; two backups and isolated
 restores validate. The shared parent and siblings were preserved. The permit is
 consumed; runtime activation and production authorization did not occur.
+
+# M3-A4C controlled activation validation
+
+M3 closed from bootstrap `f7a81b73b86c170300bb6b80f437dbb753362f7e`
+and recovery validation `0f23abdf362965c09db5f4f35483cbff47853643`.
+Audit and replay remained `HEALTHY` with zero events, isolated restores passed,
+and operational state remained unchanged. All activation, Ubuntu, and
+production capabilities remain false; 427 warnings remain separate backlog.

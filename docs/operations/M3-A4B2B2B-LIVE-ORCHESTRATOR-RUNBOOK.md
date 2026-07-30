@@ -36,3 +36,9 @@ independent-approver pair from full typed evidence and validate compatibility.
 Pass that report into issuance and revalidate the typed permit immediately
 before claim. Any failure requires zero authorization creations, permit
 issuances, claims, or writes. A fresh approval is required after R5.
+
+# M3-A4C closeout
+
+Never invoke this orchestrator from M3-A4C. Closeout is read-only and creates
+no request, authorization, permit, claim, or bootstrap execution. Future
+invocation belongs to a separately authorized sprint.

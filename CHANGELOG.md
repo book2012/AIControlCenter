@@ -1429,3 +1429,10 @@ Production activation occurred.
   cross-service, destination, tamper, claim-reuse, and production-deny tests.
 - Recorded the successful one-use permit as permanently consumed. No writer,
   monitoring, dispatch, Ubuntu, or production activation was performed.
+
+## M3-A4C
+
+- Added immutable controlled-activation contracts, fail-closed write and bypass
+  gates, and deterministic JSON closeout.
+- Closed M3 without changing operational state or authorizing runtime, Ubuntu,
+  or production capability; future activation requires a separate gate.

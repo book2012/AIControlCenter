@@ -920,3 +920,12 @@ digest-validated from read-only snapshots. Audit and replay are `HEALTHY` with
 zero events, and both baseline backups passed isolated restores. The permit is
 permanently consumed; writers, monitoring, dispatch, Ubuntu, and production
 authorization remain false. Next: `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.
+
+# M3-A4C controlled activation closeout
+
+M3 is closed at `0f23abdf362965c09db5f4f35483cbff47853643` with
+`READY_FOR_SEPARATELY_AUTHORIZED_CONTROLLED_ACTIVATION`. This is not
+activation or production authorization. The Mac remains the Control Plane;
+writers, monitoring, dispatch, Ubuntu participation, and production remain
+false. Future activation requires a separate gate. The 427 warnings remain
+backlog.

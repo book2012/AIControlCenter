@@ -1073,3 +1073,11 @@ SQLite inspectors, never restores into the operational root, and has no issuer,
 claim, live-runner, writer, monitoring, dispatch, network, Ubuntu, or business
 logic capability. Snapshot permissions may be a read-only subset of the
 created `0700`/`0600` state; broader permissions always fail closed.
+
+# Controlled activation validation boundary
+
+M3-A4C adds a pure immutable AIControlCenter closeout boundary. It validates
+Git, evidence, recovery, health, control-plane, Mac-role, Ubuntu-exclusion, and
+default-deny facts and emits deterministic JSON. It has no activation, issuer,
+claim, restore, API, remote, worker, or business-logic capability. Success
+requires a future independent architecture and authorization gate.
