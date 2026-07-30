@@ -1010,3 +1010,8 @@ is `NOT_AUTHORIZED`.
 - Operational permit/claim/bootstrap execution — zero
 - Production activation — `NOT_AUTHORIZED`
 - Next: M3-A4B2B1C Independent Approver Action and Live Permit Issuance
+# M3-A4B2B2A closure
+
+- CLOSED: authorized Mac bootstrap execution capability and atomic test claim.
+- NOT EXECUTED: controlled operational bootstrap.
+- NEXT: M3-A4B2B2B Fresh Permit and Authorized Mac Bootstrap Execution.

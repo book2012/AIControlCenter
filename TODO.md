@@ -651,3 +651,8 @@ Production activation remains `NOT_AUTHORIZED`.
 
 M3-A4B2B1C — Independent Approver Action and Live Permit Issuance. This is a
 separate authorization gate. M3-A4B2B1B does not authorize or perform it.
+# Next deployment increment
+
+- M3-A4B2B2B — Fresh Permit and Authorized Mac Bootstrap Execution.
+- Requires fresh preflight and a fresh exact-commit permit.
+- Production activation remains `NOT_AUTHORIZED`.

@@ -859,3 +859,11 @@ The requester/operator is `mac-account:kyouhan`; the independent approver is
 No operational permit was issued or claimed, bootstrap remains unauthorized
 and unexecuted, and production activation is `NOT_AUTHORIZED`. Next:
 M3-A4B2B1C Independent Approver Action and Live Permit Issuance.
+# M3-A4B2B2A authorized Mac bootstrap execution
+
+The authorized Mac bootstrap execution capability is available and validated
+in test-only confinement. Atomic permit claim and fail-closed cleanup passed;
+controlled operational mode was not executed, no operational targets or
+databases were created, writers and monitoring remain inactive, and production
+activation is `NOT_AUTHORIZED`. A fresh preflight and fresh permit are required
+for M3-A4B2B2B.

@@ -1004,3 +1004,11 @@ pure `operational_permit_approval` layer consumes M3-A4B2B1A review contracts
 and delegates synthetic in-memory creation to M3-A4B1 only after all gates
 pass. It has no persistence, executor, API, worker, network or dispatch
 dependency. Live issuance and production activation remain unauthorized.
+# M3-A4B2B2A execution boundary
+
+AIControlCenter on the Mac mini M4 is the sole owner of operational permit
+validation, atomic claim and bootstrap governance. The trusted local account
+home determines the exact Application Support root. Ubuntu, workers, CMS,
+commerce and n8n cannot participate. M3-A4B2B2A makes the controlled
+non-production capability available in code without executing it or
+authorizing production.

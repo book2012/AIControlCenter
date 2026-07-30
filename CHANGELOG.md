@@ -1362,3 +1362,11 @@ Production activation occurred.
 - Retained the current `UNASSIGNED` independent approver snapshot as `DENIED`.
 - Issued and claimed zero operational permits; authorized and executed zero
   operational bootstraps; production remains `NOT_AUTHORIZED`.
+# M3-A4B2B2A
+
+- Added immutable runtime contracts, Mac path policy, canonical live-permit
+  validation, atomic adjacent claim, fail-closed runtime adapters, coordinator,
+  evidence validation and strict JSON entrypoint.
+- Reused validated M3-A4B2A audit/replay bootstrap capability.
+- Added confined tests and operations documentation. No operational execution,
+  target creation, activation or production authorization occurred.

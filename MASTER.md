@@ -972,3 +972,10 @@ AVAILABLE. Synthetic dual-identity approval and permit issuance: VALIDATED.
 Current review: DENIED (`mac-account:kyouhan`; approver `UNASSIGNED`).
 Operational permit NOT ISSUED/NOT CLAIMED; bootstrap NOT AUTHORIZED/NOT
 EXECUTED; production `NOT_AUTHORIZED`. Next: M3-A4B2B1C.
+# M3-A4B2B2A CLOSED
+
+Authorized Mac bootstrap execution capability: AVAILABLE. Atomic claim:
+VALIDATED in tests. Controlled operational mode: NOT EXECUTED. Operational
+targets/databases: NOT CREATED. Writers/monitoring: NOT ACTIVATED. Production:
+NOT_AUTHORIZED. Next: M3-A4B2B2B Fresh Permit and Authorized Mac Bootstrap
+Execution.

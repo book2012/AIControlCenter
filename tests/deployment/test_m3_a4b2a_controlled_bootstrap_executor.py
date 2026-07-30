@@ -133,7 +133,10 @@ def execute(root: Path, *, registry=None, failure_step=None):
 
 @pytest.fixture
 def test_root(tmp_path, monkeypatch):
-    configured = Path(os.environ["AICONTROLCENTER_BOOTSTRAP_TEST_ROOT"])
+    configured = Path(os.environ.get(
+        "AICONTROLCENTER_BOOTSTRAP_TEST_ROOT",
+        os.environ["AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_ROOT"],
+    ))
     root = configured / tmp_path.parent.name / tmp_path.name
     root.mkdir(parents=True)
     monkeypatch.setenv("AICONTROLCENTER_BOOTSTRAP_TEST_ROOT", str(root))
