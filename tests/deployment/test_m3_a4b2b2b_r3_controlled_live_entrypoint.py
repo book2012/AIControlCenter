@@ -82,6 +82,22 @@ def payload(tmp_path: Path) -> dict:
         },
         "restriction_acknowledgement_digests": [DIGEST, "sha256:" + "b" * 64],
         "active_restriction_digests": [DIGEST],
+        "restriction_acknowledgements": [
+            {
+                "restriction_identifier": "warnings-427",
+                "acknowledging_identity": identity,
+                "acknowledgement_digest": digest,
+                "restriction_digest": DIGEST,
+                "branch": "feature/deployment-package",
+                "commit": COMMIT,
+                "request_id": "m3-a4b2b2b-r3-test-request",
+                "synthetic": False,
+                "placeholder": False,
+            }
+            for identity, digest in (
+                ("test:operator:r3", DIGEST),
+                ("test:approver:r3", "sha256:" + "b" * 64))
+        ],
         "scope": "CONTROLLED_NON_PRODUCTION",
         "maximum_uses": 1,
         "production_authorized": False,

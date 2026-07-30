@@ -1058,3 +1058,9 @@ Operational permit issuance and controlled Mac execution require a separate,
 immutable, exact-commit activation authorization. Flags and environment
 variables cannot grant this authority. Test and Mac operational adapters remain
 strictly separated.
+# R5 acknowledgement projection boundary
+
+The Control Plane retains complete restriction acknowledgement evidence while
+projecting only the semantic `warnings-427` Mac-operator/independent-approver
+pair into the executor contract. Projection is typed, immutable,
+order-independent, digest-bound, and validated before issuance and claim.

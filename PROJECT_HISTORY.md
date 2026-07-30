@@ -1042,3 +1042,9 @@ absence. No operational execution occurred; fresh approval is required.
 The prior attempt stopped `BLOCKED_PRE_PERMIT`; both blockers were retained as
 default-deny protections and resolved through an explicit reviewed activation
 authorization boundary. Actual operational state remains unchanged.
+# M3-A4B2B2B-R5
+
+The latest operational attempt reached authorization and typed permit issuance
+but stopped before claim because all 18 full-evidence digests crossed an exact
+two-warning boundary. R5 separates and binds those contracts. The forensic
+root is preserved and the actual bootstrap remains not executed.

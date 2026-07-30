@@ -683,3 +683,8 @@ separate authorization gate. M3-A4B2B1B does not authorize or perform it.
 - Obtain fresh independent approval bound to the R2 commit before any
   authorized Mac bootstrap attempt.
 - Keep production activation unauthorized.
+# After R5
+
+- Obtain fresh independent approval.
+- Run the current-user Mac bootstrap only under a separate authorization gate.
+- Keep M3-A4B3 blocked until the actual bootstrap succeeds.

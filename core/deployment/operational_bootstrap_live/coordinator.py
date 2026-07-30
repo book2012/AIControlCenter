@@ -12,6 +12,10 @@ from core.deployment.operational_bootstrap_execution import (
 )
 
 from .models import *
+from .acknowledgements import (
+    ControlledLivePermitCompatibilityValidator,
+    ControlledWarningAcknowledgementProjector,
+)
 from .validation import ControlledOperationalBootstrapArtifactValidator
 
 
@@ -52,6 +56,10 @@ class ControlledOperationalBootstrapOrchestrator:
         ControlledOperationalBootstrapArtifactValidator().validate(
             request=request, approval=approval, preflight=preflight,
             git=self.git.collect(), host=self.host.collect(), now=now)
+        projection = ControlledWarningAcknowledgementProjector().project(
+            evidence=request.restriction_acknowledgements, request=request)
+        compatibility = ControlledLivePermitCompatibilityValidator().validate(
+            request=request, projection=projection)
         activation_request, activation, activation_evidence = (
             self.activation_service.authorize(
                 request=request, approval=approval, preflight=preflight, now=now))
@@ -65,10 +73,13 @@ class ControlledOperationalBootstrapOrchestrator:
         self.writer.write(request.artifacts.activation_authorization_evidence_output,
                           activation_evidence)
         permit, issuance_evidence = self.permit_service.issue(
-            request=request, approval=approval, activation_authorization=activation, now=now)
+            request=request, approval=approval, activation_authorization=activation,
+            now=now, compatibility_report=compatibility)
         if not isinstance(permit, ControlledLivePermitResult):
             raise ControlledOperationalBootstrapError("TYPED_LIVE_PERMIT_REQUIRED")
         permit.validate_for(request, now)
+        ControlledLivePermitCompatibilityValidator().validate_permit(
+            request=request, permit=permit, report=compatibility)
         self.writer.write(request.artifacts.operational_permit_output, permit.as_dict())
         self.writer.write(request.artifacts.permit_issuance_evidence_output,
                           issuance_evidence)

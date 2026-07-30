@@ -905,3 +905,9 @@ for M3-A4B2B2B.
 The controlled non-production operational activation authorization boundary is
 implemented and validated as a default-deny capability. No real permit, claim
 or Mac operational bootstrap was performed; production remains unauthorized.
+# R5 acknowledgement compatibility
+
+M3-A4B2B2B-R5 preserves full restriction acknowledgements separately from the
+exact two-entry executor warning projection. Compatibility is validated before
+authorization/issuance and again before claim. The actual bootstrap remains
+`NOT EXECUTED`; production is `NOT_AUTHORIZED`.

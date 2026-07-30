@@ -1006,3 +1006,8 @@ approval and permit are required. Production is NOT_AUTHORIZED.
 
 Controlled operational activation boundary: implemented and capability
 validated. Fresh independent approval is required for the next exact commit.
+# M3-A4B2B2B-R5
+
+Acknowledgement projection compatibility is implemented. The prior attempt
+stopped before claim and its permit is not reusable. Fresh independent approval
+and an authorized Mac bootstrap remain required; M3-A4B3 is blocked.

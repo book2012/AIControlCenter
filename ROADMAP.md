@@ -1039,3 +1039,8 @@ is `NOT_AUTHORIZED`.
 
 M3-A4B2B2B Fresh Approval and Authorized Mac Bootstrap. Production activation
 remains `NOT_AUTHORIZED`.
+# R5 closure
+
+M3-A4B2B2B-R5 adds the deterministic warning acknowledgement projection and
+pre-issuance compatibility gate. Next is fresh approval and separately
+authorized current-user Mac bootstrap; M3-A4B3 remains blocked until success.

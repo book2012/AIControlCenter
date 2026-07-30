@@ -1412,3 +1412,9 @@ Production activation occurred.
   authorization, live issuance gate and controlled runner gate.
 - Preserved default deny and test/operational adapter separation; no actual
   operational execution occurred.
+# M3-A4B2B2B-R5
+
+- Added a typed, deterministic full-evidence to `warnings-427` executor
+  acknowledgement projection and pre-issuance/pre-claim compatibility gates.
+- Preserved the stopped pre-claim forensic authorization and permit; no actual
+  bootstrap or production activation was performed.

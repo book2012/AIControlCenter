@@ -11,6 +11,9 @@ from core.deployment.operational_bootstrap_live import (
     AtomicControlledOperationalArtifactWriter,
     ControlledLivePermitResult,
     ControlledLivePermitService,
+    ControlledLivePermitCompatibilityValidator,
+    ControlledRestrictionAcknowledgement,
+    ControlledWarningAcknowledgementProjector,
     ControlledOperationalBootstrapArtifactPaths,
     ControlledOperationalBootstrapError,
     ControlledOperationalBootstrapOrchestrator,
@@ -57,7 +60,15 @@ def request(tmp_path: Path) -> ControlledOperationalBootstrapRequest:
             "2026-07-30T12:30:00+09:00"),
         restriction_acknowledgement_digests=(DIGEST_A, DIGEST_B),
         active_restriction_digests=(DIGEST_A,),
-        scope=ControlledOperationalBootstrapScope.CONTROLLED_NON_PRODUCTION)
+        scope=ControlledOperationalBootstrapScope.CONTROLLED_NON_PRODUCTION,
+        restriction_acknowledgements=tuple(
+            ControlledRestrictionAcknowledgement(
+                "warnings-427", identity, digest, DIGEST_A,
+                "feature/deployment-package", COMMIT,
+                "m3-a4b2b2b-r4-test-request")
+            for identity, digest in (
+                ("test:operator:r4", DIGEST_A),
+                ("test:approver:r4", DIGEST_B))))
 
 
 def preflight(tmp_path: Path, **changes) -> Path:
@@ -78,6 +89,8 @@ def preflight(tmp_path: Path, **changes) -> Path:
 
 def issued_permit(tmp_path: Path, **changes) -> ControlledLivePermitResult:
     req = request(tmp_path)
+    projected = ControlledWarningAcknowledgementProjector().project(
+        evidence=req.restriction_acknowledgements, request=req)
     values = {
         "permit_id": "m3-a4b2b2b-r4-test-permit",
         "branch": req.branch, "commit": req.commit,
@@ -92,6 +105,10 @@ def issued_permit(tmp_path: Path, **changes) -> ControlledLivePermitResult:
         "maximum_uses": 1, "claimed": False,
         "environment": "CONTROLLED_NON_PRODUCTION",
         "warning_acknowledgements": (DIGEST_A, DIGEST_B),
+        "full_restriction_acknowledgement_digest":
+            projected.full_restriction_acknowledgement_digest,
+        "warning_acknowledgement_digest":
+            projected.warning_acknowledgement_digest,
         "readiness_report_digest": DIGEST_A,
         "preflight_report_digest": DIGEST_A,
         "schema_binding_digest": DIGEST_A,
@@ -155,12 +172,18 @@ def test_nested_ubuntu_field_is_rejected(tmp_path):
 def test_permit_service_returns_immutable_typed_deterministic_result(tmp_path):
     req = request(tmp_path)
     service = ControlledLivePermitService()
+    projection = ControlledWarningAcknowledgementProjector().project(
+        evidence=req.restriction_acknowledgements, request=req)
+    compatibility = ControlledLivePermitCompatibilityValidator().validate(
+        request=req, projection=projection)
     first, evidence = service.issue(
         request=req, approval={"status": "APPROVED"},
-        activation_authorization=object(), now=NOW)
+        activation_authorization=object(), now=NOW,
+        compatibility_report=compatibility)
     second, _ = service.issue(
         request=req, approval={"status": "APPROVED"},
-        activation_authorization=object(), now=NOW)
+        activation_authorization=object(), now=NOW,
+        compatibility_report=compatibility)
     assert isinstance(first, ControlledLivePermitResult)
     assert first == second
     assert first.as_dict() == second.as_dict()

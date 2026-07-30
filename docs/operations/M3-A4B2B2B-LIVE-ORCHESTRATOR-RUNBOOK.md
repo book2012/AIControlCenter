@@ -29,3 +29,10 @@ accepts only `ubuntu_participation=false`, and the permit service/orchestrator
 share one frozen typed result. Do not reuse the forensic attempt directory.
 Obtain fresh independent approval bound to the R4 commit before any new live
 invocation. M3-A4B3 must wait for successful actual bootstrap.
+# R5 pre-issuance gate
+
+Before activation authorization, project the exact `warnings-427` operator and
+independent-approver pair from full typed evidence and validate compatibility.
+Pass that report into issuance and revalidate the typed permit immediately
+before claim. Any failure requires zero authorization creations, permit
+issuances, claims, or writes. A fresh approval is required after R5.

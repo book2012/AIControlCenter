@@ -22,3 +22,10 @@ The live permit is an immutable typed result, never an arbitrary mapping. Its
 canonical digest binds one use, controlled-non-production scope, branch,
 commit, identities, validity window, bootstrap deadline, inactive
 capabilities, and `production_authorized=false`.
+# R5 acknowledgement evidence
+
+The strict request carries typed full restriction acknowledgement entries,
+including restriction identifier, identity, acknowledgement and restriction
+digests, branch, commit, and request binding. Plain mappings are parsed only
+by the strict canonical JSON reader into typed entries; the projector boundary
+accepts typed tuples only. The `warnings-427` pair is never position-selected.

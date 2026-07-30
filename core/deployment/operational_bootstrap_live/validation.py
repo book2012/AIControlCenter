@@ -46,6 +46,9 @@ class ControlledOperationalBootstrapRequestValidator:
         value["restriction_acknowledgement_digests"] = tuple(
             value["restriction_acknowledgement_digests"])
         value["active_restriction_digests"] = tuple(value["active_restriction_digests"])
+        value["restriction_acknowledgements"] = tuple(
+            ControlledRestrictionAcknowledgement(**item)
+            for item in value.get("restriction_acknowledgements", ()))
         return ControlledOperationalBootstrapRequest(**value)
 
 

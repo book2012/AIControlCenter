@@ -27,3 +27,10 @@ contains exact Boolean `ubuntu_participation=false`, confirm no other Ubuntu or
 generic runtime field exists, and confirm the permit boundary is the immutable
 typed contract rather than a mapping. A fresh independent approval must bind
 the R4 commit; production remains `NOT_AUTHORIZED`.
+# R5 prerequisite
+
+- Confirm a valid typed warning acknowledgement compatibility report exists
+  before creating activation authorization.
+- Confirm full evidence and warning projection digests are distinct bindings.
+- Reject synthetic, placeholder, duplicate, missing, extra, or mismatched
+  warning evidence.

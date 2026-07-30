@@ -115,7 +115,9 @@ class ActivationAuthorizationService:
 
 
 class ControlledLivePermitService:
-    def issue(self, *, request, approval, activation_authorization, now):
+    def issue(self, *, request, approval, activation_authorization, now,
+              compatibility_report):
+        projection = compatibility_report.projection
         permit = ControlledLivePermitResult.issue(**{
             "permit_id": "m3-a4b2b2b-r4-permit-" + canonical_digest(
                 {"request": request.request_id, "issued_at": now})[7:39],
@@ -130,7 +132,12 @@ class ControlledLivePermitService:
             "operator_identity": request.operator_identity,
             "approver_identity": request.independent_approver_identity,
             "warning_acknowledgements": tuple(
-                request.restriction_acknowledgement_digests),
+                item.acknowledgement_digest
+                for item in projection.warning_acknowledgements),
+            "full_restriction_acknowledgement_digest":
+                projection.full_restriction_acknowledgement_digest,
+            "warning_acknowledgement_digest":
+                projection.warning_acknowledgement_digest,
             "readiness_report_digest": canonical_digest(approval),
             "preflight_report_digest": canonical_digest("preflight"),
             "schema_binding_digest": canonical_digest("schemas"),

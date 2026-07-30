@@ -26,6 +26,9 @@ class ControlledOperationalBootstrapScope(StrEnum):
     CONTROLLED_NON_PRODUCTION = "CONTROLLED_NON_PRODUCTION"
 
 
+WARNING_RESTRICTION_IDENTIFIER = "warnings-427"
+
+
 class ControlledOperationalBootstrapStatus(StrEnum):
     COMPLETE = "COMPLETE"
     BLOCKED = "BLOCKED"
@@ -157,6 +160,95 @@ class ControlledOperationalBootstrapTimePolicy:
             raise ControlledOperationalBootstrapError("TIME_POLICY_INVALID")
 
 
+@dataclass(frozen=True, slots=True, order=True)
+class ControlledRestrictionAcknowledgement:
+    """Canonical full-evidence entry supplied by the strict approval boundary."""
+
+    restriction_identifier: str
+    acknowledging_identity: str
+    acknowledgement_digest: str
+    restriction_digest: str
+    branch: str
+    commit: str
+    request_id: str
+    synthetic: bool = False
+    placeholder: bool = False
+
+    def __post_init__(self) -> None:
+        if (not self.restriction_identifier
+                or not _IDENTITY.fullmatch(self.acknowledging_identity)
+                or self.synthetic or self.placeholder
+                or self.acknowledging_identity.casefold() in {
+                    "anonymous", "unknown", "none", "null", "n/a", "unassigned"}
+                or self.branch != "feature/deployment-package"
+                or not _COMMIT.fullmatch(self.commit) or not self.request_id
+                or not _DIGEST.fullmatch(self.acknowledgement_digest)
+                or not _DIGEST.fullmatch(self.restriction_digest)):
+            raise ControlledOperationalBootstrapError(
+                "RESTRICTION_ACKNOWLEDGEMENT_INVALID")
+
+    def as_dict(self) -> dict[str, Any]:
+        return _jsonable(asdict(self))
+
+
+@dataclass(frozen=True, slots=True, order=True)
+class ControlledWarningAcknowledgement:
+    restriction_identifier: str
+    acknowledging_identity: str
+    acknowledgement_digest: str
+
+    def __post_init__(self) -> None:
+        if (self.restriction_identifier != WARNING_RESTRICTION_IDENTIFIER
+                or not _IDENTITY.fullmatch(self.acknowledging_identity)
+                or not _DIGEST.fullmatch(self.acknowledgement_digest)):
+            raise ControlledOperationalBootstrapError(
+                "WARNING_ACKNOWLEDGEMENT_INVALID")
+
+    def as_dict(self) -> dict[str, Any]:
+        return _jsonable(asdict(self))
+
+
+@dataclass(frozen=True, slots=True)
+class ControlledWarningAcknowledgementProjection:
+    full_restriction_acknowledgements: tuple[ControlledRestrictionAcknowledgement, ...]
+    warning_acknowledgements: tuple[ControlledWarningAcknowledgement, ...]
+    full_restriction_acknowledgement_digest: str
+    warning_acknowledgement_digest: str
+
+    def __post_init__(self) -> None:
+        full = tuple(sorted(self.full_restriction_acknowledgements))
+        warning = tuple(sorted(
+            self.warning_acknowledgements,
+            key=lambda item: item.acknowledgement_digest))
+        object.__setattr__(self, "full_restriction_acknowledgements", full)
+        object.__setattr__(self, "warning_acknowledgements", warning)
+        if (canonical_digest([item.as_dict() for item in full])
+                != self.full_restriction_acknowledgement_digest
+                or canonical_digest([item.as_dict() for item in warning])
+                != self.warning_acknowledgement_digest):
+            raise ControlledOperationalBootstrapError(
+                "ACKNOWLEDGEMENT_PROJECTION_DIGEST_INVALID")
+
+
+@dataclass(frozen=True, slots=True)
+class ControlledLivePermitCompatibilityReport:
+    projection: ControlledWarningAcknowledgementProjection
+    compatible: bool
+    report_digest: str
+
+    def __post_init__(self) -> None:
+        content = {
+            "full_restriction_acknowledgement_digest":
+                self.projection.full_restriction_acknowledgement_digest,
+            "warning_acknowledgement_digest":
+                self.projection.warning_acknowledgement_digest,
+            "compatible": self.compatible,
+        }
+        if not self.compatible or canonical_digest(content) != self.report_digest:
+            raise ControlledOperationalBootstrapError(
+                "LIVE_PERMIT_COMPATIBILITY_INVALID")
+
+
 @dataclass(frozen=True, slots=True)
 class ControlledOperationalBootstrapRequest:
     request_id: str
@@ -171,6 +263,7 @@ class ControlledOperationalBootstrapRequest:
     restriction_acknowledgement_digests: tuple[str, ...]
     active_restriction_digests: tuple[str, ...]
     scope: ControlledOperationalBootstrapScope
+    restriction_acknowledgements: tuple[ControlledRestrictionAcknowledgement, ...] = ()
     maximum_uses: int = 1
     production_authorized: bool = False
     writers_authorized: bool = False
@@ -203,6 +296,18 @@ class ControlledOperationalBootstrapRequest:
                            tuple(sorted(self.restriction_acknowledgement_digests)))
         object.__setattr__(self, "active_restriction_digests",
                            tuple(sorted(self.active_restriction_digests)))
+        acknowledgements = tuple(sorted(self.restriction_acknowledgements))
+        if acknowledgements:
+            if ({item.acknowledgement_digest for item in acknowledgements}
+                    != set(self.restriction_acknowledgement_digests)
+                    or {item.restriction_digest for item in acknowledgements}
+                    != set(self.active_restriction_digests)
+                    or any(item.branch != self.branch or item.commit != self.commit
+                           or item.request_id != self.request_id
+                           for item in acknowledgements)):
+                raise ControlledOperationalBootstrapError(
+                    "RESTRICTION_ACKNOWLEDGEMENT_BINDING_INVALID")
+        object.__setattr__(self, "restriction_acknowledgements", acknowledgements)
         validate_safe(self.as_dict())
 
     def as_dict(self) -> dict[str, Any]:
@@ -227,6 +332,8 @@ class ControlledLivePermitResult:
     claimed: bool
     environment: str
     warning_acknowledgements: tuple[str, ...]
+    full_restriction_acknowledgement_digest: str
+    warning_acknowledgement_digest: str
     readiness_report_digest: str
     preflight_report_digest: str
     schema_binding_digest: str
@@ -253,7 +360,7 @@ class ControlledLivePermitResult:
                 or self.operator_identity == self.approver_identity
                 or self.maximum_uses != 1 or self.claimed
                 or self.environment != "CONTROLLED_NON_PRODUCTION"
-                or len(self.warning_acknowledgements) < 2
+                or len(self.warning_acknowledgements) != 2
                 or not not_before <= issued <= deadline < expires
                 or not self.bootstrap_authorized
                 or self.writers_authorized or self.monitoring_authorized
@@ -262,7 +369,9 @@ class ControlledLivePermitResult:
         for digest in (
                 self.readiness_report_digest, self.preflight_report_digest,
                 self.schema_binding_digest, self.target_binding_digest,
-                self.plan_binding_digest):
+                self.plan_binding_digest,
+                self.full_restriction_acknowledgement_digest,
+                self.warning_acknowledgement_digest):
             if not _DIGEST.fullmatch(digest):
                 raise ControlledOperationalBootstrapError("LIVE_PERMIT_BINDING_INVALID")
         object.__setattr__(

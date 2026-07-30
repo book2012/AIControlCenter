@@ -28,3 +28,10 @@ evidence and do not reuse or mutate it. Record the attempt as
 `BLOCKED_PRE_AUTHORIZATION`, normalization as passed, and activation,
 permit, claim, bootstrap, target, writer, monitoring, dispatch, Ubuntu, and
 production counters as zero. Require fresh approval for the R4 commit.
+# R5 incident recovery
+
+- Preserve `/private/tmp/aicontrolcenter-live-bootstrap.OR75nI` read-only.
+- Confirm its permit remains unclaimed and is not reused.
+- Confirm managed targets remain absent and bootstrap remains `NOT EXECUTED`.
+- Require fresh independent approval before a separately authorized attempt.
+- Keep production `NOT_AUTHORIZED` and M3-A4B3 blocked.
