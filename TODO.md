@@ -688,3 +688,10 @@ separate authorization gate. M3-A4B2B1B does not authorize or perform it.
 - Obtain fresh independent approval.
 - Run the current-user Mac bootstrap only under a separate authorization gate.
 - Keep M3-A4B3 blocked until the actual bootstrap succeeds.
+
+# After M3-A4B3
+
+- M3-A4B3 is closed; do not reuse the consumed permit or claim.
+- Proceed to `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.
+- Keep writers, monitoring, dispatch, Ubuntu, and production inactive unless a
+  separate future authorization gate explicitly changes their state.

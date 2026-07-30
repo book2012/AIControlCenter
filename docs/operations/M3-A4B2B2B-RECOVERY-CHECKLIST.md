@@ -35,3 +35,15 @@ production counters as zero. Require fresh approval for the R4 commit.
 - Confirm managed targets remain absent and bootstrap remains `NOT EXECUTED`.
 - Require fresh independent approval before a separately authorized attempt.
 - Keep production `NOT_AUTHORIZED` and M3-A4B3 blocked.
+
+# M3-A4B3 isolated recovery checklist
+
+- Use only the injected immutable operational and evidence snapshots.
+- Put every restore, mutation, and tamper fixture under injected recovery work.
+- Validate canonical manifest and exact database byte digest before restore.
+- Reject missing, empty, truncated, modified, cross-service, wrong-schema,
+  symlinked, broad-mode, traversal, outside-root, and pre-existing targets.
+- Restore audit and replay to distinct fresh `0700` directories and `0600`
+  files; require public inspector `HEALTHY`, current schema, and zero events.
+- Compare source hash, size, and mtime before/after.
+- Never restore into operational state. Production remains `NOT_AUTHORIZED`.

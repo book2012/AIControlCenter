@@ -1011,3 +1011,11 @@ validated. Fresh independent approval is required for the next exact commit.
 Acknowledgement projection compatibility is implemented. The prior attempt
 stopped before claim and its permit is not reusable. Fresh independent approval
 and an authorized Mac bootstrap remain required; M3-A4B3 is blocked.
+
+# M3-A4B3 CLOSED
+
+The commit `f7a81b73b86c170300bb6b80f437dbb753362f7e` bootstrap evidence
+chain, single consumed permit/claim, `HEALTHY` zero-event audit and replay
+state, baseline backups, and isolated restores are validated. Writers,
+monitoring, dispatch, Ubuntu, and production remain inactive/unauthorized.
+Next: `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.

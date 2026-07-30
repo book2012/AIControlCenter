@@ -1418,3 +1418,14 @@ Production activation occurred.
   acknowledgement projection and pre-issuance/pre-claim compatibility gates.
 - Preserved the stopped pre-claim forensic authorization and permit; no actual
   bootstrap or production activation was performed.
+
+# M3-A4B3
+
+- Added deterministic canonical bootstrap-chain validation and root-confined
+  baseline audit/replay recovery drills.
+- Reused public read-only SQLite inspectors; both snapshots and restores are
+  `HEALTHY` with zero events and unchanged sources.
+- Added fail-closed evidence, backup, permission, symlink, schema,
+  cross-service, destination, tamper, claim-reuse, and production-deny tests.
+- Recorded the successful one-use permit as permanently consumed. No writer,
+  monitoring, dispatch, Ubuntu, or production activation was performed.

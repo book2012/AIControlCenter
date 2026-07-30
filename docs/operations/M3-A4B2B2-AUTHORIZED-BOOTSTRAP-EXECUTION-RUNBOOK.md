@@ -30,3 +30,12 @@ authorization and all coordinator gates. `BLOCKED` or `FAILED` exits nonzero.
 
 Never delete a claim, reuse a permit, select another root, route through
 Ubuntu, or activate writers, monitoring, dispatch or production.
+
+## Completed bootstrap validation
+
+The one controlled bootstrap bound to
+`f7a81b73b86c170300bb6b80f437dbb753362f7e` completed successfully. Its
+permit and claim are permanently consumed. M3-A4B3 subsequently validated the
+canonical chain, `HEALTHY` zero-event databases, baseline backups, isolated
+restores, shared-parent/sibling preservation, and inactive runtime flags. This
+historical success does not authorize rerun or production.

@@ -111,6 +111,11 @@
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_execution"}]
     },
     {
+      "id": "bootstrap_evidence_recovery",
+      "responsibility": "M3-A4B3 immutable bootstrap evidence inspection and recovery-root-confined baseline restore validation; no issuance, claim, live runner, activation, network or production authorization.",
+      "selectors": [{"module_prefix": "core.deployment.bootstrap_evidence_recovery"}]
+    },
+    {
       "id": "operational_bootstrap_live",
       "responsibility": "M3-A4B2B2B-R3 strict local controlled operational composition boundary; direct coordinator invocation only, no network, API, worker or production activation.",
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_live"}]
@@ -234,6 +239,7 @@
     {"from_zone": "operational_bootstrap", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap"]},
     {"from_zone": "operational_activation_authorization", "to_zones": ["contracts", "operational_activation_authorization"]},
     {"from_zone": "operational_bootstrap_execution", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution"]},
+    {"from_zone": "bootstrap_evidence_recovery", "to_zones": ["contracts", "audit_sqlite_read_only", "permit_replay_sqlite_read_only", "operational_bootstrap_execution", "operational_bootstrap_live", "bootstrap_evidence_recovery"]},
     {"from_zone": "operational_bootstrap_live", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution", "git_readonly_evidence", "operational_bootstrap_live"]},
     {"from_zone": "git_readonly_evidence", "to_zones": ["git_readonly_evidence"]},
     {"from_zone": "operational_bootstrap_preflight", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight"]},
@@ -324,7 +330,7 @@
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery", "bootstrap_evidence_recovery", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

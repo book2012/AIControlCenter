@@ -1048,3 +1048,14 @@ The latest operational attempt reached authorization and typed permit issuance
 but stopped before claim because all 18 full-evidence digests crossed an exact
 two-warning boundary. R5 separates and binds those contracts. The forensic
 root is preserved and the actual bootstrap remains not executed.
+
+# M3-A4B3
+
+The separately authorized controlled non-production bootstrap succeeded once
+at `f7a81b73b86c170300bb6b80f437dbb753362f7e`. Authorization
+`m3-a4b2b2b-r2-60cc9ee1f8cf6c9a55a97cea3224786d`, permit
+`m3-a4b2b2b-r4-permit-a72d2e43cc42cf05150884e95919d4b7`, and claim
+`m3-a4b2b2a-claim-ef74c0c861feb6868e45999396e6f6db` are cross-bound.
+Audit and replay are `HEALTHY` with zero events; two backups and isolated
+restores validate. The shared parent and siblings were preserved. The permit is
+consumed; runtime activation and production authorization did not occur.

@@ -911,3 +911,12 @@ M3-A4B2B2B-R5 preserves full restriction acknowledgements separately from the
 exact two-entry executor warning projection. Compatibility is validated before
 authorization/issuance and again before claim. The actual bootstrap remains
 `NOT EXECUTED`; production is `NOT_AUTHORIZED`.
+
+# M3-A4B3 bootstrap evidence and recovery
+
+The single controlled non-production bootstrap at commit
+`f7a81b73b86c170300bb6b80f437dbb753362f7e` is now content- and
+digest-validated from read-only snapshots. Audit and replay are `HEALTHY` with
+zero events, and both baseline backups passed isolated restores. The permit is
+permanently consumed; writers, monitoring, dispatch, Ubuntu, and production
+authorization remain false. Next: `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.

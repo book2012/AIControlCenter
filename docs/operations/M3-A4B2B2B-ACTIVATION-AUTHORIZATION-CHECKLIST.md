@@ -34,3 +34,13 @@ the R4 commit; production remains `NOT_AUTHORIZED`.
 - Confirm full evidence and warning projection digests are distinct bindings.
 - Reject synthetic, placeholder, duplicate, missing, extra, or mismatched
   warning evidence.
+
+# M3-A4B3 retained authorization facts
+
+Authorization `m3-a4b2b2b-r2-60cc9ee1f8cf6c9a55a97cea3224786d`
+is bound to commit `f7a81b73b86c170300bb6b80f437dbb753362f7e`, requester/operator
+`mac-account:kyouhan`, independent approver `brightbok`, and maximum one use.
+Its permit `m3-a4b2b2b-r4-permit-a72d2e43cc42cf05150884e95919d4b7`
+was consumed by claim
+`m3-a4b2b2a-claim-ef74c0c861feb6868e45999396e6f6db`. It cannot authorize a
+second claim, runtime writers, monitoring, dispatch, Ubuntu, or production.

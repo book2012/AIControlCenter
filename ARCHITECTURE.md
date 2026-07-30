@@ -1064,3 +1064,12 @@ The Control Plane retains complete restriction acknowledgement evidence while
 projecting only the semantic `warnings-427` Mac-operator/independent-approver
 pair into the executor contract. Projection is typed, immutable,
 order-independent, digest-bound, and validated before issuance and claim.
+
+# Bootstrap evidence and recovery boundary
+
+M3-A4B3 adds a Control-Plane-owned, read-only-first evidence validator and
+recovery-work-confined restore adapter. It reuses public canonical helpers and
+SQLite inspectors, never restores into the operational root, and has no issuer,
+claim, live-runner, writer, monitoring, dispatch, network, Ubuntu, or business
+logic capability. Snapshot permissions may be a read-only subset of the
+created `0700`/`0600` state; broader permissions always fail closed.

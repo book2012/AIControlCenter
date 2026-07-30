@@ -1044,3 +1044,13 @@ remains `NOT_AUTHORIZED`.
 M3-A4B2B2B-R5 adds the deterministic warning acknowledgement projection and
 pre-issuance compatibility gate. Next is fresh approval and separately
 authorized current-user Mac bootstrap; M3-A4B3 remains blocked until success.
+
+# M3-A4B3 closure
+
+- CLOSED: complete bootstrap evidence chain and exact commit binding.
+- CLOSED: audit/replay `HEALTHY`, zero events, two isolated baseline restores.
+- CLOSED: source immutability and negative recovery validation.
+- PERMANENTLY CONSUMED: the successful one-use permit.
+- INACTIVE: writers, monitoring, dispatch, and Ubuntu.
+- `NOT_AUTHORIZED`: production.
+- NEXT: `M3-A4C_ACTIVATION_VALIDATION_AND_CLOSEOUT`.

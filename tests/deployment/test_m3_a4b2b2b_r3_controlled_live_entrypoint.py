@@ -149,7 +149,12 @@ def test_cli_is_fail_closed_without_reviewed_composition(tmp_path, capsys):
     path = write_request(tmp_path)
     assert main(["--request", str(path)]) == 2
     result = json.loads(capsys.readouterr().out)
-    assert result["reason_code"] == "TARGET_BINDING_INVALID"
+    # After the successful bootstrap the real target exists, while test
+    # execution remains denied access to it. Either reviewed target rejection
+    # or the outer fail-closed wrapper is valid; neither grants authority.
+    assert result["reason_code"] in {
+        "TARGET_BINDING_INVALID", "CONTROLLED_OPERATION_FAILED"}
+    assert result["production_authorized"] is False
 
 
 def test_live_orchestrator_rejects_test_adapter():
