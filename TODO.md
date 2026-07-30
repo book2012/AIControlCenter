@@ -1,5 +1,10 @@
 # TODO
 
+- [x] Close R4 strict-live preflight and typed permit contract compatibility.
+- [ ] Obtain fresh independent approval bound to the R4 commit.
+- [ ] Execute the Mac bootstrap only under separate explicit authorization.
+- [ ] Begin M3-A4B3 only after actual bootstrap succeeds.
+
 - [x] Close Recovery-2 with isolated read-only Git evidence, independent public
   inspector and PRE_ACTIVATION assertions, and preserved failure evidence.
 

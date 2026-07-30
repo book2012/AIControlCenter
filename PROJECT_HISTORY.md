@@ -1,5 +1,13 @@
 # Project History
 
+M3-A4B2B2B-R4 repaired two defects found after strict artifact normalization
+in an authorized attempt that stopped `BLOCKED_PRE_AUTHORIZATION`: the required
+Ubuntu non-participation evidence was rejected generically, and permit issuance
+returned an untyped mapping. A narrow exact-false preflight contract and frozen
+typed permit boundary now pass test-confined orchestration. Actual managed
+targets remain absent and operational counters remain zero. Fresh approval is
+required for R4; production is `NOT_AUTHORIZED`.
+
 The first R3 recovery remained blocked because concrete clean/synchronized Git
 evidence was absent. Recovery-2 added the sole narrow deployment subprocess
 exception for fixed read-only Git observations and independently exercised the

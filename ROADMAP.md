@@ -1,5 +1,10 @@
 # Roadmap
 
+M3-A4B2B2B-R4 closes strict-live contract compatibility only. Next is fresh
+independent approval bound to R4 and a separately authorized Mac bootstrap.
+M3-A4B3 remains blocked until actual bootstrap succeeds. Production remains
+`NOT_AUTHORIZED`.
+
 Recovery-2 completes reviewed evidence only. Actual managed targets remain
 absent; next is fresh independent approval bound to the final R3 commit before
 any authorized Mac bootstrap. Production remains `NOT_AUTHORIZED`.

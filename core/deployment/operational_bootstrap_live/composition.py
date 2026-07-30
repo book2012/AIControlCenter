@@ -31,7 +31,6 @@ from core.deployment.operational_bootstrap_execution import (
     OperationalMacBootstrapExecutionCoordinator,
     PwdMacOperationalHomeResolver,
     StrictJsonArtifactReader,
-    canonical_digest as execution_digest,
 )
 from core.deployment.git_readonly_evidence import (
     ReadOnlyGitEvidenceCollector,
@@ -41,9 +40,14 @@ from core.deployment.git_readonly_evidence import (
 from .artifacts import (
     AtomicControlledOperationalArtifactWriter,
     StrictControlledOperationalArtifactReader,
+    StrictControlledOperationalPreflightArtifactReader,
 )
 from .coordinator import ControlledOperationalBootstrapOrchestrator
-from .models import ControlledOperationalBootstrapError, canonical_digest
+from .models import (
+    ControlledLivePermitResult,
+    ControlledOperationalBootstrapError,
+    canonical_digest,
+)
 
 
 class SystemClock:
@@ -112,10 +116,11 @@ class ActivationAuthorizationService:
 
 class ControlledLivePermitService:
     def issue(self, *, request, approval, activation_authorization, now):
-        content = {
-            "permit_id": "m3-a4b2b2b-r3-permit-" + canonical_digest(
+        permit = ControlledLivePermitResult.issue(**{
+            "permit_id": "m3-a4b2b2b-r4-permit-" + canonical_digest(
                 {"request": request.request_id, "issued_at": now})[7:39],
             "branch": request.branch, "commit": request.commit, "issued_at": now,
+            "requester_identity": request.requester_identity,
             "not_before": request.time_policy.permit_not_before,
             "expires_at": request.time_policy.permit_expires_at,
             "bootstrap_execution_deadline":
@@ -124,7 +129,7 @@ class ControlledLivePermitService:
             "environment": "CONTROLLED_NON_PRODUCTION",
             "operator_identity": request.operator_identity,
             "approver_identity": request.independent_approver_identity,
-            "warning_acknowledgements": list(
+            "warning_acknowledgements": tuple(
                 request.restriction_acknowledgement_digests),
             "readiness_report_digest": canonical_digest(approval),
             "preflight_report_digest": canonical_digest("preflight"),
@@ -135,10 +140,9 @@ class ControlledLivePermitService:
             "bootstrap_authorized": True, "writers_authorized": False,
             "monitoring_authorized": False, "external_dispatch_authorized": False,
             "production_authorized": False,
-        }
-        content["permit_digest"] = execution_digest(content)
-        return content, {"permit_id": content["permit_id"],
-                         "permit_digest": content["permit_digest"]}
+        })
+        return permit, {"permit_id": permit.permit_id,
+                        "permit_digest": permit.permit_digest}
 
 
 def build_default_live_orchestrator(request, *, repository_root: Path | None = None):
@@ -163,7 +167,7 @@ def build_default_live_orchestrator(request, *, repository_root: Path | None = N
         trusted_root=request.trusted_operational_root, path_policy=policy)
     collaborators = {
         "approval_reader": StrictControlledOperationalArtifactReader(),
-        "preflight_reader": StrictControlledOperationalArtifactReader(),
+        "preflight_reader": StrictControlledOperationalPreflightArtifactReader(),
         "artifact_writer": AtomicControlledOperationalArtifactWriter(),
         "git_evidence": ReadOnlyGitEvidenceCollector(ReadOnlyGitEvidenceConfig(
             repository_root=root, expected_branch=request.branch,

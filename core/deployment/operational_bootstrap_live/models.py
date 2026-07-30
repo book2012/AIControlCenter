@@ -210,6 +210,102 @@ class ControlledOperationalBootstrapRequest:
 
 
 @dataclass(frozen=True, slots=True)
+class ControlledLivePermitResult:
+    """Immutable live-shaped permit shared by issuance and orchestration."""
+
+    permit_id: str
+    branch: str
+    commit: str
+    requester_identity: str
+    operator_identity: str
+    approver_identity: str
+    issued_at: str
+    not_before: str
+    expires_at: str
+    bootstrap_execution_deadline: str
+    maximum_uses: int
+    claimed: bool
+    environment: str
+    warning_acknowledgements: tuple[str, ...]
+    readiness_report_digest: str
+    preflight_report_digest: str
+    schema_binding_digest: str
+    target_binding_digest: str
+    plan_binding_digest: str
+    bootstrap_authorized: bool
+    writers_authorized: bool
+    monitoring_authorized: bool
+    external_dispatch_authorized: bool
+    production_authorized: bool
+    permit_digest: str
+
+    def __post_init__(self) -> None:
+        identities = (
+            self.requester_identity, self.operator_identity, self.approver_identity)
+        times = tuple(parse_timestamp(getattr(self, name)) for name in (
+            "issued_at", "not_before", "expires_at",
+            "bootstrap_execution_deadline"))
+        issued, not_before, expires, deadline = times
+        if (not self.permit_id or self.branch != "feature/deployment-package"
+                or not _COMMIT.fullmatch(self.commit)
+                or any(not _IDENTITY.fullmatch(item) for item in identities)
+                or self.operator_identity == "root"
+                or self.operator_identity == self.approver_identity
+                or self.maximum_uses != 1 or self.claimed
+                or self.environment != "CONTROLLED_NON_PRODUCTION"
+                or len(self.warning_acknowledgements) < 2
+                or not not_before <= issued <= deadline < expires
+                or not self.bootstrap_authorized
+                or self.writers_authorized or self.monitoring_authorized
+                or self.external_dispatch_authorized or self.production_authorized):
+            raise ControlledOperationalBootstrapError("LIVE_PERMIT_CONTRACT_INVALID")
+        for digest in (
+                self.readiness_report_digest, self.preflight_report_digest,
+                self.schema_binding_digest, self.target_binding_digest,
+                self.plan_binding_digest):
+            if not _DIGEST.fullmatch(digest):
+                raise ControlledOperationalBootstrapError("LIVE_PERMIT_BINDING_INVALID")
+        object.__setattr__(
+            self, "warning_acknowledgements",
+            tuple(sorted(self.warning_acknowledgements)))
+        if canonical_digest(self.content()) != self.permit_digest:
+            raise ControlledOperationalBootstrapError("LIVE_PERMIT_DIGEST_INVALID")
+
+    def content(self) -> dict[str, Any]:
+        value = asdict(self)
+        value.pop("permit_digest")
+        return _jsonable(value)
+
+    def as_dict(self) -> dict[str, Any]:
+        return {**self.content(), "permit_digest": self.permit_digest}
+
+    @classmethod
+    def issue(cls, **values: Any) -> ControlledLivePermitResult:
+        values["warning_acknowledgements"] = tuple(sorted(
+            values["warning_acknowledgements"]))
+        content = _jsonable(values)
+        return cls(**content, permit_digest=canonical_digest(content))
+
+    def validate_for(
+            self, request: ControlledOperationalBootstrapRequest, now: str) -> None:
+        if self.branch != request.branch or self.commit != request.commit:
+            raise ControlledOperationalBootstrapError("LIVE_PERMIT_GIT_BINDING_INVALID")
+        if (self.requester_identity != request.requester_identity
+                or self.operator_identity != request.operator_identity
+                or self.approver_identity
+                != request.independent_approver_identity):
+            raise ControlledOperationalBootstrapError(
+                "LIVE_PERMIT_IDENTITY_BINDING_INVALID")
+        current = parse_timestamp(now)
+        if (current < parse_timestamp(self.not_before)
+                or current >= parse_timestamp(self.expires_at)
+                or current >= parse_timestamp(self.bootstrap_execution_deadline)):
+            raise ControlledOperationalBootstrapError("LIVE_PERMIT_EXPIRED")
+        if canonical_digest(self.content()) != self.permit_digest:
+            raise ControlledOperationalBootstrapError("LIVE_PERMIT_DIGEST_INVALID")
+
+
+@dataclass(frozen=True, slots=True)
 class ControlledOperationalBootstrapCheck:
     code: str
     passed: bool

@@ -80,8 +80,10 @@ class ControlledOperationalBootstrapArtifactValidator:
                 or preflight["branch"] != request.branch
                 or preflight["commit"] != request.commit
                 or preflight["trusted_operational_root"] != str(request.trusted_operational_root)
-                or not preflight["managed_targets_absent"]
-                or preflight["ubuntu_participation"]):
+                or type(preflight["managed_targets_absent"]) is not bool
+                or preflight["managed_targets_absent"] is not True
+                or type(preflight["ubuntu_participation"]) is not bool
+                or preflight["ubuntu_participation"] is not False):
             raise ControlledOperationalBootstrapError("PREFLIGHT_BINDING_INVALID")
         if not isinstance(git, ReadOnlyGitEvidenceSnapshot):
             raise ControlledOperationalBootstrapError("GIT_BINDING_INVALID")

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A4B2B2B-R4
+
+- Added the preflight-only exact `ubuntu_participation=false` governance
+  exception without weakening global unsafe-field denial.
+- Added an immutable, canonical, digest-bound live permit result shared by the
+  permit service and orchestrator.
+- Added strict compatibility and default-deny regressions; no actual
+  authorization, permit, claim, bootstrap, target, or production activation
+  occurred.
+
 ## 2026-07-30 — M3-A4B2B2B-R3 Recovery-2
 
 - Closed the first recovery's Git-evidence blocker with a fixed, bounded,

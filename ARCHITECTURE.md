@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## R4 strict-live compatibility boundary
+
+The strict preflight reader alone permits the exact required governance field
+`ubuntu_participation`, and only when its value is Boolean `false`. Its exact
+schema still rejects every unknown host, command, destination, environment,
+worker, nested Ubuntu, or production field; the global unsafe-field policy is
+unchanged. The live permit service returns the frozen
+`ControlledLivePermitResult`, and the orchestrator type-checks and revalidates
+Git, identity, time, one-use, digest, controlled scope, and production denial
+before canonical serialization. No Ubuntu or runtime dependency was added.
+
 ## Recovery-2 evidence boundary
 
 Only `core.deployment.git_readonly_evidence` may import subprocess for the

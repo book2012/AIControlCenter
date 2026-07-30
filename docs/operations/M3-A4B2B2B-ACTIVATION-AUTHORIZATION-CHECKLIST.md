@@ -21,3 +21,9 @@ not create a real authorization; fresh approval is required for its commit.
 
 Completion of this checklist does not itself authorize production or execute
 the bootstrap.
+
+R4 compatibility does not create authorization. Confirm the strict preflight
+contains exact Boolean `ubuntu_participation=false`, confirm no other Ubuntu or
+generic runtime field exists, and confirm the permit boundary is the immutable
+typed contract rather than a mapping. A fresh independent approval must bind
+the R4 commit; production remains `NOT_AUTHORIZED`.

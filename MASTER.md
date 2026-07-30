@@ -1,5 +1,12 @@
 # MASTER
 
+M3-A4B2B2B-R4 is complete after strict-live contract compatibility validation.
+The prior authorized attempt stopped `BLOCKED_PRE_AUTHORIZATION`; artifact
+normalization passed, and actual counters remain zero. Ubuntu denial evidence
+and the typed one-use permit boundary are repaired without operational
+execution. Fresh independent approval must bind R4. Production is
+`NOT_AUTHORIZED`; M3-A4B3 must not begin before actual bootstrap succeeds.
+
 R3 Recovery-2 closes the first recovery's Git-evidence blocker through the
 isolated read-only adapter and independently validates audit, replay,
 PRE_ACTIVATION, and preserved post-claim failure evidence. Actual bootstrap

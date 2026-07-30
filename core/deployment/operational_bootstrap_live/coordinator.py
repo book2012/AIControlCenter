@@ -66,8 +66,9 @@ class ControlledOperationalBootstrapOrchestrator:
                           activation_evidence)
         permit, issuance_evidence = self.permit_service.issue(
             request=request, approval=approval, activation_authorization=activation, now=now)
-        if permit is None:
-            raise ControlledOperationalBootstrapError("OPERATIONAL_PERMIT_REQUIRED")
+        if not isinstance(permit, ControlledLivePermitResult):
+            raise ControlledOperationalBootstrapError("TYPED_LIVE_PERMIT_REQUIRED")
+        permit.validate_for(request, now)
         self.writer.write(request.artifacts.operational_permit_output, permit.as_dict())
         self.writer.write(request.artifacts.permit_issuance_evidence_output,
                           issuance_evidence)

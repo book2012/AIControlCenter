@@ -1,5 +1,13 @@
 # AIControlCenter
 
+M3-A4B2B2B-R4 aligns the strict preflight and live permit contracts. The exact
+Boolean `ubuntu_participation=false` is accepted only as Ubuntu
+non-participation evidence; all unsafe alternatives remain default-deny.
+Permit issuance and orchestration now share an immutable typed result. The
+authorized attempt was `BLOCKED_PRE_AUTHORIZATION`; no actual authorization,
+permit, claim, bootstrap, or managed target exists. Fresh approval must bind
+R4, production remains `NOT_AUTHORIZED`, and M3-A4B3 remains blocked.
+
 Recovery-2 closes the first blocked R3 recovery with a bounded read-only
 `/usr/bin/git` adapter isolated in `core.deployment.git_readonly_evidence`.
 Public audit/replay inspectors, PRE_ACTIVATION monitoring, and post-claim

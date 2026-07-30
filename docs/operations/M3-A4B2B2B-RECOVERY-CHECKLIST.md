@@ -22,3 +22,9 @@ parent and unrelated siblings.
 - Confirm zero operational permits, claims and controlled executions.
 - Require fresh independent approval and a permit bound to the new commit.
 - Keep production activation `NOT_AUTHORIZED`.
+
+For the R4 recovery, preserve the prior strict-live directory as forensic
+evidence and do not reuse or mutate it. Record the attempt as
+`BLOCKED_PRE_AUTHORIZATION`, normalization as passed, and activation,
+permit, claim, bootstrap, target, writer, monitoring, dispatch, Ubuntu, and
+production counters as zero. Require fresh approval for the R4 commit.

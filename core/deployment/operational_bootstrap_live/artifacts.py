@@ -20,6 +20,37 @@ class StrictControlledOperationalArtifactReader:
         return value
 
 
+class StrictControlledOperationalPreflightArtifactReader:
+    """Strict reader for the one contract containing Ubuntu deny-evidence."""
+
+    def read(self, path: Path) -> Mapping[str, object]:
+        raw = path.read_text(encoding="utf-8")
+        value = json.loads(raw)
+        if not isinstance(value, dict) or canonical_json(value) != raw:
+            raise ControlledOperationalBootstrapError("STRICT_CANONICAL_JSON_REQUIRED")
+        expected = {
+            "status", "branch", "commit", "trusted_operational_root",
+            "managed_targets_absent", "shared_parent_digest",
+            "ubuntu_participation"}
+        if set(value) != expected:
+            unknown = set(value) - expected
+            if unknown:
+                validate_safe({name: value[name] for name in unknown})
+            raise ControlledOperationalBootstrapError("ARTIFACT_FIELDS_INVALID")
+        if ("ubuntu_participation" not in value
+                or type(value["ubuntu_participation"]) is not bool
+                or value["ubuntu_participation"] is not False):
+            raise ControlledOperationalBootstrapError(
+                "UBUNTU_PARTICIPATION_MUST_BE_FALSE")
+        remaining = dict(value)
+        remaining.pop("ubuntu_participation")
+        trusted_root = remaining.pop("trusted_operational_root")
+        validate_safe(remaining)
+        if not isinstance(trusted_root, str) or "://" in trusted_root:
+            raise ControlledOperationalBootstrapError("UNSAFE_VALUE_REJECTED")
+        return value
+
+
 class AtomicControlledOperationalArtifactWriter:
     def write(self, path: Path, value: Mapping[str, object]) -> None:
         path = Path(path)

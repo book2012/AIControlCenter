@@ -21,3 +21,11 @@ adapter, a caller-provided HOME, or environment-only activation for this path.
 
 No live invocation occurred during R3 closure. Obtain fresh independent
 approval for the R3 commit before the next task.
+
+R4 records the latest authorized attempt as `BLOCKED_PRE_AUTHORIZATION`.
+Strict artifact normalization passed; the attempt created no activation
+authorization, permit, claim, or target write. The corrected preflight reader
+accepts only `ubuntu_participation=false`, and the permit service/orchestrator
+share one frozen typed result. Do not reuse the forensic attempt directory.
+Obtain fresh independent approval bound to the R4 commit before any new live
+invocation. M3-A4B3 must wait for successful actual bootstrap.
