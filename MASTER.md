@@ -1,5 +1,16 @@
 # MASTER
 
+R3 Recovery-2 closes the first recovery's Git-evidence blocker through the
+isolated read-only adapter and independently validates audit, replay,
+PRE_ACTIVATION, and preserved post-claim failure evidence. Actual bootstrap
+remains `NOT EXECUTED`; fresh approval is required and production is
+`NOT_AUTHORIZED`.
+
+The previous R3 attempt was `BLOCKED`. Recovery closes the default-composition
+and pytest end-to-end gates without issuing a real permit or running the actual
+Mac bootstrap. Actual targets remain absent, fresh approval must bind the
+recovery commit, and production activation is `NOT_AUTHORIZED`.
+
 ## M3-A4B2B1A
 
 CLOSED after validation. Review package AVAILABLE; human operator, independent

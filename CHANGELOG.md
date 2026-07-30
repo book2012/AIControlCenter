@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A4B2B2B-R3 Recovery-2
+
+- Closed the first recovery's Git-evidence blocker with a fixed, bounded,
+  read-only `/usr/bin/git` collector isolated in `git_readonly_evidence`.
+- Added independent public audit/replay inspection, deterministic
+  PRE_ACTIVATION monitoring, and canonical post-claim failure-evidence tests.
+- Kept the validation runner validation-only; no actual bootstrap or activation
+  ran, and fresh approval remains required.
+
+## 2026-07-30 — M3-A4B2B2B-R3
+
+- Added the strict local controlled operational coordinator and CLI.
+- Preserved validation-only execution runner and production `NOT_AUTHORIZED`.
+- Recovered the previously blocked attempt by adding the reviewed default live
+  collaborator composition and pytest-only end-to-end authorization, permit,
+  atomic claim, Mac bootstrap, backup/restore, and post-claim failure coverage.
+- No actual operational bootstrap or managed-target creation occurred; fresh
+  independent approval is required for the recovery commit.
+
 ## 2026-07-30 — M3-A4B2B2B-R1 Existing Safe Parent Compatibility
 
 - Corrected the application-state parent from exclusive to shared ownership.

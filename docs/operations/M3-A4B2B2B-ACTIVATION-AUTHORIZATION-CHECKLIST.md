@@ -1,5 +1,11 @@
 # M3-A4B2B2B Activation Authorization Checklist
 
+Recovery-2 evidence is not activation authorization. Fresh independent
+approval must bind the final clean synchronized R3 commit.
+
+R3 composes authorization only through the dedicated live coordinator. It did
+not create a real authorization; fresh approval is required for its commit.
+
 - Confirm feature branch, exact commit, clean tree and upstream parity.
 - Bind the human approval report and permit issuance review by ID and digest.
 - Record requester, Mac operator and independent approver; do not invent identities.

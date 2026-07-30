@@ -1,5 +1,13 @@
 # TODO
 
+- [x] Close Recovery-2 with isolated read-only Git evidence, independent public
+  inspector and PRE_ACTIVATION assertions, and preserved failure evidence.
+
+- [ ] M3-A4B2B2B Fresh Approval and Authorized Mac Bootstrap: obtain fresh
+  independent approval bound to the R3 commit.
+- [x] Recover the blocked R3 attempt with reviewed default live composition
+  and pytest-only end-to-end controlled orchestration.
+
 ## M3-A4B2B2B recovery
 
 - [x] Support an existing safe shared Mac application-state parent.

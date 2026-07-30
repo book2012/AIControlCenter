@@ -1,5 +1,19 @@
 # Project History
 
+The first R3 recovery remained blocked because concrete clean/synchronized Git
+evidence was absent. Recovery-2 added the sole narrow deployment subprocess
+exception for fixed read-only Git observations and independently exercised the
+existing inspectors, PRE_ACTIVATION monitor, and preserved failure evidence.
+Actual bootstrap remained `NOT EXECUTED`; production stayed `NOT_AUTHORIZED`.
+
+The previous M3-A4B2B2B-R3 attempt ended `BLOCKED_PRE_AUTHORIZATION`. Recovery
+completed the reviewed default composition and mandatory pytest-only
+end-to-end scenario without removing a gate. The validation runner stayed
+validation-only, the live runner now uses the dedicated composition root,
+actual managed targets stayed absent, and the actual operation stayed
+`NOT EXECUTED`. Fresh approval must bind the recovery commit; production
+activation remains `NOT_AUTHORIZED`.
+
 ## M3-A4B2B1A — closed after validation
 
 The review-only operational permit issuance control package is available.

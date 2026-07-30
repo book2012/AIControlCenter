@@ -1,5 +1,14 @@
 # Roadmap
 
+Recovery-2 completes reviewed evidence only. Actual managed targets remain
+absent; next is fresh independent approval bound to the final R3 commit before
+any authorized Mac bootstrap. Production remains `NOT_AUTHORIZED`.
+
+The blocked R3 attempt is recovered with reviewed live composition and
+pytest-only controlled orchestration. The actual operation remains
+`NOT EXECUTED`; next is fresh independent approval bound to the recovery
+commit before any authorized Mac bootstrap.
+
 ## M3-A4B2B2B-R1 closure
 
 Existing safe parent compatibility is complete. Shared siblings remain outside

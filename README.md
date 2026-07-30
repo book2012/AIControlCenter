@@ -1,5 +1,20 @@
 # AIControlCenter
 
+Recovery-2 closes the first blocked R3 recovery with a bounded read-only
+`/usr/bin/git` adapter isolated in `core.deployment.git_readonly_evidence`.
+Public audit/replay inspectors, PRE_ACTIVATION monitoring, and post-claim
+failure evidence are independently validated. The validation runner remains
+validation-only; actual bootstrap is `NOT EXECUTED`, managed targets remain
+absent, fresh approval must bind the final commit, and production is
+`NOT_AUTHORIZED`.
+
+The previous M3-A4B2B2B-R3 attempt was `BLOCKED`. R3 recovery adds the
+reviewed default live composition and mandatory pytest-only end-to-end
+orchestration. The existing execution runner remains validation-only; the live
+runner uses the dedicated composition root. No actual Mac bootstrap ran,
+actual managed targets remain absent, fresh independent approval must bind the
+recovery commit, and production activation remains `NOT_AUTHORIZED`.
+
 ## M3-A4B2B2B-R1 closure
 
 Existing safe Mac application-state parents are compatible with controlled

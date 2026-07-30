@@ -1,5 +1,27 @@
 # AI Home Datacenter Architecture
 
+## Recovery-2 evidence boundary
+
+Only `core.deployment.git_readonly_evidence` may import subprocess for the
+deployment-control Git capability. It uses fixed `/usr/bin/git` read commands,
+exact cwd, minimal environment, bounded timeout/output, and no shell, write,
+credential, hook, or network command. The live package consumes its typed
+collector/validator and does not import subprocess. Existing public SQLite
+inspectors and PRE_ACTIVATION monitoring remain independent evidence
+authorities; post-claim failures preserve canonical mode-0600 evidence.
+
+## Controlled operational composition boundary
+
+`core.deployment.operational_bootstrap_live` is the only reviewed local live
+composition boundary. It invokes the existing execution coordinator directly;
+earlier packages do not import it, and it exposes no API, worker, remote
+command, or network surface.
+The recovery composition fixes concrete readers, authorization, permit, atomic
+claim, trusted `pwd` home, host/path validation, Mac runtime, evidence writer,
+and execution coordinator collaborators. Callers cannot select collaborators
+through JSON, CLI, or environment. The validation runner remains
+validation-only.
+
 ## Operational permit issuance review boundary
 
 M3-A4B2B1A is a pure Mac Control Plane review package binding existing M3-A4

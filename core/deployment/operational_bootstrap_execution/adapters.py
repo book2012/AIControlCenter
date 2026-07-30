@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import asdict
 from pathlib import Path
@@ -97,12 +98,43 @@ class _RuntimeAdapter:
                 claim.request.permit_id, claim.claim_id, request.mode,
                 OperationalBootstrapRuntimeStatus.COMPLETE, request.branch, request.commit,
                 request.claim_at, tuple(receipts), (), (),)
-        except Exception:
+        except Exception as exc:
             for path in reversed(created):
                 if path.is_file() or path.is_symlink():
                     path.unlink()
                 elif path.is_dir() and not any(path.iterdir()):
                     path.rmdir()
+            failure_path = request.evidence_directory / "failure-evidence.json"
+            content = {
+                "claim_consumed": True,
+                "claim_digest": claim.claim_digest,
+                "claim_id": claim.claim_id,
+                "cleanup_result": "INCOMPLETE_MANAGED_ARTIFACTS_REMOVED",
+                "dispatch_active": False,
+                "failed_after_claim": True,
+                "failure_code": getattr(exc, "code", type(exc).__name__),
+                "monitoring_active": False,
+                "permit_digest": claim.request.permit_digest,
+                "permit_id": claim.request.permit_id,
+                "production_authorized": False,
+                "request_id": request.request_id,
+                "shared_parent_preserved": (
+                    paths.shared_parent_evidence.application_state_parent_preexisting),
+                "sibling_preservation_recorded": True,
+                "status": "FAILED",
+                "writers_active": False,
+            }
+            content["failure_evidence_digest"] = canonical_digest(content)
+            raw = json.dumps(content, sort_keys=True, separators=(",", ":"))
+            request.evidence_directory.mkdir(parents=True, exist_ok=True, mode=0o700)
+            os.chmod(request.evidence_directory, 0o700)
+            descriptor = os.open(
+                failure_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+            try:
+                os.write(descriptor, raw.encode())
+                os.fsync(descriptor)
+            finally:
+                os.close(descriptor)
             raise
 
 

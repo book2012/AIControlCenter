@@ -1,5 +1,13 @@
 # M3-A4B2B2B Recovery Checklist
 
+Independently validate the canonical failure digest, request/permit/claim
+binding, cleanup and preservation records, inactive capabilities, and rejected
+second execution.
+
+After an R3 post-claim failure, preserve the consumed claim and evidence.
+Remove only incomplete artifacts from that execution; preserve the shared
+parent and unrelated siblings.
+
 - Confirm the earlier attempt stopped before permit issuance.
 - Record the read-only result `ROOT_EXISTS_SAFE_PARENT_CANDIDATE`.
 - Resolve home through the trusted local account database; reject alternatives.

@@ -1,5 +1,13 @@
 # M3-A4B2B2B Live Issuance and Runner Gate
 
+Recovery-2 permits subprocess only inside `git_readonly_evidence` for fixed
+read-only Git observations. The execution validation runner remains
+validation-only and actual bootstrap remains `NOT EXECUTED`.
+
+R3 keeps `operational_bootstrap_execution.runner` validation-only. The
+dedicated live package invokes the coordinator directly and rejects test
+adapters.
+
 Live issuance and controlled runtime are default deny. An environment variable,
 boolean, CLI enable option, caller-selected mode, arbitrary adapter or monkey
 patch is not authorization.

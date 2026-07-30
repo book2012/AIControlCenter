@@ -111,6 +111,16 @@
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_execution"}]
     },
     {
+      "id": "operational_bootstrap_live",
+      "responsibility": "M3-A4B2B2B-R3 strict local controlled operational composition boundary; direct coordinator invocation only, no network, API, worker or production activation.",
+      "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_live"}]
+    },
+    {
+      "id": "git_readonly_evidence",
+      "responsibility": "Narrow reviewed read-only Git evidence adapter; sole deployment-control subprocess exception, fixed /usr/bin/git allowlist, no shell, writes, credentials or network commands.",
+      "selectors": [{"module_prefix": "core.deployment.git_readonly_evidence"}]
+    },
+    {
       "id": "operational_bootstrap_preflight",
       "responsibility": "M3-A4B2B0 read-only Mac host evidence collection and deterministic permit-review preflight; no writes, permit issuance, execution or production authorization.",
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_preflight"}]
@@ -224,6 +234,8 @@
     {"from_zone": "operational_bootstrap", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap"]},
     {"from_zone": "operational_activation_authorization", "to_zones": ["contracts", "operational_activation_authorization"]},
     {"from_zone": "operational_bootstrap_execution", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution"]},
+    {"from_zone": "operational_bootstrap_live", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution", "git_readonly_evidence", "operational_bootstrap_live"]},
+    {"from_zone": "git_readonly_evidence", "to_zones": ["git_readonly_evidence"]},
     {"from_zone": "operational_bootstrap_preflight", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight"]},
     {"from_zone": "operational_permit_issuance", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance"]},
     {"from_zone": "operational_permit_approval", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_activation_authorization", "operational_permit_approval"]},
