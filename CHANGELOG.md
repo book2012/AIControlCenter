@@ -1353,3 +1353,12 @@ performed. Production activation remains `NOT_AUTHORIZED`.
 All writable validation used pytest temporary databases. No operational replay
 database, migration, repair, audit write, raw nonce write, Ubuntu change or
 Production activation occurred.
+# M3-A4B2B1B
+
+- Added immutable human-approval, identity, restriction-acknowledgement,
+  execution-window, report and issuance-result contracts.
+- Added deterministic approval, identity-independence, acknowledgement and
+  execution-window validators plus a synthetic-only in-memory coordinator.
+- Retained the current `UNASSIGNED` independent approver snapshot as `DENIED`.
+- Issued and claimed zero operational permits; authorized and executed zero
+  operational bootstraps; production remains `NOT_AUTHORIZED`.

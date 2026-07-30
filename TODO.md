@@ -647,3 +647,7 @@ M2 activation has not started. Production activation is not authorized.
 Operational replay database creation, backup scheduling, restore and writer
 activation remain prohibited. Raw nonce writes remain zero.
 Production activation remains `NOT_AUTHORIZED`.
+# Next deployment task
+
+M3-A4B2B1C — Independent Approver Action and Live Permit Issuance. This is a
+separate authorization gate. M3-A4B2B1B does not authorize or perform it.

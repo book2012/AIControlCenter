@@ -849,3 +849,13 @@ validated only with pytest temporary databases. The operational replay DB was
 not created; no backup schedule, restore or writer was activated; raw nonce
 writes remain zero; and Production activation is `NOT_AUTHORIZED`. Next:
 M3-A3 Operational Monitoring and Alerts.
+# M3-A4B2B1B status
+
+M3-A4B2B1A is CLOSED. M3-A4B2B1B is CLOSED after validation: the human
+approval gate is AVAILABLE, synthetic dual-identity approval and in-memory
+permit issuance are VALIDATED, and the current recommended review is DENIED.
+The requester/operator is `mac-account:kyouhan`; the independent approver is
+`UNASSIGNED`, so independent approval and acknowledgement are NOT PROVIDED.
+No operational permit was issued or claimed, bootstrap remains unauthorized
+and unexecuted, and production activation is `NOT_AUTHORIZED`. Next:
+M3-A4B2B1C Independent Approver Action and Live Permit Issuance.

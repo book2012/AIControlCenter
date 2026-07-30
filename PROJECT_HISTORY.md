@@ -995,3 +995,11 @@ Temporary pytest databases validated atomicity, hash chains, idempotency and
 concurrency. The operational replay database was not created, the writer was
 not activated, raw nonce writes remained disabled and Production activation
 remained `NOT_AUTHORIZED`. M3-A2C is next.
+# M3-A4B2B1B
+
+Closed the human approval and permit issuance decision boundary after
+validation. Synthetic dual-identity approval and synthetic in-memory permit
+issuance were validated. The real review remains DENIED because the independent
+approver, independent approval and independent restriction acknowledgement are
+missing. No live permit, claim, bootstrap execution or production activation
+occurred.

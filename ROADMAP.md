@@ -1000,3 +1000,13 @@ are available without authorization or execution. Operational databases are
 not created; writers and monitoring are not activated; external dispatch is
 not implemented; bootstrap authorization is not granted; Production activation
 is `NOT_AUTHORIZED`.
+# Current milestone
+
+- M3-A4B2B1A — CLOSED
+- M3-A4B2B1B — CLOSED after validation
+- Human approval gate — AVAILABLE
+- Synthetic dual-identity approval and in-memory permit issuance — VALIDATED
+- Current recommended review — DENIED; independent approver `UNASSIGNED`
+- Operational permit/claim/bootstrap execution — zero
+- Production activation — `NOT_AUTHORIZED`
+- Next: M3-A4B2B1C Independent Approver Action and Live Permit Issuance

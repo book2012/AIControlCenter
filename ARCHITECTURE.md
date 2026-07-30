@@ -996,3 +996,11 @@ public writer contracts, deployment contracts and Python SQLite. Verified
 temporary outputs are atomically published only after byte, canonical manifest,
 ordered-ledger and derived-state equality checks. A restored file is never
 automatically selected as operational.
+# M3-A4B2B1B approval boundary
+
+AIControlCenter on the Mac Brain owns the human-approval intake and permit
+issuance decision. Ubuntu cannot approve, issue, claim or execute permits. The
+pure `operational_permit_approval` layer consumes M3-A4B2B1A review contracts
+and delegates synthetic in-memory creation to M3-A4B1 only after all gates
+pass. It has no persistence, executor, API, worker, network or dispatch
+dependency. Live issuance and production activation remain unauthorized.
