@@ -19,14 +19,13 @@
 - [x] M3-A3C Monitoring and Alert Operational Drill
 - [x] M3-A4A Read-Only Operational Activation Readiness Gate
 - [x] M3-A4B1 Controlled Bootstrap Authorization Package
-- [ ] M3-A4B2 Controlled Mac Operational Bootstrap
+- [x] M3-A4B2A Controlled Mac Bootstrap Executor Validation
+- [ ] M3-A4B2B Authorized Mac Operational Bootstrap Execution
 
-M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are closed. Bootstrap
-authorization capability is available and synthetic permit issuance is
-validated. No operational permit was issued; operational bootstrap
-authorization was not granted; directories and databases were not created;
-writers and monitoring were not activated; Production activation is
-`NOT_AUTHORIZED`.
+M3-A4A, M3-A4B1 and M3-A4B2A are closed. The executor is validated only in
+pytest temporary paths. No operational permit was issued; operational
+bootstrap was not executed; operational state was not created; writers and
+monitoring were not activated; Production activation is `NOT_AUTHORIZED`.
 
 Sprint 16
 

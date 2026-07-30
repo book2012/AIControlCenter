@@ -1,5 +1,13 @@
 # Roadmap
 
+## M3-A4B2A Closure and M3-A4B2B
+
+M3-A4B2A is closed after controlled executor validation beneath pytest-owned
+temporary roots. Synthetic permit consumption, audit/replay bootstrap,
+baseline backup/restore and cleanup are validated. Operational permit issuance
+and bootstrap remain absent; Production activation remains `NOT_AUTHORIZED`.
+Next: M3-A4B2B Authorized Mac Operational Bootstrap Execution.
+
 ## M3-A4B1 Closure and M3-A4B2
 
 M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are closed. Controlled bootstrap

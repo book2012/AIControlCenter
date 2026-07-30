@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-07-30 — M3-A4B2A Closed
+
+AIControlCenter validated the controlled Mac bootstrap executor only beneath
+injected pytest-owned `/private/tmp` roots. Synthetic one-use permit,
+audit/replay schema, baseline recovery, monitoring evidence and failure
+cleanup were validated. No operational permit was issued, operational
+bootstrap was not executed, operational state was not created, writers and
+monitoring remained inactive, and Production activation remained
+`NOT_AUTHORIZED`. M3-A4B2B is next.
+
 ## 2026-07-30 — M3-A4B1 Closed
 
 AIControlCenter added the deterministic controlled non-production bootstrap

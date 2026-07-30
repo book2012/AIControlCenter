@@ -1,5 +1,15 @@
 # MASTER
 
+## M3-A4B2A Closure
+
+M3-A4A, M3-A4B1 and M3-A4B2A are `CLOSED`. The controlled Mac bootstrap
+executor is `IMPLEMENTED` and validated only under injected pytest temporary
+paths. Synthetic permit consumption, audit/replay bootstrap, baseline
+backup/restore and cleanup are `VALIDATED`. Operational permit `NOT ISSUED`;
+operational bootstrap `NOT EXECUTED`; operational state `NOT CREATED`; writers
+and monitoring `NOT ACTIVATED`; Production activation `NOT_AUTHORIZED`. Next:
+M3-A4B2B Authorized Mac Operational Bootstrap Execution.
+
 ## M3-A4B1 Closure
 
 M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are CLOSED. Controlled bootstrap

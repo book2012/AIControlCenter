@@ -1,5 +1,15 @@
 # AI Home Datacenter Architecture
 
+## M3-A4B2A Controlled Bootstrap Validation Boundary
+
+`core.deployment.operational_bootstrap` is the Mac Control Plane-owned
+standard-library boundary for `TEST_ONLY_BOOTSTRAP_VALIDATION`. It is confined
+to an exact injected pytest root under `/private/tmp` and has no API, worker,
+Ubuntu, subprocess, network, writer composition or dispatch dependency.
+M3-A4B2A is closed after single-use permit, schema, baseline recovery,
+pre-activation evidence and cleanup validation. Operational execution remains
+absent and Production activation is `NOT_AUTHORIZED`. Next: M3-A4B2B.
+
 ## M3-A4B1 Controlled Bootstrap Authorization Boundary
 
 `core.deployment.operational_bootstrap_authorization` is a pure, deterministic

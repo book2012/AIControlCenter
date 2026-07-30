@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## 2026-07-30 — M3-A4B2A Controlled Mac Bootstrap Executor Validation
+
+- Added immutable test-only bootstrap contracts, executor/adapter ports and
+  canonical evidence.
+- Validated synthetic single-use permit claim before mutation, restrictive
+  audit/replay bootstrap, baseline backup/restore and controlled cleanup.
+- Kept operational bootstrap, writers, monitoring, dispatch and Production
+  activation disabled.
+
 ## 2026-07-30 — M3-A4B1 Controlled Bootstrap Authorization
 
 - Added immutable request, approval, restriction, target, schema, plan, safety,

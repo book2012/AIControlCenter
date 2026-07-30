@@ -33,6 +33,17 @@ AIControlCenter is the Brain of the AI Home Datacenter.
 
 Core Platform is operational.
 
+### M3-A4B2A
+
+M3-A4A, M3-A4B1 and M3-A4B2A are closed. The controlled Mac bootstrap
+executor is implemented and validated only beneath injected pytest temporary
+paths. Synthetic permit consumption, audit/replay schema bootstrap, baseline
+backup/restore and failure cleanup are validated. No operational permit was
+issued, operational bootstrap was not executed, operational state was not
+created, writers and monitoring were not activated, and Production activation
+is `NOT_AUTHORIZED`. Next: M3-A4B2B Authorized Mac Operational Bootstrap
+Execution.
+
 ### M3-A4B1
 
 M2, M3-A1, M3-A2, M3-A3, M3-A4A and M3-A4B1 are closed. Controlled
