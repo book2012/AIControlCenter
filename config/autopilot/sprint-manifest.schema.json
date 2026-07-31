@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aicontrolcenter.local/schemas/autopilot/sprint-manifest.schema.json",
+  "title": "AUTO-01 Sprint Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "task_id", "title", "milestone", "baseline",
+    "dependencies", "autonomy_level", "maximum_autonomy_level", "test_only",
+    "operational_write_allowed", "production", "ubuntu_participation", "scope",
+    "git_gates", "test_gates", "documentation_gates", "approval", "retry",
+    "evidence", "commit_policy", "next_task_policy", "forbidden_operations",
+    "control_plane_owner", "governance_authority", "approval_authority",
+    "retry_authority", "executor_identity", "secret_dependencies",
+    "canonical_manifest_digest"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "task_id": {"type": "string", "minLength": 1},
+    "title": {"type": "string", "minLength": 1},
+    "milestone": {"type": "string", "minLength": 1},
+    "baseline": {
+      "type": "object", "additionalProperties": false, "required": ["branch", "commit"],
+      "properties": {
+        "branch": {"type": "string", "minLength": 1},
+        "commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"}
+      }
+    },
+    "dependencies": {"type": "array", "uniqueItems": true, "items": {"type": "object", "additionalProperties": false, "required": ["task_id"], "properties": {"task_id": {"type": "string", "minLength": 1}}}},
+    "autonomy_level": {"enum": ["L0_OBSERVE", "L1_PLAN", "L2_TEST_ONLY_IMPLEMENT", "L3_GIT_CLOSEOUT", "L4_CONTROLLED_OPERATIONAL_WRITE", "L5_PRODUCTION_ACTIVATION"]},
+    "maximum_autonomy_level": {"enum": ["L0_OBSERVE", "L1_PLAN", "L2_TEST_ONLY_IMPLEMENT", "L3_GIT_CLOSEOUT", "L4_CONTROLLED_OPERATIONAL_WRITE", "L5_PRODUCTION_ACTIVATION"]},
+    "test_only": {"type": "boolean"},
+    "operational_write_allowed": {"type": "boolean"},
+    "production": {"type": "boolean"},
+    "ubuntu_participation": {"enum": ["NONE", "STATELESS_INFRASTRUCTURE_WORKER"]},
+    "scope": {"$ref": "#/$defs/scope"},
+    "git_gates": {"$ref": "#/$defs/git"},
+    "test_gates": {"$ref": "#/$defs/test"},
+    "documentation_gates": {"$ref": "#/$defs/docs"},
+    "approval": {"$ref": "#/$defs/approval"},
+    "retry": {"$ref": "#/$defs/retry"},
+    "evidence": {"$ref": "#/$defs/evidence"},
+    "commit_policy": {"type": "string", "minLength": 1},
+    "next_task_policy": {"type": "string", "minLength": 1},
+    "forbidden_operations": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "control_plane_owner": {"const": "AIControlCenter"},
+    "governance_authority": {"const": "AIControlCenter"},
+    "approval_authority": {"const": "AIControlCenter"},
+    "retry_authority": {"const": "AIControlCenter"},
+    "executor_identity": {"type": "string", "minLength": 1},
+    "secret_dependencies": {"type": "array", "maxItems": 0},
+    "canonical_manifest_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  },
+  "allOf": [
+    {"if": {"properties": {"autonomy_level": {"const": "L4_CONTROLLED_OPERATIONAL_WRITE"}}}, "then": {"properties": {"approval": {"properties": {"independent_approver_required": {"const": true}}}}}},
+    {"if": {"properties": {"autonomy_level": {"const": "L5_PRODUCTION_ACTIVATION"}}}, "then": {"properties": {"approval": {"properties": {"requirement": {"const": "PRODUCTION"}, "independent_approver_required": {"const": true}}}}}},
+    {"if": {"properties": {"production": {"const": true}}}, "then": {"properties": {"autonomy_level": {"const": "L5_PRODUCTION_ACTIVATION"}}}}
+  ],
+  "$defs": {
+    "scope": {
+      "type": "object", "additionalProperties": false,
+      "required": ["allowed_paths", "forbidden_paths", "allowed_dependency_zones", "forbidden_dependency_zones", "wildcard_paths_explicitly_approved"],
+      "properties": {
+        "allowed_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1, "not": {"enum": ["*", "**", "/*", ".env"]}}},
+        "forbidden_paths": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "allowed_dependency_zones": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "forbidden_dependency_zones": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "wildcard_paths_explicitly_approved": {"type": "boolean"}
+      }
+    },
+    "git": {"type": "object", "additionalProperties": false, "required": ["require_clean_tree", "require_exact_baseline", "require_upstream_sync", "require_commit_evidence", "require_remote_commit_verification"], "properties": {"require_clean_tree": {"const": true}, "require_exact_baseline": {"const": true}, "require_upstream_sync": {"const": true}, "require_commit_evidence": {"const": true}, "require_remote_commit_verification": {"const": true}}},
+    "test": {"type": "object", "additionalProperties": false, "required": ["required_commands", "require_zero_failures"], "properties": {"required_commands": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "require_zero_failures": {"const": true}}},
+    "docs": {"type": "object", "additionalProperties": false, "required": ["required_documents", "require_status_documents"], "properties": {"required_documents": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "require_status_documents": {"const": true}}},
+    "approval": {"type": "object", "additionalProperties": false, "required": ["requirement", "state", "independent_approver_required", "environment_authorization_allowed"], "properties": {"requirement": {"enum": ["NONE", "INDEPENDENT_HUMAN", "OPERATIONAL_WRITE", "PRODUCTION", "POST_CLAIM_RECOVERY"]}, "state": {"enum": ["NOT_REQUIRED", "REQUIRED", "AWAITING_APPROVAL", "APPROVED", "REJECTED", "EXPIRED", "CONSUMED"]}, "independent_approver_required": {"type": "boolean"}, "environment_authorization_allowed": {"const": false}}},
+    "retry": {"type": "object", "additionalProperties": false, "required": ["preflight_retry_allowed", "pre_claim_recovery_requires_evidence", "automatic_post_claim_retry_allowed", "post_claim_human_approval_required"], "properties": {"preflight_retry_allowed": {"type": "boolean"}, "pre_claim_recovery_requires_evidence": {"const": true}, "automatic_post_claim_retry_allowed": {"const": false}, "post_claim_human_approval_required": {"const": true}}},
+    "evidence": {"type": "object", "additionalProperties": false, "required": ["required_evidence", "immutable_transition_evidence", "completion_requires_remote_verification"], "properties": {"required_evidence": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}, "immutable_transition_evidence": {"const": true}, "completion_requires_remote_verification": {"const": true}}}
+  }
+}

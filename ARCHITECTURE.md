@@ -1118,3 +1118,40 @@ and unconditional live-boundary rejection prevent marker deletion or field
 renaming from producing an operational artifact. No operational store, writer,
 runtime port, command, network, API write, Ubuntu, or activation dependency
 exists.
+# AUTO-01 control-plane boundary
+
+AIControlCenter exclusively owns autonomous-delivery governance, policy,
+roadmap compilation, scheduling, dependency planning, approvals, authorization,
+retry and recovery decisions, evidence gates, completion and deployment
+control. Codex is a bounded replaceable executor port, never an authority.
+
+AUTO-01 adds pure typed contracts, fail-closed manifest validation, canonical
+SHA-256 JSON, deterministic DAG compilation and a strict delivery lifecycle. It
+adds no persistent runner, subprocess, network adapter, launchd service or
+operational side effect. L4/L5 and post-claim recovery require human approval;
+production remains `NOT_AUTHORIZED`. AUTO-02 owns the future persistent runner
+and terminal-independence design.
+
+<!-- SHOPPING-FIRST-REPRIORITIZATION:BEGIN -->
+## Shopping-First Service Architecture
+
+AIControlCenter remains the single control plane and owns business
+logic, governance, orchestration, authorization, adapters and audit
+references.
+
+Replaceable open-source components retain their specialized roles:
+
+- WordPress: CMS
+- WooCommerce: Commerce Engine
+- n8n: Automation Engine
+- Ollama: Local Model Runtime
+- OpenClaw: Assistant Interface
+- GitHub: Source, CI and release evidence
+
+General-purpose capabilities use replaceable open-source components.
+Custom implementation requires a documented capability gap.
+
+Service progression is Shopping Platform, then AI Integration Platform,
+then Personal AI Assistant. Ubuntu remains a stateless infrastructure
+worker and owns no orchestration or application state.
+<!-- SHOPPING-FIRST-REPRIORITIZATION:END -->

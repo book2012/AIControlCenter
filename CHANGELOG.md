@@ -1497,3 +1497,27 @@ Production activation occurred.
 - Passed 59 targeted, 1,016 deployment, and 2,000 full-regression tests with
   zero failures; full regression retained 5 configured deselections and 427
   existing warnings.
+## 2026-07-31 — AUTO-01
+
+- Added the AIControlCenter-owned autonomous delivery architecture: immutable
+  contracts, six autonomy levels, deterministic lifecycle, sprint-manifest
+  validation, canonical JSON/SHA-256, DAG planning, approval gates, retry
+  classification, evidence policy and bounded executor port.
+- Added manifest and roadmap JSON schemas plus focused safety tests.
+- Added architecture, manifest, retry and human-approval documentation.
+- No runner, subprocess, network client, operational write, authorization,
+  permit, claim, monitoring, dispatch or production activation was created.
+- Decision: `READY_FOR_PERSISTENT_RUNNER_ARCHITECTURE`; production remains
+  `NOT_AUTHORIZED`, `.env` is not required, and 427 warnings remain backlog.
+
+<!-- SHOPPING-FIRST-REPRIORITIZATION:BEGIN -->
+## 2026-07-31 — Shopping-First Roadmap Reprioritization
+
+- Closed AUTO-01 as an architecture-only foundation.
+- Deferred AUTO-02, AUTO-03 and M4-A4 through M4-A6.
+- Established Shopping Platform as the primary product milestone.
+- Established AI Integration Platform as the second service milestone.
+- Established Personal AI Assistant as the third service milestone.
+- Recorded the open-source-first capability-gap policy.
+- Retained production status as `NOT_AUTHORIZED`.
+<!-- SHOPPING-FIRST-REPRIORITIZATION:END -->

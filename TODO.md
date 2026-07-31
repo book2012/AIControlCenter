@@ -736,3 +736,23 @@ separate authorization gate. M3-A4B2B1B does not authorize or perform it.
 - Keep external endpoint details and secrets outside this boundary; `.env`
   remains unnecessary.
 - Keep the existing 427 deprecation warnings on their separate backlog track.
+- [x] Close AUTO-01 autonomous delivery controller architecture.
+- [x] Define typed autonomy, lifecycle, manifest, DAG, approval, retry,
+  evidence and bounded executor contracts.
+- [x] Add fail-closed JSON schemas and deterministic planning tests.
+- [ ] Implement AUTO-02 persistent Codex runner, terminal independence and
+  recovery behind separate architecture and human-approval gates.
+
+AUTO-01 creates no runner or operational authority. Production remains
+`NOT_AUTHORIZED`; no `.env` is required. Track the existing 427 deprecation
+warnings separately.
+
+<!-- SHOPPING-FIRST-REPRIORITIZATION:BEGIN -->
+## Active Next Task
+
+`SHOP-00_ARCHITECTURE_REPRIORITIZATION`
+
+Do not begin AUTO-02, AUTO-03 or M4-A4 through M4-A6 without a new
+architecture decision. The next production-facing milestone is a
+read-only WooCommerce product vertical slice.
+<!-- SHOPPING-FIRST-REPRIORITIZATION:END -->

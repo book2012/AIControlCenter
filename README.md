@@ -977,3 +977,38 @@ notification, Ubuntu action, or activation occurred. Production remains
 `NOT_AUTHORIZED`, `.env` is not required, and the 427 warnings remain backlog.
 Decision: `READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`. Next:
 `M4-A4_READ_ONLY_OPERATIONAL_OBSERVATION`.
+# AUTO-01 autonomous delivery controller architecture
+
+AUTO-01 is closed as architecture and deterministic planning only.
+AIControlCenter remains the single Control Plane; Codex is a replaceable,
+bounded executor only. Typed autonomy levels, lifecycle gates, JSON-first sprint
+manifests, deterministic DAG planning, approval and retry policies, evidence
+requirements and an abstract executor port are defined. No runner, subprocess,
+launchd service, operational write, authorization, permit, claim, monitoring,
+dispatch or activation was created.
+
+M4-A3 remains CLOSED with `READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`.
+AUTO-01 decides `READY_FOR_PERSISTENT_RUNNER_ARCHITECTURE`. AUTO-02 will address
+terminal independence, persistent runner and recovery architecture. Human
+approval remains mandatory for L4/L5 and post-claim recovery; automatic retry
+after a real claim is prohibited. Ubuntu remains stateless-worker-only, `.env`
+is not required, production is `NOT_AUTHORIZED`, and the 427 deprecation
+warnings remain separate backlog.
+
+<!-- SHOPPING-FIRST-REPRIORITIZATION:BEGIN -->
+## Primary Product Roadmap
+
+The active product roadmap is:
+
+1. Shopping Platform
+2. AI Integration Platform
+3. Personal AI Assistant
+
+Shopping must work without AI. AI enhances Shopping but does not own
+Commerce. The Assistant consumes service APIs but does not own service
+business logic.
+
+AUTO-01 is closed as an architecture foundation. AUTO-02, AUTO-03 and
+M4-A4 through M4-A6 are deferred until product-facing milestones require
+them. Production remains `NOT_AUTHORIZED`.
+<!-- SHOPPING-FIRST-REPRIORITIZATION:END -->

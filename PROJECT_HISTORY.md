@@ -1108,3 +1108,28 @@ command, API write route, or production activation occurred. Production remains
 `NOT_AUTHORIZED`; `.env` and endpoint secrets were not required. Decision:
 `READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION`. The 427 warnings remain
 separate backlog.
+## AUTO-01 autonomous delivery controller architecture
+
+AUTO-01 began from clean synchronized commit
+`873ad5cc8fcbf2cb48bd3205ce1ee6451c5338ec` after M4-A3 closed. It established
+AIControlCenter as the sole autonomous-delivery Control Plane and Codex as a
+bounded replaceable executor. The increment is deterministic planning only:
+there is no persistent runner, service, subprocess, authorization, permit,
+claim or activation. The decision is
+`READY_FOR_PERSISTENT_RUNNER_ARCHITECTURE`; AUTO-02 is next. Production remains
+`NOT_AUTHORIZED`; the existing 427 warnings remain separate backlog.
+
+<!-- SHOPPING-FIRST-REPRIORITIZATION:BEGIN -->
+## 2026-07-31 — Infrastructure Depth Review
+
+The project identified that deployment governance work had moved too
+far ahead of the original Shopping Platform objective.
+
+The completed deployment, authorization, evidence and AUTO-01
+architecture foundations were retained. Further autonomous runner and
+controlled-activation expansion was deferred.
+
+The project returned to the product sequence:
+
+Shopping Platform → AI Integration Platform → Personal AI Assistant.
+<!-- SHOPPING-FIRST-REPRIORITIZATION:END -->

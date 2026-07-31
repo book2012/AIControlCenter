@@ -1069,3 +1069,28 @@ their WAL/SHM files. Actual operational state remained unchanged, `.env` is not
 required, and production is `NOT_AUTHORIZED`. Decision:
 `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`. Next:
 `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+# AUTO-01 CLOSED
+
+AUTO-01 closes the autonomous delivery controller architecture with decision
+`READY_FOR_PERSISTENT_RUNNER_ARCHITECTURE`. M4-A3 remains CLOSED. AIControlCenter
+is the single Control Plane; Codex is bounded executor only. No persistent
+runner, authorization, permit, claim, write or activation exists. Next:
+`AUTO-02_PERSISTENT_CODEX_RUNNER_AND_RECOVERY`.
+
+<!-- SHOPPING-FIRST-REPRIORITIZATION:BEGIN -->
+## Active Milestone Decision — 2026-07-31
+
+- AUTO-01: CLOSED
+- AUTO-02: DEFERRED
+- AUTO-03: DEFERRED
+- M4-A4: DEFERRED
+- M4-A5: DEFERRED
+- M4-A6: DEFERRED
+- SHOP-00: ACTIVE NEXT TASK
+
+The deployment and controlled-activation foundations are retained.
+Further framework expansion is deferred while the Shopping Platform
+delivers product-facing value.
+
+Production remains `NOT_AUTHORIZED`.
+<!-- SHOPPING-FIRST-REPRIORITIZATION:END -->

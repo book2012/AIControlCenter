@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aicontrolcenter.local/schemas/autopilot/roadmap-plan.schema.json",
+  "title": "AUTO-01 Deterministic Roadmap Plan",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["steps", "decision", "production_authorized", "operational_actions_authorized", "plan_digest"],
+  "properties": {
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["sequence", "task_id", "blocked", "blockers", "approval_is_authorization", "activation_authorized"],
+        "properties": {
+          "sequence": {"type": "integer", "minimum": 1},
+          "task_id": {"type": "string", "minLength": 1},
+          "blocked": {"type": "boolean"},
+          "blockers": {"type": "array", "items": {"type": "string"}},
+          "approval_is_authorization": {"const": false},
+          "activation_authorized": {"const": false}
+        }
+      }
+    },
+    "decision": {"const": "READY_FOR_PERSISTENT_RUNNER_ARCHITECTURE"},
+    "production_authorized": {"const": false},
+    "operational_actions_authorized": {"const": 0},
+    "plan_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}
+  }
+}

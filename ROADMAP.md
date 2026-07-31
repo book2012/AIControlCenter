@@ -1110,3 +1110,42 @@ authorized current-user Mac bootstrap; M3-A4B3 remains blocked until success.
 - Decision: `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`.
 - Production: `NOT_AUTHORIZED`.
 - Next: `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+# AUTO autonomous delivery roadmap
+
+- [x] AUTO-01: immutable contracts, lifecycle, manifests, deterministic DAG,
+  approval/retry/evidence policy, schemas and bounded executor port.
+- [ ] AUTO-02: separately gated persistent Codex runner, terminal independence
+  and recovery architecture.
+
+AUTO-01 is architecture-only. Human approval remains mandatory for L4/L5 and
+post-claim recovery. Persistent state and launchd are future work. Production
+is `NOT_AUTHORIZED`.
+
+<!-- SHOPPING-FIRST-REPRIORITIZATION:BEGIN -->
+## Reprioritized Delivery Sequence
+
+### Closed
+
+- AUTO-01 — Autonomous Delivery Controller Architecture
+
+### Deferred
+
+- AUTO-02 — Persistent Codex Runner and Recovery
+- AUTO-03 — M4 Master Manifest and Approval Gates
+- M4-A4 — Read-Only Operational Observation
+- M4-A5 — Separately Authorized Controlled Pilot
+- M4-A6 — Evidence, Recovery and M4 Closeout
+
+### Active Product Track
+
+1. SHOP-00 — Shopping Platform Architecture Reprioritization
+2. SHOP-01 — WooCommerce Read Adapter
+3. SHOP-02 — Normalized Product Domain
+4. SHOP-03 — Product Management API and Dashboard
+5. Shopping draft, approval and controlled-write vertical slice
+6. AI Integration Platform
+7. Personal AI Assistant
+
+The 427 existing deprecation warnings remain a separate remediation
+backlog.
+<!-- SHOPPING-FIRST-REPRIORITIZATION:END -->
