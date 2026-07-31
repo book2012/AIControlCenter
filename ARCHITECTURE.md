@@ -1105,3 +1105,16 @@ permit, claim, and activation fields false. No runtime port, API write route,
 command, network client, writer, monitoring runtime, dispatch, Ubuntu
 delegation, or production path exists. The decision
 `READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION` authorizes nothing.
+
+# M4 test-only authorization simulation boundary
+
+M4-A3 is pure and in-memory with injected time and seed. Its seven simulated
+states are separate from the operational state machine and never enter
+`CONTROLLED_ACTIVE`. Artifacts use namespace `m4-a3-test-only` and immutable
+test-only, operational-invalid, non-production, Ubuntu-excluded, and
+runtime-denied markers. Each capability owns an independent digest chain and
+one process-local claim; dependencies are references only. Strict shape checks
+and unconditional live-boundary rejection prevent marker deletion or field
+renaming from producing an operational artifact. No operational store, writer,
+runtime port, command, network, API write, Ubuntu, or activation dependency
+exists.

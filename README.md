@@ -966,3 +966,14 @@ remains `NOT_AUTHORIZED`, Ubuntu remains excluded, external-notification
 endpoint details and secrets are outside scope, and `.env` is not required.
 The existing 427 deprecation warnings remain separate backlog. Next:
 `M4-A3_TEST_ONLY_AUTHORIZATION_SIMULATION`.
+
+# M4-A3 test-only authorization simulation
+
+M4-A1, M4-A1R1, M4-A2, and M4-A3 are closed. M4-A3 provides deterministic
+in-memory simulation for all five independent capabilities. Every artifact is
+unmistakably test-only and operationally invalid; live boundaries reject it.
+No real authorization, operational permit, claim, writer, monitoring, dispatch,
+notification, Ubuntu action, or activation occurred. Production remains
+`NOT_AUTHORIZED`, `.env` is not required, and the 427 warnings remain backlog.
+Decision: `READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`. Next:
+`M4-A4_READ_ONLY_OPERATIONAL_OBSERVATION`.

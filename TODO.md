@@ -1,5 +1,14 @@
 # TODO
 
+- [x] Close M4-A3 deterministic test-only authorization simulation.
+- [x] Prove simulation artifacts fail closed at live boundaries.
+- [ ] Implement `M4-A4_READ_ONLY_OPERATIONAL_OBSERVATION` under a separate gate.
+
+M4-A3 created no real authorization, operational permit, claim, writer,
+monitoring, dispatch, notification, Ubuntu action, command, API write route, or
+activation. Production remains `NOT_AUTHORIZED`; `.env` is not required and
+the 427 warnings remain backlog.
+
 - [x] Close R4 strict-live preflight and typed permit contract compatibility.
 - [ ] Obtain fresh independent approval bound to the R4 commit.
 - [ ] Execute the Mac bootstrap only under separate explicit authorization.

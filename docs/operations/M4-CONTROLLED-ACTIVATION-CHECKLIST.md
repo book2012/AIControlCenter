@@ -1,7 +1,12 @@
 # M4 Controlled Activation Checklist
 
-This checklist describes future gates only. M4-A1, M4-A1R1, and M4-A2 are
+This checklist describes future gates only. M4-A1, M4-A1R1, M4-A2, and M4-A3 are
 closed; none authorizes or performs activation.
+
+M4-A3 yields only `READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`. Reject every
+`m4-a3-test-*` ID, `m4-a3-test-only` namespace, and
+`deterministic-simulation` source at live boundaries, including after marker
+removal or field renaming. Never treat a simulated claim as replay state.
 
 ## Capability authorization boundary
 

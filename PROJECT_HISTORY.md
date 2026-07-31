@@ -1,5 +1,18 @@
 # Project History
 
+## M4-A3 test-only authorization simulation
+
+M4-A3 began from synchronized commit
+`05a6cd5d61bc16b973b2ea634aa435b020ef0705` after M4-A1, M4-A1R1, and M4-A2
+closed. It added immutable contracts, injected clock/seed IDs and digests, a
+seven-step evidence chain, test-only artifact factory, in-memory one-use claim
+guard, fail-closed validation, confined reporting, and live-boundary rejection.
+All five capabilities were simulated independently. No real authorization,
+operational permit, claim, writer, monitoring, dispatch, notification, Ubuntu
+action, command, restart, API write, or activation occurred. Production remains
+`NOT_AUTHORIZED`; `.env` was not required or read. Decision:
+`READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`; 427 warnings remain backlog.
+
 M3-A4B2B2B-R4 repaired two defects found after strict artifact normalization
 in an authorized attempt that stopped `BLOCKED_PRE_AUTHORIZATION`: the required
 Ubuntu non-participation evidence was rejected generically, and permit issuance

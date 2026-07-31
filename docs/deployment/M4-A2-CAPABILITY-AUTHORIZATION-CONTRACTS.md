@@ -56,3 +56,10 @@ The M4-A2 targeted suite passed 59 tests, all deployment tests passed 1,016
 tests with 9 warnings, and the full suite passed 2,000 tests with 5 configured
 deselections and the existing 427 warnings. No test was weakened and no
 operational state was accessed.
+
+## M4-A3 follow-on closure
+
+M4-A3 is closed as deterministic in-memory test-only simulation. M4-A2 plans
+remain non-operational inputs. M4-A3 artifacts cannot enter live boundaries or
+become operational through field renaming. No real authorization or activation
+occurred. Decision: `READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`.

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-07-31 — M4-A3
+
+- Added immutable test-only authorization simulation contracts and deterministic
+  injected-clock/seed lifecycle simulation for five independent capabilities.
+- Added canonical evidence chaining, in-memory single-use claim protection,
+  negative scenarios, and live-boundary rejection.
+- No real authorization, operational permit, claim, writer, monitoring,
+  dispatch, notification, Ubuntu participation, command, or production
+  activation occurred.
+- Decision: `READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`; `.env` is not
+  required and the 427 warnings remain backlog.
+
 ## 2026-07-30 — M3-A4B2B2B-R4
 
 - Added the preflight-only exact `ubuntu_participation=false` governance

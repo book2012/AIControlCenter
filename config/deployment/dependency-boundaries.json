@@ -131,6 +131,11 @@
       "selectors": [{"module_prefix": "core.deployment.capability_authorization"}]
     },
     {
+      "id": "capability_authorization_simulation",
+      "responsibility": "Pure in-memory M4-A3 deterministic test-only authorization lifecycle simulation; artifacts are operationally invalid and no live authorization, permit, claim, activation, network, command, Ubuntu or production capability exists.",
+      "selectors": [{"module_prefix": "core.deployment.capability_authorization_simulation"}]
+    },
+    {
       "id": "operational_bootstrap_live",
       "responsibility": "M3-A4B2B2B-R3 strict local controlled operational composition boundary; direct coordinator invocation only, no network, API, worker or production activation.",
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_live"}]
@@ -258,6 +263,7 @@
     {"from_zone": "controlled_activation_validation", "to_zones": ["controlled_activation_validation"]},
     {"from_zone": "controlled_activation_architecture", "to_zones": ["contracts", "controlled_activation_architecture"]},
     {"from_zone": "capability_authorization", "to_zones": ["contracts", "controlled_activation_architecture", "capability_authorization"]},
+    {"from_zone": "capability_authorization_simulation", "to_zones": ["contracts", "controlled_activation_architecture", "capability_authorization", "capability_authorization_simulation"]},
     {"from_zone": "operational_bootstrap_live", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution", "git_readonly_evidence", "operational_bootstrap_live"]},
     {"from_zone": "git_readonly_evidence", "to_zones": ["git_readonly_evidence"]},
     {"from_zone": "operational_bootstrap_preflight", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight"]},

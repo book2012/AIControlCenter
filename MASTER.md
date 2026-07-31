@@ -1,5 +1,14 @@
 # MASTER
 
+M4-A1, M4-A1R1, M4-A2, and M4-A3 are CLOSED. M4-A3 validates deterministic,
+in-memory, test-only authorization lifecycles for five independent
+capabilities. Its artifacts are operationally invalid and live-boundary
+rejected. No real authorization, permit, claim, writer, monitoring, dispatch,
+notification, Ubuntu action, or activation occurred. Production is
+`NOT_AUTHORIZED`; `.env` is not required. Decision:
+`READY_FOR_READ_ONLY_OPERATIONAL_OBSERVATION`. Next:
+`M4-A4_READ_ONLY_OPERATIONAL_OBSERVATION`; 427 warnings remain backlog.
+
 M3-A4B2B2B-R4 is complete after strict-live contract compatibility validation.
 The prior authorized attempt stopped `BLOCKED_PRE_AUTHORIZATION`; artifact
 normalization passed, and actual counters remain zero. Ubuntu denial evidence

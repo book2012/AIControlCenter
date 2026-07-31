@@ -1,5 +1,11 @@
 # Roadmap
 
+M4-A3 is closed after deterministic test-only lifecycle and live-boundary
+isolation validation. Next is `M4-A4_READ_ONLY_OPERATIONAL_OBSERVATION` under
+separate architecture and authorization gates. No M4-A3 artifact is
+operationally valid. Production remains `NOT_AUTHORIZED`, Ubuntu remains
+excluded, and the 427 warnings remain backlog.
+
 M3-A4B2B2B-R4 closes strict-live contract compatibility only. Next is fresh
 independent approval bound to R4 and a separately authorized Mac bootstrap.
 M3-A4B3 remains blocked until actual bootstrap succeeds. Production remains
