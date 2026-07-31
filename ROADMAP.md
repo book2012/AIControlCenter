@@ -1149,3 +1149,60 @@ is `NOT_AUTHORIZED`.
 The 427 existing deprecation warnings remain a separate remediation
 backlog.
 <!-- SHOPPING-FIRST-REPRIORITIZATION:END -->
+
+<!-- SHOP-00-CLOSEOUT:BEGIN -->
+## SHOP-00 Shopping Platform Reprioritization
+
+SHOP-00 is closed.
+
+Repository inventory and regression validation confirmed that the
+existing Shopping Platform Foundation and Shopping External Read
+Integration are already part of the current branch history.
+
+Existing capabilities designated for reuse:
+
+- WooCommerce external read adapter
+- WooCommerce transport and normalization
+- WordPress CMS adapter
+- normalized product snapshot JSON contracts
+- read authorization and deny-by-default policy
+- schema validation and drift monitoring
+- adapter health monitoring
+- nine read-only Shopping API routes
+- Orange Coco storefront
+
+The former SHOP-01 WooCommerce Read Adapter scope is therefore
+`CLOSED_BY_EXISTING_SRI`.
+
+The first incomplete product capability is:
+
+`SHOP-01_PRODUCT_MANAGEMENT_READ_MODEL_AND_DASHBOARD`
+
+Architecture invariants:
+
+- Storefront and management Dashboard are separate surfaces.
+- Dashboard consumes AIControlCenter APIs only.
+- Dashboard does not call WooCommerce directly.
+- WooCommerce remains the Commerce Engine.
+- WordPress remains the CMS.
+- AIControlCenter owns business workflow and normalized management
+  views.
+- SHOP-01 is read-only.
+- Product draft, approval and controlled write remain separate tasks.
+- No Shopping business logic is placed on Ubuntu.
+- Production writes remain `NOT_AUTHORIZED`.
+
+
+Product delivery sequence:
+
+1. SHOP-01 — Product Management Read Model and Dashboard
+2. SHOP-02 — Product Draft Workflow
+3. SHOP-03 — Human Approval Workflow
+4. SHOP-04 — Controlled WooCommerce Write
+5. SHOP-05 — Order and Customer Read Integration
+6. SHOP-06 — Shopping MVP Validation and Release
+7. AI-01 — Shopping AI Integration
+
+SHOP-01 must extend the existing Dashboard and Shopping APIs rather
+than introduce a new frontend framework.
+<!-- SHOP-00-CLOSEOUT:END -->

@@ -756,3 +756,26 @@ Do not begin AUTO-02, AUTO-03 or M4-A4 through M4-A6 without a new
 architecture decision. The next production-facing milestone is a
 read-only WooCommerce product vertical slice.
 <!-- SHOPPING-FIRST-REPRIORITIZATION:END -->
+
+<!-- SHOP-00-CLOSEOUT:BEGIN -->
+## Active Shopping Task
+
+`SHOP-01_PRODUCT_MANAGEMENT_READ_MODEL_AND_DASHBOARD`
+
+Required first vertical slice:
+
+WooCommerce product snapshot
+→ existing AIControlCenter Shopping query
+→ management read model
+→ existing Dashboard surface
+→ product list and integration-health view
+
+Prohibited in SHOP-01:
+
+- WooCommerce POST, PUT, PATCH or DELETE
+- direct Dashboard-to-WooCommerce communication
+- product draft persistence
+- approval execution
+- AI generation
+- Ubuntu business logic
+<!-- SHOP-00-CLOSEOUT:END -->

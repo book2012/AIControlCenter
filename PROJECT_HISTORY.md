@@ -1133,3 +1133,21 @@ The project returned to the product sequence:
 
 Shopping Platform → AI Integration Platform → Personal AI Assistant.
 <!-- SHOPPING-FIRST-REPRIORITIZATION:END -->
+
+<!-- SHOP-00-CLOSEOUT:BEGIN -->
+## 2026-07-31 — Shopping Platform Product Track Restored
+
+The repository inventory found that the Shopping foundation,
+WooCommerce read integration, normalized JSON contracts, governance,
+health monitoring, read API and storefront were already implemented.
+
+The project prohibited duplicate adapter work and selected a
+management-facing product view as the first new vertical capability.
+
+Validated baseline:
+
+- SRI commit: ba6fdb6a69ee9398b44fdd0810102b078c38c7f8
+- SHOP-00 baseline: 93a8125d97d7c32347fa757c7a8af7e0cb47eeb5
+- Shopping targeted regression: 292 passed
+- mutation routes detected: 0
+<!-- SHOP-00-CLOSEOUT:END -->

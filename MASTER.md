@@ -1094,3 +1094,57 @@ delivers product-facing value.
 
 Production remains `NOT_AUTHORIZED`.
 <!-- SHOPPING-FIRST-REPRIORITIZATION:END -->
+
+<!-- SHOP-00-CLOSEOUT:BEGIN -->
+## SHOP-00 Shopping Platform Reprioritization
+
+SHOP-00 is closed.
+
+Repository inventory and regression validation confirmed that the
+existing Shopping Platform Foundation and Shopping External Read
+Integration are already part of the current branch history.
+
+Existing capabilities designated for reuse:
+
+- WooCommerce external read adapter
+- WooCommerce transport and normalization
+- WordPress CMS adapter
+- normalized product snapshot JSON contracts
+- read authorization and deny-by-default policy
+- schema validation and drift monitoring
+- adapter health monitoring
+- nine read-only Shopping API routes
+- Orange Coco storefront
+
+The former SHOP-01 WooCommerce Read Adapter scope is therefore
+`CLOSED_BY_EXISTING_SRI`.
+
+The first incomplete product capability is:
+
+`SHOP-01_PRODUCT_MANAGEMENT_READ_MODEL_AND_DASHBOARD`
+
+Architecture invariants:
+
+- Storefront and management Dashboard are separate surfaces.
+- Dashboard consumes AIControlCenter APIs only.
+- Dashboard does not call WooCommerce directly.
+- WooCommerce remains the Commerce Engine.
+- WordPress remains the CMS.
+- AIControlCenter owns business workflow and normalized management
+  views.
+- SHOP-01 is read-only.
+- Product draft, approval and controlled write remain separate tasks.
+- No Shopping business logic is placed on Ubuntu.
+- Production writes remain `NOT_AUTHORIZED`.
+
+
+Current milestone status:
+
+- SHOP-00: CLOSED
+- SHOP-01: ACTIVE NEXT
+- SHOP-02: PLANNED
+- SHOP-03: PLANNED
+- SHOP-04: PLANNED
+- SHOP-05: PLANNED
+- SHOP-06: PLANNED
+<!-- SHOP-00-CLOSEOUT:END -->

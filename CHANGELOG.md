@@ -1521,3 +1521,16 @@ Production activation occurred.
 - Recorded the open-source-first capability-gap policy.
 - Retained production status as `NOT_AUTHORIZED`.
 <!-- SHOPPING-FIRST-REPRIORITIZATION:END -->
+
+<!-- SHOP-00-CLOSEOUT:BEGIN -->
+## 2026-07-31 — SHOP-00 Architecture Closeout
+
+- Closed SHOP-00 Shopping Platform Reprioritization.
+- Confirmed the existing SRI implementation is already in current
+  history.
+- Closed the duplicate WooCommerce Read Adapter scope.
+- Confirmed nine Shopping GET routes and zero mutation routes.
+- Selected Product Management Read Model and Dashboard as the first
+  incomplete product capability.
+- Retained production writes as `NOT_AUTHORIZED`.
+<!-- SHOP-00-CLOSEOUT:END -->
