@@ -1545,3 +1545,15 @@ Production activation occurred.
 - Added explicit network, persistence and write-boundary tests.
 - Kept Dashboard and production registration out of this task.
 <!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->
+
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:BEGIN -->
+## 2026-07-31 — SHOP-01C Dashboard Integration
+
+- Added the read-only `shopping_management` Dashboard projection.
+- Reused the SHOP-01B management read model.
+- Added deterministic unavailable-state failure isolation.
+- Protected the existing Dashboard response when no projection is
+  configured.
+- Added no Shopping mutation route.
+- Added no direct WooCommerce dependency.
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:END -->

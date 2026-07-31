@@ -1,14 +1,42 @@
-from fastapi import APIRouter
+from __future__ import annotations
 
+from typing import Annotated, Any
+
+from fastapi import APIRouter, Depends
+
+from core.api.dependencies.audit import (
+    get_audit_query_service,
+)
+from core.api.services.governance_audit_operations import (
+    build_governance_audit_operations_dashboard_payload,
+)
 from core.dashboard.api import DashboardAPI
-from typing import Annotated
-from fastapi import Depends
-from core.api.dependencies.audit import get_audit_query_service
-from core.dashboard.governance_audit import build_governance_audit_dashboard_read_model
+from core.dashboard.governance_audit import (
+    build_governance_audit_dashboard_read_model,
+)
+from core.dashboard.shopping_management import (
+    build_shopping_management_dashboard_payload,
+    unavailable_shopping_management_dashboard_payload,
+)
 from core.governance.audit_query import AuditQueryService
-from core.api.services.governance_audit_operations import build_governance_audit_operations_dashboard_payload
+from core.shopping.service import ShoppingService
+
 
 router = APIRouter()
+
+
+def build_default_shopping_management_dashboard_payload(
+) -> dict[str, Any]:
+    try:
+        source = ShoppingService()
+    except Exception:
+        return (
+            unavailable_shopping_management_dashboard_payload()
+        )
+
+    return build_shopping_management_dashboard_payload(
+        source
+    )
 
 
 @router.get("/dashboard")
@@ -18,11 +46,20 @@ def dashboard(
         Depends(get_audit_query_service),
     ],
 ):
-    payload = DashboardAPI().status(["ubuntu-main"])
+    payload = DashboardAPI(
+        shopping_management=(
+            build_default_shopping_management_dashboard_payload
+        ),
+    ).status(["ubuntu-main"])
+
     payload["model_governance_audit"] = (
         build_governance_audit_dashboard_read_model(
             audit_service
         ).to_dict()
     )
-    payload["governance_audit_operations"] = build_governance_audit_operations_dashboard_payload()
+
+    payload["governance_audit_operations"] = (
+        build_governance_audit_operations_dashboard_payload()
+    )
+
     return payload

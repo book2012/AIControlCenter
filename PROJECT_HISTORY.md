@@ -1168,3 +1168,16 @@ Next integration boundary:
 → optional `DashboardAPI` dependency
 → `/dashboard.shopping_management`
 <!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->
+
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:BEGIN -->
+## 2026-07-31 — Shopping Management Dashboard Vertical Slice
+
+The Shopping management read model was integrated into the existing
+AIControlCenter Dashboard JSON surface.
+
+The integration did not add a frontend framework, product database,
+WooCommerce adapter dependency or write operation.
+
+Shopping failures are represented as a safe `UNAVAILABLE` projection
+rather than causing the Control Plane Dashboard to fail.
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:END -->

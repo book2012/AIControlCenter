@@ -797,3 +797,21 @@ Required behavior:
 - add no mutation route
 - add no product persistence
 <!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->
+
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:BEGIN -->
+## Active Shopping Task
+
+`SHOP-01D_VALIDATION_AND_CLOSEOUT`
+
+Validate and close the Product Management Dashboard read-only vertical
+slice.
+
+Required validation:
+
+- `/dashboard.shopping_management` contract
+- product summary and product list projection
+- unavailable-state failure isolation
+- Shopping mutation route count remains zero
+- full regression
+- documentation closeout
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:END -->

@@ -1233,3 +1233,28 @@ truth through AIControlCenter. It is not a second product database.
 
 The next task is `SHOP-01C_DASHBOARD_JSON_INTEGRATION`.
 <!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->
+
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:BEGIN -->
+## SHOP-01C Dashboard JSON Integration
+
+The existing `GET /dashboard` projection now includes an optional
+`shopping_management` section.
+
+The section is generated through the completed Shopping management
+read model and remains read-only.
+
+Failure isolation rules:
+
+- Shopping configuration failure does not fail the Dashboard.
+- Shopping catalog failure does not fail the Dashboard.
+- Internal exception details are never exposed.
+- An unavailable Shopping dependency returns a deterministic
+  `UNAVAILABLE` envelope.
+- Existing Dashboard behavior is preserved when no Shopping
+  projection is injected.
+
+The Dashboard imports no WooCommerce adapter and creates no local
+product truth.
+
+The next task is `SHOP-01D_VALIDATION_AND_CLOSEOUT`.
+<!-- SHOP-01C-DASHBOARD-INTEGRATION:END -->
