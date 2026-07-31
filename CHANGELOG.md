@@ -1534,3 +1534,14 @@ Production activation occurred.
   incomplete product capability.
 - Retained production writes as `NOT_AUTHORIZED`.
 <!-- SHOP-00-CLOSEOUT:END -->
+
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:BEGIN -->
+## 2026-07-31 — SHOP-01B Management Read Model
+
+- Added a deterministic read-only Shopping management projection.
+- Added catalog, stock and inventory summary fields.
+- Added health, readiness, capability and integration projections.
+- Added payload and result mutation isolation.
+- Added explicit network, persistence and write-boundary tests.
+- Kept Dashboard and production registration out of this task.
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->

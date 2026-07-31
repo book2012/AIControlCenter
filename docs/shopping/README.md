@@ -193,3 +193,30 @@ Next implementation:
 
 `SHOP-01_PRODUCT_MANAGEMENT_READ_MODEL_AND_DASHBOARD`
 <!-- SHOP-00-CLOSEOUT:END -->
+
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:BEGIN -->
+## SHOP-01B Shopping Management Read Model
+
+SHOP-01B adds a pure read-only application projection for
+operator-facing product management data.
+
+The projection consumes the existing `ShoppingService` boundary and
+produces deterministic JSON-safe output containing:
+
+- service health
+- readiness
+- read/write capability state
+- adapter integration state
+- catalog totals
+- in-stock and out-of-stock counts
+- inventory quantity totals
+- normalized product list fields
+
+The module performs no network calls, persistence, product mutation,
+WooCommerce imports or Dashboard registration.
+
+The Product Management Dashboard remains a projection of WooCommerce
+truth through AIControlCenter. It is not a second product database.
+
+The next task is `SHOP-01C_DASHBOARD_JSON_INTEGRATION`.
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->

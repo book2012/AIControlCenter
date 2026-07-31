@@ -1151,3 +1151,20 @@ Validated baseline:
 - Shopping targeted regression: 292 passed
 - mutation routes detected: 0
 <!-- SHOP-00-CLOSEOUT:END -->
+
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:BEGIN -->
+## 2026-07-31 — SHOP-01B Management Projection
+
+The first incomplete Shopping product capability was implemented as a
+pure application read model.
+
+The module consumes the existing Shopping service and produces
+operator-facing JSON without introducing a new product store,
+WooCommerce dependency, UI framework or write capability.
+
+Next integration boundary:
+
+`ShoppingManagementReadModel`
+→ optional `DashboardAPI` dependency
+→ `/dashboard.shopping_management`
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->

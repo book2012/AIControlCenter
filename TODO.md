@@ -779,3 +779,21 @@ Prohibited in SHOP-01:
 - AI generation
 - Ubuntu business logic
 <!-- SHOP-00-CLOSEOUT:END -->
+
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:BEGIN -->
+## Active Shopping Task
+
+`SHOP-01C_DASHBOARD_JSON_INTEGRATION`
+
+Connect the completed Shopping management read model to the existing
+`DashboardAPI` through an optional injected dependency.
+
+Required behavior:
+
+- preserve the existing `/dashboard` response
+- add a `shopping_management` JSON section
+- isolate Shopping failures from the rest of the Dashboard
+- avoid direct WooCommerce dependencies
+- add no mutation route
+- add no product persistence
+<!-- SHOP-01B-MANAGEMENT-READ-MODEL:END -->
