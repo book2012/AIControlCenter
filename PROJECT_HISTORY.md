@@ -1181,3 +1181,22 @@ WooCommerce adapter dependency or write operation.
 Shopping failures are represented as a safe `UNAVAILABLE` projection
 rather than causing the Control Plane Dashboard to fail.
 <!-- SHOP-01C-DASHBOARD-INTEGRATION:END -->
+
+<!-- SHOP-01D-CLOSEOUT:BEGIN -->
+## 2026-07-31 — SHOP-01 Product Management Milestone
+
+AIControlCenter completed its first management-facing Shopping product
+vertical slice.
+
+Operators can consume normalized product, inventory, health,
+readiness and integration state through the existing Dashboard JSON
+surface.
+
+The milestone reused the existing WooCommerce read foundation and did
+not introduce another adapter, product database, frontend framework or
+write path.
+
+The next phase is Product Draft Workflow architecture. Draft state
+will belong to AIControlCenter, while WooCommerce remains the
+authoritative Commerce Engine.
+<!-- SHOP-01D-CLOSEOUT:END -->

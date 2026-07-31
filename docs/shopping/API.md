@@ -239,3 +239,37 @@ product truth.
 
 The next task is `SHOP-01D_VALIDATION_AND_CLOSEOUT`.
 <!-- SHOP-01C-DASHBOARD-INTEGRATION:END -->
+
+<!-- SHOP-01D-CLOSEOUT:BEGIN -->
+## SHOP-01 Product Management Read Model and Dashboard
+
+SHOP-01 is closed.
+
+Completed capabilities:
+
+- deterministic Shopping management read model
+- product and inventory summary
+- normalized operator-facing product list
+- health, readiness, capability and integration projection
+- optional `shopping_management` Dashboard dependency
+- `GET /dashboard.shopping_management` JSON projection
+- deterministic `UNAVAILABLE` failure envelope
+- internal error-detail suppression
+- source and result mutation isolation
+- existing Dashboard compatibility
+- default-configuration read-only operational observation
+
+Architecture boundaries remain unchanged:
+
+- WooCommerce remains the Commerce Engine.
+- WordPress remains the CMS.
+- AIControlCenter owns management projections and workflow logic.
+- The Dashboard does not import WooCommerce adapters.
+- No local product truth was created.
+- No Shopping mutation route was added.
+- Production writes remain `NOT_AUTHORIZED`.
+
+The next active task is:
+
+`SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
+<!-- SHOP-01D-CLOSEOUT:END -->

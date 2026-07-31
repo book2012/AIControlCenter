@@ -815,3 +815,32 @@ Required validation:
 - full regression
 - documentation closeout
 <!-- SHOP-01C-DASHBOARD-INTEGRATION:END -->
+
+<!-- SHOP-01D-CLOSEOUT:BEGIN -->
+## Active Shopping Task
+
+`SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
+
+Define the AIControlCenter-owned product draft workflow before adding
+state or write capabilities.
+
+Required architecture decisions:
+
+- canonical ProductDraft JSON contract
+- lifecycle states
+- draft ownership and persistence boundary
+- source product snapshot reference
+- human approval boundary
+- audit reference model
+- idempotency and revision rules
+- WooCommerce write exclusion
+- AI provider adapter boundary
+
+Prohibited in SHOP-02A:
+
+- WooCommerce mutation
+- product publishing
+- production authorization
+- autonomous approval
+- Ubuntu business logic
+<!-- SHOP-01D-CLOSEOUT:END -->
