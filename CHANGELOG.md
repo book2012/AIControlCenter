@@ -1448,4 +1448,19 @@ Production activation occurred.
 - Added dependency-zone policy/schema coverage and M4 operations documentation.
 - No writer, monitoring runtime, dispatch, Ubuntu change, command, API write
   route, authorization, permit, claim, activation, or production transition
+
+## M4-A1R1
+
+- Closed M4-A1 commit `b719aa445af864c907ac5d384c2c8347d2d6688a`
+  with an immutable retained-source and disposable-working-copy contract for
+  SQLite inspection and recovery tests.
+- Confined SQLite database, WAL, and SHM access side effects to copied recovery
+  workspaces and added byte, mode, size, mtime, and digest regression coverage.
+- Preserved M3-A4B3 bindings and all cryptographic, claim, evidence, and
+  fail-closed production validation semantics.
+- Passed 958 deployment and 1,942 full-regression tests with zero failures, 5
+  configured deselections, and 427 existing warnings. No `.env`, operational
+  access/write, authorization, permit, claim, activation, writer, monitoring,
+  dispatch, Ubuntu change, command, API write route, or production
+  authorization was used.
   occurred. The existing 427 warnings remain separate backlog.

@@ -940,3 +940,14 @@ planner has no operational side effects. Its
 `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS` decision is not authorization.
 Mac remains the Control Plane, Ubuntu remains stateless, production is
 `NOT_AUTHORIZED`, and the 427 warnings remain separate backlog.
+
+# M4-A1R1 SQLite fixture isolation
+
+M4-A1 commit `b719aa445af864c907ac5d384c2c8347d2d6688a` is closed with a
+formal retained-source versus disposable-working-copy SQLite fixture boundary.
+All inspection and recovery validation uses copied database/WAL/SHM sets;
+retained bytes, modes, sizes, mtimes, and digests remain unchanged. Actual
+operational state was not accessed or changed, `.env` is not required, and
+production remains `NOT_AUTHORIZED`. The architecture-only decision remains
+`READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`; next is
+`M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.

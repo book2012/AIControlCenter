@@ -1036,3 +1036,13 @@ chain. Planning is deterministic and test-only. Decision:
 No writer or runtime was implemented. Mac remains the Control Plane, Ubuntu
 remains stateless, and production remains `NOT_AUTHORIZED`. Next:
 `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+
+# M4-A1R1 CLOSED
+
+M4-A1 commit `b719aa445af864c907ac5d384c2c8347d2d6688a` remains
+architecture-only. Retained SQLite snapshots are immutable copy sources;
+inspection and recovery operate only on disposable working copies, including
+their WAL/SHM files. Actual operational state remained unchanged, `.env` is not
+required, and production is `NOT_AUTHORIZED`. Decision:
+`READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`. Next:
+`M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.

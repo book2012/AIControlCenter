@@ -334,6 +334,29 @@ class BootstrapEvidenceRecoveryValidator:
             "source_unchanged": True,
         }
 
+    def _inspect_disposable_copy(
+        self, source: Path, service: str, source_root: Path
+    ) -> dict[str, Any]:
+        try:
+            source.relative_to(source_root)
+        except ValueError as exc:
+            raise BootstrapEvidenceRecoveryError("INSPECTION_SOURCE_POLICY_INVALID") from exc
+        root = self.config.recovery_work / f"{service}-inspection"
+        if root.exists() or root.is_symlink():
+            raise BootstrapEvidenceRecoveryError("INSPECTION_DESTINATION_EXISTS")
+        root.mkdir(mode=0o700)
+        destination = root / source.name
+        for candidate in (source, source.with_name(source.name + "-wal"),
+                          source.with_name(source.name + "-shm")):
+            if candidate.is_symlink() or not candidate.is_file():
+                raise BootstrapEvidenceRecoveryError("INSPECTION_SOURCE_INVALID")
+            copied = destination.with_name(
+                destination.name + candidate.name.removeprefix(source.name)
+            )
+            shutil.copyfile(candidate, copied, follow_symlinks=False)
+            os.chmod(copied, 0o600)
+        return self._inspect(destination, service, root)
+
     def _restore(self, service: str, source: Path, manifest_path: Path) -> dict[str, Any]:
         if source.is_symlink() or manifest_path.is_symlink():
             raise BootstrapEvidenceRecoveryError("SYMLINK_SOURCE")
@@ -375,8 +398,10 @@ class BootstrapEvidenceRecoveryValidator:
         values, artifact_digests = self._evidence()
         self._filesystem()
         operational = self.config.operational_snapshot
-        audit = self._inspect(operational / "audit/audit-ledger.sqlite3", "audit", operational)
-        replay = self._inspect(operational / "security/permit-replay.sqlite3", "replay", operational)
+        audit = self._inspect_disposable_copy(
+            operational / "audit/audit-ledger.sqlite3", "audit", operational)
+        replay = self._inspect_disposable_copy(
+            operational / "security/permit-replay.sqlite3", "replay", operational)
         audit_recovery = self._restore(
             "audit", operational / "audit/backups/baseline.sqlite3",
             operational / "audit/backups/baseline.manifest.json")

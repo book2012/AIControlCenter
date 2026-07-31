@@ -42,7 +42,10 @@ def configure_identity(
     )
 
 
-def test_default_database_path_is_application_data() -> None:
+def test_default_database_path_is_application_data(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv(DATA_ROOT_ENV, raising=False)
     path = resolve_audit_database_path()
 
     assert path.name == "model-governance-audit.sqlite3"

@@ -3,7 +3,6 @@ from __future__ import annotations
 import json
 import os
 import shutil
-import stat
 import uuid
 from pathlib import Path
 
@@ -18,12 +17,8 @@ from core.deployment.contracts import canonical_json_bytes
 
 
 @pytest.fixture
-def source_paths() -> tuple[Path, Path, Path]:
-    return tuple(Path(os.environ[name]) for name in (
-        "AICONTROLCENTER_M3_A4B3_OPERATIONAL_SNAPSHOT",
-        "AICONTROLCENTER_M3_A4B3_EVIDENCE_SNAPSHOT",
-        "AICONTROLCENTER_M3_A4B3_RECOVERY_WORK",
-    ))
+def source_paths(sqlite_snapshot_workspace) -> tuple[Path, Path, Path]:
+    return sqlite_snapshot_workspace.source_paths
 
 
 def _work(source_paths, label: str) -> Path:
@@ -202,12 +197,19 @@ def test_permissions_symlinks_and_unsafe_destinations_rejected(source_paths):
         validator.validate()
 
 
-def test_source_metadata_hash_size_and_mtime_are_unchanged(source_paths):
-    def state(root):
-        return [(str(path.relative_to(root)), path.stat().st_size,
-                 path.stat().st_mtime_ns, stat.S_IMODE(path.stat().st_mode))
-                for path in sorted(root.rglob("*"))]
-    before = (state(source_paths[0]), state(source_paths[1]))
+def test_source_metadata_hash_size_and_mtime_are_unchanged(
+    source_paths, sqlite_snapshot_workspace,
+):
+    retained = sqlite_snapshot_workspace.retained
+    before = (retained.operational_state, retained.evidence_state)
     validator, _ = _validator(source_paths, "immutability")
     validator.validate()
-    assert before == (state(source_paths[0]), state(source_paths[1]))
+    retained.assert_unchanged()
+    assert before == (
+        retained.operational_state,
+        retained.evidence_state,
+    )
+    assert all(
+        path.is_relative_to(sqlite_snapshot_workspace.root)
+        for path in sqlite_snapshot_workspace.sqlite_sidecars()
+    )

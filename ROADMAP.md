@@ -1073,3 +1073,17 @@ authorized current-user Mac bootstrap; M3-A4B3 remains blocked until success.
 - Decision: `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`.
 - Next: `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
 - Separate backlog: 427 existing deprecation warnings.
+
+# M4-A1R1 — CLOSED
+
+- BASELINE: M4-A1 commit `b719aa445af864c907ac5d384c2c8347d2d6688a`.
+- COMPLETE: immutable retained SQLite source and disposable inspection/recovery
+  working-copy contract.
+- COMPLETE: WAL/SHM side effects confined to working copies; retained bytes,
+  modes, sizes, mtimes, and digests unchanged.
+- NO CHANGE: actual operational state, cryptographic/evidence semantics,
+  writers, monitoring, dispatch, Ubuntu, commands, API routes, and production.
+- `.env`: not required.
+- Decision: `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+- Production: `NOT_AUTHORIZED`.
+- Next: `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
