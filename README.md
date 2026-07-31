@@ -951,3 +951,18 @@ operational state was not accessed or changed, `.env` is not required, and
 production remains `NOT_AUTHORIZED`. The architecture-only decision remains
 `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`; next is
 `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+
+# M4-A2 capability authorization contracts
+
+M4-A1 and M4-A1R1 are closed. M4-A2 defines immutable, canonical,
+single-capability request and independent-approval contracts for all five
+registry capabilities. Exact Git, M3, M4-A1, identity, restriction, dependency,
+and bounded-time validation produces only a deterministic test grant plan.
+`READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION` creates no authorization,
+permit, claim, writer, monitoring runtime, dispatch, or activation.
+
+Authorization never implies activation or another capability. Production
+remains `NOT_AUTHORIZED`, Ubuntu remains excluded, external-notification
+endpoint details and secrets are outside scope, and `.env` is not required.
+The existing 427 deprecation warnings remain separate backlog. Next:
+`M4-A3_TEST_ONLY_AUTHORIZATION_SIMULATION`.

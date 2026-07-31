@@ -1079,3 +1079,19 @@ monitoring runtime, dispatch, Ubuntu action, command, API write route, or
 production activation occurred. The architecture decision is
 `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`; M4-A2 remains future work. The
 427 warnings remain a separate backlog track.
+
+# M4-A2 capability authorization contracts
+
+M4-A1 and M4-A1R1 closed before M4-A2 began at
+`cbeb20d41808ea615b08196b164d6b5578486ed8`. M4-A2 introduced immutable,
+canonical, independently approved contracts for exactly one registry capability
+at a time. Exact Git and readiness bindings, independent identities, complete
+restrictions, capability dependencies, UTC-aware bounded windows, and SHA-256
+tamper binding now fail closed.
+
+The resulting grant is only a deterministic test plan. No real authorization,
+permit, claim, writer, monitoring runtime, dispatch, Ubuntu action, runtime
+command, API write route, or production activation occurred. Production remains
+`NOT_AUTHORIZED`; `.env` and endpoint secrets were not required. Decision:
+`READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION`. The 427 warnings remain
+separate backlog.

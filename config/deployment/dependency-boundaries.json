@@ -126,6 +126,11 @@
       "selectors": [{"module_prefix": "core.deployment.controlled_activation_architecture"}]
     },
     {
+      "id": "capability_authorization",
+      "responsibility": "Pure immutable M4-A2 capability authorization contracts, canonical validation and test-only grant planning; no real authorization, permit, claim, activation, network, Ubuntu or production capability.",
+      "selectors": [{"module_prefix": "core.deployment.capability_authorization"}]
+    },
+    {
       "id": "operational_bootstrap_live",
       "responsibility": "M3-A4B2B2B-R3 strict local controlled operational composition boundary; direct coordinator invocation only, no network, API, worker or production activation.",
       "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_live"}]
@@ -252,6 +257,7 @@
     {"from_zone": "bootstrap_evidence_recovery", "to_zones": ["contracts", "audit_sqlite_read_only", "permit_replay_sqlite_read_only", "operational_bootstrap_execution", "operational_bootstrap_live", "bootstrap_evidence_recovery"]},
     {"from_zone": "controlled_activation_validation", "to_zones": ["controlled_activation_validation"]},
     {"from_zone": "controlled_activation_architecture", "to_zones": ["contracts", "controlled_activation_architecture"]},
+    {"from_zone": "capability_authorization", "to_zones": ["contracts", "controlled_activation_architecture", "capability_authorization"]},
     {"from_zone": "operational_bootstrap_live", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution", "git_readonly_evidence", "operational_bootstrap_live"]},
     {"from_zone": "git_readonly_evidence", "to_zones": ["git_readonly_evidence"]},
     {"from_zone": "operational_bootstrap_preflight", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight"]},
@@ -334,7 +340,7 @@
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["audit_contracts", "controlled_activation_validation", "controlled_activation_architecture", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "controlled_activation_validation", "controlled_activation_architecture", "capability_authorization", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "modules": ["sqlite3", "subprocess", "socket", "requests", "paramiko", "fabric"],
       "severity": "ERROR"
     }
@@ -342,7 +348,7 @@
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery", "bootstrap_evidence_recovery", "controlled_activation_validation", "controlled_activation_architecture", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
+      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery", "bootstrap_evidence_recovery", "controlled_activation_validation", "controlled_activation_architecture", "capability_authorization", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
       "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
       "severity": "ERROR"
     }

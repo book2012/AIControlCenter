@@ -1072,6 +1072,23 @@ authorized current-user Mac bootstrap; M3-A4B3 remains blocked until success.
   remain inactive; no operational authorization exists.
 - Decision: `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`.
 - Next: `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+
+# M4-A2 — CLOSED
+
+- COMPLETE: immutable typed scope, request, approval, restriction, evidence,
+  validation, grant-plan, plan, and decision contracts.
+- COMPLETE: deterministic canonical JSON and SHA-256 digest/tamper binding.
+- COMPLETE: independent identity policy and injected-clock, timezone-aware,
+  maximum-one-hour single-use window validation.
+- COMPLETE: capability-specific restrictions and separate dependency
+  references without implicit authorization.
+- NO CHANGE: no authorization, permit, claim, writer, monitoring, dispatch,
+  Ubuntu, command, API write route, or production activation.
+- Decision: `READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION`.
+- Production: `NOT_AUTHORIZED`.
+- `.env`: not required.
+- Next: `M4-A3_TEST_ONLY_AUTHORIZATION_SIMULATION`.
+- Separate backlog: 427 existing deprecation warnings.
 - Separate backlog: 427 existing deprecation warnings.
 
 # M4-A1R1 — CLOSED

@@ -1464,3 +1464,24 @@ Production activation occurred.
   dispatch, Ubuntu change, command, API write route, or production
   authorization was used.
   occurred. The existing 427 warnings remain separate backlog.
+
+## M4-A2
+
+- Added immutable typed capability authorization scope, request, approval,
+  restriction, decision, evidence, validation, grant-plan, and plan contracts.
+- Added canonical UTC-normalized JSON and SHA-256 request, approval, and plan
+  bindings with tamper rejection and an injected deterministic clock.
+- Enforced exact branch/commit, M3/M4-A1, independent identity, one-capability,
+  single-use, one-hour maximum TTL, full restriction, production-denial, and
+  Ubuntu-denial policies.
+- Added capability-specific read-only health and separately authorized
+  dependency-reference requirements without implicit escalation.
+- Added a deterministic test-only planner with zero authorization, permit,
+  claim, activation, writer, monitoring, dispatch, network, API write, command,
+  Ubuntu, or production effects.
+- Decision: `READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION`; `.env` and external
+  notification endpoint secrets are not required. The existing 427 warnings
+  remain separate backlog.
+- Passed 59 targeted, 1,016 deployment, and 2,000 full-regression tests with
+  zero failures; full regression retained 5 configured deselections and 427
+  existing warnings.

@@ -1,7 +1,7 @@
 # M4 Controlled Activation Checklist
 
-This checklist describes future gates only. M4-A1 does not authorize or perform
-activation.
+This checklist describes future gates only. M4-A1, M4-A1R1, and M4-A2 are
+closed; none authorizes or performs activation.
 
 ## Capability authorization boundary
 
@@ -25,6 +25,7 @@ activation.
 - Bind future work to M3 closeout commit
   `89d10da82545e6cfd173085719076bb71e14c120`.
 - M4-A1 yields only `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+- M4-A2 yields only `READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION`.
 - Do not interpret either readiness decision as operational authorization.
 
 ## Default-deny operations
@@ -38,5 +39,9 @@ activation.
   service restarts, runtime writers, monitoring runtime, and external dispatch.
 - Independently authorize `MONITORING_RUNTIME`, `ALERT_DISPATCH`, and
   `EXTERNAL_NOTIFICATION`; never infer downstream capability permission.
+- Treat the M4-A2 grant-shaped result as a test plan only: it creates no
+  authorization, permit, claim, or activation.
+- Keep external-notification endpoint details and secrets outside M4-A2;
+  `.env` is not required.
 
 The 427 deprecation warnings remain a separate backlog item.

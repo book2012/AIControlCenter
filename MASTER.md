@@ -1037,6 +1037,20 @@ No writer or runtime was implemented. Mac remains the Control Plane, Ubuntu
 remains stateless, and production remains `NOT_AUTHORIZED`. Next:
 `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
 
+# M4-A2 CLOSED
+
+Typed immutable authorization request, approval, restriction, evidence,
+validation, and test grant-plan contracts cover the exact M4-A1 registry.
+Canonical SHA-256 binding, independent identities, exact Git/M3/M4-A1 binding,
+full restrictions, injected-clock expiry, and one-hour maximum TTL fail closed.
+Every capability remains independent; dependencies never authorize.
+
+Decision: `READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION`. No real
+authorization, permit, claim, activation, writer, monitoring runtime, dispatch,
+Ubuntu change, API write route, command, environment secret, or production
+authorization was created. Production is `NOT_AUTHORIZED`; next:
+`M4-A3_TEST_ONLY_AUTHORIZATION_SIMULATION`.
+
 # M4-A1R1 CLOSED
 
 M4-A1 commit `b719aa445af864c907ac5d384c2c8347d2d6688a` remains

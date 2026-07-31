@@ -714,3 +714,16 @@ separate authorization gate. M3-A4B2B1B does not authorize or perform it.
 - Keep Mac as the AIControlCenter Control Plane, Ubuntu stateless, and
   production `NOT_AUTHORIZED`.
 - Keep the existing 427 deprecation warnings on their separate backlog track.
+
+# After M4-A2
+
+- M4-A2 is closed as contract and validation only; it created no real
+  authorization, permit, claim, or activation.
+- Implement `M4-A3_TEST_ONLY_AUTHORIZATION_SIMULATION` as a separate task.
+- Preserve one-capability independent authorization and treat dependency
+  references as non-authorizing evidence.
+- Keep production `NOT_AUTHORIZED`, Ubuntu excluded, and runtime effects
+  disabled.
+- Keep external endpoint details and secrets outside this boundary; `.env`
+  remains unnecessary.
+- Keep the existing 427 deprecation warnings on their separate backlog track.

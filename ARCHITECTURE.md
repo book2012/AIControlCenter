@@ -1091,3 +1091,17 @@ implicitly. AIControlCenter on Mac owns every governance, authorization, audit,
 replay, and activation boundary; Ubuntu is ineligible. The package imports only
 pure deployment contracts, exposes no runtime port, and cannot activate a
 writer, monitor, dispatch, command, API write route, or production transition.
+
+# M4 capability authorization contract boundary
+
+M4-A2 adds immutable capability-scoped request, approval, restriction, evidence,
+validation, and grant-plan contracts. Canonical JSON, SHA-256 binding, injected
+UTC-aware time validation, independent identity policy, a maximum one-hour
+window, and exact M3/M4-A1 bindings fail closed. Each M4-A1 capability is
+requested alone; dependency references never imply authorization.
+
+The grant contract is a test-only deterministic plan with authorization,
+permit, claim, and activation fields false. No runtime port, API write route,
+command, network client, writer, monitoring runtime, dispatch, Ubuntu
+delegation, or production path exists. The decision
+`READY_FOR_TEST_ONLY_AUTHORIZATION_SIMULATION` authorizes nothing.
