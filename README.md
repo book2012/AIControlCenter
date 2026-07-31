@@ -929,3 +929,14 @@ activation or production authorization. The Mac remains the Control Plane;
 writers, monitoring, dispatch, Ubuntu participation, and production remain
 false. Future activation requires a separate gate. The 427 warnings remain
 backlog.
+
+# M4-A1 controlled activation architecture
+
+M4 begins with pure architecture contracts bound to M3 closeout commit
+`89d10da82545e6cfd173085719076bb71e14c120`. Five capabilities default to
+inactive and unauthorized and require independent capability-scoped approval,
+permit, claim, evidence, validation, and rollback boundaries. The deterministic
+planner has no operational side effects. Its
+`READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS` decision is not authorization.
+Mac remains the Control Plane, Ubuntu remains stateless, production is
+`NOT_AUTHORIZED`, and the 427 warnings remain separate backlog.

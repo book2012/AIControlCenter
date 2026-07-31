@@ -1067,3 +1067,15 @@ and recovery validation `0f23abdf362965c09db5f4f35483cbff47853643`.
 Audit and replay remained `HEALTHY` with zero events, isolated restores passed,
 and operational state remained unchanged. All activation, Ubuntu, and
 production capabilities remain false; 427 warnings remain separate backlog.
+
+# M4-A1 controlled activation architecture
+
+M4 began at M3 closeout commit
+`89d10da82545e6cfd173085719076bb71e14c120` with architecture-only work.
+AIControlCenter now owns a typed closed registry, immutable deterministic state
+machine, default-deny policy, canonical planner, and validation facade for five
+independently governed capabilities. No authorization, permit, claim, writer,
+monitoring runtime, dispatch, Ubuntu action, command, API write route, or
+production activation occurred. The architecture decision is
+`READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`; M4-A2 remains future work. The
+427 warnings remain a separate backlog track.

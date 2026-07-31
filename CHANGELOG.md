@@ -1436,3 +1436,16 @@ Production activation occurred.
   gates, and deterministic JSON closeout.
 - Closed M3 without changing operational state or authorizing runtime, Ubuntu,
   or production capability; future activation requires a separate gate.
+
+## M4-A1
+
+- Added modular immutable capability, state transition, policy, planning, and
+  validation contracts for controlled activation architecture.
+- Added five default-inactive and unauthorized capabilities with independent
+  authorization, permit, claim, evidence, rollback, and dependency boundaries.
+- Added deterministic canonical JSON plans and digests plus comprehensive
+  default-deny and no-side-effect tests.
+- Added dependency-zone policy/schema coverage and M4 operations documentation.
+- No writer, monitoring runtime, dispatch, Ubuntu change, command, API write
+  route, authorization, permit, claim, activation, or production transition
+  occurred. The existing 427 warnings remain separate backlog.

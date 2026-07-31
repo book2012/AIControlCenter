@@ -1026,3 +1026,13 @@ Readiness is validated at `0f23abdf362965c09db5f4f35483cbff47853643`
 against the bootstrap at `f7a81b73b86c170300bb6b80f437dbb753362f7e`.
 Operational state is unchanged; writers, monitoring, dispatch, Ubuntu, and
 production remain false. Next: `M4_CONTROLLED_ACTIVATION_ARCHITECTURE`.
+
+# M4-A1 CLOSED
+
+Controlled activation architecture is defined with five independently
+authorized, default-inactive capabilities and an exact immutable transition
+chain. Planning is deterministic and test-only. Decision:
+`READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`; this authorizes nothing.
+No writer or runtime was implemented. Mac remains the Control Plane, Ubuntu
+remains stateless, and production remains `NOT_AUTHORIZED`. Next:
+`M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.

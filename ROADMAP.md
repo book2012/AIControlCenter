@@ -1061,3 +1061,15 @@ authorized current-user Mac bootstrap; M3-A4B3 remains blocked until success.
 - No writer, monitoring, dispatch, Ubuntu, or production activation.
 - Next: `M4_CONTROLLED_ACTIVATION_ARCHITECTURE` with a separate gate.
 - Separate backlog: the existing 427 deprecation warnings.
+
+# M4-A1 — CLOSED
+
+- COMPLETE: typed registry for five default-inactive, unauthorized capabilities.
+- COMPLETE: deterministic immutable state transitions and architecture planner.
+- COMPLETE: independent capability gates and explicit dependency policy.
+- PROHIBITED: implicit escalation, Ubuntu ownership/delegation, and production.
+- NO CHANGE: writers, monitoring runtime, dispatch, and external notification
+  remain inactive; no operational authorization exists.
+- Decision: `READY_FOR_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+- Next: `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS`.
+- Separate backlog: 427 existing deprecation warnings.

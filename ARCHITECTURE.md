@@ -1081,3 +1081,13 @@ Git, evidence, recovery, health, control-plane, Mac-role, Ubuntu-exclusion, and
 default-deny facts and emits deterministic JSON. It has no activation, issuer,
 claim, restore, API, remote, worker, or business-logic capability. Success
 requires a future independent architecture and authorization gate.
+
+# M4 controlled activation architecture boundary
+
+M4-A1 adds a closed typed capability registry, immutable per-capability state
+machine, default-deny architecture policy, deterministic planner, and
+validation facade. Capabilities cannot authorize or add dependencies
+implicitly. AIControlCenter on Mac owns every governance, authorization, audit,
+replay, and activation boundary; Ubuntu is ineligible. The package imports only
+pure deployment contracts, exposes no runtime port, and cannot activate a
+writer, monitor, dispatch, command, API write route, or production transition.

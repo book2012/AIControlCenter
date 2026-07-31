@@ -702,3 +702,15 @@ separate authorization gate. M3-A4B2B1B does not authorize or perform it.
   authorization gate and per-capability default deny.
 - Do not activate from the M3-A4C readiness report.
 - Track the existing 427 deprecation warnings separately.
+
+# After M4-A1
+
+- M4-A1 is closed; do not interpret its architecture decision as activation
+  authority.
+- Implement `M4-A2_CAPABILITY_AUTHORIZATION_CONTRACTS` as a separate task.
+- Keep all five capabilities inactive and unauthorized by default.
+- Preserve independent approval, capability-scoped permit/claim, evidence, and
+  rollback requirements; dependencies never grant authorization.
+- Keep Mac as the AIControlCenter Control Plane, Ubuntu stateless, and
+  production `NOT_AUTHORIZED`.
+- Keep the existing 427 deprecation warnings on their separate backlog track.
