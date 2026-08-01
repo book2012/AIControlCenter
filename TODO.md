@@ -844,3 +844,23 @@ Prohibited in SHOP-02A:
 - autonomous approval
 - Ubuntu business logic
 <!-- SHOP-01D-CLOSEOUT:END -->
+
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:BEGIN -->
+## Active Shopping Task
+
+`SHOP-01E3_WOOCOMMERCE_READ_ONLY_CONFIGURATION`
+
+Configure and validate the existing WooCommerce read adapter without
+enabling any write capability.
+
+Required gates:
+
+- secret values are never printed
+- adapter is `woocommerce`
+- write mode remains `read_only`
+- approval remains required
+- automation remains disabled
+- bounded WooCommerce GET succeeds
+- management Dashboard projection is not `UNAVAILABLE`
+- Shopping mutation route count remains zero
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:END -->

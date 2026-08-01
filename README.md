@@ -1141,3 +1141,29 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01D-CLOSEOUT:END -->
+
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:BEGIN -->
+## SHOP-01E2 Shopping Product Compatibility Adapter
+
+The default Mock catalog returned the legacy `Product` contract while
+the management read model required the canonical product projection.
+
+A dedicated application adapter now translates the existing
+`ShoppingService` result into the canonical management contract.
+
+Explicit mappings:
+
+- `id` to `product_id`
+- `image_url` to `image_urls`
+- `Decimal` price to a JSON number
+
+Missing SKU, inventory quantity, URL and updated timestamp values
+remain null. The adapter does not synthesize unknown Commerce data.
+
+The canonical management contract was not weakened. The Dashboard
+continues to have no direct WooCommerce dependency.
+
+The next task is:
+
+`SHOP-01E3_WOOCOMMERCE_READ_ONLY_CONFIGURATION`
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:END -->

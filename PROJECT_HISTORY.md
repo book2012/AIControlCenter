@@ -1200,3 +1200,15 @@ The next phase is Product Draft Workflow architecture. Draft state
 will belong to AIControlCenter, while WooCommerce remains the
 authoritative Commerce Engine.
 <!-- SHOP-01D-CLOSEOUT:END -->
+
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:BEGIN -->
+## 2026-08-01 — Shopping Management Contract Recovery
+
+Operational diagnostics found that the default Mock adapter returned
+the original Shopping `Product` shape, while the new management read
+model consumed the canonical snapshot-oriented product shape.
+
+The project resolved the mismatch with an explicit application
+anti-corruption adapter rather than weakening the canonical contract
+or adding translation logic to the Dashboard.
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:END -->

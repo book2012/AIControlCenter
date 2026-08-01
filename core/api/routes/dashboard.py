@@ -19,6 +19,9 @@ from core.dashboard.shopping_management import (
     unavailable_shopping_management_dashboard_payload,
 )
 from core.governance.audit_query import AuditQueryService
+from core.shopping.application.management_source import (
+    ShoppingServiceManagementSourceAdapter,
+)
 from core.shopping.service import ShoppingService
 
 
@@ -35,7 +38,9 @@ def build_default_shopping_management_dashboard_payload(
         )
 
     return build_shopping_management_dashboard_payload(
-        source
+        ShoppingServiceManagementSourceAdapter(
+            source
+        )
     )
 
 

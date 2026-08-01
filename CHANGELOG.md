@@ -1569,3 +1569,15 @@ Production activation occurred.
 - Confirmed zero direct Dashboard-to-WooCommerce dependencies.
 - Retained production writes as `NOT_AUTHORIZED`.
 <!-- SHOP-01D-CLOSEOUT:END -->
+
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:BEGIN -->
+## 2026-08-01 — SHOP-01E2 Product Compatibility Recovery
+
+- Added a ShoppingService-to-management compatibility adapter.
+- Mapped legacy product IDs into canonical `product_id`.
+- Converted legacy image values into canonical image lists.
+- Converted Decimal display prices into JSON numbers.
+- Preserved unknown SKU, inventory, URL and update fields as null.
+- Restored the default mock Dashboard management projection.
+- Added no write capability or WooCommerce dependency to Dashboard.
+<!-- SHOP-01E2-COMPATIBILITY-ADAPTER:END -->
