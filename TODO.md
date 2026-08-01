@@ -864,3 +864,19 @@ Required gates:
 - management Dashboard projection is not `UNAVAILABLE`
 - Shopping mutation route count remains zero
 <!-- SHOP-01E2-COMPATIBILITY-ADAPTER:END -->
+
+<!-- SHOP-01E3C-SECURE-RUNTIME:BEGIN -->
+## Active Shopping Task
+
+`SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
+
+Define the AIControlCenter-owned Product Draft contract and lifecycle.
+
+Separate deployment backlog:
+
+`SHOP-01E3D_READ_ONLY_PROFILE_ACTIVATION`
+
+The deployment task may only set the non-secret Shopping profile in
+the Mac Control Plane process. It must not place WooCommerce
+credentials in a plist or shell command.
+<!-- SHOP-01E3C-SECURE-RUNTIME:END -->

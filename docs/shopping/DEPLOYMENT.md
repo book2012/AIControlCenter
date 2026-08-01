@@ -133,3 +133,37 @@ Current ipTIME DDNS is development-only HTTP.
 
 A user-owned domain is required before public Production deployment.
 <!-- SHOPPING_M5_END -->
+
+<!-- SHOP-01E3C-SECURE-RUNTIME:BEGIN -->
+## SHOP-01E3C Secure WooCommerce Read Runtime
+
+AIControlCenter now provides a reusable secure runtime loader for the
+existing WooCommerce read-only credential file.
+
+The loader validates:
+
+- a regular non-symlink credential file
+- current-user ownership
+- file mode `0600`
+- direct parent mode `0700`
+- exact credential keys
+- read-only WooCommerce API permission
+
+Credential values are not copied into Git, LaunchAgent plist files or
+the process environment.
+
+Runtime selection uses the non-secret profile:
+
+`AICONTROLCENTER_SHOPPING_PROFILE=woocommerce_read_only`
+
+The profile is not enabled persistently by this task. Persistent
+LaunchAgent activation requires a separate operational authorization.
+
+The canonical WooCommerce target currently has zero products and one
+product category. This is a valid empty Commerce Engine state, not an
+adapter failure.
+
+The next active task is:
+
+`SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
+<!-- SHOP-01E3C-SECURE-RUNTIME:END -->

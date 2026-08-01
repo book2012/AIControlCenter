@@ -89,7 +89,7 @@ def test_default_dashboard_projection_contract(
 ) -> None:
     monkeypatch.setattr(
         dashboard_route,
-        "ShoppingService",
+        "build_default_shopping_service",
         FakeShoppingService,
     )
 
@@ -129,7 +129,7 @@ def test_dashboard_json_contains_injected_management_section(
 ) -> None:
     monkeypatch.setattr(
         dashboard_route,
-        "ShoppingService",
+        "build_default_shopping_service",
         FakeShoppingService,
     )
 

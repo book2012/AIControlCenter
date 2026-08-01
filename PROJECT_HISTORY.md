@@ -1212,3 +1212,19 @@ The project resolved the mismatch with an explicit application
 anti-corruption adapter rather than weakening the canonical contract
 or adding translation logic to the Dashboard.
 <!-- SHOP-01E2-COMPATIBILITY-ADAPTER:END -->
+
+<!-- SHOP-01E3C-SECURE-RUNTIME:BEGIN -->
+## 2026-08-01 — WooCommerce Read Foundation Operationally Validated
+
+AIControlCenter authenticated to the canonical WooCommerce target with
+a read-only key and successfully executed authenticated and public GET
+requests.
+
+The target matched the configured Shopping site. All product states
+were empty, while one product category existed.
+
+The platform introduced a secure reusable credential loader instead
+of storing secrets in LaunchAgent environment variables. Product
+workflow development can now proceed independently of catalog
+population.
+<!-- SHOP-01E3C-SECURE-RUNTIME:END -->

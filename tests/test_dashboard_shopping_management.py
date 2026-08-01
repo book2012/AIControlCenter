@@ -214,7 +214,7 @@ def test_default_route_projection_isolates_service_construction(
 
     monkeypatch.setattr(
         dashboard_route,
-        "ShoppingService",
+        "build_default_shopping_service",
         BrokenShoppingService,
     )
 

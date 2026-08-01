@@ -22,6 +22,9 @@ from core.governance.audit_query import AuditQueryService
 from core.shopping.application.management_source import (
     ShoppingServiceManagementSourceAdapter,
 )
+from core.shopping.secure_runtime import (
+    build_default_shopping_service,
+)
 from core.shopping.service import ShoppingService
 
 
@@ -31,7 +34,7 @@ router = APIRouter()
 def build_default_shopping_management_dashboard_payload(
 ) -> dict[str, Any]:
     try:
-        source = ShoppingService()
+        source = build_default_shopping_service()
     except Exception:
         return (
             unavailable_shopping_management_dashboard_payload()

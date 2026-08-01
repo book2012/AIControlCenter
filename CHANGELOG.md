@@ -1581,3 +1581,16 @@ Production activation occurred.
 - Restored the default mock Dashboard management projection.
 - Added no write capability or WooCommerce dependency to Dashboard.
 <!-- SHOP-01E2-COMPATIBILITY-ADAPTER:END -->
+
+<!-- SHOP-01E3C-SECURE-RUNTIME:BEGIN -->
+## 2026-08-01 — SHOP-01E3C Secure WooCommerce Runtime
+
+- Added a protected WooCommerce read credential provider.
+- Added explicit non-secret Shopping runtime profile selection.
+- Prevented credential copying into process environment or plist files.
+- Enforced read-only API permission and filesystem boundaries.
+- Validated the canonical WooCommerce target and Dashboard projection.
+- Confirmed the current Commerce Engine contains zero products and one
+  category.
+- Added no Shopping mutation route or production write authority.
+<!-- SHOP-01E3C-SECURE-RUNTIME:END -->
