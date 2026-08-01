@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:shopping:product-draft:v1",
+  "title": "ProductDraft",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "draft_id", "revision_id", "revision_number", "previous_revision_id", "created_at", "created_by", "correlation_id", "audit_reference", "source", "state", "proposed_fields", "suggestions", "validation", "human_decision", "deployment_intent"],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "draft_id": {"type": "string", "minLength": 1},
+    "revision_id": {"type": "string", "minLength": 1},
+    "revision_number": {"type": "integer", "minimum": 1},
+    "previous_revision_id": {"type": ["string", "null"], "minLength": 1},
+    "created_at": {"$ref": "#/$defs/utcTimestamp"},
+    "created_by": {"$ref": "#/$defs/actor"},
+    "correlation_id": {"type": "string", "minLength": 1},
+    "audit_reference": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object", "additionalProperties": false,
+      "required": ["source_system", "source_product_identifier", "snapshot_reference", "snapshot_digest", "observed_at", "schema_version"],
+      "properties": {
+        "source_system": {"const": "WOOCOMMERCE"},
+        "source_product_identifier": {"type": "string", "minLength": 1},
+        "snapshot_reference": {"type": ["string", "null"], "minLength": 1},
+        "snapshot_digest": {"type": ["string", "null"], "pattern": "^sha256:[0-9a-f]{64}$"},
+        "observed_at": {"$ref": "#/$defs/utcTimestamp"},
+        "schema_version": {"type": "string", "minLength": 1}
+      },
+      "anyOf": [{"required": ["snapshot_reference"], "properties": {"snapshot_reference": {"type": "string"}}}, {"required": ["snapshot_digest"], "properties": {"snapshot_digest": {"type": "string"}}}]
+    },
+    "state": {"enum": ["DRAFT", "VALIDATED", "REVIEW_REQUIRED", "APPROVED", "REJECTED", "REVOKED", "SUPERSEDED", "DEPLOYMENT_READY"]},
+    "proposed_fields": {
+      "type": "object", "additionalProperties": false, "minProperties": 1,
+      "properties": {
+        "name": {"type": "string"}, "description": {"type": "string"}, "sku": {"type": "string"},
+        "regular_price": {"type": "string", "pattern": "^[0-9]+(?:\\.[0-9]+)?$"},
+        "sale_price": {"type": ["string", "null"], "pattern": "^[0-9]+(?:\\.[0-9]+)?$"},
+        "inventory_quantity": {"type": ["integer", "null"], "minimum": 0},
+        "stock_status": {"enum": ["IN_STOCK", "OUT_OF_STOCK", "ON_BACKORDER"]},
+        "categories": {"type": "array", "items": {"$ref": "#/$defs/reference"}, "uniqueItems": true},
+        "tags": {"type": "array", "items": {"$ref": "#/$defs/reference"}, "uniqueItems": true},
+        "image_references": {"type": "array", "items": {"$ref": "#/$defs/reference"}, "uniqueItems": true}
+      }
+    },
+    "suggestions": {"type": "array", "items": {"$ref": "suggestion-provenance.schema.json"}},
+    "validation": {
+      "type": ["object", "null"], "additionalProperties": false,
+      "required": ["errors", "warnings", "validator_version", "validated_at", "validation_input_digest"],
+      "properties": {"errors": {"type": "array", "items": {"type": "string"}}, "warnings": {"type": "array", "items": {"type": "string"}}, "validator_version": {"type": "string", "minLength": 1}, "validated_at": {"$ref": "#/$defs/utcTimestamp"}, "validation_input_digest": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"}}
+    },
+    "human_decision": {"oneOf": [{"type": "null"}, {"$ref": "approval-decision.schema.json"}]},
+    "deployment_intent": {"oneOf": [{"type": "null"}, {"$ref": "deployment-intent.schema.json"}]}
+  },
+  "$defs": {
+    "utcTimestamp": {"type": "string", "format": "date-time", "pattern": "Z$"},
+    "actor": {"type": "object", "additionalProperties": false, "required": ["actor_id", "actor_type"], "properties": {"actor_id": {"type": "string", "minLength": 1}, "actor_type": {"enum": ["HUMAN", "SERVICE"]}}},
+    "reference": {"type": "object", "additionalProperties": false, "required": ["id"], "properties": {"id": {"type": "string", "minLength": 1}, "label": {"type": ["string", "null"]}}},
+    "suggestion": {"type": "object", "additionalProperties": false, "required": ["provenance", "field", "provider_model_reference", "generation_audit_reference"], "properties": {"provenance": {"enum": ["HUMAN", "AI", "IMPORT", "SYSTEM"]}, "field": {"type": "string", "minLength": 1}, "provider_model_reference": {"type": ["string", "null"]}, "generation_audit_reference": {"type": ["string", "null"]}}}
+  }
+}

@@ -62,3 +62,7 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## ProductDraft Security Boundary
+
+AI suggestions are untrusted optional inputs and cannot approve. Only a `HUMAN` reviewer can decide an exact revision. New revisions inherit no decision; revoked approvals cannot be reused. Contracts exclude credentials and raw prompt secrets. Deployment intent requires separate authorization and audit references but never authorizes execution. Production writes remain `NOT_AUTHORIZED`.

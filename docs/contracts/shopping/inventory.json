@@ -1,0 +1,21 @@
+{
+  "inventory_version": 1,
+  "observed_at": "2026-08-01T00:00:00Z",
+  "baseline_commit": "31a3569100bf8049b918b0c17eb8c546c1968b74",
+  "method": "repository file and symbol inspection at baseline HEAD; asset counts are distinct pre-sprint files in Shopping scope and route/method counts are symbols",
+  "counts": {"draft_assets_found": 9, "ai_generation_assets_found": 0, "approval_assets_found": 13, "authorization_assets_found": 16, "audit_assets_found": 14, "idempotency_assets_found": 2, "deployment_intent_assets_found": 0, "revision_assets_found": 0, "snapshot_contract_assets_found": 15, "json_schema_convention_assets_found": 23, "api_convention_assets_found": 9, "persistence_abstraction_assets_found": 18, "state_machine_pattern_assets_found": 0, "existing_shopping_routes": 9, "existing_shopping_mutation_routes": 0, "woocommerce_write_methods": 0},
+  "findings": [
+    {"area": "shopping_drafts", "evidence": ["docs/architecture/SHOP-00-SHOPPING-PLATFORM-REPRIORITIZATION.md", "docs/shopping/API.md"], "finding": "Draft and AI generation were future concepts; no aggregate existed."},
+    {"area": "approval_authorization", "evidence": ["docs/security/shopping-write-approval-gates.md", "core/shopping/governance/capabilities.py"], "finding": "Human approval and deny-by-default write governance exist as boundaries, not a ProductDraft lifecycle."},
+    {"area": "audit", "evidence": ["core/shopping/contracts/schemas/v1/audit-event.schema.json", "core/shopping/ports/audit.py"], "finding": "Versioned audit contracts and a read-oriented port establish audit-reference conventions."},
+    {"area": "idempotency", "evidence": ["docs/security/shopping-write-approval-gates.md", "docs/shopping/API.md"], "finding": "Idempotency was documented as a future write prerequisite; no Shopping implementation exists."},
+    {"area": "schemas", "evidence": ["core/shopping/contracts/schemas/v1/registry.json"], "finding": "Shopping uses JSON Schema Draft 2020-12, semantic schema versions, closed objects and offline resolution."},
+    {"area": "snapshots", "evidence": ["core/shopping/contracts/schemas/v1/product-snapshot.schema.json", "core/shopping/contracts/schemas/v1/snapshot-envelope.schema.json"], "finding": "Canonical product snapshots and immutable envelope metadata provide the source-reference boundary."},
+    {"area": "api", "evidence": ["core/api/routes/shopping.py"], "finding": "Nine Shopping routes exist and all are GET; mutation route count is zero."},
+    {"area": "persistence", "evidence": ["core/shopping/ports/snapshots.py"], "finding": "Snapshot persistence abstractions are read-only for this scope; no ProductDraft persistence exists."},
+    {"area": "deployment_intent", "evidence": ["core/deployment"], "finding": "Deployment contracts demonstrate authorization, audit and deterministic binding patterns; ProductDraft intent remains non-executable."},
+    {"area": "revisions_and_state_machines", "evidence": ["core/autopilot/lifecycle.py", "core/deployment/controlled_activation_architecture/state_machine.py"], "finding": "Closed transition and immutable evidence patterns exist, but no ProductDraft revision state machine is implemented."},
+    {"area": "woocommerce", "evidence": ["core/shopping/adapters/woocommerce_rest.py", "core/shopping/adapters/woocommerce_commerce_read.py"], "finding": "WooCommerce adapter methods are read-only; write method count is zero."}
+  ],
+  "excluded": ["credential values", "hostnames", "operational data"]
+}

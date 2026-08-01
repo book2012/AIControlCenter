@@ -178,3 +178,7 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## SHOP-02A Contract Tests
+
+`tests/test_shop_02a_product_draft_architecture.py` parses and validates every schema and inspects identity, snapshot binding, human-only approval, lifecycle closure, optimistic concurrency, idempotency, UTC timestamps and forbidden runtime/credential boundaries. It performs no network or operational access.

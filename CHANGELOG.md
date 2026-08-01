@@ -1594,3 +1594,9 @@ Production activation occurred.
   category.
 - Added no Shopping mutation route or production write authority.
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## 2026-08-01 — SHOP-02A Product Draft Workflow Architecture
+
+- Added versioned ProductDraft, transition, human decision and deployment-intent JSON contracts, inventory and architecture tests.
+- Closed SHOP-01E read foundation; deferred SHOP-01E3D persistent activation; completed SHOP-02A with SHOP-02B next.
+- Added no runtime, persistence, mutation route, WooCommerce request or production authorization. Catalog observation remains zero products and one category and does not gate draft development.

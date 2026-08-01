@@ -20,6 +20,9 @@ This document defines system-of-record and ownership boundaries.
 | customer_commerce_record | WooCommerce | WooCommerce | read_only_pii_minimized |
 | recommendation | AIControlCenter | AIControlCenter | compute_no_publish |
 | shopping_workflow_state | AIControlCenter | AIControlCenter | internal_only |
+| product_draft_revision | AIControlCenter | AIControlCenter | architecture_only |
+| product_draft_human_decision | AIControlCenter | AIControlCenter | architecture_only |
+| product_draft_deployment_intent | AIControlCenter | AIControlCenter | architecture_only_no_execution |
 | adapter_identity_mapping | AIControlCenter | AIControlCenter | read_model |
 
 ## Ownership Rules
@@ -51,3 +54,5 @@ Ubuntu must not own Shopping business logic, live application state, authorizati
 Customer and order projections must exclude data not required for approved read-only use cases.
 
 The platform must not persist passwords, payment tokens, raw credentials, webhook secrets, unnecessary addresses, unnecessary messages, or unbounded vendor payloads.
+
+ProductDraft revisions are proposals, not commerce product truth. WooCommerce owns the source product. AIControlCenter owns immutable revision governance, validation, human review, authorization/audit references and deployment intent. AI may suggest but never approve. WordPress owns no ProductDraft lifecycle, and Ubuntu owns no ProductDraft logic or state.

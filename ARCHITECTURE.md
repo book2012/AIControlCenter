@@ -1344,3 +1344,7 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## SHOP-02A Product Draft Boundary
+
+AIControlCenter owns immutable ProductDraft revisions, validation, human review, authorization/audit references and non-executable deployment intent. WooCommerce remains commerce product truth; WordPress remains the CMS Engine; Ubuntu owns no workflow state. Approval is human-only and exact-revision-bound. `DEPLOYMENT_READY` is not deployment, and production writes remain `NOT_AUTHORIZED`. See `docs/architecture/SHOP-02A-PRODUCT-DRAFT-WORKFLOW.md`.

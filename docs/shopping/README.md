@@ -339,3 +339,7 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## ProductDraft
+
+SHOP-02A is architecture-complete. Contracts live under `docs/contracts/shopping/`; the authoritative decision is `docs/architecture/SHOP-02A-PRODUCT-DRAFT-WORKFLOW.md`. No runtime, persistence, route or write is implemented. Production writes are `NOT_AUTHORIZED`; SHOP-02B is next.

@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema", "$id": "urn:aicontrolcenter:shopping:approval-decision:v1", "title": "ProductDraftApprovalDecision", "type": "object", "additionalProperties": false,
+  "required": ["schema_version", "decision_id", "draft_id", "revision_id", "reviewer", "decision", "decided_at", "reason", "correlation_id", "audit_reference", "idempotency_key"],
+  "properties": {"schema_version": {"const": "1.0.0"}, "decision_id": {"type": "string", "minLength": 1}, "draft_id": {"type": "string", "minLength": 1}, "revision_id": {"type": "string", "minLength": 1}, "reviewer": {"type": "object", "additionalProperties": false, "required": ["actor_id", "actor_type"], "properties": {"actor_id": {"type": "string", "minLength": 1}, "actor_type": {"const": "HUMAN"}}}, "decision": {"enum": ["APPROVE", "REJECT", "REVOKE"]}, "decided_at": {"type": "string", "format": "date-time", "pattern": "Z$"}, "reason": {"type": "string", "minLength": 1}, "correlation_id": {"type": "string", "minLength": 1}, "audit_reference": {"type": "string", "minLength": 1}, "idempotency_key": {"type": "string", "minLength": 1}}
+}

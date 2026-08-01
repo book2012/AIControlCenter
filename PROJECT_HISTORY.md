@@ -1228,3 +1228,7 @@ of storing secrets in LaunchAgent environment variables. Product
 workflow development can now proceed independently of catalog
 population.
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## 2026-08-01 — SHOP-02A
+
+Closed the SHOP-01E read foundation and completed the ProductDraft architecture without runtime or external writes. SHOP-01E3D persistent activation remains deferred. The design binds human approval to an immutable revision and separates deployment readiness from execution. WooCommerce still reports zero products and one category; draft development is independent. SHOP-02B is next.

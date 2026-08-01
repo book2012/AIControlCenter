@@ -1352,3 +1352,12 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## Product Draft Sequence
+
+- SHOP-01E read foundation — CLOSED.
+- SHOP-01E3D persistent activation — DEFERRED.
+- SHOP-02A Product Draft workflow architecture — COMPLETE.
+- SHOP-02B Product Draft domain implementation — NEXT; remains non-production until separately authorized.
+
+The zero-product, one-category WooCommerce observation does not block this sequence.

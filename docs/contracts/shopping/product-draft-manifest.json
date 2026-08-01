@@ -1,0 +1,15 @@
+{
+  "manifest_version": 1, "schema_version": "1.0.0", "draft": "https://json-schema.org/draft/2020-12/schema", "status": "ARCHITECTURE_ONLY", "network_resolution": false,
+  "contracts": {"ProductDraft": "v1/product-draft.schema.json", "SourceSnapshotReference": "v1/source-snapshot-reference.schema.json", "RevisionIdentity": "v1/revision-identity.schema.json", "SuggestionProvenance": "v1/suggestion-provenance.schema.json", "ValidationResult": "v1/validation-result.schema.json", "Transition": "v1/transition.schema.json", "ApprovalDecision": "v1/approval-decision.schema.json", "DeploymentIntent": "v1/deployment-intent.schema.json"},
+  "lifecycle": {
+    "states": ["DRAFT", "VALIDATED", "REVIEW_REQUIRED", "APPROVED", "REJECTED", "REVOKED", "SUPERSEDED", "DEPLOYMENT_READY"],
+    "permitted_transitions": [
+      ["DRAFT", "VALIDATED"], ["VALIDATED", "DRAFT"], ["VALIDATED", "REVIEW_REQUIRED"], ["REVIEW_REQUIRED", "APPROVED"], ["REVIEW_REQUIRED", "REJECTED"], ["APPROVED", "REVOKED"], ["APPROVED", "SUPERSEDED"], ["APPROVED", "DEPLOYMENT_READY"], ["DRAFT", "SUPERSEDED"], ["VALIDATED", "SUPERSEDED"], ["REVIEW_REQUIRED", "SUPERSEDED"], ["REJECTED", "SUPERSEDED"], ["REVOKED", "SUPERSEDED"], ["DEPLOYMENT_READY", "REVOKED"], ["DEPLOYMENT_READY", "SUPERSEDED"]
+    ],
+    "unspecified_transition_policy": "REJECT"
+  },
+  "concurrency": {"policy": "EXACT_REVISION_MATCH", "required": ["expected_revision_id", "expected_revision_number"], "stale_outcome": "REJECTED_CONFLICT"},
+  "idempotency": {"scope": "draft_id", "binding": "idempotency_key + command_digest", "same_digest_outcome": "IDEMPOTENT_REPLAY", "different_digest_outcome": "REJECTED_IDEMPOTENCY_KEY_REUSE"},
+  "side_effect_policy": "NO_EXTERNAL_CALLS",
+  "future_endpoints": {"status": "NOT_IMPLEMENTED", "authorization": "NOT_AUTHORIZED"}
+}

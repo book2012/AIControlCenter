@@ -1294,3 +1294,7 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## SHOP-02A Status
+
+SHOP-01E read foundation: CLOSED. SHOP-01E3D persistent activation: DEFERRED. SHOP-02A architecture: COMPLETE. Immutable revisions and exact-revision human approval are defined; AI approval is forbidden. Production writes: `NOT_AUTHORIZED`. WooCommerce observation: zero products, one category; ProductDraft work is independent of population. Next: `SHOP-02B_PRODUCT_DRAFT_DOMAIN_IMPLEMENTATION`.

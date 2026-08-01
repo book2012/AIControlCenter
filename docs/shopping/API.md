@@ -333,3 +333,9 @@ The next active task is:
 
 `SHOP-02A_PRODUCT_DRAFT_WORKFLOW_ARCHITECTURE`
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## Future ProductDraft Mutation API
+
+Status: `NOT_IMPLEMENTED`. Authorization: `NOT_AUTHORIZED`.
+
+Future create-revision, validate, review, decide, revoke and deployment-intent endpoints will consume the versioned transition contracts, require expected revision, actor, correlation, audit and idempotency references, and reject every unspecified lifecycle transition. SHOP-02A adds zero routes and makes zero WooCommerce requests.

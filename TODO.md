@@ -880,3 +880,11 @@ The deployment task may only set the non-secret Shopping profile in
 the Mac Control Plane process. It must not place WooCommerce
 credentials in a plist or shell command.
 <!-- SHOP-01E3C-SECURE-RUNTIME:END -->
+
+## SHOP-02
+
+- [x] SHOP-02A immutable ProductDraft workflow architecture and static contracts.
+- [ ] SHOP-02B domain implementation with no assumed production write authority.
+- [ ] SHOP-01E3D persistent activation remains separately deferred.
+
+Production writes are `NOT_AUTHORIZED`; catalog population is independent.
