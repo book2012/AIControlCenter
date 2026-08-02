@@ -890,3 +890,10 @@ credentials in a plist or shell command.
 - [ ] SHOP-01E3D persistent activation remains separately deferred.
 
 Production writes are `NOT_AUTHORIZED`; catalog population is independent.
+# SHOP-02D closeout
+
+- [x] Add the three GET-only ProductDraft routes.
+- [x] Add deterministic collection, exact revision, review queue, and Dashboard projections.
+- [x] Preserve ProductDraft contracts at 1.0.0 and distinguish empty from unavailable sources.
+- [x] Keep WooCommerce writes, mutation routes, persistence, and production activation absent.
+- [ ] Design SHOP-03 controlled WooCommerce write architecture; production writes remain `NOT_AUTHORIZED`.

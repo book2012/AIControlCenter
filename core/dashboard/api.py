@@ -9,6 +9,7 @@ from core.control_plane.status import ControlPlaneStatus
 from core.dashboard.shopping_management import (
     unavailable_shopping_management_dashboard_payload,
 )
+from core.shopping.product_drafts.read import unavailable_dashboard_projection
 from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.snapshot import DatacenterSnapshotService
 from core.datacenter.storage_registry import StorageRegistry
@@ -20,6 +21,7 @@ ShoppingManagementProjection = Callable[
     [],
     Mapping[str, Any],
 ]
+ProductDraftProjection = Callable[[], Mapping[str, Any]]
 
 
 class DashboardAPI:
@@ -34,6 +36,7 @@ class DashboardAPI:
         shopping_management: (
             ShoppingManagementProjection | None
         ) = None,
+        product_drafts: ProductDraftProjection | None = None,
     ):
         self.snapshot = snapshot or MonitoringSnapshot()
         self.brain = brain or BrainStatus()
@@ -44,6 +47,7 @@ class DashboardAPI:
             control_plane or ControlPlaneStatus()
         )
         self.shopping_management = shopping_management
+        self.product_drafts = product_drafts
 
     def _datacenter_status(self) -> dict:
         if self.datacenter is not None:
@@ -107,5 +111,14 @@ class DashboardAPI:
             result["shopping_management"] = (
                 shopping_management
             )
+
+        if self.product_drafts is not None:
+            try:
+                projection = self.product_drafts()
+                if not isinstance(projection, Mapping):
+                    raise TypeError("ProductDraft projection must return a mapping")
+                result["product_draft_review"] = deepcopy(dict(projection))
+            except Exception:
+                result["product_draft_review"] = unavailable_dashboard_projection()
 
         return result

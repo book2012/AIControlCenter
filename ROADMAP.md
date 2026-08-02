@@ -1363,3 +1363,6 @@ The next active task is:
 - SHOP-02D Product Draft read API and Dashboard projection — NEXT; production writes remain `NOT_AUTHORIZED`.
 
 The zero-product, one-category WooCommerce observation does not block this sequence.
+# Shopping sequence update
+
+SHOP-02D is complete: GET-only ProductDraft reads and the `product_draft_review` Dashboard projection use a replaceable read source with explicit empty-versus-unavailable semantics. No mutation route, WooCommerce write, or persistent ProductDraft store exists. Production writes remain `NOT_AUTHORIZED`. Next: SHOP-03 controlled WooCommerce write architecture.

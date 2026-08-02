@@ -1213,3 +1213,6 @@ SHOP-02B implements the immutable ProductDraft 1.0.0 value objects, revision agg
 ## SHOP-02C Product Draft Application Services
 
 SHOP-02C adds deterministic contract validation and authorized, exact-revision human review application services. Authorization is deny-by-default; APPROVE, REJECT, and REVOKE are HUMAN-only. Audit and idempotency adapters are isolated in-memory test infrastructure. ProductDraft contracts remain 1.0.0. No API mutation route, persistent storage, or WooCommerce write was added, and production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02D_PRODUCT_DRAFT_READ_API_DASHBOARD`.
+# SHOP-02D ProductDraft reads
+
+AIControlCenter exposes GET-only ProductDraft reads at `/shopping/product-drafts`, `/shopping/product-drafts/{draft_id}`, and `/shopping/product-drafts/{draft_id}/revisions/{revision_id}`. The Dashboard key is `product_draft_review`. Its replaceable source is unavailable by default; an explicitly configured empty source is valid and distinct from `UNAVAILABLE`. Contracts remain 1.0.0. No mutation routes, WooCommerce writes, or persistent ProductDraft storage were added. Production writes remain `NOT_AUTHORIZED`; SHOP-03 controlled WooCommerce write architecture is next.

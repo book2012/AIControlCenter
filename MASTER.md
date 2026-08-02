@@ -1306,3 +1306,6 @@ SHOP-01E read foundation: CLOSED. SHOP-01E3D persistent activation: DEFERRED. SH
 ## SHOP-02C Status
 
 `SHOP-02C_PRODUCT_DRAFT_VALIDATION_APPROVAL_SERVICE`: COMPLETE. Deterministic validation, deny-by-default authorization, exact-revision HUMAN-only approval/rejection/revocation, request-review orchestration, immutable audit events, instance-local idempotency, and read-only projections are implemented. Contracts remain 1.0.0; audit and idempotency adapters are in-memory and non-production. No API mutation route, persistent storage, or WooCommerce write exists. Production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02D_PRODUCT_DRAFT_READ_API_DASHBOARD`.
+# SHOP-02D status
+
+SHOP-02D ProductDraft GET-only API and Dashboard projection are complete. Routes: `/shopping/product-drafts`, `/shopping/product-drafts/{draft_id}`, and `/shopping/product-drafts/{draft_id}/revisions/{revision_id}`. Dashboard key: `product_draft_review`. Default source behavior is `UNAVAILABLE`; configured empty snapshots remain available. ProductDraft contract 1.0.0 is unchanged, and SHOP-03 controlled WooCommerce write architecture is next.

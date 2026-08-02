@@ -1,4 +1,6 @@
-from fastapi import APIRouter, HTTPException, Query, status
+from typing import Annotated
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from core.shopping.schemas import (
     ProductSearchResponse,
@@ -15,6 +17,12 @@ from core.shopping.service import (
     ProductNotFoundError,
     ShoppingService,
 )
+from core.shopping.product_drafts.read import (
+    ProductDraftQueryService,
+    ProductDraftReadUnavailable,
+    ProductDraftRevisionNotFound,
+    UnavailableProductDraftReadSource,
+)
 
 
 router = APIRouter(
@@ -23,6 +31,54 @@ router = APIRouter(
 )
 
 shopping = ShoppingService()
+
+
+def get_product_draft_query_service() -> ProductDraftQueryService:
+    """Safe default: unavailable until a production read source is configured."""
+    return ProductDraftQueryService(UnavailableProductDraftReadSource())
+
+
+ProductDraftQuery = Annotated[ProductDraftQueryService, Depends(get_product_draft_query_service)]
+
+
+def _product_draft_error(error: Exception) -> HTTPException:
+    if isinstance(error, ProductDraftReadUnavailable):
+        return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                             detail={"code": "product_draft_read_unavailable", "retryable": True})
+    return HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                         detail={"code": "product_draft_revision_not_found"})
+
+
+@router.get("/product-drafts")
+def product_draft_collection(
+    service: ProductDraftQuery,
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    lifecycle_state: str | None = Query(default=None),
+):
+    try:
+        return service.list_revisions(page=page, page_size=page_size, lifecycle_state=lifecycle_state)
+    except ProductDraftReadUnavailable as error:
+        raise _product_draft_error(error) from error
+    except ValueError as error:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                            detail={"code": "product_draft_invalid_query"}) from error
+
+
+@router.get("/product-drafts/{draft_id}")
+def product_draft_current(draft_id: str, service: ProductDraftQuery):
+    try:
+        return service.current_revision(draft_id)
+    except (ProductDraftReadUnavailable, ProductDraftRevisionNotFound) as error:
+        raise _product_draft_error(error) from error
+
+
+@router.get("/product-drafts/{draft_id}/revisions/{revision_id}")
+def product_draft_revision(draft_id: str, revision_id: str, service: ProductDraftQuery):
+    try:
+        return service.exact_revision(draft_id, revision_id)
+    except (ProductDraftReadUnavailable, ProductDraftRevisionNotFound) as error:
+        raise _product_draft_error(error) from error
 
 
 @router.get(

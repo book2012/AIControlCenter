@@ -26,9 +26,14 @@ from core.shopping.secure_runtime import (
     build_default_shopping_service,
 )
 from core.shopping.service import ShoppingService
+from core.shopping.product_drafts.read import ProductDraftQueryService, UnavailableProductDraftReadSource
 
 
 router = APIRouter()
+
+
+def build_default_product_draft_dashboard_payload() -> dict[str, Any]:
+    return ProductDraftQueryService(UnavailableProductDraftReadSource()).dashboard_projection()
 
 
 def build_default_shopping_management_dashboard_payload(
@@ -58,6 +63,7 @@ def dashboard(
         shopping_management=(
             build_default_shopping_management_dashboard_payload
         ),
+        product_drafts=build_default_product_draft_dashboard_payload,
     ).status(["ubuntu-main"])
 
     payload["model_governance_audit"] = (

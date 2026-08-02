@@ -1356,3 +1356,6 @@ The ProductDraft 1.0.0 domain is implemented under `core/shopping/product_drafts
 ## SHOP-02C Product Draft Application Boundary
 
 Application services under `core/shopping/product_drafts/application/` validate canonical immutable revisions and orchestrate REQUEST_REVIEW, APPROVE, REJECT, and REVOKE through the existing lifecycle evaluator. Authorization is replaceable and deny-by-default; accepted decisions require exact resource binding and HUMAN reviewers for decision operations. Deterministic audit references and command idempotency are instance-local and in-memory only. ProductDraft contracts remain 1.0.0. There are no mutation routes, Commerce writes, persistent stores, or production activation; production writes remain `NOT_AUTHORIZED`. SHOP-02D adds the read API and Dashboard projection next.
+# SHOP-02D read boundary
+
+ProductDraft query ownership remains in AIControlCenter. A replaceable `ProductDraftReadSource` supplies immutable snapshots to deterministic JSON-safe queries and the `product_draft_review` Dashboard projection. The default runtime source is safely unavailable, while an empty configured source is available with zero results. WooCommerce remains published product truth; this boundary has no writes or persistence and ProductDraft contracts remain 1.0.0.

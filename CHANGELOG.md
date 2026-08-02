@@ -1613,3 +1613,9 @@ Production activation occurred.
 - Added a replaceable repository port and isolated non-production in-memory adapter with revision lineage enforcement.
 - Added no mutation API, persistent storage, WooCommerce write, or production activation; writes remain `NOT_AUTHORIZED`. SHOP-02C validation and human approval service is next.
 - Added no runtime, persistence, mutation route, WooCommerce request or production authorization. Catalog observation remains zero products and one category and does not gate draft development.
+# SHOP-02D
+
+- Added GET-only ProductDraft collection, current-revision, and exact-revision resources under `/shopping/product-drafts`.
+- Added the failure-isolated, read-only `product_draft_review` Dashboard projection.
+- Added a replaceable immutable read-source port and isolated non-production snapshot adapter; default runtime is `UNAVAILABLE`, distinct from an available empty source.
+- Added no mutation routes, WooCommerce writes, persistent storage, or production activation. ProductDraft contracts remain 1.0.0 and production writes remain `NOT_AUTHORIZED`.

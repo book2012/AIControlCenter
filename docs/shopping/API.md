@@ -339,3 +339,10 @@ The next active task is:
 Status: `NOT_IMPLEMENTED`. Authorization: `NOT_AUTHORIZED`.
 
 Future create-revision, validate, review, decide, revoke and deployment-intent endpoints will consume the versioned transition contracts, require expected revision, actor, correlation, audit and idempotency references, and reject every unspecified lifecycle transition. SHOP-02A adds zero routes and makes zero WooCommerce requests.
+# ProductDraft GET resources (SHOP-02D)
+
+- `GET /shopping/product-drafts` lists deterministic, paginated revision projections and optionally filters by lifecycle state.
+- `GET /shopping/product-drafts/{draft_id}` returns the current exact revision.
+- `GET /shopping/product-drafts/{draft_id}/revisions/{revision_id}` returns an exact historical revision.
+
+No ProductDraft POST, PUT, PATCH, or DELETE resource exists. An unavailable default read source returns the established safe unavailable error; an available empty source returns an empty collection. The Dashboard exposes `product_draft_review`. Contracts remain 1.0.0, no WooCommerce writes or ProductDraft persistence exist, and production writes remain `NOT_AUTHORIZED`.
