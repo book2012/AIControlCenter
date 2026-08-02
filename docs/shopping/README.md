@@ -343,3 +343,5 @@ The next active task is:
 ## ProductDraft
 
 SHOP-02A is architecture-complete. Contracts live under `docs/contracts/shopping/`; the authoritative decision is `docs/architecture/SHOP-02A-PRODUCT-DRAFT-WORKFLOW.md`. No runtime, persistence, route or write is implemented. Production writes are `NOT_AUTHORIZED`; SHOP-02B is next.
+
+SHOP-02B is domain-complete against contract 1.0.0. Immutable revisions, deterministic serialization and lifecycle outcomes, exact-revision concurrency, idempotency, and a repository port now exist. The included in-memory adapter is isolated and non-production. No mutation route, durable storage, WooCommerce write, or production authorization exists. SHOP-02C validation and human approval application service is next.

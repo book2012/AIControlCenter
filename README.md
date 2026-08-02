@@ -1205,3 +1205,7 @@ The next active task is:
 ## SHOP-02A Product Draft Workflow
 
 SHOP-01E read foundation is closed; SHOP-01E3D persistent activation remains deferred. SHOP-02A defines immutable, revision-bound ProductDraft contracts and human-only approval architecture. WooCommerce remains product truth. Production writes are `NOT_AUTHORIZED`; the observed catalog baseline remains zero products and one category, independent of draft work. Next: `SHOP-02B_PRODUCT_DRAFT_DOMAIN_IMPLEMENTATION`.
+
+## SHOP-02B Product Draft Domain
+
+SHOP-02B implements the immutable ProductDraft 1.0.0 value objects, revision aggregate, closed lifecycle evaluator, deterministic serialization, repository port, and isolated in-memory adapter. The adapter is non-production: no persistent storage, API mutation route, WooCommerce write, or deployment authorization was added. Production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02C_PRODUCT_DRAFT_VALIDATION_APPROVAL_SERVICE`.

@@ -1298,3 +1298,7 @@ The next active task is:
 ## SHOP-02A Status
 
 SHOP-01E read foundation: CLOSED. SHOP-01E3D persistent activation: DEFERRED. SHOP-02A architecture: COMPLETE. Immutable revisions and exact-revision human approval are defined; AI approval is forbidden. Production writes: `NOT_AUTHORIZED`. WooCommerce observation: zero products, one category; ProductDraft work is independent of population. Next: `SHOP-02B_PRODUCT_DRAFT_DOMAIN_IMPLEMENTATION`.
+
+## SHOP-02B Status
+
+`SHOP-02B_PRODUCT_DRAFT_DOMAIN_IMPLEMENTATION`: COMPLETE. ProductDraft contract version remains 1.0.0. Immutable revisions, lifecycle evaluation, optimistic concurrency, deterministic idempotency, and the repository port are implemented. The in-memory adapter is non-production; there is no persistent store, mutation route, or WooCommerce write. Production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02C_PRODUCT_DRAFT_VALIDATION_APPROVAL_SERVICE`.

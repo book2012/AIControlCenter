@@ -1348,3 +1348,7 @@ The next active task is:
 ## SHOP-02A Product Draft Boundary
 
 AIControlCenter owns immutable ProductDraft revisions, validation, human review, authorization/audit references and non-executable deployment intent. WooCommerce remains commerce product truth; WordPress remains the CMS Engine; Ubuntu owns no workflow state. Approval is human-only and exact-revision-bound. `DEPLOYMENT_READY` is not deployment, and production writes remain `NOT_AUTHORIZED`. See `docs/architecture/SHOP-02A-PRODUCT-DRAFT-WORKFLOW.md`.
+
+## SHOP-02B Product Draft Domain
+
+The ProductDraft 1.0.0 domain is implemented under `core/shopping/product_drafts/` as immutable values and revisions with a pure, closed lifecycle evaluator. Exact revision concurrency and SHA-256 canonical-JSON idempotency are mediated through a replaceable repository port. Its only adapter is isolated in memory and is explicitly non-production. There is no mutation API, durable store, WooCommerce write, or production activation. SHOP-02C adds validation and human-approval application services next; production writes remain `NOT_AUTHORIZED`.

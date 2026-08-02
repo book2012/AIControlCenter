@@ -884,7 +884,8 @@ credentials in a plist or shell command.
 ## SHOP-02
 
 - [x] SHOP-02A immutable ProductDraft workflow architecture and static contracts.
-- [ ] SHOP-02B domain implementation with no assumed production write authority.
+- [x] SHOP-02B immutable ProductDraft 1.0.0 domain and isolated in-memory repository adapter; no API route, persistence, or WooCommerce write.
+- [ ] SHOP-02C deterministic validation and human approval application service.
 - [ ] SHOP-01E3D persistent activation remains separately deferred.
 
 Production writes are `NOT_AUTHORIZED`; catalog population is independent.

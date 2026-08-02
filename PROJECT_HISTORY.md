@@ -1232,3 +1232,7 @@ population.
 ## 2026-08-01 — SHOP-02A
 
 Closed the SHOP-01E read foundation and completed the ProductDraft architecture without runtime or external writes. SHOP-01E3D persistent activation remains deferred. The design binds human approval to an immutable revision and separates deployment readiness from execution. WooCommerce still reports zero products and one category; draft development is independent. SHOP-02B is next.
+
+## 2026-08-02 — SHOP-02B
+
+Completed the ProductDraft 1.0.0 immutable domain, pure lifecycle evaluator, exact-revision concurrency, canonical-JSON SHA-256 idempotency, repository port, and isolated in-memory adapter. No API mutation route, persistent storage, WooCommerce write, or activation was added. Production writes remain `NOT_AUTHORIZED`; SHOP-02C validation and human approval application service is next.

@@ -1599,4 +1599,10 @@ Production activation occurred.
 
 - Added versioned ProductDraft, transition, human decision and deployment-intent JSON contracts, inventory and architecture tests.
 - Closed SHOP-01E read foundation; deferred SHOP-01E3D persistent activation; completed SHOP-02A with SHOP-02B next.
+
+## 2026-08-02 — SHOP-02B Product Draft Domain
+
+- Implemented the immutable ProductDraft 1.0.0 domain, deterministic lifecycle evaluation and serialization, exact-revision concurrency, and canonical-JSON SHA-256 idempotency.
+- Added a replaceable repository port and isolated non-production in-memory adapter with revision lineage enforcement.
+- Added no mutation API, persistent storage, WooCommerce write, or production activation; writes remain `NOT_AUTHORIZED`. SHOP-02C validation and human approval service is next.
 - Added no runtime, persistence, mutation route, WooCommerce request or production authorization. Catalog observation remains zero products and one category and does not gate draft development.

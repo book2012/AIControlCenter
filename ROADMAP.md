@@ -1358,6 +1358,7 @@ The next active task is:
 - SHOP-01E read foundation — CLOSED.
 - SHOP-01E3D persistent activation — DEFERRED.
 - SHOP-02A Product Draft workflow architecture — COMPLETE.
-- SHOP-02B Product Draft domain implementation — NEXT; remains non-production until separately authorized.
+- SHOP-02B Product Draft domain implementation — COMPLETE; contract 1.0.0 with a non-production in-memory adapter and no external writes.
+- SHOP-02C Product Draft validation and human approval application service — NEXT; production writes remain `NOT_AUTHORIZED`.
 
 The zero-product, one-category WooCommerce observation does not block this sequence.
