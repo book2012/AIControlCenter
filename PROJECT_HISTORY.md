@@ -1243,3 +1243,7 @@ Completed deterministic ProductDraft validation and revision-bound human review 
 # SHOP-02D ProductDraft read delivery
 
 Completed the AIControlCenter-owned ProductDraft read/query layer, three GET-only Shopping resources, and failure-isolated `product_draft_review` Dashboard JSON. The production default is explicitly unavailable and does not pretend an in-memory snapshot is durable; an injected empty source returns an available empty result. ProductDraft contracts remain 1.0.0. No mutation API, WooCommerce write, persistent storage, or production activation was introduced. SHOP-03 controlled WooCommerce write architecture follows.
+
+## 2026-08-03 — SHOP-03A
+
+Completed the controlled Commerce write architecture for exact approved immutable ProductDraft revisions. Eligibility, freshness, authorization, controlled-plan hashing, successful-plan idempotency, fake/dry-run port execution, and JSON-safe preview are deterministic and caller-clocked. ProductDraft contracts remain 1.0.0. There is no API mutation route, persistent queue, real WooCommerce adapter, live write, or production authorization; SHOP-03B is separately gated.

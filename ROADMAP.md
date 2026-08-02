@@ -1366,3 +1366,5 @@ The zero-product, one-category WooCommerce observation does not block this seque
 # Shopping sequence update
 
 SHOP-02D is complete: GET-only ProductDraft reads and the `product_draft_review` Dashboard projection use a replaceable read source with explicit empty-versus-unavailable semantics. No mutation route, WooCommerce write, or persistent ProductDraft store exists. Production writes remain `NOT_AUTHORIZED`. Next: SHOP-03 controlled WooCommerce write architecture.
+
+SHOP-03A is complete: immutable approved-revision eligibility, exact authorization, controlled-plan idempotency, deterministic preview, and an isolated fake/dry-run adapter are implemented. ProductDraft contracts remain 1.0.0; real WooCommerce writes are `NOT_IMPLEMENTED`, production writes are `NOT_AUTHORIZED`, and SHOP-03B requires separate authorization.

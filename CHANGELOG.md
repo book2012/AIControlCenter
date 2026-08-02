@@ -1619,3 +1619,8 @@ Production activation occurred.
 - Added the failure-isolated, read-only `product_draft_review` Dashboard projection.
 - Added a replaceable immutable read-source port and isolated non-production snapshot adapter; default runtime is `UNAVAILABLE`, distinct from an available empty source.
 - Added no mutation routes, WooCommerce writes, persistent storage, or production activation. ProductDraft contracts remain 1.0.0 and production writes remain `NOT_AUTHORIZED`.
+## 2026-08-03 — SHOP-03A Controlled Commerce Write Architecture
+
+- Added deterministic exact-revision eligibility, explicit source freshness, deny-by-default authorization, immutable controlled plans, and successful-plan idempotency.
+- Added only an isolated fake/dry-run Commerce write port adapter and detached JSON-safe preview; real WooCommerce writes remain `NOT_IMPLEMENTED` and `NOT_AUTHORIZED`.
+- Kept ProductDraft contracts at 1.0.0 and added no mutation API, persistent write queue, network client, credentials, or Ubuntu dependency. SHOP-03B requires separate architecture and authorization.

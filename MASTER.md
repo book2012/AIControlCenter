@@ -1309,3 +1309,7 @@ SHOP-01E read foundation: CLOSED. SHOP-01E3D persistent activation: DEFERRED. SH
 # SHOP-02D status
 
 SHOP-02D ProductDraft GET-only API and Dashboard projection are complete. Routes: `/shopping/product-drafts`, `/shopping/product-drafts/{draft_id}`, and `/shopping/product-drafts/{draft_id}/revisions/{revision_id}`. Dashboard key: `product_draft_review`. Default source behavior is `UNAVAILABLE`; configured empty snapshots remain available. ProductDraft contract 1.0.0 is unchanged, and SHOP-03 controlled WooCommerce write architecture is next.
+
+## SHOP-03A Status
+
+`SHOP-03A_CONTROLLED_WOOCOMMERCE_WRITE_ARCHITECTURE`: COMPLETE. Exact immutable approved revisions can produce deterministic controlled fake/dry-run plans only after source freshness and digest checks plus exact deny-by-default authorization. ProductDraft contracts remain 1.0.0. No mutation API, persistent queue, real WooCommerce adapter, or production write authorization exists. SHOP-03B requires a separate explicit gate.

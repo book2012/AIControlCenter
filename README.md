@@ -219,6 +219,10 @@ Shopping documentation:
 - docs/shopping/RUNBOOK.md
 <!-- AI_SHOPPING_PLATFORM_END -->
 
+## SHOP-03A controlled Commerce write boundary
+
+SHOP-03A is complete with immutable eligibility, exact deny-by-default authorization, successful-plan idempotency, deterministic preview, and only an isolated fake/dry-run Commerce write adapter. A real WooCommerce write adapter is `NOT_IMPLEMENTED`; there is no mutation route or persistent queue. ProductDraft contracts remain 1.0.0 and production writes remain `NOT_AUTHORIZED`. SHOP-03B requires separate explicit architecture and authorization.
+
 <!-- SHOPPING_M4_START -->
 
 ## AI Shopping Platform — M4

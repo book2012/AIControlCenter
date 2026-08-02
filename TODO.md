@@ -897,3 +897,8 @@ Production writes are `NOT_AUTHORIZED`; catalog population is independent.
 - [x] Preserve ProductDraft contracts at 1.0.0 and distinguish empty from unavailable sources.
 - [x] Keep WooCommerce writes, mutation routes, persistence, and production activation absent.
 - [ ] Design SHOP-03 controlled WooCommerce write architecture; production writes remain `NOT_AUTHORIZED`.
+
+## SHOP-03
+
+- [x] SHOP-03A controlled Commerce write architecture with exact eligibility, deny-by-default authorization, instance-local idempotency, deterministic preview, and fake/dry-run adapter only.
+- [ ] SHOP-03B separately authorized controlled write; real adapter remains `NOT_IMPLEMENTED` and production writes remain `NOT_AUTHORIZED`.

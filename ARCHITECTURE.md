@@ -1359,3 +1359,7 @@ Application services under `core/shopping/product_drafts/application/` validate 
 # SHOP-02D read boundary
 
 ProductDraft query ownership remains in AIControlCenter. A replaceable `ProductDraftReadSource` supplies immutable snapshots to deterministic JSON-safe queries and the `product_draft_review` Dashboard projection. The default runtime source is safely unavailable, while an empty configured source is available with zero results. WooCommerce remains published product truth; this boundary has no writes or persistence and ProductDraft contracts remain 1.0.0.
+
+## SHOP-03A controlled Commerce write architecture
+
+Approved immutable ProductDraft revisions can now be evaluated into an immutable controlled write plan through explicit freshness, exact source/revision/intent binding, deny-by-default authorization, and instance-local idempotency. Only a deterministic fake/dry-run adapter exists. No API mutation route, persistent queue, network dependency, or real Commerce mutation exists. ProductDraft contracts remain 1.0.0; production writes are `NOT_AUTHORIZED`, and SHOP-03B is separately gated. See `docs/architecture/SHOP-03A-CONTROLLED-WOOCOMMERCE-WRITE.md`.
