@@ -1302,3 +1302,7 @@ SHOP-01E read foundation: CLOSED. SHOP-01E3D persistent activation: DEFERRED. SH
 ## SHOP-02B Status
 
 `SHOP-02B_PRODUCT_DRAFT_DOMAIN_IMPLEMENTATION`: COMPLETE. ProductDraft contract version remains 1.0.0. Immutable revisions, lifecycle evaluation, optimistic concurrency, deterministic idempotency, and the repository port are implemented. The in-memory adapter is non-production; there is no persistent store, mutation route, or WooCommerce write. Production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02C_PRODUCT_DRAFT_VALIDATION_APPROVAL_SERVICE`.
+
+## SHOP-02C Status
+
+`SHOP-02C_PRODUCT_DRAFT_VALIDATION_APPROVAL_SERVICE`: COMPLETE. Deterministic validation, deny-by-default authorization, exact-revision HUMAN-only approval/rejection/revocation, request-review orchestration, immutable audit events, instance-local idempotency, and read-only projections are implemented. Contracts remain 1.0.0; audit and idempotency adapters are in-memory and non-production. No API mutation route, persistent storage, or WooCommerce write exists. Production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02D_PRODUCT_DRAFT_READ_API_DASHBOARD`.

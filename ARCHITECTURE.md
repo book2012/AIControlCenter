@@ -1352,3 +1352,7 @@ AIControlCenter owns immutable ProductDraft revisions, validation, human review,
 ## SHOP-02B Product Draft Domain
 
 The ProductDraft 1.0.0 domain is implemented under `core/shopping/product_drafts/` as immutable values and revisions with a pure, closed lifecycle evaluator. Exact revision concurrency and SHA-256 canonical-JSON idempotency are mediated through a replaceable repository port. Its only adapter is isolated in memory and is explicitly non-production. There is no mutation API, durable store, WooCommerce write, or production activation. SHOP-02C adds validation and human-approval application services next; production writes remain `NOT_AUTHORIZED`.
+
+## SHOP-02C Product Draft Application Boundary
+
+Application services under `core/shopping/product_drafts/application/` validate canonical immutable revisions and orchestrate REQUEST_REVIEW, APPROVE, REJECT, and REVOKE through the existing lifecycle evaluator. Authorization is replaceable and deny-by-default; accepted decisions require exact resource binding and HUMAN reviewers for decision operations. Deterministic audit references and command idempotency are instance-local and in-memory only. ProductDraft contracts remain 1.0.0. There are no mutation routes, Commerce writes, persistent stores, or production activation; production writes remain `NOT_AUTHORIZED`. SHOP-02D adds the read API and Dashboard projection next.

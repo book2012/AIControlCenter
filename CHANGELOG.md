@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-08-02 — SHOP-02C
+
+- Added deterministic ProductDraft validation with canonical input/result digests and replaceable contract rules.
+- Added deny-by-default authorization, HUMAN-only exact-revision review orchestration, deterministic audit events, application idempotency, and read-only projections.
+- Kept ProductDraft contracts at 1.0.0 and adapters in-memory/non-production; no API mutation route, persistent storage, WooCommerce write, or production activation was added.
+- Production writes remain `NOT_AUTHORIZED`; SHOP-02D read API and Dashboard projection is next.
+
 ## 2026-07-31 — M4-A3
 
 - Added immutable test-only authorization simulation contracts and deterministic

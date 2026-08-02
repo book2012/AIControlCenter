@@ -1209,3 +1209,7 @@ SHOP-01E read foundation is closed; SHOP-01E3D persistent activation remains def
 ## SHOP-02B Product Draft Domain
 
 SHOP-02B implements the immutable ProductDraft 1.0.0 value objects, revision aggregate, closed lifecycle evaluator, deterministic serialization, repository port, and isolated in-memory adapter. The adapter is non-production: no persistent storage, API mutation route, WooCommerce write, or deployment authorization was added. Production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02C_PRODUCT_DRAFT_VALIDATION_APPROVAL_SERVICE`.
+
+## SHOP-02C Product Draft Application Services
+
+SHOP-02C adds deterministic contract validation and authorized, exact-revision human review application services. Authorization is deny-by-default; APPROVE, REJECT, and REVOKE are HUMAN-only. Audit and idempotency adapters are isolated in-memory test infrastructure. ProductDraft contracts remain 1.0.0. No API mutation route, persistent storage, or WooCommerce write was added, and production writes remain `NOT_AUTHORIZED`. Next: `SHOP-02D_PRODUCT_DRAFT_READ_API_DASHBOARD`.

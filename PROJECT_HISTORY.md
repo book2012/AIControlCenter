@@ -1236,3 +1236,7 @@ Closed the SHOP-01E read foundation and completed the ProductDraft architecture 
 ## 2026-08-02 — SHOP-02B
 
 Completed the ProductDraft 1.0.0 immutable domain, pure lifecycle evaluator, exact-revision concurrency, canonical-JSON SHA-256 idempotency, repository port, and isolated in-memory adapter. No API mutation route, persistent storage, WooCommerce write, or activation was added. Production writes remain `NOT_AUTHORIZED`; SHOP-02C validation and human approval application service is next.
+
+## 2026-08-02 — SHOP-02C
+
+Completed deterministic ProductDraft validation and revision-bound human review application services. Authorization is deny-by-default, accepted APPROVE/REJECT/REVOKE decisions are HUMAN-only and exact-revision-bound, and audit/idempotency adapters remain in-memory and non-production. ProductDraft contracts remain 1.0.0. No API mutation routes, WooCommerce writes, persistent storage, or activation were added. Production writes remain `NOT_AUTHORIZED`; SHOP-02D read API and Dashboard projection is next.
