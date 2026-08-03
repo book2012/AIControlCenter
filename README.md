@@ -1225,3 +1225,10 @@ AIControlCenter exposes GET-only ProductDraft reads at `/shopping/product-drafts
 SHOP-03B is user-attested as authorized at `2026-08-03T08:54:00+09:00` for architecture, implementation, and intercepted validation. SHOP-03B1 adds a synchronous, injected WooCommerce write boundary under ProductDraft deployment. Credentials are obtained only at call time and passed separately from immutable request metadata; the default credential provider and transport fail closed. There is no concrete network transport, no mutation route, and every result remains `INTERCEPTED_VALIDATION` with `live_write_performed: false`.
 
 No exact product, ProductDraft revision, deployment intent, or execution timestamp is authorized. External requests: 0. Live writes: 0. Production activation: `NOT_AUTHORIZED`. ProductDraft and deployment-intent contracts remain version 1.0.0. SHOP-03B2 is the next one-product controlled pilot.
+## UI-01 internal Shopping Homepage
+
+The internal read-only Shopping operations Homepage is available at `GET
+/homepage`. It consumes only same-origin `GET /dashboard`, including the exact
+`shopping_management` and `product_draft_review` projections. It adds no
+frontend framework, public Caddy exposure, authentication change, mutation API,
+or live Commerce write. See `docs/homepage/UI-01-shopping-dashboard.md`.

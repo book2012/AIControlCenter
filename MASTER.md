@@ -1316,3 +1316,11 @@ SHOP-02D ProductDraft GET-only API and Dashboard projection are complete. Routes
 # SHOP-03B status
 
 SHOP-03B program authorization is user-attested at `2026-08-03T08:54:00+09:00`. SHOP-03B1 is complete as an intercepted-only adapter contract and credential boundary. Exact product/revision execution authorization remains unbound, no real transport exists, and production activation remains `NOT_AUTHORIZED`. Next: `SHOP-03B2_ONE_PRODUCT_CONTROLLED_PILOT`.
+## UI-01 — Homepage Shopping Dashboard
+
+Complete: the internal read-only browser route is `GET /homepage`, consuming
+exactly `GET /dashboard` (`shopping_management` and `product_draft_review`). No
+frontend framework, public Caddy exposure, authentication change, mutation API,
+or live Commerce write was added. ProductDraft and deployment contracts remain
+unchanged. Public opening awaits OPS-01; next is UI-02 Product Management
+Console.

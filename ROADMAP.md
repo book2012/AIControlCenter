@@ -1372,3 +1372,10 @@ SHOP-03A is complete: immutable approved-revision eligibility, exact authorizati
 
 - SHOP-03B1: controlled live adapter contract and credential boundary — complete in intercepted validation mode; external requests 0, live writes 0.
 - SHOP-03B2: one-product controlled pilot — next, contingent on separate exact product, revision, intent, and execution-time authorization.
+## Shopping operator UI
+
+- **UI-01 complete:** internal read-only `GET /homepage`, backed only by
+  same-origin `GET /dashboard`.
+- **UI-02 next:** Product Management Console.
+- **OPS-01 pending:** public opening; UI-01 adds neither Caddy exposure nor an
+  authentication change.

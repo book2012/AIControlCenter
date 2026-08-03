@@ -906,3 +906,12 @@ Production writes are `NOT_AUTHORIZED`; catalog population is independent.
 
 - [x] SHOP-03B1 intercepted WooCommerce adapter, credential boundary, fail-closed transport, normalization, and reconciliation.
 - [ ] SHOP-03B2 bind one exact product/revision/deployment intent and execution timestamp through a separate authorization gate before any production request.
+## Shopping operator UI
+
+- [x] UI-01 internal read-only Homepage at `GET /homepage`.
+- [ ] UI-02 Product Management Console.
+- [ ] OPS-01 separately authorized public opening.
+
+UI-01 uses only `GET /dashboard`; it adds no framework, mutation API, live
+Commerce write, authentication change, or ProductDraft/deployment contract
+change.

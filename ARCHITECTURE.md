@@ -1368,3 +1368,11 @@ Approved immutable ProductDraft revisions can now be evaluated into an immutable
 The ProductDraft deployment package owns the controlled WooCommerce write port without coupling to the existing read adapter. An immutable SHOP-03A plan carries its digest-bound proposed fields into an explicit WooCommerce allowlist. Credentials arrive from an injected call-time provider and never enter request metadata. A synchronous injected transport receives the safe request, credential value, and bounded timeout as separate arguments. No concrete transport exists; defaults fail closed.
 
 Responses are reduced to allowlisted fields and deterministic digests, then reconciled as `MATCHED`, `MISMATCH`, `REMOTE_IDENTIFIER_MISMATCH`, `RESPONSE_INVALID`, `TRANSPORT_UNAVAILABLE`, or `CREDENTIAL_UNAVAILABLE`. No retry or compensating write exists. SHOP-03B1 is intercepted validation only and cannot claim `LIVE_APPLIED`.
+## UI-01 presentation boundary
+
+`GET /homepage` is a package-local HTML/CSS/JavaScript operator view on the
+existing Homepage router. Presentation reads only `GET /dashboard`; Shopping,
+ProductDraft, approval, deployment, and Commerce-write authority remain in
+their existing owners. ProductDraft and deployment contracts are unchanged.
+Public exposure remains pending OPS-01 and production writes remain
+`NOT_AUTHORIZED`.

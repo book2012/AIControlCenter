@@ -1630,3 +1630,10 @@ Production activation occurred.
 - Added the intercepted WooCommerce controlled update adapter, deterministic request/response normalization, and reconciliation evaluator.
 - Preserved ProductDraft and deployment-intent 1.0.0 contracts, read/application layers, and API routes.
 - Recorded 0 external requests, 0 live writes, and production activation `NOT_AUTHORIZED`.
+## UI-01 internal Shopping Homepage
+
+- Added the responsive, accessible internal `GET /homepage` operator surface.
+- Consumes only same-origin `GET /dashboard` using GET, a bounded timeout, and
+  safe retry; empty and unavailable sources remain distinct.
+- Added no frontend framework, public exposure, authentication change, mutation
+  API, ProductDraft/deployment contract change, or live Commerce write.

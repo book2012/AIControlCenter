@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Shopping Operations | AIControlCenter</title>
+  <link rel="stylesheet" href="/homepage/assets/homepage.css">
+  <script src="/homepage/assets/homepage.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to dashboard</a>
+  <header class="platform-header">
+    <div>
+      <p class="eyebrow">Mac mini control plane</p>
+      <h1>AIControlCenter</h1>
+      <p class="subtitle">Shopping operations homepage</p>
+    </div>
+    <div class="header-state">
+      <span class="chip chip-safe">INTERNAL · READ_ONLY</span>
+      <p>Last refresh <time id="last-refresh">Not refreshed</time></p>
+      <button id="retry" type="button">Refresh safely</button>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <div id="refresh-status" class="notice" role="status" aria-live="polite">
+      Loading same-origin operational status…
+    </div>
+
+    <section aria-labelledby="platform-title">
+      <div class="section-heading">
+        <div><p class="eyebrow">System posture</p><h2 id="platform-title">Platform overview</h2></div>
+      </div>
+      <div class="card-grid four">
+        <article class="card"><h3>Control Plane</h3><strong id="control-plane-status" class="status">—</strong><p>Single authority on Mac mini M4</p></article>
+        <article class="card"><h3>Shopping service</h3><strong id="shopping-status" class="status">—</strong><p id="shopping-health">Awaiting dashboard</p></article>
+        <article class="card"><h3>WooCommerce</h3><strong id="integration-status" class="status">—</strong><p id="integration-detail">Read integration only</p></article>
+        <article class="card"><h3>ProductDraft reads</h3><strong id="draft-status" class="status">—</strong><p>Query boundary; no mutations</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="catalog-title">
+      <div class="section-heading"><div><p class="eyebrow">Commerce view</p><h2 id="catalog-title">Catalog overview</h2></div><span id="catalog-state" class="chip">—</span></div>
+      <div class="metrics">
+        <article><span>Product count</span><strong id="product-count">—</strong></article>
+        <article><span>Catalog total</span><strong id="catalog-total">—</strong></article>
+        <article><span>Adapter / source</span><strong id="catalog-source">—</strong></article>
+        <article><span>Capability</span><strong id="catalog-capability">READ_ONLY</strong></article>
+      </div>
+      <p id="catalog-message" class="context">Catalog state will appear after refresh.</p>
+    </section>
+
+    <section aria-labelledby="drafts-title">
+      <div class="section-heading"><div><p class="eyebrow">Editorial gate</p><h2 id="drafts-title">ProductDraft review</h2></div><span id="review-state" class="chip">—</span></div>
+      <div class="metrics">
+        <article><span>Drafts</span><strong id="draft-count">—</strong></article>
+        <article><span>Revisions</span><strong id="revision-count">—</strong></article>
+        <article><span>Pending review</span><strong id="pending-count">—</strong></article>
+      </div>
+      <div class="split-panel">
+        <div><h3>Lifecycle summary</h3><dl id="lifecycle-summary" class="state-list"></dl></div>
+        <div><h3>Pending review queue <small>(bounded)</small></h3><ul id="pending-items" class="review-list"><li>Awaiting dashboard</li></ul></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="deployment-title">
+      <div class="section-heading"><div><p class="eyebrow">Protected boundary</p><h2 id="deployment-title">Controlled deployment status</h2></div></div>
+      <div class="card-grid three">
+        <article class="card"><h3>Fake / dry-run</h3><strong class="status">FAKE_APPLIED</strong><p>Architecture available for non-live validation.</p></article>
+        <article class="card"><h3>Intercepted validation</h3><strong class="status">INTERCEPTED_VALIDATION</strong><p>Validation boundary available.</p></article>
+        <article class="card warning"><h3>Real Commerce write</h3><strong class="status">NOT_AUTHORIZED</strong><p>No active mutation control is exposed.</p></article>
+      </div>
+    </section>
+
+    <section aria-labelledby="ai-title">
+      <div class="section-heading"><div><p class="eyebrow">Capability horizon</p><h2 id="ai-title">AI readiness</h2></div></div>
+      <div class="state-list horizontal">
+        <div><dt>AI Product Intelligence</dt><dd>PLANNED</dd></div>
+        <div><dt>AI Operations Copilot</dt><dd>PLANNED</dd></div>
+        <div><dt>Automatic Commerce write</dt><dd>DISABLED</dd></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="notices-title">
+      <div class="section-heading"><div><p class="eyebrow">Operator context</p><h2 id="notices-title">Operational notices</h2></div></div>
+      <ul id="notices" class="notice-list"><li>Sources are being evaluated.</li></ul>
+      <p class="state-key"><strong>State vocabulary:</strong> AVAILABLE · READY · READ_ONLY · EMPTY · DEGRADED · UNAVAILABLE · REVIEW_REQUIRED · APPROVED · REJECTED · FAKE_APPLIED · INTERCEPTED_VALIDATION · NOT_AUTHORIZED</p>
+    </section>
+  </main>
+  <footer>Internal operator surface · Same-origin GET data · No public Caddy exposure</footer>
+</body>
+</html>

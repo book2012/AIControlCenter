@@ -1250,3 +1250,11 @@ Completed the controlled Commerce write architecture for exact approved immutabl
 # 2026-08-03 — SHOP-03B1
 
 The user-attested SHOP-03B program authorization permitted architecture, implementation, and intercepted validation. AIControlCenter completed the production-grade adapter contract and credential boundary without external requests or live Commerce writes. No exact product/revision execution authorization was bound, no concrete network transport or API mutation route was added, and production activation remained `NOT_AUTHORIZED`.
+## UI-01 internal Homepage complete
+
+AIControlCenter gained its first real browser Homepage at `GET /homepage` for
+internal, read-only Shopping operations. Package-local HTML, CSS, and JavaScript
+consume only same-origin `GET /dashboard`, with bounded timeout and safe retry.
+No frontend framework, public Caddy exposure, authentication change, mutation
+API, live Commerce write, or ProductDraft/deployment contract change occurred.
+Public opening remains pending OPS-01; UI-02 Product Management Console is next.
