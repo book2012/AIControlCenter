@@ -1313,3 +1313,6 @@ SHOP-02D ProductDraft GET-only API and Dashboard projection are complete. Routes
 ## SHOP-03A Status
 
 `SHOP-03A_CONTROLLED_WOOCOMMERCE_WRITE_ARCHITECTURE`: COMPLETE. Exact immutable approved revisions can produce deterministic controlled fake/dry-run plans only after source freshness and digest checks plus exact deny-by-default authorization. ProductDraft contracts remain 1.0.0. No mutation API, persistent queue, real WooCommerce adapter, or production write authorization exists. SHOP-03B requires a separate explicit gate.
+# SHOP-03B status
+
+SHOP-03B program authorization is user-attested at `2026-08-03T08:54:00+09:00`. SHOP-03B1 is complete as an intercepted-only adapter contract and credential boundary. Exact product/revision execution authorization remains unbound, no real transport exists, and production activation remains `NOT_AUTHORIZED`. Next: `SHOP-03B2_ONE_PRODUCT_CONTROLLED_PILOT`.

@@ -1363,3 +1363,8 @@ ProductDraft query ownership remains in AIControlCenter. A replaceable `ProductD
 ## SHOP-03A controlled Commerce write architecture
 
 Approved immutable ProductDraft revisions can now be evaluated into an immutable controlled write plan through explicit freshness, exact source/revision/intent binding, deny-by-default authorization, and instance-local idempotency. Only a deterministic fake/dry-run adapter exists. No API mutation route, persistent queue, network dependency, or real Commerce mutation exists. ProductDraft contracts remain 1.0.0; production writes are `NOT_AUTHORIZED`, and SHOP-03B is separately gated. See `docs/architecture/SHOP-03A-CONTROLLED-WOOCOMMERCE-WRITE.md`.
+# SHOP-03B1 Commerce write adapter boundary
+
+The ProductDraft deployment package owns the controlled WooCommerce write port without coupling to the existing read adapter. An immutable SHOP-03A plan carries its digest-bound proposed fields into an explicit WooCommerce allowlist. Credentials arrive from an injected call-time provider and never enter request metadata. A synchronous injected transport receives the safe request, credential value, and bounded timeout as separate arguments. No concrete transport exists; defaults fail closed.
+
+Responses are reduced to allowlisted fields and deterministic digests, then reconciled as `MATCHED`, `MISMATCH`, `REMOTE_IDENTIFIER_MISMATCH`, `RESPONSE_INVALID`, `TRANSPORT_UNAVAILABLE`, or `CREDENTIAL_UNAVAILABLE`. No retry or compensating write exists. SHOP-03B1 is intercepted validation only and cannot claim `LIVE_APPLIED`.

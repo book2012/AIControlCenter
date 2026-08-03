@@ -902,3 +902,7 @@ Production writes are `NOT_AUTHORIZED`; catalog population is independent.
 
 - [x] SHOP-03A controlled Commerce write architecture with exact eligibility, deny-by-default authorization, instance-local idempotency, deterministic preview, and fake/dry-run adapter only.
 - [ ] SHOP-03B separately authorized controlled write; real adapter remains `NOT_IMPLEMENTED` and production writes remain `NOT_AUTHORIZED`.
+# SHOP-03B follow-up
+
+- [x] SHOP-03B1 intercepted WooCommerce adapter, credential boundary, fail-closed transport, normalization, and reconciliation.
+- [ ] SHOP-03B2 bind one exact product/revision/deployment intent and execution timestamp through a separate authorization gate before any production request.

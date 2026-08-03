@@ -1220,3 +1220,8 @@ SHOP-02C adds deterministic contract validation and authorized, exact-revision h
 # SHOP-02D ProductDraft reads
 
 AIControlCenter exposes GET-only ProductDraft reads at `/shopping/product-drafts`, `/shopping/product-drafts/{draft_id}`, and `/shopping/product-drafts/{draft_id}/revisions/{revision_id}`. The Dashboard key is `product_draft_review`. Its replaceable source is unavailable by default; an explicitly configured empty source is valid and distinct from `UNAVAILABLE`. Contracts remain 1.0.0. No mutation routes, WooCommerce writes, or persistent ProductDraft storage were added. Production writes remain `NOT_AUTHORIZED`; SHOP-03 controlled WooCommerce write architecture is next.
+# SHOP-03B1 controlled live-write boundary
+
+SHOP-03B is user-attested as authorized at `2026-08-03T08:54:00+09:00` for architecture, implementation, and intercepted validation. SHOP-03B1 adds a synchronous, injected WooCommerce write boundary under ProductDraft deployment. Credentials are obtained only at call time and passed separately from immutable request metadata; the default credential provider and transport fail closed. There is no concrete network transport, no mutation route, and every result remains `INTERCEPTED_VALIDATION` with `live_write_performed: false`.
+
+No exact product, ProductDraft revision, deployment intent, or execution timestamp is authorized. External requests: 0. Live writes: 0. Production activation: `NOT_AUTHORIZED`. ProductDraft and deployment-intent contracts remain version 1.0.0. SHOP-03B2 is the next one-product controlled pilot.

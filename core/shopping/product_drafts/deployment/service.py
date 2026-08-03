@@ -69,7 +69,8 @@ class ControlledCommerceWriteService:
                 outcome=DeploymentOutcome.REJECTED_AUTHORIZATION)
         plan = ControlledWritePlan.create(intent, mode=self._mode,
                                           policy_reference=decision.policy_reference,
-                                          evaluated_at=evaluated_at)
+                                          evaluated_at=evaluated_at,
+                                          proposed_fields=revision.proposed_fields)
         try:
             replay = self._idempotency.lookup(intent.idempotency_key, plan.plan_digest)
         except IdempotencyConflict:

@@ -4,9 +4,13 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from ..serialization import sha256_digest
 from ..values import ActorReference, SCHEMA_VERSION, require_digest, require_text, require_utc
+
+if TYPE_CHECKING:
+    from ..models import ProposedFields
 
 
 class CommerceOperation(str, Enum):
@@ -86,10 +90,12 @@ class ControlledWritePlan:
     requested_at: datetime
     evaluated_at: datetime
     plan_digest: str
+    proposed_fields: "ProposedFields | None" = None
 
     @classmethod
     def create(cls, intent: ControlledDeploymentIntent, *, mode: WriteMode,
-               policy_reference: str, evaluated_at: datetime) -> "ControlledWritePlan":
+               policy_reference: str, evaluated_at: datetime,
+               proposed_fields: "ProposedFields | None" = None) -> "ControlledWritePlan":
         require_utc(evaluated_at, "evaluated_at")
         seed = {
             "schema_version": SCHEMA_VERSION, "mode": mode.value,
@@ -108,4 +114,4 @@ class ControlledWritePlan:
             "idempotency_key": intent.idempotency_key,
             "requested_at": intent.requested_at, "evaluated_at": evaluated_at,
         }
-        return cls(**seed, plan_digest=sha256_digest(seed))
+        return cls(**seed, plan_digest=sha256_digest(seed), proposed_fields=proposed_fields)

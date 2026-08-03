@@ -1624,3 +1624,9 @@ Production activation occurred.
 - Added deterministic exact-revision eligibility, explicit source freshness, deny-by-default authorization, immutable controlled plans, and successful-plan idempotency.
 - Added only an isolated fake/dry-run Commerce write port adapter and detached JSON-safe preview; real WooCommerce writes remain `NOT_IMPLEMENTED` and `NOT_AUTHORIZED`.
 - Kept ProductDraft contracts at 1.0.0 and added no mutation API, persistent write queue, network client, credentials, or Ubuntu dependency. SHOP-03B requires separate architecture and authorization.
+# SHOP-03B1 - 2026-08-03
+
+- Added the secret-safe credential provider and synchronous Commerce write transport ports with fail-closed defaults.
+- Added the intercepted WooCommerce controlled update adapter, deterministic request/response normalization, and reconciliation evaluator.
+- Preserved ProductDraft and deployment-intent 1.0.0 contracts, read/application layers, and API routes.
+- Recorded 0 external requests, 0 live writes, and production activation `NOT_AUTHORIZED`.

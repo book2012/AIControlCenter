@@ -1247,3 +1247,6 @@ Completed the AIControlCenter-owned ProductDraft read/query layer, three GET-onl
 ## 2026-08-03 — SHOP-03A
 
 Completed the controlled Commerce write architecture for exact approved immutable ProductDraft revisions. Eligibility, freshness, authorization, controlled-plan hashing, successful-plan idempotency, fake/dry-run port execution, and JSON-safe preview are deterministic and caller-clocked. ProductDraft contracts remain 1.0.0. There is no API mutation route, persistent queue, real WooCommerce adapter, live write, or production authorization; SHOP-03B is separately gated.
+# 2026-08-03 — SHOP-03B1
+
+The user-attested SHOP-03B program authorization permitted architecture, implementation, and intercepted validation. AIControlCenter completed the production-grade adapter contract and credential boundary without external requests or live Commerce writes. No exact product/revision execution authorization was bound, no concrete network transport or API mutation route was added, and production activation remained `NOT_AUTHORIZED`.
