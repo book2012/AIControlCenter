@@ -1258,3 +1258,12 @@ consume only same-origin `GET /dashboard`, with bounded timeout and safe retry.
 No frontend framework, public Caddy exposure, authentication change, mutation
 API, live Commerce write, or ProductDraft/deployment contract change occurred.
 Public opening remains pending OPS-01; UI-02 Product Management Console is next.
+
+## UI-02 internal Product Management Console complete
+
+Added the internal, responsive ProductDraft console at
+`GET /homepage/product-management`. Its bounded presentation reads only the
+existing same-origin collection, current-revision, and exact-revision GET APIs.
+No ProductDraft/dashboard implementation or contract changed; no external
+request, Commerce write, public exposure, Ubuntu change, or production
+activation occurred. Next: `OPS-01_STAGING_CADDY_AUTH_MONITORING`.

@@ -1376,6 +1376,7 @@ SHOP-03A is complete: immutable approved-revision eligibility, exact authorizati
 
 - **UI-01 complete:** internal read-only `GET /homepage`, backed only by
   same-origin `GET /dashboard`.
-- **UI-02 next:** Product Management Console.
-- **OPS-01 pending:** public opening; UI-01 adds neither Caddy exposure nor an
-  authentication change.
+- **UI-02 complete:** internal read-only Product Management Console at
+  `GET /homepage/product-management`.
+- **OPS-01 next:** staging Caddy, authentication, and monitoring; UI-02 adds no
+  public opening or authentication change.

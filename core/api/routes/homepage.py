@@ -51,6 +51,35 @@ def homepage_script() -> Response:
     )
 
 
+@router.get(
+    "/homepage/product-management",
+    response_class=HTMLResponse,
+    include_in_schema=False,
+)
+def product_management_browser() -> str:
+    """Serve the internal, read-only ProductDraft console."""
+    return _ui_asset("product-management.html")
+
+
+@router.get(
+    "/homepage/assets/product-management.css",
+    include_in_schema=False,
+)
+def product_management_styles() -> Response:
+    return Response(_ui_asset("product-management.css"), media_type="text/css")
+
+
+@router.get(
+    "/homepage/assets/product-management.js",
+    include_in_schema=False,
+)
+def product_management_script() -> Response:
+    return Response(
+        _ui_asset("product-management.js"),
+        media_type="application/javascript",
+    )
+
+
 @router.get("/homepage/status")
 def homepage_status():
     return apply_standalone_contract(

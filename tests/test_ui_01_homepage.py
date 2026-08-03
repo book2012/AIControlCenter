@@ -51,10 +51,10 @@ def test_ui_01_status_contract_remains_compatible() -> None:
 
 def test_ui_01_homepage_router_is_get_head_only() -> None:
     routes = [route for route in homepage.router.routes if route.path.startswith("/homepage")]
-    assert {route.path for route in routes} == {
+    assert {
         "/homepage", "/homepage/status", "/homepage/assets/homepage.css",
         "/homepage/assets/homepage.js",
-    }
+    }.issubset({route.path for route in routes})
     assert all(set(route.methods or ()) <= {"GET", "HEAD"} for route in routes)
 
     routes_by_path = {

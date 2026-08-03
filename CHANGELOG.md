@@ -1637,3 +1637,12 @@ Production activation occurred.
   safe retry; empty and unavailable sources remain distinct.
 - Added no frontend framework, public exposure, authentication change, mutation
   API, ProductDraft/deployment contract change, or live Commerce write.
+
+## UI-02 internal Product Management Console
+
+- Added internal `GET /homepage/product-management` and package-local assets.
+- Added bounded same-origin ProductDraft reads, client-side filtering, immutable
+  revision detail, timeout/retry, accessibility, and distinct empty/unavailable
+  states.
+- Added no writes, persistence, external dependency, public exposure, contract
+  change, Ubuntu change, or production activation.

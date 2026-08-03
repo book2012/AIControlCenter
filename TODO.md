@@ -909,9 +909,13 @@ Production writes are `NOT_AUTHORIZED`; catalog population is independent.
 ## Shopping operator UI
 
 - [x] UI-01 internal read-only Homepage at `GET /homepage`.
-- [ ] UI-02 Product Management Console.
-- [ ] OPS-01 separately authorized public opening.
+- [x] UI-02 internal read-only Product Management Console.
+- [ ] OPS-01 staging Caddy, authentication, monitoring, and separately
+  authorized public opening.
 
 UI-01 uses only `GET /dashboard`; it adds no framework, mutation API, live
 Commerce write, authentication change, or ProductDraft/deployment contract
 change.
+
+UI-02 consumes only the existing ProductDraft GET APIs, distinguishes `EMPTY`
+from `UNAVAILABLE`, and adds no write control, persistence, or activation.

@@ -1324,3 +1324,11 @@ frontend framework, public Caddy exposure, authentication change, mutation API,
 or live Commerce write was added. ProductDraft and deployment contracts remain
 unchanged. Public opening awaits OPS-01; next is UI-02 Product Management
 Console.
+
+## UI-02 — Product Management Console
+
+Complete: internal `GET /homepage/product-management` consumes only existing
+ProductDraft GET APIs in `INTERNAL_READ_ONLY` mode. It exposes lifecycle,
+validation, human-review, and returned deployment-intent state without controls.
+Public opening and production activation remain absent and `NOT_AUTHORIZED`.
+Next: `OPS-01_STAGING_CADDY_AUTH_MONITORING`.

@@ -1376,3 +1376,13 @@ ProductDraft, approval, deployment, and Commerce-write authority remain in
 their existing owners. ProductDraft and deployment contracts are unchanged.
 Public exposure remains pending OPS-01 and production writes remain
 `NOT_AUTHORIZED`.
+
+## UI-02 Product Management presentation boundary
+
+`GET /homepage/product-management` is package-local presentation on the existing
+Homepage router. It consumes only the three existing same-origin ProductDraft
+GET resources. AIControlCenter retains lifecycle, validation, review,
+deployment-intent, policy, and audit authority; WooCommerce retains public
+Commerce truth and the browser has no business or write authority. There is no
+public exposure or production activation. Next:
+`OPS-01_STAGING_CADDY_AUTH_MONITORING`.

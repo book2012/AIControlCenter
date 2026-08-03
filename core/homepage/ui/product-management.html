@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <title>Product Management | AIControlCenter</title>
+  <link rel="stylesheet" href="/homepage/assets/product-management.css">
+  <script src="/homepage/assets/product-management.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to product drafts</a>
+  <header>
+    <div><a class="back" href="/homepage">← Shopping operations</a><p class="eyebrow">Mac mini control plane</p><h1>Product Management</h1><p>Immutable ProductDraft operations</p></div>
+    <div class="actions"><span class="chip">INTERNAL · READ_ONLY</span><button id="retry" type="button">Refresh safely</button></div>
+  </header>
+  <main id="main-content">
+    <p id="console-status" class="notice" role="status" aria-live="polite">Loading same-origin ProductDraft data…</p>
+    <section aria-labelledby="summary-title">
+      <div class="heading"><h2 id="summary-title">Summary</h2><span id="source-state" class="chip">READ_ONLY</span></div>
+      <div class="metrics"><article><span>Drafts</span><strong id="draft-count">—</strong></article><article><span>Revisions</span><strong id="revision-count">—</strong></article><article><span>Pending review</span><strong id="pending-count">—</strong></article><article><span>Source</span><strong id="availability">—</strong></article></div>
+      <dl id="lifecycle-counts" class="counts"></dl>
+    </section>
+    <div class="workspace">
+      <section aria-labelledby="draft-list-title">
+        <div class="heading"><h2 id="draft-list-title">ProductDrafts <small>(bounded)</small></h2><label>State <select id="state-filter"><option value="ALL">All</option></select></label></div>
+        <ul id="draft-list" class="select-list"><li>Awaiting source</li></ul>
+      </section>
+      <section aria-labelledby="detail-title">
+        <div class="heading"><h2 id="detail-title">Draft detail</h2><span id="detail-state" class="chip">EMPTY</span></div>
+        <div id="draft-detail" class="detail"><p>Select a ProductDraft.</p></div>
+        <h3>Immutable revisions</h3><ul id="revision-list" class="select-list compact"><li>No draft selected</li></ul>
+      </section>
+    </div>
+    <section aria-labelledby="revision-title">
+      <div class="heading"><h2 id="revision-title">Revision detail</h2><span id="revision-state" class="chip">EMPTY</span></div>
+      <div id="revision-detail" class="detail"><p>Select an immutable revision.</p></div>
+    </section>
+    <section class="guardrail" aria-labelledby="guardrail-title"><h2 id="guardrail-title">Protected boundary</h2><p><strong>NOT_AUTHORIZED</strong> — This console has no approval, rejection, deployment, or Commerce write controls. Deployment preview is shown only when an existing API returns a deployment intent.</p></section>
+    <p class="state-key">States: AVAILABLE · EMPTY · UNAVAILABLE · DEGRADED · READ_ONLY · REVIEW_REQUIRED · APPROVED · REJECTED · NOT_AUTHORIZED</p>
+  </main>
+  <footer>Internal presentation · Same-origin GET only · No public Caddy exposure</footer>
+</body>
+</html>

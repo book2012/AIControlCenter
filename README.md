@@ -1232,3 +1232,12 @@ The internal read-only Shopping operations Homepage is available at `GET
 `shopping_management` and `product_draft_review` projections. It adds no
 frontend framework, public Caddy exposure, authentication change, mutation API,
 or live Commerce write. See `docs/homepage/UI-01-shopping-dashboard.md`.
+
+## UI-02 internal Product Management Console
+
+The read-only console is available at `GET /homepage/product-management`. It
+uses only the three existing same-origin ProductDraft GET resources, keeps
+empty and unavailable states distinct, and exposes no mutation or live Commerce
+control. It is not publicly exposed and production activation remains
+`NOT_AUTHORIZED`. See `docs/homepage/UI-02-product-management-console.md`.
+Next: `OPS-01_STAGING_CADDY_AUTH_MONITORING`.
