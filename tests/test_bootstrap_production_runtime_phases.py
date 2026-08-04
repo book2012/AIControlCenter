@@ -88,7 +88,11 @@ def make_build_fixture(tmp_path: Path, dependency_file: str = "requirements.txt"
         '  if [ "$3" = "list" ]; then printf "[]\\n"; fi\n'
         "  exit 0\n"
         "fi\n"
-        'if [ "$1 $2" = "-m pytest" ]; then exit 0; fi\n'
+        'if [ "$1 $2" = "-m pytest" ]; then\n'
+        '  printf "PYTHON=%s\\nARGS=%s\\n" "$0" "$*"\n'
+        '  env | sort\n'
+        '  exit "${FAKE_PYTEST_STATUS:-0}"\n'
+        'fi\n'
         'exec "@PYTHON@" "$@"\n'
         "WRAPPER\n"
         '  chmod 755 "$3/bin/python"\n'
@@ -291,6 +295,86 @@ def test_build_finalizes_metadata_without_changing_current(tmp_path: Path) -> No
     assert report["mode"] == "build"
     assert report["activated"] is False
     assert report["runtime"]["current_unchanged"] is True
+
+
+def test_build_pytest_uses_isolated_owned_bindings_and_cleans_them(tmp_path: Path) -> None:
+    app_root, contract, commit, environment = make_build_fixture(tmp_path)
+    historical = {
+        "AICONTROLCENTER_M3_A4B3_OPERATIONAL_SNAPSHOT": "must-not-leak",
+        "AICONTROLCENTER_M3_A4B3_EVIDENCE_SNAPSHOT": "must-not-leak",
+        "AICONTROLCENTER_M3_A4B3_RECOVERY_WORK": "must-not-leak",
+        "AICONTROLCENTER_M3_A4B3_TRUSTED_BINDING": "must-not-leak",
+    }
+    result, runtime_root = run_script(
+        tmp_path, "--mode", "build", "--contract", str(contract),
+        root=app_root, extra_env=environment | historical,
+    )
+    assert result.returncode == 0, result.stderr
+    report = json.loads(result.stdout)
+    assert report["checks"]["test_suite"] == "passed"
+    log_path = runtime_root / "logs" / commit[:12] / "test-suite.log"
+    assert log_path.is_file()
+    log = log_path.read_text(encoding="utf-8")
+    env = dict(
+        line.split("=", 1) for line in log.splitlines() if "=" in line
+    )
+    bindings = [
+        "AICONTROLCENTER_APPLICATION_ROOT",
+        "AICONTROLCENTER_BOOTSTRAP_TEST_ROOT",
+        "AICONTROLCENTER_DATA_ROOT",
+        "AICONTROLCENTER_GIT_EVIDENCE_TEST_ROOT",
+        "AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_HOME",
+        "AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_ROOT",
+        "AICONTROLCENTER_OPERATIONAL_ACTIVATION_TEST_ROOT",
+        "AICONTROLCENTER_OPERATIONAL_LIVE_TEST_ROOT",
+    ]
+    roots = {Path(env[name]).parent for name in bindings}
+    assert len(roots) == 1
+    owned_root = roots.pop()
+    assert str(owned_root).startswith("/private/tmp/aicontrolcenter-runtime-pytest.")
+    assert all(Path(env[name]).is_relative_to(owned_root) for name in bindings)
+    assert not owned_root.exists()
+    assert not historical.keys() & env.keys()
+    assert env["PYTHONPATH"] == str(app_root)
+    assert env["PYTHONDONTWRITEBYTECODE"] == "1"
+    assert env["TMPDIR"] == "/private/tmp"
+    assert f"PYTHON={runtime_root}/venvs/.staging-" in log
+    assert "ARGS=-m pytest -q -p no:cacheprovider --basetemp " in log
+    assert str(owned_root / "pytest-basetemp") in log
+
+
+def test_failed_pytest_reports_failed_cleans_state_and_does_not_finalize(
+    tmp_path: Path,
+) -> None:
+    app_root, contract, commit, environment = make_build_fixture(tmp_path)
+    result, runtime_root = run_script(
+        tmp_path, "--mode", "build", "--contract", str(contract),
+        root=app_root, extra_env=environment | {"FAKE_PYTEST_STATUS": "17"},
+    )
+    assert result.returncode == 17
+    report = json.loads(result.stdout)
+    assert report["checks"]["test_suite"] == "failed"
+    assert report["failure"]["step"] == "run Test Suite"
+    log_path = runtime_root / "logs" / commit[:12] / "test-suite.log"
+    assert log_path.is_file()
+    log = log_path.read_text(encoding="utf-8")
+    owned_root = Path(
+        next(
+            line.split("=", 1)[1] for line in log.splitlines()
+            if line.startswith("AICONTROLCENTER_APPLICATION_ROOT=")
+        )
+    ).parent
+    assert not owned_root.exists()
+    assert not (runtime_root / "venvs" / commit[:12]).exists()
+    assert not list((runtime_root / "venvs").glob(".staging-*"))
+    assert not (runtime_root / "current").exists()
+
+
+def test_builder_sets_running_before_pytest_execution() -> None:
+    content = SCRIPT.read_text(encoding="utf-8")
+    running = content.index('TEST_STATUS="running"', content.index("validate_application_and_tests()"))
+    execution = content.index('"$PYTHON_PATH" -m pytest', running)
+    assert running < execution
 
 
 def test_existing_finalized_release_is_not_modified(tmp_path: Path) -> None:

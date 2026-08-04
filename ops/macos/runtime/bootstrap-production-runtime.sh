@@ -26,6 +26,7 @@ CURRENT_TARGET_BEFORE=""
 CURRENT_TARGET_AFTER=""
 ACTIVATED=false
 TEST_STATUS="not_started"
+PYTEST_ROOT=""
 IMPORT_STATUS="not_started"
 INSTALL_STATUS="not_started"
 
@@ -192,7 +193,18 @@ write_report() {
       }'
 }
 
+cleanup_owned_test_state() {
+    if [[ -n "$PYTEST_ROOT" && -d "$PYTEST_ROOT" ]]; then
+        case "$PYTEST_ROOT" in
+            /private/tmp/aicontrolcenter-runtime-pytest.*) rm -rf -- "$PYTEST_ROOT" ;;
+            *) echo "Refusing to clean unexpected pytest root: $PYTEST_ROOT" >&2 ;;
+        esac
+    fi
+    PYTEST_ROOT=""
+}
+
 cleanup_owned_state() {
+    cleanup_owned_test_state
     if [[ -n "$STAGING_PATH" && -d "$STAGING_PATH" ]]; then
         case "$STAGING_PATH" in
             "$VENV_ROOT"/.staging-*) rm -rf -- "$STAGING_PATH" ;;
@@ -362,7 +374,54 @@ PY
     normalized="$(printf '%s' "$test_command" | tr '\n\t' '  ' | awk '{$1=$1; print}')"
     case "$normalized" in
         "python -m pytest -q"|"python3 -m pytest -q")
-            (cd "$ROOT"; PYTHONPATH="$ROOT${PYTHONPATH:+:$PYTHONPATH}" "$PYTHON_PATH" -m pytest -q) >"$LOG_DIR/test-suite.log" 2>&1 || return $?
+            PYTEST_ROOT="$(mktemp -d /private/tmp/aicontrolcenter-runtime-pytest.XXXXXX)" || return $?
+            chmod 700 "$PYTEST_ROOT" || return $?
+            local application_root="$PYTEST_ROOT/application-root"
+            local bootstrap_test_root="$PYTEST_ROOT/bootstrap-test-root"
+            local data_root="$PYTEST_ROOT/data-root"
+            local git_evidence_test_root="$PYTEST_ROOT/git-evidence-test-root"
+            local operational_execution_test_home="$PYTEST_ROOT/operational-execution-test-home"
+            local operational_execution_test_root="$PYTEST_ROOT/operational-execution-test-root"
+            local operational_activation_test_root="$PYTEST_ROOT/operational-activation-test-root"
+            local operational_live_test_root="$PYTEST_ROOT/operational-live-test-root"
+            mkdir -m 700 \
+                "$application_root" \
+                "$bootstrap_test_root" \
+                "$data_root" \
+                "$git_evidence_test_root" \
+                "$operational_execution_test_home" \
+                "$operational_execution_test_root" \
+                "$operational_activation_test_root" \
+                "$operational_live_test_root" || return $?
+            TEST_STATUS="running"
+            local pytest_status
+            if (cd "$ROOT"; env \
+                -u AICONTROLCENTER_M3_A4B3_OPERATIONAL_SNAPSHOT \
+                -u AICONTROLCENTER_M3_A4B3_EVIDENCE_SNAPSHOT \
+                -u AICONTROLCENTER_M3_A4B3_RECOVERY_WORK \
+                -u AICONTROLCENTER_M3_A4B3_TRUSTED_BINDING \
+                PYTHONPATH="$ROOT" \
+                PYTHONDONTWRITEBYTECODE=1 \
+                TMPDIR=/private/tmp \
+                AICONTROLCENTER_APPLICATION_ROOT="$application_root" \
+                AICONTROLCENTER_BOOTSTRAP_TEST_ROOT="$bootstrap_test_root" \
+                AICONTROLCENTER_DATA_ROOT="$data_root" \
+                AICONTROLCENTER_GIT_EVIDENCE_TEST_ROOT="$git_evidence_test_root" \
+                AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_HOME="$operational_execution_test_home" \
+                AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_ROOT="$operational_execution_test_root" \
+                AICONTROLCENTER_OPERATIONAL_ACTIVATION_TEST_ROOT="$operational_activation_test_root" \
+                AICONTROLCENTER_OPERATIONAL_LIVE_TEST_ROOT="$operational_live_test_root" \
+                "$PYTHON_PATH" -m pytest -q -p no:cacheprovider \
+                --basetemp "$PYTEST_ROOT/pytest-basetemp") >"$LOG_DIR/test-suite.log" 2>&1; then
+                pytest_status=0
+            else
+                pytest_status=$?
+            fi
+            cleanup_owned_test_state
+            if [[ "$pytest_status" -ne 0 ]]; then
+                TEST_STATUS="failed"
+                return "$pytest_status"
+            fi
             TEST_STATUS="passed"
             ;;
         "") echo "Missing test command in Runtime Contract" >&2; TEST_STATUS="failed"; return 64 ;;
