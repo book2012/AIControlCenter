@@ -1,5 +1,12 @@
 # MASTER
 
+OPS-01B-R5-R3A closes the runtime metadata source-marker implementation gap.
+Each new immutable runtime must contain `metadata.json` and the exact
+`.aicontrolcenter-source-commit` file before `runtime/current` activation. The
+Shadow daemon validates the marker and fails closed. Existing releases are not
+repaired; OPS-01B-R5-R3 requires a separately authorized build from committed
+Git source. No activation or restart occurred.
+
 M4-A1, M4-A1R1, M4-A2, and M4-A3 are CLOSED. M4-A3 validates deterministic,
 in-memory, test-only authorization lifecycles for five independent
 capabilities. Its artifacts are operationally invalid and live-boundary

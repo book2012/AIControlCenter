@@ -372,7 +372,13 @@ The Dashboard response includes:
 - Commit-specific Runtime metadata
 - Runtime metadata validation status
 
-Runtime identity is loaded from an immutable `metadata.json` file generated during the commit-specific Runtime build.
+Runtime identity requires immutable `metadata.json` and
+`.aicontrolcenter-source-commit` files generated together during the
+commit-specific Runtime build. The marker is an exact lowercase 40-character
+Git SHA plus one newline. Generation and validation precede `runtime/current`
+activation, and the Shadow daemon fails closed when the marker is missing or
+invalid. Existing immutable releases are not repaired in place; build a new
+release from committed Git source.
 
 Dashboard requests do not execute Git, `launchctl`, or shell commands.
 

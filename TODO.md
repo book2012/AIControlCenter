@@ -1,5 +1,10 @@
 # TODO
 
+- [x] OPS-01B-R5-R3A generate and validate the immutable runtime source commit
+  marker atomically with `metadata.json`.
+- [ ] OPS-01B-R5-R3 build a new immutable runtime from committed Git source
+  under separate authorization; do not repair an existing release in place.
+
 - [x] Close M4-A3 deterministic test-only authorization simulation.
 - [x] Prove simulation artifacts fail closed at live boundaries.
 - [ ] Implement `M4-A4_READ_ONLY_OPERATIONAL_OBSERVATION` under a separate gate.

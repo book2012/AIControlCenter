@@ -343,6 +343,7 @@ Each commit-specific Runtime contains an immutable metadata file:
     <12-character-commit>/
       bin/python
       metadata.json
+      .aicontrolcenter-source-commit
 ```
 
 Runtime metadata schema version 1 contains:
@@ -363,6 +364,14 @@ The metadata provider validates:
 Invalid, missing or unreadable metadata is returned as normalized JSON with `available: false`.
 
 Invalid metadata does not crash the Dashboard API.
+
+The runtime identity contract consists of both `metadata.json` and
+`.aicontrolcenter-source-commit`. The generator validates the full Git commit
+as exactly 40 lowercase hexadecimal characters, then atomically publishes both
+files before activation. The marker contains that commit followed by one
+newline. Missing or invalid identity metadata fails closed. Existing immutable
+releases are never repaired in place; a replacement runtime must be built from
+committed Git source.
 
 ### Runtime Activation Gate
 

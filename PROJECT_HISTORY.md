@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-08-04 — OPS-01B-R5-R3A
+
+Closed the source-identity metadata gap without touching production. Runtime
+metadata generation now validates an exact lowercase full Git SHA and publishes
+`metadata.json` with `.aicontrolcenter-source-commit` as one fail-closed
+operation before symlink activation. The Shadow daemon remains the consumer and
+rejects missing or invalid markers. Existing immutable releases remain
+untouched; a new release must be built from committed Git source under a
+separate gate.
+
 ## M4-A3 test-only authorization simulation
 
 M4-A3 began from synchronized commit

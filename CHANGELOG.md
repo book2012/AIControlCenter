@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-04 — OPS-01B-R5-R3A Runtime Source Commit Marker
+
+- Made runtime metadata generation publish both `metadata.json` and the exact
+  `.aicontrolcenter-source-commit` marker through sibling temporary files,
+  flushed and fsynced before `os.replace` publication.
+- Added strict lowercase full-SHA validation, paired failure cleanup, and
+  refusal to repair an existing immutable runtime release in place.
+- Preserved metadata schema/status compatibility and the pre-activation gate;
+  no runtime was built, activated, modified, or restarted.
+
 ## 2026-08-02 — SHOP-02C
 
 - Added deterministic ProductDraft validation with canonical input/result digests and replaceable contract rules.

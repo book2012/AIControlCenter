@@ -29,6 +29,27 @@ def test_bootstrap_validates_metadata_before_switch() -> None:
     assert "RuntimeMetadata" in content
     assert 'metadata["available"] is not True' in content
 
+
+def test_bootstrap_generator_owns_source_commit_marker() -> None:
+    generator = (
+        ROOT / "core" / "runtime" / "metadata_generator.py"
+    ).read_text(encoding="utf-8")
+
+    assert (
+        'marker_path = runtime_dir / ".aicontrolcenter-source-commit"'
+        in generator
+    )
+    assert 'marker = f"{self.commit}\\n"' in generator
+
+    content = SCRIPT.read_text(encoding="utf-8")
+    marker_validation = content.index(
+        "marker_path.read_bytes() != expected_marker"
+    )
+    activation_step = content.index(
+        'CURRENT_STEP="activate runtime"'
+    )
+    assert marker_validation < activation_step
+
 def test_bootstrap_uses_fail_closed_error_handling() -> None:
     content = SCRIPT.read_text(encoding="utf-8")
 

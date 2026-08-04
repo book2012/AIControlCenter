@@ -404,11 +404,16 @@ generator = RuntimeMetadataGenerator(
 
 metadata_path = generator.write()
 metadata = RuntimeMetadata(metadata_path).status()
+marker_path = runtime_dir / ".aicontrolcenter-source-commit"
+expected_marker = (commit + "\n").encode("ascii")
 
 if metadata["available"] is not True:
     raise SystemExit(
         json.dumps(metadata, sort_keys=True)
     )
+
+if marker_path.read_bytes() != expected_marker:
+    raise SystemExit("Invalid runtime source commit marker")
 
 print(
     json.dumps(
