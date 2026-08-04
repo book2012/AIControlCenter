@@ -10,9 +10,79 @@ from typing import Any, Protocol
 
 import yaml
 
-_COMMIT = re.compile(r"^[0-9a-f]{40}$")
+_COMMIT = re.compile(r"^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$")
 _BRANCH = re.compile(r"^[A-Za-z0-9._/-]+$")
 _LOOPBACK = re.compile(r"^(?:127\.0\.0\.1|localhost):")
+_MAX_SYMBOLIC_REF_DEPTH = 16
+
+
+def _single_git_line(text: str) -> str:
+    """Return one Git metadata record without accepting hidden whitespace."""
+    line = text.removesuffix("\n").removesuffix("\r")
+    if not line or text not in {line, f"{line}\n", f"{line}\r\n"}:
+        raise ValueError("malformed Git metadata record")
+    return line
+
+
+def _safe_ref_name(ref: str) -> bool:
+    if not ref.startswith("refs/") or ref.startswith("/") or "\\" in ref:
+        return False
+    if any(character.isspace() for character in ref):
+        return False
+    components = ref.split("/")
+    return all(component not in {"", ".", ".."} for component in components)
+
+
+class _GitObjectResolver:
+    """Resolve Git object IDs using repository files only."""
+
+    def __init__(self, files: "RepositoryFileReader") -> None:
+        self._files = files
+
+    def resolve(self, ref: str) -> str:
+        return self._resolve(ref, seen=set(), depth=0)
+
+    def _resolve(self, ref: str, *, seen: set[str], depth: int) -> str:
+        if not _safe_ref_name(ref):
+            raise ValueError("unsafe Git symbolic reference")
+        if depth >= _MAX_SYMBOLIC_REF_DEPTH:
+            raise ValueError("Git symbolic reference depth exceeded")
+        if ref in seen:
+            raise ValueError("Git symbolic reference cycle")
+        seen.add(ref)
+
+        try:
+            loose = _single_git_line(self._files.read_text(f".git/{ref}"))
+        except FileNotFoundError:
+            return self._resolve_packed(ref)
+
+        if _COMMIT.fullmatch(loose):
+            return loose
+        if loose.startswith("ref: "):
+            target = loose.removeprefix("ref: ")
+            return self._resolve(target, seen=seen, depth=depth + 1)
+        raise ValueError("malformed loose Git reference")
+
+    def _resolve_packed(self, ref: str) -> str:
+        try:
+            packed = self._files.read_text(".git/packed-refs")
+        except FileNotFoundError as error:
+            raise ValueError("unresolved Git reference") from error
+
+        matches: list[str] = []
+        for line in packed.splitlines():
+            if not line or line.startswith("#") or line.startswith("^"):
+                continue
+            fields = line.split()
+            if len(fields) >= 2 and fields[1] == ref:
+                if len(fields) != 2 or line != f"{fields[0]} {fields[1]}":
+                    raise ValueError("malformed matching packed Git reference")
+                if not _COMMIT.fullmatch(fields[0]):
+                    raise ValueError("malformed matching packed Git object ID")
+                matches.append(fields[0])
+        if len(matches) != 1:
+            raise ValueError("ambiguous or unresolved packed Git reference")
+        return matches[0]
 
 
 class RepositoryFileReader:
@@ -37,14 +107,19 @@ class GitRepositoryAdapter:
         self._repository_id = repository_id
 
     def observe_git_identity(self) -> dict[str, Any]:
-        head = self._files.read_text(".git/HEAD").strip()
-        if not head.startswith("ref: refs/heads/"):
-            raise ValueError("detached Git HEAD is unavailable")
-        ref = head.removeprefix("ref: ")
-        branch = ref.removeprefix("refs/heads/")
-        commit = self._files.read_text(f".git/{ref}").strip()
-        if not _BRANCH.fullmatch(branch) or not _COMMIT.fullmatch(commit):
-            raise ValueError("malformed Git identity")
+        head = _single_git_line(self._files.read_text(".git/HEAD"))
+        if _COMMIT.fullmatch(head):
+            branch, commit = "HEAD", head
+        elif head.startswith("ref: "):
+            ref = head.removeprefix("ref: ")
+            if not _safe_ref_name(ref):
+                raise ValueError("unsafe Git HEAD reference")
+            branch = ref.removeprefix("refs/heads/") if ref.startswith("refs/heads/") else ref
+            if not _BRANCH.fullmatch(branch):
+                raise ValueError("malformed Git branch")
+            commit = _GitObjectResolver(self._files).resolve(ref)
+        else:
+            raise ValueError("malformed Git HEAD")
         return {
             "repository_id": self._repository_id,
             "branch": branch,

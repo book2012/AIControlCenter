@@ -43,6 +43,110 @@ def test_git_identity_mapping(tmp_path: Path) -> None:
     assert result["commit"] == "a" * 40
 
 
+def _write_head(tmp_path: Path, value: str) -> GitRepositoryAdapter:
+    git = tmp_path / ".git"
+    git.mkdir(exist_ok=True)
+    (git / "HEAD").write_text(value, encoding="utf-8")
+    return GitRepositoryAdapter(RepositoryFileReader(tmp_path))
+
+
+def test_git_identity_resolves_branch_only_in_packed_refs(tmp_path: Path) -> None:
+    adapter = _write_head(tmp_path, "ref: refs/heads/feature/packed\n")
+    (tmp_path / ".git/packed-refs").write_text(
+        "# pack-refs with: peeled fully-peeled sorted\n"
+        + "b" * 40 + " refs/heads/feature/packed\n"
+        + "^" + "c" * 40 + "\n",
+        encoding="utf-8",
+    )
+    result = adapter.observe_git_identity()
+    assert result["branch"] == "feature/packed"
+    assert result["commit"] == "b" * 40
+
+
+def test_git_identity_resolves_loose_symbolic_branch_ref(tmp_path: Path) -> None:
+    adapter = _write_head(tmp_path, "ref: refs/heads/current\n")
+    git = tmp_path / ".git"
+    (git / "refs/heads").mkdir(parents=True)
+    (git / "refs/heads/current").write_text(
+        "ref: refs/heads/target\n", encoding="utf-8"
+    )
+    (git / "refs/heads/target").write_text("c" * 40 + "\n", encoding="utf-8")
+    result = adapter.observe_git_identity()
+    assert result["branch"] == "current"
+    assert result["commit"] == "c" * 40
+
+
+def test_git_identity_accepts_detached_full_object_id(tmp_path: Path) -> None:
+    result = _write_head(tmp_path, "d" * 40 + "\n").observe_git_identity()
+    assert result["branch"] == "HEAD"
+    assert result["commit"] == "d" * 40
+
+
+def test_packed_refs_use_exact_name_not_similar_prefix(tmp_path: Path) -> None:
+    adapter = _write_head(tmp_path, "ref: refs/heads/release\n")
+    (tmp_path / ".git/packed-refs").write_text(
+        "e" * 40 + " refs/heads/release-candidate\n"
+        + "f" * 40 + " refs/heads/release\n",
+        encoding="utf-8",
+    )
+    assert adapter.observe_git_identity()["commit"] == "f" * 40
+
+
+@pytest.mark.parametrize(
+    "setup",
+    [
+        "missing",
+        "malformed-packed",
+        "abbreviated",
+        "invalid-object",
+        "whitespace-object",
+        "unsafe",
+        "cycle",
+        "depth",
+    ],
+)
+def test_git_identity_fails_closed_for_invalid_refs(tmp_path: Path, setup: str) -> None:
+    git = tmp_path / ".git"
+    (git / "refs/heads").mkdir(parents=True)
+    head = "ref: refs/heads/missing\n"
+    if setup == "malformed-packed":
+        (git / "packed-refs").write_text(
+            "short refs/heads/missing\n", encoding="utf-8"
+        )
+    elif setup == "abbreviated":
+        head = "a" * 12 + "\n"
+    elif setup == "invalid-object":
+        head = "g" * 40 + "\n"
+    elif setup == "whitespace-object":
+        head = "a" * 40 + " \n"
+    elif setup == "unsafe":
+        head = "ref: refs/heads/../secret\n"
+    elif setup == "cycle":
+        head = "ref: refs/heads/one\n"
+        (git / "refs/heads/one").write_text("ref: refs/heads/two\n", encoding="utf-8")
+        (git / "refs/heads/two").write_text("ref: refs/heads/one\n", encoding="utf-8")
+    elif setup == "depth":
+        head = "ref: refs/heads/0\n"
+        for index in range(17):
+            (git / f"refs/heads/{index}").write_text(
+                f"ref: refs/heads/{index + 1}\n", encoding="utf-8"
+            )
+    adapter = _write_head(tmp_path, head)
+    with pytest.raises(ValueError):
+        adapter.observe_git_identity()
+
+
+def test_duplicate_exact_packed_ref_is_rejected(tmp_path: Path) -> None:
+    adapter = _write_head(tmp_path, "ref: refs/heads/duplicate\n")
+    (tmp_path / ".git/packed-refs").write_text(
+        "a" * 40 + " refs/heads/duplicate\n"
+        + "b" * 40 + " refs/heads/duplicate\n",
+        encoding="utf-8",
+    )
+    with pytest.raises(ValueError, match="ambiguous"):
+        adapter.observe_git_identity()
+
+
 def test_runtime_metadata_mapping() -> None:
     result = RuntimeMetadataFileAdapter(
         RepositoryFileReader(ROOT),
