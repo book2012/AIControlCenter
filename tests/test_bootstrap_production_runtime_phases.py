@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import os
 import shutil
+import stat
 import subprocess
 import sys
 from pathlib import Path
@@ -156,6 +157,10 @@ def make_release(
 
 def test_shell_syntax() -> None:
     assert subprocess.run(["bash", "-n", str(SCRIPT)], check=False).returncode == 0
+
+
+def test_canonical_builder_is_executable() -> None:
+    assert SCRIPT.stat().st_mode & stat.S_IXUSR
 
 
 @pytest.mark.parametrize("arguments", [(), ("--mode", "invalid")])
