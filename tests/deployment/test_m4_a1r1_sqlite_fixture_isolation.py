@@ -19,6 +19,7 @@ def test_retained_snapshot_is_immutable_and_sqlite_sidecars_are_confined(
             sqlite_snapshot_workspace.operational,
             sqlite_snapshot_workspace.evidence,
             sqlite_snapshot_workspace.recovery,
+            sqlite_snapshot_workspace.trusted_binding,
         )
     ).validate()
 

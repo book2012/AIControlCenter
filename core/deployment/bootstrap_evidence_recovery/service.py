@@ -34,10 +34,40 @@ from core.deployment.permit_replay_sqlite import (
 TASK = "M3-A4B3"
 BRANCH = "feature/deployment-package"
 COMMIT = "f7a81b73b86c170300bb6b80f437dbb753362f7e"
-AUTHORIZATION_ID = "m3-a4b2b2b-r2-60cc9ee1f8cf6c9a55a97cea3224786d"
-PERMIT_ID = "m3-a4b2b2b-r4-permit-a72d2e43cc42cf05150884e95919d4b7"
-CLAIM_ID = "m3-a4b2b2a-claim-ef74c0c861feb6868e45999396e6f6db"
 INSPECTED_AT = "2026-07-30T14:11:03.162569+00:00"
+
+
+@dataclass(frozen=True, slots=True)
+class TrustedBootstrapEvidenceBinding:
+    """Out-of-band identities trusted by evidence recovery validation."""
+
+    requester_identity: str
+    operator_identity: str
+    independent_approver_identity: str
+    authorization_id: str
+    authorization_digest: str
+    permit_id: str
+    permit_digest: str
+    claim_id: str
+    claim_digest: str
+
+    def __post_init__(self) -> None:
+        identities = (
+            self.requester_identity, self.operator_identity,
+            self.independent_approver_identity, self.authorization_id,
+            self.permit_id, self.claim_id,
+        )
+        digests = (self.authorization_digest, self.permit_digest, self.claim_digest)
+        if (any(not isinstance(value, str) or not value for value in identities)
+                or self.operator_identity == self.independent_approver_identity
+                or any(not isinstance(value, str) or len(value) != 71
+                       or not value.startswith("sha256:")
+                       or any(character not in "0123456789abcdef" for character in value[7:])
+                       for value in digests)):
+            raise BootstrapEvidenceRecoveryError("TRUSTED_BINDING_INCOMPLETE")
+
+    def as_dict(self) -> dict[str, str]:
+        return {name: getattr(self, name) for name in self.__dataclass_fields__}
 
 
 class BootstrapEvidenceRecoveryError(RuntimeError):
@@ -53,11 +83,14 @@ class BootstrapEvidenceRecoveryConfig:
     operational_snapshot: Path
     evidence_snapshot: Path
     recovery_work: Path
+    trusted_binding: TrustedBootstrapEvidenceBinding | None = None
     expected_uid: int = os.getuid()
     branch: str = BRANCH
     commit: str = COMMIT
 
     def __post_init__(self) -> None:
+        if not isinstance(self.trusted_binding, TrustedBootstrapEvidenceBinding):
+            raise BootstrapEvidenceRecoveryError("TRUSTED_BINDING_REQUIRED")
         for name in ("operational_snapshot", "evidence_snapshot", "recovery_work"):
             path = Path(getattr(self, name))
             if not path.is_absolute() or ".." in path.parts:
@@ -199,9 +232,11 @@ class BootstrapEvidenceRecoveryValidator:
                 raise BootstrapEvidenceRecoveryError("GIT_BINDING_MISMATCH")
         if approval.get("status") != "APPROVED":
             raise BootstrapEvidenceRecoveryError("APPROVAL_INVALID")
+        trusted = self.config.trusted_binding
         if (approval.get("requester_identity"), approval.get("operator_identity"),
                 approval.get("independent_approver_identity")) != (
-                "mac-account:kyouhan", "mac-account:kyouhan", "brightbok"):
+                trusted.requester_identity, trusted.operator_identity,
+                trusted.independent_approver_identity):
             raise BootstrapEvidenceRecoveryError("IDENTITY_BINDING_INVALID")
         if preflight.get("status") != "READY_WITH_RESTRICTIONS" or preflight.get("ubuntu_participation") is not False:
             raise BootstrapEvidenceRecoveryError("PREFLIGHT_INVALID")
@@ -225,7 +260,9 @@ class BootstrapEvidenceRecoveryValidator:
             raise BootstrapEvidenceRecoveryError("FULL_RESTRICTION_BINDING_INVALID")
         auth_content = dict(authorization)
         auth_digest = auth_content.pop("authorization_digest", None)
-        if auth_digest != canonical_digest(auth_content) or authorization.get("authorization_id") != AUTHORIZATION_ID:
+        if (auth_digest != canonical_digest(auth_content)
+                or auth_digest != trusted.authorization_digest
+                or authorization.get("authorization_id") != trusted.authorization_id):
             raise BootstrapEvidenceRecoveryError("AUTHORIZATION_DIGEST_INVALID")
         if authorization.get("request") != auth_request:
             raise BootstrapEvidenceRecoveryError("AUTHORIZATION_REQUEST_BINDING_INVALID")
@@ -237,16 +274,20 @@ class BootstrapEvidenceRecoveryValidator:
             raise BootstrapEvidenceRecoveryError("AUTHORIZATION_EVIDENCE_INVALID")
         permit_content = dict(permit)
         permit_digest = permit_content.pop("permit_digest", None)
-        if permit_digest != canonical_digest(permit_content) or permit.get("permit_id") != PERMIT_ID:
+        if (permit_digest != canonical_digest(permit_content)
+                or permit_digest != trusted.permit_digest
+                or permit.get("permit_id") != trusted.permit_id):
             raise BootstrapEvidenceRecoveryError("PERMIT_DIGEST_INVALID")
-        if issuance != {"permit_digest": permit_digest, "permit_id": PERMIT_ID}:
+        if issuance != {"permit_digest": permit_digest, "permit_id": trusted.permit_id}:
             raise BootstrapEvidenceRecoveryError("PERMIT_ISSUANCE_BINDING_INVALID")
-        if claim.get("permit_id") != PERMIT_ID or claim.get("permit_digest") != permit_digest:
+        if claim.get("permit_id") != trusted.permit_id or claim.get("permit_digest") != permit_digest:
             raise BootstrapEvidenceRecoveryError("CLAIM_BINDING_INVALID")
         claim_digest = canonical_digest(claim)
-        if CLAIM_ID != "m3-a4b2b2a-claim-" + claim_digest[7:39]:
+        if (claim_digest != trusted.claim_digest
+                or trusted.claim_id != "m3-a4b2b2a-claim-" + claim_digest[7:39]):
             raise BootstrapEvidenceRecoveryError("CLAIM_DIGEST_INVALID")
-        if receipt.get("permit_id") != PERMIT_ID or receipt.get("claim_id") != CLAIM_ID:
+        if (receipt.get("permit_id") != trusted.permit_id
+                or receipt.get("claim_id") != trusted.claim_id):
             raise BootstrapEvidenceRecoveryError("RECEIPT_BINDING_INVALID")
         if receipt.get("status") != "COMPLETE" or receipt.get("findings") != []:
             raise BootstrapEvidenceRecoveryError("RECEIPT_FAILED")
@@ -271,7 +312,7 @@ class BootstrapEvidenceRecoveryValidator:
                 or not all(item.get("passed") is True for item in post.get("checks", ()))):
             raise BootstrapEvidenceRecoveryError("POST_BOOTSTRAP_VALIDATION_INVALID")
         if (post.get("activation_authorization_id"), post.get("permit_id"), post.get("claim_id")) != (
-                AUTHORIZATION_ID, PERMIT_ID, CLAIM_ID):
+                trusted.authorization_id, trusted.permit_id, trusted.claim_id):
             raise BootstrapEvidenceRecoveryError("CROSS_BINDING_INVALID")
         issued, claimed, completed = map(_time, (
             permit["issued_at"], claim["claimed_at"], receipt["completed_at"]))
@@ -419,16 +460,16 @@ class BootstrapEvidenceRecoveryValidator:
             "artifact_digests": artifact_digests,
             "audit_inspection": audit,
             "audit_recovery": audit_recovery,
-            "authorization_id": AUTHORIZATION_ID,
+            "authorization_id": self.config.trusted_binding.authorization_id,
             "blockers": [],
             "branch": self.config.branch,
-            "claim_id": CLAIM_ID,
+            "claim_id": self.config.trusted_binding.claim_id,
             "commit": self.config.commit,
             "dispatch_active": False,
             "evidence_chain_status": "VALID",
             "monitoring_active": False,
             "operational_root_binding": sha256_digest(root),
-            "permit_id": PERMIT_ID,
+            "permit_id": self.config.trusted_binding.permit_id,
             "production_authorization": False,
             "readiness_decision": "READY_FOR_CONTROLLED_ACTIVATION_VALIDATION",
             "replay_inspection": replay,

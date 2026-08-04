@@ -17,7 +17,7 @@ from core.deployment.contracts import canonical_json_bytes
 
 
 @pytest.fixture
-def source_paths(sqlite_snapshot_workspace) -> tuple[Path, Path, Path]:
+def source_paths(sqlite_snapshot_workspace):
     return sqlite_snapshot_workspace.source_paths
 
 
@@ -30,7 +30,7 @@ def _work(source_paths, label: str) -> Path:
 def _validator(source_paths, label="valid"):
     recovery = _work(source_paths, label)
     return BootstrapEvidenceRecoveryValidator(BootstrapEvidenceRecoveryConfig(
-        source_paths[0], source_paths[1], recovery)), recovery
+        source_paths[0], source_paths[1], recovery, source_paths[3])), recovery
 
 
 def _copy_sources(source_paths, label: str):
@@ -61,9 +61,9 @@ def test_complete_evidence_chain_and_isolated_recovery(source_paths):
     assert report["evidence_chain_status"] == "VALID"
     assert report["branch"] == "feature/deployment-package"
     assert report["commit"] == "f7a81b73b86c170300bb6b80f437dbb753362f7e"
-    assert report["authorization_id"].endswith("60cc9ee1f8cf6c9a55a97cea3224786d")
-    assert report["permit_id"].endswith("a72d2e43cc42cf05150884e95919d4b7")
-    assert report["claim_id"].endswith("ef74c0c861feb6868e45999396e6f6db")
+    assert report["authorization_id"] == source_paths[3].authorization_id
+    assert report["permit_id"] == source_paths[3].permit_id
+    assert report["claim_id"] == source_paths[3].claim_id
     assert report["audit_inspection"]["status"] == "HEALTHY"
     assert report["audit_inspection"]["event_count"] == 0
     assert report["replay_inspection"]["status"] == "HEALTHY"
@@ -106,7 +106,7 @@ def test_tampered_evidence_is_rejected(source_paths, artifact, mutation, code):
     operational, evidence, recovery = _copy_sources(source_paths, artifact)
     _rewrite(evidence / artifact, mutation)
     validator = BootstrapEvidenceRecoveryValidator(
-        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery))
+        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery, source_paths[3]))
     with pytest.raises(BootstrapEvidenceRecoveryError, match=code):
         validator.validate()
 
@@ -115,7 +115,7 @@ def test_failure_evidence_and_second_claim_are_rejected(source_paths):
     operational, evidence, recovery = _copy_sources(source_paths, "extra-evidence")
     (evidence / "failure-evidence.json").write_bytes(canonical_json_bytes({"status": "FAILED"}))
     validator = BootstrapEvidenceRecoveryValidator(
-        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery))
+        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery, source_paths[3]))
     with pytest.raises(BootstrapEvidenceRecoveryError, match="FAILURE_EVIDENCE_PRESENT"):
         validator.validate()
     (evidence / "failure-evidence.json").unlink()
@@ -140,7 +140,7 @@ def test_corrupt_and_cross_service_backups_fail_closed(source_paths, kind, code)
     audit_backup = operational / "audit/backups/baseline.sqlite3"
     audit_manifest = operational / "audit/backups/baseline.manifest.json"
     validator = BootstrapEvidenceRecoveryValidator(
-        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery))
+        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery, source_paths[3]))
     if kind == "missing":
         audit_manifest.unlink()
     elif kind == "empty":
@@ -160,7 +160,7 @@ def test_corrupt_and_cross_service_backups_fail_closed(source_paths, kind, code)
         shutil.copyfile(audit_backup, replay)
         _rewrite(replay_manifest, lambda value: value.update(
             database_byte_digest=BootstrapEvidenceRecoveryValidator(
-                BootstrapEvidenceRecoveryConfig(operational, evidence, recovery)
+                BootstrapEvidenceRecoveryConfig(operational, evidence, recovery, source_paths[3])
             )._restore.__self__ and __import__("hashlib").sha256(replay.read_bytes()).hexdigest()))
         _rewrite(replay_manifest, lambda value: value.update(
             database_byte_digest="sha256:" + value["database_byte_digest"]))
@@ -183,7 +183,7 @@ def test_permissions_symlinks_and_unsafe_destinations_rejected(source_paths):
     database = operational / "audit/audit-ledger.sqlite3"
     os.chmod(database, 0o644)
     validator = BootstrapEvidenceRecoveryValidator(
-        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery))
+        BootstrapEvidenceRecoveryConfig(operational, evidence, recovery, source_paths[3]))
     with pytest.raises(BootstrapEvidenceRecoveryError, match="FILE_MODE_INVALID"):
         validator.validate()
     os.chmod(database, 0o600)

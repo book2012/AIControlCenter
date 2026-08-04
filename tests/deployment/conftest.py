@@ -10,6 +10,9 @@ from pathlib import Path
 
 import pytest
 
+from core.deployment.bootstrap_evidence_recovery import TrustedBootstrapEvidenceBinding
+from tests.support.operational_snapshot_factory import OperationalSnapshotFactory
+
 
 _SNAPSHOT_ENVIRONMENT = (
     "AICONTROLCENTER_M3_A4B3_OPERATIONAL_SNAPSHOT",
@@ -58,6 +61,7 @@ class RetainedSQLiteSnapshot:
     operational: Path
     evidence: Path
     recovery_work: Path
+    trusted_binding: TrustedBootstrapEvidenceBinding
     operational_state: tuple[SnapshotEntry, ...]
     evidence_state: tuple[SnapshotEntry, ...]
 
@@ -92,8 +96,12 @@ class SQLiteSnapshotWorkspace:
     recovery: Path
 
     @property
-    def source_paths(self) -> tuple[Path, Path, Path]:
-        return self.operational, self.evidence, self.recovery
+    def trusted_binding(self) -> TrustedBootstrapEvidenceBinding:
+        return self.retained.trusted_binding
+
+    @property
+    def source_paths(self):
+        return self.operational, self.evidence, self.recovery, self.trusted_binding
 
     def sqlite_sidecars(self) -> tuple[Path, ...]:
         return tuple(sorted(
@@ -104,18 +112,20 @@ class SQLiteSnapshotWorkspace:
 
 @pytest.fixture(scope="session")
 def retained_sqlite_snapshot() -> RetainedSQLiteSnapshot:
+    generated = OperationalSnapshotFactory(Path(__file__).parents[2]).create()
     operational, evidence, recovery_work = (
-        Path(os.environ[name]) for name in _SNAPSHOT_ENVIRONMENT
-    )
+        Path(generated.environment[name]) for name in _SNAPSHOT_ENVIRONMENT)
     retained = RetainedSQLiteSnapshot(
         operational=operational,
         evidence=evidence,
         recovery_work=recovery_work,
+        trusted_binding=generated.trusted_binding,
         operational_state=snapshot_state(operational),
         evidence_state=snapshot_state(evidence),
     )
     yield retained
     retained.assert_unchanged()
+    generated.cleanup()
 
 
 @pytest.fixture
