@@ -1,5 +1,38 @@
 # AI Home Datacenter Architecture
 
+## Verified test, Git identity, and immutable Runtime boundaries
+
+The Mac mini M4 remains the always-on Brain and sole Control Plane; Ubuntu
+remains an optional stateless infrastructure worker and owns no AI workload,
+business logic, application state, or Control Plane authority.
+
+Controlled bootstrap validation receives identities, authorization, permit,
+and claim identifiers and digests only through an immutable
+`TrustedBootstrapEvidenceBinding`. Missing, incomplete, inconsistent, or
+self-asserted-only binding evidence fails closed. The
+`ControlledBootstrapEvidenceGenerator` deterministically emits the exact
+canonical 14-artifact non-production evidence set, and operational snapshots
+consume the public `ControlledMacBootstrapExecutor` contracts. Historical
+retained host evidence and fixed historical identities are not test
+dependencies; writable test state is confined beneath `/private/tmp` with
+restrictive permissions.
+
+Repository identity observation is deterministic, file-backed, and strictly
+read-only. Exact loose refs take precedence over exact `packed-refs` fallback;
+detached full object IDs are supported, while symbolic resolution is bounded
+and cycle-detected. Unsafe, malformed, abbreviated, missing, or ambiguous refs
+fail closed. This boundary executes no subprocess and writes no Git metadata,
+and inventory responses retain the sanitized error boundary.
+
+Every new immutable Runtime release must atomically publish both
+`metadata.json` and a valid lowercase full-SHA
+`.aicontrolcenter-source-commit` marker before activation. Existing immutable
+releases must never be patched in place, and installed services must never
+reference the mutable repository `.venv`. A separately authorized new release
+must be built and validated before an atomic `runtime/current` switch. These
+contracts grant no Runtime build or activation, public access, or production
+write authority; production remains `NOT_AUTHORIZED`.
+
 ## R4 strict-live compatibility boundary
 
 The strict preflight reader alone permits the exact required governance field

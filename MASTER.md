@@ -1,5 +1,21 @@
 # MASTER
 
+## DOCS-RECONCILE-01 Current Gate
+
+Implementation and local verification are complete for `TEST-INFRA-02` at
+`95f2f9d7b302428889d28e377fece3deb33eaf8e`, `FIX-GIT-01` at
+`2bf553a733c3cb4c1d1b147f598fc7b696bd0318`, and the immutable Runtime source
+marker at `52f896f085186dc7fef65106942980d2cdaaf8ef`. The current clean Full Suite
+baseline is 2257 passed and 5 deselected; phase-specific warning and standalone
+counts remain recorded in CHANGELOG and PROJECT_HISTORY.
+
+Documentation reconciliation is the current gate. Subsequent, separate gates
+are push and remote verification, a newly built immutable Runtime from
+committed source, and localhost HTTP GET smoke for the Homepage and Product
+Management Console. Staging Caddy authentication and validation remain open.
+No push, Runtime build or activation, public opening, or production write was
+authorized by these commits. Production remains `NOT_AUTHORIZED`.
+
 OPS-01B-R5-R3A closes the runtime metadata source-marker implementation gap.
 Each new immutable runtime must contain `metadata.json` and the exact
 `.aicontrolcenter-source-commit` file before `runtime/current` activation. The

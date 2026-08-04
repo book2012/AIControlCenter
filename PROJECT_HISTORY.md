@@ -1,5 +1,36 @@
 # Project History
 
+## 2026-08-04 — TEST-INFRA-02 through Runtime source-marker verification
+
+`TEST-INFRA-01` ended blocked because its harness depended on retained host
+evidence and fixed historical identities. That was a test-infrastructure
+failure, not a product defect. `TEST-INFRA-02` replaced that dependency with an
+immutable trusted evidence binding and deterministic exact 14-artifact
+non-production generator. Commit
+`95f2f9d7b302428889d28e377fece3deb33eaf8e` passed 4 generator-focused tests,
+3 factory-focused tests, 74 clean-room targeted tests, and a clean-room Full
+Suite of 2244 passed, 5 deselected, with 437 warnings.
+
+Verification from a detached worktree then exposed a harness limitation: Git
+identity observation did not resolve the repository state presented there.
+Diagnosis isolated an actual product defect in exact ref discovery: the
+file-backed observer lacked correct `packed-refs` fallback. `FIX-GIT-01`, commit
+`2bf553a733c3cb4c1d1b147f598fc7b696bd0318`, corrected loose-ref precedence,
+exact packed-ref lookup, detached full-SHA handling, and bounded symbolic-ref
+resolution without subprocesses or metadata writes. Both focused phases passed
+27 tests; the main pre-commit Full Suite was 2257 passed, 5 deselected, with
+437 warnings, while standalone commit verification was 2251 passed,
+5 deselected, with 435 warnings. Thus the detached-worktree constraint was a
+harness limitation, while the packed-ref behavior was a product defect.
+
+Commit `52f896f085186dc7fef65106942980d2cdaaf8ef` then added the atomic immutable
+Runtime source commit marker and fail-closed activation requirement. Runtime
+focused verification passed 15 tests; the clean main and standalone Full
+Suites each passed 2257 with 5 deselected, reporting 437 and 435 warnings
+respectively. No existing release was patched, and no Runtime build,
+`runtime/current` switch, service, launchd, Caddy, push, public opening, or
+production authorization occurred. Production remained `NOT_AUTHORIZED`.
+
 ## 2026-08-04 — OPS-01B-R5-R3A
 
 Closed the source-identity metadata gap without touching production. Runtime

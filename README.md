@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## Current verified platform status
+
+AIControlCenter remains the Mac mini M4-owned Control Plane, with Ubuntu only
+as an optional stateless infrastructure worker. Controlled bootstrap tests now
+use immutable trusted evidence binding and a deterministic canonical
+non-production evidence generator instead of historical host evidence. Git
+identity inspection is file-backed and read-only, with loose-ref precedence,
+exact packed-ref fallback, detached-HEAD support, and fail-closed bounded
+symbolic resolution.
+
+Immutable Runtime releases require an atomic source-commit marker paired with
+their metadata; existing releases cannot be repaired in place, installed
+services cannot use the repository `.venv`, and activation requires a newly
+built and validated release plus an atomic `runtime/current` switch. The
+current clean Full Suite baseline is **2257 passed, 5 deselected**.
+
+The internal Homepage and Product Management Console are implemented but have
+not completed localhost HTTP smoke, staging, Caddy authentication, public
+exposure, or Runtime deployment gates. Production remains
+`NOT_AUTHORIZED`, and production writes remain disabled.
+
 M3-A4B2B2B-R4 aligns the strict preflight and live permit contracts. The exact
 Boolean `ubuntu_participation=false` is accepted only as Ubuntu
 non-participation evidence; all unsafe alternatives remain default-deny.

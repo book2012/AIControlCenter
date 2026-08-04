@@ -1,5 +1,27 @@
 # TODO
 
+## DOCS-RECONCILE-01 release gates
+
+- [x] `TEST-INFRA-02` trusted evidence binding, deterministic canonical
+  evidence generation, and local verification
+  (`95f2f9d7b302428889d28e377fece3deb33eaf8e`).
+- [x] `FIX-GIT-01` read-only loose-ref/packed-ref identity correction and local
+  verification (`2bf553a733c3cb4c1d1b147f598fc7b696bd0318`).
+- [x] Immutable Runtime source marker implementation and local verification
+  (`52f896f085186dc7fef65106942980d2cdaaf8ef`).
+- [ ] Commit this documentation reconciliation; it remains open until the
+  documentation change is committed.
+- [ ] Push the three implementation commits and documentation commit, then
+  verify the remote branch and repository synchronization.
+- [ ] Build and validate a new immutable Runtime from committed source under
+  separate authorization; do not patch an existing release.
+- [ ] Run localhost HTTP GET smoke for `/homepage` and
+  `/homepage/product-management` after the immutable Runtime gate.
+- [ ] Configure and validate staging Caddy authentication and monitoring before
+  any separately authorized public opening.
+- [ ] Obtain explicit production authorization. Until then, production and
+  production writes remain `NOT_AUTHORIZED`.
+
 - [x] OPS-01B-R5-R3A generate and validate the immutable runtime source commit
   marker atomically with `metadata.json`.
 - [ ] OPS-01B-R5-R3 build a new immutable runtime from committed Git source

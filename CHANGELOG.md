@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## 2026-08-04 — DOCS-RECONCILE-01 verified implementation baseline
+
+- `95f2f9d7b302428889d28e377fece3deb33eaf8e` (`TEST-INFRA-02`) replaced
+  historical-host test dependencies with an immutable trusted evidence binding
+  and deterministic canonical 14-artifact non-production generator. Focused
+  verification was 4 generator tests and 3 factory tests; clean-room targeted
+  verification was 74 passed, and its phase Full Suite was 2244 passed,
+  5 deselected, with 437 warnings.
+- `2bf553a733c3cb4c1d1b147f598fc7b696bd0318` (`FIX-GIT-01`) corrected the
+  read-only file-backed Git identity observer with loose-ref precedence,
+  exact-match `packed-refs` fallback, detached-HEAD support, and bounded
+  symbolic-ref resolution. Codex-focused and host-targeted verification were
+  each 27 passed; the pre-commit main Full Suite was 2257 passed, 5 deselected,
+  with 437 warnings, and the standalone commit Full Suite was 2251 passed,
+  5 deselected, with 435 warnings.
+- `52f896f085186dc7fef65106942980d2cdaaf8ef` added the atomic immutable
+  Runtime source commit marker and fail-closed activation contract. Runtime
+  focused verification was 15 passed; both main and standalone clean Full
+  Suites were 2257 passed and 5 deselected, with 437 and 435 warnings
+  respectively.
+- These were phase-specific verification gates. No push, Runtime build or
+  activation, service/launchd/Caddy change, public opening, or production
+  authorization occurred; production remains `NOT_AUTHORIZED`.
+
 ## 2026-08-04 — OPS-01B-R5-R3A Runtime Source Commit Marker
 
 - Made runtime metadata generation publish both `metadata.json` and the exact
