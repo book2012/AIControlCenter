@@ -408,24 +408,40 @@ committed Git source.
 
 ### Runtime Activation Gate
 
-The canonical Runtime bootstrap performs:
+The canonical macOS Runtime builder has two explicit public modes and three
+internal phases:
 
 ```text
-Runtime Contract validation
+--mode build
+  Runtime Contract validation
   -> repository commit validation
   -> clean Git validation
-  -> commit-specific virtual environment
+  -> owned staging virtual environment
   -> dependency installation
   -> application import validation
   -> test suite
   -> metadata generation
   -> metadata schema validation
-  -> runtime/current activation
+  -> atomic finalization as an immutable commit-specific release
+
+--mode activate
+  finalized release validation
+  -> exact source-marker and metadata validation
+  -> atomic runtime/current switch
 ```
 
-Metadata generation and validation occur before the `runtime/current` symlink is changed.
+Build mode cannot change `runtime/current`. Finalized releases are immutable;
+an existing release fails closed and is never repaired or patched in place.
+Activation is a distinct, explicit, independently authorized operation. An
+invocation without a valid explicit mode fails closed, and the mutable
+repository `.venv` is never an activation candidate.
 
-A metadata failure prevents Runtime activation.
+Metadata or source-marker failure prevents finalization and activation. A
+service restart is a further, separate operational gate and is performed by
+neither mode. The Mac mini M4 remains the sole Control Plane. Ubuntu remains
+an optional stateless infrastructure worker and owns no AI workload, business
+logic, application state, or Control Plane authority. Production remains
+`NOT_AUTHORIZED`.
 
 ### Safety Policy
 
