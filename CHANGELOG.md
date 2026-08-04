@@ -1,5 +1,35 @@
 # CHANGELOG
 
+## 2026-08-04 — RUNTIME-BUILD-02A phased Runtime builder
+
+- `5517fdb25a68c65f1bc8db03110900aa44ff173f` made an explicit mode mandatory
+  and separated BUILD/VALIDATE from ACTIVATE. Build installs dependencies only
+  in an owned staging release, generates and validates metadata plus the exact
+  source marker, and atomically finalizes an immutable release without changing
+  `runtime/current` or patching an existing finalized release.
+- Activation accepts only an already finalized validated release, revalidates
+  its source marker, metadata, and Runtime Python, and atomically switches
+  `runtime/current`. It does not install dependencies, restart services, or call
+  `launchctl`; missing or invalid modes fail closed.
+- Initial targeted verification was 18 passed. The main Full Suite was 2270
+  passed, 5 deselected, with 437 warnings; the standalone Full Suite was 2270
+  passed, 5 deselected, with 435 warnings.
+
+## 2026-08-04 — RUNTIME-BUILD-02B executable contract correction
+
+- `f8f2890178c78862cff53362fd167982fa672c99` restored the canonical builder's
+  Git mode from the RUNTIME-BUILD-02A regression of `100755` to `100644` back
+  to `100755`; builder content remained byte-for-byte unchanged.
+- Added a deterministic executable-bit regression test. Main and standalone
+  targeted verification were each 19 passed. Their Full Suites were each 2271
+  passed and 5 deselected, with 437 and 435 warnings respectively.
+- Worktree, index, committed tree, and standalone clone all verified Git mode
+  `100755`. The initial pre-staging `git ls-files` blocker was a host gate error,
+  not a product defect.
+- No real Runtime build or activation, `runtime/current` change, existing
+  release modification, service restart, `launchctl` or Caddy operation, push,
+  or production authorization occurred. Production remains `NOT_AUTHORIZED`.
+
 ## 2026-08-04 — DOCS-RECONCILE-01 verified implementation baseline
 
 - `95f2f9d7b302428889d28e377fece3deb33eaf8e` (`TEST-INFRA-02`) replaced

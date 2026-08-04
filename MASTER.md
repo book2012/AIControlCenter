@@ -1,20 +1,32 @@
 # MASTER
 
-## DOCS-RECONCILE-01 Current Gate
+## RUNTIME-BUILD-02 Documentation Reconciliation Current Gate
 
-Implementation and local verification are complete for `TEST-INFRA-02` at
-`95f2f9d7b302428889d28e377fece3deb33eaf8e`, `FIX-GIT-01` at
-`2bf553a733c3cb4c1d1b147f598fc7b696bd0318`, and the immutable Runtime source
-marker at `52f896f085186dc7fef65106942980d2cdaaf8ef`. The current clean Full Suite
-baseline is 2257 passed and 5 deselected; phase-specific warning and standalone
-counts remain recorded in CHANGELOG and PROJECT_HISTORY.
+RUNTIME-BUILD-02A is locally complete and verified at
+`5517fdb25a68c65f1bc8db03110900aa44ff173f`. The canonical macOS builder now
+requires an explicit fail-closed mode, separates BUILD/VALIDATE from ACTIVATE,
+builds only in owned staging, and atomically finalizes immutable releases
+without changing `runtime/current`. Activation accepts and revalidates only an
+already finalized release, atomically switches `runtime/current`, and performs
+no dependency installation, service restart, or `launchctl` operation.
 
-Documentation reconciliation is the current gate. Subsequent, separate gates
-are push and remote verification, a newly built immutable Runtime from
-committed source, and localhost HTTP GET smoke for the Homepage and Product
-Management Console. Staging Caddy authentication and validation remain open.
-No push, Runtime build or activation, public opening, or production write was
-authorized by these commits. Production remains `NOT_AUTHORIZED`.
+RUNTIME-BUILD-02B is locally complete and verified at
+`f8f2890178c78862cff53362fd167982fa672c99`. It restores the canonical builder
+Git mode to `100755` after the RUNTIME-BUILD-02A `100644` regression and adds a
+deterministic executable-mode regression test. Local HEAD is
+`f8f2890178c78862cff53362fd167982fa672c99`; remote HEAD remains
+`e31f1cf7eb4efe78e8a88dd37398ba76f8a08987`, so the branch is locally ahead by
+the two Runtime builder commits. The current clean Full Suite baseline is 2271
+passed and 5 deselected; phase-specific counts are recorded in CHANGELOG and
+PROJECT_HISTORY.
+
+Documentation reconciliation is the current gate. Push and remote SHA
+verification, real build-only execution, new release marker/metadata/import
+validation, `runtime/current` invariance evidence, direct localhost Homepage
+and Product Management smoke, separately authorized activation and rollback,
+the service restart gate, and Caddy authenticated read-only staging remain
+open. No real Runtime build, activation, rollback, service or Caddy operation,
+or production authorization occurred. Production remains `NOT_AUTHORIZED`.
 
 OPS-01B-R5-R3A closes the runtime metadata source-marker implementation gap.
 Each new immutable runtime must contain `metadata.json` and the exact

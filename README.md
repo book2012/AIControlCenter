@@ -10,11 +10,15 @@ identity inspection is file-backed and read-only, with loose-ref precedence,
 exact packed-ref fallback, detached-HEAD support, and fail-closed bounded
 symbolic resolution.
 
-Immutable Runtime releases require an atomic source-commit marker paired with
-their metadata; existing releases cannot be repaired in place, installed
-services cannot use the repository `.venv`, and activation requires a newly
-built and validated release plus an atomic `runtime/current` switch. The
-current clean Full Suite baseline is **2257 passed, 5 deselected**.
+The canonical macOS Runtime builder requires an explicit `build` or `activate`
+mode and fails closed otherwise. Build uses owned staging, validates metadata
+and the exact source marker, atomically finalizes an immutable release, and
+preserves `runtime/current`. Activation is separately authorized, accepts only
+an already finalized validated release, and atomically switches
+`runtime/current` without installing dependencies or restarting services. The
+builder is executable with Git mode `100755`, protected by a deterministic
+regression test. The current clean Full Suite baseline is **2271 passed,
+5 deselected**; no real new Runtime release has been built.
 
 The internal Homepage and Product Management Console are implemented but have
 not completed localhost HTTP smoke, staging, Caddy authentication, public
@@ -394,12 +398,13 @@ The Dashboard response includes:
 - Runtime metadata validation status
 
 Runtime identity requires immutable `metadata.json` and
-`.aicontrolcenter-source-commit` files generated together during the
-commit-specific Runtime build. The marker is an exact lowercase 40-character
-Git SHA plus one newline. Generation and validation precede `runtime/current`
-activation, and the Shadow daemon fails closed when the marker is missing or
-invalid. Existing immutable releases are not repaired in place; build a new
-release from committed Git source.
+`.aicontrolcenter-source-commit` files generated together during explicit
+build mode. The marker is an exact lowercase 40-character Git SHA plus one
+newline. Build finalizes only after generation and validation and does not
+change `runtime/current`. Explicit, separately authorized activate mode
+revalidates the finalized release before the atomic switch, and the Shadow
+daemon fails closed when the marker is missing or invalid. Existing immutable
+releases are not repaired in place.
 
 Dashboard requests do not execute Git, `launchctl`, or shell commands.
 

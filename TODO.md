@@ -1,6 +1,6 @@
 # TODO
 
-## DOCS-RECONCILE-01 release gates
+## RUNTIME-BUILD-02 release gates
 
 - [x] `TEST-INFRA-02` trusted evidence binding, deterministic canonical
   evidence generation, and local verification
@@ -9,15 +9,31 @@
   verification (`2bf553a733c3cb4c1d1b147f598fc7b696bd0318`).
 - [x] Immutable Runtime source marker implementation and local verification
   (`52f896f085186dc7fef65106942980d2cdaaf8ef`).
+- [x] Implement phased BUILD/VALIDATE and ACTIVATE modes
+  (`5517fdb25a68c65f1bc8db03110900aa44ff173f`).
+- [x] Require an explicit mode and fail closed for missing or invalid modes.
+- [x] Build through owned staging and atomically finalize immutable releases
+  without patching existing releases or changing `runtime/current`.
+- [x] Restore the canonical builder Git mode to `100755`
+  (`f8f2890178c78862cff53362fd167982fa672c99`).
+- [x] Add deterministic executable-mode regression coverage.
+- [x] Complete local main and standalone targeted and Full Suite verification;
+  current baseline: 2271 passed, 5 deselected.
 - [ ] Commit this documentation reconciliation; it remains open until the
   documentation change is committed.
-- [ ] Push the three implementation commits and documentation commit, then
-  verify the remote branch and repository synchronization.
-- [ ] Build and validate a new immutable Runtime from committed source under
-  separate authorization; do not patch an existing release.
-- [ ] Run localhost HTTP GET smoke for `/homepage` and
-  `/homepage/product-management` after the immutable Runtime gate.
-- [ ] Configure and validate staging Caddy authentication and monitoring before
+- [ ] Non-force push the two Runtime builder commits and documentation commit,
+  then verify the remote SHA and repository synchronization.
+- [ ] Execute a real `--mode build` under separate authorization.
+- [ ] Validate the new release source marker, metadata, Runtime Python, and
+  application import.
+- [ ] Capture evidence that `runtime/current` remains invariant during the real
+  build.
+- [ ] Run direct localhost HTTP GET smoke for `/homepage` and
+  `/homepage/product-management` after the immutable Runtime build gate.
+- [ ] Perform explicit activation and rollback only under separate
+  authorization.
+- [ ] Keep service restart behind its separate authorization gate.
+- [ ] Configure and validate Caddy authentication and read-only staging before
   any separately authorized public opening.
 - [ ] Obtain explicit production authorization. Until then, production and
   production writes remain `NOT_AUTHORIZED`.

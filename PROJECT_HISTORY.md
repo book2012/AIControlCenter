@@ -1,5 +1,40 @@
 # Project History
 
+## 2026-08-04 — RUNTIME-BUILD-02A and RUNTIME-BUILD-02B
+
+The canonical macOS Runtime builder audit found a monolithic flow whose
+successful execution unconditionally switched `runtime/current`. That coupled
+dependency installation, release construction, validation, and activation,
+preventing a build-only proof that preserved the active Runtime.
+
+RUNTIME-BUILD-02A, commit
+`5517fdb25a68c65f1bc8db03110900aa44ff173f`, replaced that flow with explicit
+fail-closed BUILD/VALIDATE and ACTIVATE modes. Build owns a staging release,
+installs dependencies only there, generates and validates metadata and the
+exact source marker, and atomically finalizes an immutable release without
+changing `runtime/current` or patching existing releases. Activation separately
+revalidates a finalized release and Runtime Python before the atomic current
+switch; it installs nothing and performs no service or `launchctl` action.
+Targeted verification passed 18 tests. Main and standalone Full Suites each
+passed 2270 with 5 deselected, reporting 437 and 435 warnings respectively.
+
+The refactor introduced a product regression: the canonical builder's Git mode
+changed from `100755` to `100644`. During correction, an initial host gate read
+`git ls-files` index mode before the executable change had been staged and
+reported a blocker. That was a host verification sequencing error, not another
+product defect. Correct verification checked the executable worktree, then the
+staged index, committed tree, and standalone clone.
+
+RUNTIME-BUILD-02B, commit
+`f8f2890178c78862cff53362fd167982fa672c99`, restored Git mode `100755` without
+changing builder bytes and added a deterministic executable-bit regression
+test. Main and standalone targeted runs each passed 19 tests. Main and
+standalone Full Suites each passed 2271 with 5 deselected, reporting 437 and
+435 warnings respectively; all four mode surfaces verified `100755`. No real
+Runtime build, activation, `runtime/current` change, existing-release change,
+service restart, `launchctl` or Caddy operation, push, or production
+authorization occurred. Production remained `NOT_AUTHORIZED`.
+
 ## 2026-08-04 — TEST-INFRA-02 through Runtime source-marker verification
 
 `TEST-INFRA-01` ended blocked because its harness depended on retained host
