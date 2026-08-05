@@ -1,5 +1,19 @@
 # TODO
 
+<!-- AICONTROLCENTER:ACTIVATION_01A:START -->
+## ACTIVATION-01B — Read-Only Activation Inspector
+
+- [ ] Define the versioned activation policy
+- [ ] Define the versioned localhost route manifest
+- [ ] Implement read-only Git identity inspection
+- [ ] Implement read-only Runtime pointer inspection
+- [ ] Implement read-only Python and `PYTHONPATH` inspection
+- [ ] Implement read-only launchd identity inspection
+- [ ] Implement canonical inspection evidence JSON Schema
+- [ ] Add no-mutation fixture integration tests
+- [ ] Keep Production `NOT_AUTHORIZED`
+<!-- AICONTROLCENTER:ACTIVATION_01A:END -->
+
 ## RUNTIME-BUILD-04A controlled gates
 
 - [x] Build and validate release `acd80ab9f6ae` from
@@ -14,7 +28,7 @@
 - [ ] Commit this documentation reconciliation.
 - [ ] Non-force push and verify the remote SHA and repository synchronization.
 - [ ] Hand off in a new chat before the activation risk boundary.
-- [ ] Design ACTIVATION-01A activation/rollback architecture and runbook only.
+- [x] Design ACTIVATION-01A activation/rollback architecture and runbook only.
 - [ ] Run a read-only activation preflight.
 - [ ] Perform a separately authorized atomic `runtime/current` switch.
 - [ ] Perform a separately authorized exact service restart.

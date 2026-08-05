@@ -1,5 +1,37 @@
 # Roadmap
 
+<!-- AICONTROLCENTER:ACTIVATION_01A:START -->
+## ACTIVATION-01A — Architecture and Runbook Only
+
+Status: `DOCUMENTATION_REVIEW_PASS`
+
+- [x] Atomic activation contract
+- [x] Exact service restart contract
+- [x] Post-activation localhost validation contract
+- [x] Fail-closed failure conditions
+- [x] Separate rollback authorization boundary
+- [x] Evidence requirements
+- [x] Production authorization boundary
+- [x] Repository `PYTHONPATH` limitation
+- [ ] Documentation commit and remote synchronization
+
+No operational activation is authorized.
+
+## ACTIVATION-01B — Read-Only Activation Inspector
+
+Status: `NOT_STARTED`
+
+- [ ] Versioned activation policy
+- [ ] Versioned localhost route manifest
+- [ ] Read-only Git and Runtime identity inspector
+- [ ] Read-only launchd identity inspection
+- [ ] Evidence JSON Schema validation
+- [ ] Fixture-based no-mutation integration tests
+- [ ] Authorization-review eligibility report
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01A:END -->
+
 M4-A3 is closed after deterministic test-only lifecycle and live-boundary
 isolation validation. Next is `M4-A4_READ_ONLY_OPERATIONAL_OBSERVATION` under
 separate architecture and authorization gates. No M4-A3 artifact is

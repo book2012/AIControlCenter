@@ -1,5 +1,31 @@
 # Project History
 
+<!-- AICONTROLCENTER:ACTIVATION_01A:START -->
+## 2026-08-05 — ACTIVATION-01A Architecture Decision
+
+ACTIVATION-01A documented the atomic Runtime activation boundary without
+performing an operational activation.
+
+The decision binds candidate Runtime `acd80ab9f6ae`, active Runtime
+`b9ad351a7241`, canonical serving target `core.api.shadow:app`, and
+LaunchDaemon `system/com.aicontrolcenter.api.shadow`.
+
+Runtime selection must use the existing atomic `runtime/current`
+symlink-replacement mechanism. Service restart remains a separate gate
+and may target only the exact loaded LaunchDaemon.
+
+Failed activation validation does not authorize automatic rollback.
+The previous Runtime target is rollback evidence only. Recovery requires
+new, separately authorized human approval.
+
+The candidate application source remains repository-bound through
+effective `PYTHONPATH`, so it is not yet a completely independent
+immutable application artifact.
+
+No Runtime pointer, service, launchd, Caddy, Ubuntu or public-access
+state changed. Production remained `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01A:END -->
+
 ## 2026-08-05 — RUNTIME-BUILD-04A build, evidence recovery, and smoke
 
 At source/documentation commit

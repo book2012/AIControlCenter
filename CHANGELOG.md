@@ -1,5 +1,40 @@
 # CHANGELOG
 
+<!-- AICONTROLCENTER:ACTIVATION_01A:START -->
+## 2026-08-05 — ACTIVATION-01A
+
+### Added
+
+- Atomic Runtime activation contract
+- Exact LaunchDaemon restart contract
+- Direct-localhost post-activation validation contract
+- Fail-closed activation failure conditions
+- Separate rollback authorization boundary
+- Canonical activation evidence requirements
+- Repository `PYTHONPATH` coupling limitation
+
+### Bound
+
+- Source/build baseline:
+  `acd80ab9f6aeb848900e1a19e3fa3afd69face8a`
+- Runtime build and smoke documentation commit:
+  `180d874bcbd17f74e6b816223fe3527f36332ecf`
+- Candidate Runtime: `acd80ab9f6ae`
+- Active Runtime: `b9ad351a7241`
+- Canonical serving target: `core.api.shadow:app`
+- LaunchDaemon: `system/com.aicontrolcenter.api.shadow`
+
+### Safety
+
+- `runtime/current` unchanged
+- Service restart count: zero
+- Rollback execution count: zero
+- launchd and Caddy changes: zero
+- Ubuntu changes: zero
+- Public opening count: zero
+- Production remains `NOT_AUTHORIZED`
+<!-- AICONTROLCENTER:ACTIVATION_01A:END -->
+
 ## 2026-08-05 — RUNTIME-BUILD-04A build and direct shadow smoke
 
 - Built and validated side-by-side release `acd80ab9f6ae` from

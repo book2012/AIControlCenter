@@ -1,5 +1,32 @@
 # AIControlCenter
 
+<!-- AICONTROLCENTER:ACTIVATION_01A:START -->
+## ACTIVATION-01A Runtime Activation
+
+Status: `DOCUMENTATION_REVIEW_PASS`
+
+Gate: `ACTIVATION-01A — Architecture and Runbook Only`
+
+The atomic Runtime activation contract is documented at
+`docs/operations/macos/ACTIVATION-01A-RUNTIME-ACTIVATION-CONTRACT.md`.
+
+Bound baseline:
+
+- Candidate Runtime: `acd80ab9f6ae`
+- Active Runtime: `b9ad351a7241`
+- Canonical serving target: `core.api.shadow:app`
+- LaunchDaemon: `system/com.aicontrolcenter.api.shadow`
+- Localhost listener: `127.0.0.1:18100`
+- Production: `NOT_AUTHORIZED`
+
+No Runtime switch, service restart, rollback, launchd or Caddy change,
+public opening, Ubuntu change or Production authorization occurred.
+
+The candidate application source remains repository-bound through
+effective `PYTHONPATH`. ACTIVATION-01B is the next read-only gate after
+the ACTIVATION-01A documentation commit.
+<!-- AICONTROLCENTER:ACTIVATION_01A:END -->
+
 ## Current verified platform status
 
 AIControlCenter remains the Mac mini M4-owned Control Plane, with Ubuntu only

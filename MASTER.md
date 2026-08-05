@@ -1,5 +1,30 @@
 # MASTER
 
+<!-- AICONTROLCENTER:ACTIVATION_01A:START -->
+## ACTIVATION-01A Runtime Activation Gate
+
+Status: `DOCUMENTATION_REVIEW_PASS`
+
+ACTIVATION-01A defines architecture and runbook contracts only.
+
+The contract binds atomic `runtime/current` replacement, the exact
+`system/com.aicontrolcenter.api.shadow` restart identity, localhost
+validation, fail-closed behavior, evidence requirements and a separate
+rollback authorization boundary.
+
+Candidate Runtime `acd80ab9f6ae` is not active. Active Runtime remains
+`b9ad351a7241`.
+
+The candidate application source remains coupled to the mutable
+repository through effective `PYTHONPATH`; this limitation must be
+removed or explicitly accepted before Production authorization.
+
+Production remains `NOT_AUTHORIZED`.
+
+Next controlled gate after documentation closeout:
+`ACTIVATION-01B — Read-Only Activation Inspector`.
+<!-- AICONTROLCENTER:ACTIVATION_01A:END -->
+
 ## RUNTIME-BUILD-04A Current Gate
 
 Build-only and direct localhost shadow smoke are complete for release
