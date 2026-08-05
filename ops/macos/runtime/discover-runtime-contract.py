@@ -63,6 +63,23 @@ ENVIRONMENT_PATTERN = re.compile(
     re.VERBOSE,
 )
 
+CANONICAL_RUNTIME_LAUNCHERS = (
+    "ops/macos/launchd/run-shadow-api.sh",
+    "ops/macos/launchd/run-shadow-daemon.sh",
+)
+
+UVICORN_TARGET_PATTERN = re.compile(
+    r"(?:^|\s)-m(?:[ \t]|\\\r?\n)+uvicorn"
+    r"(?:[ \t]|\\\r?\n)+([^\s\\]+)",
+    re.MULTILINE,
+)
+
+FULL_RUNTIME_TARGET_PATTERN = re.compile(
+    r"[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)+:[A-Za-z_]\w*\Z"
+)
+
+HTTP_PATH_PATTERN = re.compile(r"/(?!/)[^\s?#]*\Z")
+
 
 def run_command(
     arguments: list[str],
@@ -314,7 +331,7 @@ def discover_python_contract(
 ) -> dict[str, Any]:
     application_objects: list[dict[str, str]] = []
     explicit_uvicorn_targets: set[str] = set()
-    health_endpoints: list[dict[str, str]] = []
+    health_endpoints: set[tuple[str, str, str]] = set()
     environment_variables: set[str] = set()
     main_guard_files: set[str] = set()
     framework_files: dict[str, set[str]] = {
@@ -467,6 +484,10 @@ def discover_python_contract(
                 continue
 
             endpoint = first_argument.value
+
+            if HTTP_PATH_PATTERN.fullmatch(endpoint) is None:
+                continue
+
             endpoint_lower = endpoint.lower()
 
             if not any(
@@ -480,12 +501,12 @@ def discover_python_contract(
             ):
                 continue
 
-            health_endpoints.append(
-                {
-                    "file": relative,
-                    "method": method.upper(),
-                    "path": endpoint,
-                }
+            health_endpoints.add(
+                (
+                    relative,
+                    method.upper(),
+                    endpoint,
+                )
             )
 
     inferred_targets = {
@@ -494,10 +515,18 @@ def discover_python_contract(
         if item["framework"] == "fastapi"
     }
 
-    runtime_targets = sorted(
-        explicit_uvicorn_targets
-        | inferred_targets
+    inferred_runtime_targets = sorted(
+        explicit_uvicorn_targets | inferred_targets
     )
+
+    health_endpoint_output = [
+        {
+            "file": file,
+            "method": method,
+            "path": endpoint,
+        }
+        for file, method, endpoint in health_endpoints
+    ]
 
     framework_output = {
         framework: sorted(paths)
@@ -514,14 +543,13 @@ def discover_python_contract(
                 item["file"],
             ),
         ),
-        "runtime_targets": runtime_targets,
-        "runtime_target_ambiguous":
-            len(runtime_targets) != 1,
+        "inferred_runtime_targets": inferred_runtime_targets,
         "health_endpoints": sorted(
-            health_endpoints,
+            health_endpoint_output,
             key=lambda item: (
                 item["path"],
                 item["file"],
+                item["method"],
             ),
         ),
         "framework_files": framework_output,
@@ -531,6 +559,59 @@ def discover_python_contract(
         "main_guard_files": sorted(
             main_guard_files
         ),
+    }
+
+
+def discover_launcher_contract(root: Path) -> dict[str, Any]:
+    launchers: list[dict[str, Any]] = []
+
+    for relative in CANONICAL_RUNTIME_LAUNCHERS:
+        path = root / relative
+        targets: list[str] = []
+        error = ""
+
+        try:
+            source = path.read_text(encoding="utf-8")
+        except OSError:
+            error = "launcher_unavailable"
+        else:
+            targets = UVICORN_TARGET_PATTERN.findall(source)
+
+            if not targets:
+                error = "launcher_target_missing"
+            elif len(targets) != 1:
+                error = "launcher_target_multiple"
+            elif FULL_RUNTIME_TARGET_PATTERN.fullmatch(targets[0]) is None:
+                error = "launcher_target_malformed"
+
+        launchers.append(
+            {
+                "path": relative,
+                "targets": targets,
+                "valid": not error,
+                "error": error,
+            }
+        )
+
+    valid_targets = [
+        launcher["targets"][0]
+        for launcher in launchers
+        if launcher["valid"]
+    ]
+    all_valid = all(launcher["valid"] for launcher in launchers)
+    agreed = (
+        all_valid
+        and len(valid_targets) == len(CANONICAL_RUNTIME_LAUNCHERS)
+        and len(set(valid_targets)) == 1
+    )
+    selected_target = valid_targets[0] if agreed else None
+
+    return {
+        "canonical_launchers": launchers,
+        "targets": sorted(set(valid_targets)),
+        "all_valid": all_valid,
+        "agreed": agreed,
+        "selected_runtime_target": selected_target,
     }
 
 
@@ -596,6 +677,7 @@ def main() -> int:
         root,
         python_files,
     )
+    launcher_contract = discover_launcher_contract(root)
 
     dirty_lines = [
         line
@@ -608,18 +690,14 @@ def main() -> int:
     ]
 
     selected_dependency = dependency["selected"]
-    runtime_targets = python_contract[
-        "runtime_targets"
-    ]
+    runtime_targets = launcher_contract["targets"]
     health_endpoints = python_contract[
         "health_endpoints"
     ]
 
-    selected_runtime_target = (
-        runtime_targets[0]
-        if len(runtime_targets) == 1
-        else None
-    )
+    selected_runtime_target = launcher_contract[
+        "selected_runtime_target"
+    ]
 
     runtime_command = ""
 
@@ -653,7 +731,7 @@ def main() -> int:
         "runtime_target_selected":
             selected_runtime_target is not None,
         "runtime_target_unambiguous":
-            len(runtime_targets) == 1,
+            launcher_contract["agreed"],
         "health_endpoint_found":
             len(health_endpoints) > 0,
         "tests_found":
@@ -698,6 +776,10 @@ def main() -> int:
         "dependency": dependency,
         "application": {
             **python_contract,
+            "launcher_contract": launcher_contract,
+            "runtime_targets": runtime_targets,
+            "runtime_target_ambiguous":
+                not launcher_contract["agreed"],
             "selected_runtime_target":
                 selected_runtime_target,
             "recommended_runtime_command":
