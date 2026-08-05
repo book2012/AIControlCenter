@@ -1,5 +1,37 @@
 # Project History
 
+## 2026-08-05 — RUNTIME-BUILD-04A build, evidence recovery, and smoke
+
+At source/documentation commit
+`acd80ab9f6aeb848900e1a19e3fa3afd69face8a`, the build-only workflow created
+side-by-side release `acd80ab9f6ae` while active Runtime `b9ad351a7241` and
+`runtime/current` remained unchanged. Dependency installation and application
+import passed. The Full Suite passed, source marker and metadata validation
+passed, FastAPI was `0.139.0`, Uvicorn was `0.51.0`, and `jsonschema` was
+available. The release was validated but not activated.
+
+The builder produced a valid structured JSON report on stdout. The host wrapper
+did not find a canonical build-report JSON file; the report was recovered from
+the builder log and validated successfully. This is host wrapper/report
+persistence tooling debt, not a product or release failure. An optional host
+`rg` command was also unavailable; because it was optional, that was not a
+release defect.
+
+Direct localhost smoke started canonical `core.api.shadow:app`. Its
+`ReadOnlyASGI` Shadow application composes internal FastAPI application
+`core.api.app:app`. GET requests to `/health`, `/runtime/health`,
+`/homepage/status`, `/homepage`, `/homepage/product-management`, and
+`/datacenter/status` each returned 200; `POST /health` returned 405. Cleanup
+terminated the exact smoke PID and confirmed listener cleanup.
+
+The release owns Python and dependencies, but loads application source from the
+mutable repository through `PYTHONPATH`; `source_bundled_inside_release` is
+false and `repository_source_binding` is true. It is therefore not a fully
+source-immutable application release. No service, launchd, Caddy, Ubuntu,
+public, or production change occurred. Runtime activation, rollback execution,
+service restart, public staging, production, and production writes remained
+`NOT_AUTHORIZED`.
+
 ## 2026-08-05 — RUNTIME-CONTRACT-04A
 
 Commit `637f5ee62ee7a5ac24c06afe9074811077cf0082`,

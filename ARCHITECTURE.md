@@ -21,6 +21,42 @@ output. This discovery contract is read-only and grants no build, activation,
 restart, launchd or Caddy mutation, public opening, Ubuntu change, production
 write, or production authorization; production remains `NOT_AUTHORIZED`.
 
+## RUNTIME-BUILD-04A release and source boundary
+
+Source/documentation commit
+`acd80ab9f6aeb848900e1a19e3fa3afd69face8a` produced side-by-side release
+`acd80ab9f6ae`. Each finalized release owns its Python interpreter and installed
+dependencies, so dependency releases are immutable and can coexist. The build
+and validation completed without changing `runtime/current`, which remained on
+active Runtime `b9ad351a7241`; the new release was not activated.
+
+The canonical serving target is `core.api.shadow:app`. The Shadow application
+is `ReadOnlyASGI` and composes the internal FastAPI application
+`core.api.app:app`. Direct localhost shadow smoke ran from the new release and
+confirmed HTTP 200 for `/health`, `/runtime/health`, `/homepage/status`,
+`/homepage`, `/homepage/product-management`, and `/datacenter/status`, plus HTTP
+405 for `POST /health`. Exact smoke PID cleanup and listener cleanup passed.
+
+The current immutability boundary is narrower than a fully source-immutable
+application release: Python and dependencies are release-owned, but application
+source is loaded from the mutable repository through `PYTHONPATH`.
+`source_bundled_inside_release` is false and `repository_source_binding` is
+true. Source bundling, a source manifest, and source-independent launch remain
+future architecture work.
+
+The builder emitted a valid structured JSON report on stdout. The host wrapper
+found no canonical build-report JSON file, so the report was recovered and
+validated from the builder log. That persistence mismatch is operational
+tooling debt, not a release failure. An unavailable optional host `rg` command
+was likewise not a release defect.
+
+This release evidence does not grant activation authority. Runtime activation,
+rollback execution, service restart, public staging, production, and production
+writes remain `NOT_AUTHORIZED`. No service, launchd, Caddy, Ubuntu, public, or
+production change occurred. The Mac mini M4 remains the sole Control Plane;
+Ubuntu remains an optional stateless infrastructure worker with no AI workload,
+business logic, application state, or Control Plane authority.
+
 ## Verified test, Git identity, and immutable Runtime boundaries
 
 The Mac mini M4 remains the always-on Brain and sole Control Plane; Ubuntu

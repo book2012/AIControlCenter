@@ -1,30 +1,35 @@
 # MASTER
 
-## RUNTIME-CONTRACT-04A Current Gate
+## RUNTIME-BUILD-04A Current Gate
 
-RUNTIME-CONTRACT-04A source implementation is complete at
-`637f5ee62ee7a5ac24c06afe9074811077cf0082`. Both canonical launchd runners are
-the serving-target authority and agree on the complete production target
-`core.api.shadow:app`. The internal FastAPI target `core.api.app:app` is
-diagnostic/composition-only and cannot be selected for direct production
-serving. Missing, conflicting, multiple, malformed, or abbreviated launcher
-targets fail closed. Health endpoint discovery accepts only valid path-shaped
-endpoints, removes duplicates, and is deterministic. The completed source gate
-is 7 targeted tests passed and an isolated Full Suite of 2281 passed,
-5 deselected, with 437 warnings.
+Build-only and direct localhost shadow smoke are complete for release
+`acd80ab9f6ae`, built from source/documentation commit
+`acd80ab9f6aeb848900e1a19e3fa3afd69face8a`. Dependency installation,
+application import, the Full Suite, source marker, and metadata validation
+passed. FastAPI was `0.139.0`, Uvicorn was `0.51.0`, and `jsonschema` was
+available. The canonical target `core.api.shadow:app` is a `ReadOnlyASGI`
+application composing internal FastAPI target `core.api.app:app`.
 
-Runtime current remains `b9ad351a7241`. Immutable release `382ba887a045` was
-previously built but not activated. No immutable release has yet been built
-from `637f5ee62ee7a5ac24c06afe9074811077cf0082`. Documentation reconciliation is
-the current gate. Remaining gates, in order, are documentation commit,
-non-force push and remote verification, fresh Runtime Contract generation, new
-immutable build-only, direct localhost `core.api.shadow:app` smoke, GET 200,
-mutation 405, exact smoke PID shutdown verification, and a separate
-activation/rollback gate.
+Direct smoke returned 200 for all six required GET routes and 405 for
+`POST /health`; exact smoke PID cleanup and listener cleanup passed. The
+builder's structured JSON stdout report was recovered and validated from its
+log because the host wrapper found no canonical report file. That and the
+unavailable optional host `rg` command are tooling observations, not release
+defects.
 
-No Runtime activation, service restart, launchd mutation, Caddy mutation,
-public opening, Ubuntu change, production write, or production authorization
-occurred. Production remains `NOT_AUTHORIZED`.
+Active Runtime `b9ad351a7241` and `runtime/current` remained unchanged; the new
+release was not activated. Python and dependencies are release-owned, while
+application source remains repository-bound through `PYTHONPATH`
+(`source_bundled_inside_release=false`, `repository_source_binding=true`).
+Source bundling, source manifesting, and source-independent launch remain open.
+
+Activation is unauthorized. The next controlled gate is ACTIVATION-01A
+architecture and an activation/rollback runbook only, after documentation
+commit, non-force push with remote verification, and a new-chat handoff before
+the activation risk boundary. No service, launchd, Caddy, Ubuntu, public,
+production, or production-write change occurred. Runtime activation, rollback
+execution, service restart, public staging, production, and production writes
+remain `NOT_AUTHORIZED`.
 
 ## RUNTIME-BUILD-02 Documentation Reconciliation Gate
 

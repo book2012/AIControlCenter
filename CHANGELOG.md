@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 2026-08-05 — RUNTIME-BUILD-04A build and direct shadow smoke
+
+- Built and validated side-by-side release `acd80ab9f6ae` from
+  source/documentation commit `acd80ab9f6aeb848900e1a19e3fa3afd69face8a`.
+  Dependency installation, application import, the Full Suite, source marker,
+  and metadata validation passed. FastAPI was `0.139.0`, Uvicorn was `0.51.0`,
+  and `jsonschema` was available.
+- Direct localhost smoke used canonical target `core.api.shadow:app`, whose
+  `ReadOnlyASGI` application composes internal FastAPI target
+  `core.api.app:app`. GET returned 200 for `/health`, `/runtime/health`,
+  `/homepage/status`, `/homepage`, `/homepage/product-management`, and
+  `/datacenter/status`; `POST /health` returned 405. Exact smoke PID and
+  listener cleanup passed.
+- The builder produced valid structured JSON on stdout. The host wrapper found
+  no canonical build-report JSON file, so the report was recovered and
+  validated from the builder log. This is operational tooling debt, not a
+  release failure. An optional host `rg` command was unavailable and was not a
+  release defect.
+- Python and dependencies are release-owned, but application source is loaded
+  from the mutable repository through `PYTHONPATH`:
+  `source_bundled_inside_release=false` and
+  `repository_source_binding=true`. This is not yet a fully source-immutable
+  application release.
+- Existing active Runtime `b9ad351a7241` and `runtime/current` remained
+  unchanged. Release `acd80ab9f6ae` was not activated. No service, launchd,
+  Caddy, Ubuntu, public, or production change occurred. Activation, rollback,
+  restart, public staging, production, and production writes remain
+  `NOT_AUTHORIZED`.
+
 ## 2026-08-05 — RUNTIME-CONTRACT-04A canonical launcher target
 
 - Source commit `637f5ee62ee7a5ac24c06afe9074811077cf0082`

@@ -1,34 +1,35 @@
 # TODO
 
-## RUNTIME-CONTRACT-04A controlled gates
+## RUNTIME-BUILD-04A controlled gates
 
-- [x] Complete source implementation at
-  `637f5ee62ee7a5ac24c06afe9074811077cf0082` and require both canonical
-  launchd runners to agree on the complete `core.api.shadow:app` serving
-  target.
-- [x] Keep `core.api.app:app` diagnostic/composition-only and fail closed for
-  missing, conflicting, multiple, malformed, or abbreviated launcher targets.
-- [x] Retain only valid path-shaped health endpoints, remove duplicates, and
-  produce deterministic output.
-- [x] Verify 7 targeted tests and the isolated Full Suite: 2281 passed,
-  5 deselected, 437 warnings.
+- [x] Build and validate release `acd80ab9f6ae` from
+  `acd80ab9f6aeb848900e1a19e3fa3afd69face8a` without activation or a
+  `runtime/current` change.
+- [x] Pass dependency installation, application import, Full Suite, source
+  marker, and metadata validation.
+- [x] Complete direct localhost `core.api.shadow:app` smoke: six required GET
+  routes returned 200 and `POST /health` returned 405.
+- [x] Complete exact smoke PID cleanup and listener cleanup.
+- [x] Recover and validate the structured build report from the builder log.
 - [ ] Commit this documentation reconciliation.
 - [ ] Non-force push and verify the remote SHA and repository synchronization.
-- [ ] Generate a fresh Runtime Contract from the pushed source.
-- [ ] Perform a new immutable build-only; do not activate it or alter
-  `runtime/current`, which remains `b9ad351a7241`.
-- [ ] Run direct localhost `core.api.shadow:app` smoke from the new immutable
-  release.
-- [ ] Verify GET returns HTTP 200.
-- [ ] Verify mutation returns HTTP 405.
-- [ ] Shut down and verify the exact smoke PID only.
-- [ ] Keep activation and rollback behind a separate authorization gate.
+- [ ] Hand off in a new chat before the activation risk boundary.
+- [ ] Design ACTIVATION-01A activation/rollback architecture and runbook only.
+- [ ] Run a read-only activation preflight.
+- [ ] Perform a separately authorized atomic `runtime/current` switch.
+- [ ] Perform a separately authorized exact service restart.
+- [ ] Run post-activation validation and rollback validation.
+- [ ] Bundle application source inside the release, add a source manifest, and
+  support source-independent launch.
+- [ ] Configure and validate authenticated Caddy staging.
 
-Immutable release `382ba887a045` was built previously and was not activated.
-No immutable release has yet been built from the RUNTIME-CONTRACT-04A source
-commit. No Runtime activation, service restart, launchd or Caddy mutation,
-public opening, Ubuntu change, production write, or production authorization
-occurred. Production remains `NOT_AUTHORIZED`.
+Active Runtime remains `b9ad351a7241`; release `acd80ab9f6ae` was built and
+validated but not activated. Python and dependencies are release-owned, while
+application source remains repository-bound through `PYTHONPATH`
+(`source_bundled_inside_release=false`, `repository_source_binding=true`).
+Runtime activation, rollback execution, service restart, public staging,
+production, and production writes remain `NOT_AUTHORIZED`. No service,
+launchd, Caddy, Ubuntu, public, or production change occurred.
 
 ## RUNTIME-BUILD-02 release gates
 
