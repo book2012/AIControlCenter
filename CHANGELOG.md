@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-08-05 — RUNTIME-CONTRACT-04A canonical launcher target
+
+- Source commit `637f5ee62ee7a5ac24c06afe9074811077cf0082`
+  (`fix(runtime): derive serving target from canonical launchers`) makes both
+  canonical launchd runners the serving-target authority. They must agree on
+  one complete target: `core.api.shadow:app`.
+- Recorded `core.api.app:app` as the internal FastAPI composition target. It is
+  diagnostic/composition-only and cannot be selected as the direct production
+  serving target. Missing, conflicting, multiple, malformed, or abbreviated
+  launcher declarations fail closed.
+- Restricted health endpoint discovery to valid path-shaped endpoints, removed
+  duplicates, and made output deterministic. Targeted verification was 7
+  passed; after harness-only failures, the successful isolated Full Suite was
+  2281 passed, 5 deselected, with 437 warnings.
+- Runtime current remains `b9ad351a7241`. Previously built immutable release
+  `382ba887a045` was not activated, and no immutable release has been built from
+  the source commit above. No build, activation, service restart, launchd or
+  Caddy mutation, public opening, Ubuntu change, production write, or
+  production authorization occurred. Production remains `NOT_AUTHORIZED`.
+
 ## 2026-08-04 — RUNTIME-BUILD-02A phased Runtime builder
 
 - `5517fdb25a68c65f1bc8db03110900aa44ff173f` made an explicit mode mandatory

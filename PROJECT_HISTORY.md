@@ -1,5 +1,35 @@
 # Project History
 
+## 2026-08-05 — RUNTIME-CONTRACT-04A
+
+Commit `637f5ee62ee7a5ac24c06afe9074811077cf0082`,
+`fix(runtime): derive serving target from canonical launchers`, corrected
+Runtime Contract discovery so the two canonical launchd runners, rather than
+the set of discovered FastAPI objects, own serving-target selection. Both
+runners must declare one complete target and agree on
+`core.api.shadow:app`. The internal `core.api.app:app` target describes the
+FastAPI composition behind the Shadow application and remains
+diagnostic/composition-only; it is not eligible as a direct production serving
+target. Missing, conflicting, multiple, malformed, and abbreviated launcher
+targets all fail closed.
+
+The same implementation retained only valid path-shaped health endpoints,
+deduplicated them, and made their output deterministic. Targeted verification
+passed 7 tests. Harness-only failures occurred before the successful isolated
+Full Suite; they did not establish product or production failures. The final
+isolated Full Suite passed 2281 tests, with 5 deselected and 437 warnings.
+
+Runtime current remained `b9ad351a7241`. The previously built immutable
+release `382ba887a045` was not activated, and no immutable release was built
+from the RUNTIME-CONTRACT-04A commit. No Runtime activation, service restart,
+launchd mutation, Caddy mutation, public opening, Ubuntu change, production
+write, or production authorization occurred. Production remained
+`NOT_AUTHORIZED`. The controlled continuation is documentation commit,
+non-force push and remote verification, fresh Runtime Contract generation, new
+immutable build-only, direct localhost `core.api.shadow:app` smoke, GET 200,
+mutation 405, exact smoke PID shutdown verification, and a separate
+activation/rollback gate.
+
 ## 2026-08-04 — RUNTIME-BUILD-02A and RUNTIME-BUILD-02B
 
 The canonical macOS Runtime builder audit found a monolithic flow whose

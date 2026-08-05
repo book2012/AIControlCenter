@@ -1,5 +1,35 @@
 # TODO
 
+## RUNTIME-CONTRACT-04A controlled gates
+
+- [x] Complete source implementation at
+  `637f5ee62ee7a5ac24c06afe9074811077cf0082` and require both canonical
+  launchd runners to agree on the complete `core.api.shadow:app` serving
+  target.
+- [x] Keep `core.api.app:app` diagnostic/composition-only and fail closed for
+  missing, conflicting, multiple, malformed, or abbreviated launcher targets.
+- [x] Retain only valid path-shaped health endpoints, remove duplicates, and
+  produce deterministic output.
+- [x] Verify 7 targeted tests and the isolated Full Suite: 2281 passed,
+  5 deselected, 437 warnings.
+- [ ] Commit this documentation reconciliation.
+- [ ] Non-force push and verify the remote SHA and repository synchronization.
+- [ ] Generate a fresh Runtime Contract from the pushed source.
+- [ ] Perform a new immutable build-only; do not activate it or alter
+  `runtime/current`, which remains `b9ad351a7241`.
+- [ ] Run direct localhost `core.api.shadow:app` smoke from the new immutable
+  release.
+- [ ] Verify GET returns HTTP 200.
+- [ ] Verify mutation returns HTTP 405.
+- [ ] Shut down and verify the exact smoke PID only.
+- [ ] Keep activation and rollback behind a separate authorization gate.
+
+Immutable release `382ba887a045` was built previously and was not activated.
+No immutable release has yet been built from the RUNTIME-CONTRACT-04A source
+commit. No Runtime activation, service restart, launchd or Caddy mutation,
+public opening, Ubuntu change, production write, or production authorization
+occurred. Production remains `NOT_AUTHORIZED`.
+
 ## RUNTIME-BUILD-02 release gates
 
 - [x] `TEST-INFRA-02` trusted evidence binding, deterministic canonical

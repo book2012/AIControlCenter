@@ -1,6 +1,32 @@
 # MASTER
 
-## RUNTIME-BUILD-02 Documentation Reconciliation Current Gate
+## RUNTIME-CONTRACT-04A Current Gate
+
+RUNTIME-CONTRACT-04A source implementation is complete at
+`637f5ee62ee7a5ac24c06afe9074811077cf0082`. Both canonical launchd runners are
+the serving-target authority and agree on the complete production target
+`core.api.shadow:app`. The internal FastAPI target `core.api.app:app` is
+diagnostic/composition-only and cannot be selected for direct production
+serving. Missing, conflicting, multiple, malformed, or abbreviated launcher
+targets fail closed. Health endpoint discovery accepts only valid path-shaped
+endpoints, removes duplicates, and is deterministic. The completed source gate
+is 7 targeted tests passed and an isolated Full Suite of 2281 passed,
+5 deselected, with 437 warnings.
+
+Runtime current remains `b9ad351a7241`. Immutable release `382ba887a045` was
+previously built but not activated. No immutable release has yet been built
+from `637f5ee62ee7a5ac24c06afe9074811077cf0082`. Documentation reconciliation is
+the current gate. Remaining gates, in order, are documentation commit,
+non-force push and remote verification, fresh Runtime Contract generation, new
+immutable build-only, direct localhost `core.api.shadow:app` smoke, GET 200,
+mutation 405, exact smoke PID shutdown verification, and a separate
+activation/rollback gate.
+
+No Runtime activation, service restart, launchd mutation, Caddy mutation,
+public opening, Ubuntu change, production write, or production authorization
+occurred. Production remains `NOT_AUTHORIZED`.
+
+## RUNTIME-BUILD-02 Documentation Reconciliation Gate
 
 RUNTIME-BUILD-02A is locally complete and verified at
 `5517fdb25a68c65f1bc8db03110900aa44ff173f`. The canonical macOS builder now
@@ -13,20 +39,11 @@ no dependency installation, service restart, or `launchctl` operation.
 RUNTIME-BUILD-02B is locally complete and verified at
 `f8f2890178c78862cff53362fd167982fa672c99`. It restores the canonical builder
 Git mode to `100755` after the RUNTIME-BUILD-02A `100644` regression and adds a
-deterministic executable-mode regression test. Local HEAD is
-`f8f2890178c78862cff53362fd167982fa672c99`; remote HEAD remains
-`e31f1cf7eb4efe78e8a88dd37398ba76f8a08987`, so the branch is locally ahead by
-the two Runtime builder commits. The current clean Full Suite baseline is 2271
-passed and 5 deselected; phase-specific counts are recorded in CHANGELOG and
-PROJECT_HISTORY.
+deterministic executable-mode regression test. Its phase-specific identities
+and verification counts remain recorded in CHANGELOG and PROJECT_HISTORY.
 
-Documentation reconciliation is the current gate. Push and remote SHA
-verification, real build-only execution, new release marker/metadata/import
-validation, `runtime/current` invariance evidence, direct localhost Homepage
-and Product Management smoke, separately authorized activation and rollback,
-the service restart gate, and Caddy authenticated read-only staging remain
-open. No real Runtime build, activation, rollback, service or Caddy operation,
-or production authorization occurred. Production remains `NOT_AUTHORIZED`.
+Its documentation reconciliation was completed before RUNTIME-CONTRACT-04A.
+The later controlled Runtime gates are governed by the current section above.
 
 OPS-01B-R5-R3A closes the runtime metadata source-marker implementation gap.
 Each new immutable runtime must contain `metadata.json` and the exact

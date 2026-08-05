@@ -10,6 +10,17 @@ identity inspection is file-backed and read-only, with loose-ref precedence,
 exact packed-ref fallback, detached-HEAD support, and fail-closed bounded
 symbolic resolution.
 
+Runtime Contract source commit
+`637f5ee62ee7a5ac24c06afe9074811077cf0082` derives the production serving
+target only from unanimous canonical launcher declarations. Both launchd
+runners agree on `core.api.shadow:app`; `core.api.app:app` is the internal
+FastAPI composition target and is diagnostic/composition-only, not a direct
+production serving target. Missing, conflicting, multiple, malformed, or
+abbreviated launcher targets fail closed. Health endpoint discovery keeps only
+valid path-shaped endpoints, deduplicates them, and produces deterministic
+output. Targeted verification was 7 passed; the isolated Full Suite was 2281
+passed, 5 deselected, with 437 warnings.
+
 The canonical macOS Runtime builder requires an explicit `build` or `activate`
 mode and fails closed otherwise. Build uses owned staging, validates metadata
 and the exact source marker, atomically finalizes an immutable release, and
@@ -17,13 +28,22 @@ preserves `runtime/current`. Activation is separately authorized, accepts only
 an already finalized validated release, and atomically switches
 `runtime/current` without installing dependencies or restarting services. The
 builder is executable with Git mode `100755`, protected by a deterministic
-regression test. The current clean Full Suite baseline is **2271 passed,
-5 deselected**; no real new Runtime release has been built.
+regression test. Runtime current remains `b9ad351a7241`. The previously built
+immutable release `382ba887a045` was not activated, and no immutable release
+has yet been built from `637f5ee62ee7a5ac24c06afe9074811077cf0082`.
 
 The internal Homepage and Product Management Console are implemented but have
 not completed localhost HTTP smoke, staging, Caddy authentication, public
 exposure, or Runtime deployment gates. Production remains
 `NOT_AUTHORIZED`, and production writes remain disabled.
+
+The next controlled sequence is: documentation commit; non-force push and
+remote verification; fresh Runtime Contract generation; new immutable
+build-only; direct localhost `core.api.shadow:app` smoke; GET 200 verification;
+mutation 405 verification; exact smoke PID shutdown verification; and a
+separate activation/rollback gate. No Runtime activation, service restart,
+launchd mutation, Caddy mutation, public opening, Ubuntu change, or production
+authorization occurred.
 
 M3-A4B2B2B-R4 aligns the strict preflight and live permit contracts. The exact
 Boolean `ubuntu_participation=false` is accepted only as Ubuntu

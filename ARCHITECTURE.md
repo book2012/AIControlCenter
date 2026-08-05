@@ -1,5 +1,26 @@
 # AI Home Datacenter Architecture
 
+## Canonical Runtime serving-target authority
+
+The two canonical macOS launchd runners,
+`ops/macos/launchd/run-shadow-api.sh` and
+`ops/macos/launchd/run-shadow-daemon.sh`, are the serving-target authority.
+Both runners must declare exactly one complete target and must agree on the
+same value. The canonical production serving target is
+`core.api.shadow:app`. The Shadow application composes the internal FastAPI
+application exposed as `core.api.app:app`; that internal target is
+diagnostic/composition-only and must never be selected as the direct
+production serving target.
+
+Runtime Contract discovery fails closed when either canonical launcher is
+missing, conflicting, declares multiple targets, or provides a malformed or
+abbreviated target. Only unanimous agreement on one complete launcher target
+can produce a selected serving target. Health endpoint discovery retains only
+valid path-shaped endpoints, removes duplicates, and emits deterministic
+output. This discovery contract is read-only and grants no build, activation,
+restart, launchd or Caddy mutation, public opening, Ubuntu change, production
+write, or production authorization; production remains `NOT_AUTHORIZED`.
+
 ## Verified test, Git identity, and immutable Runtime boundaries
 
 The Mac mini M4 remains the always-on Brain and sole Control Plane; Ubuntu
