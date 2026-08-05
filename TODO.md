@@ -1,6 +1,8 @@
 # TODO
 
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
+ACTIVATION-01A is `COMPLETE` at contract documentation commit `d14058553baa1dfc45e027a59ff580013584913b`.
+
 ## ACTIVATION-01B — Read-Only Activation Inspector
 
 - [ ] Define the versioned activation policy

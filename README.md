@@ -3,7 +3,9 @@
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
 ## ACTIVATION-01A Runtime Activation
 
-Status: `DOCUMENTATION_REVIEW_PASS`
+Status: `COMPLETE`
+
+Contract documentation commit: `d14058553baa1dfc45e027a59ff580013584913b`
 
 Gate: `ACTIVATION-01A — Architecture and Runbook Only`
 

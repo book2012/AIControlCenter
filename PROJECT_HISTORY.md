@@ -24,6 +24,8 @@ immutable application artifact.
 
 No Runtime pointer, service, launchd, Caddy, Ubuntu or public-access
 state changed. Production remained `NOT_AUTHORIZED`.
+
+The architecture-and-runbook gate closed after the contract documentation commit `d14058553baa1dfc45e027a59ff580013584913b` was pushed and local/remote synchronization passed. This closure did not activate the candidate Runtime, restart a service, authorize rollback, open public access or grant Production authorization.
 <!-- AICONTROLCENTER:ACTIVATION_01A:END -->
 
 ## 2026-08-05 — RUNTIME-BUILD-04A build, evidence recovery, and smoke
