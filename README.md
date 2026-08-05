@@ -1,5 +1,33 @@
 # AIControlCenter
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
+## ACTIVATION-01B Read-Only Activation Inspector
+
+Status: `ARCHITECTURE_FROZEN`
+
+Architecture:
+
+`docs/deployment/ACTIVATION-01B-READ-ONLY-INSPECTOR-ARCHITECTURE.md`
+
+Runbook:
+
+`docs/operations/macos/ACTIVATION-01B-READ-ONLY-INSPECTOR-RUNBOOK.md`
+
+The frozen design defines a JSON-first, fail-closed inspector
+for Git, Runtime, Python, launchd, process, listener and direct
+localhost HTTP evidence.
+
+The inspector implementation and real-host inspection have not
+started.
+
+Runtime activation, service restart, rollback, public opening,
+Ubuntu changes and Production authorization remain prohibited.
+
+Architecture predecessor commit:
+
+`43975f6e26986fd91c9a715786e7c68deb63f612`
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
 ## ACTIVATION-01A Runtime Activation
 

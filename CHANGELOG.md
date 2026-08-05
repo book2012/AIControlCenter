@@ -1,5 +1,35 @@
 # CHANGELOG
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
+## 2026-08-05 — ACTIVATION-01B Architecture Freeze
+
+### Added
+
+- Read-only Activation Inspector architecture
+- Read-only macOS inspector runbook
+- Versioned policy and route-manifest design
+- Canonical JSON evidence-report design
+- Exact launchd and localhost boundaries
+- Isolated Runtime Python version-probe contract
+- Exact zero-body `POST /health` method-denial contract
+
+### Reused
+
+- Existing canonical JSON and SHA-256 contracts
+- Existing JSON Schema Draft 2020-12 registry
+- Existing bounded Git read-only evidence capability
+- Existing macOS read-only adapter patterns
+
+### Safety
+
+- Architecture predecessor commit:
+  `43975f6e26986fd91c9a715786e7c68deb63f612`
+- Runtime mutations: `0`
+- Service restarts: `0`
+- Ubuntu changes: `0`
+- Production remains `NOT_AUTHORIZED`
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
 ## 2026-08-05 — ACTIVATION-01A
 

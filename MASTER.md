@@ -1,5 +1,34 @@
 # MASTER
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
+## ACTIVATION-01B Read-Only Activation Inspector
+
+Status: `ARCHITECTURE_FROZEN`
+
+ACTIVATION-01B is a thin read-only orchestration layer over the
+existing canonical deployment contracts, Git evidence capability
+and bounded macOS adapters.
+
+It will produce canonical JSON eligibility evidence using closed
+states:
+
+- `READY_FOR_AUTHORIZATION_REVIEW`
+- `BLOCKED`
+- `ERROR`
+
+No result grants activation or Production authorization.
+
+The implementation phase may now create versioned schemas,
+policy, route manifest, pure models and services, bounded macOS
+adapters, a JSON CLI and no-mutation tests.
+
+Architecture predecessor commit:
+
+`43975f6e26986fd91c9a715786e7c68deb63f612`
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
 ## ACTIVATION-01A Runtime Activation Gate
 

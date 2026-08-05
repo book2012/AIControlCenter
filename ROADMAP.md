@@ -21,15 +21,27 @@ No operational activation is authorized.
 
 ## ACTIVATION-01B — Read-Only Activation Inspector
 
-Status: `NOT_STARTED`
+Status: `ARCHITECTURE_FROZEN`
 
-- [ ] Versioned activation policy
-- [ ] Versioned localhost route manifest
-- [ ] Read-only Git and Runtime identity inspector
-- [ ] Read-only launchd identity inspection
-- [ ] Evidence JSON Schema validation
-- [ ] Fixture-based no-mutation integration tests
-- [ ] Authorization-review eligibility report
+- [x] Repository capability inventory
+- [x] Targeted reusable-component review
+- [x] Architecture document
+- [x] macOS read-only runbook
+- [x] Host command allowlist
+- [x] Runtime Python probe hardening
+- [x] HTTP method-denial probe hardening
+- [x] CLI status and exit-code semantics
+- [x] No-mutation test strategy
+- [ ] Versioned activation policy schema
+- [ ] Versioned localhost route-manifest schema
+- [ ] Activation inspection report schema
+- [ ] Registered contract fixtures
+- [ ] Pure models and evaluation service
+- [ ] Bounded macOS adapters
+- [ ] Canonical JSON CLI
+- [ ] Fixture-based no-mutation test suite
+- [ ] Read-only real-host validation
+- [ ] Implementation documentation closeout
 
 Production remains `NOT_AUTHORIZED`.
 <!-- AICONTROLCENTER:ACTIVATION_01A:END -->

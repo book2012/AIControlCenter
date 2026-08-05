@@ -5,14 +5,21 @@ ACTIVATION-01A is `COMPLETE` at contract documentation commit `d14058553baa1dfc4
 
 ## ACTIVATION-01B — Read-Only Activation Inspector
 
-- [ ] Define the versioned activation policy
-- [ ] Define the versioned localhost route manifest
-- [ ] Implement read-only Git identity inspection
-- [ ] Implement read-only Runtime pointer inspection
-- [ ] Implement read-only Python and `PYTHONPATH` inspection
-- [ ] Implement read-only launchd identity inspection
-- [ ] Implement canonical inspection evidence JSON Schema
-- [ ] Add no-mutation fixture integration tests
+Status: `ARCHITECTURE_FROZEN`
+
+- [x] Freeze architecture and macOS runbook
+- [x] Reuse canonical JSON and Schema registry
+- [x] Freeze exact launchd command allowlist
+- [x] Freeze isolated Runtime Python probe
+- [x] Freeze zero-body `POST /health` denial probe
+- [ ] Implement policy, route and report schemas
+- [ ] Register schemas and valid fixtures
+- [ ] Implement immutable models and ports
+- [ ] Implement pure deterministic evaluation service
+- [ ] Implement bounded macOS read-only adapters
+- [ ] Implement canonical JSON CLI
+- [ ] Add no-mutation and fail-closed tests
+- [ ] Perform separately reviewed read-only host inspection
 - [ ] Keep Production `NOT_AUTHORIZED`
 <!-- AICONTROLCENTER:ACTIVATION_01A:END -->
 

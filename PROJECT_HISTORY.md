@@ -1,5 +1,31 @@
 # Project History
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
+## 2026-08-05 — ACTIVATION-01B Architecture Freeze
+
+ACTIVATION-01B froze the architecture of a read-only Activation
+Inspector after repository inventory and targeted review of the
+existing deployment contracts.
+
+The design reuses canonical JSON, SHA-256, JSON Schema Draft
+2020-12, bounded Git evidence and macOS read-only adapter
+patterns.
+
+The Runtime Python probe is restricted to the exact isolated
+invocation `<exact-runtime-python> -I -S --version`.
+
+The only POST probe is a zero-body, one-attempt denial check
+against `127.0.0.1:18100/health`, expecting HTTP `405`.
+
+No implementation, host inspection, Runtime mutation, service
+restart, rollback, Ubuntu operation, public opening or Production
+authorization occurred.
+
+Architecture predecessor commit:
+
+`43975f6e26986fd91c9a715786e7c68deb63f612`
+<!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
 ## 2026-08-05 — ACTIVATION-01A Architecture Decision
 
