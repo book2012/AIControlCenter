@@ -1,5 +1,33 @@
 # Project History
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:START -->
+## 2026-08-06 — ACTIVATION-01B-C1 Complete
+
+The versioned contract foundation for the read-only Activation
+Inspector was completed.
+
+Three Draft 2020-12 contracts were registered with canonical URN
+identities. Synthetic fixtures validate policy-to-manifest,
+report-to-policy, report-to-manifest and semantic report digest
+bindings.
+
+The focused gate passed `41` tests. The safe deployment
+regression passed `1017` tests with `9` warnings.
+
+Operational harness suites were deferred because isolated
+test-root environment variables were unavailable. This is
+tracked as test-infrastructure backlog, not as a C1 regression.
+
+No Runtime, HTTP, service, launchd, Caddy, Ubuntu or Production
+operation occurred.
+
+Architecture base commit:
+
+`dc482780fdd36ba50d4947e8193380d7426d8367`
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
 ## 2026-08-05 — ACTIVATION-01B Architecture Freeze
 

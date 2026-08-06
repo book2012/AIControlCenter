@@ -1,5 +1,20 @@
 {
   "contracts": {
+    "ActivationInspectionPolicy": {
+      "path": "activation-inspection-policy.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:activation-inspection-policy",
+      "schema_version": "dpl/v1"
+    },
+    "ActivationInspectionReport": {
+      "path": "activation-inspection-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:activation-inspection-report",
+      "schema_version": "dpl/v1"
+    },
+    "ActivationRouteManifest": {
+      "path": "activation-route-manifest.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:activation-route-manifest",
+      "schema_version": "dpl/v1"
+    },
     "ApprovalDecision": {
       "path": "approval-decision.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:approval-decision",
@@ -13,6 +28,26 @@
     "AuthorizationValidationReport": {
       "path": "authorization-validation-report.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:authorization-validation-report",
+      "schema_version": "dpl/v1"
+    },
+    "DependencyBoundaryPolicy": {
+      "path": "dependency-boundary-policy.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-policy",
+      "schema_version": "dpl/v1"
+    },
+    "DependencyBoundaryReport": {
+      "path": "dependency-boundary-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-report",
+      "schema_version": "dpl/v1"
+    },
+    "DeploymentApiResponse": {
+      "path": "api-response.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:api-response",
+      "schema_version": "dpl/v1"
+    },
+    "DeploymentAuditEvidence": {
+      "path": "audit-evidence.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:audit-evidence",
       "schema_version": "dpl/v1"
     },
     "DeploymentPlan": {
@@ -33,16 +68,6 @@
     "DeploymentTargetProfile": {
       "path": "deployment-target-profile.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-target-profile",
-      "schema_version": "dpl/v1"
-    },
-    "DependencyBoundaryPolicy": {
-      "path": "dependency-boundary-policy.schema.json",
-      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-policy",
-      "schema_version": "dpl/v1"
-    },
-    "DependencyBoundaryReport": {
-      "path": "dependency-boundary-report.schema.json",
-      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-report",
       "schema_version": "dpl/v1"
     },
     "DesiredCurrentDiff": {
@@ -85,34 +110,9 @@
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:executor-validation-report",
       "schema_version": "dpl/v1"
     },
-    "SimulationExecutionReceipt": {
-      "path": "simulation-execution-receipt.schema.json",
-      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-receipt",
-      "schema_version": "dpl/v1"
-    },
-    "SimulationExecutionReport": {
-      "path": "simulation-execution-report.schema.json",
-      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-report",
-      "schema_version": "dpl/v1"
-    },
-    "DeploymentAuditEvidence": {
-      "path": "audit-evidence.schema.json",
-      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:audit-evidence",
-      "schema_version": "dpl/v1"
-    },
-    "DeploymentApiResponse": {
-      "path": "api-response.schema.json",
-      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:api-response",
-      "schema_version": "dpl/v1"
-    },
     "ImmutableDeploymentPackage": {
       "path": "deployment-package.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:deployment-package",
-      "schema_version": "dpl/v1"
-    },
-    "InventoryResult": {
-      "path": "inventory-result.schema.json",
-      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:inventory-result",
       "schema_version": "dpl/v1"
     },
     "IngressContract": {
@@ -125,9 +125,24 @@
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:ingress-readiness-report",
       "schema_version": "dpl/v1"
     },
+    "InventoryResult": {
+      "path": "inventory-result.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:inventory-result",
+      "schema_version": "dpl/v1"
+    },
     "ReadinessReport": {
       "path": "readiness-report.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:readiness-report",
+      "schema_version": "dpl/v1"
+    },
+    "SimulationExecutionReceipt": {
+      "path": "simulation-execution-receipt.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-receipt",
+      "schema_version": "dpl/v1"
+    },
+    "SimulationExecutionReport": {
+      "path": "simulation-execution-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-report",
       "schema_version": "dpl/v1"
     },
     "ValidationReport": {
@@ -307,6 +322,18 @@
       "name": "ErrorEnvelope",
       "path": "error-envelope.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:error-envelope"
+    },
+    {
+      "path": "activation-inspection-policy.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:activation-inspection-policy"
+    },
+    {
+      "path": "activation-route-manifest.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:activation-route-manifest"
+    },
+    {
+      "path": "activation-inspection-report.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:activation-inspection-report"
     }
   ],
   "schema_version": "dpl/v1"

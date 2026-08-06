@@ -1,5 +1,26 @@
 # Roadmap
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:START -->
+## ACTIVATION-01B-C1 Contract Foundation
+
+Status: `COMPLETE`
+
+- [x] Inspection policy Schema
+- [x] Route-manifest Schema
+- [x] Inspection-report Schema
+- [x] Registry resources and bindings
+- [x] Synthetic fixtures
+- [x] Canonical digest bindings
+- [x] Secret-field rejection
+- [x] Pure-validation tests
+- [x] Focused contract gate
+- [x] Safe deployment regression
+- [ ] Operational test-root harness stabilization
+- [ ] C2 immutable models and pure evaluator
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
 ## ACTIVATION-01A — Architecture and Runbook Only
 

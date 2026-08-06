@@ -1,0 +1,292 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:activation-inspection-policy",
+  "title": "ActivationInspectionPolicy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "policy_version",
+    "read_only",
+    "repository",
+    "runtime",
+    "application",
+    "launchd",
+    "listener",
+    "route_manifest",
+    "safety"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "dpl/v1"
+    },
+    "policy_version": {
+      "const": "activation-inspection-policy/v1"
+    },
+    "read_only": {
+      "const": true
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "absolute_path",
+        "branch",
+        "expected_head",
+        "require_clean_worktree",
+        "require_remote_sync"
+      ],
+      "properties": {
+        "absolute_path": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "branch": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200
+        },
+        "expected_head": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "require_clean_worktree": {
+          "const": true
+        },
+        "require_remote_sync": {
+          "const": true
+        }
+      }
+    },
+    "runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "root",
+        "current_link_name",
+        "expected_current_runtime",
+        "candidate_runtime",
+        "expected_source_commit",
+        "metadata_filename",
+        "source_marker_filename",
+        "python"
+      ],
+      "properties": {
+        "root": {
+          "type": "string",
+          "pattern": "^/"
+        },
+        "current_link_name": {
+          "const": "current"
+        },
+        "expected_current_runtime": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}$"
+        },
+        "candidate_runtime": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{12}$"
+        },
+        "expected_source_commit": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
+        },
+        "metadata_filename": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 200,
+          "not": {
+            "pattern": "(^/|(^|/)\\.\\.(/|$))"
+          }
+        },
+        "source_marker_filename": {
+          "const": ".aicontrolcenter-source-commit"
+        },
+        "python": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "executable_relative_path",
+            "probe_arguments",
+            "inherit_pythonpath",
+            "user_site_enabled",
+            "bytecode_writes",
+            "dependency_identity_source"
+          ],
+          "properties": {
+            "executable_relative_path": {
+              "type": "string",
+              "pattern": "^bin/python[0-9.]*$"
+            },
+            "probe_arguments": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "const": "-I"
+                },
+                {
+                  "const": "-S"
+                },
+                {
+                  "const": "--version"
+                }
+              ],
+              "items": false,
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "inherit_pythonpath": {
+              "const": false
+            },
+            "user_site_enabled": {
+              "const": false
+            },
+            "bytecode_writes": {
+              "const": false
+            },
+            "dependency_identity_source": {
+              "enum": [
+                "RUNTIME_METADATA",
+                "VERSION_CONTROLLED_EVIDENCE"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "application": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "serving_target"
+      ],
+      "properties": {
+        "serving_target": {
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_.]*:[A-Za-z_][A-Za-z0-9_]*$"
+        }
+      }
+    },
+    "launchd": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain",
+        "label",
+        "identity",
+        "allowed_operation",
+        "application_user"
+      ],
+      "properties": {
+        "domain": {
+          "const": "system"
+        },
+        "label": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+$"
+        },
+        "identity": {
+          "type": "string",
+          "pattern": "^system/[A-Za-z0-9_.-]+$"
+        },
+        "allowed_operation": {
+          "const": "print"
+        },
+        "application_user": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 100
+        }
+      }
+    },
+    "listener": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "host",
+        "port",
+        "expected_listener_count",
+        "require_pid_match",
+        "loopback_only"
+      ],
+      "properties": {
+        "host": {
+          "const": "127.0.0.1"
+        },
+        "port": {
+          "const": 18100
+        },
+        "expected_listener_count": {
+          "const": 1
+        },
+        "require_pid_match": {
+          "const": true
+        },
+        "loopback_only": {
+          "const": true
+        }
+      }
+    },
+    "route_manifest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "manifest_version",
+        "manifest_digest"
+      ],
+      "properties": {
+        "manifest_version": {
+          "const": "activation-route-manifest/v1"
+        },
+        "manifest_digest": {
+          "type": "string",
+          "pattern": "^sha256:[0-9a-f]{64}$"
+        }
+      }
+    },
+    "safety": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runtime_mutations",
+        "service_restarts",
+        "rollback_executions",
+        "launchd_changes",
+        "caddy_changes",
+        "public_openings",
+        "production_writes",
+        "ubuntu_changes",
+        "production_authorized"
+      ],
+      "properties": {
+        "runtime_mutations": {
+          "const": 0
+        },
+        "service_restarts": {
+          "const": 0
+        },
+        "rollback_executions": {
+          "const": 0
+        },
+        "launchd_changes": {
+          "const": 0
+        },
+        "caddy_changes": {
+          "const": 0
+        },
+        "public_openings": {
+          "const": 0
+        },
+        "production_writes": {
+          "const": 0
+        },
+        "ubuntu_changes": {
+          "const": 0
+        },
+        "production_authorized": {
+          "const": false
+        }
+      }
+    }
+  }
+}

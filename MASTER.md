@@ -1,5 +1,25 @@
 # MASTER
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:START -->
+## ACTIVATION-01B-C1 Contract Foundation
+
+Status: `COMPLETE`
+
+C1 owns immutable JSON-first validation and evidence identity.
+It performs no host observation, Runtime command, HTTP request,
+service operation or infrastructure mutation.
+
+Next stage:
+
+`ACTIVATION-01B-C2 — Immutable Models and Pure Evaluator`
+
+Architecture base commit:
+
+`dc482780fdd36ba50d4947e8193380d7426d8367`
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
 ## ACTIVATION-01B Read-Only Activation Inspector
 

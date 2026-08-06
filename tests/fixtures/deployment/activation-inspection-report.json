@@ -1,0 +1,147 @@
+{
+  "schema_version": "dpl/v1",
+  "inspection_id": "activation-inspection-fixture-0001",
+  "inspection_mode": "READ_ONLY",
+  "read_only": true,
+  "started_at": "2026-08-05T13:51:00Z",
+  "completed_at": "2026-08-05T13:51:00Z",
+  "overall_status": "READY_FOR_AUTHORIZATION_REVIEW",
+  "policy_version": "activation-inspection-policy/v1",
+  "policy_digest": "sha256:ddcbdd370bb0cfbff91a999eab715fc0487f26ec02067010d02f4f42fbc58fad",
+  "route_manifest_version": "activation-route-manifest/v1",
+  "route_manifest_digest": "sha256:3e875a5aa8051eacd2a4a3ddc828414f044568c082723849a312feb74949eb0a",
+  "git": {
+    "available": true,
+    "repository_path": "/Users/example/AIControlCenter",
+    "branch": "fixture/activation-inspection",
+    "head": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "clean": true,
+    "remote_sync": true,
+    "ahead": 0,
+    "behind": 0,
+    "evidence_digest": "sha256:9e6ad93eb1e0a5b49a9dde13e55300ef5dab047dca2f6676bd8266836c626664"
+  },
+  "runtime": {
+    "current_runtime": "111111111111",
+    "candidate_runtime": "222222222222",
+    "pointer_status": "MATCH",
+    "candidate_available": true,
+    "metadata_status": "MATCH",
+    "metadata_digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+    "source_marker_status": "MATCH",
+    "source_marker_commit": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "python_status": "MATCH",
+    "python_executable": "/Users/example/Library/Application Support/AIControlCenter/runtime/releases/222222222222/bin/python",
+    "python_version": "Python 3.12.0",
+    "repository_pythonpath_coupled": true,
+    "evidence_digest": "sha256:fe515b020d2bf981e3c81db6e08b15abafc56222f42f1c46abb8a899af51bf09"
+  },
+  "launchd": {
+    "identity": "system/com.aicontrolcenter.api.shadow",
+    "available": true,
+    "running": true,
+    "pid": 4242,
+    "application_user": "fixture-user",
+    "allowed_operation": "print",
+    "evidence_digest": "sha256:2c5224a152de62359a13654ffc7cb45e5bdb6edff8fa6ff973d01cd923c08829"
+  },
+  "process": {
+    "expected_count": 1,
+    "observed_count": 1,
+    "pid": 4242,
+    "user": "fixture-user",
+    "root_process": false,
+    "evidence_digest": "sha256:314bbcf9bee65dcf1df8c158fce425b8d2ce53397f718fee45f3ef6381eaf86e"
+  },
+  "listener": {
+    "host": "127.0.0.1",
+    "port": 18100,
+    "expected_count": 1,
+    "observed_count": 1,
+    "pid": 4242,
+    "loopback_only": true,
+    "pid_matches_service": true,
+    "evidence_digest": "sha256:5b9fcc1817990d09f2d6d01c32e4b0e16ee9b829761e00ae1d2f9f1f1ac60ad0"
+  },
+  "http": {
+    "host": "127.0.0.1",
+    "port": 18100,
+    "results": [
+      {
+        "probe_id": "get-health",
+        "method": "GET",
+        "path": "/health",
+        "expected_status": 200,
+        "actual_status": 200,
+        "result": "PASS",
+        "redirect_followed": false,
+        "attempt_count": 1,
+        "body_length": 0,
+        "sanitized_error": null
+      },
+      {
+        "probe_id": "get-runtime-health",
+        "method": "GET",
+        "path": "/runtime/health",
+        "expected_status": 200,
+        "actual_status": 200,
+        "result": "PASS",
+        "redirect_followed": false,
+        "attempt_count": 1,
+        "body_length": 0,
+        "sanitized_error": null
+      },
+      {
+        "probe_id": "post-health-denied",
+        "method": "POST",
+        "path": "/health",
+        "expected_status": 405,
+        "actual_status": 405,
+        "result": "PASS",
+        "redirect_followed": false,
+        "attempt_count": 1,
+        "body_length": 0,
+        "sanitized_error": null
+      }
+    ],
+    "evidence_digest": "sha256:ee0dcf011c995ce37d3b9b34ad7b5b1e121de156e3fdb8cb92313e9b957cb9c1"
+  },
+  "checks": [
+    {
+      "check_id": "GIT_IDENTITY_MATCH",
+      "expected": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "actual": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "result": "PASS",
+      "blocking": true,
+      "evidence_reference": "git.evidence_digest",
+      "timestamp": "2026-08-05T13:51:00Z"
+    },
+    {
+      "check_id": "RUNTIME_POINTER_MATCH",
+      "expected": "111111111111",
+      "actual": "111111111111",
+      "result": "PASS",
+      "blocking": true,
+      "evidence_reference": "runtime.evidence_digest",
+      "timestamp": "2026-08-05T13:51:00Z"
+    },
+    {
+      "check_id": "POST_HEALTH_DENIED",
+      "expected": 405,
+      "actual": 405,
+      "result": "PASS",
+      "blocking": true,
+      "evidence_reference": "http.evidence_digest",
+      "timestamp": "2026-08-05T13:51:00Z"
+    }
+  ],
+  "blocking_reasons": [],
+  "warnings": [
+    "REPOSITORY_PYTHONPATH_COUPLING_REQUIRES_HUMAN_ACKNOWLEDGEMENT"
+  ],
+  "sanitized_errors": [],
+  "production_writes": 0,
+  "ubuntu_changes": 0,
+  "production_authorized": false,
+  "report_digest": "sha256:92442afaf62672b0cacaab841f2f3a36aa2089f6b1c45a1977b0f0209e72b556"
+}

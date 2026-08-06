@@ -1,5 +1,27 @@
 # CHANGELOG
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:START -->
+## 2026-08-06 — ACTIVATION-01B-C1 Complete
+
+Added activation inspection policy, route-manifest and report
+Schemas, canonical registry resources, synthetic fixtures,
+digest-binding tests, secret-field rejection and pure validation
+coverage.
+
+Test evidence:
+
+- Focused contract gate: `41 passed`
+- Safe deployment regression: `1017 passed`
+- Deprecation warnings: `9`
+- Operational harness suites: `DEFERRED`
+
+Architecture base commit:
+
+`dc482780fdd36ba50d4947e8193380d7426d8367`
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
 ## 2026-08-05 — ACTIVATION-01B Architecture Freeze
 

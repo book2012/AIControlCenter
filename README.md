@@ -1,5 +1,34 @@
 # AIControlCenter
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:START -->
+## ACTIVATION-01B-C1 Contract Foundation
+
+Status: `COMPLETE`
+
+Added three versioned read-only inspection contracts:
+
+- `ActivationInspectionPolicy`
+- `ActivationRouteManifest`
+- `ActivationInspectionReport`
+
+Validation evidence:
+
+- Focused contract gate: `41 passed`
+- Safe deployment regression: `1017 passed`
+- Warnings: `9`
+- Operational harness suites: `DEFERRED`
+
+Deferred operational suites require isolated test-root
+environments and are tracked separately as test-infrastructure
+work.
+
+Architecture base commit:
+
+`dc482780fdd36ba50d4947e8193380d7426d8367`
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_ARCHITECTURE:START -->
 ## ACTIVATION-01B Read-Only Activation Inspector
 

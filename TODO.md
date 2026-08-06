@@ -1,5 +1,30 @@
 # TODO
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:START -->
+## ACTIVATION-01B-C1 Closeout
+
+Status: `COMPLETE`
+
+Completed:
+
+- [x] Register three inspection contracts
+- [x] Register three Schema resources
+- [x] Validate synthetic fixtures
+- [x] Validate canonical digest bindings
+- [x] Pass focused contract gate
+- [x] Pass safe deployment regression
+
+Backlog:
+
+- [ ] Stabilize isolated operational test roots
+- [ ] Resolve Starlette/httpx deprecation
+- [ ] Replace deprecated naive `datetime.utcnow()`
+- [ ] Implement C2 immutable observation models
+- [ ] Implement C2 pure fail-closed evaluator
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01A:START -->
 ACTIVATION-01A is `COMPLETE` at contract documentation commit `d14058553baa1dfc45e027a59ff580013584913b`.
 
