@@ -1,5 +1,31 @@
 # Project History
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C2:START -->
+## ACTIVATION-01B-C2 Pure Evaluator
+
+Status: `COMPLETE`
+
+Implemented immutable inspection models and a deterministic,
+fail-closed evaluator producing only:
+
+- `READY_FOR_AUTHORIZATION_REVIEW`
+- `BLOCKED`
+- `ERROR`
+
+The evaluator validates C1 contracts and digest bindings, orders
+checks deterministically, derives blocking reasons, sanitizes
+errors and emits a canonical inspection report.
+
+Focused gate: `PASS`
+
+Base commit: `4ad97e44c9bf499fc3368be5d41017ccb9924134`
+
+No host adapter, Runtime command, HTTP probe, service operation,
+launchd change, Ubuntu change or Production authorization occurred.
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C2:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_C1_CLOSEOUT:START -->
 ## 2026-08-06 — ACTIVATION-01B-C1 Complete
 
