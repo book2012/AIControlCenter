@@ -1,5 +1,36 @@
 # MASTER
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C3:START -->
+## ACTIVATION-01B-C3 Bounded macOS Read-Only Adapters
+
+Status: `COMPLETE`
+
+Implemented bounded macOS observation adapters for:
+
+- exact `launchctl print`
+- structured `lsof -F` listener inspection
+- Runtime pointer, metadata and source-marker reads
+- isolated Runtime Python `-I -S --version` probe
+- exact `127.0.0.1` single-attempt HTTP probes
+
+Safety boundaries:
+
+- absolute executable paths
+- `shell=False`
+- bounded timeout and output size
+- no retries or redirects
+- no credentials, cookies or authorization headers
+- no launchd mutation operations
+- no Runtime mutation
+- no Ubuntu operations
+
+Focused gate: `35 passed`
+
+Base commit: `e2781094351fd9d68b562f0806799c8dbc4f100a`
+
+Production remains `NOT_AUTHORIZED`.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C3:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_C2:START -->
 ## ACTIVATION-01B-C2 Pure Evaluator
 
