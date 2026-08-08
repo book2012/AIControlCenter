@@ -355,16 +355,45 @@ def parse_launchctl_print(
         component="LAUNCHD",
     )
 
-    if len(text.splitlines()) > 4096:
+    lines = text.splitlines()
+
+    if len(lines) > 4096:
         raise MacOSObservationError(
             "LAUNCHD_LINE_LIMIT_EXCEEDED"
         )
 
+    first_nonempty = next(
+        (
+            line.strip()
+            for line in lines
+            if line.strip()
+        ),
+        "",
+    )
+
+    service_depth = (
+        1
+        if first_nonempty.endswith("= {")
+        else 0
+    )
+
+    depth = 0
+    arguments_depth: int | None = None
+
     values: dict[str, list[str]] = {}
     program_arguments: list[str] = []
-    inside_arguments = False
 
-    for line in text.splitlines():
+    assignment = re.compile(
+        r"^\s*([A-Za-z0-9._-]+)"
+        r"\s*=\s*(.*?)\s*$"
+    )
+
+    argument_pattern = re.compile(
+        r"^(?:[0-9]+\s*=\s*)?"
+        r"(.*?)(?:,)?$"
+    )
+
+    for line in lines:
         if len(line) > 4096:
             raise MacOSObservationError(
                 "LAUNCHD_LINE_LIMIT_EXCEEDED"
@@ -372,41 +401,58 @@ def parse_launchctl_print(
 
         stripped = line.strip()
 
-        if stripped == "arguments = {":
-            inside_arguments = True
-            continue
-
-        if inside_arguments:
-            if stripped == "}":
-                inside_arguments = False
-                continue
-
-            argument_match = re.match(
-                r"^(?:[0-9]+\s*=\s*)?(.*?)(?:,)?$",
-                stripped,
-            )
-
+        if arguments_depth is not None:
             if (
-                argument_match is not None
-                and argument_match.group(1)
+                stripped == "}"
+                and depth == arguments_depth
             ):
-                program_arguments.append(
-                    argument_match.group(1)
+                arguments_depth = None
+
+            elif depth == arguments_depth:
+                argument_match = (
+                    argument_pattern.match(
+                        stripped
+                    )
                 )
 
-            continue
+                if (
+                    argument_match is not None
+                    and argument_match.group(1)
+                ):
+                    program_arguments.append(
+                        argument_match.group(1)
+                    )
 
-        match = re.match(
-            r"^\s*([A-Za-z0-9._-]+)\s*=\s*(.*?)\s*$",
-            line,
+        elif (
+            depth == service_depth
+            and stripped == "arguments = {"
+        ):
+            arguments_depth = depth + 1
+
+        elif depth == service_depth:
+            match = assignment.match(line)
+
+            if match is not None:
+                key = match.group(1)
+                value = match.group(2)
+
+                values.setdefault(
+                    key,
+                    [],
+                ).append(value)
+
+        depth += stripped.count("{")
+        depth -= stripped.count("}")
+
+        if depth < 0:
+            raise MacOSObservationError(
+                "LAUNCHD_STRUCTURE_MALFORMED"
+            )
+
+    if arguments_depth is not None:
+        raise MacOSObservationError(
+            "LAUNCHD_ARGUMENTS_UNTERMINATED"
         )
-
-        if match is None:
-            continue
-
-        key = match.group(1)
-        value = match.group(2)
-        values.setdefault(key, []).append(value)
 
     def unique_value(
         *keys: str,
@@ -414,7 +460,9 @@ def parse_launchctl_print(
         found: list[str] = []
 
         for key in keys:
-            found.extend(values.get(key, []))
+            found.extend(
+                values.get(key, [])
+            )
 
         unique = sorted(set(found))
 
@@ -423,11 +471,23 @@ def parse_launchctl_print(
                 "LAUNCHD_CONFLICTING_FIELD"
             )
 
-        return unique[0] if unique else None
+        return (
+            unique[0]
+            if unique
+            else None
+        )
 
-    state = unique_value("state") or "unknown"
+    state = (
+        unique_value("state")
+        or "unknown"
+    )
+
     pid_text = unique_value("pid")
-    user = unique_value("username", "user")
+
+    user = unique_value(
+        "username",
+        "user",
+    )
 
     pid: int | None = None
 
@@ -451,7 +511,9 @@ def parse_launchctl_print(
         pid=pid,
         application_user=user,
         state=state,
-        program_arguments=tuple(program_arguments),
+        program_arguments=tuple(
+            program_arguments
+        ),
     )
 
 

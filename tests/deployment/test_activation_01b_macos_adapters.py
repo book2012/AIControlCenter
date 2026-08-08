@@ -597,3 +597,48 @@ def test_adapter_commands_are_read_only_only() -> None:
         assert lowered.isdisjoint(forbidden)
 
     assert executor.requests[0].argv[1] == "print"
+
+def test_launchctl_parser_ignores_nested_state_fields():
+    from core.deployment.activation_inspector.macos import (
+        parse_launchctl_print,
+    )
+
+    raw = b"""system/com.aicontrolcenter.api.shadow = {
+    path = /Library/LaunchDaemons/com.aicontrolcenter.api.shadow.plist
+    state = spawn scheduled
+    program = /bin/bash
+    arguments = {
+        0 = /bin/bash
+        1 = /opt/aicontrolcenter/start-shadow.sh
+        2 = core.api.shadow:app
+    }
+    username = kyouhan
+    resource coalition = {
+        ID = 611
+        state = active
+        type = resource
+    }
+    jetsam coalition = {
+        ID = 612
+        state = active
+        type = jetsam
+    }
+}
+"""
+
+    observation = parse_launchctl_print(
+        identity=(
+            "system/com.aicontrolcenter.api.shadow"
+        ),
+        stdout=raw,
+    )
+
+    assert observation.state == "spawn scheduled"
+    assert observation.running is False
+    assert observation.pid is None
+    assert observation.application_user == "kyouhan"
+    assert observation.program_arguments == (
+        "/bin/bash",
+        "/opt/aicontrolcenter/start-shadow.sh",
+        "core.api.shadow:app",
+    )

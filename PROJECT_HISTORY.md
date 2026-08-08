@@ -1,5 +1,44 @@
 # Project History
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_LAUNCHD_SCOPE_FIX:START -->
+## ACTIVATION-01B Launchd Parser Scope Correction
+
+Status: `COMPLETE`
+
+Operational validation discovered that `launchctl print` contains
+nested resource and jetsam records whose field names overlap with the
+top-level service record.
+
+Observed example:
+
+- service scope: `state = spawn scheduled`
+- resource scope: `state = active`
+- jetsam scope: `state = active`
+
+The previous parser flattened all scopes and therefore emitted
+`LAUNCHD_CONFLICTING_FIELD`.
+
+The corrected parser is brace-depth aware and consumes identity,
+state, pid, username and program arguments only from the service
+record scope.
+
+Nested launchd metadata is ignored rather than selected
+heuristically.
+
+Conflicting values within the service scope still fail closed.
+
+The change affects observation logic only.
+
+Runtime mutations: `0`
+Service restarts: `0`
+Rollback executions: `0`
+launchd changes: `0`
+Caddy changes: `0`
+Public openings: `0`
+Ubuntu changes: `0`
+Production authorization: `NO`
+<!-- AICONTROLCENTER:ACTIVATION_01B_LAUNCHD_SCOPE_FIX:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_RUNTIME_LAYOUT_FIX:START -->
 ## ACTIVATION-01B Runtime Layout Correction
 
