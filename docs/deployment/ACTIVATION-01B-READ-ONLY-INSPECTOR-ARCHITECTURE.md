@@ -1,5 +1,54 @@
 # ACTIVATION-01B Read-Only Activation Inspector Architecture
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_OPERATIONAL_VALIDATION:START -->
+## ACTIVATION-01B Read-Only Operational Validation
+
+Status: `COMPLETE`
+
+Classification: `PASS / FAIL-CLOSED`
+
+The bounded read-only inspector completed the full Mac control-plane
+observation path.
+
+Inspector exit code: `2`
+
+Overall status: `BLOCKED`
+
+Inspection ID: `activation-inspection-7f2591c5066142dfaa383a31ae943f0d`
+
+Report digest: `sha256:5afa71f7bd1edb1111203f0227a1cb3314a306cc1355ec465d33f5d10800e9e4`
+
+Inspector commit: `698f60444894cb4f22c9cbc647abc2ee2a530e59`
+
+Blocking reasons:
+
+`["GIT_IDENTITY_MATCH","GIT_VALIDATION_COMPLETE","HTTP_GET_HEALTH","HTTP_GET_RUNTIME_HEALTH","HTTP_POST_HEALTH_DENIED","LAUNCHD_RUNNING","LISTENER_COUNT_MATCH","LISTENER_PID_MATCH","PROCESS_SERVING_TARGET_MATCH"]`
+
+Sanitized errors:
+
+`[]`
+
+Operational safety:
+
+- Runtime mutations: `0`
+- Service restarts: `0`
+- Rollback executions: `0`
+- launchd changes: `0`
+- Caddy changes: `0`
+- Public openings: `0`
+- Production writes: `0`
+- Ubuntu changes: `0`
+- Production authorization: `NO`
+
+`READY_FOR_AUTHORIZATION_REVIEW` is evidence readiness only.
+
+A `BLOCKED` result is a successful fail-closed operational
+validation. It does not authorize remediation or Production.
+
+Notion synchronization remains pending as the final
+project-management gate.
+<!-- AICONTROLCENTER:ACTIVATION_01B_OPERATIONAL_VALIDATION:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_HTTP_CONTRACT_FIX:START -->
 ## ACTIVATION-01B HTTP Evidence Contract Correction
 
