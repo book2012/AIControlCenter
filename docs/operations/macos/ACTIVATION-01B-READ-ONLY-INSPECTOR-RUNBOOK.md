@@ -1,5 +1,67 @@
 # ACTIVATION-01B Read-Only Activation Inspector Runbook
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_C4:START -->
+## ACTIVATION-01B-C4 Read-Only Inspector
+
+Status: `COMPLETE`
+
+ACTIVATION-01B read-only inspector implementation is complete.
+
+Implemented capabilities:
+
+- Versioned activation inspection policy
+- Versioned localhost route manifest
+- Existing bounded Git evidence reuse
+- Bounded macOS read-only adapters
+- Exact `launchctl print` inspection
+- Structured `lsof -F` listener inspection
+- Runtime filesystem observation
+- Isolated Runtime Python `-I -S --version` probe
+- Exact localhost HTTP probes
+- Immutable pure evaluator
+- Launchd serving-target observation
+- Canonical `PROCESS_SERVING_TARGET_MATCH` check
+- Actual-evidence report materialization
+- Evidence digest regeneration
+- Check evidence-reference regeneration
+- Canonical report digest generation
+- Final report JSON Schema validation
+- Deterministic CLI exit codes
+
+Status contract:
+
+- `READY_FOR_AUTHORIZATION_REVIEW` -> exit `0`
+- `BLOCKED` -> exit `2`
+- Invalid policy, manifest or contract -> exit `3`
+- Observation or internal error -> exit `4`
+
+Evidence mismatches remain `BLOCKED`.
+
+No exit code grants Production authorization.
+
+C4 focused integration gate: `43 passed`
+
+Base commit: `9f7d71a08235d23502c72c417a029b480b29a5e8`
+
+Runtime mutations: `0`
+Service restarts: `0`
+Rollback executions: `0`
+launchd changes: `0`
+Caddy changes: `0`
+Public openings: `0`
+Ubuntu changes: `0`
+Production authorization: `NO`
+
+Implemented invocation:
+
+    python -m core.deployment.activation_inspector.runner --repository /Users/kyouhan/AIControlCenter --runtime-root "/Users/kyouhan/Library/Application Support/AIControlCenter/runtime" --json
+
+The command performs bounded read-only inspection only.
+
+It does not modify Runtime state, restart services, alter launchd or
+Caddy, touch Ubuntu, open public access, or authorize Production.
+<!-- AICONTROLCENTER:ACTIVATION_01B_C4:END -->
+
 ## Status
 
 Gate:

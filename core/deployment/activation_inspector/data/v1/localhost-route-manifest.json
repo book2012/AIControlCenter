@@ -1,0 +1,56 @@
+{
+  "manifest_version": "activation-route-manifest/v1",
+  "probes": [
+    {
+      "attempt_count": 1,
+      "automatic_retries": 0,
+      "body_length": 0,
+      "expected_status": 200,
+      "follow_redirects": false,
+      "method": "GET",
+      "path": "/health",
+      "probe_id": "get-health",
+      "send_authorization": false,
+      "send_cookies": false,
+      "send_credentials": false,
+      "user_supplied_headers": false
+    },
+    {
+      "attempt_count": 1,
+      "automatic_retries": 0,
+      "body_length": 0,
+      "expected_status": 200,
+      "follow_redirects": false,
+      "method": "GET",
+      "path": "/runtime/health",
+      "probe_id": "get-runtime-health",
+      "send_authorization": false,
+      "send_cookies": false,
+      "send_credentials": false,
+      "user_supplied_headers": false
+    },
+    {
+      "attempt_count": 1,
+      "automatic_retries": 0,
+      "body_length": 0,
+      "expected_status": 405,
+      "follow_redirects": false,
+      "method": "POST",
+      "path": "/health",
+      "probe_id": "post-health-denied",
+      "send_authorization": false,
+      "send_cookies": false,
+      "send_credentials": false,
+      "user_supplied_headers": false
+    }
+  ],
+  "production_authorized": false,
+  "production_writes": 0,
+  "read_only": true,
+  "schema_version": "dpl/v1",
+  "target": {
+    "host": "127.0.0.1",
+    "port": 18100
+  },
+  "ubuntu_changes": 0
+}

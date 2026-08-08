@@ -1,0 +1,65 @@
+{
+  "application": {
+    "serving_target": "core.api.shadow:app"
+  },
+  "launchd": {
+    "allowed_operation": "print",
+    "application_user": "kyouhan",
+    "domain": "system",
+    "identity": "system/com.aicontrolcenter.api.shadow",
+    "label": "com.aicontrolcenter.api.shadow"
+  },
+  "listener": {
+    "expected_listener_count": 1,
+    "host": "127.0.0.1",
+    "loopback_only": true,
+    "port": 18100,
+    "require_pid_match": true
+  },
+  "policy_version": "activation-inspection-policy/v1",
+  "read_only": true,
+  "repository": {
+    "absolute_path": "/Users/kyouhan/AIControlCenter",
+    "branch": "feature/homepage-product-management-console",
+    "expected_head": "acd80ab9f6aeb848900e1a19e3fa3afd69face8a",
+    "require_clean_worktree": true,
+    "require_remote_sync": true
+  },
+  "route_manifest": {
+    "manifest_digest": "sha256:3e875a5aa8051eacd2a4a3ddc828414f044568c082723849a312feb74949eb0a",
+    "manifest_version": "activation-route-manifest/v1"
+  },
+  "runtime": {
+    "candidate_runtime": "acd80ab9f6ae",
+    "current_link_name": "current",
+    "expected_current_runtime": "b9ad351a7241",
+    "expected_source_commit": "acd80ab9f6aeb848900e1a19e3fa3afd69face8a",
+    "metadata_filename": "runtime-metadata.json",
+    "python": {
+      "bytecode_writes": false,
+      "dependency_identity_source": "RUNTIME_METADATA",
+      "executable_relative_path": "bin/python",
+      "inherit_pythonpath": false,
+      "probe_arguments": [
+        "-I",
+        "-S",
+        "--version"
+      ],
+      "user_site_enabled": false
+    },
+    "root": "/Users/kyouhan/Library/Application Support/AIControlCenter/runtime",
+    "source_marker_filename": ".aicontrolcenter-source-commit"
+  },
+  "safety": {
+    "caddy_changes": 0,
+    "launchd_changes": 0,
+    "production_authorized": false,
+    "production_writes": 0,
+    "public_openings": 0,
+    "rollback_executions": 0,
+    "runtime_mutations": 0,
+    "service_restarts": 0,
+    "ubuntu_changes": 0
+  },
+  "schema_version": "dpl/v1"
+}

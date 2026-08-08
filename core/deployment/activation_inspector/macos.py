@@ -59,6 +59,7 @@ class LaunchdObservation:
     pid: int | None
     application_user: str | None
     state: str
+    program_arguments: tuple[str, ...] = ()
 
     def to_payload(self) -> dict[str, Any]:
         return {
@@ -360,12 +361,40 @@ def parse_launchctl_print(
         )
 
     values: dict[str, list[str]] = {}
+    program_arguments: list[str] = []
+    inside_arguments = False
 
     for line in text.splitlines():
         if len(line) > 4096:
             raise MacOSObservationError(
                 "LAUNCHD_LINE_LIMIT_EXCEEDED"
             )
+
+        stripped = line.strip()
+
+        if stripped == "arguments = {":
+            inside_arguments = True
+            continue
+
+        if inside_arguments:
+            if stripped == "}":
+                inside_arguments = False
+                continue
+
+            argument_match = re.match(
+                r"^(?:[0-9]+\s*=\s*)?(.*?)(?:,)?$",
+                stripped,
+            )
+
+            if (
+                argument_match is not None
+                and argument_match.group(1)
+            ):
+                program_arguments.append(
+                    argument_match.group(1)
+                )
+
+            continue
 
         match = re.match(
             r"^\s*([A-Za-z0-9._-]+)\s*=\s*(.*?)\s*$",
@@ -422,6 +451,7 @@ def parse_launchctl_print(
         pid=pid,
         application_user=user,
         state=state,
+        program_arguments=tuple(program_arguments),
     )
 
 
