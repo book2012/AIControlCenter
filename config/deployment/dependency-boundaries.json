@@ -6,356 +6,1064 @@
       "id": "contracts",
       "responsibility": "Immutable schemas, canonical models and validation contracts.",
       "selectors": [
-        {"module_prefix": "core.deployment.contracts"},
-        {"path_glob": "core/deployment/__init__.py"}
+        {
+          "module_prefix": "core.deployment.contracts"
+        },
+        {
+          "path_glob": "core/deployment/__init__.py"
+        }
       ]
     },
     {
       "id": "executor_contracts",
       "responsibility": "Pure immutable non-production executor contracts; no adapter or execution.",
-      "selectors": [{"module_prefix": "core.deployment.executor_contracts"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.executor_contracts"
+        }
+      ]
     },
     {
       "id": "audit_contracts",
       "responsibility": "Pure immutable durable-audit domain contracts and replaceable port; no persistence adapter.",
-      "selectors": [{"module_prefix": "core.deployment.audit_contracts"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.audit_contracts"
+        }
+      ]
     },
     {
       "id": "audit_sqlite_read_only",
       "responsibility": "Mac-only SQLite URI read-only audit integrity inspection; no append, creation, migration or repair.",
-      "selectors": [{"module_prefix": "core.deployment.audit_sqlite"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.audit_sqlite"
+        }
+      ]
     },
     {
       "id": "audit_sqlite_writer",
       "responsibility": "Mac-only existing-file append adapter; no creation, migration, repair, command, network or production activation.",
-      "selectors": [{"module_prefix": "core.deployment.audit_sqlite_writer"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.audit_sqlite_writer"
+        }
+      ]
     },
     {
       "id": "audit_sqlite_recovery",
       "responsibility": "Explicit-path online SQLite backup, restore, and recovery validation; operational composition disabled.",
-      "selectors": [{"module_prefix": "core.deployment.audit_sqlite_recovery"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.audit_sqlite_recovery"
+        }
+      ]
     },
     {
       "id": "permit_replay_sqlite_read_only",
       "responsibility": "Mac-owned SQLite URI read-only permit/replay integrity inspection; no reservation, consumption, creation, migration or repair.",
-      "selectors": [{"module_prefix": "core.deployment.permit_replay_sqlite"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.permit_replay_sqlite"
+        }
+      ]
     },
     {
       "id": "permit_replay_sqlite_writer",
       "responsibility": "Mac-owned existing-file durable permit reservation and terminal writer; no creation, migration, repair, network or production activation.",
-      "selectors": [{"module_prefix": "core.deployment.permit_replay_sqlite_writer"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.permit_replay_sqlite_writer"
+        }
+      ]
     },
     {
       "id": "permit_replay_sqlite_recovery",
       "responsibility": "Explicit-path pytest-owned online SQLite replay backup, restore, exact recovery and concurrency validation; operational composition disabled.",
-      "selectors": [{"module_prefix": "core.deployment.permit_replay_sqlite_recovery"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.permit_replay_sqlite_recovery"
+        }
+      ]
     },
     {
       "id": "m2_readiness",
       "responsibility": "Pure immutable evidence-driven M2 readiness contracts and deterministic gate; no runtime probing or activation.",
-      "selectors": [{"module_prefix": "core.deployment.m2_readiness"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.m2_readiness"
+        }
+      ]
     },
     {
       "id": "pilot_authorization",
       "responsibility": "Pure immutable M2-P1 non-production pilot authorization policy; no execution, activation or persistence.",
-      "selectors": [{"module_prefix": "core.deployment.pilot_authorization"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.pilot_authorization"
+        }
+      ]
     },
     {
       "id": "pilot_activation",
       "responsibility": "M2-P2 fail-closed test-owned sandbox activation through an injected typed executor port; no concrete adapter or persistence.",
-      "selectors": [{"module_prefix": "core.deployment.pilot_activation"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.pilot_activation"
+        }
+      ]
     },
     {
       "id": "pilot_evidence",
       "responsibility": "M2-P3 pure immutable activation evidence validation and injected pytest-owned rollback orchestration; no concrete adapter or persistence.",
-      "selectors": [{"module_prefix": "core.deployment.pilot_evidence"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.pilot_evidence"
+        }
+      ]
     },
     {
       "id": "operational_monitoring",
       "responsibility": "Pure immutable M3-A3A read-only operational monitoring and alert-candidate evaluation; no persistence, dispatch, commands, adapters or production activation.",
-      "selectors": [{"module_prefix": "core.deployment.operational_monitoring"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_monitoring"
+        }
+      ]
     },
     {
       "id": "alert_routing",
       "responsibility": "Pure immutable M3-A3B logical alert routing, deduplication and escalation; no persistence, dispatch, commands, adapters or production activation.",
-      "selectors": [{"module_prefix": "core.deployment.alert_routing"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.alert_routing"
+        }
+      ]
     },
     {
       "id": "monitoring_alert_drill",
       "responsibility": "Deterministic M3-A3C in-memory monitoring and logical-alert drill; no external dispatch, persistence, network or production composition.",
-      "selectors": [{"module_prefix": "core.deployment.monitoring_alert_drill"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.monitoring_alert_drill"
+        }
+      ]
     },
     {
       "id": "operational_activation_gate",
       "responsibility": "Pure immutable M3-A4A pre-activation readiness, path, permission, bootstrap and rollback planning; no probing, execution, persistence or authorization.",
-      "selectors": [{"module_prefix": "core.deployment.operational_activation_gate"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_activation_gate"
+        }
+      ]
     },
     {
       "id": "operational_bootstrap_authorization",
       "responsibility": "Pure immutable M3-A4B1 controlled non-production bootstrap authorization and injected single-use port; no execution, persistence or activation.",
-      "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_authorization"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_bootstrap_authorization"
+        }
+      ]
     },
     {
       "id": "operational_bootstrap",
       "responsibility": "M3-A4B2A Mac bootstrap executor validation restricted to injected pytest roots; no operational execution, writer activation, dispatch or production authorization.",
-      "selectors": [{"module_prefix": "core.deployment.operational_bootstrap"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_bootstrap"
+        }
+      ]
     },
     {
       "id": "operational_activation_authorization",
       "responsibility": "Pure immutable reviewed controlled non-production activation authorization; no persistence, execution, network or production authorization.",
-      "selectors": [{"module_prefix": "core.deployment.operational_activation_authorization"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_activation_authorization"
+        }
+      ]
     },
     {
       "id": "operational_bootstrap_execution",
       "responsibility": "M3-A4B2B2A authorized Mac bootstrap execution capability with live permit validation, atomic claim, fail-closed runtime adapters and no production activation.",
-      "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_execution"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_bootstrap_execution"
+        }
+      ]
     },
     {
       "id": "bootstrap_evidence_recovery",
       "responsibility": "M3-A4B3 immutable bootstrap evidence inspection and recovery-root-confined baseline restore validation; no issuance, claim, live runner, activation, network or production authorization.",
-      "selectors": [{"module_prefix": "core.deployment.bootstrap_evidence_recovery"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.bootstrap_evidence_recovery"
+        }
+      ]
     },
     {
       "id": "controlled_activation_validation",
       "responsibility": "Pure immutable M3-A4C controlled activation readiness and closeout; no request, authorization, permit, claim, runner, writer, restore, network, Ubuntu or production capability.",
-      "selectors": [{"module_prefix": "core.deployment.controlled_activation_validation"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.controlled_activation_validation"
+        }
+      ]
     },
     {
       "id": "controlled_activation_architecture",
       "responsibility": "Pure immutable M4-A1 capability registry, state machine, policy, deterministic architecture planning and validation; no authorization, permit, claim, runner, writer, network, Ubuntu or production capability.",
-      "selectors": [{"module_prefix": "core.deployment.controlled_activation_architecture"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.controlled_activation_architecture"
+        }
+      ]
     },
     {
       "id": "capability_authorization",
       "responsibility": "Pure immutable M4-A2 capability authorization contracts, canonical validation and test-only grant planning; no real authorization, permit, claim, activation, network, Ubuntu or production capability.",
-      "selectors": [{"module_prefix": "core.deployment.capability_authorization"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.capability_authorization"
+        }
+      ]
     },
     {
       "id": "capability_authorization_simulation",
       "responsibility": "Pure in-memory M4-A3 deterministic test-only authorization lifecycle simulation; artifacts are operationally invalid and no live authorization, permit, claim, activation, network, command, Ubuntu or production capability exists.",
-      "selectors": [{"module_prefix": "core.deployment.capability_authorization_simulation"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.capability_authorization_simulation"
+        }
+      ]
     },
     {
       "id": "operational_bootstrap_live",
       "responsibility": "M3-A4B2B2B-R3 strict local controlled operational composition boundary; direct coordinator invocation only, no network, API, worker or production activation.",
-      "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_live"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_bootstrap_live"
+        }
+      ]
     },
     {
       "id": "git_readonly_evidence",
       "responsibility": "Narrow reviewed read-only Git evidence adapter; sole deployment-control subprocess exception, fixed /usr/bin/git allowlist, no shell, writes, credentials or network commands.",
-      "selectors": [{"module_prefix": "core.deployment.git_readonly_evidence"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.git_readonly_evidence"
+        }
+      ]
     },
     {
       "id": "operational_bootstrap_preflight",
       "responsibility": "M3-A4B2B0 read-only Mac host evidence collection and deterministic permit-review preflight; no writes, permit issuance, execution or production authorization.",
-      "selectors": [{"module_prefix": "core.deployment.operational_bootstrap_preflight"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_bootstrap_preflight"
+        }
+      ]
     },
     {
       "id": "operational_permit_issuance",
       "responsibility": "M3-A4B2B1A pure deterministic operational permit issuance review package; no identity synthesis, acknowledgement, issuance, claim, persistence, execution or production authorization.",
-      "selectors": [{"module_prefix": "core.deployment.operational_permit_issuance"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_permit_issuance"
+        }
+      ]
     },
     {
       "id": "operational_permit_approval",
       "responsibility": "M3-A4B2B1B pure deterministic human approval and test-only in-memory permit issuance gate; no live issuance, claim, persistence, execution or production authorization.",
-      "selectors": [{"module_prefix": "core.deployment.operational_permit_approval"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.operational_permit_approval"
+        }
+      ]
     },
     {
       "id": "executor_ports",
       "responsibility": "Typed non-production executor ports and deny-only default composition.",
-      "selectors": [{"module_prefix": "core.deployment.executor_ports"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.executor_ports"
+        }
+      ]
     },
     {
       "id": "sandbox_adapter",
       "responsibility": "Mac-only non-production sandbox filesystem adapter; no commands, network or production activation.",
-      "selectors": [{"module_prefix": "core.deployment.sandbox_adapter"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.sandbox_adapter"
+        }
+      ]
     },
     {
       "id": "read_ports",
       "responsibility": "Capability-specific interfaces for read-only observations.",
-      "selectors": [{"module_prefix": "core.deployment.ports"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.ports"
+        }
+      ]
     },
     {
       "id": "read_adapters",
       "responsibility": "Repository-local implementations of read ports.",
-      "selectors": [{"module_prefix": "core.deployment.adapters"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.adapters"
+        }
+      ]
     },
     {
       "id": "read_application",
       "responsibility": "Read-only inventory and readiness orchestration.",
       "selectors": [
-        {"module_prefix": "core.deployment.application.mac_inventory"},
-        {"module_prefix": "core.deployment.application.ingress_readiness"},
-        {"path_glob": "core/deployment/application/*.py"}
+        {
+          "module_prefix": "core.deployment.application.mac_inventory"
+        },
+        {
+          "module_prefix": "core.deployment.application.ingress_readiness"
+        },
+        {
+          "path_glob": "core/deployment/application/*.py"
+        }
       ]
     },
     {
       "id": "plan_services",
       "responsibility": "Pure desired-state planning without activation.",
       "selectors": [
-        {"module_prefix": "core.deployment.policy"},
-        {"module_prefix": "core.deployment.planning"}
+        {
+          "module_prefix": "core.deployment.policy"
+        },
+        {
+          "module_prefix": "core.deployment.planning"
+        }
       ]
     },
     {
       "id": "authorization",
       "responsibility": "Pure approval evidence validation and bounded non-production authorization; no execution.",
-      "selectors": [{"module_prefix": "core.deployment.authorization"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.authorization"
+        }
+      ]
     },
     {
       "id": "simulation",
       "responsibility": "Pure non-production simulation using a process-local replay guard and typed fake executor.",
-      "selectors": [{"module_prefix": "core.deployment.simulation"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.simulation"
+        }
+      ]
     },
     {
       "id": "apply_services",
       "responsibility": "Future explicitly authorized apply boundary; absent from default composition.",
-      "selectors": [{"module_prefix": "core.deployment.apply"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.apply"
+        }
+      ]
     },
     {
       "id": "api_composition",
       "responsibility": "GET-only DPL route, dependency wiring and response composition.",
       "selectors": [
-        {"module_prefix": "core.api.routes.deployment"},
-        {"module_prefix": "core.api.dependencies.deployment"},
-        {"module_prefix": "core.deployment.application.api_composition"},
-        {"path_glob": "core/deployment/application/__init__.py"}
+        {
+          "module_prefix": "core.api.routes.deployment"
+        },
+        {
+          "module_prefix": "core.api.dependencies.deployment"
+        },
+        {
+          "module_prefix": "core.deployment.application.api_composition"
+        },
+        {
+          "path_glob": "core/deployment/application/__init__.py"
+        }
       ]
     },
     {
       "id": "audit_evidence",
       "responsibility": "Non-persistent read-only evidence contracts and ports.",
-      "selectors": [{"module_prefix": "core.deployment.ports.audit"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.ports.audit"
+        }
+      ]
     },
     {
       "id": "legacy_unsupported",
       "responsibility": "Explicitly quarantined pre-DPL deployment modules.",
-      "selectors": [{"module_prefix": "core.deployment.legacy_unsupported"}]
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.legacy_unsupported"
+        }
+      ]
     },
     {
       "id": "worker_infrastructure",
       "responsibility": "Optional stateless infrastructure worker, unreachable from DPL read and plan.",
-      "selectors": [{"module_prefix": "core.worker"}]
+      "selectors": [
+        {
+          "module_prefix": "core.worker"
+        }
+      ]
+    },
+    {
+      "id": "activation_inspector",
+      "responsibility": "Read-only ACTIVATION-01B macOS runtime, launchd, listener, process and exact-localhost HTTP inspection with deterministic evidence evaluation; no runtime mutation, service mutation, rollback, Ubuntu mutation or production authorization.",
+      "selectors": [
+        {
+          "module_prefix": "core.deployment.activation_inspector"
+        }
+      ]
     }
   ],
   "allowed_dependency_directions": [
-    {"from_zone": "contracts", "to_zones": ["contracts"]},
-    {"from_zone": "audit_contracts", "to_zones": ["contracts", "audit_contracts"]},
-    {"from_zone": "audit_sqlite_read_only", "to_zones": ["contracts", "audit_contracts", "audit_sqlite_read_only"]},
-    {"from_zone": "audit_sqlite_writer", "to_zones": ["contracts", "audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer"]},
-    {"from_zone": "audit_sqlite_recovery", "to_zones": ["contracts", "audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery"]},
-    {"from_zone": "permit_replay_sqlite_read_only", "to_zones": ["contracts", "pilot_authorization", "pilot_activation", "authorization", "permit_replay_sqlite_read_only"]},
-    {"from_zone": "permit_replay_sqlite_writer", "to_zones": ["contracts", "pilot_authorization", "pilot_activation", "authorization", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer"]},
-    {"from_zone": "permit_replay_sqlite_recovery", "to_zones": ["contracts", "pilot_authorization", "pilot_activation", "authorization", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery"]},
-    {"from_zone": "m2_readiness", "to_zones": ["contracts", "plan_services", "authorization", "simulation", "executor_contracts", "executor_ports", "audit_contracts", "m2_readiness"]},
-    {"from_zone": "pilot_authorization", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "audit_contracts", "pilot_authorization"]},
-    {"from_zone": "pilot_activation", "to_zones": ["contracts", "authorization", "m2_readiness", "executor_contracts", "executor_ports", "audit_contracts", "pilot_authorization", "pilot_activation"]},
-    {"from_zone": "pilot_evidence", "to_zones": ["contracts", "executor_contracts", "audit_contracts", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence"]},
-    {"from_zone": "operational_monitoring", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "m2_readiness", "pilot_evidence", "operational_monitoring"]},
-    {"from_zone": "alert_routing", "to_zones": ["contracts", "operational_monitoring", "alert_routing"]},
-    {"from_zone": "monitoring_alert_drill", "to_zones": ["contracts", "operational_monitoring", "alert_routing", "monitoring_alert_drill"]},
-    {"from_zone": "operational_activation_gate", "to_zones": ["contracts", "m2_readiness", "pilot_evidence", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate"]},
-    {"from_zone": "operational_bootstrap_authorization", "to_zones": ["contracts", "audit_sqlite_read_only", "permit_replay_sqlite_read_only", "operational_activation_gate", "operational_bootstrap_authorization"]},
-    {"from_zone": "operational_bootstrap", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap"]},
-    {"from_zone": "operational_activation_authorization", "to_zones": ["contracts", "operational_activation_authorization"]},
-    {"from_zone": "operational_bootstrap_execution", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution"]},
-    {"from_zone": "bootstrap_evidence_recovery", "to_zones": ["contracts", "audit_sqlite_read_only", "permit_replay_sqlite_read_only", "operational_bootstrap_execution", "operational_bootstrap_live", "bootstrap_evidence_recovery"]},
-    {"from_zone": "controlled_activation_validation", "to_zones": ["controlled_activation_validation"]},
-    {"from_zone": "controlled_activation_architecture", "to_zones": ["contracts", "controlled_activation_architecture"]},
-    {"from_zone": "capability_authorization", "to_zones": ["contracts", "controlled_activation_architecture", "capability_authorization"]},
-    {"from_zone": "capability_authorization_simulation", "to_zones": ["contracts", "controlled_activation_architecture", "capability_authorization", "capability_authorization_simulation"]},
-    {"from_zone": "operational_bootstrap_live", "to_zones": ["contracts", "audit_sqlite_read_only", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_recovery", "operational_monitoring", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_permit_approval", "operational_activation_authorization", "operational_bootstrap_execution", "git_readonly_evidence", "operational_bootstrap_live"]},
-    {"from_zone": "git_readonly_evidence", "to_zones": ["git_readonly_evidence"]},
-    {"from_zone": "operational_bootstrap_preflight", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight"]},
-    {"from_zone": "operational_permit_issuance", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap", "operational_bootstrap_preflight", "operational_permit_issuance"]},
-    {"from_zone": "operational_permit_approval", "to_zones": ["contracts", "operational_activation_gate", "operational_bootstrap_authorization", "operational_bootstrap_preflight", "operational_permit_issuance", "operational_activation_authorization", "operational_permit_approval"]},
-    {"from_zone": "executor_contracts", "to_zones": ["contracts", "executor_contracts"]},
-    {"from_zone": "executor_ports", "to_zones": ["contracts", "executor_contracts", "executor_ports"]},
-    {"from_zone": "sandbox_adapter", "to_zones": ["contracts", "executor_contracts", "executor_ports", "sandbox_adapter"]},
-    {"from_zone": "read_ports", "to_zones": ["contracts", "read_ports"]},
-    {"from_zone": "read_adapters", "to_zones": ["contracts", "read_ports", "read_adapters"]},
-    {"from_zone": "read_application", "to_zones": ["contracts", "read_ports", "read_application"]},
-    {"from_zone": "plan_services", "to_zones": ["contracts", "read_ports", "read_application", "plan_services"]},
-    {"from_zone": "authorization", "to_zones": ["contracts", "plan_services", "authorization"]},
-    {"from_zone": "simulation", "to_zones": ["contracts", "plan_services", "authorization", "executor_contracts", "executor_ports", "simulation"]},
-    {"from_zone": "api_composition", "to_zones": ["contracts", "read_ports", "read_adapters", "read_application", "plan_services", "api_composition", "audit_evidence"]},
-    {"from_zone": "audit_evidence", "to_zones": ["contracts", "audit_evidence"]}
+    {
+      "from_zone": "contracts",
+      "to_zones": [
+        "contracts"
+      ]
+    },
+    {
+      "from_zone": "audit_contracts",
+      "to_zones": [
+        "contracts",
+        "audit_contracts"
+      ]
+    },
+    {
+      "from_zone": "audit_sqlite_read_only",
+      "to_zones": [
+        "contracts",
+        "audit_contracts",
+        "audit_sqlite_read_only"
+      ]
+    },
+    {
+      "from_zone": "audit_sqlite_writer",
+      "to_zones": [
+        "contracts",
+        "audit_contracts",
+        "audit_sqlite_read_only",
+        "audit_sqlite_writer"
+      ]
+    },
+    {
+      "from_zone": "audit_sqlite_recovery",
+      "to_zones": [
+        "contracts",
+        "audit_contracts",
+        "audit_sqlite_read_only",
+        "audit_sqlite_writer",
+        "audit_sqlite_recovery"
+      ]
+    },
+    {
+      "from_zone": "permit_replay_sqlite_read_only",
+      "to_zones": [
+        "contracts",
+        "pilot_authorization",
+        "pilot_activation",
+        "authorization",
+        "permit_replay_sqlite_read_only"
+      ]
+    },
+    {
+      "from_zone": "permit_replay_sqlite_writer",
+      "to_zones": [
+        "contracts",
+        "pilot_authorization",
+        "pilot_activation",
+        "authorization",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_writer"
+      ]
+    },
+    {
+      "from_zone": "permit_replay_sqlite_recovery",
+      "to_zones": [
+        "contracts",
+        "pilot_authorization",
+        "pilot_activation",
+        "authorization",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_writer",
+        "permit_replay_sqlite_recovery"
+      ]
+    },
+    {
+      "from_zone": "m2_readiness",
+      "to_zones": [
+        "contracts",
+        "plan_services",
+        "authorization",
+        "simulation",
+        "executor_contracts",
+        "executor_ports",
+        "audit_contracts",
+        "m2_readiness"
+      ]
+    },
+    {
+      "from_zone": "pilot_authorization",
+      "to_zones": [
+        "contracts",
+        "authorization",
+        "m2_readiness",
+        "executor_contracts",
+        "audit_contracts",
+        "pilot_authorization"
+      ]
+    },
+    {
+      "from_zone": "pilot_activation",
+      "to_zones": [
+        "contracts",
+        "authorization",
+        "m2_readiness",
+        "executor_contracts",
+        "executor_ports",
+        "audit_contracts",
+        "pilot_authorization",
+        "pilot_activation"
+      ]
+    },
+    {
+      "from_zone": "pilot_evidence",
+      "to_zones": [
+        "contracts",
+        "executor_contracts",
+        "audit_contracts",
+        "m2_readiness",
+        "pilot_authorization",
+        "pilot_activation",
+        "pilot_evidence"
+      ]
+    },
+    {
+      "from_zone": "operational_monitoring",
+      "to_zones": [
+        "contracts",
+        "audit_sqlite_read_only",
+        "audit_sqlite_recovery",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_recovery",
+        "m2_readiness",
+        "pilot_evidence",
+        "operational_monitoring"
+      ]
+    },
+    {
+      "from_zone": "alert_routing",
+      "to_zones": [
+        "contracts",
+        "operational_monitoring",
+        "alert_routing"
+      ]
+    },
+    {
+      "from_zone": "monitoring_alert_drill",
+      "to_zones": [
+        "contracts",
+        "operational_monitoring",
+        "alert_routing",
+        "monitoring_alert_drill"
+      ]
+    },
+    {
+      "from_zone": "operational_activation_gate",
+      "to_zones": [
+        "contracts",
+        "m2_readiness",
+        "pilot_evidence",
+        "audit_sqlite_read_only",
+        "audit_sqlite_recovery",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_recovery",
+        "operational_monitoring",
+        "alert_routing",
+        "monitoring_alert_drill",
+        "operational_activation_gate"
+      ]
+    },
+    {
+      "from_zone": "operational_bootstrap_authorization",
+      "to_zones": [
+        "contracts",
+        "audit_sqlite_read_only",
+        "permit_replay_sqlite_read_only",
+        "operational_activation_gate",
+        "operational_bootstrap_authorization"
+      ]
+    },
+    {
+      "from_zone": "operational_bootstrap",
+      "to_zones": [
+        "contracts",
+        "audit_sqlite_read_only",
+        "audit_sqlite_recovery",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_recovery",
+        "operational_monitoring",
+        "operational_activation_gate",
+        "operational_bootstrap_authorization",
+        "operational_bootstrap"
+      ]
+    },
+    {
+      "from_zone": "operational_activation_authorization",
+      "to_zones": [
+        "contracts",
+        "operational_activation_authorization"
+      ]
+    },
+    {
+      "from_zone": "operational_bootstrap_execution",
+      "to_zones": [
+        "contracts",
+        "audit_sqlite_read_only",
+        "audit_sqlite_recovery",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_recovery",
+        "operational_monitoring",
+        "operational_activation_gate",
+        "operational_bootstrap_authorization",
+        "operational_bootstrap",
+        "operational_permit_issuance",
+        "operational_permit_approval",
+        "operational_activation_authorization",
+        "operational_bootstrap_execution"
+      ]
+    },
+    {
+      "from_zone": "bootstrap_evidence_recovery",
+      "to_zones": [
+        "contracts",
+        "audit_sqlite_read_only",
+        "permit_replay_sqlite_read_only",
+        "operational_bootstrap_execution",
+        "operational_bootstrap_live",
+        "bootstrap_evidence_recovery"
+      ]
+    },
+    {
+      "from_zone": "controlled_activation_validation",
+      "to_zones": [
+        "controlled_activation_validation"
+      ]
+    },
+    {
+      "from_zone": "controlled_activation_architecture",
+      "to_zones": [
+        "contracts",
+        "controlled_activation_architecture"
+      ]
+    },
+    {
+      "from_zone": "capability_authorization",
+      "to_zones": [
+        "contracts",
+        "controlled_activation_architecture",
+        "capability_authorization"
+      ]
+    },
+    {
+      "from_zone": "capability_authorization_simulation",
+      "to_zones": [
+        "contracts",
+        "controlled_activation_architecture",
+        "capability_authorization",
+        "capability_authorization_simulation"
+      ]
+    },
+    {
+      "from_zone": "operational_bootstrap_live",
+      "to_zones": [
+        "contracts",
+        "audit_sqlite_read_only",
+        "audit_sqlite_recovery",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_recovery",
+        "operational_monitoring",
+        "operational_activation_gate",
+        "operational_bootstrap_authorization",
+        "operational_bootstrap",
+        "operational_bootstrap_preflight",
+        "operational_permit_issuance",
+        "operational_permit_approval",
+        "operational_activation_authorization",
+        "operational_bootstrap_execution",
+        "git_readonly_evidence",
+        "operational_bootstrap_live"
+      ]
+    },
+    {
+      "from_zone": "git_readonly_evidence",
+      "to_zones": [
+        "git_readonly_evidence"
+      ]
+    },
+    {
+      "from_zone": "operational_bootstrap_preflight",
+      "to_zones": [
+        "contracts",
+        "operational_activation_gate",
+        "operational_bootstrap_authorization",
+        "operational_bootstrap",
+        "operational_bootstrap_preflight"
+      ]
+    },
+    {
+      "from_zone": "operational_permit_issuance",
+      "to_zones": [
+        "contracts",
+        "operational_activation_gate",
+        "operational_bootstrap_authorization",
+        "operational_bootstrap",
+        "operational_bootstrap_preflight",
+        "operational_permit_issuance"
+      ]
+    },
+    {
+      "from_zone": "operational_permit_approval",
+      "to_zones": [
+        "contracts",
+        "operational_activation_gate",
+        "operational_bootstrap_authorization",
+        "operational_bootstrap_preflight",
+        "operational_permit_issuance",
+        "operational_activation_authorization",
+        "operational_permit_approval"
+      ]
+    },
+    {
+      "from_zone": "executor_contracts",
+      "to_zones": [
+        "contracts",
+        "executor_contracts"
+      ]
+    },
+    {
+      "from_zone": "executor_ports",
+      "to_zones": [
+        "contracts",
+        "executor_contracts",
+        "executor_ports"
+      ]
+    },
+    {
+      "from_zone": "sandbox_adapter",
+      "to_zones": [
+        "contracts",
+        "executor_contracts",
+        "executor_ports",
+        "sandbox_adapter"
+      ]
+    },
+    {
+      "from_zone": "read_ports",
+      "to_zones": [
+        "contracts",
+        "read_ports",
+        "audit_evidence"
+      ]
+    },
+    {
+      "from_zone": "read_adapters",
+      "to_zones": [
+        "contracts",
+        "read_ports",
+        "read_adapters"
+      ]
+    },
+    {
+      "from_zone": "read_application",
+      "to_zones": [
+        "contracts",
+        "read_ports",
+        "read_application"
+      ]
+    },
+    {
+      "from_zone": "plan_services",
+      "to_zones": [
+        "contracts",
+        "read_ports",
+        "read_application",
+        "plan_services"
+      ]
+    },
+    {
+      "from_zone": "authorization",
+      "to_zones": [
+        "contracts",
+        "plan_services",
+        "authorization"
+      ]
+    },
+    {
+      "from_zone": "simulation",
+      "to_zones": [
+        "contracts",
+        "plan_services",
+        "authorization",
+        "executor_contracts",
+        "executor_ports",
+        "simulation"
+      ]
+    },
+    {
+      "from_zone": "api_composition",
+      "to_zones": [
+        "contracts",
+        "read_ports",
+        "read_adapters",
+        "read_application",
+        "plan_services",
+        "api_composition",
+        "audit_evidence"
+      ]
+    },
+    {
+      "from_zone": "audit_evidence",
+      "to_zones": [
+        "contracts",
+        "audit_evidence"
+      ]
+    },
+    {
+      "from_zone": "activation_inspector",
+      "to_zones": [
+        "activation_inspector",
+        "contracts",
+        "git_readonly_evidence"
+      ]
+    }
   ],
   "dependency_rules": [
     {
       "id": "DPL-DIRECTION-001",
-      "from_zones": ["contracts"],
-      "to_zones": ["api_composition", "read_adapters", "worker_infrastructure", "apply_services"],
+      "from_zones": [
+        "contracts"
+      ],
+      "to_zones": [
+        "api_composition",
+        "read_adapters",
+        "worker_infrastructure",
+        "apply_services"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-002",
-      "from_zones": ["read_ports"],
-      "to_zones": ["api_composition", "read_adapters", "read_application", "plan_services", "apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "from_zones": [
+        "read_ports"
+      ],
+      "to_zones": [
+        "api_composition",
+        "read_adapters",
+        "read_application",
+        "plan_services",
+        "apply_services",
+        "worker_infrastructure",
+        "legacy_unsupported"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-003",
-      "from_zones": ["read_application"],
-      "to_zones": ["read_adapters", "api_composition", "apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "from_zones": [
+        "read_application"
+      ],
+      "to_zones": [
+        "read_adapters",
+        "api_composition",
+        "apply_services",
+        "worker_infrastructure",
+        "legacy_unsupported"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-004",
-      "from_zones": ["plan_services"],
-      "to_zones": ["apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "from_zones": [
+        "plan_services"
+      ],
+      "to_zones": [
+        "apply_services",
+        "worker_infrastructure",
+        "legacy_unsupported"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-005",
-      "from_zones": ["api_composition"],
-      "to_zones": ["apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "from_zones": [
+        "api_composition"
+      ],
+      "to_zones": [
+        "apply_services",
+        "worker_infrastructure",
+        "legacy_unsupported"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-006",
-      "from_zones": ["authorization"],
-      "to_zones": ["api_composition", "read_adapters", "read_application", "apply_services", "simulation", "worker_infrastructure", "legacy_unsupported"],
+      "from_zones": [
+        "authorization"
+      ],
+      "to_zones": [
+        "api_composition",
+        "read_adapters",
+        "read_application",
+        "apply_services",
+        "simulation",
+        "worker_infrastructure",
+        "legacy_unsupported"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-007",
-      "from_zones": ["simulation"],
-      "to_zones": ["api_composition", "read_adapters", "read_application", "apply_services", "worker_infrastructure", "legacy_unsupported"],
+      "from_zones": [
+        "simulation"
+      ],
+      "to_zones": [
+        "api_composition",
+        "read_adapters",
+        "read_application",
+        "apply_services",
+        "worker_infrastructure",
+        "legacy_unsupported"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-008",
-      "from_zones": ["plan_services", "api_composition", "worker_infrastructure"],
-      "to_zones": ["executor_contracts", "executor_ports"],
+      "from_zones": [
+        "plan_services",
+        "api_composition",
+        "worker_infrastructure"
+      ],
+      "to_zones": [
+        "executor_contracts",
+        "executor_ports"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-009",
-      "from_zones": ["authorization"],
-      "to_zones": ["executor_ports"],
+      "from_zones": [
+        "authorization"
+      ],
+      "to_zones": [
+        "executor_ports"
+      ],
       "severity": "ERROR"
     },
     {
       "id": "DPL-DIRECTION-010",
-      "from_zones": ["plan_services", "authorization", "api_composition", "worker_infrastructure"],
-      "to_zones": ["sandbox_adapter"],
+      "from_zones": [
+        "plan_services",
+        "authorization",
+        "api_composition",
+        "worker_infrastructure"
+      ],
+      "to_zones": [
+        "sandbox_adapter"
+      ],
       "severity": "ERROR"
     }
   ],
   "prohibited_external_modules": [
     {
       "id": "DPL-EXTERNAL-001",
-      "zones": ["audit_contracts", "controlled_activation_validation", "controlled_activation_architecture", "capability_authorization", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_activation_gate", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
-      "modules": ["sqlite3", "subprocess", "socket", "requests", "paramiko", "fabric"],
+      "zones": [
+        "audit_contracts",
+        "controlled_activation_validation",
+        "controlled_activation_architecture",
+        "capability_authorization",
+        "m2_readiness",
+        "pilot_authorization",
+        "pilot_activation",
+        "pilot_evidence",
+        "operational_monitoring",
+        "alert_routing",
+        "monitoring_alert_drill",
+        "operational_activation_gate",
+        "operational_bootstrap_preflight",
+        "executor_contracts",
+        "executor_ports",
+        "sandbox_adapter",
+        "read_application",
+        "plan_services",
+        "authorization",
+        "simulation",
+        "api_composition"
+      ],
+      "modules": [
+        "sqlite3",
+        "subprocess",
+        "socket",
+        "requests",
+        "paramiko",
+        "fabric"
+      ],
       "severity": "ERROR"
     }
   ],
   "prohibited_symbols": [
     {
       "id": "DPL-SYMBOL-001",
-      "zones": ["audit_contracts", "audit_sqlite_read_only", "audit_sqlite_writer", "audit_sqlite_recovery", "permit_replay_sqlite_read_only", "permit_replay_sqlite_writer", "permit_replay_sqlite_recovery", "bootstrap_evidence_recovery", "controlled_activation_validation", "controlled_activation_architecture", "capability_authorization", "m2_readiness", "pilot_authorization", "pilot_activation", "pilot_evidence", "operational_monitoring", "alert_routing", "monitoring_alert_drill", "operational_bootstrap_preflight", "executor_contracts", "executor_ports", "sandbox_adapter", "read_application", "plan_services", "authorization", "simulation", "api_composition"],
-      "symbols": ["SSHRunner", "UbuntuWorkerClient", "CommandRunner", "RemoteCommandRunner", "ApplyExecutor"],
+      "zones": [
+        "audit_contracts",
+        "audit_sqlite_read_only",
+        "audit_sqlite_writer",
+        "audit_sqlite_recovery",
+        "permit_replay_sqlite_read_only",
+        "permit_replay_sqlite_writer",
+        "permit_replay_sqlite_recovery",
+        "bootstrap_evidence_recovery",
+        "controlled_activation_validation",
+        "controlled_activation_architecture",
+        "capability_authorization",
+        "m2_readiness",
+        "pilot_authorization",
+        "pilot_activation",
+        "pilot_evidence",
+        "operational_monitoring",
+        "alert_routing",
+        "monitoring_alert_drill",
+        "operational_bootstrap_preflight",
+        "executor_contracts",
+        "executor_ports",
+        "sandbox_adapter",
+        "read_application",
+        "plan_services",
+        "authorization",
+        "simulation",
+        "api_composition"
+      ],
+      "symbols": [
+        "SSHRunner",
+        "UbuntuWorkerClient",
+        "CommandRunner",
+        "RemoteCommandRunner",
+        "ApplyExecutor"
+      ],
       "severity": "ERROR"
     }
   ],
@@ -364,7 +1072,11 @@
       "module": "core.deployment.inspect",
       "reason": "Pre-DPL inspector performs socket, HTTP and launchctl print observations through subprocess.",
       "allowed_consumers": [],
-      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "prohibited_consumers": [
+        "read_application",
+        "plan_services",
+        "api_composition"
+      ],
       "production_authorized": false,
       "migration_target": "DPL-03B capability-specific read ports",
       "review_by": "2026-10-31"
@@ -373,7 +1085,11 @@
       "module": "core.deployment.diff",
       "reason": "Pre-DPL diff transitively reaches the legacy runtime inspector.",
       "allowed_consumers": [],
-      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "prohibited_consumers": [
+        "read_application",
+        "plan_services",
+        "api_composition"
+      ],
       "production_authorized": false,
       "migration_target": "DPL-03B pure plan composition",
       "review_by": "2026-10-31"
@@ -382,7 +1098,11 @@
       "module": "core.deployment.plan",
       "reason": "Pre-DPL planner models mutation actions outside the DPL v1 contracts.",
       "allowed_consumers": [],
-      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "prohibited_consumers": [
+        "read_application",
+        "plan_services",
+        "api_composition"
+      ],
       "production_authorized": false,
       "migration_target": "DPL-03B pure plan composition",
       "review_by": "2026-10-31"
@@ -391,7 +1111,11 @@
       "module": "core.deployment.dry_run",
       "reason": "Pre-DPL dry run models installation, launchd mutation and rollback commands.",
       "allowed_consumers": [],
-      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "prohibited_consumers": [
+        "read_application",
+        "plan_services",
+        "api_composition"
+      ],
       "production_authorized": false,
       "migration_target": "DPL-03B pure plan composition",
       "review_by": "2026-10-31"
@@ -400,7 +1124,11 @@
       "module": "core.deployment.approval",
       "reason": "Pre-DPL approval format references installation and rollback actions.",
       "allowed_consumers": [],
-      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "prohibited_consumers": [
+        "read_application",
+        "plan_services",
+        "api_composition"
+      ],
       "production_authorized": false,
       "migration_target": "Future separately authorized apply milestone",
       "review_by": "2026-10-31"
@@ -409,7 +1137,11 @@
       "module": "core.deployment.execution_gate",
       "reason": "Pre-DPL execution gating belongs to a future apply boundary.",
       "allowed_consumers": [],
-      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "prohibited_consumers": [
+        "read_application",
+        "plan_services",
+        "api_composition"
+      ],
       "production_authorized": false,
       "migration_target": "Future separately authorized apply milestone",
       "review_by": "2026-10-31"
@@ -418,7 +1150,11 @@
       "module": "core.deployment.manifest",
       "reason": "Pre-DPL manifest and CLI contract is outside the immutable DPL v1 registry.",
       "allowed_consumers": [],
-      "prohibited_consumers": ["read_application", "plan_services", "api_composition"],
+      "prohibited_consumers": [
+        "read_application",
+        "plan_services",
+        "api_composition"
+      ],
       "production_authorized": false,
       "migration_target": "DPL v1 contract registry",
       "review_by": "2026-10-31"

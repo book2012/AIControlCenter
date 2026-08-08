@@ -214,7 +214,12 @@ def validate_dependency_boundaries(
         except (OSError, UnicodeDecodeError, SyntaxError) as error:
             warnings.append({"module": module, "warning": f"source could not be analyzed: {type(error).__name__}"})
             continue
-        imports = _imports(tree, module)
+        import_context = (
+            module + ".__init__"
+            if relative_path.name == "__init__.py"
+            else module
+        )
+        imports = _imports(tree, import_context)
         if quarantine is not None:
             sensitive = sorted(
                 imported
