@@ -273,19 +273,19 @@ def test_runtime_filesystem_is_read_only_and_bounded(
     tmp_path: Path,
 ) -> None:
     runtime = tmp_path / "runtime"
-    release = runtime / "releases" / "candidate123"
+    release = runtime / "venvs" / "candidate123"
     release.mkdir(parents=True)
 
     current_release = (
         runtime
-        / "releases"
+        / "venvs"
         / "active123"
     )
 
     current_release.mkdir()
 
     (runtime / "current").symlink_to(
-        Path("releases") / "active123"
+        Path("venvs") / "active123"
     )
 
     metadata = {

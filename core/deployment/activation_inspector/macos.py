@@ -733,7 +733,7 @@ class MacOSReadOnlyAdapter:
 
         candidate_root = (
             root
-            / "releases"
+            / "venvs"
             / candidate_runtime
         )
 

@@ -1,5 +1,36 @@
 # CHANGELOG
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_RUNTIME_LAYOUT_FIX:START -->
+## ACTIVATION-01B Runtime Layout Correction
+
+Status: `COMPLETE`
+
+Read-only operational validation discovered a Control Plane
+observation-path mismatch.
+
+Canonical Runtime layout:
+
+- Runtime environments: `runtime/venvs/<runtime-id>`
+- Candidate metadata: `metadata.json`
+- Source identity: `.aicontrolcenter-source-commit`
+
+The inspector previously looked under `runtime/releases/<runtime-id>`
+and expected `runtime-metadata.json`.
+
+The repair changes observation logic only.
+
+No Runtime environment was created, removed or modified.
+
+Runtime mutations: `0`
+Service restarts: `0`
+Rollback executions: `0`
+launchd changes: `0`
+Caddy changes: `0`
+Public openings: `0`
+Ubuntu changes: `0`
+Production authorization: `NO`
+<!-- AICONTROLCENTER:ACTIVATION_01B_RUNTIME_LAYOUT_FIX:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_C4:START -->
 ## ACTIVATION-01B-C4 Read-Only Inspector
 

@@ -34,7 +34,7 @@
     "current_link_name": "current",
     "expected_current_runtime": "b9ad351a7241",
     "expected_source_commit": "acd80ab9f6aeb848900e1a19e3fa3afd69face8a",
-    "metadata_filename": "runtime-metadata.json",
+    "metadata_filename": "metadata.json",
     "python": {
       "bytecode_writes": false,
       "dependency_identity_source": "RUNTIME_METADATA",
