@@ -1,5 +1,47 @@
 # Project History
 
+<!-- AICONTROLCENTER:ACTIVATION_01B_HTTP_CONTRACT_FIX:START -->
+## ACTIVATION-01B HTTP Evidence Contract Correction
+
+Status: `COMPLETE`
+
+Operational validation exposed a direct-localhost
+`HTTP_PROBE_FAILED` condition.
+
+The registered HTTP evidence contract uses:
+
+- `actual_status`
+- `result`
+- `body_length`
+- `sanitized_error`
+- `attempt_count`
+- `redirect_followed`
+
+Transport or connection failures are now represented as probe
+evidence:
+
+- `actual_status = null`
+- `result = ERROR`
+- `body_length = 0`
+- bounded `sanitized_error`
+- `attempt_count = 1`
+- `redirect_followed = false`
+
+The corresponding blocking inspection check fails.
+
+A transport failure therefore resolves to `BLOCKED` rather than
+being promoted to an inspector execution `ERROR`.
+
+Runtime mutations: `0`
+Service restarts: `0`
+Rollback executions: `0`
+launchd changes: `0`
+Caddy changes: `0`
+Public openings: `0`
+Ubuntu changes: `0`
+Production authorization: `NO`
+<!-- AICONTROLCENTER:ACTIVATION_01B_HTTP_CONTRACT_FIX:END -->
+
 <!-- AICONTROLCENTER:ACTIVATION_01B_LAUNCHD_SCOPE_FIX:START -->
 ## ACTIVATION-01B Launchd Parser Scope Correction
 

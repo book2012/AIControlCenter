@@ -387,3 +387,95 @@ def test_policy_copy_mutation_breaks_manifest_binding():
         ]
         != changed
     )
+
+def test_http_connection_failure_is_blocked():
+    from core.deployment.activation_inspector.macos import (
+        MacOSObservationError,
+    )
+
+    class FailingHttpAdapter(FakeAdapter):
+        def probe_http(self, request):
+            self.http_requests.append(
+                request
+            )
+
+            raise MacOSObservationError(
+                "HTTP_PROBE_FAILED"
+            )
+
+    policy, manifest = load_contracts()
+
+    snapshot, validation = git_evidence(
+        policy
+    )
+
+    adapter = FailingHttpAdapter(
+        policy=policy,
+        manifest=manifest,
+    )
+
+    report = run_inspection(
+        policy=policy,
+        manifest=manifest,
+        adapter=adapter,
+        git_collector_factory=(
+            lambda config: FakeCollector(
+                snapshot
+            )
+        ),
+        git_validator=FakeValidator(
+            validation
+        ),
+        now=lambda: FIXED_TIME,
+        id_factory=lambda: (
+            "activation-inspection-"
+            "0123456789abcdef0123456789abcdef"
+        ),
+    )
+
+    assert (
+        report["overall_status"]
+        == "BLOCKED"
+    )
+
+    error_results = [
+        item
+        for item in report["http"]["results"]
+        if item["result"] == "ERROR"
+    ]
+
+    assert error_results
+
+    assert all(
+        item["actual_status"] is None
+        for item in error_results
+    )
+
+    assert all(
+        item["sanitized_error"]
+        == "HTTP_PROBE_FAILED"
+        for item in error_results
+    )
+
+    assert all(
+        item["body_length"] == 0
+        for item in error_results
+    )
+
+    assert all(
+        item["attempt_count"] == 1
+        for item in error_results
+    )
+
+    assert all(
+        item["redirect_followed"] is False
+        for item in error_results
+    )
+
+    validate_contract_payload(
+        registry=load_schema_registry(),
+        contract_name=(
+            "ActivationInspectionReport"
+        ),
+        payload=report,
+    )

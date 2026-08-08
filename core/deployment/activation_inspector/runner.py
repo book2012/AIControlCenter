@@ -864,142 +864,38 @@ def _http_section(
     manifest: dict[str, Any],
     results: list[dict[str, Any]],
 ) -> dict[str, Any]:
-    section = deepcopy(
-        REPORT_TEMPLATE["http"]
-    )
+    semantic = {
+        "host": manifest["target"]["host"],
+        "port": manifest["target"]["port"],
+        "results": [
+            {
+                "probe_id": item["probe_id"],
+                "method": item["method"],
+                "path": item["path"],
+                "expected_status": item[
+                    "expected_status"
+                ],
+                "actual_status": item[
+                    "actual_status"
+                ],
+                "result": item["result"],
+                "redirect_followed": False,
+                "attempt_count": 1,
+                "body_length": 0,
+                "sanitized_error": item[
+                    "sanitized_error"
+                ],
+            }
+            for item in results
+        ],
+    }
 
-    target = manifest["target"]
-
-    _set_aliases(
-        section,
-        target["host"],
-        "host",
-        "target_host",
-    )
-
-    _set_aliases(
-        section,
-        target["port"],
-        "port",
-        "target_port",
-    )
-
-    _set_aliases(
-        section,
-        len(results),
-        "probe_count",
-        "total_count",
-    )
-
-    passed = sum(
-        item["result"] == "PASS"
-        for item in results
-    )
-
-    failed = len(results) - passed
-
-    _set_aliases(
-        section,
-        passed,
-        "passed_count",
-    )
-
-    _set_aliases(
-        section,
-        failed,
-        "failed_count",
-    )
-
-    _set_aliases(
-        section,
-        failed == 0,
-        "all_passed",
-    )
-
-    for key in (
-        "probes",
-        "results",
-    ):
-        if key not in section:
-            continue
-
-        template_rows = section[key]
-        template_row = (
-            deepcopy(template_rows[0])
-            if isinstance(template_rows, list)
-            and template_rows
-            and isinstance(template_rows[0], dict)
-            else {}
-        )
-
-        rows = []
-
-        for result in results:
-            row = deepcopy(template_row)
-
-            _set_aliases(
-                row,
-                result["probe_id"],
-                "probe_id",
-                "id",
-            )
-
-            _set_aliases(
-                row,
-                result["method"],
-                "method",
-            )
-
-            _set_aliases(
-                row,
-                result["path"],
-                "path",
-            )
-
-            _set_aliases(
-                row,
-                result["expected_status"],
-                "expected_status",
-            )
-
-            _set_aliases(
-                row,
-                result["observed_status"],
-                "observed_status",
-                "status",
-            )
-
-            _set_aliases(
-                row,
-                result["result"],
-                "result",
-            )
-
-            _set_aliases(
-                row,
-                result["blocking"],
-                "blocking",
-            )
-
-            _set_aliases(
-                row,
-                result["body_bytes"],
-                "body_bytes",
-                "response_body_bytes",
-            )
-
-            _set_aliases(
-                row,
-                result["error"],
-                "error",
-                "error_code",
-            )
-
-            rows.append(row)
-
-        section[key] = rows
-
-    return _digest_section(section)
+    return {
+        **semantic,
+        "evidence_digest": sha256_digest(
+            semantic
+        ),
+    }
 
 
 def _materialize_report_values(
@@ -1499,9 +1395,11 @@ def run_inspection(
 
         method = str(probe["method"])
         path = str(probe["path"])
+
         expected_status = int(
             probe["expected_status"]
         )
+
         blocking = bool(
             probe.get("blocking", True)
         )
@@ -1515,32 +1413,55 @@ def run_inspection(
             expected_status=expected_status,
         )
 
-        response = adapter.probe_http(
-            request
-        )
+        try:
+            response = adapter.probe_http(
+                request
+            )
 
-        passed = (
-            response.status
-            == expected_status
-        )
+        except MacOSObservationError as error:
+            error_code = str(error)
 
-        result = {
-            "probe_id": probe_id,
-            "method": method,
-            "path": path,
-            "expected_status": expected_status,
-            "observed_status": response.status,
-            "result": (
+            if re.fullmatch(
+                r"[A-Z][A-Z0-9_]{0,127}",
+                error_code,
+            ) is None:
+                error_code = "HTTP_PROBE_FAILED"
+
+            actual_status = None
+            result_status = "ERROR"
+            sanitized_error = error_code
+            passed = False
+
+        else:
+            actual_status = response.status
+            sanitized_error = None
+
+            passed = (
+                actual_status
+                == expected_status
+            )
+
+            result_status = (
                 "PASS"
                 if passed
                 else "FAIL"
-            ),
-            "blocking": blocking,
-            "body_bytes": len(response.body),
-            "error": None,
-        }
+            )
 
-        http_results.append(result)
+        http_results.append(
+            {
+                "probe_id": probe_id,
+                "method": method,
+                "path": path,
+                "expected_status": (
+                    expected_status
+                ),
+                "actual_status": actual_status,
+                "result": result_status,
+                "sanitized_error": (
+                    sanitized_error
+                ),
+            }
+        )
 
         add_check(
             check_id=(
@@ -1551,7 +1472,11 @@ def run_inspection(
                 )
             ),
             expected=expected_status,
-            actual=response.status,
+            actual=(
+                actual_status
+                if actual_status is not None
+                else sanitized_error
+            ),
             passed=passed,
             blocking=blocking,
             evidence_reference=(
