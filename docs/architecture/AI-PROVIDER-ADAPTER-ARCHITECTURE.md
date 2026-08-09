@@ -1,7 +1,7 @@
 # AI Provider Adapter Architecture
 
-Version: 1.1
-Status: AI-PROVIDER-01B repository implementation ready for authenticated smoke
+Version: 1.2
+Status: AI-PROVIDER-01C-A Control Plane workflow integrated (repository only)
 
 ## Decision
 
@@ -25,6 +25,38 @@ The implementation extends the existing `core/providers` subsystem rather than
 creating a parallel provider stack. Legacy provider entry points remain for
 compatibility, but routing is now explicit and does not fall back to another
 provider.
+
+## Canonical Control Plane integration
+
+AI-PROVIDER-01C-A integrates the existing `BrainAgent.ask` workflow used by the
+`POST /agents/brain/ask` API and Telegram brain-chat adapter. It does not create
+a second agent or workflow stack.
+
+Old call path:
+
+```text
+BrainAgent.ask -> ProviderManager.chat -> AIProvider.chat
+```
+
+New canonical call path:
+
+```text
+BrainAgent.ask -> ProviderRouter.invoke -> ProviderAdapter.invoke
+    -> provider implementation
+```
+
+The request-supplied provider, or the Control Plane's configured provider when
+the request omits it, is selected once and passed explicitly in
+`ProviderRequest`. The router never substitutes another provider. Normalized
+`ProviderResponse.to_dict()` or `ProviderError.to_dict()` data is returned in a
+JSON-serializable workflow envelope. Audit metadata is limited to provider,
+model, result class and request ID; prompts, credentials and authorization
+headers are excluded. Router response validation prevents vendor objects from
+escaping the adapter boundary.
+
+Injected `ProviderManager` instances remain supported as a narrow compatibility
+seam for existing callers. Default canonical workflow construction uses
+`ProviderRouter`; legacy business logic is not duplicated.
 
 ## Contract
 
@@ -85,5 +117,7 @@ Production Runtime remains `7b171f135dc7`, sourced from authorized commit
 `7b171f135dc7882546bf7f733208778f1aef4943`. No Runtime build, activation,
 service mutation, wrapper change, Caddy change, Ubuntu operation or Production
 data write is part of this sprint. PI-009 Production authorization remains
-intact. AI-PROVIDER-01C will handle candidate Runtime integration and promotion.
-Notion synchronization is `DEFERRED_UNTIL_FINAL_PHASE`.
+intact. No authenticated provider call occurred in 01C-A. AI-PROVIDER-01C-B
+will create a new Candidate Runtime; AI-PROVIDER-01C-C requires explicit human
+authorization for Production promotion. Notion synchronization is
+`DEFERRED_UNTIL_FINAL_PHASE`.

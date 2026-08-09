@@ -6,7 +6,12 @@
   fake adapter and no-network OpenAI adapter boundary.
 - [ ] AI-PROVIDER-01B secure credential installation and authenticated
   connectivity (requires separate authorization).
-- [ ] Notion synchronization (`PENDING`).
+- [x] AI-PROVIDER-01C-A integrate canonical `BrainAgent.ask` through the strict
+  `ProviderRouter` application boundary without an authenticated provider call.
+- [ ] AI-PROVIDER-01C-B create a new Candidate Runtime.
+- [ ] AI-PROVIDER-01C-C obtain explicit human authorization before Production
+  promotion.
+- [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
 
 Never store provider API keys in Git. Production Runtime `7b171f135dc7` and
 PI-009 authorization were not changed by 01A.

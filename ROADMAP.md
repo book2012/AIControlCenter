@@ -7,6 +7,11 @@
 - [ ] AI-PROVIDER-01B: Responses API repository transport and smoke CLI are
   implemented; human-controlled authenticated smoke is pending.
 - [ ] AI-PROVIDER-01C: candidate Runtime integration and promotion.
+- [x] AI-PROVIDER-01C-A: canonical Control Plane `BrainAgent.ask` workflow
+  integration through `ProviderRouter` (repository only; no authenticated call).
+- [ ] AI-PROVIDER-01C-B: create a new Candidate Runtime.
+- [ ] AI-PROVIDER-01C-C: Production promotion only after explicit human
+  authorization.
 - [ ] Synchronize the provider architecture record to Notion
   (`DEFERRED_UNTIL_FINAL_PHASE`).
 

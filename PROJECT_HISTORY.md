@@ -1,5 +1,21 @@
 # Project History
 
+## 2026-08-10 — AI-PROVIDER-01C-A
+
+The existing canonical `BrainAgent.ask` Control Plane workflow moved from the
+legacy `ProviderManager.chat -> AIProvider.chat` call path to explicit
+`ProviderRouter -> ProviderAdapter` invocation. Request/config provider
+selection remains deterministic, unknown providers fail closed, and normalized
+JSON results, errors and audit-safe metadata are the application boundary.
+Injected legacy managers remain a compatibility seam only; no second agent or
+workflow stack was created.
+
+No authenticated provider request or network call occurred. Production Runtime
+remained `7b171f135dc7`, with no service or operational-state mutation. 01C-B
+will create a new Candidate Runtime and 01C-C requires explicit human
+authorization for Production promotion. Notion is
+`DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## 2026-08-10 — AI-PROVIDER-01A
 
 AIControlCenter established its first production-quality vendor-neutral

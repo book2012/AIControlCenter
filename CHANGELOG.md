@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-08-10 — AI-PROVIDER-01C-A Control Plane Workflow Integration
+
+- Integrated canonical `BrainAgent.ask` calls with `ProviderRouter` and the
+  normalized `ProviderAdapter` request/result/error boundary.
+- Preserved request/config provider selection, action routing and injected
+  legacy manager compatibility while prohibiting unknown-provider fallback.
+- Added FakeProvider integration coverage for JSON-safe results, audit metadata,
+  normalized failures and rejection of vendor response objects.
+- No authenticated request or Runtime operation occurred. Production Runtime
+  remains `7b171f135dc7`; 01C-B creates a Candidate Runtime and 01C-C requires
+  explicit human promotion authorization. Notion is
+  `DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## 2026-08-10 — AI-PROVIDER-01B Authenticated OpenAI Provider Transport
 
 - Implemented the OpenAI Responses API POST transport behind `OpenAIAdapter`

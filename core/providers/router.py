@@ -27,4 +27,11 @@ class ProviderRouter:
         return tuple(sorted(self._adapters))
 
     def invoke(self, request: ProviderRequest) -> ProviderResponse:
-        return self.get(request.provider).invoke(request)
+        response = self.get(request.provider).invoke(request)
+        if not isinstance(response, ProviderResponse):
+            raise ProviderError(
+                ProviderErrorCode.INTERNAL_ADAPTER_ERROR,
+                request.provider,
+                model=request.model,
+            )
+        return response

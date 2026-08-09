@@ -1,5 +1,16 @@
 # MASTER
 
+## AI-PROVIDER-01C-A — Control Plane workflow integration
+
+Status: `READY_FOR_GIT_CLOSEOUT` (repository only). Canonical `BrainAgent.ask`
+business logic now invokes the explicitly selected provider through
+`ProviderRouter` and receives only normalized `ProviderAdapter` results or safe
+errors. There is no vendor SDK ownership in business logic and no automatic
+cross-provider fallback. No authenticated call occurred. Production Runtime
+remains `7b171f135dc7`; 01C-B creates a new Candidate Runtime and 01C-C requires
+explicit human authorization for Production promotion. Notion is
+`DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## AI-PROVIDER-01B — Authenticated OpenAI transport
 
 Status: `READY_FOR_AUTHENTICATED_SMOKE` (repository only). The Responses API is

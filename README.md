@@ -1,5 +1,17 @@
 # AIControlCenter
 
+## AI-PROVIDER-01C-A Control Plane Workflow Integration
+
+The canonical `BrainAgent.ask` workflow now selects an explicit configured or
+request-supplied provider through `ProviderRouter`, which is the application
+provider boundary. Business logic receives only normalized JSON-safe results
+from `ProviderAdapter`; it owns no vendor SDK transport behavior. Unknown
+providers fail closed, and no automatic cross-provider fallback or retry is
+allowed. Focused FakeProvider tests made zero network calls and no authenticated
+provider call occurred. Production Runtime remains `7b171f135dc7`. 01C-B will
+create a new Candidate Runtime; 01C-C requires explicit human authorization for
+Production promotion. Notion is `DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## AI-PROVIDER-01B Authenticated OpenAI Transport
 
 The OpenAI Responses API transport is implemented behind the vendor-neutral

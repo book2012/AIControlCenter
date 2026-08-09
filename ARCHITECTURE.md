@@ -15,6 +15,16 @@ installation and authenticated connectivity. Production Runtime `7b171f135dc7`
 and PI-009 authorization remain unchanged. Notion sync is `PENDING`. The
 canonical decision is `docs/architecture/AI-PROVIDER-ADAPTER-ARCHITECTURE.md`.
 
+AI-PROVIDER-01C-A integrates the existing canonical `BrainAgent.ask` workflow:
+`BrainAgent -> ProviderRouter -> ProviderAdapter -> provider implementation`.
+Provider selection is explicit from the request or configured Control Plane
+policy. Business logic owns no vendor transport behavior, vendor objects cannot
+cross the adapter boundary, unknown providers fail closed, and no automatic
+cross-provider fallback occurs. This is repository-only; no authenticated call
+or Runtime change occurred. 01C-B creates a Candidate Runtime and 01C-C requires
+explicit human Production-promotion authorization. Notion is
+`DEFERRED_UNTIL_FINAL_PHASE`.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 
