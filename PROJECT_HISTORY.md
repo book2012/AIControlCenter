@@ -2037,3 +2037,17 @@ an invalid `/bin/exit` path and use of zsh's reserved `status` variable.
 Neither triggered a source build retry or operational service mutation.
 
 The source builder invocation count remained exactly one.
+
+## PI-009A2 A2.3
+
+The shadow service was quiesced before SQLite state migration, eliminating the
+live-writer race. Runtime `7b171f135dc7` and its immutable source artifact were
+then activated as a matched deployment pair.
+
+Persistent application state moved from repository-local SQLite files to the
+AIControlCenter macOS application data root.
+
+The service was restored once and validated using immutable source cwd,
+operational database paths, listener identity and HTTP checks.
+
+No automatic rollback or repeated cutover attempt occurred.

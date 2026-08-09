@@ -1893,3 +1893,12 @@ and successfully loads the shadow application with writable state externalized.
 The active Runtime and live wrapper remain unchanged.
 
 Production remains unauthorized.
+
+### PI-009A2 A2.3 Live Cutover
+
+Runtime `7b171f135dc7` is now serving from its paired immutable source artifact.
+Persistent application state is externalized under the macOS AIControlCenter
+application data root. Repository source and repository-local DB state are no
+longer part of the live execution boundary.
+
+Production authorization remains separate.

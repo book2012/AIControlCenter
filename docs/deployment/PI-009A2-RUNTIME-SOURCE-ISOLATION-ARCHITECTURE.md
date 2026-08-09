@@ -360,3 +360,12 @@ Writable application state remains external to the immutable source artifact.
 The pair is validated but not yet serving Production traffic.
 
 A2.3 remains a separate human-authorized live-cutover gate.
+
+## A2.3 Live Topology
+
+Runtime and source artifact `7b171f135dc7` now form the active immutable pair.
+
+Application writable state is external to both Runtime and immutable source.
+
+The former repository-local state was migrated only after the old service was
+quiesced.

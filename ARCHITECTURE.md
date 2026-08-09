@@ -1693,3 +1693,14 @@ The production wrapper must derive the matching source artifact from the same
 Runtime ID and must require exact full source-commit agreement.
 
 The mutable Git working tree is not a valid production application source.
+
+## Immutable Live Runtime Boundary
+
+The live AIControlCenter shadow service uses:
+
+- Runtime: `runtime/venvs/7b171f135dc7`
+- Source: `runtime/sources/7b171f135dc7`
+- State: `~/Library/Application Support/AIControlCenter/data`
+
+Mutable Git source and repository-local SQLite state are outside the live
+application boundary.

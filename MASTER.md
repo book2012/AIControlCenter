@@ -2067,3 +2067,29 @@ NO
 
 Milestone:
 IMMUTABLE_SOURCE_ARTIFACT_OPERATIONALLY_VALIDATED
+
+## PI-009A2 A2.3
+
+Status:
+VALIDATED
+
+Live Runtime:
+`7b171f135dc7`
+
+Immutable source:
+YES
+
+External persistent state:
+YES
+
+Repository source serving:
+NO
+
+Repository DB serving:
+NO
+
+Production authorized:
+NO
+
+Milestone:
+IMMUTABLE_RUNTIME_LIVE_CUTOVER_VALIDATED

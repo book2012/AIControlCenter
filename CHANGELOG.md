@@ -2364,3 +2364,14 @@ Production activation occurred.
 - application state remained external
 - active Runtime and live service remained unchanged
 - Production remains unauthorized
+
+## PI-009A2 A2.3 — Controlled Live Cutover
+
+- migrated persistent SQLite state after quiescing the old writer
+- switched Runtime current from `acd80ab9f6ae` to `7b171f135dc7`
+- installed immutable-source wrapper
+- restored LaunchDaemon exactly once
+- verified immutable source cwd
+- verified external operational DB state
+- verified HTTP 200 / 200 / 405
+- Production remains unauthorized

@@ -1599,3 +1599,15 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [ ] perform exactly one launchd kickstart
 - [ ] validate live immutable source execution
 - [ ] run PI-009 final Production gate
+
+## PI-009A2 A2.3
+
+- [x] state continuity migration
+- [x] immutable wrapper installation
+- [x] canonical Runtime activation
+- [x] service restore
+- [x] immutable source validation
+- [x] external state validation
+- [x] HTTP validation
+- [ ] PI-009 final technical Production review
+- [ ] explicit human Production authorization
