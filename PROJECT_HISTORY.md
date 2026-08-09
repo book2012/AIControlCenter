@@ -1914,3 +1914,25 @@ existing same-origin collection, current-revision, and exact-revision GET APIs.
 No ProductDraft/dashboard implementation or contract changed; no external
 request, Commerce write, public exposure, Ubuntu change, or production
 activation occurred. Next: `OPS-01_STAGING_CADDY_AUTH_MONITORING`.
+
+## PI-009A1 Deployment Test Gate Repair
+
+The first PI-009 deployment regression reported 1032 passing tests,
+18 failures and 17 errors.
+
+The failures were traced to dependency architecture classification,
+package-relative import analysis, macOS temporary-path canonicalization,
+and controlled-bootstrap `/private/tmp` test confinement.
+
+After repair, the complete deployment suite passed:
+
+`1133 passed, 9 warnings`
+
+Repair commit:
+
+`fe0e89af58c28d8b72b47c4c4e2f8fa86cc5739c`
+
+No Runtime, service, Caddy, Ubuntu or Production mutation was performed.
+
+PI-009A1 closed with `RUNTIME_SOURCE_ISOLATION` as the remaining technical
+Production blocker.

@@ -1494,3 +1494,16 @@ change.
 
 UI-02 consumes only the existing ProductDraft GET APIs, distinguishes `EMPTY`
 from `UNAVAILABLE`, and adds no write control, persistence, or activation.
+
+## PI-009A2
+
+- [ ] define immutable runtime source artifact contract
+- [ ] add source snapshot build/staging validation
+- [ ] bind source identity to runtime identity
+- [ ] remove repository PYTHONPATH dependence from production wrapper
+- [ ] add source/runtime identity validator
+- [ ] add focused regression tests
+- [ ] validate rollback design
+- [ ] require explicit authorization before wrapper/service mutation
+- [ ] verify exact loaded `core.api.shadow` source path
+- [ ] rerun PI-009 Technical Production Authorization Review

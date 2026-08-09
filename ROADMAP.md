@@ -1897,3 +1897,24 @@ SHOP-03A is complete: immutable approved-revision eligibility, exact authorizati
   `GET /homepage/product-management`.
 - **OPS-01 next:** staging Caddy, authentication, and monitoring; UI-02 adds no
   public opening or authentication change.
+
+## PI-009A2 — Immutable Runtime Source Isolation
+
+Priority: Production blocker
+
+Goal:
+
+Remove AIControlCenter runtime dependence on the mutable Git working tree.
+
+Target architecture:
+
+`runtime/venvs/<runtime-id>`
+provides the immutable Python dependency environment.
+
+`runtime/sources/<runtime-id>`
+provides the immutable application-source snapshot.
+
+The runtime wrapper must derive both artifacts from the same approved runtime
+identity and must not use the repository root as the application PYTHONPATH.
+
+Production authorization remains blocked until source isolation is validated.

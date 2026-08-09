@@ -1816,3 +1816,16 @@ empty and unavailable states distinct, and exposes no mutation or live Commerce
 control. It is not publicly exposed and production activation remains
 `NOT_AUTHORIZED`. See `docs/homepage/UI-02-product-management-console.md`.
 Next: `OPS-01_STAGING_CADDY_AUTH_MONITORING`.
+
+## PI-009A1 Deployment Test Gate
+
+PI-009A1 is complete.
+
+The deployment regression harness and dependency-boundary policy were repaired
+and the complete deployment suite passed with 1133 tests.
+
+Production remains unauthorized.
+
+The remaining technical Production blocker is `RUNTIME_SOURCE_ISOLATION`:
+the service must execute immutable release source instead of importing
+application code from the mutable repository working tree.

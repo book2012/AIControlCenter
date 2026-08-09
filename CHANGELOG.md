@@ -2280,3 +2280,16 @@ Production activation occurred.
   states.
 - Added no writes, persistence, external dependency, public exposure, contract
   change, Ubuntu change, or production activation.
+
+## PI-009A1 — Deployment Test Gate Repair
+
+- repaired package-relative dependency analysis for package `__init__.py`
+- registered the ACTIVATION-01B activation inspector dependency zone
+- synchronized dependency-policy schema classification
+- permitted the existing read-only `read_ports -> audit_evidence` re-export
+- added the reusable deployment regression gate runner
+- canonicalized macOS temporary test-home paths
+- confined controlled-bootstrap test roots to `/private/tmp`
+- final deployment regression: 1133 passed, 9 warnings
+- Production remains unauthorized
+- remaining blocker: `RUNTIME_SOURCE_ISOLATION`

@@ -1657,3 +1657,25 @@ deployment-intent, policy, and audit authority; WooCommerce retains public
 Commerce truth and the browser has no business or write authority. There is no
 public exposure or production activation. Next:
 `OPS-01_STAGING_CADDY_AUTH_MONITORING`.
+
+## Runtime Source Isolation Requirement
+
+A production Runtime identity must identify both its Python dependency
+environment and its application source.
+
+The mutable AIControlCenter Git working tree must not be treated as the
+production application-source artifact.
+
+Target runtime layout:
+
+`runtime/venvs/<runtime-id>`
+
+and:
+
+`runtime/sources/<runtime-id>`
+
+must represent the same approved release identity.
+
+The production wrapper must resolve application source from the immutable
+runtime source artifact and must fail closed when source identity, runtime
+identity, or expected commit do not match.
