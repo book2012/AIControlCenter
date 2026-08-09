@@ -1962,3 +1962,35 @@ new source commit and new Runtime Candidate.
 
 Production authorized:
 NO
+
+## PI-009A2 A2.1
+
+Status:
+COMPLETE
+
+Immutable source artifact tooling:
+VALIDATED
+
+Immutable-source wrapper template:
+VALIDATED
+
+Source/state isolation:
+VALIDATED
+
+Canonical Runtime build source:
+CLEAN HEAD
+
+Operational source artifact:
+NOT CREATED
+
+Live wrapper:
+UNCHANGED
+
+Runtime pointer:
+UNCHANGED
+
+Production authorized:
+NO
+
+Next gate:
+new Runtime Candidate build authorization.

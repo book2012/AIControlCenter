@@ -1946,3 +1946,18 @@ Execution plan:
 5. authorize operational source artifact creation
 6. authorize wrapper cutover
 7. rerun PI-009 Production Authorization Review
+
+### PI-009A2 A2.1 Complete
+
+The next Runtime Candidate will use the A2.1 completion commit as its immutable
+source identity because the canonical bootstrap build contract is HEAD-only.
+
+Next steps:
+
+1. authorize one new Runtime Candidate build
+2. build Candidate with canonical bootstrap
+3. validate Candidate metadata and full test gate
+4. create matching immutable source artifact under separate authorization
+5. validate source/state identity
+6. authorize immutable-source wrapper cutover
+7. rerun PI-009 Production Authorization Review

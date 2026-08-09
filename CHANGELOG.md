@@ -2319,3 +2319,18 @@ Production activation occurred.
 - existing Candidate `acd80ab9f6ae` is no longer eligible as the final
   immutable-source Production release
 - Production remains unauthorized
+
+## PI-009A2 A2.1 — Immutable Runtime Source Tooling
+
+- added JSON-first immutable source artifact build and validation
+- added exact source commit and Git tree evidence
+- added Git archive and independent content SHA-256 evidence
+- added atomic same-parent source publication
+- added fail-closed operational-write capability
+- added immutable-source launchd wrapper template
+- added Python `-P` application path isolation
+- removed mutable repository application cwd/PYTHONPATH from the new template
+- enforced external application data-root compatibility
+- validated read-only application source with external writable SQLite state
+- confirmed canonical Runtime bootstrap build is clean-HEAD only
+- no operational Runtime or service mutation performed

@@ -274,3 +274,40 @@ final immutable-source Production release.
 A new source commit and new Runtime Candidate are required.
 
 Production remains unauthorized.
+
+## A2.1 Immutable Source Artifact Tooling
+
+Status: COMPLETE
+
+The canonical bootstrap build contract was verified to be HEAD-only.
+
+Accordingly, the completed A2.1 repository commit becomes the source identity
+for the next Runtime Candidate. Historical source commits are not injected into
+the bootstrap build path.
+
+The repository now provides:
+
+- JSON-first immutable source artifact builder
+- immutable source artifact validator
+- source commit and Git tree identity
+- Git archive SHA-256
+- independent source-content SHA-256
+- same-parent staging and atomic publication
+- explicit capability requirement for operational source writes
+- immutable-source launchd wrapper template
+- Python `-P` path isolation
+- mutable repository removal from application cwd and PYTHONPATH
+- required external application-state contract
+
+The source validator requires the state-isolation module,
+`core/runtime/data_paths.py`, in addition to the application entrypoint and
+tracked worker configuration.
+
+Production state remains external through `AICONTROLCENTER_DATA_ROOT`.
+
+No operational Runtime, source artifact, live wrapper, service, or Runtime
+pointer was modified during A2.1.
+
+The next Runtime Candidate must be built from the clean A2.1 completion HEAD.
+
+Production remains unauthorized.

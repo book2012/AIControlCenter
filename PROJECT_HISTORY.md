@@ -1975,3 +1975,22 @@ the source artifact.
 
 The former Candidate source commit cannot be modified in place. A new Runtime
 Candidate is required.
+
+## PI-009A2 A2.1 Completion
+
+After state isolation was repaired, the canonical Runtime bootstrap was
+inspected for source identity behavior.
+
+Build mode resolves `git rev-parse HEAD`, requires the Runtime Contract commit to
+equal HEAD, requires a clean repository and has no historical-commit build
+option.
+
+The architecture therefore adopts the A2.1 completion commit as the source
+identity of the next Runtime Candidate rather than extending or bypassing the
+canonical bootstrap.
+
+A2.1 implemented immutable source artifact tooling and an immutable-source
+wrapper template while preserving external writable state through
+`AICONTROLCENTER_DATA_ROOT`.
+
+No operational Runtime mutation occurred.

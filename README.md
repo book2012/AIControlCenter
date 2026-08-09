@@ -1854,3 +1854,18 @@ AIControlCenter application data root.
 
 The former Candidate `acd80ab9f6ae` cannot be promoted as the final
 immutable-source release. A new Candidate is required.
+
+### PI-009A2 A2.1 Complete
+
+Immutable Runtime source artifact tooling and the immutable-source wrapper
+template are implemented.
+
+The source artifact is read-only and application state remains external through
+`AICONTROLCENTER_DATA_ROOT`.
+
+The canonical Runtime bootstrap is HEAD-only. Therefore the A2.1 completion
+commit is the source identity for the next Runtime Candidate.
+
+No operational source artifact or service cutover has occurred.
+
+Production remains unauthorized.

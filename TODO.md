@@ -1542,3 +1542,24 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [ ] authorize operational source artifact creation
 - [ ] authorize immutable-source wrapper cutover
 - [ ] rerun final PI-009 gate
+
+## PI-009A2 A2.1 Completion
+
+- [x] repair application state isolation
+- [x] implement immutable source artifact builder
+- [x] implement immutable source validator
+- [x] enforce source content digest
+- [x] enforce state-isolation module presence
+- [x] implement immutable-source wrapper template
+- [x] remove mutable repository application import path
+- [x] enforce Python `-P`
+- [x] preserve external `AICONTROLCENTER_DATA_ROOT`
+- [x] validate immutable source plus external state
+- [x] confirm canonical bootstrap is HEAD-only
+- [ ] authorize new Runtime Candidate build
+- [ ] build new Runtime Candidate
+- [ ] validate new Candidate
+- [ ] authorize operational source artifact creation
+- [ ] validate operational immutable source
+- [ ] authorize wrapper cutover and one kickstart
+- [ ] rerun PI-009 final gate
