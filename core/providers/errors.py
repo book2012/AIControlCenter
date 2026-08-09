@@ -11,6 +11,7 @@ from core.providers.contracts import JsonValue, ProviderIdentity
 class ProviderErrorCode(str, Enum):
     PROVIDER_UNAVAILABLE = "provider_unavailable"
     CREDENTIAL_MISSING = "credential_missing"
+    AUTHENTICATION_FAILURE = "authentication_failure"
     INVALID_REQUEST = "invalid_request"
     TIMEOUT = "timeout"
     RATE_LIMIT = "rate_limit"
@@ -23,6 +24,7 @@ class ProviderErrorCode(str, Enum):
 _SAFE_MESSAGES = {
     ProviderErrorCode.PROVIDER_UNAVAILABLE: "provider is unavailable",
     ProviderErrorCode.CREDENTIAL_MISSING: "provider credential is not configured",
+    ProviderErrorCode.AUTHENTICATION_FAILURE: "provider authentication failed",
     ProviderErrorCode.INVALID_REQUEST: "provider request or configuration is invalid",
     ProviderErrorCode.TIMEOUT: "provider request timed out",
     ProviderErrorCode.RATE_LIMIT: "provider rate limit was reached",

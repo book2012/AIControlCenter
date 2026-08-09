@@ -1633,3 +1633,12 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [x] explicit human Production authorization
 - [x] machine-readable authorization evidence
 - [ ] synchronize final milestone to Notion
+
+## AI-PROVIDER-01B
+
+- [x] secure external OpenAI credential
+- [x] Responses API adapter transport
+- [x] focused mocked transport tests
+- [x] authenticated smoke
+- [x] secret exposure validation
+- [ ] AI-PROVIDER-01C Production integration

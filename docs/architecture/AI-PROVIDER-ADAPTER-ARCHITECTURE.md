@@ -1,7 +1,7 @@
 # AI Provider Adapter Architecture
 
-Version: 1.0
-Status: AI-PROVIDER-01A baseline implemented
+Version: 1.1
+Status: AI-PROVIDER-01B repository implementation ready for authenticated smoke
 
 ## Decision
 
@@ -56,17 +56,24 @@ upstream exception text.
 
 ## Credentials and provider boundaries
 
-Credentials are external secrets and API keys never belong in Git. The future
-OpenAI credential contract names `OPENAI_API_KEY`. `OpenAIAdapter` validates
-credential presence before reaching its injectable invocation boundary. The
-01A adapter has no default network implementation and therefore cannot make an
-authenticated call.
+The OpenAI Responses API at `https://api.openai.com/v1/responses` is the OpenAI
+transport boundary. Its standard-library HTTP implementation remains behind
+`OpenAIAdapter` and the vendor-neutral `ProviderAdapter` contract. Each invoke
+performs one POST with an explicit model, explicit input, bounded timeout and
+bounded output. Automatic retry is disabled, and cross-provider fallback
+remains prohibited.
 
-AI-PROVIDER-01A does not install, read or use a real provider credential and
-performs no OpenAI, Claude, Anthropic or Ollama network request. It does not
-create an environment file or change Production configuration. AI-PROVIDER-01B
-is separately gated work for secure credential installation and authenticated
-connectivity; 01A does not authorize or begin that work.
+`OPENAI_API_KEY` is external secret configuration. The adapter reads it only at
+invocation time and supplies it to the transport as Bearer authentication. The
+value is never cached, serialized, logged, returned or persisted; secret values
+never belong in Git. Provider success is reduced to `ProviderResponse` content,
+request identity and normalized usage. Failures use fixed, audit-safe provider
+errors without unrestricted upstream bodies.
+
+AI-PROVIDER-01B repository tests use mocked transports and make no provider
+network request. The exactly-one-request authenticated smoke is pending and is
+performed outside Codex by a human-controlled process. This document does not
+claim that external smoke has passed.
 
 ## Audit and operational safety
 
@@ -78,4 +85,5 @@ Production Runtime remains `7b171f135dc7`, sourced from authorized commit
 `7b171f135dc7882546bf7f733208778f1aef4943`. No Runtime build, activation,
 service mutation, wrapper change, Caddy change, Ubuntu operation or Production
 data write is part of this sprint. PI-009 Production authorization remains
-intact. Notion synchronization is `PENDING`.
+intact. AI-PROVIDER-01C will handle candidate Runtime integration and promotion.
+Notion synchronization is `DEFERRED_UNTIL_FINAL_PHASE`.

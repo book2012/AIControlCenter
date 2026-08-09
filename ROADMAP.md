@@ -4,9 +4,11 @@
 
 - [x] AI-PROVIDER-01A: vendor-neutral contract, strict router, normalized errors,
   network-free OpenAI boundary and deterministic fake adapter.
-- [ ] AI-PROVIDER-01B: separately authorize secure credential installation and
-  authenticated connectivity. Not started by 01A.
-- [ ] Synchronize the provider architecture record to Notion (`PENDING`).
+- [ ] AI-PROVIDER-01B: Responses API repository transport and smoke CLI are
+  implemented; human-controlled authenticated smoke is pending.
+- [ ] AI-PROVIDER-01C: candidate Runtime integration and promotion.
+- [ ] Synchronize the provider architecture record to Notion
+  (`DEFERRED_UNTIL_FINAL_PHASE`).
 
 Production Runtime remains `7b171f135dc7`; PI-009 authorization remains intact.
 
@@ -2018,3 +2020,11 @@ Milestone:
 Next platform milestone:
 
 `AI-PROVIDER-01 — Secure Provider Integration`
+
+### AI-PROVIDER-01B Complete
+
+Authenticated OpenAI connectivity validated.
+
+Next:
+
+AI-PROVIDER-01C — Production Workflow Integration and Candidate Runtime Promotion

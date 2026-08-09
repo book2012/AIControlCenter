@@ -1,5 +1,15 @@
 # MASTER
 
+## AI-PROVIDER-01B — Authenticated OpenAI transport
+
+Status: `READY_FOR_AUTHENTICATED_SMOKE` (repository only). The Responses API is
+implemented behind `ProviderAdapter` with invocation-time external
+`OPENAI_API_KEY`, bounded timeout/output, one request, no automatic retry and no
+cross-provider fallback. Focused tests are mocked; the human-controlled
+authenticated smoke remains pending. Production Runtime `7b171f135dc7` is
+untouched. AI-PROVIDER-01C owns candidate Runtime integration/promotion. Notion
+is `DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## AI-PROVIDER-01A — Provider baseline
 
 Status: `IMPLEMENTED` (repository only). AIControlCenter owns provider
@@ -2141,3 +2151,25 @@ YES
 Milestone:
 
 `PI_009_PRODUCTION_AUTHORIZED`
+
+## AI-PROVIDER-01B
+
+Status:
+
+VALIDATED
+
+OpenAI authenticated connectivity:
+
+YES
+
+Responses API:
+
+VALIDATED
+
+Production integration:
+
+PENDING AI-PROVIDER-01C
+
+Notion:
+
+DEFERRED_UNTIL_FINAL_PHASE

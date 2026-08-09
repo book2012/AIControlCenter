@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-08-10 — AI-PROVIDER-01B Authenticated OpenAI Provider Transport
+
+- Implemented the OpenAI Responses API POST transport behind `OpenAIAdapter`
+  using invocation-time `OPENAI_API_KEY` lookup and standard-library HTTP.
+- Added bounded timeout/output, one-request/no-retry enforcement, normalized
+  response identity and usage, sanitized failure mapping, and a JSON-only
+  operational smoke command.
+- Added focused mocked tests; no credential was read and no provider network
+  request occurred. The external authenticated smoke remains pending.
+- Production Runtime `7b171f135dc7` remains untouched. AI-PROVIDER-01C owns
+  candidate Runtime integration/promotion. Notion is
+  `DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## 2026-08-10 — AI-PROVIDER-01A Provider Architecture and Adapter Contract
 
 - Added normalized provider identities, request/response models, bounded timeout
@@ -2398,3 +2411,12 @@ Production activation occurred.
 - launchd/listener/HTTP/state boundary revalidated read-only
 - no Runtime activation, migration, wrapper install or service restart performed
 - milestone: PI_009_PRODUCTION_AUTHORIZED
+
+## AI-PROVIDER-01B — Authenticated OpenAI Connectivity
+
+- implemented Responses API transport behind ProviderAdapter
+- externalized OPENAI_API_KEY credential handling
+- validated one authenticated OpenAI smoke request
+- preserved fail-closed routing and no cross-provider fallback
+- Production Runtime remained unchanged
+- Production service was not mutated

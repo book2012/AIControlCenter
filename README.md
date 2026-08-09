@@ -1,15 +1,15 @@
 # AIControlCenter
 
-## AI-PROVIDER-01A Provider Adapter Baseline
+## AI-PROVIDER-01B Authenticated OpenAI Transport
 
-AIControlCenter now owns vendor-neutral provider governance, explicit routing,
-normalization and policy through `ProviderRouter` and replaceable
-`ProviderAdapter` implementations. Business logic does not own vendor SDK
-behavior, credentials remain external secrets, and API keys never belong in
-Git. This sprint made no authenticated provider call and left Production
-Runtime `7b171f135dc7` and PI-009 authorization unchanged. Secure credential
-installation and authenticated connectivity belong to separately authorized
-AI-PROVIDER-01B work. Notion synchronization is `PENDING`. See
+The OpenAI Responses API transport is implemented behind the vendor-neutral
+`ProviderAdapter` contract. `OPENAI_API_KEY` remains external, is read only at
+invocation time, and must never be stored in Git. Requests have explicit model
+and input, bounded timeout/output, exactly one attempt, and no cross-provider
+fallback. Mocked repository tests made no network request; the human-controlled
+authenticated smoke is pending. Production Runtime `7b171f135dc7` remains
+untouched, AI-PROVIDER-01C owns candidate Runtime integration/promotion, and
+Notion is `DEFERRED_UNTIL_FINAL_PHASE`. See
 `docs/architecture/AI-PROVIDER-ADAPTER-ARCHITECTURE.md`.
 
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
