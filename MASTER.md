@@ -1911,3 +1911,28 @@ NO
 
 Next Production blocker:
 `RUNTIME_SOURCE_ISOLATION`
+
+## PI-009A2
+
+Status: ARCHITECTURE FROZEN
+
+Target:
+
+`runtime/venvs/<runtime-id>` + `runtime/sources/<runtime-id>`
+
+Current Candidate Runtime:
+
+`acd80ab9f6ae`
+
+Candidate source commit:
+
+`acd80ab9f6aeb848900e1a19e3fa3afd69face8a`
+
+Current pointer migration required:
+NO
+
+Production authorized:
+NO
+
+Next gate:
+A2.1 repository implementation and tests.

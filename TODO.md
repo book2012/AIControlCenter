@@ -1507,3 +1507,22 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [ ] require explicit authorization before wrapper/service mutation
 - [ ] verify exact loaded `core.api.shadow` source path
 - [ ] rerun PI-009 Technical Production Authorization Review
+
+## PI-009A2 Architecture Freeze
+
+- [x] confirm Candidate venv does not contain application source
+- [x] confirm repository has no Python packaging descriptor
+- [x] confirm exact Candidate source commit
+- [x] confirm immutable `git archive` capability
+- [x] select paired venv/source Runtime model
+- [x] preserve current Runtime pointer semantics
+- [ ] implement source artifact builder
+- [ ] implement source artifact validator
+- [ ] implement repository-managed immutable-source wrapper
+- [ ] add focused tests
+- [ ] obtain A2.2 source-artifact authorization
+- [ ] create and validate immutable source artifact
+- [ ] obtain A2.3 wrapper-cutover authorization
+- [ ] install wrapper and perform one authorized service kickstart
+- [ ] verify exact loaded source path
+- [ ] rerun PI-009 Production Authorization Review

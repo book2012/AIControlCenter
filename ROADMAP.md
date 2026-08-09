@@ -1918,3 +1918,16 @@ The runtime wrapper must derive both artifacts from the same approved runtime
 identity and must not use the repository root as the application PYTHONPATH.
 
 Production authorization remains blocked until source isolation is validated.
+
+## PI-009A2 Execution Plan
+
+1. A2.1 — implement and test immutable source builder/validator and repository
+   wrapper template
+2. A2.2 — explicitly authorize and create one immutable source artifact
+3. validate source artifact read-only
+4. A2.3 — explicitly authorize wrapper cutover and one service kickstart
+5. prove loaded application source is inside the immutable Runtime artifact
+6. rerun PI-009 Technical Production Authorization Review
+
+Production remains blocked until
+`RUNTIME_SOURCE_ISOLATION_VERIFIED`.

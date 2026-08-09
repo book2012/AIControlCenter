@@ -1936,3 +1936,21 @@ No Runtime, service, Caddy, Ubuntu or Production mutation was performed.
 
 PI-009A1 closed with `RUNTIME_SOURCE_ISOLATION` as the remaining technical
 Production blocker.
+
+## PI-009A2 Architecture Decision
+
+Runtime source isolation investigation confirmed:
+
+- no `pyproject.toml`
+- no `setup.py`
+- no `setup.cfg`
+- Candidate Runtime cannot import `core.api.shadow` from a neutral directory
+- Candidate Runtime contains no installed AIControlCenter distribution
+- the current wrapper imports application source from the mutable Git working
+  tree
+- the approved Candidate commit can be exported with `git archive`
+
+The architecture therefore selected a paired immutable Runtime model instead of
+introducing a new packaging system during the Production gate.
+
+No Runtime or service mutation occurred during the architecture decision.

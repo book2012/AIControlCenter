@@ -2293,3 +2293,15 @@ Production activation occurred.
 - final deployment regression: 1133 passed, 9 warnings
 - Production remains unauthorized
 - remaining blocker: `RUNTIME_SOURCE_ISOLATION`
+
+## PI-009A2 — Runtime Source Isolation Architecture
+
+- selected immutable Git source snapshots instead of introducing a new Python
+  packaging system during the Production gate
+- preserved existing `runtime/current -> runtime/venvs/<runtime-id>` semantics
+- defined `runtime/sources/<runtime-id>` as the matching immutable source
+  artifact
+- separated source-artifact creation and wrapper cutover into independent human
+  authorization gates
+- prohibited mutable repository source from the final production import path
+- Production remains unauthorized

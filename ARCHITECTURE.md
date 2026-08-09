@@ -1679,3 +1679,17 @@ must represent the same approved release identity.
 The production wrapper must resolve application source from the immutable
 runtime source artifact and must fail closed when source identity, runtime
 identity, or expected commit do not match.
+
+## PI-009A2 Runtime Source Isolation
+
+PI-009A2 freezes a paired immutable Runtime artifact model:
+
+- `runtime/venvs/<runtime-id>` — Python dependency environment
+- `runtime/sources/<runtime-id>` — immutable tracked application source
+
+`runtime/current` continues to select the venv Runtime identity.
+
+The production wrapper must derive the matching source artifact from the same
+Runtime ID and must require exact full source-commit agreement.
+
+The mutable Git working tree is not a valid production application source.

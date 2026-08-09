@@ -148,3 +148,24 @@ Production authorization remains blocked by:
 The current production wrapper obtains AIControlCenter application source from
 the mutable repository working tree. PI-009A2 must establish immutable source
 identity before Production authorization can proceed.
+
+## PI-009A2 Runtime Source Isolation Architecture
+
+The Production source-isolation repair uses:
+
+`runtime/venvs/<runtime-id>`
+
+paired with:
+
+`runtime/sources/<runtime-id>`
+
+The source artifact is an immutable tracked Git snapshot of the exact full
+source commit recorded by the Runtime.
+
+The existing Runtime current pointer is preserved.
+
+Source artifact creation and wrapper cutover are separate explicit human
+authorization gates.
+
+Production remains unauthorized until the wrapper executes the application
+from the immutable source artifact and loaded-source identity is verified.

@@ -1829,3 +1829,15 @@ Production remains unauthorized.
 The remaining technical Production blocker is `RUNTIME_SOURCE_ISOLATION`:
 the service must execute immutable release source instead of importing
 application code from the mutable repository working tree.
+
+## PI-009A2 Runtime Source Isolation
+
+The PI-009A2 architecture is frozen.
+
+AIControlCenter production Runtime identity will consist of a paired immutable
+venv and Git source snapshot. The existing current pointer remains unchanged.
+
+Repository implementation is allowed first. Runtime source creation and wrapper
+cutover require separate explicit human authorizations.
+
+Production remains unauthorized.
