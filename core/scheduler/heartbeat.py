@@ -1,11 +1,18 @@
 import sqlite3
 from datetime import datetime
 from pathlib import Path
+from core.runtime.data_paths import resolve_data_path
 
 
 class HeartbeatStore:
-    def __init__(self, db_path: str = "data/scheduler.db"):
-        self.db_path = Path(db_path)
+    def __init__(self, db_path: str | None = None):
+        self.db_path = (
+            Path(db_path)
+            if db_path is not None
+            else resolve_data_path(
+                "scheduler.db"
+            )
+        )
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._init_db()
 

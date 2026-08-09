@@ -1841,3 +1841,16 @@ Repository implementation is allowed first. Runtime source creation and wrapper
 cutover require separate explicit human authorizations.
 
 Production remains unauthorized.
+
+### PI-009A2 Application State Isolation
+
+Immutable-source validation exposed two repository-relative SQLite state paths.
+
+Memory and scheduler state now use the canonical
+`AICONTROLCENTER_DATA_ROOT` contract.
+
+Production source remains read-only while writable state lives under the
+AIControlCenter application data root.
+
+The former Candidate `acd80ab9f6ae` cannot be promoted as the final
+immutable-source release. A new Candidate is required.

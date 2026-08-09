@@ -1526,3 +1526,19 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [ ] install wrapper and perform one authorized service kickstart
 - [ ] verify exact loaded source path
 - [ ] rerun PI-009 Production Authorization Review
+
+## PI-009A2 State Isolation
+
+- [x] identify repository-relative conversation state
+- [x] identify repository-relative scheduler state
+- [x] add canonical `AICONTROLCENTER_DATA_ROOT` resolver
+- [x] isolate conversation database from immutable source
+- [x] isolate scheduler database from immutable source
+- [x] validate read-only source plus external writable state
+- [ ] complete A2.1 immutable source artifact tooling
+- [ ] create new source commit identity
+- [ ] build new Runtime Candidate from repaired source
+- [ ] validate new Candidate/source/state identity
+- [ ] authorize operational source artifact creation
+- [ ] authorize immutable-source wrapper cutover
+- [ ] rerun final PI-009 gate

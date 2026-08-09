@@ -1954,3 +1954,24 @@ The architecture therefore selected a paired immutable Runtime model instead of
 introducing a new packaging system during the Production gate.
 
 No Runtime or service mutation occurred during the architecture decision.
+
+## PI-009A2 State Isolation Discovery
+
+Immutable-source execution exposed a second implicit repository dependency:
+application state.
+
+`SQLiteConversationStore` defaulted to `data/conversations.db` and scheduler
+heartbeat state defaulted to `data/scheduler.db`.
+
+Because the immutable source artifact is intentionally non-writable, application
+initialization correctly failed instead of writing state into the release.
+
+The repair introduced a canonical external application data-root contract while
+preserving a development fallback when the environment variable is absent.
+
+A synthetic read-only source test using Candidate Python confirmed that
+application source can remain immutable while SQLite state is created outside
+the source artifact.
+
+The former Candidate source commit cannot be modified in place. A new Runtime
+Candidate is required.

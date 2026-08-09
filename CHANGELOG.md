@@ -2305,3 +2305,17 @@ Production activation occurred.
   authorization gates
 - prohibited mutable repository source from the final production import path
 - Production remains unauthorized
+
+## PI-009A2 — Application State Isolation Repair
+
+- added a canonical AIControlCenter application data-root resolver
+- moved default conversation SQLite state behind `AICONTROLCENTER_DATA_ROOT`
+- moved default scheduler SQLite state behind `AICONTROLCENTER_DATA_ROOT`
+- explicit configured data roots must be absolute
+- preserved development fallback to local `data/` when no data-root environment
+  is configured
+- validated application import from read-only source with writable state outside
+  the source artifact
+- existing Candidate `acd80ab9f6ae` is no longer eligible as the final
+  immutable-source Production release
+- Production remains unauthorized

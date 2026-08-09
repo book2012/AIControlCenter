@@ -169,3 +169,23 @@ authorization gates.
 
 Production remains unauthorized until the wrapper executes the application
 from the immutable source artifact and loaded-source identity is verified.
+
+## PI-009A2 Application State Isolation Gate
+
+Production Runtime source and writable application state must be separate.
+
+Required:
+
+- application source is immutable
+- `AICONTROLCENTER_DATA_ROOT` is an absolute external data root in production
+- conversation SQLite state is outside the source artifact
+- scheduler SQLite state is outside the source artifact
+- no Runtime source file or directory becomes writable to accommodate state
+- source and state isolation both pass before wrapper cutover
+
+The former Candidate `acd80ab9f6ae` does not satisfy this source version of the
+state-isolation contract.
+
+A new Candidate is required.
+
+Production remains unauthorized.

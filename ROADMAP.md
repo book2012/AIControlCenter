@@ -1931,3 +1931,18 @@ Production authorization remains blocked until source isolation is validated.
 
 Production remains blocked until
 `RUNTIME_SOURCE_ISOLATION_VERIFIED`.
+
+### PI-009A2 New Candidate Requirement
+
+The former Candidate cannot complete source isolation because its application
+state defaults are repository-relative.
+
+Execution plan:
+
+1. commit state-isolation repair
+2. complete immutable source artifact tooling on the repaired source
+3. build a new Runtime Candidate from the repaired commit
+4. validate new Candidate plus immutable source artifact
+5. authorize operational source artifact creation
+6. authorize wrapper cutover
+7. rerun PI-009 Production Authorization Review

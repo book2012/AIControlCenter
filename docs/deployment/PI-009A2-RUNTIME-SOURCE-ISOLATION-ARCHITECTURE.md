@@ -239,3 +239,38 @@ until:
 `RUNTIME_SOURCE_ISOLATION_VERIFIED`
 
 is satisfied and PI-009 Technical Production Authorization Review is rerun.
+
+## Application State Isolation Amendment
+
+During A2.1 immutable-source validation, the approved Candidate source was found
+to initialize writable SQLite application state through repository-relative
+paths:
+
+- `data/conversations.db`
+- `data/scheduler.db`
+
+An immutable production source artifact must never become writable to preserve
+such state.
+
+The production Runtime architecture therefore separates:
+
+- immutable source: `runtime/sources/<runtime-id>`
+- writable application state:
+  `~/Library/Application Support/AIControlCenter/data`
+
+`AICONTROLCENTER_DATA_ROOT` is the canonical application-state root contract.
+
+Memory and scheduler database defaults must resolve through this contract.
+
+When the environment variable is explicitly configured it must be an absolute
+path. Development fallback to repository-relative `data/` remains available
+only when the variable is absent.
+
+The existing Candidate source
+`acd80ab9f6aeb848900e1a19e3fa3afd69face8a`
+does not satisfy this state-isolation requirement and therefore cannot be the
+final immutable-source Production release.
+
+A new source commit and new Runtime Candidate are required.
+
+Production remains unauthorized.

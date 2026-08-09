@@ -1936,3 +1936,29 @@ NO
 
 Next gate:
 A2.1 repository implementation and tests.
+
+## PI-009A2 State Isolation
+
+Status:
+REPAIR IMPLEMENTED
+
+Immutable source:
+READ ONLY
+
+Writable application state:
+EXTERNAL DATA ROOT
+
+Canonical environment contract:
+`AICONTROLCENTER_DATA_ROOT`
+
+Former Candidate final promotion:
+BLOCKED
+
+Reason:
+The former source commit contains repository-relative SQLite state defaults.
+
+Required:
+new source commit and new Runtime Candidate.
+
+Production authorized:
+NO
