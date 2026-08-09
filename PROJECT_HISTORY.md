@@ -1994,3 +1994,25 @@ wrapper template while preserving external writable state through
 `AICONTROLCENTER_DATA_ROOT`.
 
 No operational Runtime mutation occurred.
+
+## PI-009A2 A2.2A Runtime Candidate Build
+
+Runtime Candidate `7b171f135dc7` was built once through the canonical
+production Runtime bootstrap from source commit `7b171f135dc7882546bf7f733208778f1aef4943`.
+
+The canonical report recorded a passed Runtime gate, dependency installation,
+application import and test suite with no activation.
+
+A separate report-first review validated Runtime identity, `pip check`,
+immutable source execution, external application state, unchanged service PID,
+unchanged listener PID and HTTP 200/200/405 behavior.
+
+A read-only observation command initially shadowed the shell PATH and therefore
+could not invoke curl or git. The observation was repeated using absolute
+command paths. This did not trigger a Runtime build retry or service mutation.
+
+The authorized canonical build count remained exactly one.
+
+Milestone:
+
+`NEW_IMMUTABLE_RUNTIME_CANDIDATE_VALIDATED`

@@ -1994,3 +1994,38 @@ NO
 
 Next gate:
 new Runtime Candidate build authorization.
+
+## PI-009A2 A2.2A
+
+Status:
+VALIDATED
+
+Runtime Candidate:
+`7b171f135dc7`
+
+Source commit:
+`7b171f135dc7882546bf7f733208778f1aef4943`
+
+Canonical report SHA-256:
+`61f88c861a4ecf44a17570e46dc1608866193b987c0448e8eca747d294dfa77b`
+
+Immutable source/state smoke:
+PASS
+
+Active Runtime changed:
+NO
+
+Operational source artifact created:
+NO
+
+Live wrapper changed:
+NO
+
+Service mutated:
+NO
+
+Production authorized:
+NO
+
+Milestone:
+NEW_IMMUTABLE_RUNTIME_CANDIDATE_VALIDATED

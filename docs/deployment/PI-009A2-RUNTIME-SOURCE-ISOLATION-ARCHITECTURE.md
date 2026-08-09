@@ -311,3 +311,27 @@ pointer was modified during A2.1.
 The next Runtime Candidate must be built from the clean A2.1 completion HEAD.
 
 Production remains unauthorized.
+
+## A2.2A Validated Runtime Candidate
+
+Runtime Candidate:
+
+`7b171f135dc7`
+
+Source identity:
+
+`7b171f135dc7882546bf7f733208778f1aef4943`
+
+The Candidate was built exactly once through the canonical clean-HEAD Runtime
+bootstrap and passed dependency installation, application import and the
+canonical test suite.
+
+A temporary immutable source snapshot paired with the Candidate Runtime and an
+external writable application data root successfully loaded the shadow
+application without the mutable repository in the application import path.
+
+The Runtime is validated but not active.
+
+No operational immutable source artifact exists yet.
+
+Production remains unauthorized.

@@ -189,3 +189,41 @@ state-isolation contract.
 A new Candidate is required.
 
 Production remains unauthorized.
+
+## PI-009A2 A2.2A Gate Result
+
+Status:
+
+VALIDATED
+
+Runtime Candidate:
+
+`7b171f135dc7`
+
+Source commit:
+
+`7b171f135dc7882546bf7f733208778f1aef4943`
+
+Canonical build report SHA-256:
+
+`61f88c861a4ecf44a17570e46dc1608866193b987c0448e8eca747d294dfa77b`
+
+Required checks passed:
+
+- canonical build exactly once
+- dependency installation
+- application import
+- canonical test suite
+- Runtime marker identity
+- Runtime metadata identity
+- pip check
+- temporary immutable source execution
+- external writable state isolation
+- active Runtime unchanged
+- service unchanged
+- HTTP 200 / 200 / 405
+- Git clean
+
+Operational source artifact creation remains a separate authorization gate.
+
+Production remains NOT_AUTHORIZED.

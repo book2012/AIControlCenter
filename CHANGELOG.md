@@ -2334,3 +2334,18 @@ Production activation occurred.
 - validated read-only application source with external writable SQLite state
 - confirmed canonical Runtime bootstrap build is clean-HEAD only
 - no operational Runtime or service mutation performed
+
+## PI-009A2 A2.2A — Runtime Candidate Build
+
+- built Runtime Candidate `7b171f135dc7` exactly once through the canonical bootstrap
+- source commit: `7b171f135dc7882546bf7f733208778f1aef4943`
+- canonical build report SHA-256: `61f88c861a4ecf44a17570e46dc1608866193b987c0448e8eca747d294dfa77b`
+- dependency installation passed
+- application import passed
+- canonical test suite passed
+- Runtime metadata and source marker matched
+- `pip check` passed
+- temporary immutable-source/external-state execution passed
+- Runtime pointer remained unchanged
+- live service remained healthy without mutation
+- Production remains unauthorized

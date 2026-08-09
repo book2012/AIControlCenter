@@ -1563,3 +1563,19 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [ ] validate operational immutable source
 - [ ] authorize wrapper cutover and one kickstart
 - [ ] rerun PI-009 final gate
+
+## PI-009A2 A2.2A
+
+- [x] authorize exactly one Runtime Candidate build
+- [x] execute canonical Runtime build exactly once
+- [x] validate canonical build report
+- [x] validate Runtime source marker and metadata
+- [x] validate Runtime dependencies
+- [x] validate immutable source + external state execution
+- [x] confirm Runtime pointer unchanged
+- [x] confirm service unchanged and healthy
+- [ ] authorize operational source artifact creation
+- [ ] create `runtime/sources/7b171f135dc7`
+- [ ] validate operational immutable source
+- [ ] authorize wrapper cutover and one kickstart
+- [ ] rerun PI-009 final Production gate

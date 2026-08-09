@@ -1869,3 +1869,15 @@ commit is the source identity for the next Runtime Candidate.
 No operational source artifact or service cutover has occurred.
 
 Production remains unauthorized.
+
+### PI-009A2 A2.2A Runtime Candidate Validated
+
+Runtime Candidate `7b171f135dc7` was built exactly once through the canonical
+Runtime bootstrap from source commit `7b171f135dc7882546bf7f733208778f1aef4943`.
+
+The canonical build, dependency validation, full test suite and temporary
+immutable-source/external-state execution all passed.
+
+The active Runtime, live wrapper and service remained unchanged.
+
+Production remains unauthorized.
