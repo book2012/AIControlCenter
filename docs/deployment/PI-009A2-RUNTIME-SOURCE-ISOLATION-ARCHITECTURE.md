@@ -335,3 +335,28 @@ The Runtime is validated but not active.
 No operational immutable source artifact exists yet.
 
 Production remains unauthorized.
+
+## A2.2B Operational Immutable Source Pair
+
+Runtime:
+
+`runtime/venvs/7b171f135dc7`
+
+Source:
+
+`runtime/sources/7b171f135dc7`
+
+Source commit:
+
+`7b171f135dc7882546bf7f733208778f1aef4943`
+
+The Runtime and source artifact form an exact immutable identity pair.
+
+The source artifact is read-only, contains no Git metadata and carries manifest
+evidence for Git tree, archive digest and independent content digest.
+
+Writable application state remains external to the immutable source artifact.
+
+The pair is validated but not yet serving Production traffic.
+
+A2.3 remains a separate human-authorized live-cutover gate.

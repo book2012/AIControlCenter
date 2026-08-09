@@ -1579,3 +1579,23 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [ ] validate operational immutable source
 - [ ] authorize wrapper cutover and one kickstart
 - [ ] rerun PI-009 final Production gate
+
+## PI-009A2 A2.2B
+
+- [x] authorize immutable source artifact creation
+- [x] invoke source builder exactly once
+- [x] validate builder JSON
+- [x] validate source manifest
+- [x] validate source content digest
+- [x] validate read-only permissions
+- [x] validate Runtime/source identity
+- [x] validate operational immutable-source execution
+- [x] validate external application state
+- [x] confirm active Runtime unchanged
+- [x] confirm live service unchanged
+- [ ] authorize A2.3 controlled live cutover
+- [ ] switch Runtime pointer to `7b171f135dc7`
+- [ ] install immutable-source live wrapper
+- [ ] perform exactly one launchd kickstart
+- [ ] validate live immutable source execution
+- [ ] run PI-009 final Production gate

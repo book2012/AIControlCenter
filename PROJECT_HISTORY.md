@@ -2016,3 +2016,24 @@ The authorized canonical build count remained exactly one.
 Milestone:
 
 `NEW_IMMUTABLE_RUNTIME_CANDIDATE_VALIDATED`
+
+## PI-009A2 A2.2B Operational Immutable Source
+
+An operational immutable source artifact was created exactly once for Runtime
+`7b171f135dc7` from source commit `7b171f135dc7882546bf7f733208778f1aef4943`.
+
+Builder, validator, manifest, Runtime marker and Runtime metadata all agreed on
+the same source identity.
+
+The resulting source artifact was read-only, contained no Git metadata and
+successfully loaded `core.api.shadow` using Candidate Runtime Python while
+application state was redirected to an external writable data root.
+
+The active Runtime, live wrapper, LaunchDaemon PID and listener PID remained
+unchanged.
+
+Two evidence-shell issues occurred after the successful builder operation:
+an invalid `/bin/exit` path and use of zsh's reserved `status` variable.
+Neither triggered a source build retry or operational service mutation.
+
+The source builder invocation count remained exactly one.

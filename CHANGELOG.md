@@ -2349,3 +2349,18 @@ Production activation occurred.
 - Runtime pointer remained unchanged
 - live service remained healthy without mutation
 - Production remains unauthorized
+
+## PI-009A2 A2.2B — Operational Immutable Source Artifact
+
+- created immutable source artifact for Runtime `7b171f135dc7` exactly once
+- source commit: `7b171f135dc7882546bf7f733208778f1aef4943`
+- manifest SHA-256: `a74977db05ac93bfc5c9e3d621d0748822c5f7f6021f7f0d0fb7c2d3f1983626`
+- archive SHA-256: `e227f823b367c7a5ded7ab8b0319a3b4213b60851dbcfabc72e15763850c466f`
+- content SHA-256: `f2454fc4e90a860515caa95d7f42382d611da4cae530d534111131ce3e61e6e8`
+- Git tree: `4987b22e30b51efd04eb893c4368cd85166ab335`
+- source validator passed
+- Runtime/source identity passed
+- operational immutable-source execution smoke passed
+- application state remained external
+- active Runtime and live service remained unchanged
+- Production remains unauthorized

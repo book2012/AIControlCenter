@@ -2029,3 +2029,41 @@ NO
 
 Milestone:
 NEW_IMMUTABLE_RUNTIME_CANDIDATE_VALIDATED
+
+## PI-009A2 A2.2B
+
+Status:
+VALIDATED
+
+Runtime:
+`7b171f135dc7`
+
+Immutable source:
+PRESENT
+
+Runtime/source identity:
+PASS
+
+Manifest SHA-256:
+`a74977db05ac93bfc5c9e3d621d0748822c5f7f6021f7f0d0fb7c2d3f1983626`
+
+Content SHA-256:
+`f2454fc4e90a860515caa95d7f42382d611da4cae530d534111131ce3e61e6e8`
+
+Immutable application execution:
+PASS
+
+Active Runtime changed:
+NO
+
+Live wrapper changed:
+NO
+
+Service mutation:
+NO
+
+Production authorized:
+NO
+
+Milestone:
+IMMUTABLE_SOURCE_ARTIFACT_OPERATIONALLY_VALIDATED

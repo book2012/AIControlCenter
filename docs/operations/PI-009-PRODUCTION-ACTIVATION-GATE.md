@@ -227,3 +227,42 @@ Required checks passed:
 Operational source artifact creation remains a separate authorization gate.
 
 Production remains NOT_AUTHORIZED.
+
+## PI-009A2 A2.2B Gate Result
+
+Status:
+
+VALIDATED
+
+Runtime/source pair:
+
+`7b171f135dc7`
+
+Source commit:
+
+`7b171f135dc7882546bf7f733208778f1aef4943`
+
+Manifest SHA-256:
+
+`a74977db05ac93bfc5c9e3d621d0748822c5f7f6021f7f0d0fb7c2d3f1983626`
+
+Required checks passed:
+
+- source artifact builder exactly once
+- source validator
+- manifest identity
+- Runtime/source identity
+- source immutability
+- Git metadata absence
+- required Runtime assets
+- immutable-source application execution
+- external writable application state
+- active Runtime unchanged
+- live wrapper unchanged
+- service unchanged
+- HTTP 200 / 200 / 405
+- Git clean
+
+A2.3 live cutover requires separate human authorization.
+
+Production remains NOT_AUTHORIZED.

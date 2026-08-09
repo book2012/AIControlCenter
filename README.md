@@ -1881,3 +1881,15 @@ immutable-source/external-state execution all passed.
 The active Runtime, live wrapper and service remained unchanged.
 
 Production remains unauthorized.
+
+### PI-009A2 A2.2B Immutable Source Validated
+
+Runtime Candidate `7b171f135dc7` now has a matching operational immutable
+source artifact built from source commit `7b171f135dc7882546bf7f733208778f1aef4943`.
+
+The artifact is read-only, has no Git metadata, matches the Runtime identity,
+and successfully loads the shadow application with writable state externalized.
+
+The active Runtime and live wrapper remain unchanged.
+
+Production remains unauthorized.
