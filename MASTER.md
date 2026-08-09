@@ -2093,3 +2093,41 @@ NO
 
 Milestone:
 IMMUTABLE_RUNTIME_LIVE_CUTOVER_VALIDATED
+
+## PI-009 Production Status
+
+Production status:
+
+`PRODUCTION_AUTHORIZED`
+
+Runtime:
+
+`7b171f135dc7`
+
+Source commit:
+
+`7b171f135dc7882546bf7f733208778f1aef4943`
+
+Authorized governance baseline:
+
+`d3dda82e8f26b6405212071d0713a6e9acb4d6ee`
+
+Technical gate:
+
+PASS
+
+Deployment regression:
+
+2337 passed, 5 deselected
+
+Immutable source:
+
+YES
+
+External persistent state:
+
+YES
+
+Milestone:
+
+`PI_009_PRODUCTION_AUTHORIZED`

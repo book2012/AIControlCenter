@@ -2051,3 +2051,18 @@ The service was restored once and validated using immutable source cwd,
 operational database paths, listener identity and HTTP checks.
 
 No automatic rollback or repeated cutover attempt occurred.
+
+## PI-009 Production Authorization
+
+PI-009 reached final human Production authorization for Runtime
+`7b171f135dc7` and source commit `7b171f135dc7882546bf7f733208778f1aef4943`.
+
+The final deployment regression passed 2337 tests with 5 deselected.
+
+The initial final review reported LAUNCHD_NOT_RUNNING because its parser
+overwrote the top-level launchd state `running` with a nested coalition state
+`active`. The corrected V2 review removed the false blocker without any
+operational mutation or regression rerun.
+
+The Production authorization itself was governance-only. Runtime, state,
+wrapper and LaunchDaemon were not mutated.

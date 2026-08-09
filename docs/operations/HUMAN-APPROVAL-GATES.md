@@ -65,3 +65,22 @@ Approval is not activation and readiness is not authorization. AUTO-01 creates
 no real approval. AIControlCenter remains approval authority; Codex, Ubuntu,
 APIs, n8n, WordPress and WooCommerce cannot approve or govern delivery.
 Production remains `NOT_AUTHORIZED`.
+
+## PI-009 Production Authorization
+
+Consumed authorization:
+
+`PI-009 AUTHORIZE PRODUCTION RUNTIME 7b171f135dc7 SOURCE 7b171f135dc7882546bf7f733208778f1aef4943 AT GOVERNANCE HEAD d3dda82e8f26b6405212071d0713a6e9acb4d6ee`
+
+Result:
+
+`PRODUCTION_AUTHORIZED`
+
+Scope:
+
+- Runtime `7b171f135dc7`
+- source commit `7b171f135dc7882546bf7f733208778f1aef4943`
+- governance baseline `d3dda82e8f26b6405212071d0713a6e9acb4d6ee`
+
+The authorization does not apply automatically to future Runtime, source or
+governance revisions.

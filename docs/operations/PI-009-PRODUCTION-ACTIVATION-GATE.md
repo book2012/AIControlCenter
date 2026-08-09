@@ -286,3 +286,39 @@ Passed:
 - HTTP 200 / 200 / 405
 
 Production remains NOT_AUTHORIZED pending final PI-009 review.
+
+## Final PI-009 Production Authorization
+
+Status:
+
+`PRODUCTION_AUTHORIZED`
+
+Human authorization:
+
+`PI-009 AUTHORIZE PRODUCTION RUNTIME 7b171f135dc7 SOURCE 7b171f135dc7882546bf7f733208778f1aef4943 AT GOVERNANCE HEAD d3dda82e8f26b6405212071d0713a6e9acb4d6ee`
+
+Technical gate:
+
+`READY_FOR_HUMAN_PRODUCTION_AUTHORIZATION`
+
+Deployment regression:
+
+`2337 passed, 5 deselected`
+
+Authorized Runtime:
+
+`7b171f135dc7`
+
+Authorized source commit:
+
+`7b171f135dc7882546bf7f733208778f1aef4943`
+
+Authorized governance baseline:
+
+`d3dda82e8f26b6405212071d0713a6e9acb4d6ee`
+
+The authorization required no operational mutation.
+
+Milestone:
+
+`PI_009_PRODUCTION_AUTHORIZED`

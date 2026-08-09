@@ -1902,3 +1902,15 @@ application data root. Repository source and repository-local DB state are no
 longer part of the live execution boundary.
 
 Production authorization remains separate.
+
+### PI-009 Production Authorization
+
+Runtime `7b171f135dc7` with source commit `7b171f135dc7882546bf7f733208778f1aef4943` is authorized for
+Production under PI-009.
+
+The authorization followed a clean final technical gate, immutable Runtime/source
+validation, external persistent-state validation, HTTP validation and a
+deployment regression result of 2337 passed with 5 deselected.
+
+Production authorization is recorded as governance evidence; no operational
+restart or reactivation was required.

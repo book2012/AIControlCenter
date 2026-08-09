@@ -1611,3 +1611,14 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [x] HTTP validation
 - [ ] PI-009 final technical Production review
 - [ ] explicit human Production authorization
+
+## PI-009 Final Production Gate
+
+- [x] immutable Runtime/source live cutover
+- [x] persistent-state continuity
+- [x] final deployment regression
+- [x] final operational validation
+- [x] corrected launchd final-gate parser false blocker
+- [x] explicit human Production authorization
+- [x] machine-readable authorization evidence
+- [ ] synchronize final milestone to Notion

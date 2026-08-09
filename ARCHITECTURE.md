@@ -1704,3 +1704,19 @@ The live AIControlCenter shadow service uses:
 
 Mutable Git source and repository-local SQLite state are outside the live
 application boundary.
+
+## Production Authorization Boundary
+
+PI-009 Production authorization is represented as governance evidence tied to
+an exact immutable Runtime/source identity.
+
+Production authorization does not mutate the immutable source artifact.
+
+Current authorized deployment:
+
+- Runtime: `7b171f135dc7`
+- Source commit: `7b171f135dc7882546bf7f733208778f1aef4943`
+- Runtime source: immutable
+- Persistent state: external macOS application data root
+- Control Plane: AIControlCenter on Mac mini M4
+- Ubuntu role: stateless infrastructure worker

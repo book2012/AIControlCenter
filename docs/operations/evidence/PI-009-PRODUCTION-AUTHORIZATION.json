@@ -1,0 +1,33 @@
+{
+  "authorization": "PI-009 AUTHORIZE PRODUCTION RUNTIME 7b171f135dc7 SOURCE 7b171f135dc7882546bf7f733208778f1aef4943 AT GOVERNANCE HEAD d3dda82e8f26b6405212071d0713a6e9acb4d6ee",
+  "authorization_consumed": true,
+  "authorized_at": "2026-08-10T07:52:58.368060+09:00",
+  "authorized_governance_head": "d3dda82e8f26b6405212071d0713a6e9acb4d6ee",
+  "database_migration_performed": false,
+  "deployment_regression": {
+    "log_path": "/private/tmp/PI-009-FINAL-DEPLOYMENT-REGRESSION.log",
+    "log_sha256": "e51aa7d5c261ad3c5b6a06b9f630dcfffa827afa154e84b26ac19c65ca2a6276",
+    "rerun_for_authorization": false,
+    "status": "PASS",
+    "summary": "2337 passed, 5 deselected"
+  },
+  "final_status": "PRODUCTION_AUTHORIZED",
+  "live_service": {
+    "pid_at_authorization": 78116,
+    "wrapper_sha256": "e6bdbc37b66bf8615a39414760ba310db6e7ff627c648d9cac0ffb5609c976aa"
+  },
+  "operation": "PI-009-PRODUCTION-AUTHORIZATION",
+  "operational_mutations_performed": false,
+  "production_authorized": true,
+  "runtime_activation_performed": false,
+  "runtime_id": "7b171f135dc7",
+  "schema_version": 1,
+  "service_restart_performed": false,
+  "source_commit": "7b171f135dc7882546bf7f733208778f1aef4943",
+  "technical_gate": {
+    "report_path": "/private/tmp/PI-009-FINAL-PRODUCTION-AUTHORIZATION-REVIEW-V2.json",
+    "report_sha256": "54a0561e1e5935ed563d48ebec99ddd1cdd6b82ebe901687074e8fa2d6ef8d22",
+    "status": "READY_FOR_HUMAN_PRODUCTION_AUTHORIZATION"
+  },
+  "wrapper_install_performed": false
+}
