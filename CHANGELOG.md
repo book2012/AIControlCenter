@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-08-10 — AI-PROVIDER-01A Provider Architecture and Adapter Contract
+
+- Added normalized provider identities, request/response models, bounded timeout
+  and retry policies, audit-safe errors, strict routing, a deterministic fake
+  adapter and a network-free OpenAI adapter boundary.
+- Removed automatic cross-provider fallback from the legacy provider manager.
+- Added focused provider safety and serialization tests plus canonical
+  architecture documentation.
+- No credentials were installed or read, no authenticated provider call was
+  made, and Production Runtime `7b171f135dc7` and PI-009 authorization remain
+  unchanged. AI-PROVIDER-01B is not started. Notion sync is `PENDING`.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 

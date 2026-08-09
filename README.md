@@ -1,5 +1,17 @@
 # AIControlCenter
 
+## AI-PROVIDER-01A Provider Adapter Baseline
+
+AIControlCenter now owns vendor-neutral provider governance, explicit routing,
+normalization and policy through `ProviderRouter` and replaceable
+`ProviderAdapter` implementations. Business logic does not own vendor SDK
+behavior, credentials remain external secrets, and API keys never belong in
+Git. This sprint made no authenticated provider call and left Production
+Runtime `7b171f135dc7` and PI-009 authorization unchanged. Secure credential
+installation and authenticated connectivity belong to separately authorized
+AI-PROVIDER-01B work. Notion synchronization is `PENDING`. See
+`docs/architecture/AI-PROVIDER-ADAPTER-ARCHITECTURE.md`.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 

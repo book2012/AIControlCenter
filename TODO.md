@@ -1,5 +1,16 @@
 # TODO
 
+## AI-PROVIDER
+
+- [x] AI-PROVIDER-01A provider contract, strict router, safe normalized errors,
+  fake adapter and no-network OpenAI adapter boundary.
+- [ ] AI-PROVIDER-01B secure credential installation and authenticated
+  connectivity (requires separate authorization).
+- [ ] Notion synchronization (`PENDING`).
+
+Never store provider API keys in Git. Production Runtime `7b171f135dc7` and
+PI-009 authorization were not changed by 01A.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 

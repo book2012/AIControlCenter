@@ -1,5 +1,20 @@
 # Project History
 
+## 2026-08-10 — AI-PROVIDER-01A
+
+AIControlCenter established its first production-quality vendor-neutral
+provider baseline in the existing `core/providers` subsystem. The platform now
+owns provider governance, explicit fail-closed routing, normalized contracts
+and audit-safe errors while replaceable adapters isolate business logic from
+vendor SDK behavior. A deterministic fake adapter validates the boundary. The
+OpenAI adapter checks the external `OPENAI_API_KEY` contract before an
+invocation hook and includes no default network implementation.
+
+No credential was installed or read and no authenticated provider call was
+made. Production Runtime `7b171f135dc7`, its authorized source commit and
+PI-009 authorization remained intact. AI-PROVIDER-01B was not started. Notion
+synchronization is `PENDING`.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 

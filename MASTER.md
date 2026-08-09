@@ -1,5 +1,15 @@
 # MASTER
 
+## AI-PROVIDER-01A — Provider baseline
+
+Status: `IMPLEMENTED` (repository only). AIControlCenter owns provider
+governance, explicit routing, normalization and policy. Replaceable adapters
+isolate vendor behavior from business logic. Credentials are external secrets
+and API keys never belong in Git. No authenticated provider call occurred;
+Production Runtime `7b171f135dc7` and PI-009 authorization remain intact.
+AI-PROVIDER-01B secure credential installation and authenticated connectivity
+are not started. Notion synchronization is `PENDING`.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 

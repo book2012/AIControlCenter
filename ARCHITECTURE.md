@@ -1,5 +1,20 @@
 # AI Home Datacenter Architecture
 
+## AI provider boundary
+
+AIControlCenter owns provider governance, routing, policy and normalization.
+Business logic selects an explicit provider through `ProviderRouter` and talks
+only to the replaceable `ProviderAdapter` contract; vendor SDK behavior belongs
+behind adapters. Unknown and duplicate providers fail closed, retries are
+bounded, and cross-provider fallback is prohibited. Credentials are external
+secrets and API keys never belong in Git.
+
+AI-PROVIDER-01A adds only a no-network OpenAI boundary and deterministic fake
+adapter. AI-PROVIDER-01B is reserved for separately authorized credential
+installation and authenticated connectivity. Production Runtime `7b171f135dc7`
+and PI-009 authorization remain unchanged. Notion sync is `PENDING`. The
+canonical decision is `docs/architecture/AI-PROVIDER-ADAPTER-ARCHITECTURE.md`.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 

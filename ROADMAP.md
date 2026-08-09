@@ -1,5 +1,15 @@
 # Roadmap
 
+## AI provider architecture
+
+- [x] AI-PROVIDER-01A: vendor-neutral contract, strict router, normalized errors,
+  network-free OpenAI boundary and deterministic fake adapter.
+- [ ] AI-PROVIDER-01B: separately authorize secure credential installation and
+  authenticated connectivity. Not started by 01A.
+- [ ] Synchronize the provider architecture record to Notion (`PENDING`).
+
+Production Runtime remains `7b171f135dc7`; PI-009 authorization remains intact.
+
 <!-- AICONTROLCENTER:ACTIVATION_01C_POINTER_CLOSEOUT:START -->
 ## ACTIVATION-01C Controlled Pointer Activation
 

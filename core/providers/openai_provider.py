@@ -2,6 +2,9 @@ from typing import Any, Dict
 
 from core.config.settings import OpenAISettings, load_settings
 from core.providers.base import AIProvider
+from core.providers.contracts import ProviderMessage, ProviderRequest
+from core.providers.errors import ProviderError
+from core.providers.openai_adapter import OpenAIAdapter
 
 
 class OpenAIProvider(AIProvider):
@@ -19,38 +22,25 @@ class OpenAIProvider(AIProvider):
         }
 
     def chat(self, prompt: str) -> Dict[str, Any]:
-        if not self.settings.api_key:
-            return {
-                "provider": self.name(),
-                "ok": False,
-                "error": "OPENAI_API_KEY is not configured",
-            }
-
         try:
-            from openai import OpenAI
-
-            client = OpenAI(api_key=self.settings.api_key)
-
-            response = client.chat.completions.create(
-                model=self.settings.model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt,
-                    }
-                ],
+            response = OpenAIAdapter(
+                credential_lookup=lambda _variable_name: self.settings.api_key,
+            ).invoke(
+                ProviderRequest(
+                    provider=self.name(),
+                    model=self.settings.model,
+                    messages=(ProviderMessage(role="user", content=prompt),),
+                )
             )
-
             return {
-                "provider": self.name(),
+                "provider": response.provider,
                 "ok": True,
                 "model": response.model,
-                "content": response.choices[0].message.content,
+                "content": response.content,
             }
-
-        except Exception as exc:
+        except ProviderError as exc:
             return {
                 "provider": self.name(),
                 "ok": False,
-                "error": str(exc),
+                **exc.to_dict(),
             }

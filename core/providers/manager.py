@@ -48,48 +48,18 @@ class ProviderManager:
 
     def chat(self, prompt: str, provider: str | None = None):
         preferred = provider or self.settings.ai.provider
-
-        attempts = []
-
         if preferred not in self.providers:
-            attempts.append({
+            attempt = {
                 "provider": preferred,
                 "skipped": True,
                 "reason": "unknown_provider",
-            })
-            order = list(self.providers.keys())
-        else:
-            order = [preferred] + [
-                name for name in self.providers
-                if name != preferred
-            ]
+            }
+            return {"ok": False, "provider": None, "result": None, "attempts": [attempt]}
 
-        for name in order:
-            current = self.providers[name]
-            health = current.health()
-
-            if not health.get("configured"):
-                attempts.append({
-                    "provider": name,
-                    "skipped": True,
-                    "reason": "not_configured",
-                })
-                continue
-
-            result = current.chat(prompt)
-            attempts.append(result)
-
-            if result.get("ok"):
-                return {
-                    "ok": True,
-                    "provider": name,
-                    "result": result,
-                    "attempts": attempts,
-                }
-
+        result = self.providers[preferred].chat(prompt)
         return {
-            "ok": False,
-            "provider": None,
-            "result": None,
-            "attempts": attempts,
+            "ok": bool(result.get("ok")),
+            "provider": preferred,
+            "result": result,
+            "attempts": [result],
         }
