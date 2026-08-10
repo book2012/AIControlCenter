@@ -1714,8 +1714,10 @@ Genuine remaining follow-up:
 - [x] SEC-02A1 — freeze governance domain, lifecycle, mutation-budget,
   evidence/adapter rules, controlled-mutation policy, and the 16 v1 contract
   names/major fields; no schema implementation.
-- [ ] SEC-02A2 — authorization domain models (next).
-- [ ] SEC-02A3 — precondition snapshot and comparison models.
+- [ ] SEC-02A2 — pure authorization domain models and focused tests implemented;
+  externally run tests are required before claiming
+  `SEC-02A2_AUTHORIZATION_DOMAIN_MODELS_VALIDATED`.
+- [ ] SEC-02A3 — precondition snapshot and stale semantics (next).
 - [ ] SEC-02A4 — mutation budget and consumption models.
 - [ ] SEC-02A5 — receipts, failures, and evidence models.
 - [ ] SEC-02A6 — v1 schema family and contract registry implementation.
@@ -1732,4 +1734,4 @@ mutation remains separately human-authorized.
 
 SEC-02A1 status:
 `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`.
-No queued item above claims implementation or Production authority.
+A2 adds pure domain implementation only and no Production authority.

@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A2 authorization domain models
+
+- Added pure, immutable authorization request, decision, receipt, state-record,
+  identity, failure, aggregate, and transition models under the Control Plane
+  domain boundary.
+- Encoded exactly the five frozen states and four allowed transitions, including
+  terminal reuse denial, exact identity/budget/snapshot bindings, non-widening
+  scope, and deterministic JSON-safe projections.
+- Added focused pure tests, but Codex did not run them. Therefore
+  `SEC-02A2_AUTHORIZATION_DOMAIN_MODELS_VALIDATED` remains the A2 target pending
+  external test execution.
+- Added no adapters, persistence, mutation accounting, precondition comparison,
+  retry, rollback, public API, network, filesystem, Git subprocess, Production,
+  provider, Runtime, or Ubuntu capability.
+- Next: `SEC-02A3 PRECONDITION SNAPSHOT AND STALE SEMANTICS`.
+
 ## 2026-08-10 — SEC-02A1 governance domain and JSON contract freeze
 
 - Froze the `core/governance/control_plane/` domain, application, adapter, and

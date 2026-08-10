@@ -1,5 +1,23 @@
 # Project History
 
+## 2026-08-10 — SEC-02A2 authorization domain models implemented
+
+A2 implemented the frozen authorization lifecycle as pure immutable Python
+domain models. It distinguishes requests from authority, approvals from
+rejections, and authority-bearing receipts from rejected terminal state. The
+single transition API returns new aggregate/state-record objects, preserves
+caller-supplied UTC timestamps, and fails closed on illegal transitions,
+terminal reuse, identity drift, scope widening, budget changes, and snapshot
+digest changes.
+
+Focused deterministic tests were added but were not run by Codex. Consequently,
+`SEC-02A2_AUTHORIZATION_DOMAIN_MODELS_VALIDATED` is recorded only as the A2
+target pending external test execution. No architecture-ready milestone is
+claimed. No Production, provider, Runtime, Ubuntu, network, filesystem adapter,
+persistence, execution, retry, rollback, budget-accounting, or precondition
+comparison capability was added. Next:
+`SEC-02A3 PRECONDITION SNAPSHOT AND STALE SEMANTICS`.
+
 ## 2026-08-10 — SEC-02A1 governance domain and JSON contract freeze
 
 SEC-02 began by inventorying rather than replacing the repository's mature DPL

@@ -2066,8 +2066,9 @@ Notion remains deferred until the final phase.
 - [x] A0 — authoritative governance capability inventory.
 - [x] A1 — governance domain and JSON contract freeze:
   `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`.
-- [ ] A2 — authorization domain models (next).
-- [ ] A3 — precondition snapshot and exact comparison models.
+- [ ] A2 — pure authorization domain models and focused tests implemented;
+  target `SEC-02A2_AUTHORIZATION_DOMAIN_MODELS_VALIDATED` awaits external tests.
+- [ ] A3 — precondition snapshot and stale semantics (next).
 - [ ] A4 — mutation budget and irreversible consumption domain.
 - [ ] A5 — receipt, failure, and evidence domain models.
 - [ ] A6 — v1 JSON Schema implementation and registry.
@@ -2076,9 +2077,9 @@ Notion remains deferred until the final phase.
 - [ ] A9 — durable state/evidence integration and isolated operational tests.
 - [ ] A10 — API/read-model and architecture closure preparation.
 
-A1 freezes architecture and contract semantics only. It is not Production
-mutation implementation, does not execute Production validation, and does not
-claim the SEC-02A architecture-closure milestone.
+A2 is pure domain only. It is not Production mutation implementation, does not
+execute Production validation, and does not claim the SEC-02A
+architecture-closure milestone.
 
 - SEC-01B: repository implementation and fake-secret validation.
 - SEC-01C: `COMPLETE` — Production daemon secret delivery validated against matching immutable source/config (`PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`).

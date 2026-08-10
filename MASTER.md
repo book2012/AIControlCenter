@@ -2243,16 +2243,19 @@ The authoritative provider-secret design is Protected File-Per-Provider Secrets 
 ## SEC-02 active governance program
 
 SEC-01 remains complete at `PRODUCTION_SECRET_LIFECYCLE_VALIDATED`. SEC-02 is
-active. SEC-02A0 governance inventory is complete, and SEC-02A1 is the current
-architecture/domain/contract freeze:
+active. SEC-02A0 governance inventory and the SEC-02A1
+architecture/domain/contract freeze are complete:
 
 `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`
 
-A1 adds documentation and semantic contracts only, not Production mutation
-capability. AIControlCenter on the Mac mini remains the sole Control Plane;
-Ubuntu remains a stateless bounded-JSON infrastructure Worker. Mature DPL,
-governance operations, and shopping ownership is preserved. Next:
-`SEC-02A2 AUTHORIZATION DOMAIN MODELS`.
+A2 now has a pure-domain implementation and focused tests, with no test run by
+Codex. Its target milestone
+`SEC-02A2_AUTHORIZATION_DOMAIN_MODELS_VALIDATED` remains pending external test
+execution. It adds no Production mutation capability. AIControlCenter on the
+Mac mini remains the sole Control Plane; Ubuntu remains a stateless bounded-JSON
+infrastructure Worker. Mature DPL, governance operations, and shopping
+ownership is preserved. Next:
+`SEC-02A3 PRECONDITION SNAPSHOT AND STALE SEMANTICS`.
 
 # SEC-01C-R1 repair state
 
