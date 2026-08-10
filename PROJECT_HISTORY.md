@@ -16,6 +16,80 @@ will create a new Candidate Runtime and 01C-C requires explicit human
 authorization for Production promotion. Notion is
 `DEFERRED_UNTIL_FINAL_PHASE`.
 
+## 2026-08-10 — SEC-01 production provider-secret lifecycle completed
+
+SEC-01 closed at `PRODUCTION_SECRET_LIFECYCLE_VALIDATED` with Runtime
+`102b8f1fa862` bound to matching immutable source. Protected
+File-Per-Provider Secrets with Deterministic Wrapper Injection gives each
+provider an isolated, fail-closed boundary while the wrapper, never business
+logic, reads and injects protected files. This prevents secret access from
+spreading into application policy, avoids `launchctl setenv` persistence and
+plaintext plist material, and preserves explicit selection without silent
+cross-provider fallback.
+
+Immutable Runtime/source binding prevents Production from drifting onto mutable
+repository source. Explicit human authorization exists because a desired state,
+staged candidate, dependency, or recovery condition is not implicit authority
+to mutate Production. Controlled mutation failure does not trigger automatic
+rollback or retry.
+
+Persistent daemon delivery and restart recovery were validated. Reboot recovery
+closed as `VALIDATED_WITH_EVIDENCE_RECOVERY`. Missing-secret behavior failed
+closed using the installed helper's supported `--secret-root` seam. Storage
+rotation used exactly one atomic replacement and daemon rotation one authorized
+E3 restart. Provider administration and candidate cleanup were validated;
+previous credential revocation/deletion remains operator-attested. Provider
+admin revocation was not machine verified, authenticated provider validation
+was not performed, and credential identity was not proven locally. No secret
+value or credential identifier belongs in documentation. Production was
+healthy after E5 and the candidate `.next` file was removed.
+
+The final quality gate required an audit correction. SEC-01 FINAL R1 invoked
+raw pytest directly and reported 2 failed, 2338 passed, 5 deselected, and 62
+errors. That invocation bypassed the canonical deployment regression harness,
+so its required isolated test-root environment variables were absent. The
+attempt remains recorded as `INVALID_RAW_PYTEST_GATE_INVOCATION`; it did not
+demonstrate an application regression and documentation did not cause it. FINAL
+R2 was `DIAGNOSED_READ_ONLY` and made no repository or Production mutation.
+
+FINAL R3 used `ops/macos/validation/run-deployment-regression-gate.sh`, whose
+contract provisions `AICONTROLCENTER_GIT_EVIDENCE_TEST_ROOT`,
+`AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_ROOT`, and
+`AICONTROLCENTER_OPERATIONAL_LIVE_TEST_ROOT` before forwarding selectors with
+`python -m pytest "$@"`. All 3 representative selections passed, totaling 17
+tests, with
+`tests/deployment/test_m3_a4b2b2b_r1_existing_safe_parent.py` as the primary
+module. Tests did not modify the repository and Production was not mutated.
+
+SEC-01 FINAL R4 is the authoritative final regression gate. The canonical
+harness—not raw pytest—reported 2402 passed, 5 deselected, and 437 warnings;
+warnings are not failures. No application regression was demonstrated, tests
+did not modify the repository, Production PID was unchanged, canonical secret
+metadata was preserved, the candidate was absent, and Production mutation was
+zero.
+
+Permanent governance exceptions explain the recovery controls:
+
+- `SEC-01D-B-REPEATED-RESTART-AUTHORIZATION-SCOPE-EXCEPTION`: D-B ran two
+  restart workflows under authorization for one. It was not retroactively
+  authorized, and Production health did not erase the exception.
+- `SEC-01D-C3-BOOT-PARSER-DEFECT`: greedy parsing captured `usec` rather than
+  `sec`; the original reboot authorization became `STALE_UNCONSUMED`, and C3-R1
+  corrected the parser before the authorized reboot.
+- `SEC-01D-C5-EVIDENCE-RETENTION-DEFECT`: C3/C4 evidence in `/private/tmp` was
+  lost and not restored. C5-R2 used transcript-bound recovery. Exact reboot
+  count was not machine-verifiable; the operator attested one reboot and boot
+  epoch proved the reboot boundary.
+
+The durable evidence root exists because temporary storage cannot carry
+authoritative governance evidence across reboot:
+`/Users/kyouhan/Library/Application Support/AIControlCenter/governance/evidence/SEC-01`.
+The Mac mini M4 remains the always-on Brain and AIControlCenter the sole Control
+Plane. Ubuntu remains a stateless JSON-API infrastructure Worker with no AI
+workload, business logic, application state, governance, authorization, or
+secret policy. SEC-01 completion does not complete the wider project. Next:
+`SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`.
+
 ## 2026-08-10 — AI-PROVIDER-01A
 
 AIControlCenter established its first production-quality vendor-neutral

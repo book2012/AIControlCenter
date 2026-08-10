@@ -1685,3 +1685,35 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [ ] SEC-01D — Secret Lifecycle & Recovery Validation
 
 SEC-01 remains open.
+
+## SEC-01 final closeout (supersedes the historical open snapshot above)
+
+- [x] persistent daemon delivery and restart recovery
+- [x] reboot recovery: `VALIDATED_WITH_EVIDENCE_RECOVERY`
+- [x] missing-secret fail-closed validation through the installed helper's
+  supported `--secret-root` injection seam
+- [x] storage rotation with exactly one canonical atomic replacement
+- [x] daemon delivery rotation with exactly one authorized E3 restart
+- [x] provider administration lifecycle; prior credential revocation/deletion
+  remains operator-attested, not machine/API verified
+- [x] candidate cleanup, `.next` removal, and final E5 health
+- [x] `PRODUCTION_SECRET_LIFECYCLE_VALIDATED`
+- [x] retain FINAL R1 as `INVALID_RAW_PYTEST_GATE_INVOCATION` (2 failed, 2338
+  passed, 5 deselected, 62 errors), not an application or documentation failure
+- [x] FINAL R2 read-only diagnosis; no repository or Production mutation
+- [x] FINAL R3 canonical focused validation: 3/3 representative selections,
+  17 passed
+- [x] FINAL R4 authoritative canonical regression: 2402 passed, 5 deselected,
+  437 warnings; no repository modification by tests or Production mutation
+
+Genuine remaining follow-up:
+
+- [ ] Perform final Notion synchronization from the sync-ready payload; this
+  documentation update does not claim it occurred.
+- [ ] Plan and authorize `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`.
+- [ ] Preserve all three exception records, operator-attestation provenance,
+  and the rule that `/private/tmp` is not authoritative across reboot in future
+  governance automation.
+
+SEC-01 is complete; the wider project remains in progress and Production
+mutation remains separately human-authorized.

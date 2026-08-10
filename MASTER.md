@@ -2260,3 +2260,46 @@ repository dependencies are false; operational state and HTTP `200/200/405` are
 validated; and credential presence was verified without exposing the value or
 calling the provider. SEC-01 is not complete. Next: SEC-01D Secret Lifecycle &
 Recovery Validation. Notion: `DEFERRED_UNTIL_FINAL_PHASE`.
+
+## SEC-01 final production state
+
+Status: `COMPLETE`
+
+Milestone: `PRODUCTION_SECRET_LIFECYCLE_VALIDATED`
+
+Governance baseline HEAD:
+`68a107432ceabf8527f0071db6b0bb7cd2bec71b`
+
+Production Runtime/source: `102b8f1fa862` at
+`/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/sources/102b8f1fa862`
+
+Validated: persistent daemon delivery; restart and reboot recovery; isolated
+missing-secret fail-closed behavior; one atomic storage replacement; one
+authorized E3 daemon restart; provider administration; and candidate cleanup.
+Previous credential revocation/deletion is operator-attested. Provider admin
+revocation machine verified: false. Authenticated provider validation
+performed: false. Credential identity proven locally: false. No secret value or
+credential identifier belongs in documentation. The service was healthy after
+E5 and the candidate `.next` file was removed.
+
+Final quality gate: R1 is retained as
+`INVALID_RAW_PYTEST_GATE_INVOCATION` (raw pytest: 2 failed, 2338 passed, 5
+deselected, 62 errors) because it bypassed the canonical harness and lacked its
+isolated test-root environment. It demonstrated no application regression and
+was not caused by documentation. R2 was `DIAGNOSED_READ_ONLY` with no mutation.
+R3 passed 3/3 representative selections (17 tests) through the canonical
+harness. R4 is authoritative: the canonical deployment regression harness, not
+raw pytest, reported 2402 passed, 5 deselected, and 437 warnings. Warnings are
+not failures; tests did not modify the repository, Production PID was unchanged,
+canonical secret metadata was preserved, the candidate was absent, and
+Production mutation was zero.
+
+Permanent exceptions:
+`SEC-01D-B-REPEATED-RESTART-AUTHORIZATION-SCOPE-EXCEPTION`,
+`SEC-01D-C3-BOOT-PARSER-DEFECT`, and
+`SEC-01D-C5-EVIDENCE-RETENTION-DEFECT`. They are neither retroactive authority
+nor a claim that lost evidence was restored. Durable evidence belongs in the
+Control Plane evidence root, not `/private/tmp` across reboot.
+
+Next milestone: `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`. The wider project
+remains in progress.

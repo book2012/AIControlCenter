@@ -1974,3 +1974,37 @@ daemon uses matching immutable source/config, passes HTTP `200/200/405`, and has
 validated `OPENAI_API_KEY` presence without value exposure or provider calls.
 SEC-01 is not complete. Next: SEC-01D Secret Lifecycle & Recovery Validation.
 See [the evidence-backed closeout](docs/operations/SEC-01C-PRODUCTION-SECRET-DELIVERY-CLOSEOUT.md).
+
+## Current Production security status — SEC-01 complete
+
+SEC-01 / the provider-secret lifecycle is complete at
+`PRODUCTION_SECRET_LIFECYCLE_VALIDATED`. Production Runtime `102b8f1fa862` is
+bound to matching immutable source. Persistent daemon delivery, restart and
+reboot recovery, missing-secret fail-closed behavior, storage rotation, daemon
+delivery rotation, provider administration lifecycle, and candidate cleanup
+were validated. Previous credential revocation/deletion is operator-attested;
+provider admin revocation is not machine verified, authenticated provider
+validation was not performed, and credential identity was not proven locally.
+No secret value or credential identifier belongs in documentation. The service
+was healthy after E5 and the candidate `.next` file was removed.
+
+The authoritative final regression gate is SEC-01 FINAL R4: the canonical
+`ops/macos/validation/run-deployment-regression-gate.sh` harness produced 2402
+passed, 5 deselected, and 437 warnings, with no repository modification by
+tests, no Production mutation, unchanged Production PID, preserved canonical
+secret metadata, and no candidate. FINAL R1 remains in the audit trail: raw
+pytest produced 2 failed, 2338 passed, 5 deselected, and 62 errors because it
+bypassed the harness-provisioned isolated test roots. It is classified
+`INVALID_RAW_PYTEST_GATE_INVOCATION`, not an application or documentation
+failure. FINAL R2 was read-only diagnosis; FINAL R3 passed 3/3 representative
+selections (17 tests) through the canonical harness. Warnings are not failures.
+
+The Mac mini M4 remains the always-on Brain and AIControlCenter the single
+Control Plane. Ubuntu remains a stateless JSON-API infrastructure Worker with no
+AI workloads, business logic, application state, governance, authorization, or
+provider-secret policy. Secrets use Protected File-Per-Provider Secrets with
+Deterministic Wrapper Injection; business logic never reads secret files.
+Production mutation remains explicitly human-authorized, with no automatic
+rollback after controlled mutation failure. Next:
+`SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`. SEC-01 completion does not mean
+the AI Home Datacenter project is complete.

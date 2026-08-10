@@ -2068,3 +2068,24 @@ Notion remains deferred until the final phase.
 - Notion sync: `DEFERRED_UNTIL_FINAL_PHASE`.
 - SEC-01C-R1 historical gate: the repository immutable-source wrapper repair was validated after the prior attempt consumed two installs and one restart, recovered HTTP without immutable convergence, and did not roll back. At R1 closeout, live replacement and one restart still required new exact human authorization; Runtime `102b8f1fa862` had importable `jsonschema`.
 - SEC-01C-R2 through R3Q2: R2 found the mutable workers config dependency; R3 froze its immutable binding without intended mutation; R3Q stopped on precondition drift with zero attempts; and separately authorized R3Q2 made one representation-only correction and one restart, validating no mutable repository dependency, HTTP `200/200/405`, and secret presence without provider calls.
+
+## Security roadmap closeout
+
+- [x] SEC-01 — Production provider-secret lifecycle:
+  `PRODUCTION_SECRET_LIFECYCLE_VALIDATED`.
+- [x] SEC-01D — restart recovery, reboot recovery with evidence recovery,
+  missing-secret fail-closed behavior, both rotation paths, provider lifecycle,
+  and candidate cleanup.
+- [x] SEC-01 FINAL quality gate — R1 retained as
+  `INVALID_RAW_PYTEST_GATE_INVOCATION`; R2 diagnosed read-only; R3 passed 3/3
+  representative selections (17 tests); authoritative canonical-harness R4
+  passed 2402 tests with 5 deselected and 437 non-failing warnings, with no
+  repository modification by tests or Production mutation.
+- [ ] `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION` — next Control Plane
+  security/governance milestone.
+
+The three permanent exception records remain
+`SEC-01D-B-REPEATED-RESTART-AUTHORIZATION-SCOPE-EXCEPTION`,
+`SEC-01D-C3-BOOT-PARSER-DEFECT`, and
+`SEC-01D-C5-EVIDENCE-RETENTION-DEFECT`. SEC-01 completion neither authorizes a
+Production mutation nor completes the wider project.

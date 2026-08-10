@@ -1798,3 +1798,55 @@ without value exposure or provider network calls. SEC-01 remains open; next is
 SEC-01D Secret Lifecycle & Recovery Validation. Notion is
 `DEFERRED_UNTIL_FINAL_PHASE`. See
 [the closeout](docs/operations/SEC-01C-PRODUCTION-SECRET-DELIVERY-CLOSEOUT.md).
+
+## SEC-01 Production provider-secret lifecycle architecture
+
+SEC-01 is complete at `PRODUCTION_SECRET_LIFECYCLE_VALIDATED`. The Mac mini M4
+is the always-on Brain and AIControlCenter is the single Control Plane. Ubuntu
+remains an optional stateless infrastructure Worker consumed through JSON APIs;
+it owns no AI workload, business logic, application state, governance,
+authorization, or provider-secret policy. Operations remain headless and
+Git-first.
+
+Provider credentials use **Protected File-Per-Provider Secrets with
+Deterministic Wrapper Injection**. The deterministic service wrapper validates
+and injects protected provider files; business logic never reads secret files.
+There is no `launchctl setenv` persistence, plaintext secret in a plist, or
+silent cross-provider fallback. Missing or invalid provider material fails
+closed, and no credential value or identifier belongs in documentation.
+
+Production is immutably bound to Runtime `102b8f1fa862` and source
+`/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/sources/102b8f1fa862`.
+A desired state or staged candidate is not activation authority. Every
+Production mutation requires explicit, scope-bounded human authorization; a
+failed controlled mutation authorizes neither automatic rollback nor retry.
+
+Authoritative reboot-crossing evidence belongs under
+`/Users/kyouhan/Library/Application Support/AIControlCenter/governance/evidence/SEC-01`;
+`/private/tmp` is not authoritative across reboot. Permanent exceptions are:
+
+- `SEC-01D-B-REPEATED-RESTART-AUTHORIZATION-SCOPE-EXCEPTION`: D-B ran the
+  restart workflow twice under authorization for exactly one. This was not
+  retroactively authorized or erased, although Production remained healthy.
+- `SEC-01D-C3-BOOT-PARSER-DEFECT`: greedy parsing captured `usec` instead of
+  `sec`; the original reboot authorization became `STALE_UNCONSUMED`, and C3-R1
+  corrected the parser before the authorized reboot.
+- `SEC-01D-C5-EVIDENCE-RETENTION-DEFECT`: reboot evidence in `/private/tmp` was
+  lost. C5-R2 used transcript-bound recovery. Exact reboot count was no longer
+  machine-verifiable; the operator attested one reboot and boot epoch proved a
+  reboot boundary. Lost C3/C4 files were not restored.
+
+The final regression gate uses the canonical deployment harness
+`ops/macos/validation/run-deployment-regression-gate.sh`. It provisions
+`AICONTROLCENTER_GIT_EVIDENCE_TEST_ROOT`,
+`AICONTROLCENTER_OPERATIONAL_EXECUTION_TEST_ROOT`, and
+`AICONTROLCENTER_OPERATIONAL_LIVE_TEST_ROOT`, then forwards selectors with
+`python -m pytest "$@"`. FINAL R1 bypassed that contract with raw pytest and
+reported 2 failed, 2338 passed, 5 deselected, and 62 errors; it is retained as
+`INVALID_RAW_PYTEST_GATE_INVOCATION`, not an application or documentation
+failure. FINAL R2 diagnosed this read-only with no mutation. FINAL R3 passed
+3/3 representative selections (17 tests) through the harness. Authoritative
+FINAL R4 used the canonical harness and passed 2402 tests with 5 deselected and
+437 warnings; warnings are not failures. Tests did not modify the repository,
+Production PID was unchanged, canonical secret metadata was preserved, the
+candidate was absent, and Production mutation was zero.

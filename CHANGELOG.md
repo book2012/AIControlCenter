@@ -1,5 +1,59 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-01 production provider-secret lifecycle closeout
+
+- Closed SEC-01 at `PRODUCTION_SECRET_LIFECYCLE_VALIDATED` on governance
+  baseline `68a107432ceabf8527f0071db6b0bb7cd2bec71b`, Production Runtime
+  `102b8f1fa862`, and matching immutable source.
+- Validated persistent daemon delivery, restart recovery, reboot recovery
+  (`VALIDATED_WITH_EVIDENCE_RECOVERY`), and isolated missing-secret fail-closed
+  behavior (`PROVIDER_SECRET_MISSING_FAIL_CLOSED_VALIDATED`) through the
+  installed helper's supported `--secret-root` seam.
+- Validated exactly one canonical atomic storage replacement
+  (`PROVIDER_SECRET_STORAGE_ROTATION_VALIDATED`) and exactly one authorized E3
+  restart (`PROVIDER_SECRET_DAEMON_DELIVERY_ROTATION_VALIDATED`).
+- Validated provider administration
+  (`PROVIDER_SECRET_PROVIDER_LIFECYCLE_VALIDATED`) with previous credential
+  revocation/deletion recorded as operator-attested. Provider admin revocation
+  was not machine verified, authenticated provider validation was not performed,
+  and credential identity was not proven locally. No secret value or credential
+  identifier is documented.
+- Validated candidate cleanup
+  (`PROVIDER_SECRET_CANDIDATE_CLEANUP_VALIDATED`), removed the candidate `.next`
+  file, and confirmed Production healthy after E5.
+- Corrected the final quality gate without erasing the initial attempt. SEC-01
+  FINAL R1 invoked raw pytest and reported 2 failed, 2338 passed, 5 deselected,
+  and 62 errors. Because it bypassed the canonical deployment harness and its
+  isolated test-root variables, it is classified
+  `INVALID_RAW_PYTEST_GATE_INVOCATION`; it demonstrated neither an application
+  regression nor a documentation-caused failure. FINAL R2 was
+  `DIAGNOSED_READ_ONLY`, with no repository or Production mutation.
+- Ran the canonical harness contract in FINAL R3 and R4. R3 passed 3/3
+  representative selections (17 tests), led by
+  `tests/deployment/test_m3_a4b2b2b_r1_existing_safe_parent.py`. Authoritative
+  FINAL R4 used `ops/macos/validation/run-deployment-regression-gate.sh`, not
+  raw pytest, and reported 2402 passed, 5 deselected, and 437 warnings. Warnings
+  are not failures. Tests did not modify the repository; Production PID was
+  unchanged, canonical secret metadata was preserved, the candidate was absent,
+  and Production mutation was zero.
+- Preserved fail-closed routing, no silent fallback, no business-logic
+  secret-file reads, no `launchctl setenv` persistence, no plaintext plist
+  secrets, explicit human authorization for Production mutation, and no
+  automatic rollback after controlled mutation failure.
+- Retained `SEC-01D-B-REPEATED-RESTART-AUTHORIZATION-SCOPE-EXCEPTION`: D-B ran
+  the restart workflow twice under an exactly-one authorization. It was not
+  retroactively authorized or erased, although Production remained healthy.
+- Retained `SEC-01D-C3-BOOT-PARSER-DEFECT`: greedy `usec` parsing made the
+  original reboot authorization `STALE_UNCONSUMED`; C3-R1 corrected the parser
+  before the authorized reboot.
+- Retained `SEC-01D-C5-EVIDENCE-RETENTION-DEFECT`: `/private/tmp` evidence was
+  lost; C5-R2 used transcript-bound recovery. Exact reboot count was not
+  machine-verifiable, the operator attested one reboot, boot epoch proved a
+  reboot boundary, and lost C3/C4 files were not restored. Future evidence uses
+  the durable Control Plane evidence root.
+- Advanced to `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`; only SEC-01, not the
+  wider AI Home Datacenter project, is complete.
+
 ## 2026-08-10 — AI-PROVIDER-01C-A Control Plane Workflow Integration
 
 - Integrated canonical `BrainAgent.ask` calls with `ProviderRouter` and the
