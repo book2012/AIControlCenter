@@ -1,5 +1,27 @@
 # Project History
 
+## 2026-08-10 — SEC-02A Governance Control Plane architecture ready
+
+The A0-A10 SEC-02A architecture phase closed at
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`, with the A1-A9 canonical
+evidence chain `VALIDATED`. The milestone declares reusable Governance Control
+Plane architecture readiness only. It does not enable a concrete Production
+execution adapter, Production mutation, Shopping write automation, automatic
+retry or rollback, or Ubuntu Governance authority.
+
+The supplied canonical full repository regression was
+`========= 2667 passed, 5 deselected, 437 warnings in 166.69s (0:02:46) =========`;
+the prior focused Governance regression was `265 passed in 1.45s`. No tests
+were rerun for this documentation closure. Git closeout will be performed by
+the external controller. Notion actual external synchronization has not been
+performed; documentation payload status is `READY_FOR_FINAL_SYNC`.
+
+Next: `SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`, in
+the sequence Architecture -> Product Domain -> WooCommerce READ-ONLY Adapter
+-> Product Catalog API -> AI Draft Generation -> Recommendation -> Dashboard
+-> Dry-run / Draft Workflow. Production commerce writes remain separately
+governed and require explicit future authorization.
+
 ## 2026-08-10 — SEC-02A9 durable evidence and API projection validated
 
 A9 added a pure immutable policy over caller-supplied storage facts and a

@@ -1,5 +1,26 @@
 # Roadmap
 
+## Current architecture milestone
+
+- [x] A0-A10 SEC-02A architecture phase complete:
+  `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`.
+- [x] A1-A9 canonical evidence chain: `VALIDATED`.
+- [x] Canonical full repository regression recorded exactly as
+  `========= 2667 passed, 5 deselected, 437 warnings in 166.69s (0:02:46) =========`.
+- [x] Prior focused Governance regression recorded as `265 passed in 1.45s`.
+- [ ] External controller Git closeout.
+- [ ] Notion actual external synchronization; documentation payload is
+  `READY_FOR_FINAL_SYNC`.
+
+## Next production-development milestone
+
+- [ ] `SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`
+  following: Architecture -> Product Domain -> WooCommerce READ-ONLY Adapter
+  -> Product Catalog API -> AI Draft Generation -> Recommendation -> Dashboard
+  -> Dry-run / Draft Workflow.
+- [ ] Keep Production commerce writes separately governed and blocked pending
+  explicit future authorization.
+
 ## SEC-02 governance Control Plane
 
 - [x] SEC-02A9 durable evidence policy and deterministic READ ONLY API
@@ -7,7 +28,8 @@
   1.45s`; milestone
   `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not the
   full repository regression.
-- [ ] SEC-02A10 architecture closure review (next).
+- [x] SEC-02A10 architecture closure review; milestone
+  `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`.
 - [x] SEC-02A8 pure orchestration policy and safety tests: focused Governance
   regression `231 passed in 1.42s`; milestone
   `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
@@ -20,11 +42,9 @@
   2020-12 schemas and their registry/valid-invalid fixture contracts validated
   by the focused governance regression, `173 passed in 1.39s`; milestone
   `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`.
-- [ ] SEC-02A5 receipts, failure, and evidence models: pure domain evidence
-  vocabulary and focused tests added; controller test validation remains
-  required before claiming
-  `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
-- [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
+- [x] SEC-02A5 receipts, failure, and evidence models included in the validated
+  A1-A9 canonical evidence chain.
+- [ ] Notion actual external synchronization (`READY_FOR_FINAL_SYNC`).
 
 The A7 initial result was `1 failed, 193 passed in 1.56s`. R1 fixed the
 Protocol-only interface gate and classified the failure as
@@ -42,9 +62,8 @@ and consumed authorization remains consumed after later drift. `FAILED`,
 `UNCERTAIN`, postcondition `FAIL`, and failure evidence stop. Remaining
 mutation count is not retry authority. There is no automatic retry, automatic
 rollback, compensation authority, Production/provider/Ubuntu mutation, or
-public mutation API. SEC-02A architecture-ready is not yet claimed. Next:
-`SEC-02A10 ARCHITECTURE CLOSURE REVIEW`. Notion remains
-`DEFERRED_UNTIL_FINAL_PHASE`.
+public mutation API. SEC-02A architecture readiness is now claimed only at the
+A10 reusable-architecture boundary; none of these exclusions changed.
 
 A9 requires operator-configured external Control Plane durable storage, atomic
 write publication, restrictive permissions, durable synchronization, manifest
@@ -61,8 +80,8 @@ frozen contract specified behavior, not that exact function name; it was not an
 A6 contract implementation defect. The focused result is not a full repository
 regression. SEC-02A6 adds no Production or Runtime access, execution adapter,
 provider or Ubuntu mutation, orchestration, persistence, audit storage, public
-mutation API, retry, or rollback. The SEC-02A architecture-ready milestone is
-not claimed.
+mutation API, retry, or rollback. The later A10 closure claims reusable
+architecture readiness without changing those A6 limits.
 
 ## AI provider architecture
 

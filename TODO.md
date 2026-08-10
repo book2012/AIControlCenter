@@ -1,12 +1,26 @@
 # TODO
 
+## SEC-02A10 closure
+
+- [x] Complete the A0-A10 SEC-02A architecture phase and record
+  `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`.
+- [x] Record the supplied canonical full regression exactly:
+  `========= 2667 passed, 5 deselected, 437 warnings in 166.69s (0:02:46) =========`.
+- [x] Record the prior focused Governance regression: `265 passed in 1.45s`.
+- [ ] External controller performs Git closeout.
+- [ ] Perform actual Notion external synchronization; documentation payload
+  status is `READY_FOR_FINAL_SYNC`.
+- [ ] Begin `SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`
+  with read-only foundations; Production commerce writes require separate
+  explicit future authorization.
+
 ## SEC-02
 
 - [x] Validate A9 durable evidence and deterministic READ ONLY API projection:
   focused Governance regression `265 passed in 1.45s`;
   `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not the
   full repository regression.
-- [ ] SEC-02A10 architecture closure review (next).
+- [x] SEC-02A10 architecture closure review complete.
 - [x] Validate A8 pure orchestration policy and safety tests: focused
   Governance regression `231 passed in 1.42s`;
   `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
@@ -17,9 +31,8 @@
 - [x] Validate the 16 Draft 2020-12 schema registry and valid/invalid fixture
   contracts with the focused governance regression: `173 passed in 1.39s`;
   `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`.
-- [ ] Controller-run the focused A2/A3/A4/A5 pure-domain regression gate before
-  claiming `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
-- [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
+- [x] Include A2/A3/A4/A5 in the validated A1-A9 canonical evidence chain.
+- [ ] Notion actual external synchronization (`READY_FOR_FINAL_SYNC`).
 
 A8 performs no port/adapter invocation. Authorization consumption is distinct
 from invocation permission; current preconditions must `MATCH`, consumed
@@ -28,8 +41,8 @@ one bounded invocation. `FAILED`, `UNCERTAIN`, postcondition `FAIL`, and
 failure evidence produce `STOP`. Remaining mutation count is not retry
 authority. There is no automatic retry, automatic rollback, compensation
 authority, Production/provider/Ubuntu mutation, or public mutation API.
-SEC-02A architecture-ready is not yet claimed. A10 architecture closure review
-is next.
+SEC-02A reusable architecture readiness is claimed by the completed A10 review;
+none of these safety exclusions changed.
 
 A9 requires operator-configured external Control Plane durable storage, atomic
 write publication, restrictive permissions, durable synchronization, manifest
@@ -39,7 +52,7 @@ hard-codes no user-specific absolute data root. The compatible
 `GovernanceApiEnvelope` projection cannot authorize, consume authorization,
 execute, retry, roll back, or persist. No HTTP mutation route, concrete evidence
 persistence adapter, or Production/provider/Ubuntu mutation was added. Notion
-remains `DEFERRED_UNTIL_FINAL_PHASE`.
+actual external synchronization remains `READY_FOR_FINAL_SYNC`.
 
 The A7 initial external result was `1 failed, 193 passed in 1.56s`. R1 fixed
 the Protocol-only interface gate under
@@ -49,9 +62,9 @@ final result was not a full repository regression. A7 provides abstract
 Governance ports only, no concrete Production adapter. Adapters cannot
 authorize, widen scope or mutation budget, or decide retry or rollback. Git
 evidence is read-only, Runtime identity observation-only, Governance Operations
-operational audit/read-model only, Shopping rules Shopping-owned, and Ubuntu a
-stateless Worker with zero Governance authority. No SEC-02A architecture-ready
-claim is made. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+operational audit/read-model only, Shopping rules AIControlCenter-owned, and
+Ubuntu a stateless Worker with zero Governance authority. The later A10 closure
+claims reusable architecture readiness without changing those A7 limits.
 
 SEC-02A6 is contract implementation only. Schemas and registry lookups never
 grant authority; no retry, rollback, adapter invocation, persistence, or
@@ -61,7 +74,9 @@ of a public `registry.contract_names()` function rather than an A6 contract
 implementation defect. Validation involved no Production, provider, or Ubuntu
 mutation and no execution adapter, and the focused result is not a full
 repository regression.
-`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` is not claimed.
+The later A10 closure claims
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` without changing those A6
+limits.
 
 ## AI-PROVIDER
 

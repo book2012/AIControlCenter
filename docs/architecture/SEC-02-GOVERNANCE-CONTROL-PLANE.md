@@ -1,8 +1,8 @@
 # SEC-02 Governance Control Plane Architecture
 
-Status: `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`
+Status: `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`
 
-Next: `SEC-02A10 ARCHITECTURE CLOSURE REVIEW`
+Next: `SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`
 
 This document is the canonical SEC-02 architecture freeze. SEC-02A is **not a
 Production mutation implementation**. It establishes reusable Control Plane
@@ -63,7 +63,9 @@ systems never call inward as policy owners.
 - `core/governance/operations/*` remains operational observation, audit
   scheduling, and read-model capability. It is not Production mutation
   authorization.
-- `core/shopping/*` retains shopping eligibility and commerce-write semantics.
+- AIControlCenter retains Shopping eligibility and all platform business logic;
+  WordPress is the CMS Engine and WooCommerce is the Commerce Engine, not an
+  owner of platform business logic.
 - Existing audit SQLite, permit replay, Git evidence, runtime identity,
   deployment authorization, and evidence capabilities are reused behind
   governance ports where appropriate.
@@ -80,7 +82,7 @@ AUTHORIZED -> STALE
 AUTHORIZED -> CONSUMED
 ```
 
-`STALE`, `CONSUMED`, and `REJECTED` are terminal.
+`STALE`, `CONSUMED`, and `REJECTED` are non-reusable terminal states.
 
 - `REQUESTED` has no mutation authority.
 - `AUTHORIZED` requires an explicit human decision bound to exact
@@ -133,8 +135,9 @@ boundary is crossed.
 11. Persist durable evidence.
 12. Close out the Git/documentation gate when applicable.
 
-After step 6, any failure means `STOP`: no automatic retry and no automatic
-rollback. Authorization remains `CONSUMED`.
+After step 6, `FAILED`, `UNCERTAIN`, `DRIFT`, failed postcondition, or failure
+evidence means `STOP`: **NO AUTOMATIC RETRY** and **NO AUTOMATIC ROLLBACK**.
+Authorization remains `CONSUMED`.
 
 ## Durable evidence
 
@@ -144,7 +147,8 @@ atomically written with restrictive permissions and durability confirmation,
 and compatible with evidence manifests. Credential-related evidence is
 value-free.
 
-Git-tracked evidence is summary/closeout evidence only. It cannot grant
+Git-tracked repository evidence JSON is canonical documentation/audit evidence,
+not mutable application runtime state. It cannot grant
 authorization, must exclude secret values and credential identifiers, and
 should avoid host-sensitive absolute paths.
 
@@ -159,8 +163,8 @@ printed, hashed, compared, serialized, or used as governance identity.
 
 Adapters may collect observations, execute one bounded typed capability,
 persist governance state, return typed receipts, and expose integrity or health.
-They must not decide authorization, widen scope, increase budget, decide retry
-or rollback safety, silently replay authorization, own platform-wide policy, or
+They must not authorize, widen scope or budget, retry, roll back, silently
+replay authorization, own platform-wide policy, or
 expose raw secret-bearing process/environment data.
 
 Ubuntu adapters are limited to stateless bounded JSON infrastructure calls.
@@ -258,20 +262,32 @@ External validation of the focused Governance regression reported `265 passed
 in 1.45s`, reaching
 `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not a full
 repository regression. `GovernanceApiEnvelope` compatibility and the
-deterministic, read-only projection boundary were validated. A10 is the next
-architecture closure review; architecture-ready is not claimed before A10.
-Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+deterministic, read-only projection boundary were validated. A10 subsequently
+performed the architecture closure review.
+
+## A10 architecture closure
+
+The A0-A10 architecture phase is complete, the A1-A9 canonical evidence chain
+is `VALIDATED`, and the reusable architecture milestone is
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`. The supplied canonical
+full repository regression passed exactly as:
+
+```text
+========= 2667 passed, 5 deselected, 437 warnings in 166.69s (0:02:46) =========
+```
+
+The prior focused Governance regression was `265 passed in 1.45s`. No test was
+rerun for documentation closure.
 
 ## Milestones
 
 - A0: governance inventory — complete.
-- A1: governance domain and JSON contract freeze — current, frozen by this
-  document and the v1 catalog.
-- A2: authorization domain models — next.
-- A3: precondition snapshots and comparison.
-- A4: mutation budgets and consumption semantics.
-- A5: receipts, failures, and evidence domain.
-- A6: v1 schema implementation and registry.
+- A1: governance domain and JSON contract freeze — complete.
+- A2: authorization domain models — complete.
+- A3: precondition snapshots and comparison — complete.
+- A4: mutation budgets and consumption semantics — complete.
+- A5: receipts, failures, and evidence domain — complete.
+- A6: v1 schema implementation and registry — complete.
 - A7: adapter ports and compatibility mappings — validated by the focused
   Governance regression, `194 passed in 1.53s`.
 - A8: pure orchestration policy and safety tests — validated by the focused
@@ -282,7 +298,12 @@ Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
   the focused Governance regression, `265 passed in 1.45s`; milestone
   `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not a full
   repository regression.
-- A10: architecture closure review — next.
+- A10: architecture closure review — complete; milestone
+  `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`.
 
 No milestone here authorizes Production activation. The architecture-ready
-milestone is reserved for a later SEC-02A closure review and is not claimed.
+milestone confirms reusable architecture only. No concrete Production mutation
+adapter was implemented by SEC-02A. Git closeout will be performed by the
+external controller. Notion actual external synchronization has not been
+performed; documentation payload status is `READY_FOR_FINAL_SYNC`. See
+`docs/architecture/SEC-02A10-ARCHITECTURE-CLOSURE.md`.

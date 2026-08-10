@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A architecture closure
+
+- Closed the complete A0-A10 SEC-02A architecture phase at
+  `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`; the A1-A9 canonical
+  evidence chain is `VALIDATED`.
+- Recorded the terminal authorization lifecycle, exact current-precondition
+  match, separate consumption and invocation boundaries, one bounded
+  invocation per permission, accounting-only remaining budget, and mandatory
+  `STOP` behavior.
+- Reaffirmed no automatic retry or rollback; adapter non-authority; READ ONLY
+  Governance projection; external Mac Control Plane durable evidence;
+  transient-only `/private/tmp`; canonical repository audit JSON; and mandatory
+  value-free evidence.
+- Reaffirmed AIControlCenter ownership of platform and Shopping business logic,
+  WordPress/WooCommerce engine roles, and Ubuntu's stateless zero-authority
+  Worker role. No concrete Production mutation adapter was implemented.
+- Canonical full repository regression supplied for closure:
+  `========= 2667 passed, 5 deselected, 437 warnings in 166.69s (0:02:46) =========`.
+  Prior focused Governance regression: `265 passed in 1.45s`. Tests were not
+  rerun during this documentation-only closeout.
+- Git closeout is assigned to the external controller. Notion external
+  synchronization has not been performed; payload status is
+  `READY_FOR_FINAL_SYNC`.
+- Next: `SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`.
+  Production commerce writes remain separately governed and require explicit
+  future authorization.
+
 ## 2026-08-10 — SEC-02A9 durable evidence and API projection validated
 
 - Added pure immutable, caller-classified durable-storage policy with stable

@@ -2,6 +2,22 @@
 
 ## SEC-02 Governance Control Plane
 
+Status: `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`
+
+The A0-A10 architecture phase is complete. Authorization follows only
+`REQUESTED -> AUTHORIZED`, `REQUESTED -> REJECTED`, `AUTHORIZED -> STALE`, or
+`AUTHORIZED -> CONSUMED`; `STALE`, `CONSUMED`, and `REJECTED` are terminal and
+non-reusable. Current preconditions must `MATCH` before invocation permission.
+Consumption is separate from invocation, and one orchestration permission
+represents one bounded invocation. Remaining mutation budget is accounting
+only, never retry authority.
+
+`FAILED`, `UNCERTAIN`, `DRIFT`, failed postcondition, or failure evidence
+produces `STOP`. There is no automatic retry or automatic rollback. Adapters
+cannot authorize, widen scope or budget, retry, or roll back. Governance API
+and dashboard projection is READ ONLY. See
+[`docs/architecture/SEC-02A10-ARCHITECTURE-CLOSURE.md`](docs/architecture/SEC-02A10-ARCHITECTURE-CLOSURE.md).
+
 SEC-02 freezes a reusable governance boundary under
 `core/governance/control_plane/`, with pure domain rules, application-owned
 orchestration and ports, bounded adapters, and a versioned contract family.
@@ -19,12 +35,9 @@ state, authorization, or audit authority. SEC-02 creates no generic remote
 command path. Existing deployment, governance-operations, and shopping domains
 retain their business ownership and are wrapped through ports where useful.
 
-SEC-02A is not a Production mutation implementation. A1 freezes the exact
-authorization state machine, mutation-budget semantics, irreversible
-consumption boundary, durable evidence rules, adapter constraints, and contract
-names only. Production mutation remains separately human-authorized.
-
-`SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`
+SEC-02A is not a Production mutation implementation. No concrete Production
+mutation adapter was implemented. Production mutation remains separately
+human-authorized.
 
 ## AI provider boundary
 

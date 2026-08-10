@@ -1,5 +1,23 @@
 # AIControlCenter
 
+## SEC-02A Governance Control Plane Architecture Ready
+
+Status: `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`
+
+The A0-A10 SEC-02A architecture phase is complete. AIControlCenter now has a
+reusable Governance Control Plane architecture with strict authorization,
+precondition, consumption, single-invocation, failure-stop, evidence, adapter,
+and READ ONLY projection boundaries. The canonical closure record is
+[`docs/architecture/SEC-02A10-ARCHITECTURE-CLOSURE.md`](docs/architecture/SEC-02A10-ARCHITECTURE-CLOSURE.md).
+
+This milestone enables no concrete Production execution adapter or Production
+mutation, no Shopping write automation, no automatic retry or rollback, and no
+Ubuntu Governance authority. The next production-development milestone is
+`SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`; commerce
+writes remain separately governed and require explicit future authorization.
+Notion external synchronization has not been performed; documentation payload
+status is `READY_FOR_FINAL_SYNC`.
+
 ## AI-PROVIDER-01C-A Control Plane Workflow Integration
 
 The canonical `BrainAgent.ask` workflow now selects an explicit configured or

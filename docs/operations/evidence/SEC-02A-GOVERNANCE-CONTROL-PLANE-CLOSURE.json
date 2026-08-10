@@ -1,0 +1,68 @@
+{
+  "architecture": {
+    "adapter_ports_frozen": true,
+    "authorization_lifecycle_frozen": true,
+    "durable_evidence_policy_frozen": true,
+    "json_contracts_machine_enforced": true,
+    "mutation_budget_accounting_frozen": true,
+    "orchestration_safety_frozen": true,
+    "precondition_stale_semantics_frozen": true,
+    "read_only_api_projection_frozen": true,
+    "receipts_failure_evidence_frozen": true,
+    "single_control_plane": "AIControlCenter"
+  },
+  "closure_baseline_head": "609443d0484aeca03752dda6609e60740bdd67af",
+  "documentation": {
+    "architecture_updated": true,
+    "changelog_updated": true,
+    "closure_document_created": true,
+    "master_updated": true,
+    "project_history_updated": true,
+    "readme_updated": true,
+    "roadmap_updated": true,
+    "todo_updated": true
+  },
+  "evidence_chain": {
+    "a1_through_a9_committed": true,
+    "a1_through_a9_parseable": true,
+    "a1_through_a9_present": true,
+    "stage_count": 9
+  },
+  "final_status": "GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY",
+  "milestone": "SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY",
+  "next_milestone": "SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION",
+  "notion": {
+    "external_sync_performed": false,
+    "payload_status": "READY_FOR_FINAL_SYNC"
+  },
+  "operation": "SEC-02A10",
+  "recorded_at_utc": "2026-08-10T15:01:53Z",
+  "safety": {
+    "adapters_can_authorize": false,
+    "adapters_can_widen_budget": false,
+    "adapters_can_widen_scope": false,
+    "api_projection_read_only": true,
+    "automatic_compensation": false,
+    "automatic_retry": false,
+    "automatic_rollback": false,
+    "concrete_production_execution_adapter_added": false,
+    "consume_before_invocation": true,
+    "one_permission_one_bounded_invocation": true,
+    "private_tmp_durable_storage_allowed": false,
+    "production_mutation_authority_enabled": false,
+    "remaining_budget_is_retry_authority": false,
+    "shopping_business_logic_owned_by_governance": false,
+    "ubuntu_application_state": false,
+    "ubuntu_business_logic": false,
+    "ubuntu_governance_authority": false,
+    "value_free_evidence_required": true
+  },
+  "schema_version": 1,
+  "tests": {
+    "canonical_full_repository": "========= 2667 passed, 5 deselected, 437 warnings in 166.69s (0:02:46) =========",
+    "canonical_full_repository_status": "PASS",
+    "canonical_harness_used": "ops/macos/validation/run-deployment-regression-gate.sh",
+    "latest_focused_governance": "265 passed in 1.45s",
+    "raw_pytest_used_for_final_full_gate": false
+  }
+}
