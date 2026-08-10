@@ -2433,3 +2433,13 @@ Production activation occurred.
 - preserved fail-closed routing and no cross-provider fallback
 - Production Runtime remained unchanged
 - Production service was not mutated
+
+## AI-PROVIDER-01C-B — Candidate Runtime and Immutable Source
+
+- built Candidate Runtime `102b8f1fa862` exactly once from commit `102b8f1fa8628d00d25575cb94538826a1a04e10`
+- created and validated the matching immutable source artifact exactly once
+- passed the canonical dependency, import, test, manifest, content, and immutability gates
+- passed the canonical BrainAgent workflow with FakeProvider and zero provider network calls
+- did not read `OPENAI_API_KEY`, activate Production, mutate state, or restart the service
+- preserved Production Runtime `7b171f135dc7`
+- deferred AI-PROVIDER-01C-C promotion and Notion synchronization

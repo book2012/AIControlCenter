@@ -1938,3 +1938,11 @@ deployment regression result of 2337 passed with 5 deselected.
 
 Production authorization is recorded as governance evidence; no operational
 restart or reactivation was required.
+
+### AI-PROVIDER-01C-B Candidate Validated
+
+Candidate Runtime/source `102b8f1fa862`, bound to commit
+`102b8f1fa8628d00d25575cb94538826a1a04e10`, passed canonical build,
+immutable-source, and network-free FakeProvider workflow validation.
+Production remains on `7b171f135dc7`; promotion requires separate explicit
+AI-PROVIDER-01C-C authorization. Notion is `DEFERRED_UNTIL_FINAL_PHASE`.

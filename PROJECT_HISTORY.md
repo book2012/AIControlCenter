@@ -2097,3 +2097,15 @@ operational mutation or regression rerun.
 
 The Production authorization itself was governance-only. Runtime, state,
 wrapper and LaunchDaemon were not mutated.
+
+## 2026-08-10 — AI-PROVIDER-01C-B Candidate Artifacts
+
+Human authorization was consumed to build Candidate Runtime `102b8f1fa862`
+and its matching immutable source exactly once from commit
+`102b8f1fa8628d00d25575cb94538826a1a04e10`. Canonical Runtime, source
+identity, immutability, and network-free FakeProvider workflow gates passed.
+
+Production remained on `7b171f135dc7`. No activation, launchd operation,
+Production database mutation, credential read, or provider network call
+occurred. AI-PROVIDER-01C-C remains a separate human authorization gate, and
+Notion synchronization is deferred until the final phase.

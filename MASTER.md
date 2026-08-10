@@ -2184,3 +2184,25 @@ PENDING AI-PROVIDER-01C
 Notion:
 
 DEFERRED_UNTIL_FINAL_PHASE
+
+## AI-PROVIDER-01C-B
+
+Status:
+
+VALIDATED
+
+Candidate Runtime/source:
+
+`102b8f1fa862`
+
+Source commit:
+
+`102b8f1fa8628d00d25575cb94538826a1a04e10`
+
+Production Runtime:
+
+`7b171f135dc7` UNCHANGED
+
+Next gate:
+
+SEPARATE HUMAN AUTHORIZATION FOR AI-PROVIDER-01C-C

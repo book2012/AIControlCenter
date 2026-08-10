@@ -1,7 +1,7 @@
 # AI Provider Adapter Architecture
 
-Version: 1.2
-Status: AI-PROVIDER-01C-A Control Plane workflow integrated (repository only)
+Version: 1.3
+Status: AI-PROVIDER-01C-B candidate Runtime/source validated (not active)
 
 ## Decision
 
@@ -121,3 +121,17 @@ intact. No authenticated provider call occurred in 01C-A. AI-PROVIDER-01C-B
 will create a new Candidate Runtime; AI-PROVIDER-01C-C requires explicit human
 authorization for Production promotion. Notion synchronization is
 `DEFERRED_UNTIL_FINAL_PHASE`.
+
+## Candidate Runtime validation
+
+AI-PROVIDER-01C-B built Runtime `102b8f1fa862` and its matching immutable
+source from commit `102b8f1fa8628d00d25575cb94538826a1a04e10`. Candidate
+Runtime Python loaded `BrainAgent`, `ProviderRouter`, and `FakeProviderAdapter`
+from the immutable source and returned a normalized JSON-safe response. The
+smoke used isolated external state, did not expose repository source through
+`PYTHONPATH`, did not read `OPENAI_API_KEY`, and made zero provider network
+calls.
+
+Production Runtime `7b171f135dc7` was not changed or reactivated. Candidate
+promotion remains gated by separate explicit AI-PROVIDER-01C-C human
+authorization. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.

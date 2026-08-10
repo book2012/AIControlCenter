@@ -1745,3 +1745,17 @@ Current authorized deployment:
 - Persistent state: external macOS application data root
 - Control Plane: AIControlCenter on Mac mini M4
 - Ubuntu role: stateless infrastructure worker
+
+## AI Provider Candidate Deployment Boundary
+
+AI-PROVIDER-01C-B produced the non-active deployment pair:
+
+- Candidate Runtime: `runtime/venvs/102b8f1fa862`
+- Candidate source: `runtime/sources/102b8f1fa862`
+- Source commit: `102b8f1fa8628d00d25575cb94538826a1a04e10`
+
+Candidate validation runs from the immutable source with matching Runtime
+Python and external temporary state. FakeProvider is the network-free workflow
+boundary. Candidate existence is not activation authority: Production remains
+on `7b171f135dc7`, and AI-PROVIDER-01C-C requires separate explicit promotion
+authorization.

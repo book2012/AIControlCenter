@@ -1647,3 +1647,13 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [x] authenticated smoke
 - [x] secret exposure validation
 - [ ] AI-PROVIDER-01C Production integration
+
+## AI-PROVIDER-01C-B
+
+- [x] build Candidate Runtime `102b8f1fa862` exactly once
+- [x] create matching immutable source artifact exactly once
+- [x] validate Runtime/source identity and immutability
+- [x] run isolated network-free BrainAgent FakeProvider workflow
+- [x] preserve Production Runtime `7b171f135dc7`
+- [ ] obtain separate human authorization for AI-PROVIDER-01C-C promotion
+- [ ] synchronize to Notion in the final phase
