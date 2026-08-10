@@ -1,5 +1,25 @@
 # MASTER
 
+## SEC-02A9 — Durable evidence and API projection
+
+Status: `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. A9 adds pure
+immutable storage classification policy and a typed, value-free Governance read model
+projected deterministically to the unchanged A6 API envelope. Durable evidence
+belongs in an operator-configured external Control Plane data root;
+`/private/tmp` is transient only, and repository evidence JSON is
+documentation/audit evidence rather than mutable runtime state. No
+user-specific data-root path, concrete persistence adapter, writer, HTTP
+mutation route, Production mutation API, authorization mutation or
+consumption, execution, retry, rollback, or persistence capability was added. Atomic write
+publication, restrictive permissions, durable synchronization, manifest
+binding, and value-free evidence are required. External validation reported
+`265 passed in 1.45s` for the focused Governance regression and validated the
+deterministic READ ONLY projection and unchanged `GovernanceApiEnvelope`
+compatibility. This was not the full repository regression, and no Production,
+provider, or Ubuntu mutation occurred. Next: `SEC-02A10 ARCHITECTURE CLOSURE
+REVIEW`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`; architecture-ready is not claimed before A10.
+
 ## SEC-02A8 — Orchestration policy and safety tests
 
 Status: `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. A8 is a pure immutable

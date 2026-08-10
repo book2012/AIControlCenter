@@ -2,11 +2,16 @@
 
 ## SEC-02 governance Control Plane
 
+- [x] SEC-02A9 durable evidence policy and deterministic READ ONLY API
+  projection validated by the focused Governance regression, `265 passed in
+  1.45s`; milestone
+  `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not the
+  full repository regression.
+- [ ] SEC-02A10 architecture closure review (next).
 - [x] SEC-02A8 pure orchestration policy and safety tests: focused Governance
   regression `231 passed in 1.42s`; milestone
   `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
   full repository regression.
-- [ ] SEC-02A9 durable evidence and API projection (next).
 - [x] SEC-02A7 adapter ports and compatibility mappings: abstract Governance
   ports and immutable declarative mappings validated by the focused Governance
   regression, `194 passed in 1.53s`; milestone
@@ -38,8 +43,17 @@ and consumed authorization remains consumed after later drift. `FAILED`,
 mutation count is not retry authority. There is no automatic retry, automatic
 rollback, compensation authority, Production/provider/Ubuntu mutation, or
 public mutation API. SEC-02A architecture-ready is not yet claimed. Next:
-`SEC-02A9 DURABLE EVIDENCE AND API PROJECTION`. Notion remains
+`SEC-02A10 ARCHITECTURE CLOSURE REVIEW`. Notion remains
 `DEFERRED_UNTIL_FINAL_PHASE`.
+
+A9 requires operator-configured external Control Plane durable storage, atomic
+write publication, restrictive permissions, durable synchronization, manifest
+binding, and value-free evidence. `/private/tmp` is transient only; repository
+or immutable source cannot own mutable runtime evidence, and application source
+hard-codes no user-specific absolute data root. The compatible
+`GovernanceApiEnvelope` projection cannot authorize, consume authorization,
+execute, retry, roll back, or persist. No HTTP mutation route, concrete evidence
+persistence adapter, or Production/provider/Ubuntu mutation was added.
 
 The A6 R1 blocker was `SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`, a
 controller assumption of a public `registry.contract_names()` API where the
@@ -2126,8 +2140,10 @@ Notion remains deferred until the final phase.
 - [ ] A6 — v1 JSON Schema implementation and registry.
 - [ ] A7 — application ports and orchestration.
 - [ ] A8 — compatibility adapters for existing bounded capabilities.
-- [ ] A9 — durable state/evidence integration and isolated operational tests.
-- [ ] A10 — API/read-model and architecture closure preparation.
+- [x] A9 — durable evidence policy and deterministic READ ONLY API projection
+  validated by the focused Governance regression, `265 passed in 1.45s`; not
+  the full repository regression.
+- [ ] A10 — architecture closure review (next).
 
 A3 is pure domain only. It is not Production mutation implementation, did not
 execute tests or Production validation, and does not claim the SEC-02A

@@ -1,8 +1,8 @@
 # SEC-02 Governance Control Plane Architecture
 
-Status: `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`
+Status: `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`
 
-Next: `SEC-02A9 DURABLE EVIDENCE AND API PROJECTION`
+Next: `SEC-02A10 ARCHITECTURE CLOSURE REVIEW`
 
 This document is the canonical SEC-02 architecture freeze. SEC-02A is **not a
 Production mutation implementation**. It establishes reusable Control Plane
@@ -234,6 +234,34 @@ in 1.42s`, reaching
 repository regression. See
 `docs/architecture/SEC-02A8-ORCHESTRATION-SAFETY.md`.
 
+## A9 durable evidence and API projection freeze
+
+A9 adds a pure immutable storage policy over caller-supplied classification
+facts and a typed, read-only Governance projection. Durable runtime evidence
+belongs in an operator-configured external Control Plane data root, never the
+repository working tree, immutable application source, or `/private/tmp`.
+Historical controller reports under `/private/tmp` remain transient only.
+Git-tracked evidence JSON is canonical documentation/audit evidence, not
+mutable runtime state. Application code hard-codes no user-specific data root.
+
+Acceptance requires atomic publication, restrictive permissions, durable
+synchronization, manifest binding, caller-supplied non-secret identities and
+digests, and value-free evidence. The deterministic API projection uses the
+caller-supplied projection time and the unchanged A6 `GovernanceApiEnvelope`.
+It grants or consumes no authorization and exposes no mutation, execution,
+retry, rollback, or HTTP route. A9 adds no concrete persistence adapter.
+Shopping business logic remains Shopping-owned; Ubuntu remains a stateless
+Worker with no Governance authority. See
+`docs/architecture/SEC-02A9-DURABLE-EVIDENCE-API-PROJECTION.md`.
+
+External validation of the focused Governance regression reported `265 passed
+in 1.45s`, reaching
+`SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not a full
+repository regression. `GovernanceApiEnvelope` compatibility and the
+deterministic, read-only projection boundary were validated. A10 is the next
+architecture closure review; architecture-ready is not claimed before A10.
+Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## Milestones
 
 - A0: governance inventory — complete.
@@ -250,8 +278,11 @@ repository regression. See
   Governance regression, `231 passed in 1.42s`; milestone
   `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
   full repository regression.
-- A9: durable evidence and API projection — next.
-- A10: API/read-model and architecture closure preparation.
+- A9: pure durable-evidence policy and read-only API projection — validated by
+  the focused Governance regression, `265 passed in 1.45s`; milestone
+  `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not a full
+  repository regression.
+- A10: architecture closure review — next.
 
 No milestone here authorizes Production activation. The architecture-ready
 milestone is reserved for a later SEC-02A closure review and is not claimed.

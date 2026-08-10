@@ -2,11 +2,15 @@
 
 ## SEC-02
 
+- [x] Validate A9 durable evidence and deterministic READ ONLY API projection:
+  focused Governance regression `265 passed in 1.45s`;
+  `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`. This was not the
+  full repository regression.
+- [ ] SEC-02A10 architecture closure review (next).
 - [x] Validate A8 pure orchestration policy and safety tests: focused
   Governance regression `231 passed in 1.42s`;
   `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
   full repository regression.
-- [ ] SEC-02A9 durable evidence and API projection (next).
 - [x] Validate the A7 abstract port, compatibility, and boundary-safety tests:
   final focused Governance regression `194 passed in 1.53s`;
   `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`.
@@ -24,8 +28,18 @@ one bounded invocation. `FAILED`, `UNCERTAIN`, postcondition `FAIL`, and
 failure evidence produce `STOP`. Remaining mutation count is not retry
 authority. There is no automatic retry, automatic rollback, compensation
 authority, Production/provider/Ubuntu mutation, or public mutation API.
-SEC-02A architecture-ready is not yet claimed. A9 durable evidence and API
-projection is next.
+SEC-02A architecture-ready is not yet claimed. A10 architecture closure review
+is next.
+
+A9 requires operator-configured external Control Plane durable storage, atomic
+write publication, restrictive permissions, durable synchronization, manifest
+binding, and value-free evidence. `/private/tmp` is transient only; repository
+or immutable source cannot own mutable runtime evidence, and application source
+hard-codes no user-specific absolute data root. The compatible
+`GovernanceApiEnvelope` projection cannot authorize, consume authorization,
+execute, retry, roll back, or persist. No HTTP mutation route, concrete evidence
+persistence adapter, or Production/provider/Ubuntu mutation was added. Notion
+remains `DEFERRED_UNTIL_FINAL_PHASE`.
 
 The A7 initial external result was `1 failed, 193 passed in 1.56s`. R1 fixed
 the Protocol-only interface gate under
@@ -1775,8 +1789,10 @@ Genuine remaining follow-up:
 - [x] SEC-02A6 — v1 schema family and contract registry validated.
 - [ ] SEC-02A7 — adapter ports and compatibility mappings.
 - [ ] SEC-02A8 — compatibility adapters over mature bounded capabilities.
-- [ ] SEC-02A9 — durable state/evidence and isolated operational validation.
-- [ ] SEC-02A10 — read models/API and architecture closure preparation.
+- [x] SEC-02A9 — durable evidence policy and deterministic READ ONLY API
+  projection validated: `265 passed in 1.45s` focused Governance regression;
+  not the full repository regression.
+- [ ] SEC-02A10 — architecture closure review (next).
 - [ ] Preserve all three exception records, operator-attestation provenance,
   and the rule that `/private/tmp` is not authoritative across reboot in future
   governance automation.

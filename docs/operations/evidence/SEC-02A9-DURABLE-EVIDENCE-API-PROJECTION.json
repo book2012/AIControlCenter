@@ -1,0 +1,60 @@
+{
+  "api_projection": {
+    "can_authorize": false,
+    "can_consume_authorization": false,
+    "can_execute": false,
+    "can_persist": false,
+    "can_retry": false,
+    "can_rollback": false,
+    "can_widen_budget": false,
+    "deterministic": true,
+    "governance_api_envelope_compatible": true,
+    "http_mutation_route_added": false,
+    "json_safe": true,
+    "read_only": true
+  },
+  "durable_evidence": {
+    "atomic_write_required": true,
+    "concrete_persistence_adapter_added": false,
+    "durable_sync_required": true,
+    "ephemeral_storage_allowed": false,
+    "external_control_plane_data_root_required": true,
+    "filesystem_write_performed": false,
+    "immutable_source_runtime_state_allowed": false,
+    "manifest_binding_required": true,
+    "operator_configured_root": true,
+    "private_tmp_allowed_as_durable_storage": false,
+    "repository_runtime_state_allowed": false,
+    "restrictive_permissions_required": true,
+    "user_specific_root_hardcoded": false,
+    "value_free_evidence_required": true
+  },
+  "final_status": "DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED",
+  "governance_baseline_head": "c08f00593c8d515e7558623b565318b2e5833448",
+  "milestone": "SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED",
+  "next_step": "SEC-02A10_ARCHITECTURE_CLOSURE_REVIEW",
+  "notion_sync": "DEFERRED_UNTIL_FINAL_PHASE",
+  "operation": "SEC-02A9",
+  "recorded_at_utc": "2026-08-10T14:48:41Z",
+  "safety": {
+    "adapter_imports": false,
+    "automatic_retry": false,
+    "automatic_rollback": false,
+    "filesystem_access": false,
+    "network_access": false,
+    "port_imports": false,
+    "production_access": false,
+    "provider_access": false,
+    "public_mutation_api_added": false,
+    "sqlite_access": false,
+    "ubuntu_access": false
+  },
+  "schema_version": 1,
+  "sec_02a_architecture_ready_claimed": false,
+  "tests": {
+    "full_repository_regression_run": false,
+    "scope": "SEC_02_GOVERNANCE_CONTROL_PLANE_FOCUSED",
+    "status": "PASS",
+    "summary": "265 passed in 1.45s"
+  }
+}

@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A9 durable evidence and API projection validated
+
+- Added pure immutable, caller-classified durable-storage policy with stable
+  accept/reject reasons and value-free evidence enforcement.
+- Added an immutable typed Governance read model and deterministic projection
+  to the unchanged A6 `GovernanceApiEnvelope`; caller supplies projection time
+  and safe digest/reference identities.
+- Froze external operator-configured Control Plane data as durable storage,
+  `/private/tmp` as transient only, and repository evidence JSON as canonical
+  documentation/audit evidence rather than mutable runtime state.
+- Required atomic write publication, restrictive permissions, durable
+  synchronization, manifest binding, and value-free evidence; application
+  source hard-codes no user-specific absolute data root.
+- External validation reported `265 passed in 1.45s` for the focused Governance
+  regression, validating the durable evidence policy, deterministic READ ONLY
+  projection, and unchanged `GovernanceApiEnvelope` compatibility. This was
+  not the full repository regression. Milestone:
+  `SEC-02A9_DURABLE_EVIDENCE_AND_API_PROJECTION_VALIDATED`.
+- The projection cannot authorize, consume authorization, execute, retry, roll
+  back, or persist. Added no concrete persistence adapter, writer, HTTP mutation
+  route, Production mutation API, external access, or Production/provider/Ubuntu
+  mutation.
+  Next: `SEC-02A10 ARCHITECTURE CLOSURE REVIEW`. Notion remains
+  `DEFERRED_UNTIL_FINAL_PHASE`; architecture-ready is not claimed before A10.
+
 ## 2026-08-10 — SEC-02A8 orchestration policy and safety tests validated
 
 - Added a pure immutable application context and deterministic decision model
