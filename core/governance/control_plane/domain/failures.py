@@ -33,3 +33,23 @@ class ApprovalRequired(AuthorizationDomainError):
 
 class AuthorizationBindingMismatch(AuthorizationDomainError):
     code = "AUTHORIZATION_BINDING_MISMATCH"
+
+
+class InvalidPreconditionModel(AuthorizationDomainError):
+    code = "INVALID_PRECONDITION_MODEL"
+
+
+class DuplicatePreconditionBinding(InvalidPreconditionModel):
+    code = "DUPLICATE_PRECONDITION_BINDING"
+
+
+class AuthorizationSnapshotBindingMismatch(AuthorizationDomainError):
+    code = "AUTHORIZATION_SNAPSHOT_BINDING_MISMATCH"
+
+
+class InvalidPreconditionComparisonInput(AuthorizationDomainError):
+    code = "INVALID_PRECONDITION_COMPARISON_INPUT"
+
+
+class InvalidStaleEvaluationState(AuthorizationDomainError):
+    code = "INVALID_STALE_EVALUATION_STATE"

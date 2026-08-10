@@ -1,5 +1,32 @@
 # Project History
 
+## 2026-08-10 — SEC-02A3 precondition and stale domain implemented
+
+A3 added an immutable `GovernancePreconditionSnapshot` and immutable named
+bindings without collecting state or generating identities, timestamps, or
+digests. Multi-valued categories normalize deterministically and reject
+duplicate names. JSON-safe projection remains explicit and deterministic.
+
+Pure comparison ignores recollection identity, time, and collector metadata but
+binds lifecycle, request, target, Git, Runtime, security, manifests, operational
+state, policy version, and canonical snapshot digest. It reports ordered
+category-specific reasons. Before comparison, the issued authorization receipt
+must match the expected lifecycle, request, and snapshot digest. Drift alone
+uses the preserved A2 transition API to produce terminal `STALE`; match leaves
+the original authority object and receipt unchanged. Caller-supplied time after
+expiry similarly produces `STALE` with `AUTHORIZATION_EXPIRED`, while the exact
+expiry boundary remains valid.
+
+Focused tests were added but were not run by Codex. Thus
+`SEC-02A3_PRECONDITION_SNAPSHOT_AND_STALE_SEMANTICS_VALIDATED` remains a target
+pending external focused-test success. This is pure domain implementation only:
+no Production or Runtime access, collector, adapter, persistence, accounting,
+network, filesystem, subprocess, provider, Ubuntu, retry, rollback, public
+mutation API, internal clock, random identity, or digest generation was added.
+No SEC-02A architecture-ready milestone is claimed. Next:
+`SEC-02A4 MUTATION BUDGET AND INVOCATION ACCOUNTING`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## 2026-08-10 — SEC-02A2 authorization domain models implemented
 
 A2 implemented the frozen authorization lifecycle as pure immutable Python

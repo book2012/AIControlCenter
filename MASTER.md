@@ -2248,14 +2248,20 @@ architecture/domain/contract freeze are complete:
 
 `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`
 
-A2 now has a pure-domain implementation and focused tests, with no test run by
-Codex. Its target milestone
-`SEC-02A2_AUTHORIZATION_DOMAIN_MODELS_VALIDATED` remains pending external test
-execution. It adds no Production mutation capability. AIControlCenter on the
+A2 is the preserved authorization-domain baseline. A3 now has a pure-domain
+implementation and focused tests, with no test run by Codex. Its target
+milestone
+`SEC-02A3_PRECONDITION_SNAPSHOT_AND_STALE_SEMANTICS_VALIDATED` remains pending
+external focused-test success. Immutable snapshots, deterministic exact-bound
+comparison, receipt/snapshot validation, drift-to-`STALE`, and caller-time
+expiry-to-`STALE` add no Production mutation capability. AIControlCenter on the
 Mac mini remains the sole Control Plane; Ubuntu remains a stateless bounded-JSON
 infrastructure Worker. Mature DPL, governance operations, and shopping
 ownership is preserved. Next:
-`SEC-02A3 PRECONDITION SNAPSHOT AND STALE SEMANTICS`.
+`SEC-02A4 MUTATION BUDGET AND INVOCATION ACCOUNTING`.
+
+The SEC-02A governance architecture-ready milestone is not claimed. Notion
+remains `DEFERRED_UNTIL_FINAL_PHASE`.
 
 # SEC-01C-R1 repair state
 

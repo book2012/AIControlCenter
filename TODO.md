@@ -1717,8 +1717,11 @@ Genuine remaining follow-up:
 - [ ] SEC-02A2 — pure authorization domain models and focused tests implemented;
   externally run tests are required before claiming
   `SEC-02A2_AUTHORIZATION_DOMAIN_MODELS_VALIDATED`.
-- [ ] SEC-02A3 — precondition snapshot and stale semantics (next).
-- [ ] SEC-02A4 — mutation budget and consumption models.
+- [ ] SEC-02A3 — pure precondition snapshot, exact comparison, drift/expiry
+  stale semantics, and focused tests implemented; external focused tests are
+  required before claiming
+  `SEC-02A3_PRECONDITION_SNAPSHOT_AND_STALE_SEMANTICS_VALIDATED`.
+- [ ] SEC-02A4 — mutation budget and invocation accounting (next).
 - [ ] SEC-02A5 — receipts, failures, and evidence models.
 - [ ] SEC-02A6 — v1 schema family and contract registry implementation.
 - [ ] SEC-02A7 — governance application ports and orchestration.
@@ -1734,4 +1737,6 @@ mutation remains separately human-authorized.
 
 SEC-02A1 status:
 `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`.
-A2 adds pure domain implementation only and no Production authority.
+A3 adds pure domain implementation only and no Production authority. Tests
+were not run by Codex. The SEC-02A architecture-ready milestone is not claimed,
+and Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.

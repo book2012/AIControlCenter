@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A3 precondition snapshot and stale semantics
+
+- Added pure immutable governance precondition snapshots, named binding records,
+  deterministic normalization/projection, and fail-closed duplicate-name
+  validation. All identities, timestamps, observations, and digests remain
+  caller supplied.
+- Added exact authorization-bound comparison with frozen `MATCH`/`DRIFT`
+  statuses and ordered category-specific reason codes. Recollection metadata
+  does not cause drift; lifecycle, request, target, Git, Runtime, security,
+  manifest, operational, policy, and canonical digest changes do.
+- Integrated pure receipt/snapshot binding validation, drift-to-`STALE`, and
+  caller-time expiry-to-`STALE` with the existing A2 transition API. Match does
+  not refresh or replace authority, and the exact expiry boundary remains
+  authorized.
+- Added the two focused A3 test modules but did not run them. Therefore
+  `SEC-02A3_PRECONDITION_SNAPSHOT_AND_STALE_SEMANTICS_VALIDATED` is the target
+  milestone pending external focused-test success.
+- Added no collectors, adapters, persistence, mutation accounting, Production,
+  Runtime, provider, Ubuntu, network, filesystem, subprocess, environment,
+  secret, internal clock, random ID, or digest-generation capability.
+- Next: `SEC-02A4 MUTATION BUDGET AND INVOCATION ACCOUNTING`. Notion remains
+  `DEFERRED_UNTIL_FINAL_PHASE`; no SEC-02A architecture-ready claim is made.
+
 ## 2026-08-10 — SEC-02A2 authorization domain models
 
 - Added pure, immutable authorization request, decision, receipt, state-record,

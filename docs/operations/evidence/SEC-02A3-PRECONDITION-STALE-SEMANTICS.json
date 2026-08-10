@@ -1,0 +1,69 @@
+{
+  "authorization": {
+    "caller_supplied_evaluation_time": true,
+    "drift_consumes_authorization": false,
+    "drift_transitions_authorized_to_stale": true,
+    "expiry_reason": "AUTHORIZATION_EXPIRED",
+    "expiry_transitions_authorized_to_stale": true,
+    "internal_clock_reads": false,
+    "match_consumes_authorization": false,
+    "match_grants_new_authority": false,
+    "match_replaces_snapshot_binding": false,
+    "stale_terminal": true
+  },
+  "bounded_context": "core/governance/control_plane/",
+  "final_status": "PRECONDITION_SNAPSHOT_AND_STALE_SEMANTICS_VALIDATED",
+  "governance_baseline_head": "ff670803d8de2a46499207885d1e522998acd737",
+  "milestone": "SEC-02A3_PRECONDITION_SNAPSHOT_AND_STALE_SEMANTICS_VALIDATED",
+  "next_step": "SEC-02A4_MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING",
+  "notion_sync": "DEFERRED_UNTIL_FINAL_PHASE",
+  "operation": "SEC-02A3",
+  "preconditions": {
+    "bound_categories": [
+      "lifecycle_id",
+      "request_id",
+      "target_identity",
+      "git_state_binding",
+      "runtime_identity_binding",
+      "security_state_bindings",
+      "manifest_bindings",
+      "operational_state_bindings",
+      "policy_version",
+      "snapshot_digest"
+    ],
+    "comparison_statuses": [
+      "MATCH",
+      "DRIFT"
+    ],
+    "observational_metadata_excluded_from_binding": [
+      "snapshot_id",
+      "collected_at",
+      "collector_identities"
+    ],
+    "pure_domain_only": true,
+    "snapshot_collected_by_domain": false,
+    "snapshot_digest_generated_by_domain": false,
+    "snapshot_immutable": true
+  },
+  "recorded_at_utc": "2026-08-10T07:58:40Z",
+  "safety": {
+    "automatic_retry": false,
+    "automatic_rollback": false,
+    "filesystem_access": false,
+    "git_command_access": false,
+    "network_access": false,
+    "production_access": false,
+    "provider_access": false,
+    "public_mutation_api_added": false,
+    "sqlite_access": false,
+    "subprocess_access": false,
+    "ubuntu_access": false
+  },
+  "schema_version": 1,
+  "sec_02a_architecture_ready_claimed": false,
+  "tests": {
+    "scope": "A2_PLUS_A3_FOCUSED_DOMAIN_REGRESSION",
+    "status": "PASS",
+    "summary": "57 passed in 0.05s"
+  }
+}
