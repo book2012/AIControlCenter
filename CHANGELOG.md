@@ -2456,3 +2456,4 @@ Production activation occurred.
 # Unreleased
 
 - Implemented SEC-01B generic file-per-provider validation, metadata-only JSON diagnostics, deterministic wrapper injection, environment-backed adapter consumption, and redaction tests. No live installation or Production mutation was performed.
+- Repaired the SEC-01C canonical wrapper to restore dynamic immutable Runtime/source validation, external state, isolated `PYTHONPATH`, immutable cwd, and Runtime Python `-P`, without changing the secret helper. The prior attempt consumed two installs and one restart; HTTP recovery did not satisfy immutable convergence and no rollback occurred. R1 did not install or restart. Runtime `102b8f1fa862` has importable `jsonschema`; a new exact human authorization is required.

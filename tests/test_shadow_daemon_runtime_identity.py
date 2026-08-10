@@ -142,6 +142,7 @@ def test_uvicorn_exec_command_is_preserved() -> None:
     expected = (
         'exec /usr/bin/python3 "$SECRET_DELIVERY" exec --provider "$ACTIVE_PROVIDER" -- \\\n'
         '  "$PYTHON_PATH" \\\n'
+        '  -P \\\n'
         '  -m uvicorn \\\n'
         '  core.api.shadow:app \\\n'
         '  --host "$HOST" \\\n'
@@ -152,6 +153,41 @@ def test_uvicorn_exec_command_is_preserved() -> None:
     assert source.count(
         'exec /usr/bin/python3 "$SECRET_DELIVERY" exec'
     ) == 1
+
+
+def test_runner_uses_active_runtime_and_matching_immutable_source() -> None:
+    source = runner_source()
+
+    assert 'CURRENT_RUNTIME="$RUNTIME_ROOT/current"' in source
+    assert 'RUNTIME_ID="$(' in source
+    assert 'SOURCE_ROOT="$SOURCE_PARENT/$RUNTIME_ID"' in source
+    assert 'RUNTIME_SOURCE_MARKER="$RUNTIME_TARGET/.aicontrolcenter-source-commit"' in source
+    assert 'SOURCE_SOURCE_MARKER="$SOURCE_REAL/.aicontrolcenter-source-commit"' in source
+    assert "Runtime/source identity mismatch" in source
+    assert '"$PYTHON_PATH" \\\n    -P \\\n    - "$SOURCE_REAL"' in source
+
+
+def test_runner_prohibits_mutable_repository_serving() -> None:
+    source = runner_source()
+
+    assert "/Users/kyouhan/AIControlCenter" not in source
+    assert 'cd "$ROOT"' not in source
+    assert 'PYTHONPATH="$ROOT' not in source
+    assert "unset PYTHONPATH" in source
+    assert 'cd "$SOURCE_REAL"' in source
+    assert 'export PYTHONPATH="$SOURCE_REAL"' in source
+    assert source.index("unset PYTHONPATH") < source.index('cd "$SOURCE_REAL"')
+    assert source.index('cd "$SOURCE_REAL"') < source.index(
+        'exec /usr/bin/python3 "$SECRET_DELIVERY" exec'
+    )
+
+
+def test_runtime_template_and_canonical_wrapper_do_not_drift() -> None:
+    template = Path(
+        "ops/macos/runtime/run-shadow-daemon-immutable-source.sh"
+    ).read_text(encoding="utf-8")
+
+    assert runner_source() == template
 
 
 def test_runner_does_not_depend_on_git_checkout() -> None:

@@ -2064,3 +2064,4 @@ Notion remains deferred until the final phase.
 - SEC-01B: repository implementation and fake-secret validation.
 - SEC-01C: explicit human authorization required before live helper/wrapper installation or restart.
 - Notion sync: `DEFERRED_UNTIL_FINAL_PHASE`.
+- SEC-01C-R1: repository immutable-source wrapper repair validated. The prior attempt consumed two installs and one restart, recovered HTTP without immutable convergence, and did not roll back. Live replacement and one restart require new exact human authorization; Runtime `102b8f1fa862` has importable `jsonschema`.

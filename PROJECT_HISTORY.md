@@ -2132,3 +2132,7 @@ rewritten as zero in governance evidence.
 # SEC-01B — Deterministic Provider Secret Delivery
 
 Implemented the repository-only form of Protected File-Per-Provider Secrets with Deterministic Wrapper Injection. Added generic provider mapping, strict file metadata/value-shape validation, sanitized JSON diagnostics, wrapper-mediated environment injection, and business-logic separation. Live Production wrapper, service, state, and Runtime `102b8f1fa862` were not changed.
+
+## 2026-08-10 — SEC-01C-R1 immutable-source regression repair
+
+SEC-01C consumed two live installs and one restart. Its frozen wrapper retained secret delivery but selected mutable repository cwd and `PYTHONPATH`. HTTP recovery did not establish immutable Production convergence; no automatic rollback occurred, and the current installation remains blocked. R1 repaired and focus-tested repository artifacts only, restoring dynamic Runtime/source pairing, identity/content validation, external state, isolated imports, immutable cwd, and Runtime Python safe-path execution without changing the provider helper or business logic. The supplied Runtime `102b8f1fa862` preflight reports `jsonschema` importable. No install or restart occurred; new exact human authorization is required. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.

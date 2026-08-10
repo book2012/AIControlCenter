@@ -1777,6 +1777,10 @@ Vendor-specific transport remains isolated behind ProviderAdapter.
 Automatic cross-provider fallback remains prohibited.
 
 Persistent daemon credential delivery is owned by SEC-01.
+
+# SEC-01C-R1 immutable-source repair
+
+SEC-01C consumed two installs and one restart. Its frozen wrapper preserved secret injection but used mutable repository cwd and `PYTHONPATH`; HTTP recovery did not satisfy the immutable Production gate, and no automatic rollback occurred. The repository wrapper now dynamically pairs `runtime/venvs/<ID>` and `runtime/sources/<ID>` from `runtime/current`, verifies identity/content, preserves external data, isolates `PYTHONPATH`, enters immutable source, and uses Runtime Python `-P`. It is not installed by R1; the current live installation remains blocked pending new exact human authorization for replacement and one restart. Runtime `102b8f1fa862` has importable `jsonschema`; Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
 # Security architecture update (SEC-01B)
 
 Provider credentials follow [Protected File-Per-Provider Secrets with Deterministic Wrapper Injection](docs/architecture/PROVIDER-SECRET-DELIVERY.md): external protected storage, wrapper-owned validation/injection, and environment-backed adapter consumption. Business logic has no secret-file responsibility.

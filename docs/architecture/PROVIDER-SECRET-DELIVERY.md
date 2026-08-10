@@ -23,3 +23,7 @@ Every restart or reboot reconstructs delivery from the current external file wit
 Rotation prepares a mode-`0600` `kyouhan:staff` replacement outside the secret directory, validates it without value exposure, atomically replaces the stable provider file, and adopts it through one separately authorized restart. Audit metadata is limited to provider, environment-variable name, file basename, validation classes, metadata compliance, outcome, and authorization identity.
 
 SEC-01B changes repository representations only. The live wrapper and Production Runtime `102b8f1fa862` remain unchanged. SEC-01C requires explicit human authorization for helper/wrapper installation and any service restart. Notion synchronization is `DEFERRED_UNTIL_FINAL_PHASE`.
+
+## SEC-01C-R1 execution-boundary repair
+
+SEC-01C consumed two installs and one restart. The frozen wrapper injected the secret correctly but ran mutable repository source. HTTP recovery did not satisfy immutable convergence and no rollback occurred. The repaired repository wrapper validates the Runtime/source pair selected by `runtime/current`, keeps state external, clears inherited `PYTHONPATH`, enters immutable source, and uses Runtime Python `-P` through the unchanged helper. Runtime `102b8f1fa862` has importable `jsonschema`. R1 performs no live install/restart; the installation remains blocked pending new exact human authorization. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.

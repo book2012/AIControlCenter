@@ -33,7 +33,6 @@ set -Eeuo pipefail
 
 umask 077
 
-ROOT="${AICONTROLCENTER_ROOT:-/Users/kyouhan/AIControlCenter}"
 HOME_DIR="${AICONTROLCENTER_HOME:-/Users/kyouhan}"
 RUN_USER="${AICONTROLCENTER_RUN_USER:-kyouhan}"
 ACTIVE_PROVIDER="${AI_PROVIDER:-openai}"

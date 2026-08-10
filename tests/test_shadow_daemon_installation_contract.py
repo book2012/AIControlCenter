@@ -50,9 +50,7 @@ def test_identity_contract() -> None:
     assert payload["UserName"] == "kyouhan"
     assert payload["GroupName"] == "staff"
 
-    assert payload["WorkingDirectory"] == (
-        "/Users/kyouhan/AIControlCenter"
-    )
+    assert "WorkingDirectory" not in payload
 
 
 def test_program_contract() -> None:

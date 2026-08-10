@@ -1674,3 +1674,7 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 
 - Do not install the provider-secret helper or wrapper, modify launchd, or restart Production without explicit SEC-01C human authorization.
 - Keep Notion synchronization `DEFERRED_UNTIL_FINAL_PHASE`.
+- [x] repair and focus-test the repository immutable-source wrapper
+- [x] record Runtime `102b8f1fa862` `jsonschema` preflight as importable
+- [ ] obtain new exact human authorization for live wrapper replacement
+- [ ] perform one newly authorized restart and validate immutable convergence

@@ -34,7 +34,5 @@
 	<integer>10</integer>
 	<key>UserName</key>
 	<string>kyouhan</string>
-	<key>WorkingDirectory</key>
-	<string>/Users/kyouhan/AIControlCenter</string>
 </dict>
 </plist>

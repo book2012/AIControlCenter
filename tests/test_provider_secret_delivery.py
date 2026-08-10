@@ -135,3 +135,8 @@ def test_wrapper_and_plist_secret_contracts() -> None:
     assert "OPENAI_API_KEY" not in plist
     assert "launchctl setenv" not in wrapper
     assert "openai-api-key" not in wrapper
+    assert "unset PYTHONPATH" in wrapper
+    assert 'cd "$SOURCE_REAL"' in wrapper
+    assert '  -P \\\n  -m uvicorn' in wrapper
+    assert "/Users/kyouhan/AIControlCenter" not in wrapper
+    assert "WorkingDirectory" not in plist

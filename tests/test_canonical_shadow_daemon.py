@@ -58,6 +58,10 @@ def test_canonical_contract_passes() -> None:
         result["checks"].values()
     )
 
+    assert result["checks"][
+        "mutable_working_directory_absent"
+    ] is True
+
 
 def test_install_plan_is_json_serializable() -> None:
     module = load_module()

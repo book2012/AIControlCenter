@@ -159,3 +159,9 @@ Configured: `2026-07-14T04:19:41+00:00`
 # SEC-01B repository wrapper contract
 
 The repository wrapper delegates its final immutable-Runtime exec to the installed `provider-secret-delivery.py` helper. The helper validates only the selected provider, injects its canonical variable, and fails closed with sanitized output. SEC-01B did not install either asset or modify/restart the live LaunchDaemon; SEC-01C requires explicit authorization.
+
+## SEC-01C-R1 blocked state and repository repair
+
+SEC-01C consumed two installs and one restart. Its frozen wrapper retained secret injection but used `/Users/kyouhan/AIControlCenter` for cwd and `PYTHONPATH`. HTTP recovered without satisfying the immutable Production gate; no automatic rollback occurred and the live installation remains blocked.
+
+The repository wrapper now derives the ID from `runtime/current`, requires and validates the matching immutable source, preserves external data, clears inherited `PYTHONPATH`, enters immutable source, and invokes Runtime Python with `-P` through the provider-secret helper. The plist no longer seeds mutable cwd. Runtime `102b8f1fa862` has importable `jsonschema`. R1 installs nothing and does not restart launchd. Replacement and one restart require new exact human authorization. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`; SEC-01C is not complete.

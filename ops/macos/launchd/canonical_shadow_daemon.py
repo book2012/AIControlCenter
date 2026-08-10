@@ -136,11 +136,8 @@ def validate_contract(
             == "staff"
         ),
 
-        "working_directory_matches": (
-            payload.get(
-                "WorkingDirectory"
-            )
-            == "/Users/kyouhan/AIControlCenter"
+        "mutable_working_directory_absent": (
+            "WorkingDirectory" not in payload
         ),
 
         "program_arguments_match": (

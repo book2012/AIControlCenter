@@ -2239,3 +2239,7 @@ Milestone:
 # SEC-01B security control
 
 The authoritative provider-secret design is Protected File-Per-Provider Secrets with Deterministic Wrapper Injection. Repository implementation is complete; live helper/wrapper installation remains an SEC-01C authorization-gated operation. Production Runtime remains `102b8f1fa862`.
+
+# SEC-01C-R1 repair state
+
+Repository repair is validated, but SEC-01C is incomplete. The live attempt consumed two installs and one restart; its frozen wrapper used mutable source. HTTP recovery was insufficient and no rollback occurred. The repaired wrapper is not installed, and the current installation remains blocked pending new exact human authorization for replacement and one restart. Runtime `102b8f1fa862` has importable `jsonschema`. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.

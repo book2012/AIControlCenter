@@ -1958,3 +1958,7 @@ validation. Persistent daemon credential wiring remains deferred to SEC-01.
 # SEC-01B provider credential delivery
 
 The repository now defines deterministic, redacted provider credential validation and wrapper injection. See [Provider Secret Delivery](docs/architecture/PROVIDER-SECRET-DELIVERY.md). This is repository-only; live installation is deferred to explicitly authorized SEC-01C.
+
+# SEC-01C-R1 repository repair
+
+The canonical wrapper restores immutable Runtime/source execution while retaining deterministic secret injection. SEC-01C consumed two installs and one restart; its frozen wrapper served mutable repository source, so HTTP recovery did not pass the immutable gate. No rollback occurred. R1 performs no live install or restart. Runtime `102b8f1fa862` has importable `jsonschema`, but the live installation remains blocked pending new exact human authorization for wrapper replacement and one restart. Notion is `DEFERRED_UNTIL_FINAL_PHASE`.
