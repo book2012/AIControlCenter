@@ -1,5 +1,37 @@
 # Project History
 
+## 2026-08-10 — SEC-02A8 orchestration policy validated
+
+A8 added an immutable, deterministic application policy over existing A2-A5
+domain facts. It returns only the next permitted disposition and imports or
+invokes no Governance port or adapter. Failure evidence and exact binding,
+lifecycle, current-precondition, consumption, budget, execution, and
+postcondition blockers are evaluated before progress. Authorization
+consumption and single invocation remain external coordinator boundaries.
+
+Authorization consumption is a distinct gate, and current preconditions must
+`MATCH` before invocation permission. Consumed authorization remains consumed
+after later drift. One policy permission corresponds to one bounded
+invocation. `FAILED`, `UNCERTAIN`, postcondition `FAIL`, and failure evidence
+each produce `STOP`.
+
+Every decision prohibits automatic retry and automatic rollback. Remaining
+mutation count is accounting only and is not retry authority; no compensation
+authority exists. Completed execution requires a matching postcondition, and
+`PASS` permits closeout only.
+
+External validation reported the focused Governance regression `231 passed in
+1.42s`, reaching
+`SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a full
+repository regression. No Production,
+Runtime, filesystem, network, subprocess, SQLite, Git-command, provider,
+Ubuntu, environment, secret, clock, persistence, public mutation API, retry,
+rollback, or compensation capability was added, and no Production, provider,
+or Ubuntu mutation occurred. Next:
+`SEC-02A9 DURABLE EVIDENCE AND API PROJECTION`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`; no
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## 2026-08-10 — SEC-02A7 adapter ports and compatibility mappings validated
 
 A7 added Governance-owned Protocol interfaces for typed precondition, Git, and

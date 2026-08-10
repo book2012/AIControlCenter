@@ -1,5 +1,24 @@
 # MASTER
 
+## SEC-02A8 — Orchestration policy and safety tests
+
+Status: `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. A8 is a pure immutable
+application policy that inspects A2-A5 facts and returns only the next permitted
+disposition. It invokes no port or adapter and performs no consumption,
+invocation, retry, rollback, compensation, persistence, or external access.
+Authorization consumption is a distinct gate. Current preconditions must
+`MATCH` before invocation permission; consumed authorization remains consumed
+after later drift, and one permission maps to one bounded invocation.
+`FAILED`, `UNCERTAIN`, postcondition `FAIL`, and failure evidence each produce
+`STOP`. Remaining mutation count is accounting, not retry authority. There is
+no automatic retry, automatic rollback, or compensation authority. External
+validation reported `231 passed in 1.42s` for the focused Governance
+regression; this was not a full repository regression. No Production, provider,
+or Ubuntu mutation and no public mutation API were added. Next:
+`SEC-02A9 DURABLE EVIDENCE AND API PROJECTION`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`. No
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## SEC-02A7 — Adapter ports and compatibility mappings
 
 Status: `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`.

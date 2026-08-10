@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A8 orchestration policy and safety tests validated
+
+- Added a pure immutable application context and deterministic decision model
+  with the five frozen A8 dispositions. Decisions grant no external action and
+  always prohibit automatic retry and rollback.
+- Added fail-closed priority gates for failure evidence, exact lifecycle and
+  receipt bindings, authorization state, current preconditions, consumption
+  evidence, mutation budgets, execution outcomes, and postconditions.
+- Kept authorization consumption as a distinct gate. Current preconditions
+  must `MATCH` before invocation permission; consumed authorization remains
+  consumed after later drift. One permission corresponds to one bounded
+  invocation.
+- Froze `FAILED -> STOP`, `UNCERTAIN -> STOP`, postcondition `FAIL -> STOP`,
+  and failure evidence `-> STOP`. Remaining mutation count is accounting, not
+  retry authority. There is no automatic retry, automatic rollback, or
+  compensation authority; postcondition `PASS` permits closeout only.
+- External validation reported the focused Governance result `231 passed in
+  1.42s`, reaching
+  `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
+  full repository regression.
+- Added no port/adapter invocation, Production/Runtime/provider/Ubuntu access,
+  persistence, filesystem, subprocess, network, SQLite, Git command,
+  environment, secret, clock, public mutation API, retry, rollback, or
+  compensation authority. Next: `SEC-02A9 DURABLE EVIDENCE AND API
+  PROJECTION`. Notion
+  remains `DEFERRED_UNTIL_FINAL_PHASE`; no
+  `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## 2026-08-10 — SEC-02A7 adapter ports and compatibility mappings validated
 
 - Added seven abstract Governance-owned typed port capabilities covering

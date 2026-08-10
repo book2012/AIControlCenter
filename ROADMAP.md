@@ -2,11 +2,15 @@
 
 ## SEC-02 governance Control Plane
 
+- [x] SEC-02A8 pure orchestration policy and safety tests: focused Governance
+  regression `231 passed in 1.42s`; milestone
+  `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
+  full repository regression.
+- [ ] SEC-02A9 durable evidence and API projection (next).
 - [x] SEC-02A7 adapter ports and compatibility mappings: abstract Governance
   ports and immutable declarative mappings validated by the focused Governance
   regression, `194 passed in 1.53s`; milestone
   `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`.
-- [ ] SEC-02A8 orchestration policy and safety tests (next).
 - [x] SEC-02A6 JSON Schema registry and contract tests: exactly 16 Draft
   2020-12 schemas and their registry/valid-invalid fixture contracts validated
   by the focused governance regression, `173 passed in 1.39s`; milestone
@@ -26,6 +30,16 @@ authorize, widen scope or mutation budget, or decide retry or rollback. Git
 evidence remains read-only, Runtime identity observation-only, Governance
 Operations operational audit/read-model only, Shopping rules Shopping-owned,
 and Ubuntu a stateless Worker with zero Governance authority.
+
+A8 invokes no port or adapter. Authorization consumption is a distinct gate;
+current preconditions must `MATCH` before one bounded invocation permission,
+and consumed authorization remains consumed after later drift. `FAILED`,
+`UNCERTAIN`, postcondition `FAIL`, and failure evidence stop. Remaining
+mutation count is not retry authority. There is no automatic retry, automatic
+rollback, compensation authority, Production/provider/Ubuntu mutation, or
+public mutation API. SEC-02A architecture-ready is not yet claimed. Next:
+`SEC-02A9 DURABLE EVIDENCE AND API PROJECTION`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`.
 
 The A6 R1 blocker was `SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`, a
 controller assumption of a public `registry.contract_names()` API where the

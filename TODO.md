@@ -2,16 +2,30 @@
 
 ## SEC-02
 
+- [x] Validate A8 pure orchestration policy and safety tests: focused
+  Governance regression `231 passed in 1.42s`;
+  `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
+  full repository regression.
+- [ ] SEC-02A9 durable evidence and API projection (next).
 - [x] Validate the A7 abstract port, compatibility, and boundary-safety tests:
   final focused Governance regression `194 passed in 1.53s`;
   `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`.
-- [ ] SEC-02A8 orchestration policy and safety tests (next).
 - [x] Validate the 16 Draft 2020-12 schema registry and valid/invalid fixture
   contracts with the focused governance regression: `173 passed in 1.39s`;
   `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`.
 - [ ] Controller-run the focused A2/A3/A4/A5 pure-domain regression gate before
   claiming `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
 - [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
+
+A8 performs no port/adapter invocation. Authorization consumption is distinct
+from invocation permission; current preconditions must `MATCH`, consumed
+authorization remains consumed after later drift, and one permission permits
+one bounded invocation. `FAILED`, `UNCERTAIN`, postcondition `FAIL`, and
+failure evidence produce `STOP`. Remaining mutation count is not retry
+authority. There is no automatic retry, automatic rollback, compensation
+authority, Production/provider/Ubuntu mutation, or public mutation API.
+SEC-02A architecture-ready is not yet claimed. A9 durable evidence and API
+projection is next.
 
 The A7 initial external result was `1 failed, 193 passed in 1.56s`. R1 fixed
 the Protocol-only interface gate under

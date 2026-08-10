@@ -1,8 +1,8 @@
 # SEC-02 Governance Control Plane Architecture
 
-Status: `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`
+Status: `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`
 
-Next: `SEC-02A8 ORCHESTRATION POLICY AND SAFETY TESTS`
+Next: `SEC-02A9 DURABLE EVIDENCE AND API PROJECTION`
 
 This document is the canonical SEC-02 architecture freeze. SEC-02A is **not a
 Production mutation implementation**. It establishes reusable Control Plane
@@ -33,6 +33,7 @@ The frozen boundary is:
 ```text
 core/governance/control_plane/
     domain/
+    application/
     ports/
     adapters/
     contracts/
@@ -41,6 +42,9 @@ core/governance/control_plane/
 - `domain/` is pure, immutable, deterministic, and JSON serializable. It has no
   filesystem, subprocess, network, SQLite, provider, Git-command, or clock
   access.
+- `application/` is pure, immutable orchestration policy. It inspects domain
+  facts and returns permission-only dispositions without invoking ports or
+  adapters.
 - `ports/` owns abstract typed boundaries. A7 adds no orchestration or external
   implementation; orchestration policy is deferred to A8.
 - `adapters/` wrap existing capabilities and execute bounded typed operations.
@@ -205,6 +209,31 @@ Governance authority. Shopping retains eligibility and commerce business-write
 semantics; WooCommerce remains the Commerce Engine. See
 `docs/architecture/SEC-02A7-ADAPTER-PORTS.md`.
 
+## A8 orchestration safety freeze
+
+A8 adds a pure application policy with exactly five dispositions:
+`ALLOW_AUTHORIZATION_CONSUMPTION`, `ALLOW_SINGLE_INVOCATION`,
+`REQUIRE_POSTCONDITION_VALIDATION`, `ALLOW_CLOSEOUT`, and `STOP`. All decisions
+prohibit automatic retry and rollback. Failure evidence, invalid bindings,
+non-authoritative lifecycle states, absent or drifted current preconditions,
+missing consumption evidence, budget violations or exhaustion, failed or
+uncertain execution, and failed postconditions take priority over progress.
+
+The policy performs no consumption or invocation: authorization consumption is
+a distinct gate, followed by a fresh current-precondition `MATCH` requirement
+before one bounded invocation may be permitted. One policy permission maps to
+one bounded invocation. Consumed authorization remains consumed after later
+drift. Remaining mutation count is accounting only, never retry authority.
+`FAILED`, `UNCERTAIN`, postcondition `FAIL`, and existing failure evidence each
+produce `STOP`. There is no automatic retry, automatic rollback, or
+compensation authority; postcondition `PASS` permits closeout only.
+
+External validation of the focused Governance regression reported `231 passed
+in 1.42s`, reaching
+`SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a full
+repository regression. See
+`docs/architecture/SEC-02A8-ORCHESTRATION-SAFETY.md`.
+
 ## Milestones
 
 - A0: governance inventory — complete.
@@ -217,8 +246,11 @@ semantics; WooCommerce remains the Commerce Engine. See
 - A6: v1 schema implementation and registry.
 - A7: adapter ports and compatibility mappings — validated by the focused
   Governance regression, `194 passed in 1.53s`.
-- A8: orchestration policy and safety tests — next.
-- A9: durable state/evidence integration and isolated operational validation.
+- A8: pure orchestration policy and safety tests — validated by the focused
+  Governance regression, `231 passed in 1.42s`; milestone
+  `SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS_VALIDATED`. This was not a
+  full repository regression.
+- A9: durable evidence and API projection — next.
 - A10: API/read-model and architecture closure preparation.
 
 No milestone here authorizes Production activation. The architecture-ready
