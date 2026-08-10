@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A7 adapter ports and compatibility mappings validated
+
+- Added seven abstract Governance-owned typed port capabilities covering
+  observations, audit/evidence persistence, one bounded controlled invocation,
+  and postcondition validation. A2-A5 models remain the primary boundaries.
+- Added an immutable deterministic compatibility catalog for deployment
+  preflight, read-only Git evidence, Runtime identity, deployment audit,
+  governance operations, bootstrap execution/evidence recovery, and Shopping.
+- External validation initially reported `1 failed, 193 passed in 1.56s`. R1
+  fixed the Protocol-only interface gate and classified the issue as
+  `PROTOCOL_RUNTIME_INIT_TEST_INSPECTION_DEFECT`: test-inspection semantics,
+  not implementation `__init__` semantics. The final focused Governance
+  regression reported `194 passed in 1.53s`, validating
+  `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`; this was not a
+  full repository regression.
+- Added no concrete adapter, orchestration, persistence implementation,
+  Production/Runtime/Ubuntu/provider access, public mutation API, retry, or
+  rollback. The abstract Governance ports cannot authorize, widen scope or
+  mutation budget, or decide retry or rollback. Git evidence is read-only,
+  Runtime identity is observation-only, Governance Operations remains an
+  operational audit/read-model, Shopping rules remain Shopping-owned, and
+  Ubuntu has zero Governance authority. Next:
+  `SEC-02A8 ORCHESTRATION POLICY AND SAFETY TESTS`. Notion remains
+  `DEFERRED_UNTIL_FINAL_PHASE`; no
+  `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## 2026-08-10 — SEC-02A6 JSON Schema registry and contract tests
 
 - Implemented exactly 16 standalone governance v1 JSON Schema Draft 2020-12

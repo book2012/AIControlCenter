@@ -1,0 +1,64 @@
+{
+  "authority": {
+    "adapters_can_authorize": false,
+    "adapters_can_decide_retry": false,
+    "adapters_can_decide_rollback": false,
+    "adapters_can_widen_budget": false,
+    "adapters_can_widen_scope": false,
+    "governance_owns_authorization": true,
+    "governance_owns_mutation_budget_policy": true,
+    "governance_owns_retry_prohibition": true,
+    "governance_owns_rollback_prohibition": true
+  },
+  "compatibility": {
+    "audit_stack_mapped": true,
+    "bootstrap_evidence_recovery_requires_refactor": true,
+    "deployment_preflight_mapped": true,
+    "git_readonly_evidence_mapped": true,
+    "governance_operations_retained_as_read_model": true,
+    "operational_bootstrap_execution_mapped": true,
+    "runtime_identity_mapped": true,
+    "shopping_business_rules_retained_domain_specific": true
+  },
+  "final_status": "ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED",
+  "governance_baseline_head": "fce6212d46a3be16cd6be816eda311622e9f93ad",
+  "milestone": "SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED",
+  "next_step": "SEC-02A8_ORCHESTRATION_POLICY_AND_SAFETY_TESTS",
+  "notion_sync": "DEFERRED_UNTIL_FINAL_PHASE",
+  "operation": "SEC-02A7-R1",
+  "ports": {
+    "abstract_boundary_only": true,
+    "audit": true,
+    "controlled_execution": true,
+    "evidence_persistence": true,
+    "git_readonly_evidence": true,
+    "postcondition_validation": true,
+    "precondition_observation": true,
+    "protocol_only": true,
+    "runtime_identity_observation": true
+  },
+  "recorded_at_utc": "2026-08-10T14:12:37Z",
+  "repair": {
+    "a7_full_implementation_rerun": false,
+    "classification": "PROTOCOL_RUNTIME_INIT_TEST_INSPECTION_DEFECT",
+    "initial_external_result": "1 failed, 193 passed in 1.56s",
+    "minimal_repair": true
+  },
+  "safety": {
+    "automatic_retry": false,
+    "automatic_rollback": false,
+    "concrete_execution_adapter_added": false,
+    "production_access": false,
+    "provider_access": false,
+    "public_mutation_api_added": false,
+    "ubuntu_access": false
+  },
+  "schema_version": 1,
+  "sec_02a_architecture_ready_claimed": false,
+  "tests": {
+    "full_repository_regression_run": false,
+    "scope": "SEC_02_GOVERNANCE_CONTROL_PLANE_FOCUSED",
+    "status": "PASS",
+    "summary": "194 passed in 1.53s"
+  }
+}

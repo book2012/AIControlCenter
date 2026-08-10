@@ -2,18 +2,32 @@
 
 ## SEC-02 governance Control Plane
 
+- [x] SEC-02A7 adapter ports and compatibility mappings: abstract Governance
+  ports and immutable declarative mappings validated by the focused Governance
+  regression, `194 passed in 1.53s`; milestone
+  `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`.
+- [ ] SEC-02A8 orchestration policy and safety tests (next).
 - [x] SEC-02A6 JSON Schema registry and contract tests: exactly 16 Draft
   2020-12 schemas and their registry/valid-invalid fixture contracts validated
   by the focused governance regression, `173 passed in 1.39s`; milestone
   `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`.
-- [ ] SEC-02A7 adapter ports and compatibility mappings (next).
 - [ ] SEC-02A5 receipts, failure, and evidence models: pure domain evidence
   vocabulary and focused tests added; controller test validation remains
   required before claiming
   `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
 - [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
 
-The R1 blocker was `SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`, a
+The A7 initial result was `1 failed, 193 passed in 1.56s`. R1 fixed the
+Protocol-only interface gate and classified the failure as
+`PROTOCOL_RUNTIME_INIT_TEST_INSPECTION_DEFECT`: test-inspection semantics, not
+implementation `__init__` semantics. The final A7 result was not a full
+repository regression. A7 adds no concrete Production adapter; adapters cannot
+authorize, widen scope or mutation budget, or decide retry or rollback. Git
+evidence remains read-only, Runtime identity observation-only, Governance
+Operations operational audit/read-model only, Shopping rules Shopping-owned,
+and Ubuntu a stateless Worker with zero Governance authority.
+
+The A6 R1 blocker was `SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`, a
 controller assumption of a public `registry.contract_names()` API where the
 frozen contract specified behavior, not that exact function name; it was not an
 A6 contract implementation defect. The focused result is not a full repository

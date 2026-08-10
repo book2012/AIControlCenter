@@ -2,13 +2,28 @@
 
 ## SEC-02
 
+- [x] Validate the A7 abstract port, compatibility, and boundary-safety tests:
+  final focused Governance regression `194 passed in 1.53s`;
+  `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`.
+- [ ] SEC-02A8 orchestration policy and safety tests (next).
 - [x] Validate the 16 Draft 2020-12 schema registry and valid/invalid fixture
   contracts with the focused governance regression: `173 passed in 1.39s`;
   `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`.
-- [ ] SEC-02A7 adapter ports and compatibility mappings.
 - [ ] Controller-run the focused A2/A3/A4/A5 pure-domain regression gate before
   claiming `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
 - [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
+
+The A7 initial external result was `1 failed, 193 passed in 1.56s`. R1 fixed
+the Protocol-only interface gate under
+`PROTOCOL_RUNTIME_INIT_TEST_INSPECTION_DEFECT`; the diagnosis was a
+test-inspection-semantics defect, not implementation `__init__` semantics. The
+final result was not a full repository regression. A7 provides abstract
+Governance ports only, no concrete Production adapter. Adapters cannot
+authorize, widen scope or mutation budget, or decide retry or rollback. Git
+evidence is read-only, Runtime identity observation-only, Governance Operations
+operational audit/read-model only, Shopping rules Shopping-owned, and Ubuntu a
+stateless Worker with zero Governance authority. No SEC-02A architecture-ready
+claim is made. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
 
 SEC-02A6 is contract implementation only. Schemas and registry lookups never
 grant authority; no retry, rollback, adapter invocation, persistence, or

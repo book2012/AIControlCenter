@@ -1,5 +1,35 @@
 # Project History
 
+## 2026-08-10 — SEC-02A7 adapter ports and compatibility mappings validated
+
+A7 added Governance-owned Protocol interfaces for typed precondition, Git, and
+Runtime observations; audit and evidence persistence; exactly one bounded
+external invocation; and read-only postcondition validation. Immutable,
+declarative metadata classifies the existing deployment, audit, Runtime,
+governance-operations, evidence-recovery, and Shopping boundaries without
+importing or invoking operational code. Every concrete adapter remains absent.
+
+Initial external validation reported `1 failed, 193 passed in 1.56s`. R1 fixed
+the Protocol-only interface gate and classified the issue as
+`PROTOCOL_RUNTIME_INIT_TEST_INSPECTION_DEFECT`. The diagnosis identified
+test-inspection semantics—whether a Protocol class body explicitly declared
+`__init__`—not implementation `__init__` semantics. The final focused
+Governance regression reported `194 passed in 1.53s`, validating
+`SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`. This was not a
+full repository regression. No Production,
+Runtime, Ubuntu, provider, filesystem, network, subprocess, SQLite, secret, or
+environment access occurred, and no orchestration, persistence implementation,
+public mutation API, retry, or rollback was added. A7 contains abstract
+Governance ports only and no concrete Production adapter. Adapters cannot
+authorize, widen scope or mutation budget, or decide retry or rollback. Git
+evidence remains read-only; Runtime identity remains observation-only;
+Governance Operations remains operational audit/read-model only; Shopping
+business rules remain Shopping-owned; and Ubuntu remains a stateless Worker
+with zero Governance authority. Next:
+`SEC-02A8 ORCHESTRATION POLICY AND SAFETY TESTS`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`; no
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## 2026-08-10 — SEC-02A6 JSON Schema registry and contract tests validated
 
 Implemented exactly 16 standalone Draft 2020-12 governance schemas with stable

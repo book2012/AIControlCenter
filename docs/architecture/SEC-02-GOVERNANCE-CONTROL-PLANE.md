@@ -1,8 +1,8 @@
 # SEC-02 Governance Control Plane Architecture
 
-Status: `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`
+Status: `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`
 
-Next: `SEC-02A2 AUTHORIZATION DOMAIN MODELS`
+Next: `SEC-02A8 ORCHESTRATION POLICY AND SAFETY TESTS`
 
 This document is the canonical SEC-02 architecture freeze. SEC-02A is **not a
 Production mutation implementation**. It establishes reusable Control Plane
@@ -33,7 +33,7 @@ The frozen boundary is:
 ```text
 core/governance/control_plane/
     domain/
-    application/
+    ports/
     adapters/
     contracts/
 ```
@@ -41,8 +41,8 @@ core/governance/control_plane/
 - `domain/` is pure, immutable, deterministic, and JSON serializable. It has no
   filesystem, subprocess, network, SQLite, provider, Git-command, or clock
   access.
-- `application/` owns the orchestration sequence and ports. It does not directly
-  implement an external system.
+- `ports/` owns abstract typed boundaries. A7 adds no orchestration or external
+  implementation; orchestration policy is deferred to A8.
 - `adapters/` wrap existing capabilities and execute bounded typed operations.
 - `contracts/` owns the SEC-02 registry and versioned governance JSON Schema
   family. Actual schemas are deferred.
@@ -180,6 +180,31 @@ database migration, operational execution, provider access, Production access,
 Ubuntu integration, retry, rollback, or generic command authority. It does not
 move deployment or shopping business semantics into governance.
 
+## A7 port and compatibility freeze
+
+A7 defines read-only precondition, Git-evidence, and Runtime-identity
+observation protocols; typed audit and evidence persistence protocols; a
+single-invocation controlled execution protocol; and a read-only postcondition
+validation protocol. Compatibility metadata is immutable and declarative. It
+names operational boundaries without importing them, and every mapped concrete
+adapter is absent.
+
+External validation initially reported `1 failed, 193 passed in 1.56s`. R1
+classified the failure as
+`PROTOCOL_RUNTIME_INIT_TEST_INSPECTION_DEFECT` and fixed the Protocol-only
+interface gate. The defect was in test-inspection semantics: the gate needed to
+inspect whether a Protocol class body explicitly declared `__init__`; it did
+not identify implementation `__init__` semantics. The final focused Governance
+regression reported `194 passed in 1.53s`. This was not a full repository
+regression.
+
+Governance retains authorization, binding, mutation-budget, consumption,
+retry/rollback prohibition, audit/evidence, and orchestration authority.
+Ubuntu remains a stateless bounded-JSON infrastructure Worker with no
+Governance authority. Shopping retains eligibility and commerce business-write
+semantics; WooCommerce remains the Commerce Engine. See
+`docs/architecture/SEC-02A7-ADAPTER-PORTS.md`.
+
 ## Milestones
 
 - A0: governance inventory — complete.
@@ -190,11 +215,11 @@ move deployment or shopping business semantics into governance.
 - A4: mutation budgets and consumption semantics.
 - A5: receipts, failures, and evidence domain.
 - A6: v1 schema implementation and registry.
-- A7: application ports and orchestration.
-- A8: compatibility adapters for mature repository capabilities.
+- A7: adapter ports and compatibility mappings — validated by the focused
+  Governance regression, `194 passed in 1.53s`.
+- A8: orchestration policy and safety tests — next.
 - A9: durable state/evidence integration and isolated operational validation.
 - A10: API/read-model and architecture closure preparation.
 
 No milestone here authorizes Production activation. The architecture-ready
-milestone is reserved for a later SEC-02A closure review and is not claimed by
-A1.
+milestone is reserved for a later SEC-02A closure review and is not claimed.

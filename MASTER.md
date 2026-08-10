@@ -1,5 +1,26 @@
 # MASTER
 
+## SEC-02A7 — Adapter ports and compatibility mappings
+
+Status: `SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS_VALIDATED`.
+Governance now owns seven abstract typed port capabilities and a deterministic
+immutable catalog
+that classifies existing deployment, Runtime, audit, evidence, governance
+operations, and Shopping boundaries without importing or invoking them. Every
+concrete Production adapter remains absent. Initial external validation was `1
+failed, 193 passed in 1.56s`. R1 fixed the Protocol-only interface gate under
+`PROTOCOL_RUNTIME_INIT_TEST_INSPECTION_DEFECT`: the diagnosis identified
+test-inspection semantics, not implementation `__init__` semantics. The final
+focused Governance regression was `194 passed in 1.53s`; this was not a full
+repository regression. Adapters cannot authorize, widen scope or mutation
+budget, or decide retry or rollback. Git evidence remains read-only, Runtime
+identity observation-only, Governance Operations operational audit/read-model
+only, Shopping rules Shopping-owned, and Ubuntu a stateless Worker with zero
+Governance authority. Next:
+`SEC-02A8 ORCHESTRATION POLICY AND SAFETY TESTS`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`. No
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## SEC-02A6 — JSON Schema registry and contract tests
 
 Status: `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`. Exactly 16
