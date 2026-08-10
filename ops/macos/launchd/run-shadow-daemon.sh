@@ -36,6 +36,8 @@ umask 077
 ROOT="${AICONTROLCENTER_ROOT:-/Users/kyouhan/AIControlCenter}"
 HOME_DIR="${AICONTROLCENTER_HOME:-/Users/kyouhan}"
 RUN_USER="${AICONTROLCENTER_RUN_USER:-kyouhan}"
+ACTIVE_PROVIDER="${AI_PROVIDER:-openai}"
+SECRET_DELIVERY="${AICONTROLCENTER_SECRET_DELIVERY:-/usr/local/libexec/aicontrolcenter/provider-secret-delivery.py}"
 
 RUNTIME_ROOT="$HOME_DIR/Library/Application Support/AIControlCenter/runtime"
 CURRENT_RUNTIME="$RUNTIME_ROOT/current"
@@ -134,7 +136,8 @@ export AICONTROLCENTER_SOURCE_COMMIT
 export AICONTROLCENTER_RUNTIME_RELEASE
 export AICONTROLCENTER_DATA_ROOT
 
-exec "$PYTHON_PATH" \
+exec /usr/bin/python3 "$SECRET_DELIVERY" exec --provider "$ACTIVE_PROVIDER" -- \
+  "$PYTHON_PATH" \
   -m uvicorn \
   core.api.shadow:app \
   --host "$HOST" \

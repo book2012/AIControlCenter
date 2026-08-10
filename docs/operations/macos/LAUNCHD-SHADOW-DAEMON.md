@@ -156,3 +156,6 @@ the main service.
 
 Configured: `2026-07-14T04:19:41+00:00`
 <!-- AICONTROLCENTER:SHADOW_OBSERVATION:END -->
+# SEC-01B repository wrapper contract
+
+The repository wrapper delegates its final immutable-Runtime exec to the installed `provider-secret-delivery.py` helper. The helper validates only the selected provider, injects its canonical variable, and fails closed with sanitized output. SEC-01B did not install either asset or modify/restart the live LaunchDaemon; SEC-01C requires explicit authorization.

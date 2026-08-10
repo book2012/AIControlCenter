@@ -1670,3 +1670,7 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [x] harness-only failure diagnosis
 - [x] corrected authenticated Production workflow validation
 - [ ] SEC-01 persistent daemon credential injection and rotation
+# SEC-01C authorization gate
+
+- Do not install the provider-secret helper or wrapper, modify launchd, or restart Production without explicit SEC-01C human authorization.
+- Keep Notion synchronization `DEFERRED_UNTIL_FINAL_PHASE`.

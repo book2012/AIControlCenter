@@ -2059,3 +2059,8 @@ Then:
 `OPS-01 — Production Observability & Health`
 
 Notion remains deferred until the final phase.
+# Security delivery roadmap
+
+- SEC-01B: repository implementation and fake-secret validation.
+- SEC-01C: explicit human authorization required before live helper/wrapper installation or restart.
+- Notion sync: `DEFERRED_UNTIL_FINAL_PHASE`.

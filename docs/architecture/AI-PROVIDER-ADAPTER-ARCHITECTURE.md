@@ -147,3 +147,6 @@ path has passed authenticated Production-artifact validation.
 The initial validation harness defect required no application code change.
 
 Persistent LaunchDaemon credential injection remains deferred to SEC-01.
+# Credential boundary (SEC-01B)
+
+Provider adapters consume canonical environment variables through the generic `EnvironmentCredentialSource`. Secret-file validation and injection belong exclusively to the macOS wrapper helper documented in [Provider Secret Delivery](PROVIDER-SECRET-DELIVERY.md); routers and business workflows never receive credential values.

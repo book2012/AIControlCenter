@@ -2129,3 +2129,6 @@ provider contracts and completed successfully.
 
 The first failed smoke's upstream request occurrence remains unknown and is not
 rewritten as zero in governance evidence.
+# SEC-01B — Deterministic Provider Secret Delivery
+
+Implemented the repository-only form of Protected File-Per-Provider Secrets with Deterministic Wrapper Injection. Added generic provider mapping, strict file metadata/value-shape validation, sanitized JSON diagnostics, wrapper-mediated environment injection, and business-logic separation. Live Production wrapper, service, state, and Runtime `102b8f1fa862` were not changed.

@@ -1955,3 +1955,6 @@ Production Runtime `102b8f1fa862` now executes the canonical AI provider path:
 
 The immutable Production artifact has passed a corrected authenticated workflow
 validation. Persistent daemon credential wiring remains deferred to SEC-01.
+# SEC-01B provider credential delivery
+
+The repository now defines deterministic, redacted provider credential validation and wrapper injection. See [Provider Secret Delivery](docs/architecture/PROVIDER-SECRET-DELIVERY.md). This is repository-only; live installation is deferred to explicitly authorized SEC-01C.

@@ -114,6 +114,14 @@ def test_install_plan_uses_canonical_assets() -> None:
         / "ops"
         / "macos"
         / "launchd"
+        / "provider-secret-delivery.py"
+    ) in sources
+
+    assert str(
+        ROOT
+        / "ops"
+        / "macos"
+        / "launchd"
         / "run-shadow-daemon.sh"
     ) in sources
 

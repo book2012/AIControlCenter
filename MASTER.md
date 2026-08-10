@@ -2236,3 +2236,6 @@ PENDING SEC-01
 Milestone:
 
 `AI_PROVIDER_PRODUCTION_ARTIFACT_WORKFLOW_VALIDATED`
+# SEC-01B security control
+
+The authoritative provider-secret design is Protected File-Per-Provider Secrets with Deterministic Wrapper Injection. Repository implementation is complete; live helper/wrapper installation remains an SEC-01C authorization-gated operation. Production Runtime remains `102b8f1fa862`.

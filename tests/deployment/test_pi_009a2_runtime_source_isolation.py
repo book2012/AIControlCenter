@@ -329,7 +329,7 @@ def test_wrapper_enforces_source_and_state_contract():
     assert "core.api.shadow:app" in text
 
     assert (
-        'exec "$PYTHON_PATH" \\\n'
+        '  "$PYTHON_PATH" \\\n'
         '  -P \\\n'
         '  -m uvicorn'
         in text

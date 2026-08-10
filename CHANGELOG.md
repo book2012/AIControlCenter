@@ -2453,3 +2453,6 @@ Production activation occurred.
 - completed one separately authorized corrected authenticated smoke
 - no application code repair, Runtime rebuild, repromotion or restart was required
 - secret exposure: none
+# Unreleased
+
+- Implemented SEC-01B generic file-per-provider validation, metadata-only JSON diagnostics, deterministic wrapper injection, environment-backed adapter consumption, and redaction tests. No live installation or Production mutation was performed.

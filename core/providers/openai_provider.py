@@ -4,6 +4,7 @@ from core.config.settings import OpenAISettings, load_settings
 from core.providers.base import AIProvider
 from core.providers.contracts import ProviderMessage, ProviderRequest
 from core.providers.errors import ProviderError
+from core.providers.credentials import EnvironmentCredentialSource
 from core.providers.openai_adapter import OpenAIAdapter
 
 
@@ -24,7 +25,7 @@ class OpenAIProvider(AIProvider):
     def chat(self, prompt: str) -> Dict[str, Any]:
         try:
             response = OpenAIAdapter(
-                credential_lookup=lambda _variable_name: self.settings.api_key,
+                credential_source=EnvironmentCredentialSource(),
             ).invoke(
                 ProviderRequest(
                     provider=self.name(),

@@ -1,3 +1,5 @@
+from dataclasses import replace
+
 from core.agent.router import AgentActionRouter
 from core.memory.conversation import ConversationMemory
 from core.memory.manager import MemoryManager
@@ -10,6 +12,7 @@ from core.providers import (
     ProviderRouter,
 )
 from core.providers.manager import ProviderManager
+from core.providers.credentials import EnvironmentCredentialSource
 from core.providers.openai_adapter import OpenAIAdapter
 
 
@@ -25,7 +28,11 @@ class BrainAgent:
         settings: Settings | None = None,
     ):
         self.providers = providers
-        self.settings = settings or load_settings()
+        selected_settings = settings or load_settings()
+        self.settings = replace(
+            selected_settings,
+            openai=replace(selected_settings.openai, api_key=None),
+        )
         self.provider_router = provider_router or self._default_provider_router()
         self.memory = memory or ConversationMemory()
         self.router = router or AgentActionRouter()
@@ -35,9 +42,7 @@ class BrainAgent:
     def _default_provider_router(self) -> ProviderRouter:
         router = ProviderRouter()
         router.register(
-            OpenAIAdapter(
-                credential_lookup=lambda _variable_name: self.settings.openai.api_key,
-            )
+            OpenAIAdapter(credential_source=EnvironmentCredentialSource())
         )
         return router
 

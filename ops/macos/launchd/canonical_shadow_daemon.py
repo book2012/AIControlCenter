@@ -16,6 +16,7 @@ SERVICE = f"system/{LABEL}"
 
 PLIST_NAME = f"{LABEL}.plist"
 RUNNER_NAME = "run-shadow-daemon.sh"
+SECRET_DELIVERY_NAME = "provider-secret-delivery.py"
 
 INSTALLED_PLIST = Path(
     "/Library/LaunchDaemons"
@@ -24,6 +25,7 @@ INSTALLED_PLIST = Path(
 INSTALLED_RUNNER = Path(
     "/usr/local/libexec/aicontrolcenter"
 ) / RUNNER_NAME
+INSTALLED_SECRET_DELIVERY = INSTALLED_RUNNER.parent / SECRET_DELIVERY_NAME
 
 LOG_DIRECTORY = Path(
     "/var/log/aicontrolcenter"
@@ -53,6 +55,7 @@ def canonical_paths(
     return {
         "plist": launchd / PLIST_NAME,
         "runner": launchd / RUNNER_NAME,
+        "secret_delivery": launchd / SECRET_DELIVERY_NAME,
     }
 
 
@@ -77,9 +80,11 @@ def validate_contract(
 
     plist_path = paths["plist"]
     runner_path = paths["runner"]
+    secret_delivery_path = paths["secret_delivery"]
 
     plist_exists = plist_path.is_file()
     runner_exists = runner_path.is_file()
+    secret_delivery_exists = secret_delivery_path.is_file()
 
     payload: dict[str, Any] = {}
     plist_parseable = False
@@ -111,6 +116,7 @@ def validate_contract(
 
         "canonical_runner_exists":
             runner_exists,
+        "canonical_secret_delivery_exists": secret_delivery_exists,
 
         "canonical_plist_parseable":
             plist_parseable,
@@ -221,6 +227,7 @@ def validate_contract(
                 str(plist_path),
             "runner":
                 str(runner_path),
+            "secret_delivery": str(secret_delivery_path),
         },
 
         "installation": {
@@ -230,6 +237,7 @@ def validate_contract(
                 str(INSTALLED_PLIST),
             "runner":
                 str(INSTALLED_RUNNER),
+            "secret_delivery": str(INSTALLED_SECRET_DELIVERY),
             "log_directory":
                 str(LOG_DIRECTORY),
             "stdout_log":
@@ -293,6 +301,14 @@ def build_install_plan(
                 "wheel",
             "mode":
                 "0755",
+        },
+        {
+            "step": "install_file",
+            "source": str(paths["secret_delivery"]),
+            "destination": str(INSTALLED_SECRET_DELIVERY),
+            "owner": "root",
+            "group": "wheel",
+            "mode": "0755",
         },
         {
             "step":

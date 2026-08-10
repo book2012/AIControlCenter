@@ -126,7 +126,7 @@ def test_identity_is_exported_before_uvicorn_exec() -> None:
         "export AICONTROLCENTER_SOURCE_COMMIT"
     )
     exec_position = source.index(
-        'exec "$PYTHON_PATH" \\'
+        'exec /usr/bin/python3 "$SECRET_DELIVERY" exec'
     )
     uvicorn_position = source.index(
         "-m uvicorn"
@@ -140,7 +140,8 @@ def test_uvicorn_exec_command_is_preserved() -> None:
     source = runner_source()
 
     expected = (
-        'exec "$PYTHON_PATH" \\\n'
+        'exec /usr/bin/python3 "$SECRET_DELIVERY" exec --provider "$ACTIVE_PROVIDER" -- \\\n'
+        '  "$PYTHON_PATH" \\\n'
         '  -m uvicorn \\\n'
         '  core.api.shadow:app \\\n'
         '  --host "$HOST" \\\n'
@@ -149,7 +150,7 @@ def test_uvicorn_exec_command_is_preserved() -> None:
 
     assert expected in source
     assert source.count(
-        'exec "$PYTHON_PATH" \\'
+        'exec /usr/bin/python3 "$SECRET_DELIVERY" exec'
     ) == 1
 
 

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import socket
 import urllib.error
 import urllib.request
@@ -11,7 +10,11 @@ from collections.abc import Callable, Mapping
 from typing import Any
 
 from core.providers.contracts import ProviderRequest, ProviderResponse, ProviderUsage
-from core.providers.credentials import OPENAI_CREDENTIAL_VARIABLE
+from core.providers.credentials import (
+    CredentialSource,
+    EnvironmentCredentialSource,
+    OPENAI_CREDENTIAL_VARIABLE,
+)
 from core.providers.errors import ProviderError, ProviderErrorCode
 
 
@@ -31,6 +34,7 @@ class OpenAIAdapter:
     def __init__(
         self,
         *,
+        credential_source: CredentialSource | None = None,
         credential_lookup: CredentialLookup | None = None,
         invocation_boundary: InvocationBoundary | None = None,
         http_transport: HttpTransport | None = None,
@@ -39,7 +43,10 @@ class OpenAIAdapter:
     ) -> None:
         if max_output_tokens < 1 or max_output_tokens > DEFAULT_MAX_OUTPUT_TOKENS:
             raise ValueError(f"max_output_tokens must be between 1 and {DEFAULT_MAX_OUTPUT_TOKENS}")
-        self._credential_lookup = credential_lookup or os.environ.get
+        if credential_source is not None and credential_lookup is not None:
+            raise ValueError("provide only one credential source")
+        source = credential_source or EnvironmentCredentialSource()
+        self._credential_lookup = credential_lookup or source.get
         self._invocation_boundary = invocation_boundary
         self._http_transport = http_transport or _stdlib_transport
         self._endpoint = endpoint

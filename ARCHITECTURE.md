@@ -1777,3 +1777,6 @@ Vendor-specific transport remains isolated behind ProviderAdapter.
 Automatic cross-provider fallback remains prohibited.
 
 Persistent daemon credential delivery is owned by SEC-01.
+# Security architecture update (SEC-01B)
+
+Provider credentials follow [Protected File-Per-Provider Secrets with Deterministic Wrapper Injection](docs/architecture/PROVIDER-SECRET-DELIVERY.md): external protected storage, wrapper-owned validation/injection, and environment-backed adapter consumption. Business logic has no secret-file responsibility.
