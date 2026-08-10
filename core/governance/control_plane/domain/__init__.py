@@ -24,8 +24,18 @@ from .failures import (
     InvalidPreconditionComparisonInput,
     InvalidPreconditionModel,
     InvalidStaleEvaluationState,
+    DuplicateMutationActionType,
+    InvalidMutationBudgetModel,
+    InvalidMutationCountInvariant,
+    InvalidMutationInvocationOutcome,
+    InvocationBeforeAuthorizationConsumption,
+    MutationBudgetExhausted,
+    MutationBudgetViolated,
+    MutationInvocationCountExceeded,
+    RepeatedAuthorizationConsumption,
     RequestDecisionBindingMismatch,
     TerminalAuthorizationReuse,
+    UnknownMutationActionType,
 )
 from .identity import GovernanceIdentity
 from .preconditions import (
@@ -39,6 +49,15 @@ from .preconditions import (
     evaluate_authorization_expiry,
     evaluate_authorization_preconditions,
     validate_authorization_snapshot_binding,
+)
+from .mutation_budget import (
+    GovernanceMutationBudget,
+    MutationBudgetLineItem,
+    MutationBudgetStatus,
+    MutationInvocationOutcome,
+    account_mutation_invocation,
+    consume_mutation_budget,
+    mark_mutation_budget_violated,
 )
 
 __all__ = (
@@ -56,4 +75,12 @@ __all__ = (
     "PreconditionEvaluationResult", "compare_precondition_snapshots",
     "evaluate_authorization_expiry", "evaluate_authorization_preconditions",
     "validate_authorization_snapshot_binding",
+    "DuplicateMutationActionType", "GovernanceMutationBudget",
+    "InvalidMutationBudgetModel", "InvalidMutationCountInvariant",
+    "InvalidMutationInvocationOutcome", "InvocationBeforeAuthorizationConsumption",
+    "MutationBudgetExhausted", "MutationBudgetLineItem", "MutationBudgetStatus",
+    "MutationBudgetViolated", "MutationInvocationCountExceeded",
+    "MutationInvocationOutcome", "RepeatedAuthorizationConsumption",
+    "UnknownMutationActionType", "account_mutation_invocation",
+    "consume_mutation_budget", "mark_mutation_budget_violated",
 )

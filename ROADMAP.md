@@ -1,5 +1,18 @@
 # Roadmap
 
+## SEC-02 governance Control Plane
+
+- [ ] SEC-02A4 mutation budget and invocation accounting: pure domain
+  implementation and focused tests added; external test validation remains
+  required before claiming
+  `SEC-02A4_MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING_VALIDATED`.
+- [ ] SEC-02A5 receipts, failure, and evidence models.
+- [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
+
+SEC-02A4 adds no Production or Runtime access, adapter, orchestration,
+persistence, evidence storage, public mutation API, retry, or rollback. The
+SEC-02A architecture-ready milestone is not claimed.
+
 ## AI provider architecture
 
 - [x] AI-PROVIDER-01A: vendor-neutral contract, strict router, normalized errors,

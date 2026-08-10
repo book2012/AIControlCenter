@@ -1,5 +1,31 @@
 # Project History
 
+## 2026-08-10 — SEC-02A4 mutation budget domain implemented
+
+A4 added immutable governance mutation budgets made from deterministically
+ordered explicit capability line items. Each line item separately preserves its
+allowed, actual invocation, completed, uncertain, remaining, and status
+accounting. Duplicate or generic action types and invalid count relationships
+fail closed instead of being repaired.
+
+The pure transition from `AVAILABLE` to `CONSUMED` records irreversible
+authorization consumption without implying an adapter call or changing a
+counter. A separate pure operation accounts exactly one caller-reported
+`COMPLETED`, `CONFIRMED_ZERO_EFFECT`, or `UNCERTAIN` boundary and exhausts only
+the relevant line item until all line items are exhausted. Remaining count is
+accounting only and creates no retry authority. An explicit caller-reasoned
+safety incident can make a budget terminal `VIOLATED` while preserving counts;
+it performs no compensation.
+
+Three focused test modules were added but were not run by Codex. Therefore
+`SEC-02A4_MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING_VALIDATED` remains a target
+pending external validation. This was pure domain work only, with no Production
+or Runtime access, adapter, execution orchestration, persistence, evidence
+storage, public mutation API, retry, rollback, filesystem, subprocess, network,
+SQLite, provider, Ubuntu, environment, secret, clock, ID, or digest behavior.
+No SEC-02A architecture-ready milestone is claimed. Next: `SEC-02A5 RECEIPTS
+FAILURE AND EVIDENCE MODELS`. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## 2026-08-10 — SEC-02A3 precondition and stale domain implemented
 
 A3 added an immutable `GovernancePreconditionSnapshot` and immutable named

@@ -1,0 +1,55 @@
+{
+  "bounded_context": "core/governance/control_plane/",
+  "final_status": "MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING_VALIDATED",
+  "governance_baseline_head": "0bb348c8d5f269f5218b99da4101ebee8559bfe4",
+  "milestone": "SEC-02A4_MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING_VALIDATED",
+  "mutation_budget": {
+    "actual_invocation_count_explicit": true,
+    "allowed_count_explicit": true,
+    "authorization_consumption_separate_from_invocation": true,
+    "completed_count_explicit": true,
+    "composite_workflows_use_explicit_line_items": true,
+    "invocation_outcomes": [
+      "COMPLETED",
+      "CONFIRMED_ZERO_EFFECT",
+      "UNCERTAIN"
+    ],
+    "over_budget_fails_closed": true,
+    "pure_domain_only": true,
+    "remaining_count_is_retry_authority": false,
+    "statuses": [
+      "AVAILABLE",
+      "CONSUMED",
+      "EXHAUSTED",
+      "VIOLATED"
+    ],
+    "uncertain_count_explicit": true,
+    "unknown_action_fails_closed": true,
+    "violated_state_terminal": true
+  },
+  "next_step": "SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS",
+  "notion_sync": "DEFERRED_UNTIL_FINAL_PHASE",
+  "operation": "SEC-02A4",
+  "recorded_at_utc": "2026-08-10T08:33:19Z",
+  "safety": {
+    "automatic_retry": false,
+    "automatic_rollback": false,
+    "execution_adapter_added": false,
+    "filesystem_access": false,
+    "network_access": false,
+    "production_access": false,
+    "provider_access": false,
+    "public_mutation_api_added": false,
+    "sqlite_access": false,
+    "subprocess_access": false,
+    "ubuntu_access": false
+  },
+  "schema_version": 1,
+  "sec_02a_architecture_ready_claimed": false,
+  "tests": {
+    "full_regression_run": false,
+    "scope": "A2_A3_A4_FOCUSED_DOMAIN_REGRESSION",
+    "status": "PASS",
+    "summary": "88 passed in 0.07s"
+  }
+}

@@ -1,5 +1,16 @@
 # MASTER
 
+## SEC-02A4 — Mutation budget and invocation accounting
+
+Status: `IMPLEMENTED_PENDING_EXTERNAL_TEST_VALIDATION` (pure domain only).
+Immutable explicit action line items now separate authorization consumption
+from completed, confirmed-zero-effect, and uncertain invocation accounting.
+Remaining count is accounting only and never retry authority. The target
+milestone is `SEC-02A4_MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING_VALIDATED`;
+tests were added but not run by Codex. Next: `SEC-02A5 RECEIPTS FAILURE AND
+EVIDENCE MODELS`. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`. No
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## AI-PROVIDER-01C-A — Control Plane workflow integration
 
 Status: `READY_FOR_GIT_CLOSEOUT` (repository only). Canonical `BrainAgent.ask`

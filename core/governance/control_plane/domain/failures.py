@@ -53,3 +53,43 @@ class InvalidPreconditionComparisonInput(AuthorizationDomainError):
 
 class InvalidStaleEvaluationState(AuthorizationDomainError):
     code = "INVALID_STALE_EVALUATION_STATE"
+
+
+class InvalidMutationBudgetModel(AuthorizationDomainError):
+    code = "INVALID_MUTATION_BUDGET_MODEL"
+
+
+class DuplicateMutationActionType(InvalidMutationBudgetModel):
+    code = "DUPLICATE_MUTATION_ACTION_TYPE"
+
+
+class UnknownMutationActionType(AuthorizationDomainError):
+    code = "UNKNOWN_MUTATION_ACTION_TYPE"
+
+
+class InvocationBeforeAuthorizationConsumption(AuthorizationDomainError):
+    code = "INVOCATION_BEFORE_AUTHORIZATION_CONSUMPTION"
+
+
+class MutationBudgetExhausted(AuthorizationDomainError):
+    code = "MUTATION_BUDGET_EXHAUSTED"
+
+
+class MutationBudgetViolated(AuthorizationDomainError):
+    code = "MUTATION_BUDGET_VIOLATED"
+
+
+class MutationInvocationCountExceeded(AuthorizationDomainError):
+    code = "MUTATION_INVOCATION_COUNT_EXCEEDED"
+
+
+class InvalidMutationInvocationOutcome(AuthorizationDomainError):
+    code = "INVALID_MUTATION_INVOCATION_OUTCOME"
+
+
+class InvalidMutationCountInvariant(InvalidMutationBudgetModel):
+    code = "INVALID_MUTATION_COUNT_INVARIANT"
+
+
+class RepeatedAuthorizationConsumption(AuthorizationDomainError):
+    code = "REPEATED_AUTHORIZATION_CONSUMPTION"

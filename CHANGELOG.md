@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A4 mutation budget and invocation accounting
+
+- Added pure immutable mutation-budget and explicit per-capability line-item
+  models with the frozen `AVAILABLE`, `CONSUMED`, `EXHAUSTED`, and `VIOLATED`
+  statuses, deterministic ordering, exact accounting, and JSON-safe projection.
+- Kept irreversible authorization consumption separate from adapter invocation
+  accounting. Completed, confirmed-zero-effect, and uncertain outcomes each
+  account exactly one crossed boundary without granting retry or rollback.
+- Added typed fail-closed A4 failures, composite-workflow isolation, explicit
+  terminal safety-incident transition, and three focused test modules. Codex
+  did not run tests, so
+  `SEC-02A4_MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING_VALIDATED` remains the
+  target milestone pending external validation.
+- This is pure domain work only. It adds no adapter, orchestration, persistence,
+  evidence storage, public mutation API, Production, Runtime, provider, Ubuntu,
+  filesystem, subprocess, network, SQLite, environment, secret, clock, ID, or
+  digest capability.
+- Next: `SEC-02A5 RECEIPTS FAILURE AND EVIDENCE MODELS`. Notion remains
+  `DEFERRED_UNTIL_FINAL_PHASE`; no SEC-02A architecture-ready claim is made.
+
 ## 2026-08-10 — SEC-02A3 precondition snapshot and stale semantics
 
 - Added pure immutable governance precondition snapshots, named binding records,
