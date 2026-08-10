@@ -2109,3 +2109,23 @@ Production remained on `7b171f135dc7`. No activation, launchd operation,
 Production database mutation, credential read, or provider network call
 occurred. AI-PROVIDER-01C-C remains a separate human authorization gate, and
 Notion synchronization is deferred until the final phase.
+
+## AI-PROVIDER-01 Production Completion
+
+Production Runtime `102b8f1fa862` was promoted using the frozen immutable
+Candidate.
+
+The initial LaunchDaemon handoff required a separately authorized retry after
+macOS administrator authorization rejected the first attempt.
+
+The first authenticated BrainAgent smoke later failed. Read-only diagnosis
+classified the failure as a temporary harness-only defect and confirmed that no
+repository application repair, Candidate rebuild, repromotion or service
+restart was required.
+
+A separate human authorization permitted one corrected authenticated smoke.
+The corrected validation used the actual immutable Production BrainAgent and
+provider contracts and completed successfully.
+
+The first failed smoke's upstream request occurrence remains unknown and is not
+rewritten as zero in governance evidence.

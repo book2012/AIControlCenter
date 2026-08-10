@@ -2443,3 +2443,13 @@ Production activation occurred.
 - did not read `OPENAI_API_KEY`, activate Production, mutate state, or restart the service
 - preserved Production Runtime `7b171f135dc7`
 - deferred AI-PROVIDER-01C-C promotion and Notion synchronization
+
+## AI-PROVIDER-01 — Production Provider Workflow Validated
+
+- promoted Production Runtime to `102b8f1fa862`
+- validated immutable source and external state boundaries
+- validated canonical BrainAgent provider routing
+- diagnosed the initial smoke failure as a temporary harness-only defect
+- completed one separately authorized corrected authenticated smoke
+- no application code repair, Runtime rebuild, repromotion or restart was required
+- secret exposure: none

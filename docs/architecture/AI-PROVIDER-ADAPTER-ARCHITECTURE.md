@@ -135,3 +135,15 @@ calls.
 Production Runtime `7b171f135dc7` was not changed or reactivated. Candidate
 promotion remains gated by separate explicit AI-PROVIDER-01C-C human
 authorization. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+
+## Production Status
+
+AI-PROVIDER-01 is Production validated on immutable Runtime
+`102b8f1fa862`.
+
+The canonical BrainAgent -> ProviderRouter -> ProviderAdapter -> OpenAIAdapter
+path has passed authenticated Production-artifact validation.
+
+The initial validation harness defect required no application code change.
+
+Persistent LaunchDaemon credential injection remains deferred to SEC-01.

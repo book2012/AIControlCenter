@@ -1946,3 +1946,12 @@ Candidate Runtime/source `102b8f1fa862`, bound to commit
 immutable-source, and network-free FakeProvider workflow validation.
 Production remains on `7b171f135dc7`; promotion requires separate explicit
 AI-PROVIDER-01C-C authorization. Notion is `DEFERRED_UNTIL_FINAL_PHASE`.
+
+### Production AI Provider Workflow
+
+Production Runtime `102b8f1fa862` now executes the canonical AI provider path:
+
+`BrainAgent -> ProviderRouter -> ProviderAdapter -> OpenAIAdapter`
+
+The immutable Production artifact has passed a corrected authenticated workflow
+validation. Persistent daemon credential wiring remains deferred to SEC-01.

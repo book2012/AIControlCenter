@@ -2206,3 +2206,33 @@ Production Runtime:
 Next gate:
 
 SEPARATE HUMAN AUTHORIZATION FOR AI-PROVIDER-01C-C
+
+## AI-PROVIDER-01
+
+Status:
+
+VALIDATED
+
+Production Runtime:
+
+`102b8f1fa862`
+
+Production source:
+
+`102b8f1fa8628d00d25575cb94538826a1a04e10`
+
+Canonical Production AI workflow:
+
+`BrainAgent -> ProviderRouter -> ProviderAdapter -> OpenAIAdapter`
+
+Authenticated Production-artifact workflow:
+
+VALIDATED
+
+Persistent daemon credential wiring:
+
+PENDING SEC-01
+
+Milestone:
+
+`AI_PROVIDER_PRODUCTION_ARTIFACT_WORKFLOW_VALIDATED`

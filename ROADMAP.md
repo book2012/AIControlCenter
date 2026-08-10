@@ -2043,3 +2043,19 @@ fake provider and zero provider calls.
 Next gated milestone:
 
 AI-PROVIDER-01C-C — separately authorized Production promotion
+
+### AI-PROVIDER-01 Complete
+
+Provider architecture, OpenAI transport, BrainAgent integration, immutable
+Runtime promotion and authenticated Production-artifact workflow validation are
+complete.
+
+Next operational priority:
+
+`SEC-01 — Production Secret Injection & Rotation`
+
+Then:
+
+`OPS-01 — Production Observability & Health`
+
+Notion remains deferred until the final phase.

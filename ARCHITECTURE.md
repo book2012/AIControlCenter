@@ -1759,3 +1759,21 @@ Python and external temporary state. FakeProvider is the network-free workflow
 boundary. Candidate existence is not activation authority: Production remains
 on `7b171f135dc7`, and AI-PROVIDER-01C-C requires separate explicit promotion
 authorization.
+
+## Production AI Provider
+
+Active Runtime:
+
+`102b8f1fa862`
+
+Canonical Control Plane path:
+
+`BrainAgent -> ProviderRouter -> ProviderAdapter -> OpenAIAdapter`
+
+AIControlCenter owns provider selection, governance and business logic.
+
+Vendor-specific transport remains isolated behind ProviderAdapter.
+
+Automatic cross-provider fallback remains prohibited.
+
+Persistent daemon credential delivery is owned by SEC-01.

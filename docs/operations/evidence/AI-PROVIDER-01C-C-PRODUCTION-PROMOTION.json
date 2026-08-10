@@ -1,0 +1,67 @@
+{
+  "authorizations": {
+    "corrected_authenticated_smoke": "AI-PROVIDER-01C-C AUTHORIZE ONE CORRECTED AUTHENTICATED BRAIN WORKFLOW SMOKE ON PRODUCTION RUNTIME 102b8f1fa862 AFTER HARNESS-ONLY DEFECT DIAGNOSIS WITHOUT RESTART REACTIVATION OR REBUILD",
+    "production_promotion": "AI-PROVIDER-01C-C AUTHORIZE PRODUCTION PROMOTION RUNTIME 102b8f1fa862 SOURCE 102b8f1fa8628d00d25575cb94538826a1a04e10 FROM PRODUCTION RUNTIME 7b171f135dc7 AT GOVERNANCE HEAD 32c50cbfc53837bfa66ed4cf201e55b7f80c0844",
+    "service_handoff_retry": "AI-PROVIDER-01C-C AUTHORIZE ONE SERVICE HANDOFF RETRY TO RUNTIME 102b8f1fa862 AFTER SUCCESSFUL ACTIVATION WITHOUT REACTIVATION OR ROLLBACK"
+  },
+  "blockers": [],
+  "corrected_authenticated_smoke": {
+    "attempts": 1,
+    "corrected_harness_sha256": "a5099b3ec901eeb5a96fb9db726aa15637586b545584c7c554a6bd15f7848dfd",
+    "json_safe_result": true,
+    "marker_observed": true,
+    "model": "gpt-5.6-luna",
+    "network_calls": 1,
+    "passed": true,
+    "provider": "openai",
+    "report_sha256": "dfe6485a73d8e68fe1a9ae51f663f10430b960616c34f896edd38651517b3196",
+    "response_id_present": true,
+    "secret_exposed": false,
+    "workflow": "BrainAgent -> ProviderRouter -> ProviderAdapter -> OpenAIAdapter"
+  },
+  "final_status": "VALIDATED",
+  "governance_baseline": "32c50cbfc53837bfa66ed4cf201e55b7f80c0844",
+  "initial_authenticated_smoke": {
+    "diagnosis": "HARNESS_ONLY_DEFECT",
+    "diagnosis_report_sha256": "92ecacdfd98138065d277aa0a5a0a92f7a5e2eb13b76c709f9085dc6ab961724",
+    "passed": false,
+    "provider_network_request_observed": "unknown"
+  },
+  "milestone": "AI_PROVIDER_PRODUCTION_ARTIFACT_WORKFLOW_VALIDATED",
+  "notion_sync": "DEFERRED_UNTIL_FINAL_PHASE",
+  "operation": "AI-PROVIDER-01C-C-PRODUCTION-PROMOTION",
+  "persistent_daemon_secret_wiring": false,
+  "production": {
+    "external_state_validated": true,
+    "http": {
+      "health": 200,
+      "post_health": 405,
+      "runtime_health": 200
+    },
+    "immutable_source_cwd": "/Users/kyouhan/Library/Application Support/AIControlCenter/runtime/sources/102b8f1fa862",
+    "pid_at_closeout": 86481,
+    "repository_source_serving": false,
+    "service_running": true,
+    "wrapper_changed": false
+  },
+  "promotion": {
+    "database_migration_total": 0,
+    "rollback_total": 0,
+    "runtime_activation_total": 1,
+    "runtime_build_total": 0,
+    "service_restart_authorized_repair": 1,
+    "service_restart_initial_failed": 1,
+    "source_artifact_create_total": 0,
+    "wrapper_install_total": 0
+  },
+  "real_api_key_persisted_to_service_config": false,
+  "reason_total_unknown": "The first failed temporary harness could not establish whether an upstream provider request occurred.",
+  "runtime": {
+    "after": "102b8f1fa862",
+    "before": "7b171f135dc7",
+    "changed": true
+  },
+  "schema_version": 3,
+  "source_commit": "102b8f1fa8628d00d25575cb94538826a1a04e10",
+  "total_provider_network_calls_across_01c_c": "unknown"
+}

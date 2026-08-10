@@ -1657,3 +1657,16 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - [x] preserve Production Runtime `7b171f135dc7`
 - [ ] obtain separate human authorization for AI-PROVIDER-01C-C promotion
 - [ ] synchronize to Notion in the final phase
+
+## AI-PROVIDER-01
+
+- [x] vendor-neutral provider contract
+- [x] ProviderRouter
+- [x] authenticated OpenAI Responses transport
+- [x] BrainAgent canonical integration
+- [x] immutable Candidate Runtime/source
+- [x] controlled Production promotion
+- [x] service handoff
+- [x] harness-only failure diagnosis
+- [x] corrected authenticated Production workflow validation
+- [ ] SEC-01 persistent daemon credential injection and rotation
