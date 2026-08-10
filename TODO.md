@@ -1676,5 +1676,12 @@ from `UNAVAILABLE`, and adds no write control, persistence, or activation.
 - Keep Notion synchronization `DEFERRED_UNTIL_FINAL_PHASE`.
 - [x] repair and focus-test the repository immutable-source wrapper
 - [x] record Runtime `102b8f1fa862` `jsonschema` preflight as importable
-- [ ] obtain new exact human authorization for live wrapper replacement
-- [ ] perform one newly authorized restart and validate immutable convergence
+- [x] complete separately authorized immutable-source Production handoff
+- [x] classify and freeze `AICONTROLCENTER_WORKERS_CONFIG` to matching immutable source
+- [x] stop R3Q before mutation when its precondition drifted (zero edits/restarts)
+- [x] complete separately authorized R3Q2 representation-only recovery and exactly one restart
+- [x] validate daemon/listener PID, immutable cwd/config, external state, HTTP `200/200/405`, and redacted credential presence with zero provider calls
+- [x] mark SEC-01C `COMPLETE` and milestone `PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`
+- [ ] SEC-01D — Secret Lifecycle & Recovery Validation
+
+SEC-01 remains open.

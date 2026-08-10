@@ -1962,3 +1962,15 @@ The repository now defines deterministic, redacted provider credential validatio
 # SEC-01C-R1 repository repair
 
 The canonical wrapper restores immutable Runtime/source execution while retaining deterministic secret injection. SEC-01C consumed two installs and one restart; its frozen wrapper served mutable repository source, so HTTP recovery did not pass the immutable gate. No rollback occurred. R1 performs no live install or restart. Runtime `102b8f1fa862` has importable `jsonschema`, but the live installation remains blocked pending new exact human authorization for wrapper replacement and one restart. Notion is `DEFERRED_UNTIL_FINAL_PHASE`.
+
+## SEC-01C Production daemon secret delivery
+
+SEC-01C is `COMPLETE` at milestone
+`PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`. R1 converged immutable execution;
+R2/R3 removed the remaining mutable repository config dependency; R3Q stopped
+before mutation after detecting drift; and separately authorized R3Q2 made one
+logical-value-preserving quoting correction and exactly one restart. The running
+daemon uses matching immutable source/config, passes HTTP `200/200/405`, and has
+validated `OPENAI_API_KEY` presence without value exposure or provider calls.
+SEC-01 is not complete. Next: SEC-01D Secret Lifecycle & Recovery Validation.
+See [the evidence-backed closeout](docs/operations/SEC-01C-PRODUCTION-SECRET-DELIVERY-CLOSEOUT.md).

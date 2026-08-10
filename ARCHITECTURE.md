@@ -1784,3 +1784,17 @@ SEC-01C consumed two installs and one restart. Its frozen wrapper preserved secr
 # Security architecture update (SEC-01B)
 
 Provider credentials follow [Protected File-Per-Provider Secrets with Deterministic Wrapper Injection](docs/architecture/PROVIDER-SECRET-DELIVERY.md): external protected storage, wrapper-owned validation/injection, and environment-backed adapter consumption. Business logic has no secret-file responsibility.
+
+## SEC-01C Production secret delivery closeout
+
+SEC-01C is `COMPLETE`; milestone `PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`.
+After R1 restored immutable-source execution, R2 identified the workers config as
+`VERSIONED_APPLICATION_CONFIG`, R3 froze its immutable-source binding without an
+intended live mutation, R3Q stopped on precondition drift with zero edits and
+restarts, and separately authorized R3Q2 performed one representation-only
+worker.env correction plus exactly one restart. The daemon now has no mutable
+repository source/config dependency, and provider-secret presence was validated
+without value exposure or provider network calls. SEC-01 remains open; next is
+SEC-01D Secret Lifecycle & Recovery Validation. Notion is
+`DEFERRED_UNTIL_FINAL_PHASE`. See
+[the closeout](docs/operations/SEC-01C-PRODUCTION-SECRET-DELIVERY-CLOSEOUT.md).

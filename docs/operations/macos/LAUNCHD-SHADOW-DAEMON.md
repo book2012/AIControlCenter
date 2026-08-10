@@ -165,3 +165,25 @@ The repository wrapper delegates its final immutable-Runtime exec to the install
 SEC-01C consumed two installs and one restart. Its frozen wrapper retained secret injection but used `/Users/kyouhan/AIControlCenter` for cwd and `PYTHONPATH`. HTTP recovered without satisfying the immutable Production gate; no automatic rollback occurred and the live installation remains blocked.
 
 The repository wrapper now derives the ID from `runtime/current`, requires and validates the matching immutable source, preserves external data, clears inherited `PYTHONPATH`, enters immutable source, and invokes Runtime Python with `-P` through the provider-secret helper. The plist no longer seeds mutable cwd. Runtime `102b8f1fa862` has importable `jsonschema`. R1 installs nothing and does not restart launchd. Replacement and one restart require new exact human authorization. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`; SEC-01C is not complete.
+
+## SEC-01C final daemon validation
+
+Subsequent separately authorized work completed the handoff. R1 converged the
+daemon to immutable source; R2 found the remaining mutable workers config
+dependency; R3 froze its matching immutable-source binding without intended
+live mutation; and R3Q stopped before mutation on precondition drift with zero
+edit/restart attempts. R3Q2 was separately authorized to change only the
+existing logical value's representation to shell-safe single quoting and to
+perform exactly one restart.
+
+The current daemon is running; LaunchDaemon PID equals listener PID; cwd is the
+immutable `102b8f1fa862` source; and `AICONTROLCENTER_WORKERS_CONFIG` names its
+matching immutable config with SHA-256
+`f3167547ee37173ad2cc4069d473b5d44adb9583c9d6d0a761857ba03f61bc1a`.
+Mutable repository source/config dependencies are false, external state is
+validated, HTTP is `200/200/405`, and `OPENAI_API_KEY` presence is validated
+without value exposure. R3Q2 made zero provider calls and no Runtime, source,
+helper, wrapper, plist, database, or secret change beyond its authorized
+worker.env representation edit and restart. SEC-01C is `COMPLETE`; milestone
+`PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`. SEC-01 remains open; next is
+SEC-01D. Notion is `DEFERRED_UNTIL_FINAL_PHASE`.

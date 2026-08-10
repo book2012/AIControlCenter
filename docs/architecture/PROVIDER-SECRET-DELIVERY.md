@@ -27,3 +27,22 @@ SEC-01B changes repository representations only. The live wrapper and Production
 ## SEC-01C-R1 execution-boundary repair
 
 SEC-01C consumed two installs and one restart. The frozen wrapper injected the secret correctly but ran mutable repository source. HTTP recovery did not satisfy immutable convergence and no rollback occurred. The repaired repository wrapper validates the Runtime/source pair selected by `runtime/current`, keeps state external, clears inherited `PYTHONPATH`, enters immutable source, and uses Runtime Python `-P` through the unchanged helper. Runtime `102b8f1fa862` has importable `jsonschema`. R1 performs no live install/restart; the installation remains blocked pending new exact human authorization. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+
+## SEC-01C validated Production boundary
+
+The later authorized R1 handoff converged immutable execution. R2 identified
+`AICONTROLCENTER_WORKERS_CONFIG` as `VERSIONED_APPLICATION_CONFIG`; R3 froze it
+to the matching immutable-source config without an intended live mutation. R3Q
+stopped before mutation after detecting representation drift and consumed zero
+edits/restarts. Separately authorized R3Q2 preserved the logical value and all
+other worker.env bytes while changing only the entry to shell-safe quoting, then
+performed exactly one restart.
+
+The running daemon now uses matching immutable source/config, with config digest
+`f3167547ee37173ad2cc4069d473b5d44adb9583c9d6d0a761857ba03f61bc1a`, and has
+no mutable repository source/config dependency. Credential presence is
+validated without disclosure, persistence, hashing, or provider network calls.
+SEC-01C is `COMPLETE` at milestone
+`PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`; SEC-01 remains open and SEC-01D
+Secret Lifecycle & Recovery Validation is next. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`.

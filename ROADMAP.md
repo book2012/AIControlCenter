@@ -2062,6 +2062,9 @@ Notion remains deferred until the final phase.
 # Security delivery roadmap
 
 - SEC-01B: repository implementation and fake-secret validation.
-- SEC-01C: explicit human authorization required before live helper/wrapper installation or restart.
+- SEC-01C: `COMPLETE` — Production daemon secret delivery validated against matching immutable source/config (`PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`).
+- SEC-01D: next — Secret Lifecycle & Recovery Validation.
+- SEC-01: remains open pending its later independently authorized phases.
 - Notion sync: `DEFERRED_UNTIL_FINAL_PHASE`.
-- SEC-01C-R1: repository immutable-source wrapper repair validated. The prior attempt consumed two installs and one restart, recovered HTTP without immutable convergence, and did not roll back. Live replacement and one restart require new exact human authorization; Runtime `102b8f1fa862` has importable `jsonschema`.
+- SEC-01C-R1 historical gate: the repository immutable-source wrapper repair was validated after the prior attempt consumed two installs and one restart, recovered HTTP without immutable convergence, and did not roll back. At R1 closeout, live replacement and one restart still required new exact human authorization; Runtime `102b8f1fa862` had importable `jsonschema`.
+- SEC-01C-R2 through R3Q2: R2 found the mutable workers config dependency; R3 froze its immutable binding without intended mutation; R3Q stopped on precondition drift with zero attempts; and separately authorized R3Q2 made one representation-only correction and one restart, validating no mutable repository dependency, HTTP `200/200/405`, and secret presence without provider calls.

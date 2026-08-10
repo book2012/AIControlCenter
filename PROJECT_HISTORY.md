@@ -2136,3 +2136,30 @@ Implemented the repository-only form of Protected File-Per-Provider Secrets with
 ## 2026-08-10 — SEC-01C-R1 immutable-source regression repair
 
 SEC-01C consumed two live installs and one restart. Its frozen wrapper retained secret delivery but selected mutable repository cwd and `PYTHONPATH`. HTTP recovery did not establish immutable Production convergence; no automatic rollback occurred, and the current installation remains blocked. R1 repaired and focus-tested repository artifacts only, restoring dynamic Runtime/source pairing, identity/content validation, external state, isolated imports, immutable cwd, and Runtime Python safe-path execution without changing the provider helper or business logic. The supplied Runtime `102b8f1fa862` preflight reports `jsonschema` importable. No install or restart occurred; new exact human authorization is required. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+
+## 2026-08-10 — SEC-01C Production secret delivery completed
+
+The separately authorized R1 handoff converged Production to immutable source.
+R2 then found that `AICONTROLCENTER_WORKERS_CONFIG` still named mutable
+version-controlled config and classified it as `VERSIONED_APPLICATION_CONFIG`.
+R3 froze the matching immutable-source config binding without performing its
+intended live mutation. R3Q detected precondition drift before mutation: the
+logical value was already present but unquoted, and the service was not
+converged; its controller consumed zero edit and restart attempts.
+
+Separately authorized R3Q2 changed only that representation to shell-safe
+single-quoted form, preserving the logical value, every other worker.env byte,
+and `root:staff` mode `0640`, then performed exactly one restart. Evidence
+validated a running daemon with matching service/listener PID, immutable cwd and
+workers config (SHA-256
+`f3167547ee37173ad2cc4069d473b5d44adb9583c9d6d0a761857ba03f61bc1a`), no
+mutable repository source/config dependency, external state, HTTP `200/200/405`,
+and `OPENAI_API_KEY` presence without printing, persisting, or hashing its value.
+Provider calls were zero; no Runtime, source artifact, helper, wrapper, plist,
+database, or secret change occurred beyond the authorized representation edit
+and restart.
+
+SEC-01C is `COMPLETE`; milestone
+`PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`. SEC-01 remains open. Next is
+SEC-01D Secret Lifecycle & Recovery Validation. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`.
