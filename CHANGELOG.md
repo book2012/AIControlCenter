@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A5 receipts, failure, and evidence models
+
+- Added pure immutable authorization-consumption, execution-request,
+  execution-receipt, postcondition, and failure-evidence models. They record
+  caller-supplied facts only and grant no execution, retry, rollback, or new
+  authorization authority.
+- Added typed value-free artifact references, deterministic evidence manifests
+  and lifecycle-bound evidence bundles with fail-closed duplicate and binding
+  validation. No contents, paths, secrets, hashes, times, or identities are
+  collected or generated.
+- Added the three focused A5 test modules but did not run tests. Therefore
+  `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED` remains the target
+  milestone pending controller validation.
+- This is pure domain evidence vocabulary only. It adds no adapter,
+  orchestration, persistence, audit storage, public mutation API, Production,
+  Runtime, provider, Ubuntu, filesystem, subprocess, network, SQLite,
+  environment, secret, clock, ID, or digest capability.
+- Next: `SEC-02A6 JSON SCHEMA REGISTRY AND CONTRACT TESTS`. Notion remains
+  `DEFERRED_UNTIL_FINAL_PHASE`; no SEC-02A architecture-ready claim is made.
+
 ## 2026-08-10 — SEC-02A4 mutation budget and invocation accounting
 
 - Added pure immutable mutation-budget and explicit per-capability line-item

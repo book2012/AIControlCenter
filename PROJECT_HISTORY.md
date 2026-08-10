@@ -1,5 +1,28 @@
 # Project History
 
+## 2026-08-10 — SEC-02A5 receipt, failure, and evidence domain implemented
+
+A5 added immutable models for atomic-consumption receipts, already-governed
+execution requests, factual execution receipts, PASS/FAIL postcondition
+reports, and fail-closed failure evidence. Caller-supplied counts preserve A4
+invariants without status-driven rewriting. Consumption proves only the claim;
+no receipt or report grants authorization, retry, rollback, or adapter action.
+
+Value-free typed artifact references now compose deterministic manifests and
+lifecycle-bound bundles. Duplicate identities and lifecycle drift fail closed;
+artifact contents, raw payloads, secret material, paths, and generated hashes
+are outside the model.
+
+Three focused test modules were added but were not run by Codex. Therefore
+`SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED` remains a target
+pending controller validation. This was pure domain evidence vocabulary only,
+with no Production or Runtime access, execution adapter, orchestration,
+persistence, audit storage, public mutation API, filesystem, subprocess,
+network, SQLite, provider, Ubuntu, environment, secret, clock, ID, or digest
+behavior. No SEC-02A architecture-ready milestone is claimed. Next: `SEC-02A6
+JSON SCHEMA REGISTRY AND CONTRACT TESTS`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`.
+
 ## 2026-08-10 — SEC-02A4 mutation budget domain implemented
 
 A4 added immutable governance mutation budgets made from deterministically

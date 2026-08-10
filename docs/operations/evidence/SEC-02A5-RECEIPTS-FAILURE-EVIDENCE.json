@@ -1,0 +1,59 @@
+{
+  "bounded_context": "core/governance/control_plane/",
+  "final_status": "RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED",
+  "governance_baseline_head": "4b5f4a4d1025aa359f76abc14bd6d9e91f1b0697",
+  "milestone": "SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED",
+  "models": {
+    "authorization_consumption_receipt": true,
+    "caller_supplied_digests": true,
+    "caller_supplied_ids": true,
+    "caller_supplied_timestamps": true,
+    "deterministic_projection": true,
+    "evidence_bundle": true,
+    "evidence_manifest": true,
+    "execution_receipt": true,
+    "execution_request": true,
+    "failure_evidence": true,
+    "immutable": true,
+    "postcondition_report": true,
+    "pure_domain_only": true
+  },
+  "next_step": "SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS",
+  "notion_sync": "DEFERRED_UNTIL_FINAL_PHASE",
+  "operation": "SEC-02A5",
+  "recorded_at_utc": "2026-08-10T12:59:40Z",
+  "safety": {
+    "automatic_retry": false,
+    "automatic_rollback": false,
+    "execution_adapter_added": false,
+    "filesystem_access": false,
+    "git_command_access": false,
+    "network_access": false,
+    "production_access": false,
+    "provider_access": false,
+    "public_mutation_api_added": false,
+    "sqlite_access": false,
+    "subprocess_access": false,
+    "ubuntu_access": false
+  },
+  "schema_version": 1,
+  "sec_02a_architecture_ready_claimed": false,
+  "semantics": {
+    "consumption_receipt_implies_mutation_success": false,
+    "evidence_bundle_grants_authorization": false,
+    "evidence_contains_raw_artifact_contents": false,
+    "execution_receipt_grants_authorization": false,
+    "execution_request_grants_authorization": false,
+    "failure_creates_retry_authority": false,
+    "failure_creates_rollback_authority": false,
+    "postcondition_pass_grants_authorization": false,
+    "retry_prohibited": true,
+    "rollback_prohibited": true
+  },
+  "tests": {
+    "full_regression_run": false,
+    "scope": "A2_A3_A4_A5_FOCUSED_DOMAIN_REGRESSION",
+    "status": "PASS",
+    "summary": "119 passed in 0.09s"
+  }
+}

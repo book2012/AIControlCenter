@@ -2,14 +2,15 @@
 
 ## SEC-02
 
-- [ ] Externally run the focused A2/A3/A4 pure-domain regression gate before
-  claiming `SEC-02A4_MUTATION_BUDGET_AND_INVOCATION_ACCOUNTING_VALIDATED`.
-- [ ] SEC-02A5 receipts, failure, and evidence models.
+- [ ] Controller-run the focused A2/A3/A4/A5 pure-domain regression gate before
+  claiming `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
+- [ ] SEC-02A6 JSON Schema registry and contract tests.
 - [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
 
-A4 is pure domain only. Remaining count is never retry authority, and no
-automatic retry, rollback, adapter invocation, or Production/Runtime access was
-added. `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` is not claimed.
+A5 is pure domain evidence vocabulary only. Receipts and evidence references
+never grant authority; no automatic retry, rollback, adapter invocation,
+persistence, or Production/Runtime access was added.
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` is not claimed.
 
 ## AI-PROVIDER
 

@@ -36,6 +36,17 @@ from .failures import (
     RequestDecisionBindingMismatch,
     TerminalAuthorizationReuse,
     UnknownMutationActionType,
+    DuplicateEvidenceReference,
+    InvalidEvidenceBundle,
+    InvalidEvidenceManifest,
+    InvalidEvidenceReference,
+    InvalidFailureEvidence,
+    InvalidPostconditionModel,
+    InvalidReceiptCounts,
+    InvalidReceiptModel,
+    ReceiptBindingMismatch,
+    RetryProhibitionViolation,
+    RollbackProhibitionViolation,
 )
 from .identity import GovernanceIdentity
 from .preconditions import (
@@ -58,6 +69,23 @@ from .mutation_budget import (
     account_mutation_invocation,
     consume_mutation_budget,
     mark_mutation_budget_violated,
+)
+from .receipts import (
+    ConsumptionTransactionStatus,
+    ExecutionStatus,
+    GovernanceAuthorizationConsumptionReceipt,
+    GovernanceExecutionReceipt,
+    GovernanceExecutionRequest,
+    GovernancePostconditionReport,
+    PostconditionDecision,
+)
+from .evidence import (
+    EvidenceArtifactReference,
+    FailureClass,
+    FailurePhase,
+    GovernanceEvidenceBundle,
+    GovernanceEvidenceManifest,
+    GovernanceFailureEvidence,
 )
 
 __all__ = (
@@ -83,4 +111,15 @@ __all__ = (
     "MutationInvocationOutcome", "RepeatedAuthorizationConsumption",
     "UnknownMutationActionType", "account_mutation_invocation",
     "consume_mutation_budget", "mark_mutation_budget_violated",
+    "ConsumptionTransactionStatus", "ExecutionStatus",
+    "GovernanceAuthorizationConsumptionReceipt", "GovernanceExecutionReceipt",
+    "GovernanceExecutionRequest", "GovernancePostconditionReport",
+    "PostconditionDecision", "InvalidReceiptModel", "ReceiptBindingMismatch",
+    "InvalidReceiptCounts", "InvalidPostconditionModel",
+    "EvidenceArtifactReference", "FailureClass", "FailurePhase",
+    "GovernanceEvidenceBundle", "GovernanceEvidenceManifest",
+    "GovernanceFailureEvidence", "InvalidFailureEvidence",
+    "RetryProhibitionViolation", "RollbackProhibitionViolation",
+    "InvalidEvidenceReference", "DuplicateEvidenceReference",
+    "InvalidEvidenceManifest", "InvalidEvidenceBundle",
 )

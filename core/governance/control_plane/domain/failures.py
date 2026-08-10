@@ -93,3 +93,47 @@ class InvalidMutationCountInvariant(InvalidMutationBudgetModel):
 
 class RepeatedAuthorizationConsumption(AuthorizationDomainError):
     code = "REPEATED_AUTHORIZATION_CONSUMPTION"
+
+
+class InvalidReceiptModel(AuthorizationDomainError):
+    code = "INVALID_RECEIPT_MODEL"
+
+
+class ReceiptBindingMismatch(AuthorizationDomainError):
+    code = "RECEIPT_BINDING_MISMATCH"
+
+
+class InvalidReceiptCounts(InvalidReceiptModel):
+    code = "INVALID_RECEIPT_COUNTS"
+
+
+class InvalidPostconditionModel(AuthorizationDomainError):
+    code = "INVALID_POSTCONDITION_MODEL"
+
+
+class InvalidFailureEvidence(AuthorizationDomainError):
+    code = "INVALID_FAILURE_EVIDENCE"
+
+
+class RetryProhibitionViolation(InvalidFailureEvidence):
+    code = "RETRY_PROHIBITION_VIOLATION"
+
+
+class RollbackProhibitionViolation(InvalidFailureEvidence):
+    code = "ROLLBACK_PROHIBITION_VIOLATION"
+
+
+class InvalidEvidenceReference(AuthorizationDomainError):
+    code = "INVALID_EVIDENCE_REFERENCE"
+
+
+class DuplicateEvidenceReference(InvalidEvidenceReference):
+    code = "DUPLICATE_EVIDENCE_REFERENCE"
+
+
+class InvalidEvidenceManifest(AuthorizationDomainError):
+    code = "INVALID_EVIDENCE_MANIFEST"
+
+
+class InvalidEvidenceBundle(AuthorizationDomainError):
+    code = "INVALID_EVIDENCE_BUNDLE"

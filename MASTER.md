@@ -1,5 +1,18 @@
 # MASTER
 
+## SEC-02A5 — Receipts, failure, and evidence models
+
+Status: `IMPLEMENTED_PENDING_EXTERNAL_TEST_VALIDATION` (pure domain evidence
+vocabulary only). Caller-supplied consumption and execution facts,
+postcondition decisions, mandatory non-retry/non-rollback failure evidence,
+and value-free lifecycle-bound evidence references now have immutable,
+deterministic JSON-safe models. Tests were added but not run by Codex. The
+target milestone is
+`SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`. Next: `SEC-02A6 JSON
+SCHEMA REGISTRY AND CONTRACT TESTS`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`. No
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## SEC-02A4 — Mutation budget and invocation accounting
 
 Status: `IMPLEMENTED_PENDING_EXTERNAL_TEST_VALIDATION` (pure domain only).
