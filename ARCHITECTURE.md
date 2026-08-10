@@ -1,5 +1,31 @@
 # AI Home Datacenter Architecture
 
+## SEC-02 Governance Control Plane
+
+SEC-02 freezes a reusable governance boundary under
+`core/governance/control_plane/`, with pure domain rules, application-owned
+orchestration and ports, bounded adapters, and a versioned contract family.
+The canonical architecture is
+[`docs/architecture/SEC-02-GOVERNANCE-CONTROL-PLANE.md`](docs/architecture/SEC-02-GOVERNANCE-CONTROL-PLANE.md),
+the v1 semantic catalog is
+[`docs/contracts/SEC-02-GOVERNANCE-JSON-V1.md`](docs/contracts/SEC-02-GOVERNANCE-JSON-V1.md),
+and operator safety policy is
+[`docs/operations/SEC-02-CONTROLLED-MUTATION-POLICY.md`](docs/operations/SEC-02-CONTROLLED-MUTATION-POLICY.md).
+
+The Mac mini M4 remains the always-on Brain and AIControlCenter the sole Control
+Plane. Ubuntu remains an optional stateless infrastructure Worker using bounded
+JSON APIs; it owns no AI workload, business logic, application/governance/replay
+state, authorization, or audit authority. SEC-02 creates no generic remote
+command path. Existing deployment, governance-operations, and shopping domains
+retain their business ownership and are wrapped through ports where useful.
+
+SEC-02A is not a Production mutation implementation. A1 freezes the exact
+authorization state machine, mutation-budget semantics, irreversible
+consumption boundary, durable evidence rules, adapter constraints, and contract
+names only. Production mutation remains separately human-authorized.
+
+`SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`
+
 ## AI provider boundary
 
 AIControlCenter owns provider governance, routing, policy and normalization.

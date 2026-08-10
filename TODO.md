@@ -1710,10 +1710,26 @@ Genuine remaining follow-up:
 
 - [ ] Perform final Notion synchronization from the sync-ready payload; this
   documentation update does not claim it occurred.
-- [ ] Plan and authorize `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`.
+- [x] SEC-02A0 — complete authoritative governance capability inventory.
+- [x] SEC-02A1 — freeze governance domain, lifecycle, mutation-budget,
+  evidence/adapter rules, controlled-mutation policy, and the 16 v1 contract
+  names/major fields; no schema implementation.
+- [ ] SEC-02A2 — authorization domain models (next).
+- [ ] SEC-02A3 — precondition snapshot and comparison models.
+- [ ] SEC-02A4 — mutation budget and consumption models.
+- [ ] SEC-02A5 — receipts, failures, and evidence models.
+- [ ] SEC-02A6 — v1 schema family and contract registry implementation.
+- [ ] SEC-02A7 — governance application ports and orchestration.
+- [ ] SEC-02A8 — compatibility adapters over mature bounded capabilities.
+- [ ] SEC-02A9 — durable state/evidence and isolated operational validation.
+- [ ] SEC-02A10 — read models/API and architecture closure preparation.
 - [ ] Preserve all three exception records, operator-attestation provenance,
   and the rule that `/private/tmp` is not authoritative across reboot in future
   governance automation.
 
 SEC-01 is complete; the wider project remains in progress and Production
 mutation remains separately human-authorized.
+
+SEC-02A1 status:
+`SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`.
+No queued item above claims implementation or Production authority.

@@ -2061,6 +2061,25 @@ Then:
 Notion remains deferred until the final phase.
 # Security delivery roadmap
 
+## SEC-02 — Control Plane Governance Automation (active)
+
+- [x] A0 — authoritative governance capability inventory.
+- [x] A1 — governance domain and JSON contract freeze:
+  `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`.
+- [ ] A2 — authorization domain models (next).
+- [ ] A3 — precondition snapshot and exact comparison models.
+- [ ] A4 — mutation budget and irreversible consumption domain.
+- [ ] A5 — receipt, failure, and evidence domain models.
+- [ ] A6 — v1 JSON Schema implementation and registry.
+- [ ] A7 — application ports and orchestration.
+- [ ] A8 — compatibility adapters for existing bounded capabilities.
+- [ ] A9 — durable state/evidence integration and isolated operational tests.
+- [ ] A10 — API/read-model and architecture closure preparation.
+
+A1 freezes architecture and contract semantics only. It is not Production
+mutation implementation, does not execute Production validation, and does not
+claim the SEC-02A architecture-closure milestone.
+
 - SEC-01B: repository implementation and fake-secret validation.
 - SEC-01C: `COMPLETE` — Production daemon secret delivery validated against matching immutable source/config (`PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`).
 - SEC-01D: next — Secret Lifecycle & Recovery Validation.
@@ -2081,8 +2100,8 @@ Notion remains deferred until the final phase.
   representative selections (17 tests); authoritative canonical-harness R4
   passed 2402 tests with 5 deselected and 437 non-failing warnings, with no
   repository modification by tests or Production mutation.
-- [ ] `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION` — next Control Plane
-  security/governance milestone.
+- [ ] `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION` — active Control Plane
+  security/governance milestone; A0 and A1 complete, A2 next.
 
 The three permanent exception records remain
 `SEC-01D-B-REPEATED-RESTART-AUTHORIZATION-SCOPE-EXCEPTION`,

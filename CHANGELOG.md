@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A1 governance domain and JSON contract freeze
+
+- Froze the `core/governance/control_plane/` domain, application, adapter, and
+  contract ownership boundary without adding implementation.
+- Defined the exact authorization lifecycle, mutation-budget accounting,
+  irreversible consumption boundary, execution order, durable evidence model,
+  adapter safety rules, and five-layer test architecture.
+- Cataloged the 16 SEC-02 v1 JSON contract names and major semantic field
+  families. No JSON Schema files were created.
+- Preserved mature DPL, governance-operations, shopping, audit SQLite, permit
+  replay, Git evidence, runtime identity, and evidence ownership behind
+  governance ports/adapters.
+- Added operator policy requiring stop-without-retry-or-rollback after
+  consumption and new authorization after any terminal lifecycle.
+- No Production capability, Production access, Runtime access, provider access,
+  Ubuntu access, source code, tests, scripts, configuration, or launchd change
+  was added or performed.
+- Status: `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`.
+  Next: `SEC-02A2 AUTHORIZATION DOMAIN MODELS`.
+
 ## 2026-08-10 — SEC-01 production provider-secret lifecycle closeout
 
 - Closed SEC-01 at `PRODUCTION_SECRET_LIFECYCLE_VALIDATED` on governance

@@ -1,5 +1,37 @@
 # Project History
 
+## 2026-08-10 — SEC-02A1 governance domain and JSON contract freeze
+
+SEC-02 began by inventorying rather than replacing the repository's mature DPL
+primitives. Deployment authorization, preflight, atomic permit claim, replay
+protection, append-only audit SQLite, Git evidence, runtime identity, receipts,
+and evidence validation already encode strong deployment-specific safety rules.
+Replacing them would duplicate proven controls and blur ownership. SEC-02
+therefore freezes a reusable governance domain and application port boundary
+that wraps those capabilities while `core/deployment/*` retains deployment
+business rules, `core/governance/operations/*` retains operational observation
+and audit scheduling/read models, and `core/shopping/*` retains commerce
+eligibility and write semantics.
+
+A1 also records a critical distinction: authorization consumption and mutation
+invocation accounting are not the same event. Atomic claim irreversibly changes
+authorization to `CONSUMED`, even if no adapter boundary is subsequently
+crossed. `actual_invocation_count` changes only when the bounded adapter call
+boundary is crossed. Consequently, an unspent numeric remainder cannot restore
+authority or permit retry. Failures after claim stop without automatic retry or
+rollback and require manual inspection plus an entirely new authorization
+lifecycle for any future attempt.
+
+The freeze defines the exact five-state authorization lifecycle, four mutation
+budget statuses, durable Mac Control Plane evidence rules, bounded adapters, and
+16 v1 governance contract names/major field families. It adds no schemas or
+Production mutation capability. Ubuntu remains a stateless bounded-JSON
+infrastructure Worker and `/private/tmp` remains non-authoritative for durable
+evidence.
+
+`SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`. Next:
+`SEC-02A2 AUTHORIZATION DOMAIN MODELS`.
+
 ## 2026-08-10 — AI-PROVIDER-01C-A
 
 The existing canonical `BrainAgent.ask` Control Plane workflow moved from the

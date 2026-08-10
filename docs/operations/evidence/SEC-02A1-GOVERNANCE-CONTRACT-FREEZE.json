@@ -1,0 +1,124 @@
+{
+  "architecture": {
+    "bounded_context": "core/governance/control_plane/",
+    "host_role": "MAC_MINI_M4_CONTROL_PLANE",
+    "layers": [
+      "domain",
+      "application",
+      "adapters",
+      "contracts"
+    ],
+    "owner": "AIControlCenter",
+    "production_mutation_capability_added": false,
+    "ubuntu_role": "STATELESS_INFRASTRUCTURE_WORKER"
+  },
+  "architecture_ready_milestone_claimed": false,
+  "authorization": {
+    "allowed_transitions": [
+      [
+        "REQUESTED",
+        "AUTHORIZED"
+      ],
+      [
+        "REQUESTED",
+        "REJECTED"
+      ],
+      [
+        "AUTHORIZED",
+        "STALE"
+      ],
+      [
+        "AUTHORIZED",
+        "CONSUMED"
+      ]
+    ],
+    "consumed_authorization_reusable": false,
+    "explicit_human_authorization_required": true,
+    "stale_authorization_reusable": false,
+    "states": [
+      "REQUESTED",
+      "AUTHORIZED",
+      "STALE",
+      "CONSUMED",
+      "REJECTED"
+    ],
+    "terminal_states": [
+      "STALE",
+      "CONSUMED",
+      "REJECTED"
+    ]
+  },
+  "contracts_v1": [
+    "GovernanceAuthorizationRequest",
+    "GovernancePreconditionSnapshot",
+    "GovernanceAuthorizationDecision",
+    "GovernanceAuthorizationReceipt",
+    "GovernanceAuthorizationStateRecord",
+    "GovernanceMutationBudget",
+    "GovernanceAuthorizationConsumptionReceipt",
+    "GovernanceExecutionRequest",
+    "GovernanceExecutionReceipt",
+    "GovernancePostconditionReport",
+    "GovernanceFailureEvidence",
+    "GovernanceEvidenceManifest",
+    "GovernanceEvidenceBundle",
+    "GovernanceAuditEvent",
+    "GovernanceGitDocumentationGateReport",
+    "GovernanceApiEnvelope"
+  ],
+  "evidence": {
+    "canonical_format": "JSON",
+    "durable_control_plane_storage_required": true,
+    "manifest_compatible": true,
+    "private_tmp_authoritative": false,
+    "raw_authorization_header_allowed": false,
+    "raw_environment_dump_allowed": false,
+    "schema_versioned": true,
+    "secret_derived_comparison_allowed": false,
+    "secret_derived_hash_allowed": false,
+    "secret_value_allowed": false
+  },
+  "existing_capability_strategy": {
+    "audit_sqlite": "REUSE_THROUGH_ADAPTERS",
+    "deployment_business_rules_replaced": false,
+    "deployment_controls": "REUSE_THROUGH_ADAPTERS",
+    "git_readonly_evidence": "REUSE_THROUGH_ADAPTERS",
+    "permit_replay": "REUSE_THROUGH_ADAPTERS",
+    "runtime_identity": "REUSE_THROUGH_ADAPTERS",
+    "shopping_business_rules_replaced": false
+  },
+  "final_status": "GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN",
+  "governance_baseline_head": "5cd41b7c2c675de96bba4ca209123296e9b305c8",
+  "mutation_budget": {
+    "automatic_retry_allowed": false,
+    "automatic_rollback_allowed": false,
+    "composite_workflow_requires_explicit_line_items": true,
+    "invocation_boundary_accounted": true,
+    "remaining_count_is_retry_authority": false,
+    "statuses": [
+      "AVAILABLE",
+      "CONSUMED",
+      "EXHAUSTED",
+      "VIOLATED"
+    ]
+  },
+  "next_step": "SEC-02A2_AUTHORIZATION_DOMAIN_MODELS",
+  "operation": "SEC-02A1-R1",
+  "recorded_at_utc": "2026-08-10T07:20:40Z",
+  "repair": {
+    "codex_rerun": false,
+    "no_automatic_retry_marker_present": true,
+    "no_automatic_rollback_marker_present": true,
+    "original_a1_design_invalid": false,
+    "policy_marker_repair_only": true,
+    "reason": "DOCUMENTATION_EXACT_POLICY_MARKER_GATE"
+  },
+  "schema_version": 1,
+  "sec_02a_scope": {
+    "production_access": false,
+    "provider_access": false,
+    "public_mutation_api": false,
+    "runtime_mutation": false,
+    "ubuntu_operations": false
+  }
+}
