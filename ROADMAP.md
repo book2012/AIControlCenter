@@ -2,16 +2,25 @@
 
 ## SEC-02 governance Control Plane
 
+- [x] SEC-02A6 JSON Schema registry and contract tests: exactly 16 Draft
+  2020-12 schemas and their registry/valid-invalid fixture contracts validated
+  by the focused governance regression, `173 passed in 1.39s`; milestone
+  `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`.
+- [ ] SEC-02A7 adapter ports and compatibility mappings (next).
 - [ ] SEC-02A5 receipts, failure, and evidence models: pure domain evidence
   vocabulary and focused tests added; controller test validation remains
   required before claiming
   `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
-- [ ] SEC-02A6 JSON Schema registry and contract tests.
 - [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
 
-SEC-02A5 adds no Production or Runtime access, adapter, orchestration,
-persistence, audit storage, public mutation API, retry, or rollback. The
-SEC-02A architecture-ready milestone is not claimed.
+The R1 blocker was `SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`, a
+controller assumption of a public `registry.contract_names()` API where the
+frozen contract specified behavior, not that exact function name; it was not an
+A6 contract implementation defect. The focused result is not a full repository
+regression. SEC-02A6 adds no Production or Runtime access, execution adapter,
+provider or Ubuntu mutation, orchestration, persistence, audit storage, public
+mutation API, retry, or rollback. The SEC-02A architecture-ready milestone is
+not claimed.
 
 ## AI provider architecture
 

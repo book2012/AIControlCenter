@@ -2,14 +2,22 @@
 
 ## SEC-02
 
+- [x] Validate the 16 Draft 2020-12 schema registry and valid/invalid fixture
+  contracts with the focused governance regression: `173 passed in 1.39s`;
+  `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`.
+- [ ] SEC-02A7 adapter ports and compatibility mappings.
 - [ ] Controller-run the focused A2/A3/A4/A5 pure-domain regression gate before
   claiming `SEC-02A5_RECEIPTS_FAILURE_AND_EVIDENCE_MODELS_VALIDATED`.
-- [ ] SEC-02A6 JSON Schema registry and contract tests.
 - [ ] Notion synchronization (`DEFERRED_UNTIL_FINAL_PHASE`).
 
-A5 is pure domain evidence vocabulary only. Receipts and evidence references
-never grant authority; no automatic retry, rollback, adapter invocation,
-persistence, or Production/Runtime access was added.
+SEC-02A6 is contract implementation only. Schemas and registry lookups never
+grant authority; no retry, rollback, adapter invocation, persistence, or
+Production/Runtime access was added. The R1 blocker was
+`SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`: a controller assumption
+of a public `registry.contract_names()` function rather than an A6 contract
+implementation defect. Validation involved no Production, provider, or Ubuntu
+mutation and no execution adapter, and the focused result is not a full
+repository regression.
 `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` is not claimed.
 
 ## AI-PROVIDER
@@ -1735,8 +1743,8 @@ Genuine remaining follow-up:
   `SEC-02A3_PRECONDITION_SNAPSHOT_AND_STALE_SEMANTICS_VALIDATED`.
 - [ ] SEC-02A4 — mutation budget and invocation accounting (next).
 - [ ] SEC-02A5 — receipts, failures, and evidence models.
-- [ ] SEC-02A6 — v1 schema family and contract registry implementation.
-- [ ] SEC-02A7 — governance application ports and orchestration.
+- [x] SEC-02A6 — v1 schema family and contract registry validated.
+- [ ] SEC-02A7 — adapter ports and compatibility mappings.
 - [ ] SEC-02A8 — compatibility adapters over mature bounded capabilities.
 - [ ] SEC-02A9 — durable state/evidence and isolated operational validation.
 - [ ] SEC-02A10 — read models/API and architecture closure preparation.

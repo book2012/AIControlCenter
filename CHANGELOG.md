@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 2026-08-10 — SEC-02A6 JSON Schema registry and contract tests
+
+- Implemented exactly 16 standalone governance v1 JSON Schema Draft 2020-12
+  resources aligned with the A2-A5 immutable projections and frozen A1 names.
+- Added a deterministic local-only, read-only-copy registry with stable URN
+  identifiers, exact name/resource bindings, and fail-closed unknown lookup.
+- Added one synthetic valid and invalid fixture per contract and focused
+  registry, schema, fixture, frozen-enum, forbidden-field, and projection-shape
+  contract tests. External focused governance regression validated the
+  registry and valid/invalid fixture contracts: `173 passed in 1.39s`, reaching
+  `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`. This was not a
+  full repository regression.
+- Classified the prior blocker as
+  `SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`: the controller
+  assumed a public `registry.contract_names()` function even though the frozen
+  contract required behavior, not that exact API name. It was not an A6
+  contract implementation defect.
+- Added no Production/Runtime access, execution adapter, provider or Ubuntu
+  mutation, mutation API, retry, rollback, Git mutation, or authorization
+  behavior.
+- Next: `SEC-02A7 ADAPTER PORTS AND COMPATIBILITY MAPPINGS`. Notion remains
+  `DEFERRED_UNTIL_FINAL_PHASE`; no architecture-ready claim is made.
+
 ## 2026-08-10 — SEC-02A5 receipts, failure, and evidence models
 
 - Added pure immutable authorization-consumption, execution-request,

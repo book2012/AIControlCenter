@@ -1,0 +1,1 @@
+{"schema_version":"governance/v1","authorization_id":"authorization-synthetic-001","previous_state":"REQUESTED","current_state":"AUTHORIZED","transition_reason":"SCOPE_APPROVED","transitioned_at":"2026-08-10T00:02:00+00:00","precondition_comparison_digest":null,"audit_event_id":"audit-synthetic-001"}

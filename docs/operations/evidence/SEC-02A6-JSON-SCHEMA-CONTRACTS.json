@@ -1,0 +1,45 @@
+{
+  "contracts": {
+    "contract_count": 16,
+    "invalid_fixture_count": 16,
+    "machine_enforced": true,
+    "registry_behavior_validated_by_contract_tests": true,
+    "registry_import_validated": true,
+    "remote_schema_resolution_required": false,
+    "schema_draft": "2020-12",
+    "schema_ids_unique": true,
+    "valid_fixture_count": 16
+  },
+  "final_status": "JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED",
+  "governance_baseline_head": "6030bce66a71ec8808b153b33ace2ec5b63f4534",
+  "milestone": "SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED",
+  "next_step": "SEC-02A7_ADAPTER_PORTS_AND_COMPATIBILITY_MAPPINGS",
+  "notion_sync": "DEFERRED_UNTIL_FINAL_PHASE",
+  "operation": "SEC-02A6-R1",
+  "recorded_at_utc": "2026-08-10T13:41:59Z",
+  "repair": {
+    "classification": "CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT",
+    "controller_assumption_removed": true,
+    "implementation_defect": false,
+    "implementation_rerun": false
+  },
+  "safety": {
+    "automatic_retry": false,
+    "automatic_rollback": false,
+    "execution_adapter_added": false,
+    "production_access": false,
+    "provider_access": false,
+    "public_mutation_api_added": false,
+    "registry_grants_authorization": false,
+    "schemas_grant_authorization": false,
+    "ubuntu_access": false
+  },
+  "schema_version": 1,
+  "sec_02a_architecture_ready_claimed": false,
+  "tests": {
+    "full_repository_regression_run": false,
+    "scope": "SEC_02_GOVERNANCE_CONTROL_PLANE_FOCUSED",
+    "status": "PASS",
+    "summary": "173 passed in 1.39s"
+  }
+}

@@ -1,5 +1,21 @@
 # MASTER
 
+## SEC-02A6 — JSON Schema registry and contract tests
+
+Status: `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`. Exactly 16
+governance v1 Draft 2020-12 schemas, the deterministic local-only registry, and
+valid/invalid fixture contracts were validated by the focused governance
+regression: `173 passed in 1.39s`. This was not a full repository regression.
+The R1 blocker was
+`SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`: the controller assumed
+a public `registry.contract_names()` function although the frozen contract
+required behavior, not that exact API name. It was not an A6 contract
+implementation defect. The schemas grant no authorization, and validation
+involved no Production, provider, or Ubuntu mutation and no execution adapter.
+Next: `SEC-02A7 ADAPTER PORTS AND COMPATIBILITY MAPPINGS`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`. No
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
+
 ## SEC-02A5 — Receipts, failure, and evidence models
 
 Status: `IMPLEMENTED_PENDING_EXTERNAL_TEST_VALIDATION` (pure domain evidence

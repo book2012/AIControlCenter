@@ -1,0 +1,1 @@
+{"schema_version":"governance/v1","budget_id":"budget-synthetic-001","authorization_id":"authorization-synthetic-001","status":"AVAILABLE","line_items":[{"action_type":"DOCS:UPDATE","allowed_count":1,"actual_invocation_count":0,"completed_count":0,"uncertain_count":0,"remaining_count":1,"status":"AVAILABLE"}],"remaining_count":1,"violation_reason_code":null}

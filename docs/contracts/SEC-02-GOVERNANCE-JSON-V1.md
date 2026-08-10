@@ -1,11 +1,21 @@
 # SEC-02 Governance JSON v1 Contract Catalog
 
-Status: `SEC_02A1_FINAL_STATUS=GOVERNANCE_DOMAIN_AND_JSON_CONTRACT_FROZEN`
+Status: `SEC-02A6_JSON_SCHEMA_REGISTRY_AND_CONTRACT_TESTS_VALIDATED`
+
+The frozen v1 family is now implemented as 16 JSON Schema Draft 2020-12
+resources under
+`core/governance/control_plane/contracts/schemas/v1/*.json`. The deterministic
+local-only registry is
+`core/governance/control_plane/contracts/registry.py`. Valid and invalid
+fixtures plus registry, schema, and fixture contract tests live under
+`tests/governance/control_plane/`. A1 semantic names remain frozen. Schemas are
+machine enforcement, not authorization authority, and add no Production
+capability.
 
 This is the canonical v1 semantic catalog. It freezes names, ownership,
-lifecycle roles, major field families, and invariants only. It does not define
-field encodings and contains no JSON Schema implementation. Schemas and the
-registry are deferred to a later milestone.
+lifecycle roles, major field families, and invariants. The implemented schemas
+encode those frozen contracts without changing their semantics or granting
+authorization.
 
 ## Family-wide rules
 
@@ -297,5 +307,15 @@ altering consumption/retry rules requires a new major contract family and an
 explicit migration. Canonicalization and digest rules must remain deterministic
 within a version.
 
-Actual Draft 2020-12 schemas, registry entries, fixtures, and contract tests are
-future implementation work. This document does not claim their existence.
+All 16 Draft 2020-12 schemas, their exact registry bindings, and deterministic
+valid/invalid fixture contracts are validated by the successful focused
+governance regression: `173 passed in 1.39s`. The prior R1 blocker is classified
+as `SEC-02A6-R1_CONTROLLER_REGISTRY_API_ASSUMPTION_DEFECT`: the controller
+incorrectly assumed a public `registry.contract_names()` function, although the
+frozen contract required behavior rather than that exact API name. It was not
+an A6 contract implementation defect. No Production, provider, or Ubuntu
+mutation and no execution adapter were involved. This result is not a full
+repository regression. Next:
+`SEC-02A7 ADAPTER PORTS AND COMPATIBILITY MAPPINGS`. Notion remains
+`DEFERRED_UNTIL_FINAL_PHASE`. No
+`SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY` claim is made.
