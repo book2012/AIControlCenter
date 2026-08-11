@@ -10,11 +10,19 @@
   reconciled without replacing `core/shopping/` or enabling writes.
 - [x] Single-attempt WooCommerce reads and disabled Production mutation
   authority recorded.
-- [ ] `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC`: human review, approved-branch Git
-  closeout, and external documentation synchronization.
+- [x] `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC_PREPARATION`: documentation closeout
+  prepared without commit, push, external synchronization, or Production
+  access.
 
-Recommended terminal milestone:
-`SHOP-01A_REPOSITORY_AND_ARCHITECTURE_RECONCILED`.
+Terminal milestone: `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`.
+
+## Next bounded Shopping milestone
+
+- [ ] `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`.
+- [ ] Reuse existing SHOP-02 `ProductDraft` work; do not restart the Shopping
+  architecture.
+- [ ] Reconcile AI draft generation and recommendation runtime usage while
+  remaining read-only first and keeping Production mutation disabled.
 
 ## Current architecture milestone
 
@@ -30,10 +38,9 @@ Recommended terminal milestone:
 
 ## Next production-development milestone
 
-- [ ] `SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`
-  following: Architecture -> Product Domain -> WooCommerce READ-ONLY Adapter
-  -> Product Catalog API -> AI Draft Generation -> Recommendation -> Dashboard
-  -> Dry-run / Draft Workflow.
+- [ ] `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`, reusing the
+  existing SHOP-02 `ProductDraft` domain and the completed read-only Shopping
+  foundation rather than restarting the architecture.
 - [ ] Keep Production commerce writes separately governed and blocked pending
   explicit future authorization.
 

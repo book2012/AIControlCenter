@@ -8,12 +8,21 @@
   warnings` via `ops/macos/validation/run-deployment-regression-gate.sh -q`.
 - [x] SHOP-01A2 repository utilization and architecture/history
   reconciliation.
+- [x] Prepare the SHOP-01A documentation-only closeout as
+  `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`.
 - [ ] Human review of the documentation-only diff.
 - [ ] Git closeout on the approved feature branch; do not push a protected or
   Production branch.
 - [ ] Perform actual external documentation synchronization; payload status is
   `READY_FOR_FINAL_SYNC` and no synchronization is claimed yet.
-- [ ] Close as `SHOP-01A_REPOSITORY_AND_ARCHITECTURE_RECONCILED`.
+
+## SHOP-01B next bounded work
+
+- [ ] Inventory existing AI draft generation runtime usage.
+- [ ] Inventory recommendation implementation and runtime usage.
+- [ ] Reuse the existing SHOP-02 `ProductDraft` domain.
+- [ ] Remain read-only first.
+- [ ] Do not enable Production mutation.
 
 ## SEC-02A10 closure
 
@@ -25,8 +34,8 @@
 - [ ] External controller performs Git closeout.
 - [ ] Perform actual Notion external synchronization; documentation payload
   status is `READY_FOR_FINAL_SYNC`.
-- [ ] Begin `SHOP-01A_SHOPPING_PLATFORM_ARCHITECTURE_AND_READ_ONLY_FOUNDATION`
-  with read-only foundations; Production commerce writes require separate
+- [ ] Continue with `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`,
+  reusing SHOP-02 `ProductDraft`; Production commerce writes require separate
   explicit future authorization.
 
 ## SEC-02

@@ -1,5 +1,36 @@
 # MASTER
 
+## SHOP-01A — Shopping read-only foundation ready
+
+Status: `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`. SHOP-01A1 runtime
+reconciliation and SHOP-01A2 repository/architecture reconciliation are
+complete at the verified SHOP-01A2 baseline HEAD
+`55270476e4b4e8d57c041084ff8eafda889c2660`. Canonical regression:
+`2670 passed, 5 deselected, 437 warnings` via
+`ops/macos/validation/run-deployment-regression-gate.sh -q`.
+
+The Mac mini M4 is the always-on Brain and AIControlCenter is the single
+Control Plane, owning Shopping business logic and Governance, authorization,
+and orchestration. Ubuntu is a stateless infrastructure Worker only, with no
+Shopping business logic, Governance, AI workload, application state, or
+Control Plane authority. WordPress is the CMS/presentation boundary and
+WooCommerce is the Commerce Engine. `core/shopping/` is the canonical Shopping
+domain; the Shopping API is GET-only and runtime composition uses
+`build_default_shopping_service()`.
+
+Each WooCommerce read invocation permits exactly one outbound HTTP GET attempt.
+There is no automatic retry or rollback. Capabilities remain
+`write_catalog=false`, `write_executor_available=false`, and
+`production_mutation_authorized=false`. `WooCommerceControlledWriteAdapter`
+remains intercepted `ACTIVE_LIBRARY` code and is not Production enabled. No
+concrete Production outbound write transport, Production credential provider,
+runtime write construction, mutation API endpoint, or Production mutation
+authority exists.
+
+Next: `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`, reusing the
+existing SHOP-02 `ProductDraft` work without restarting Shopping architecture.
+No Git push or external Notion synchronization is claimed.
+
 ## SHOP-01A2 — Repository utilization and architecture reconciliation
 
 Status: `SHOP-01A2_REPOSITORY_UTILIZATION_AND_ARCHITECTURE_RECONCILED` at
@@ -12,7 +43,7 @@ The intercepted SHOP-03 adapter is retained as `ACTIVE_LIBRARY`, with no
 Production transport, credential provider, runtime/API wiring, or mutation
 endpoint. Repository classification and ownership are canonicalized in
 `docs/architecture/SHOP-01A2-REPOSITORY-UTILIZATION-AND-ARCHITECTURE-RECONCILIATION.md`.
-Next: `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC`.
+SHOP-01A3 closeout is recorded by the final SHOP-01A state above.
 
 ## SEC-02A10 — Architecture closure
 

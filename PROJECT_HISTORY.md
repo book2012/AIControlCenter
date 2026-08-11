@@ -1,5 +1,25 @@
 # Project History
 
+## 2026-08-11 — SHOP-01A Shopping read-only foundation closeout
+
+SHOP-01A closed at `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY` after
+SHOP-01A1 reconciled the GET-only runtime and SHOP-01A2 reconciled repository
+utilization and architecture history. The verified SHOP-01A2 baseline HEAD is
+`55270476e4b4e8d57c041084ff8eafda889c2660`; the canonical regression remains
+`2670 passed, 5 deselected, 437 warnings` via
+`ops/macos/validation/run-deployment-regression-gate.sh -q`.
+
+The closeout preserves the existing SHOP-01/02/03 history and the intercepted
+SHOP-03 adapter as non-Production `ACTIVE_LIBRARY` code. The Mac mini M4
+remains the always-on Brain, AIControlCenter the single Control Plane and owner
+of Shopping logic and Governance, Ubuntu a stateless infrastructure Worker,
+WordPress the CMS/presentation boundary, and WooCommerce the Commerce Engine.
+Shopping reads remain single-attempt and GET-only; Production mutation,
+automatic retry, and automatic rollback remain disabled. No commit hash was
+invented, no push occurred, and no external Notion synchronization occurred.
+Next: `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`, reusing the
+existing SHOP-02 `ProductDraft` work.
+
 ## 2026-08-11 — SHOP-01A2 retrospective reconciliation
 
 SHOP-01A1 reconciled the GET-only runtime at HEAD

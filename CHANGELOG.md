@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-08-11 — SHOP-01A closeout
+
+- Closed SHOP-01A1 runtime reconciliation and SHOP-01A2
+  repository/architecture reconciliation without restarting or replacing the
+  existing SHOP-01/02/03 architecture.
+- Recorded the canonical regression `2670 passed, 5 deselected, 437 warnings`
+  from `ops/macos/validation/run-deployment-regression-gate.sh -q`.
+- Production mutation remains disabled; no automatic retry or rollback was
+  enabled.
+- Final milestone: `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`.
+
 ## 2026-08-11 — SHOP-01A2 repository and architecture reconciliation
 
 - Added the canonical repository-utilization classification without marking
