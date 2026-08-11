@@ -1,5 +1,23 @@
 # AI Home Datacenter Architecture
 
+## SHOP-01A reconciled Shopping baseline
+
+SHOP-01A is retrospective baseline hardening over the existing SHOP-01/02/03
+chronology. The canonical domain remains `core/shopping/`. At SHOP-01A1 HEAD
+`f95ba9ae2133b55db06c362df321b16785f21423`, `/shopping` and the Shopping
+dashboard share `build_default_shopping_service()`. The API is GET-only; one
+read invocation permits one outbound HTTP GET attempt and automatic retry is
+disabled.
+
+The Mac mini M4 is the always-on Brain and AIControlCenter the single Control
+Plane. WordPress is CMS/presentation, WooCommerce is the Commerce Engine, and
+Ubuntu is a stateless infrastructure Worker with no Shopping business logic.
+Production mutation authority is disabled. The intercepted
+`WooCommerceControlledWriteAdapter` is retained library code, but no concrete
+Production write transport, Production credential provider, runtime/API
+wiring, or mutation endpoint exists. See the
+[`SHOP-01A2 reconciliation`](docs/architecture/SHOP-01A2-REPOSITORY-UTILIZATION-AND-ARCHITECTURE-RECONCILIATION.md).
+
 ## SEC-02 Governance Control Plane
 
 Status: `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`

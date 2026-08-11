@@ -1,5 +1,20 @@
 # TODO
 
+## SHOP-01A closeout
+
+- [x] SHOP-01A1 read-only runtime reconciliation at
+  `f95ba9ae2133b55db06c362df321b16785f21423`.
+- [x] Record canonical wrapper regression: `2670 passed, 5 deselected, 437
+  warnings` via `ops/macos/validation/run-deployment-regression-gate.sh -q`.
+- [x] SHOP-01A2 repository utilization and architecture/history
+  reconciliation.
+- [ ] Human review of the documentation-only diff.
+- [ ] Git closeout on the approved feature branch; do not push a protected or
+  Production branch.
+- [ ] Perform actual external documentation synchronization; payload status is
+  `READY_FOR_FINAL_SYNC` and no synchronization is claimed yet.
+- [ ] Close as `SHOP-01A_REPOSITORY_AND_ARCHITECTURE_RECONCILED`.
+
 ## SEC-02A10 closure
 
 - [x] Complete the A0-A10 SEC-02A architecture phase and record

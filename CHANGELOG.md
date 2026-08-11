@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 2026-08-11 — SHOP-01A2 repository and architecture reconciliation
+
+- Added the canonical repository-utilization classification without marking
+  any component deprecated or removable.
+- Reconciled SHOP-01A as retrospective baseline hardening over existing
+  SHOP-01/02/03 history; `core/shopping/` remains the canonical domain.
+- Recorded SHOP-01A1 HEAD
+  `f95ba9ae2133b55db06c362df321b16785f21423` and canonical wrapper result
+  `2670 passed, 5 deselected, 437 warnings` from
+  `ops/macos/validation/run-deployment-regression-gate.sh -q`.
+- Recorded GET-only Shopping runtime, one outbound GET attempt per invocation,
+  disabled automatic read retry, and disabled Production mutation authority.
+- Retained the intercepted SHOP-03 adapter as active library code while
+  recording the absence of a Production write transport, Production credential
+  provider, runtime/API wiring, and mutation endpoint.
+- Added a `READY_FOR_FINAL_SYNC` payload; no external synchronization occurred.
+- Next: `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC`.
+
 ## 2026-08-10 — SEC-02A architecture closure
 
 - Closed the complete A0-A10 SEC-02A architecture phase at

@@ -1,5 +1,21 @@
 # Roadmap
 
+## SHOP-01A retrospective reconciliation
+
+- [x] SHOP-01A1 read-only runtime reconciled at
+  `f95ba9ae2133b55db06c362df321b16785f21423`.
+- [x] Canonical wrapper regression: `2670 passed, 5 deselected, 437 warnings`
+  using `ops/macos/validation/run-deployment-regression-gate.sh -q`.
+- [x] SHOP-01A2 repository utilization and SHOP-01/02/03 architecture history
+  reconciled without replacing `core/shopping/` or enabling writes.
+- [x] Single-attempt WooCommerce reads and disabled Production mutation
+  authority recorded.
+- [ ] `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC`: human review, approved-branch Git
+  closeout, and external documentation synchronization.
+
+Recommended terminal milestone:
+`SHOP-01A_REPOSITORY_AND_ARCHITECTURE_RECONCILED`.
+
 ## Current architecture milestone
 
 - [x] A0-A10 SEC-02A architecture phase complete:

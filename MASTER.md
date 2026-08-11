@@ -1,5 +1,19 @@
 # MASTER
 
+## SHOP-01A2 — Repository utilization and architecture reconciliation
+
+Status: `SHOP-01A2_REPOSITORY_UTILIZATION_AND_ARCHITECTURE_RECONCILED` at
+SHOP-01A1 HEAD `f95ba9ae2133b55db06c362df321b16785f21423`. The canonical
+macOS wrapper regression is `2670 passed, 5 deselected, 437 warnings` via
+`ops/macos/validation/run-deployment-regression-gate.sh -q`. Existing
+SHOP-01/02/03 chronology is retained; `core/shopping/` remains canonical.
+Runtime reads are single-attempt and Production mutation authority is disabled.
+The intercepted SHOP-03 adapter is retained as `ACTIVE_LIBRARY`, with no
+Production transport, credential provider, runtime/API wiring, or mutation
+endpoint. Repository classification and ownership are canonicalized in
+`docs/architecture/SHOP-01A2-REPOSITORY-UTILIZATION-AND-ARCHITECTURE-RECONCILIATION.md`.
+Next: `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC`.
+
 ## SEC-02A10 — Architecture closure
 
 Status: `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`. The A0-A10

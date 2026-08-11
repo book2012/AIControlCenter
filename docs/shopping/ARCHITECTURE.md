@@ -1,5 +1,22 @@
 # AI Shopping Platform Architecture
 
+## SHOP-01A2 reconciled baseline
+
+SHOP-01A is a retrospective reconciliation of existing SHOP-01/02/03 work.
+`core/shopping/` remains the canonical domain. SHOP-01A1 HEAD is
+`f95ba9ae2133b55db06c362df321b16785f21423`; the canonical regression command
+`ops/macos/validation/run-deployment-regression-gate.sh -q` reported `2670
+passed, 5 deselected, 437 warnings`.
+
+The runtime is GET-only and composed through
+`build_default_shopping_service()` for both `/shopping` and the Shopping
+dashboard. One read invocation permits one outbound HTTP GET attempt; automatic
+retry is disabled. Production mutation authority is disabled. The intercepted
+SHOP-03 adapter remains active library code, but no Production write transport,
+Production credential provider, runtime/API wiring, or mutation endpoint
+exists. The canonical utilization matrix and history reconciliation are in
+[`SHOP-01A2-REPOSITORY-UTILIZATION-AND-ARCHITECTURE-RECONCILIATION.md`](../architecture/SHOP-01A2-REPOSITORY-UTILIZATION-AND-ARCHITECTURE-RECONCILIATION.md).
+
 ## Purpose
 
 AI Shopping Platform is a service domain inside AIControlCenter.

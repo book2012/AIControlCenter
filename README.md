@@ -1,5 +1,19 @@
 # AIControlCenter
 
+## SHOP-01A2 Repository and Architecture Reconciliation
+
+Status: `SHOP-01A2_REPOSITORY_UTILIZATION_AND_ARCHITECTURE_RECONCILED`.
+SHOP-01A is a retrospective reconciliation of existing SHOP-01/02/03 work, not
+a greenfield restart. At SHOP-01A1 HEAD
+`f95ba9ae2133b55db06c362df321b16785f21423`, the canonical wrapper
+`ops/macos/validation/run-deployment-regression-gate.sh -q` reported `2670
+passed, 5 deselected, 437 warnings`. Shopping remains GET-only with one outbound
+GET attempt per read invocation and no automatic retry. Production mutation
+authority remains disabled. See
+[`docs/architecture/SHOP-01A2-REPOSITORY-UTILIZATION-AND-ARCHITECTURE-RECONCILIATION.md`](docs/architecture/SHOP-01A2-REPOSITORY-UTILIZATION-AND-ARCHITECTURE-RECONCILIATION.md).
+Next: `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC`; Notion payload is
+`READY_FOR_FINAL_SYNC`, not synchronized.
+
 ## SEC-02A Governance Control Plane Architecture Ready
 
 Status: `SEC-02A_GOVERNANCE_CONTROL_PLANE_ARCHITECTURE_READY`

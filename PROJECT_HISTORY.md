@@ -1,5 +1,22 @@
 # Project History
 
+## 2026-08-11 — SHOP-01A2 retrospective reconciliation
+
+SHOP-01A1 reconciled the GET-only runtime at HEAD
+`f95ba9ae2133b55db06c362df321b16785f21423`; the canonical macOS validation
+wrapper reported `2670 passed, 5 deselected, 437 warnings`. SHOP-01A2 then
+classified repository utilization and reconciled the chronology of existing
+SHOP-01, SHOP-02A/B/C, SHOP-03A, and SHOP-03B1 work. This milestone did not
+restart or replace the Shopping domain and did not rewrite historical closeout
+records.
+
+The Mac mini remains the always-on Brain and AIControlCenter the single Control
+Plane. WordPress remains CMS/presentation, WooCommerce the Commerce Engine, and
+Ubuntu a stateless Worker with no Shopping business logic. Reads permit one
+outbound GET attempt per invocation. The intercepted write adapter remains
+library code, but Production transport, credentials, wiring, endpoints, and
+mutation authority remain absent. Next: `SHOP-01A3_CLOSEOUT_AND_FINAL_SYNC`.
+
 ## 2026-08-10 — SEC-02A Governance Control Plane architecture ready
 
 The A0-A10 SEC-02A architecture phase closed at
