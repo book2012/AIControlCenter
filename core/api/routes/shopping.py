@@ -2,6 +2,11 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
+from core.api.dependencies.shopping import (
+    get_product_draft_query_service,
+    get_shopping_service,
+)
+
 from core.shopping.schemas import (
     ProductSearchResponse,
     FeaturedProductListResponse,
@@ -17,14 +22,10 @@ from core.shopping.service import (
     ProductNotFoundError,
     ShoppingService,
 )
-from core.shopping.secure_runtime import (
-    build_default_shopping_service,
-)
 from core.shopping.product_drafts.read import (
     ProductDraftQueryService,
     ProductDraftReadUnavailable,
     ProductDraftRevisionNotFound,
-    UnavailableProductDraftReadSource,
 )
 
 
@@ -33,15 +34,8 @@ router = APIRouter(
     tags=["shopping"],
 )
 
-shopping = build_default_shopping_service()
-
-
-def get_product_draft_query_service() -> ProductDraftQueryService:
-    """Safe default: unavailable until a production read source is configured."""
-    return ProductDraftQueryService(UnavailableProductDraftReadSource())
-
-
 ProductDraftQuery = Annotated[ProductDraftQueryService, Depends(get_product_draft_query_service)]
+ShoppingCatalog = Annotated[ShoppingService, Depends(get_shopping_service)]
 
 
 def _product_draft_error(error: Exception) -> HTTPException:
@@ -88,24 +82,24 @@ def product_draft_revision(draft_id: str, revision_id: str, service: ProductDraf
     "/health",
     response_model=ShoppingHealthResponse,
 )
-def shopping_health():
-    return shopping.health()
+def shopping_health(service: ShoppingCatalog):
+    return service.health()
 
 
 @router.get(
     "/readiness",
     response_model=ShoppingReadinessResponse,
 )
-def shopping_readiness():
-    return shopping.readiness()
+def shopping_readiness(service: ShoppingCatalog):
+    return service.readiness()
 
 
 @router.get(
     "/capabilities",
     response_model=ShoppingCapabilitiesResponse,
 )
-def shopping_capabilities():
-    return shopping.capabilities()
+def shopping_capabilities(service: ShoppingCatalog):
+    return service.capabilities()
 
 
 
@@ -113,8 +107,8 @@ def shopping_capabilities():
     "/integrations",
     response_model=ShoppingIntegrationResponse,
 )
-def shopping_integrations():
-    return shopping.integration_status()
+def shopping_integrations(service: ShoppingCatalog):
+    return service.integration_status()
 
 
 
@@ -125,6 +119,7 @@ def shopping_integrations():
     response_model=ProductSearchResponse,
 )
 def shopping_search(
+    service: ShoppingCatalog,
     q: str | None = Query(
         default=None,
         min_length=1,
@@ -170,7 +165,7 @@ def shopping_search(
             },
         )
 
-    return shopping.search_products(
+    return service.search_products(
         query=q,
         category=category,
         minimum_price=minimum_price,
@@ -186,13 +181,14 @@ def shopping_search(
     response_model=FeaturedProductListResponse,
 )
 def shopping_featured_products(
+    service: ShoppingCatalog,
     limit: int = Query(
         default=4,
         ge=1,
         le=20,
     ),
 ):
-    return shopping.list_featured_products(
+    return service.list_featured_products(
         limit=limit,
     )
 
@@ -201,8 +197,8 @@ def shopping_featured_products(
     "/categories",
     response_model=ShoppingCategoryListResponse,
 )
-def shopping_categories():
-    return shopping.list_categories()
+def shopping_categories(service: ShoppingCatalog):
+    return service.list_categories()
 
 
 @router.get(
@@ -210,10 +206,11 @@ def shopping_categories():
     response_model=ProductListResponse,
 )
 def shopping_products(
+    service: ShoppingCatalog,
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
 ):
-    return shopping.list_products(
+    return service.list_products(
         page=page,
         page_size=page_size,
     )
@@ -223,9 +220,9 @@ def shopping_products(
     "/products/{product_id}",
     response_model=ProductResponse,
 )
-def shopping_product(product_id: str):
+def shopping_product(product_id: str, service: ShoppingCatalog):
     try:
-        return shopping.get_product(product_id)
+        return service.get_product(product_id)
     except ProductNotFoundError as error:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

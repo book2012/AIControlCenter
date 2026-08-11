@@ -4,7 +4,7 @@ from fastapi.testclient import TestClient
 import pytest
 
 from core.api.app import app
-from core.api.routes import shopping as shopping_routes
+from core.api.dependencies.shopping import get_shopping_service
 from core.shopping.adapters.mock_commerce import (
     MockCommerceCatalogAdapter,
 )
@@ -20,16 +20,15 @@ client = TestClient(app)
 
 @pytest.fixture(autouse=True)
 def use_mock_catalog_for_api_tests():
-    original_catalog = shopping_routes.shopping.catalog
-
-    shopping_routes.shopping.catalog = (
-        MockCommerceCatalogAdapter()
+    service = ShoppingService(
+        catalog=MockCommerceCatalogAdapter(),
     )
+    app.dependency_overrides[get_shopping_service] = lambda: service
 
     try:
         yield
     finally:
-        shopping_routes.shopping.catalog = original_catalog
+        app.dependency_overrides.pop(get_shopping_service, None)
 
 
 def test_mock_catalog_lists_products():

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+import pytest
 
 from core.api.routes import shopping
 from core.dashboard.api import DashboardAPI
@@ -8,7 +9,7 @@ from core.shopping.product_drafts.read import (
 )
 
 
-def test_product_draft_routes_are_get_only_and_default_is_unavailable():
+def test_product_draft_routes_are_get_only_and_missing_runtime_fails_closed():
     routes = [route for route in shopping.router.routes if "product-drafts" in route.path]
     assert [route.path for route in routes] == [
         "/shopping/product-drafts", "/shopping/product-drafts/{draft_id}",
@@ -17,9 +18,8 @@ def test_product_draft_routes_are_get_only_and_default_is_unavailable():
     assert all(route.methods == {"GET"} for route in routes)
     app = FastAPI()
     app.include_router(shopping.router)
-    response = TestClient(app).get("/shopping/product-drafts")
-    assert response.status_code == 503
-    assert response.json()["detail"]["code"] == "product_draft_read_unavailable"
+    with pytest.raises(RuntimeError, match="Shopping runtime is not composed"):
+        TestClient(app).get("/shopping/product-drafts")
 
 
 def test_route_dependency_can_be_replaced_with_empty_available_source():

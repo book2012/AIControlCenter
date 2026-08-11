@@ -1,17 +1,21 @@
 from fastapi.testclient import TestClient
 
 from core.api.app import app
-from core.api.routes import dashboard as dashboard_routes
+from core.api.dependencies.shopping import (
+    get_product_draft_query_service,
+    get_shopping_runtime,
+    get_shopping_service,
+)
 from core.api.routes import shopping as shopping_routes
-from core.shopping.secure_runtime import build_default_shopping_service
 from core.shopping.config import ShoppingSettings
+from core.shopping.runtime_composition import ShoppingRuntime
 from core.shopping.service import ShoppingService
 
 
 client = TestClient(app)
 
 
-def test_shopping_routes_are_read_only_and_share_canonical_composition():
+def test_shopping_routes_are_read_only_and_use_application_runtime():
     shopping_api_routes = [
         route
         for route in shopping_routes.router.routes
@@ -20,14 +24,14 @@ def test_shopping_routes_are_read_only_and_share_canonical_composition():
 
     assert shopping_api_routes
     assert all(route.methods == {"GET"} for route in shopping_api_routes)
-    assert (
-        shopping_routes.build_default_shopping_service
-        is build_default_shopping_service
+    assert isinstance(app.state.shopping_runtime, ShoppingRuntime)
+    assert get_shopping_runtime.__module__ == "core.api.dependencies.shopping"
+    assert get_shopping_service.__module__ == "core.api.dependencies.shopping"
+    assert get_product_draft_query_service.__module__ == (
+        "core.api.dependencies.shopping"
     )
-    assert (
-        dashboard_routes.build_default_shopping_service
-        is build_default_shopping_service
-    )
+    assert not hasattr(shopping_routes, "build_default_shopping_service")
+    assert not hasattr(shopping_routes, "shopping")
 
 
 def test_shopping_health_api():

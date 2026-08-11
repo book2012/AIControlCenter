@@ -84,18 +84,12 @@ class FakeShoppingService:
         }
 
 
-def test_default_dashboard_projection_contract(
-    monkeypatch,
-) -> None:
-    monkeypatch.setattr(
-        dashboard_route,
-        "build_default_shopping_service",
-        FakeShoppingService,
-    )
-
+def test_default_dashboard_projection_contract() -> None:
     payload = (
         dashboard_route
-        .build_default_shopping_management_dashboard_payload()
+        .build_default_shopping_management_dashboard_payload(
+            FakeShoppingService()
+        )
     )
 
     assert payload["schema_version"] == "1.0"
@@ -124,19 +118,13 @@ def test_default_dashboard_projection_contract(
     assert payload["integration"]["read_only"] is True
 
 
-def test_dashboard_json_contains_injected_management_section(
-    monkeypatch,
-) -> None:
-    monkeypatch.setattr(
-        dashboard_route,
-        "build_default_shopping_service",
-        FakeShoppingService,
-    )
-
+def test_dashboard_json_contains_injected_management_section() -> None:
     payload = DashboardAPI(
         shopping_management=(
-            dashboard_route
-            .build_default_shopping_management_dashboard_payload
+            lambda: dashboard_route
+            .build_default_shopping_management_dashboard_payload(
+                FakeShoppingService()
+            )
         )
     ).status(include_datacenter=False)
 

@@ -7,6 +7,7 @@ from core.api.routes.ollama import router as ollama_router
 from core.api.routes.model_governance import router as model_governance_router
 from core.api.routes.governance_audit import router as governance_audit_router
 from core.api.routes.deployment import router as deployment_router
+from core.shopping.runtime_composition import build_shopping_runtime
 
 
 def create_app() -> FastAPI:
@@ -16,6 +17,7 @@ def create_app() -> FastAPI:
         description="AI Home Infrastructure Control Plane",
         version="0.1.0",
     )
+    app.state.shopping_runtime = build_shopping_runtime()
 
     app.include_router(health.router)
     app.include_router(homepage.router)

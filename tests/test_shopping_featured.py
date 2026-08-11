@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
 from core.api.app import app
-from core.api.routes import shopping as shopping_routes
+from core.api.dependencies.shopping import get_shopping_service
 from core.shopping.adapters.mock_commerce import (
     MockCommerceCatalogAdapter,
 )
@@ -57,13 +57,12 @@ def test_featured_products_prioritize_in_stock():
 
 
 def test_featured_products_api():
-    original_catalog = shopping_routes.shopping.catalog
+    service = ShoppingService(
+        catalog=MockCommerceCatalogAdapter(),
+    )
+    app.dependency_overrides[get_shopping_service] = lambda: service
 
     try:
-        shopping_routes.shopping.catalog = (
-            MockCommerceCatalogAdapter()
-        )
-
         response = client.get(
             "/shopping/featured-products?limit=2"
         )
@@ -77,7 +76,7 @@ def test_featured_products_api():
         assert data["strategy"] == "in_stock_first"
         assert len(data["items"]) == 2
     finally:
-        shopping_routes.shopping.catalog = original_catalog
+        app.dependency_overrides.pop(get_shopping_service, None)
 
 
 def test_featured_products_limit_validation():

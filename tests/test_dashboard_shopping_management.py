@@ -206,21 +206,14 @@ def test_dashboard_projection_result_is_mutation_isolated() -> None:
 
 
 def test_default_route_projection_isolates_service_construction(
-    monkeypatch,
 ) -> None:
     class BrokenShoppingService:
-        def __init__(self):
+        def health(self):
             raise RuntimeError("credential detail")
-
-    monkeypatch.setattr(
-        dashboard_route,
-        "build_default_shopping_service",
-        BrokenShoppingService,
-    )
 
     payload = (
         dashboard_route
-        .build_default_shopping_management_dashboard_payload()
+        .build_default_shopping_management_dashboard_payload(BrokenShoppingService())
     )
 
     assert payload["status"] == "UNAVAILABLE"
@@ -345,7 +338,4 @@ def test_dashboard_route_remains_get_only_and_wires_projection(
 
     projection = shopping_keywords[0].value
 
-    assert isinstance(projection, ast.Name)
-    assert projection.id == (
-        "build_default_shopping_management_dashboard_payload"
-    )
+    assert isinstance(projection, ast.Lambda)

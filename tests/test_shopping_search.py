@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
 from core.api.app import app
-from core.api.routes import shopping as shopping_routes
+from core.api.dependencies.shopping import get_shopping_service
 from core.shopping.adapters.mock_commerce import (
     MockCommerceCatalogAdapter,
 )
@@ -61,13 +61,12 @@ def test_service_filters_in_stock():
 
 
 def test_search_api():
-    original_catalog = shopping_routes.shopping.catalog
+    service = ShoppingService(
+        catalog=MockCommerceCatalogAdapter(),
+    )
+    app.dependency_overrides[get_shopping_service] = lambda: service
 
     try:
-        shopping_routes.shopping.catalog = (
-            MockCommerceCatalogAdapter()
-        )
-
         response = client.get(
             "/shopping/search?q=AI&page=1&page_size=10"
         )
@@ -81,7 +80,7 @@ def test_search_api():
         assert data["filters"]["query"] == "AI"
         assert data["items"]
     finally:
-        shopping_routes.shopping.catalog = original_catalog
+        app.dependency_overrides.pop(get_shopping_service, None)
 
 
 def test_search_price_range_validation():
