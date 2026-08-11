@@ -306,7 +306,8 @@ class GenerationOperationClaim:
 class ProductDraftGenerationOperationCoordinator(Protocol):
     """Atomically consumes operation keys within the coordinator's durability scope."""
 
-    def claim(self, key: str, command_digest: str) -> GenerationOperationClaim: ...
+    def claim(self, key: str, command_digest: str, draft_id: str,
+              revision_id: str) -> GenerationOperationClaim: ...
     def complete(self, key: str, command_digest: str,
                  result: ProductDraftGenerationResult) -> None: ...
     def fail(self, key: str, command_digest: str) -> None: ...
@@ -315,6 +316,8 @@ class ProductDraftGenerationOperationCoordinator(Protocol):
 @dataclass(slots=True)
 class _OperationRecord:
     command_digest: str
+    draft_id: str
+    revision_id: str
     state: str = "IN_FLIGHT"
     result: ProductDraftGenerationResult | None = None
 
@@ -328,15 +331,16 @@ class InMemoryProductDraftGenerationOperationCoordinator:
         self._lock = Lock()
         self._operations: dict[str, _OperationRecord] = {}
 
-    def claim(self, key: str, command_digest: str) -> GenerationOperationClaim:
+    def claim(self, key: str, command_digest: str, draft_id: str,
+              revision_id: str) -> GenerationOperationClaim:
         require_text(key, "key")
         require_text(command_digest, "command_digest")
         with self._lock:
             record = self._operations.get(key)
             if record is None:
-                self._operations[key] = _OperationRecord(command_digest)
+                self._operations[key] = _OperationRecord(command_digest, draft_id, revision_id)
                 return GenerationOperationClaim(GenerationOperationClaimStatus.CLAIMED)
-            if record.command_digest != command_digest:
+            if (record.command_digest, record.draft_id, record.revision_id) != (command_digest, draft_id, revision_id):
                 raise GenerationOperationConflict("idempotency key conflicts with another command")
             if record.state == "COMPLETED":
                 return GenerationOperationClaim(GenerationOperationClaimStatus.COMPLETED,
@@ -372,7 +376,8 @@ class ProductDraftGenerationService:
         if not isinstance(command, GenerateProductDraftCommand):
             raise ValueError("command must be a GenerateProductDraftCommand")
         digest = command.command_digest
-        claim = self._coordinator.claim(command.idempotency_key, digest)
+        claim = self._coordinator.claim(command.idempotency_key, digest,
+                                        command.draft_id, command.revision_id)
         if claim.status is GenerationOperationClaimStatus.COMPLETED:
             if claim.result is None:
                 raise RuntimeError("completed operation has no result")

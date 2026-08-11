@@ -20,6 +20,7 @@ from .generation import (
     ProductDraftGenerationService, StructuredGenerationResult,
     parse_generation_contract,
 )
+from .generation_transactions import DurableGenerationTransactionPort
 
 __all__ = [
     "ApplicationResult", "AuditEvent", "AuditEventPort",
@@ -36,4 +37,7 @@ __all__ = [
     "ProductDraftReviewService", "ProductDraftValidationService", "ReviewCommand",
     "ReviewOperation", "StaticAuthorizationAdapter", "StructuredGenerationResult",
     "ValidationFinding", "ValidationRulesPort", "parse_generation_contract",
+    "DurableGenerationTransactionPort",
 ]
+
+__all__.sort()
