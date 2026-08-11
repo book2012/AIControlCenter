@@ -89,19 +89,13 @@ class ShoppingService:
         }
 
     def capabilities(self) -> dict:
-        write_enabled = self.settings.write_mode in {
-            "controlled_write",
-            "automated",
-        }
-
         return {
             "service": "AIShoppingPlatform",
             "read_catalog": self.settings.enabled,
-            "write_catalog": (
-                self.settings.enabled
-                and write_enabled
-                and self.settings.approval_required
-            ),
+            "write_catalog": False,
+            "configured_write_mode": self.settings.write_mode,
+            "write_executor_available": False,
+            "production_mutation_authorized": False,
             "generate_ai_content": (
                 self.settings.enabled
                 and self.settings.ai_enabled

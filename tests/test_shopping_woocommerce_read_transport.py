@@ -37,20 +37,32 @@ def test_connect_read_timeout_and_redirect_policy():
     assert session.calls[0]["timeout"] == (5.0, 15.0)
     assert session.calls[0]["allow_redirects"] is False
 
-def test_retry_status_retries_once():
-    session = Session([Response(503), Response(200)])
-    transport = WooCommerceReadTransportSession(session=session, monotonic=Clock([0.0, 0.0, 1.0, 1.0, 2.0]))
-    response = transport.get("https://shop.example")
-    assert response.status_code == 200
-    assert len(session.calls) == 2
+def test_retry_statuses_make_exactly_one_get_attempt():
+    for status_code in (429, 502, 503, 504):
+        session = Session([Response(status_code), Response(200)])
+        transport = WooCommerceReadTransportSession(
+            session=session,
+            max_retries=99,
+            monotonic=Clock([0.0, 1.0, 1.0]),
+        )
+        response = transport.get("https://shop.example")
+        assert response.status_code == status_code
+        assert len(session.calls) == 1
 
-def test_retry_after_is_capped_at_five_seconds():
+def test_retry_after_cannot_sleep_or_retry():
     sleeps = []
     session = Session([Response(429, {"Retry-After": "60"}), Response(200)])
-    transport = WooCommerceReadTransportSession(session=session, monotonic=Clock([0.0, 0.0, 1.0, 1.0, 1.0, 2.0]), sleep=sleeps.append)
+    transport = WooCommerceReadTransportSession(
+        session=session,
+        max_retries=1,
+        retry_after_max_seconds=5.0,
+        monotonic=Clock([0.0, 1.0, 1.0]),
+        sleep=sleeps.append,
+    )
     response = transport.get("https://shop.example")
-    assert response.status_code == 200
-    assert sleeps == [5.0]
+    assert response.status_code == 429
+    assert len(session.calls) == 1
+    assert sleeps == []
 
 def test_non_retry_status_does_not_retry():
     session = Session([Response(400)])

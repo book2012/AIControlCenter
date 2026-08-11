@@ -1,11 +1,33 @@
 from fastapi.testclient import TestClient
 
 from core.api.app import app
+from core.api.routes import dashboard as dashboard_routes
+from core.api.routes import shopping as shopping_routes
+from core.shopping.secure_runtime import build_default_shopping_service
 from core.shopping.config import ShoppingSettings
 from core.shopping.service import ShoppingService
 
 
 client = TestClient(app)
+
+
+def test_shopping_routes_are_read_only_and_share_canonical_composition():
+    shopping_api_routes = [
+        route
+        for route in shopping_routes.router.routes
+        if getattr(route, "path", "").startswith("/shopping")
+    ]
+
+    assert shopping_api_routes
+    assert all(route.methods == {"GET"} for route in shopping_api_routes)
+    assert (
+        shopping_routes.build_default_shopping_service
+        is build_default_shopping_service
+    )
+    assert (
+        dashboard_routes.build_default_shopping_service
+        is build_default_shopping_service
+    )
 
 
 def test_shopping_health_api():
@@ -49,6 +71,29 @@ def test_shopping_capabilities_are_safe_by_default():
     assert data["generate_ai_content"] is False
     assert data["execute_automation"] is False
     assert data["approval_required"] is True
+    assert data["write_executor_available"] is False
+    assert data["production_mutation_authorized"] is False
+
+
+def test_configured_write_mode_does_not_claim_mutation_authority():
+    for write_mode in ("controlled_write", "automated"):
+        settings = ShoppingSettings(
+            enabled=True,
+            environment="test",
+            runtime="virtual",
+            deployment_target="mac-mini-m4",
+            write_mode=write_mode,
+            approval_required=True,
+            automation_enabled=True,
+            ai_enabled=False,
+        )
+
+        capabilities = ShoppingService(settings=settings).capabilities()
+
+        assert capabilities["configured_write_mode"] == write_mode
+        assert capabilities["write_catalog"] is False
+        assert capabilities["write_executor_available"] is False
+        assert capabilities["production_mutation_authorized"] is False
 
 
 def test_invalid_write_mode_is_not_ready():

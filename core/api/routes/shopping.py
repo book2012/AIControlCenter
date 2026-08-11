@@ -17,6 +17,9 @@ from core.shopping.service import (
     ProductNotFoundError,
     ShoppingService,
 )
+from core.shopping.secure_runtime import (
+    build_default_shopping_service,
+)
 from core.shopping.product_drafts.read import (
     ProductDraftQueryService,
     ProductDraftReadUnavailable,
@@ -30,7 +33,7 @@ router = APIRouter(
     tags=["shopping"],
 )
 
-shopping = ShoppingService()
+shopping = build_default_shopping_service()
 
 
 def get_product_draft_query_service() -> ProductDraftQueryService:

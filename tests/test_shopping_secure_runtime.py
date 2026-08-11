@@ -13,6 +13,9 @@ from core.shopping.secure_runtime import (
     load_secure_woocommerce_read_settings,
     secure_runtime_contract_manifest,
 )
+from core.shopping.product_drafts.deployment.live import (
+    WooCommerceControlledWriteAdapter,
+)
 
 
 def write_secret(
@@ -164,6 +167,23 @@ def test_default_profile_preserves_mock_runtime(
     ] == "mock"
 
 
+def test_default_runtime_does_not_construct_live_write_adapter(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def forbidden_constructor(*args, **kwargs):
+        raise AssertionError("live write adapter constructed")
+
+    monkeypatch.setattr(
+        WooCommerceControlledWriteAdapter,
+        "__init__",
+        forbidden_constructor,
+    )
+
+    service = build_default_shopping_service(environment={})
+
+    assert service.capabilities()["write_executor_available"] is False
+
+
 def test_woocommerce_profile_uses_secure_provider(
     tmp_path: Path,
     monkeypatch: pytest.MonkeyPatch,
@@ -222,6 +242,8 @@ def test_secure_runtime_contract_freezes_safety() -> None:
     assert contract["automation_enabled"] is False
     assert contract["ai_enabled"] is False
     assert contract["write_methods_added"] is False
+    assert contract["write_executor_available"] is False
+    assert contract["production_mutation_authorized"] is False
     assert (
         contract["persistent_activation_authorized"]
         is False

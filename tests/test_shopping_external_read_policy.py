@@ -14,6 +14,9 @@ def test_manifest_is_get_only_and_deny_by_default():
     assert manifest["default_decision"] == "DENY"
     assert manifest["authorization_before_network"] is True
     assert manifest["http"]["allowed_methods"] == ["GET"]
+    assert manifest["http"]["max_retries"] == 0
+    assert manifest["http"]["retry_status_codes"] == []
+    assert manifest["http"]["max_retry_after_seconds"] == 0
     assert manifest["safety"]["write_operations_enabled"] is False
 
 

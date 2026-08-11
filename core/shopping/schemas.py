@@ -34,6 +34,9 @@ class ShoppingCapabilitiesResponse(BaseModel):
     generate_ai_content: bool
     execute_automation: bool
     approval_required: bool
+    configured_write_mode: str
+    write_executor_available: bool
+    production_mutation_authorized: bool
 
 
 class ProductResponse(BaseModel):

@@ -351,6 +351,8 @@ def secure_runtime_contract_manifest() -> dict[str, Any]:
         "automation_enabled": False,
         "ai_enabled": False,
         "write_methods_added": False,
+        "write_executor_available": False,
+        "production_mutation_authorized": False,
         "ubuntu_secret_loading_allowed": False,
         "persistent_activation_authorized": False,
     }
