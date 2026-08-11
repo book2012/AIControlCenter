@@ -32,7 +32,7 @@ def launchagent(home: Path) -> dict[str, Any]:
     resolved = paths(home)
     return {
         "Label": LABEL,
-        "ProgramArguments": ["/bin/bash", str(resolved["runner"])],
+        "ProgramArguments": [str(resolved["runner"])],
         "EnvironmentVariables": {
             "AICONTROLCENTER_DATA_ROOT": str(resolved["data_root"]),
             "HOME": str(home),

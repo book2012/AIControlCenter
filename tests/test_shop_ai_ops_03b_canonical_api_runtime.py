@@ -59,17 +59,27 @@ def test_launchagent_render_is_deterministic_and_user_relative() -> None:
     first = module.render(home)
     assert first == module.render(home)
     payload = plistlib.loads(first)
+    installed_runner = (
+        "/Users/operator/Library/Application Support/AIControlCenter/bin/"
+        "run-canonical-api-immutable-source.sh"
+    )
     assert payload["Label"] == "com.aicontrolcenter.api"
+    assert payload["ProgramArguments"] == [installed_runner]
+    assert str(RUNNER) not in payload["ProgramArguments"]
     assert payload["EnvironmentVariables"]["AICONTROLCENTER_DATA_ROOT"] == (
         "/Users/operator/Library/Application Support/AIControlCenter/data"
     )
     assert payload["KeepAlive"] is True
     assert payload["RunAtLoad"] is True
+    assert b"core.api.shadow:app" not in first
+    assert b"18100" not in first
 
 
 def test_iac_plan_is_pure_and_activation_is_next_task_only() -> None:
     module = load_iac()
-    plan = module.build_plan(ROOT, Path("/Users/operator"), 501)
+    home = Path("/Users/operator")
+    plan = module.build_plan(ROOT, home, 501)
+    rendered = plistlib.loads(module.render(home))
     assert plan["write_operations_executed"] is False
     assert plan["activation_authorized"] is False
     assert plan["contract"] == {
@@ -80,4 +90,25 @@ def test_iac_plan_is_pure_and_activation_is_next_task_only() -> None:
         "port": 58081,
         "data_root": "/Users/operator/Library/Application Support/AIControlCenter/data",
     }
+    assert plan == module.build_plan(ROOT, home, 501)
+    assert plan["install"][0]["destination"] == rendered["ProgramArguments"][0]
+    assert plan["contract"]["data_root"] == rendered["EnvironmentVariables"]["AICONTROLCENTER_DATA_ROOT"]
     assert plan["activation_next_task_only"][0][0:2] == ["launchctl", "bootstrap"]
+
+
+def test_render_is_write_free_and_iac_executes_no_launchctl(tmp_path: Path, monkeypatch) -> None:
+    module = load_iac()
+
+    def unexpected_subprocess(*args: object, **kwargs: object) -> None:
+        raise AssertionError(f"unexpected subprocess execution: {args!r} {kwargs!r}")
+
+    monkeypatch.setattr(subprocess, "run", unexpected_subprocess)
+    home = tmp_path / "operator"
+    before = set(tmp_path.rglob("*"))
+    payload = plistlib.loads(module.render(home))
+    plan = module.build_plan(ROOT, home, 501)
+    after = set(tmp_path.rglob("*"))
+
+    assert before == after
+    assert payload["ProgramArguments"][0] == plan["install"][0]["destination"]
+    assert "launchctl" not in IAC.read_text(encoding="utf-8").split("def main", 1)[1]
