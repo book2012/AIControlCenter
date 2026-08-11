@@ -1,4 +1,4 @@
-"""SHOP-02C ProductDraft validation and human-review application API."""
+"""Explicit ProductDraft validation, review, and generation application API."""
 
 from .idempotency import IdempotencyKeyReuseConflict, InMemoryIdempotencyStore
 from .ports import (AuditEvent, AuditEventPort, AuthorizationDecision,
@@ -10,13 +10,30 @@ from .review import (ProductDraftReviewService, ReviewCommand,
 from .validation import (ContractValidationRules, FindingSeverity,
                          ProductDraftValidationService, ValidationFinding,
                          ValidationRulesPort)
+from .generation import (
+    CanonicalProviderProductDraftGenerationAdapter, GenerateProductDraftCommand,
+    GenerationContractError, GenerationOperationConflict,
+    GenerationOperationInFlight, GenerationOperationTerminalFailure,
+    InMemoryProductDraftGenerationOperationCoordinator,
+    ProductDraftGenerationAuditProjection, ProductDraftGenerationOperationCoordinator,
+    ProductDraftGenerationPort, ProductDraftGenerationResult,
+    ProductDraftGenerationService, StructuredGenerationResult,
+    parse_generation_contract,
+)
 
 __all__ = [
     "ApplicationResult", "AuditEvent", "AuditEventPort",
     "AuthorizationDecision", "AuthorizationDecisionValue", "AuthorizationPort",
-    "ContractValidationRules", "FindingSeverity", "IdempotencyKeyReuseConflict",
-    "InMemoryAuditAdapter", "InMemoryIdempotencyStore",
-    "ProductDraftReviewService", "ProductDraftValidationService",
-    "ReviewCommand", "ReviewOperation", "StaticAuthorizationAdapter",
-    "ValidationFinding", "ValidationRulesPort",
+    "CanonicalProviderProductDraftGenerationAdapter", "ContractValidationRules",
+    "FindingSeverity", "GenerateProductDraftCommand", "GenerationContractError",
+    "GenerationOperationConflict", "GenerationOperationInFlight",
+    "GenerationOperationTerminalFailure",
+    "IdempotencyKeyReuseConflict", "InMemoryAuditAdapter",
+    "InMemoryIdempotencyStore", "InMemoryProductDraftGenerationOperationCoordinator",
+    "ProductDraftGenerationAuditProjection",
+    "ProductDraftGenerationOperationCoordinator", "ProductDraftGenerationPort",
+    "ProductDraftGenerationResult", "ProductDraftGenerationService",
+    "ProductDraftReviewService", "ProductDraftValidationService", "ReviewCommand",
+    "ReviewOperation", "StaticAuthorizationAdapter", "StructuredGenerationResult",
+    "ValidationFinding", "ValidationRulesPort", "parse_generation_contract",
 ]
