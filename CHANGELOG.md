@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-08-11 — SHOP-AI-01A documentation closeout
+
+- Closed `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified
+  implementation HEAD `52db3600ae76c70926e27ce930be70fe34f98452` and recorded
+  the verified canonical regression `2691 passed, 5 deselected, 437 warnings`.
+- Documented reuse of canonical `core/shopping/`, SHOP-02 `ProductDraft`,
+  existing `ProposedFields`, immutable revisions, and canonical
+  `core.providers.ProviderAdapter` under structured contract `1.0.0`.
+- Documented the AI provenance-bearing `DRAFT` candidate, snapshotted source
+  context, traceable provider request ID, one injected provider, bounded
+  timeout, `RetryPolicy(max_attempts=1)`, and no fallback.
+- Documented at-most-one provider invocation per consumed operation key within
+  the injected coordinator's durability scope and concurrent duplicate
+  suppression. The in-memory coordinator remains non-production; no global
+  exactly-once guarantee is claimed.
+- Added no runtime or test changes. Durable persistence/ledger/transaction,
+  generation API or Dashboard mutation, recommendations, Commerce writes,
+  Production mutation authority, automatic retry, and rollback remain absent.
+- Next: `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`; separate
+  future stream: `SHOP-REC-01A_RECOMMENDATION_ARCHITECTURE`.
+
 ## 2026-08-11 — SHOP-01A closeout
 
 - Closed SHOP-01A1 runtime reconciliation and SHOP-01A2

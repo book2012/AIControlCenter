@@ -1,5 +1,29 @@
 # Project History
 
+## 2026-08-11 — SHOP-AI-01A ProductDraft generation foundation
+
+Closed `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified
+implementation HEAD `52db3600ae76c70926e27ce930be70fe34f98452`; canonical
+regression was `2691 passed, 5 deselected, 437 warnings`. The milestone reused
+the canonical Shopping domain, SHOP-02 ProductDraft and ProposedFields,
+immutable revision candidates, and the canonical provider adapter. Contract
+`1.0.0` prepares AI provenance-bearing candidates that remain `DRAFT`.
+
+One injected provider is called with one attempt, a bounded timeout, and no
+fallback. Source context is snapshotted and provider request IDs remain
+traceable. Consuming the operation key before invocation provides at-most-one
+provider invocation within the injected coordinator's durability scope and
+suppresses concurrent duplicates. The coordinator is in-memory,
+non-production, and does not establish global exactly-once semantics.
+
+No durable persistence or operation ledger, transactional Unit of Work,
+generation mutation surface, recommendation/ranking engine, WooCommerce write,
+Production authority, retry, rollback, validation, approval, or deployment
+intent was added. `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`
+is next and begins with persistence/transaction architecture discovery.
+`SHOP-REC-01A_RECOMMENDATION_ARCHITECTURE` remains separate. Ubuntu owns no
+ProductDraft or AI application state.
+
 ## 2026-08-11 — SHOP-01A Shopping read-only foundation closeout
 
 SHOP-01A closed at `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY` after
@@ -17,8 +41,9 @@ WordPress the CMS/presentation boundary, and WooCommerce the Commerce Engine.
 Shopping reads remain single-attempt and GET-only; Production mutation,
 automatic retry, and automatic rollback remain disabled. No commit hash was
 invented, no push occurred, and no external Notion synchronization occurred.
-Next: `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`, reusing the
-existing SHOP-02 `ProductDraft` work.
+Next: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION`, reusing the existing
+SHOP-02 `ProductDraft` work, followed by
+`SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`.
 
 ## 2026-08-11 — SHOP-01A2 retrospective reconciliation
 

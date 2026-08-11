@@ -1,5 +1,36 @@
 # AI Shopping Platform Architecture
 
+## SHOP-AI-01A ProductDraft generation foundation
+
+`SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` preserves
+`core/shopping/` as the canonical domain and reuses the SHOP-02 ProductDraft
+aggregate, existing `ProposedFields`, and immutable revision construction.
+Structured generation contract `1.0.0` accepts only the existing proposed
+fields. Generated values receive AI `SuggestionProvenance`; each candidate
+remains `LifecycleState.DRAFT`. Generation does not validate, approve, create
+deployment intent, persist, or expose a mutation surface.
+
+The Shopping adapter reuses canonical `core.providers.ProviderAdapter`. It has
+one injected provider, `RetryPolicy(max_attempts=1)`, a timeout bounded to 60
+seconds, and no provider fallback. The command snapshots source context as
+canonical JSON; provider request identity remains in result and audit
+projection. The operation key is claimed before provider invocation, yielding
+**AT-MOST-ONE provider invocation per consumed operation key within the
+injected coordinator's durability scope** and concurrent duplicate
+suppression. It is not a global exactly-once guarantee. The current
+`InMemoryProductDraftGenerationOperationCoordinator` is explicitly
+non-production.
+
+Durable ProductDraft persistence, durable operation ledger, transactional
+revision/audit/operation Unit of Work, generation API, Dashboard generation
+mutation, recommendation/ranking, WooCommerce write integration, Production
+mutation authority, automatic retry, and automatic rollback are not
+implemented. Next:
+`SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`, starting with
+architecture/discovery of existing persistence and transaction conventions.
+No ProductDraft or AI application state may reside on Ubuntu. Canonical detail:
+[`SHOP-AI-01A-PRODUCT-DRAFT-GENERATION-FOUNDATION.md`](../architecture/SHOP-AI-01A-PRODUCT-DRAFT-GENERATION-FOUNDATION.md).
+
 ## SHOP-01A2 reconciled baseline
 
 SHOP-01A is a retrospective reconciliation of existing SHOP-01/02/03 work.

@@ -1,5 +1,22 @@
 # TODO
 
+## SHOP-AI-01A closeout and next bound
+
+- [x] Close `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified
+  HEAD `52db3600ae76c70926e27ce930be70fe34f98452`.
+- [x] Record canonical regression: `2691 passed, 5 deselected, 437 warnings`.
+- [x] Document scoped at-most-one invocation and the non-production in-memory
+  coordinator without claiming global exactly-once semantics.
+- [ ] `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`: first perform
+  architecture/discovery of existing durable persistence and transaction
+  conventions.
+- [ ] Design durable ProductDraft persistence, generation operation ledger,
+  and transactional revision + audit + operation Unit of Work on the Mac
+  Control Plane.
+- [ ] Keep ProductDraft and AI application state off Ubuntu.
+- [ ] `SHOP-REC-01A_RECOMMENDATION_ARCHITECTURE` remains a separate future
+  stream.
+
 ## SHOP-01A closeout
 
 - [x] SHOP-01A1 read-only runtime reconciliation at
@@ -16,11 +33,11 @@
 - [ ] Perform actual external documentation synchronization; payload status is
   `READY_FOR_FINAL_SYNC` and no synchronization is claimed yet.
 
-## SHOP-01B next bounded work
+## SHOP-AI next bounded work
 
-- [ ] Inventory existing AI draft generation runtime usage.
-- [ ] Inventory recommendation implementation and runtime usage.
-- [ ] Reuse the existing SHOP-02 `ProductDraft` domain.
+- [x] Inventory and implement the bounded AI draft generation foundation.
+- [ ] Discover durable persistence and transaction conventions.
+- [x] Reuse the existing SHOP-02 `ProductDraft` domain.
 - [ ] Remain read-only first.
 - [ ] Do not enable Production mutation.
 
@@ -34,7 +51,7 @@
 - [ ] External controller performs Git closeout.
 - [ ] Perform actual Notion external synchronization; documentation payload
   status is `READY_FOR_FINAL_SYNC`.
-- [ ] Continue with `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`,
+- [ ] Continue with `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`,
   reusing SHOP-02 `ProductDraft`; Production commerce writes require separate
   explicit future authorization.
 

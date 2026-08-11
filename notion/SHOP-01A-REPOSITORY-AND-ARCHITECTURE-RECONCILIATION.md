@@ -16,7 +16,11 @@ occurred.
   `ops/macos/validation/run-deployment-regression-gate.sh -q`
 - Production mutation authority: disabled
 - Final SHOP-01A milestone: `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`
-- Next: `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`
+- Current AI milestone: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION`
+- Next AI milestone:
+  `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`
+- Separate future recommendation stream:
+  `SHOP-REC-01A_RECOMMENDATION_ARCHITECTURE`
 
 Final architecture state:
 

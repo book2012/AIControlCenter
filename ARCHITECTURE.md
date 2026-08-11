@@ -1,5 +1,34 @@
 # AI Home Datacenter Architecture
 
+## SHOP-AI-01A ProductDraft generation foundation
+
+Status: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified
+implementation HEAD `52db3600ae76c70926e27ce930be70fe34f98452`.
+
+`core/shopping/` remains the canonical Shopping domain and the existing SHOP-02
+`ProductDraft`, `ProposedFields`, and immutable `ProductDraftRevision` model are
+reused rather than replaced. The Shopping-owned structured generation contract
+is version `1.0.0`. Generated fields carry AI `SuggestionProvenance`; the
+candidate revision remains `LifecycleState.DRAFT` and causes no automatic
+validation, human approval, or deployment intent.
+
+The adapter reuses the canonical `core.providers.ProviderAdapter` with one
+injected provider, `RetryPolicy(max_attempts=1)`, a bounded timeout, and no
+provider fallback. Source context is canonicalized and snapshotted, and the
+provider request ID remains traceable. The operation key is consumed before
+provider invocation, providing **AT-MOST-ONE provider invocation per consumed
+operation key within the injected coordinator's durability scope** and
+concurrent duplicate suppression. This is not global exactly-once semantics.
+The current `InMemoryProductDraftGenerationOperationCoordinator` is
+non-production.
+
+No durable ProductDraft persistence, durable operation ledger, transactional
+revision/audit/operation Unit of Work, generation API, Dashboard mutation,
+recommendation or ranking engine, WooCommerce write integration, Production
+mutation authority, automatic retry, or automatic rollback was added. See
+[`SHOP-AI-01A architecture`](docs/architecture/SHOP-AI-01A-PRODUCT-DRAFT-GENERATION-FOUNDATION.md).
+Next: `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`.
+
 ## SHOP-01A reconciled Shopping baseline
 
 SHOP-01A is retrospective baseline hardening over the existing SHOP-01/02/03

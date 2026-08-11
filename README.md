@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## SHOP-AI-01A ProductDraft Generation Foundation
+
+Status: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified
+HEAD `52db3600ae76c70926e27ce930be70fe34f98452`; canonical regression: `2691
+passed, 5 deselected, 437 warnings` via
+`ops/macos/validation/run-deployment-regression-gate.sh -q`.
+
+The canonical `core/shopping/` domain now has a bounded preparation service
+that reuses SHOP-02 `ProductDraft`, existing `ProposedFields`, immutable
+revisions, and the canonical provider adapter. Contract `1.0.0` produces an AI
+provenance-bearing candidate that remains `DRAFT`; it performs no validation,
+approval, deployment, API/Dashboard mutation, persistence, or Commerce write.
+Provider execution uses one injected provider, one attempt, bounded timeout,
+and no fallback. The in-memory coordinator provides scoped at-most-one
+invocation and concurrent duplicate suppression but is non-production and not
+durable. See
+[`docs/architecture/SHOP-AI-01A-PRODUCT-DRAFT-GENERATION-FOUNDATION.md`](docs/architecture/SHOP-AI-01A-PRODUCT-DRAFT-GENERATION-FOUNDATION.md).
+Next: `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`; recommendation
+architecture is the separate future stream
+`SHOP-REC-01A_RECOMMENDATION_ARCHITECTURE`.
+
 ## SHOP-01A2 Repository and Architecture Reconciliation
 
 Status: `SHOP-01A2_REPOSITORY_UTILIZATION_AND_ARCHITECTURE_RECONCILED`.

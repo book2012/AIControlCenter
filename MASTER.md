@@ -1,5 +1,31 @@
 # MASTER
 
+## SHOP-AI-01A — ProductDraft generation foundation ready
+
+Status: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY`. Verified
+implementation HEAD: `52db3600ae76c70926e27ce930be70fe34f98452`. Verified
+canonical regression: `2691 passed, 5 deselected, 437 warnings` via
+`ops/macos/validation/run-deployment-regression-gate.sh -q`.
+
+`core/shopping/` remains canonical. SHOP-02 `ProductDraft`, its existing
+`ProposedFields`, and immutable revision model are reused. Structured generation
+contract `1.0.0` records AI `SuggestionProvenance` and prepares a candidate
+that remains `LifecycleState.DRAFT`, without automatic validation, human
+approval, or deployment intent. The canonical provider boundary is reused with
+one injected provider, `RetryPolicy(max_attempts=1)`, bounded timeout, no
+fallback, snapshotted source context, and traceable provider request ID.
+
+An operation key is consumed before invocation. Semantics are **AT-MOST-ONE
+provider invocation per consumed operation key within the injected
+coordinator's durability scope**, with concurrent duplicate suppression—not
+global exactly-once. The current in-memory coordinator is non-production. No
+durable ProductDraft or operation persistence, transactional Unit of Work,
+generation mutation surface, recommendation engine, Commerce integration, or
+Production authority exists. Next:
+`SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`, beginning with
+architecture/discovery of existing durable persistence and transaction
+conventions. Ubuntu may own no ProductDraft or AI application state.
+
 ## SHOP-01A — Shopping read-only foundation ready
 
 Status: `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`. SHOP-01A1 runtime
@@ -27,8 +53,10 @@ concrete Production outbound write transport, Production credential provider,
 runtime write construction, mutation API endpoint, or Production mutation
 authority exists.
 
-Next: `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`, reusing the
-existing SHOP-02 `ProductDraft` work without restarting Shopping architecture.
+Next: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION`, reusing the existing
+SHOP-02 `ProductDraft` work without restarting Shopping architecture; the
+following milestone is
+`SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`.
 No Git push or external Notion synchronization is claimed.
 
 ## SHOP-01A2 — Repository utilization and architecture reconciliation

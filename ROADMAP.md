@@ -1,5 +1,22 @@
 # Roadmap
 
+## SHOP-AI ProductDraft generation stream
+
+- [x] `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified HEAD
+  `52db3600ae76c70926e27ce930be70fe34f98452`.
+- [x] Reuse SHOP-02 `ProductDraft`, existing `ProposedFields`, immutable
+  revisions, and canonical `ProviderAdapter`; candidate remains `DRAFT`.
+- [x] Contract `1.0.0`; one injected provider, one attempt, bounded timeout, no
+  fallback; scoped at-most-one invocation with a non-production in-memory
+  coordinator.
+- [ ] `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`.
+- [ ] First bound: architecture/discovery of existing durable persistence and
+  transaction conventions before implementation.
+- [ ] Add durable ProductDraft persistence, durable generation ledger, and a
+  transactional revision + audit + operation Unit of Work on the Mac Control
+  Plane; no ProductDraft or AI application state on Ubuntu.
+- [ ] `SHOP-REC-01A_RECOMMENDATION_ARCHITECTURE` as a separate future stream.
+
 ## SHOP-01A retrospective reconciliation
 
 - [x] SHOP-01A1 read-only runtime reconciled at
@@ -18,11 +35,11 @@ Terminal milestone: `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`.
 
 ## Next bounded Shopping milestone
 
-- [ ] `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`.
+- [x] `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION`.
 - [ ] Reuse existing SHOP-02 `ProductDraft` work; do not restart the Shopping
   architecture.
-- [ ] Reconcile AI draft generation and recommendation runtime usage while
-  remaining read-only first and keeping Production mutation disabled.
+- [ ] Continue with `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION`;
+  keep recommendation work separate and Production mutation disabled.
 
 ## Current architecture milestone
 
@@ -38,9 +55,10 @@ Terminal milestone: `SHOP-01A_SHOPPING_READ_ONLY_FOUNDATION_READY`.
 
 ## Next production-development milestone
 
-- [ ] `SHOP-01B_SHOPPING_AI_AND_RECOMMENDATION_RECONCILIATION`, reusing the
+- [x] `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION`, reusing the
   existing SHOP-02 `ProductDraft` domain and the completed read-only Shopping
   foundation rather than restarting the architecture.
+- [ ] `SHOP-AI-01B_DURABLE_PRODUCT_DRAFT_GENERATION_TRANSACTION` next.
 - [ ] Keep Production commerce writes separately governed and blocked pending
   explicit future authorization.
 
