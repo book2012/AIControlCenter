@@ -13,6 +13,9 @@ import re
 import stat
 import subprocess
 import sys
+
+# Immutable Production Source must never be mutated by Python import caches.
+sys.dont_write_bytecode = True
 from typing import Any, Callable, Mapping, Sequence
 
 MODULE_DIRECTORY = Path(__file__).resolve().parent
