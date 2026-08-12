@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.aicontrolcenter.api</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/usr/local/libexec/aicontrolcenter/run-canonical-api-immutable-source.sh</string>
+  </array>
+  <key>UserName</key>
+  <string>kyouhan</string>
+  <key>GroupName</key>
+  <string>staff</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>/Users/kyouhan</string>
+    <key>AICONTROLCENTER_DATA_ROOT</key>
+    <string>/Users/kyouhan/Library/Application Support/AIControlCenter/data</string>
+    <key>PYTHONUNBUFFERED</key>
+    <string>1</string>
+    <key>PATH</key>
+    <string>/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>StandardOutPath</key>
+  <string>/var/log/aicontrolcenter/canonical-api.stdout.log</string>
+  <key>StandardErrorPath</key>
+  <string>/var/log/aicontrolcenter/canonical-api.stderr.log</string>
+</dict>
+</plist>
