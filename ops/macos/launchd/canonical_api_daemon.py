@@ -85,7 +85,7 @@ def validate_contract(root: Path) -> dict[str, Any]:
         "program_arguments_match": arguments == ["/bin/bash", str(INSTALLED_RUNNER)],
         "environment_matches_exactly": environment == EXPECTED_ENVIRONMENT,
         "run_at_load_enabled": payload.get("RunAtLoad") is True,
-        "keep_alive_enabled": payload.get("KeepAlive") is True,
+        "keep_alive_disabled": payload.get("KeepAlive") is False,
         "process_type_background": payload.get("ProcessType") == "Background",
         "throttle_interval_matches": payload.get("ThrottleInterval") == 10,
         "stdout_log_matches": payload.get("StandardOutPath") == str(STDOUT_LOG),

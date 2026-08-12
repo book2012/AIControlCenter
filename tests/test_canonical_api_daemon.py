@@ -44,7 +44,7 @@ def test_plist_exact_runtime_environment_and_background_contract() -> None:
         payload = plistlib.load(stream)
     assert payload["UserName"] == "kyouhan" and payload["GroupName"] == "staff"
     assert payload["EnvironmentVariables"] == module.EXPECTED_ENVIRONMENT
-    assert payload["RunAtLoad"] is True and payload["KeepAlive"] is True
+    assert payload["RunAtLoad"] is True and payload["KeepAlive"] is False
     assert payload["ProcessType"] == "Background" and payload["ThrottleInterval"] == 10
 
 
