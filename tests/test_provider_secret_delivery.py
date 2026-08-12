@@ -36,10 +36,27 @@ def write_secret(root: Path, value: bytes = SENTINEL.encode() + b"\n") -> Path:
     return path
 
 
-def test_valid_mandatory_secret_and_json_are_redacted(tmp_path: Path) -> None:
+def adapt_fixture_identity(
+    helper: ModuleType,
+    root: Path,
+    secret: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    root_info = root.lstat()
+    secret_info = secret.lstat()
+    assert root_info.st_uid == secret_info.st_uid
+    assert root_info.st_gid == secret_info.st_gid
+    monkeypatch.setattr(helper, "EXPECTED_UID", root_info.st_uid)
+    monkeypatch.setattr(helper, "EXPECTED_GID", root_info.st_gid)
+
+
+def test_valid_mandatory_secret_and_json_are_redacted(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     helper = load_helper()
     root = tmp_path / "secrets"
-    write_secret(root)
+    secret = write_secret(root)
+    adapt_fixture_identity(helper, root, secret, monkeypatch)
     result = helper.validate("openai", root)
     rendered = json.dumps(helper.asdict(result))
     assert result.ready is True
@@ -49,10 +66,13 @@ def test_valid_mandatory_secret_and_json_are_redacted(tmp_path: Path) -> None:
 
 
 @pytest.mark.parametrize("value", [b"", b" value", b"value ", b"value\n\n", b"value\r\n", b"a\nb"])
-def test_empty_or_malformed_secret_fails_without_exposure(tmp_path: Path, value: bytes) -> None:
+def test_empty_or_malformed_secret_fails_without_exposure(
+    tmp_path: Path, value: bytes, monkeypatch: pytest.MonkeyPatch
+) -> None:
     helper = load_helper()
     root = tmp_path / "secrets"
-    write_secret(root, value)
+    secret = write_secret(root, value)
+    adapt_fixture_identity(helper, root, secret, monkeypatch)
     result = helper.validate("openai", root)
     assert result.ready is False
     with pytest.raises(helper.SecretValidationError) as error:
@@ -62,11 +82,14 @@ def test_empty_or_malformed_secret_fails_without_exposure(tmp_path: Path, value:
     assert SENTINEL not in repr(error.value)
 
 
-def test_missing_and_mode_invalid_mandatory_secret_fail(tmp_path: Path) -> None:
+def test_missing_and_mode_invalid_mandatory_secret_fail(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     helper = load_helper()
     root = tmp_path / "secrets"
     assert helper.validate("openai", root).ready is False
     path = write_secret(root)
+    adapt_fixture_identity(helper, root, path, monkeypatch)
     path.chmod(0o640)
     result = helper.validate("openai", root)
     assert result.mode_valid is False
@@ -76,8 +99,9 @@ def test_missing_and_mode_invalid_mandatory_secret_fail(tmp_path: Path) -> None:
 def test_invalid_owner_policy_is_rejected_without_privilege(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     helper = load_helper()
     root = tmp_path / "secrets"
-    write_secret(root)
-    monkeypatch.setattr(helper, "EXPECTED_UID", helper.EXPECTED_UID + 1)
+    secret = write_secret(root)
+    adapt_fixture_identity(helper, root, secret, monkeypatch)
+    monkeypatch.setattr(helper, "EXPECTED_UID", secret.lstat().st_uid + 1)
     assert helper.validate("openai", root).owner_valid is False
 
 
@@ -92,7 +116,8 @@ def test_optional_local_provider_needs_no_secret(tmp_path: Path) -> None:
 def test_execute_constructs_deterministic_environment(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     helper = load_helper()
     root = tmp_path / "secrets"
-    write_secret(root)
+    secret = write_secret(root)
+    adapt_fixture_identity(helper, root, secret, monkeypatch)
     captured: dict[str, object] = {}
 
     def fake_exec(file: str, argv: list[str], environment: dict[str, str]) -> None:
