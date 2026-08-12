@@ -1,5 +1,30 @@
 # Roadmap
 
+## Canonical API recovery and runtime-health follow-up
+
+- [x] Remediate privileged canonical refresh/bootstrap bytecode creation by
+  disabling bytecode before project-local imports.
+- [x] Pass focused regression (`49 passed`) and canonical regression (`2954
+  passed, 5 deselected, 439 warnings`).
+- [x] Build and independently validate Runtime/immutable Source
+  `ef07532bd3d7` exactly once from commit
+  `ef07532bd3d7ba91868d46375d48cac4821d6a56`.
+- [x] Activate `runtime/current` once, reconcile shadow once, and recover the
+  canonical API with exactly one separately authorized kickstart.
+- [x] Validate canonical and shadow immutable Source CWD, `200/405` health
+  method behavior, launchd running state, and public HTTPS API/Homepage ingress.
+- [x] Verify duplicate recovery fails closed before authorization or mutation
+  after the expected failed-state precondition is no longer true.
+- [ ] Reconcile degraded whole-runtime health: `/runtime/health` currently
+  returns HTTP `200` with `healthy=false`, unavailable API, Telegram, and
+  scheduler entries, plus a stale scheduler heartbeat.
+- [ ] Establish a fresh scheduler heartbeat and independently verify each
+  unavailable service through a separately scoped, read-only-first operational
+  investigation. Do not infer mutation authority from this roadmap item.
+
+Canonical API/Homepage recovery is complete. Whole-runtime health debt remains
+open and blocks any claim that the entire platform Runtime is healthy.
+
 ## SHOP-AI ProductDraft generation stream
 
 - [x] `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified HEAD

@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## 2026-08-13 — Bytecode-safe canonical API recovery
+
+- Released Runtime and immutable Source `ef07532bd3d7` from commit
+  `ef07532bd3d7ba91868d46375d48cac4821d6a56`; focused tests passed `49`, and
+  the canonical regression passed `2954 passed, 5 deselected, 439 warnings`.
+- Prevented privileged canonical refresh/bootstrap executors from generating
+  project-local bytecode by setting `sys.dont_write_bytecode = True` before
+  sibling imports, with regression coverage that removes external bytecode
+  protection variables.
+- Retired rather than repaired contaminated release `9a7216a75323`. The new
+  Source passed independent identity, content, archive, Git-tree,
+  immutability, and bytecode-contamination validation.
+- Activated `runtime/current` once, reconciled shadow once, and performed one
+  separately human-authorized canonical kickstart. Canonical and shadow now
+  serve from the matching immutable Source with `GET /health = 200` and
+  `POST /health = 405`; public HTTPS health and Homepage validation passed.
+- A duplicate recovery request failed closed at preflight before authorization
+  or mutation because canonical was already running. No second bootstrap,
+  second kickstart, automatic retry, automatic rollback, ProductDraft or
+  WooCommerce mutation, Ubuntu change, or in-place Source repair occurred.
+- Whole-runtime health remains degraded: `/runtime/health` returns HTTP `200`
+  with `healthy=false`, unavailable API/Telegram/scheduler service entries,
+  and a stale scheduler heartbeat. Runtime-health reconciliation remains open.
+
 ## 2026-08-11 — SHOP-AI-01A documentation closeout
 
 - Closed `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified

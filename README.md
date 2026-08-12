@@ -1,5 +1,42 @@
 # AIControlCenter
 
+## Canonical Production API and Homepage
+
+Current Production release: `ef07532bd3d7`, from commit
+`ef07532bd3d7ba91868d46375d48cac4821d6a56`.
+
+The Mac mini M4 is the always-on Brain and sole Control Plane. Host Caddy is
+the only public edge. The active Python Runtime is
+`runtime/venvs/ef07532bd3d7`, selected by `runtime/current`, and both the
+shadow and canonical API execute from the paired immutable Source
+`runtime/sources/ef07532bd3d7`. WordPress remains the CMS Engine,
+WooCommerce remains the Commerce Engine, and Ubuntu remains an optional
+stateless infrastructure worker with no application state or Control Plane
+authority.
+
+The canonical API and Homepage recovery is complete. The canonical launchd
+service is running from the immutable Source; direct health behavior is
+`GET /health = 200` and `POST /health = 405`. Public DNS resolves through the
+host edge, HTTP redirects to HTTPS, and public `/health` and
+`/homepage/product-management` return `200`.
+
+Production operations remain JSON-first, read-only-first, Git-first, and
+fail-closed. One human authorization permits one bounded Production mutation
+invocation. A successful mutation followed by wrapper or observation failure
+enters read-only reconciliation and is never retried automatically. Duplicate
+lifecycle requests must fail before authorization or mutation when the
+observed precondition no longer matches. Immutable Source artifacts reject
+writable objects and generated Python bytecode; privileged Python executors
+must set `sys.dont_write_bytecode = True` before importing project-local
+modules. A contaminated immutable release is retired and replaced, never
+repaired in place.
+
+Whole-runtime health remains degraded and is open operational debt. Although
+`GET /runtime/health` returns HTTP `200`, its JSON reports `healthy=false`, API,
+Telegram, and scheduler services `unavailable`, and a stale scheduler
+heartbeat. This does not invalidate the completed canonical API/Homepage
+recovery, and it must not be represented as full platform health.
+
 ## SHOP-AI-01A ProductDraft Generation Foundation
 
 Status: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified

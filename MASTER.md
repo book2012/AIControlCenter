@@ -1,5 +1,51 @@
 # MASTER
 
+## Authoritative Production checkpoint — 2026-08-13
+
+Status: `CANONICAL_API_HOMEPAGE_RECOVERY_COMPLETE`.
+
+- Full commit: `ef07532bd3d7ba91868d46375d48cac4821d6a56`
+- Runtime ID: `ef07532bd3d7`
+- Active Runtime: `runtime/venvs/ef07532bd3d7`
+- Immutable Source: `runtime/sources/ef07532bd3d7`
+- Source content SHA-256:
+  `2357749d768dfd8391a582669ae6b87b1f8e1c17cf477f5c505f47e051b15ce6`
+- Source archive SHA-256:
+  `b6cc292b95cc1327d35fcba0874bb7822f199ac15cf295226f7573bac3dcadbe`
+- Source Git tree: `2b157f1391cf34dd72c21cce6d5c82c212730bfd`
+- Immutable writable objects: `0`
+- Python bytecode contamination: absent before and after service starts
+- ProductDraft main DB SHA-256 unchanged:
+  `761d07099f051e2d1c934fce63fc66aee47bb052bf49138c220418c06ab604c4`
+
+Runtime/Source commit identity matches exactly. Runtime and Source were each
+built exactly once; dependency installation, application import, test suite,
+and independent Source validation passed. `runtime/current` moved exactly once
+from `9a7216a75323` to `ef07532bd3d7`; shadow reconciled exactly once and runs
+from the new Source (PID `37951`). Canonical runner and plist were byte-exact
+with Source and retained required metadata (`root:wheel 0755` and
+`root:wheel 0644` respectively), `RunAtLoad=true`, and `KeepAlive=false`.
+
+One separately human-authorized canonical kickstart recovered the registered,
+not-running service from its prior exit `3`. Canonical now runs from the new
+Source (PID `38153`), launchd state is `running`, and runs is `2`. Shadow and
+canonical both return `200` for `GET /health` and `405` for `POST /health`.
+Public ingress is operational: DNS resolved to `222.111.236.227`, HTTP root
+returned `308`, and HTTPS `/health` and `/homepage/product-management`
+returned `200`. A later duplicate wrapper request was rejected by failed-state
+preflight before authorization or mutation; second canonical kickstart is
+`false`.
+
+This checkpoint does **not** declare the whole Runtime healthy.
+`GET /runtime/health` returns HTTP `200` but reports `healthy=false`;
+`services.api`, `services.telegram`, and `services.scheduler` are
+`unavailable`; `scheduler_heartbeat.status=STALE` and `fresh=false`. Its latest
+heartbeat says `ALIVE` but was created at
+`2026-08-05T07:43:56.748515`. Runtime-health reconciliation is the next open
+operational debt. No ProductDraft generation, WooCommerce mutation, Ubuntu
+change, automatic retry, automatic rollback, or Production mutation occurred
+during this documentation closeout.
+
 ## SHOP-AI-01A — ProductDraft generation foundation ready
 
 Status: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY`. Verified

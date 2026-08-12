@@ -1,5 +1,44 @@
 # AI Home Datacenter Architecture
 
+## Immutable Production Source and canonical process recovery invariants
+
+The Mac mini M4 remains the always-on Brain and sole Control Plane. Host Caddy
+is the only public edge. WordPress is the CMS Engine, WooCommerce is the
+Commerce Engine, and Ubuntu is an optional stateless infrastructure worker; it
+owns no AI workload, application or business state, governance, authorization,
+audit, deployment control, or Control Plane authority.
+
+An active Production release is a paired identity:
+
+- `runtime/venvs/<runtime-id>` contains the dependency Runtime.
+- `runtime/sources/<runtime-id>` contains immutable tracked application Source.
+- `runtime/current` selects the Runtime ID, and Runtime, Source, and approved
+  full commit must agree exactly.
+
+Immutable Source validation rejects both writable filesystem objects and
+generated Python bytecode contamination, including `__pycache__`, `*.pyc`, and
+`*.pyo`. Privileged Python executors that import project-local sibling modules
+must set `sys.dont_write_bytecode = True` before those imports; environment
+variables are defense in depth, not the sole protection. A contaminated
+immutable release is retired and replaced by a newly built and independently
+validated release. It is never repaired in place.
+
+Production lifecycle control preserves strict read, plan, authorization, and
+apply boundaries. One human authorization maps to one bounded mutation
+invocation. Successful mutation followed by wrapper or observation failure
+transitions to read-only reconciliation; it grants neither automatic retry nor
+automatic rollback. Duplicate requests fail closed before authorization and
+mutation if observed state no longer satisfies the expected precondition.
+Authorization read inside a heredoc uses `/dev/tty`; expected-absence probes
+must be safe under `set -e` and `pipefail`; generated wrapper redirections must
+remain atomic; and JSON gates validate the actual emitted versioned schema.
+
+Endpoint-local success is not equivalent to whole-runtime health. A recovered
+canonical API/Homepage may be operational while `/runtime/health` truthfully
+reports degraded dependencies or stale heartbeats. Operational status must
+preserve that distinction and must not promote HTTP status alone into a
+platform-health claim.
+
 ## SHOP-AI-01A ProductDraft generation foundation
 
 Status: `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified
