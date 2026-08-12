@@ -7,6 +7,7 @@ HOME_DIR="${AICONTROLCENTER_HOME:-$HOME}"
 RUN_USER="${AICONTROLCENTER_RUN_USER:-$(/usr/bin/id -un)}"
 APPLICATION_ROOT="${AICONTROLCENTER_APPLICATION_ROOT:-$HOME_DIR/Library/Application Support/AIControlCenter}"
 RUNTIME_ROOT="$APPLICATION_ROOT/runtime"
+VENV_ROOT="$RUNTIME_ROOT/venvs"
 CURRENT_RUNTIME="${AICONTROLCENTER_RUNTIME_LINK:-$RUNTIME_ROOT/current}"
 DATA_ROOT="${AICONTROLCENTER_DATA_ROOT:-$APPLICATION_ROOT/data}"
 HOST="${AICONTROLCENTER_CANONICAL_HOST:-127.0.0.1}"
@@ -35,10 +36,14 @@ if [[ ! -d "$RUNTIME_TARGET" ]]; then
   echo "AIControlCenter runtime release is unavailable" >&2
   exit 78
 fi
-RUNTIME_ROOT_REAL="$(cd "$RUNTIME_ROOT" && /bin/pwd -P)"
+if [[ ! -d "$VENV_ROOT" || -L "$VENV_ROOT" ]]; then
+  echo "AIControlCenter runtime venv root is unavailable" >&2
+  exit 78
+fi
+VENV_ROOT_REAL="$(cd "$VENV_ROOT" && /bin/pwd -P)"
 RUNTIME_REAL="$(cd "$RUNTIME_TARGET" && /bin/pwd -P)"
-if [[ "${RUNTIME_REAL%/*}" != "$RUNTIME_ROOT_REAL" ]]; then
-  echo "AIControlCenter runtime release escaped runtime root" >&2
+if [[ "${RUNTIME_REAL%/*}" != "$VENV_ROOT_REAL" ]]; then
+  echo "AIControlCenter runtime release escaped runtime venv root" >&2
   exit 78
 fi
 
