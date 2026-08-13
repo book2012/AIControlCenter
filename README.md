@@ -2098,3 +2098,34 @@ Production mutation remains explicitly human-authorized, with no automatic
 rollback after controlled mutation failure. Next:
 `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`. SEC-01 completion does not mean
 the AI Home Datacenter project is complete.
+
+<!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## Production Runtime Health
+
+Current Production release:
+
+`ed2424e39bb1`
+(`ed2424e39bb12e363ae7a1967c677e661ae7ec0e`)
+
+The canonical AIControlCenter API runs on the Mac Control Plane at
+`127.0.0.1:58081` and is published through Caddy.
+
+`GET /runtime/health` currently reports a truthful degraded state:
+
+- API: required and `RUNNING`.
+- Telegram: optional and `NOT_DEPLOYED`.
+- Application Scheduler: required and `NOT_DEPLOYED`.
+- Scheduler heartbeat: `STALE`.
+- Service topology: `VALID`.
+- Aggregate `healthy`: `false`.
+
+The aggregate becomes healthy only after the dedicated Mac Application
+Scheduler is deployed and produces a fresh heartbeat.
+
+The Ubuntu Server remains an on-demand infrastructure Worker. Runtime Health,
+application scheduling, orchestration and business logic remain on the Mac
+Control Plane.
+
+The existing Shadow service on `127.0.0.1:18100` is not part of public ingress.
+Shadow release alignment is a separate maintenance concern and is not required
+for the current Production release.

@@ -2562,3 +2562,40 @@ Control Plane evidence root, not `/private/tmp` across reboot.
 
 Next milestone: `SEC-02_CONTROL_PLANE_GOVERNANCE_AUTOMATION`. The wider project
 remains in progress.
+
+<!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## Production Runtime Status — 2026-08-13
+
+Production release:
+
+`ed2424e39bb1`
+(`ed2424e39bb12e363ae7a1967c677e661ae7ec0e`)
+
+Status:
+
+`AIControlCenter_RUNTIME_HEALTH_MODEL_PRODUCTION_DEPLOYED`
+
+The canonical AIControlCenter API runs on the Mac mini Control Plane at
+`127.0.0.1:58081`.
+
+Production Runtime Health currently reports:
+
+- API — required, launchd, `RUNNING`.
+- Telegram — optional, `NOT_DEPLOYED`.
+- Application Scheduler — required, `NOT_DEPLOYED`.
+- Scheduler heartbeat — `STALE`.
+- Service topology — `VALID`.
+- Aggregate — `healthy=false` by design until the required Scheduler becomes
+  operational with a fresh heartbeat.
+
+Public HTTP/HTTPS ingress is terminated by Caddy on the Mac and forwarded to
+the canonical API. Ubuntu remains a stateless on-demand infrastructure Worker
+and does not own AI workloads, application scheduling, business logic or
+platform-wide state.
+
+Next production observability milestone:
+
+`APPLICATION_SCHEDULER_PRODUCTION_OPERATIONAL`
+
+Shadow release alignment is a separate maintenance Sprint and is not a blocker
+for the active Production release.

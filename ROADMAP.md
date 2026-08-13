@@ -2263,3 +2263,45 @@ The three permanent exception records remain
 `SEC-01D-C3-BOOT-PARSER-DEFECT`, and
 `SEC-01D-C5-EVIDENCE-RETENTION-DEFECT`. SEC-01 completion neither authorizes a
 Production mutation nor completes the wider project.
+
+<!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## OPS-01A — Runtime Health Service Topology Reconciliation — COMPLETE
+
+Production milestone:
+
+`AIControlCenter_RUNTIME_HEALTH_MODEL_PRODUCTION_DEPLOYED`
+
+Immutable release `ed2424e39bb1` is active on the canonical Mac Control Plane
+API.
+
+Completed:
+
+- [x] Replace the legacy Linux/systemd Runtime Health projection with the Mac
+  Production service-topology contract.
+- [x] Model required versus optional services explicitly.
+- [x] Validate the candidate Runtime and immutable Source independently from the
+  Production `runtime/current` pointer.
+- [x] Validate canonical and public HTTP operation after Production promotion.
+- [x] Preserve immutable Source integrity and ProductDraft persistent state.
+- [x] Confirm that `healthy=false` correctly represents the currently missing
+  required Application Scheduler rather than a canonical API failure.
+
+Next observability milestone:
+
+`OPS-01B — Application Scheduler Service & Fresh Heartbeat`
+
+Goals:
+
+- deploy the dedicated Application Scheduler on the Mac Control Plane;
+- expose its launchd lifecycle through the authoritative service manifest;
+- produce a fresh durable heartbeat;
+- converge Runtime Health from truthful degraded state to `healthy=true`.
+
+Separate maintenance work:
+
+- Shadow `:18100` release alignment;
+- explicit candidate/release selector for Shadow tooling;
+- removal of legacy automatic external rollback semantics.
+
+Notion synchronization remains deferred until the designated final
+documentation phase unless separately performed and verified.

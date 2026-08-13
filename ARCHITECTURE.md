@@ -1982,3 +1982,62 @@ FINAL R4 used the canonical harness and passed 2402 tests with 5 deselected and
 437 warnings; warnings are not failures. Tests did not modify the repository,
 Production PID was unchanged, canonical secret metadata was preserved, the
 candidate was absent, and Production mutation was zero.
+
+<!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## Production Runtime Health Operational Contract — 2026-08-13
+
+The Runtime Health model is deployed to Production release
+`ed2424e39bb1`
+(`ed2424e39bb12e363ae7a1967c677e661ae7ec0e`).
+
+The Mac mini remains the AIControlCenter Control Plane.
+The Production API lifecycle is owned by launchd service
+`com.aicontrolcenter.api` and serves the canonical API on
+`127.0.0.1:58081`.
+
+The production service-topology projection is:
+
+- `aicontrolcenter-api`: required, launchd-managed, `RUNNING`.
+- `telegram`: optional and currently `NOT_DEPLOYED`.
+- `application-scheduler`: required and currently `NOT_DEPLOYED`.
+- Scheduler heartbeat: currently `STALE`.
+- Topology contract: `VALID`.
+- Aggregate Runtime Health: `healthy=false` until the required Application
+  Scheduler is deployed and its heartbeat becomes fresh.
+
+`healthy=false` in this state is an intentional truthful degraded-state
+projection, not an API deployment failure.
+
+The Homepage scheduler projection and the Runtime Health
+`application-scheduler` lifecycle projection are different operational
+concepts. An application-level scheduler status such as `ONLINE` must not be
+interpreted as proof that the dedicated launchd Application Scheduler service
+is deployed.
+
+### Production ingress contract
+
+Public ingress is:
+
+`WAN :80/:443`
+→ router forwarding
+→ Mac Caddy `:58080/:58443`
+→ canonical API `127.0.0.1:58081`.
+
+Shadow `127.0.0.1:18100` is not a public Caddy upstream.
+
+### Candidate-validation contract
+
+A candidate release must be capable of Shadow validation without changing the
+Production `runtime/current` pointer.
+
+Release `ed2424e39bb1` was validated using a pinned ephemeral candidate lane on
+`127.0.0.1:18101`, while the canonical API, existing Shadow and public ingress
+remained unchanged.
+
+Known deployment-tooling debt is tracked separately:
+
+- the existing Shadow runner derives its effective Runtime/Source selection
+  from `runtime/current` before its runtime-link override is processed;
+- the legacy Shadow executor contains automatic external rollback behavior that
+  does not match the current one-authorization/one-bounded-mutation governance
+  model.

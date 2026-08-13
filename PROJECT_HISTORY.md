@@ -2640,3 +2640,53 @@ SEC-01C is `COMPLETE`; milestone
 `PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`. SEC-01 remains open. Next is
 SEC-01D Secret Lifecycle & Recovery Validation. Notion remains
 `DEFERRED_UNTIL_FINAL_PHASE`.
+
+<!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## 2026-08-13 — Runtime Health Model Production Deployment
+
+Runtime Health previously projected Linux/systemd service units even though the
+Production Control Plane runs on macOS launchd. This produced false
+`unavailable` states for the API, Telegram and Scheduler.
+
+The Runtime Health model was reconciled to the authoritative Mac service
+topology. The canonical API is now represented as the required launchd service
+`com.aicontrolcenter.api`; Telegram is optional and currently not deployed; the
+dedicated Application Scheduler is required but not yet deployed. The existing
+persisted scheduler heartbeat is stale, so the aggregate correctly remains
+`healthy=false` while topology status is `VALID`.
+
+Release `ed2424e39bb1`
+(`ed2424e39bb12e363ae7a1967c677e661ae7ec0e`) passed focused tests and the
+canonical repository regression before release staging.
+
+The Runtime and matching immutable Source were built separately without
+Production activation. The candidate was then validated on an ephemeral pinned
+Shadow lane at `127.0.0.1:18101`, proving that candidate validation does not
+need to move the Production pointer. Health, Runtime Health and Homepage
+validation passed while the canonical API, existing Shadow and public ingress
+remained operational. The candidate was later stopped with one separately
+authorized SIGTERM.
+
+Production `runtime/current` converged from `ef07532bd3d7` to
+`ed2424e39bb1`. The canonical API subsequently converged to the matching
+immutable Source and served the Production API on `127.0.0.1:58081`.
+Canonical health, Homepage status, public health, public Homepage and public
+Product Management validation all returned HTTP 200. Production
+`/runtime/health` matched the new service-topology contract.
+
+The immutable Source remained bytecode-clean and the ProductDraft main SQLite
+database content remained unchanged. No automatic retry or external rollback
+was used.
+
+The existing Shadow service on `127.0.0.1:18100` remained healthy on the prior
+release during closeout. It is not a public upstream and its alignment is
+deferred to a separate maintenance Sprint.
+
+The Shadow audit also identified two deployment-tooling debts: effective
+Runtime selection is still derived from `runtime/current` before the
+runtime-link override is processed, and the legacy Shadow executor contains
+automatic external rollback logic incompatible with the current bounded
+Production governance model.
+
+Next Runtime Health milestone: deploy the dedicated Mac Application Scheduler
+and establish a fresh heartbeat.

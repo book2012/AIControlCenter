@@ -1861,3 +1861,30 @@ SEC-02A1 status:
 A3 adds pure domain implementation only and no Production authority. Tests
 were not run by Codex. The SEC-02A architecture-ready milestone is not claimed,
 and Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+
+<!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## Runtime Health Follow-up — 2026-08-13
+
+### High
+
+- [ ] Deploy the dedicated Application Scheduler on the Mac Control Plane.
+- [ ] Register its launchd lifecycle in the authoritative Production service
+  topology.
+- [ ] Establish a fresh durable Scheduler heartbeat.
+- [ ] Validate `/runtime/health` convergence to `healthy=true`.
+
+### Maintenance
+
+- [ ] Align the persistent Shadow service with the current Production release
+  using a separately bounded lifecycle.
+- [ ] Implement a single explicit Shadow release selector that resolves both
+  Runtime and immutable Source without requiring `runtime/current` mutation.
+- [ ] Remove or replace legacy automatic external rollback behavior in the
+  Shadow lifecycle executor.
+- [ ] Clarify Homepage scheduler terminology versus the dedicated Runtime
+  lifecycle Application Scheduler.
+
+### Documentation
+
+- [ ] Synchronize the final project state to Notion only when explicitly
+  performed and verified.

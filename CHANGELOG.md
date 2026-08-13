@@ -2814,3 +2814,56 @@ Production activation occurred.
 - Implemented SEC-01B generic file-per-provider validation, metadata-only JSON diagnostics, deterministic wrapper injection, environment-backed adapter consumption, and redaction tests. No live installation or Production mutation was performed.
 - Repaired the SEC-01C canonical wrapper to restore dynamic immutable Runtime/source validation, external state, isolated `PYTHONPATH`, immutable cwd, and Runtime Python `-P`, without changing the secret helper. The prior attempt consumed two installs and one restart; HTTP recovery did not satisfy immutable convergence and no rollback occurred. R1 did not install or restart. Runtime `102b8f1fa862` has importable `jsonschema`; a new exact human authorization is required.
 - Closed SEC-01C as `COMPLETE` at milestone `PRODUCTION_DAEMON_SECRET_DELIVERY_VALIDATED`. R1 converged immutable source; R2 classified the remaining workers config dependency as `VERSIONED_APPLICATION_CONFIG`; R3 froze the matching immutable binding without intended live mutation; R3Q detected drift and consumed zero edits/restarts; and separately authorized R3Q2 preserved the logical value and all other worker.env bytes while applying shell-safe quoting and exactly one restart. Final evidence validates matching immutable source/config, no mutable repository dependency, external state, HTTP `200/200/405`, and redacted `OPENAI_API_KEY` presence with zero provider calls. SEC-01 remains open; SEC-01D is next. Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
+
+<!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## 2026-08-13 — Runtime Health Model Production Deployment
+
+### Changed
+
+- Reconciled Runtime Health from the legacy Linux/systemd service model to the
+  authoritative Mac Control Plane service topology.
+- Added explicit required/optional and lifecycle semantics for the canonical
+  API, Telegram and Application Scheduler.
+- Runtime Health now distinguishes `RUNNING`, `NOT_DEPLOYED` and stale
+  heartbeat state rather than reporting absent Linux units as generic
+  unavailable services.
+- The topology source of truth is the Mac standalone Production service
+  manifest and its Runtime adapter.
+
+### Production
+
+- Promoted immutable release `ed2424e39bb1`
+  (`ed2424e39bb12e363ae7a1967c677e661ae7ec0e`).
+- Production `runtime/current` converged to the matching Runtime.
+- The canonical `core.api.app:app` service converged to the matching immutable
+  Source on `127.0.0.1:58081`.
+- Local canonical health, Homepage status, public health, public Homepage and
+  public Product Management endpoints returned HTTP 200.
+- Production `/runtime/health` passed the versioned topology projection gate.
+
+### Safety
+
+- Candidate Runtime and Source were validated in a pinned ephemeral Shadow lane
+  without requiring Production pointer activation.
+- Candidate cleanup completed with one explicitly authorized SIGTERM and no
+  automatic retry or rollback.
+- Immutable Source remained bytecode-clean.
+- ProductDraft main SQLite database content remained unchanged through
+  candidate validation and Production validation.
+- No Caddy, WooCommerce or Ubuntu mutation was required for this release.
+
+### Current degraded state
+
+The Runtime Health aggregate intentionally remains `healthy=false` because the
+required dedicated Application Scheduler is not yet deployed and its persisted
+heartbeat is stale. The canonical API is `RUNNING`, Telegram is optional
+`NOT_DEPLOYED`, and topology status is `VALID`.
+
+### Follow-up
+
+- Deploy the dedicated Mac Application Scheduler and establish a fresh
+  heartbeat.
+- Review Shadow release alignment separately.
+- Repair the Shadow explicit-release selector contract.
+- Replace legacy automatic external rollback semantics with the current bounded
+  governance lifecycle contract.
