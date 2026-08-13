@@ -44,9 +44,9 @@ def test_required_and_optional_not_deployed_semantics_are_truthful():
 
     assert result["services"]["telegram"]["status"] == "NOT_DEPLOYED"
     assert result["services"]["telegram"]["required"] is False
-    assert result["services"]["scheduler"]["status"] == "NOT_DEPLOYED"
+    assert result["services"]["scheduler"]["status"] == "RUNNING"
     assert result["services"]["scheduler"]["required"] is True
-    assert result["healthy"] is False
+    assert result["healthy"] is True
 
 
 def test_optional_not_deployed_does_not_fail_aggregate(tmp_path):
@@ -54,11 +54,21 @@ def test_optional_not_deployed_does_not_fail_aggregate(tmp_path):
     for item in manifest["services"]:
         if item.get("logical_id") == "scheduler":
             item["required"] = False
+            item["production_status"] = "NOT_DEPLOYED"
+            item["runtime"] = "UNASSIGNED"
+            item["supervisor"] = "UNASSIGNED"
+            item["lifecycle"] = "not_deployed"
+            item.pop("launchd_label", None)
     path = tmp_path / "manifest.json"
     path.write_text(json.dumps(manifest))
 
     result = health(topology=ServiceTopology(path, SCHEMA)).status()
 
+    assert result["services"]["api"]["status"] == "RUNNING"
+    assert result["services"]["api"]["required"] is True
+    assert result["services"]["scheduler"]["status"] == "NOT_DEPLOYED"
+    assert result["services"]["scheduler"]["required"] is False
+    assert result["services"]["scheduler"]["lifecycle"] == "not_deployed"
     assert result["healthy"] is True
 
 
@@ -94,10 +104,19 @@ def test_malformed_topology_fails_closed(tmp_path):
 
 
 def test_service_health_format_reports_warning_for_required_not_deployed():
-    text = health().format_text()
+    text = health(launchd_state="STOPPED").format_text()
 
     assert "Service Health" in text
     assert "Overall: WARNING" in text
+
+
+def test_scheduler_health_requires_launchd_running_and_fresh_heartbeat():
+    fresh = FakeHeartbeat(datetime.utcnow() - timedelta(seconds=30))
+    stale = FakeHeartbeat(datetime.utcnow() - timedelta(seconds=91))
+
+    assert health(heartbeat=fresh, launchd_state="RUNNING").status()["healthy"] is True
+    assert health(heartbeat=stale, launchd_state="RUNNING").status()["healthy"] is False
+    assert health(heartbeat=fresh, launchd_state="STOPPED").status()["healthy"] is False
 
 
 def test_legacy_linux_service_projection_is_absent():

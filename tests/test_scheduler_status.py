@@ -19,7 +19,8 @@ def test_scheduler_status_format_text(tmp_path):
 
 
 def test_scheduler_status_no_heartbeat(tmp_path):
-    heartbeat = HeartbeatStore(str(tmp_path / "scheduler.db"))
+    db_path = tmp_path / "scheduler.db"
+    heartbeat = HeartbeatStore(str(db_path))
 
     service = SchedulerStatusService(
         heartbeat=heartbeat,
@@ -29,3 +30,6 @@ def test_scheduler_status_no_heartbeat(tmp_path):
     text = service.format_text()
 
     assert "Heartbeat: none" in text
+    assert service.status()["status"] == "MISSING"
+    assert service.status()["status"] != "ONLINE"
+    assert not db_path.exists()

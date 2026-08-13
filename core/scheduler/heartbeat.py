@@ -1,7 +1,52 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from core.runtime.data_paths import resolve_data_path
+
+
+DEFAULT_FRESHNESS_SECONDS = 90
+
+
+def classify_heartbeat(
+    latest: dict | None,
+    freshness_seconds: int = DEFAULT_FRESHNESS_SECONDS,
+    now: datetime | None = None,
+):
+    """Classify a previously read heartbeat without touching its store."""
+    if latest is None:
+        return {
+            "status": "MISSING",
+            "fresh": False,
+            "freshness_seconds": freshness_seconds,
+            "age_seconds": None,
+            "latest": None,
+        }
+
+    try:
+        created = datetime.fromisoformat(latest["created"])
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        observed_at = now or datetime.now(timezone.utc)
+        if observed_at.tzinfo is None:
+            observed_at = observed_at.replace(tzinfo=timezone.utc)
+        age = observed_at - created
+        age_seconds = age.total_seconds()
+        fresh = (
+            latest.get("status") == "ALIVE"
+            and age >= timedelta(0)
+            and age <= timedelta(seconds=freshness_seconds)
+        )
+    except (KeyError, TypeError, ValueError):
+        age_seconds = None
+        fresh = False
+
+    return {
+        "status": "ALIVE" if fresh else "STALE",
+        "fresh": fresh,
+        "freshness_seconds": freshness_seconds,
+        "age_seconds": age_seconds,
+        "latest": latest,
+    }
 
 
 class HeartbeatStore:

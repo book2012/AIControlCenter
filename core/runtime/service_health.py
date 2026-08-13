@@ -1,8 +1,7 @@
 import subprocess
 from collections.abc import Callable
-from datetime import datetime, timedelta, timezone
 
-from core.scheduler.heartbeat import HeartbeatStore
+from core.scheduler.heartbeat import HeartbeatStore, classify_heartbeat
 from core.runtime.service_topology import (
     ServiceTopology,
     TopologyConfigurationError,
@@ -38,27 +37,10 @@ class ServiceHealth:
             return "UNAVAILABLE"
 
     def heartbeat_status(self):
-        latest = self.heartbeat.latest()
-
-        if not latest:
-            return {
-                "status": "MISSING",
-                "fresh": False,
-                "latest": None,
-            }
-
-        created = datetime.fromisoformat(latest["created"])
-        if created.tzinfo is None:
-            created = created.replace(tzinfo=timezone.utc)
-        fresh = datetime.now(timezone.utc) - created <= timedelta(
-            seconds=self.heartbeat_timeout_seconds
+        return classify_heartbeat(
+            self.heartbeat.latest(),
+            self.heartbeat_timeout_seconds,
         )
-
-        return {
-            "status": "ALIVE" if fresh else "STALE",
-            "fresh": fresh,
-            "latest": latest,
-        }
 
     def status(self):
         heartbeat = self.heartbeat_status()

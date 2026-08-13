@@ -1,5 +1,9 @@
 from core.scheduler.defaults import create_default_jobs
-from core.scheduler.heartbeat import HeartbeatStore
+from core.scheduler.heartbeat import (
+    DEFAULT_FRESHNESS_SECONDS,
+    HeartbeatStore,
+    classify_heartbeat,
+)
 from core.scheduler.jobs import JobRegistry
 
 
@@ -8,14 +12,20 @@ class SchedulerStatusService:
         self,
         heartbeat: HeartbeatStore | None = None,
         jobs: JobRegistry | None = None,
+        freshness_seconds: int = DEFAULT_FRESHNESS_SECONDS,
     ):
         self.heartbeat = heartbeat or HeartbeatStore()
         self.jobs = jobs or create_default_jobs()
+        self.freshness_seconds = freshness_seconds
 
     def status(self):
+        heartbeat = classify_heartbeat(
+            self.heartbeat.latest(),
+            self.freshness_seconds,
+        )
         return {
-            "status": "ONLINE",
-            "heartbeat": self.heartbeat.latest(),
+            "status": heartbeat["status"],
+            "heartbeat": heartbeat,
             "jobs": self.jobs.list(),
         }
 
@@ -30,9 +40,9 @@ class SchedulerStatusService:
             "",
         ]
 
-        if heartbeat:
+        if heartbeat["latest"]:
             lines.append(f"Heartbeat: {heartbeat['status']}")
-            lines.append(f"Last: {heartbeat['created']}")
+            lines.append(f"Last: {heartbeat['latest']['created']}")
         else:
             lines.append("Heartbeat: none")
 

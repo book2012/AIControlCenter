@@ -10,6 +10,7 @@ class ScheduledJob:
     command: str
     interval_seconds: int
     enabled: bool = True
+    run_on_start: bool = False
     created: datetime = field(default_factory=datetime.utcnow)
 
     def to_dict(self):
@@ -19,6 +20,7 @@ class ScheduledJob:
             "command": self.command,
             "interval_seconds": self.interval_seconds,
             "enabled": self.enabled,
+            "run_on_start": self.run_on_start,
             "created": self.created.isoformat(),
         }
 
@@ -27,12 +29,19 @@ class JobRegistry:
     def __init__(self):
         self.jobs = {}
 
-    def add(self, name: str, command: str, interval_seconds: int):
+    def add(
+        self,
+        name: str,
+        command: str,
+        interval_seconds: int,
+        run_on_start: bool = False,
+    ):
         job = ScheduledJob(
             id=str(uuid4()),
             name=name,
             command=command,
             interval_seconds=interval_seconds,
+            run_on_start=run_on_start,
         )
         self.jobs[job.id] = job
         return job

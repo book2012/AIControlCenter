@@ -16,9 +16,10 @@ class SchedulerLoop:
         self.jobs = jobs or JobRegistry()
         self.runner = runner or JobRunner()
         self.last_run = {}
+        self.started_at = datetime.utcnow()
 
-    def due_jobs(self):
-        now = datetime.utcnow()
+    def due_jobs(self, now: datetime | None = None):
+        now = now or datetime.utcnow()
         due = []
 
         for job in self.jobs.jobs.values():
@@ -28,7 +29,10 @@ class SchedulerLoop:
             last = self.last_run.get(job.id)
 
             if last is None:
-                due.append(job)
+                if job.run_on_start or now - self.started_at >= timedelta(
+                    seconds=job.interval_seconds
+                ):
+                    due.append(job)
                 continue
 
             if now - last >= timedelta(seconds=job.interval_seconds):

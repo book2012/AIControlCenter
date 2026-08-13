@@ -1,7 +1,7 @@
 import time
 
 from core.scheduler.defaults import create_default_jobs
-from core.scheduler.heartbeat import HeartbeatStore
+from core.scheduler.heartbeat import HeartbeatStore, classify_heartbeat
 from core.scheduler.loop import SchedulerLoop
 from core.scheduler.runner import JobRunner
 
@@ -21,12 +21,13 @@ class SchedulerService:
         self.running = False
 
     def status(self):
-        latest = self.loop.heartbeat.latest()
+        heartbeat = classify_heartbeat(self.loop.heartbeat.latest())
 
         return {
+            "status": heartbeat["status"],
             "running": self.running,
             "interval_seconds": self.interval_seconds,
-            "heartbeat": latest,
+            "heartbeat": heartbeat,
             "jobs": self.loop.jobs.list(),
         }
 

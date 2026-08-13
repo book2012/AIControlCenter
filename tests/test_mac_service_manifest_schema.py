@@ -135,19 +135,48 @@ def test_runtime_health_topology_has_approved_semantics():
     assert services["telegram"]["lifecycle"] == "not_deployed"
     assert services["telegram"]["required"] is False
     assert "launchd_label" not in services["telegram"]
-    assert services["scheduler"]["lifecycle"] == "not_deployed"
+    assert services["scheduler"]["service_id"] == "application-scheduler"
+    assert services["scheduler"]["logical_id"] == "scheduler"
     assert services["scheduler"]["required"] is True
+    assert services["scheduler"]["production_status"] == "PRODUCTION"
+    assert services["scheduler"]["runtime"] == "python-immutable-venv"
+    assert services["scheduler"]["supervisor"] == "system-launchdaemon"
+    assert services["scheduler"]["lifecycle"] == "launchd"
+    assert (
+        services["scheduler"]["launchd_label"]
+        == "com.aicontrolcenter.application-scheduler"
+    )
+    assert services["scheduler"]["ubuntu_dependency"] is False
 
 
 def test_launchd_label_is_conditional_on_launchd_lifecycle():
     schema = load_json(SCHEMA_PATH)
     manifest = load_json(MANIFEST_PATH)
-    invalid = deepcopy(manifest)
-    invalid["services"][-1]["launchd_label"] = "invented.scheduler"
+    non_launchd_invalid = deepcopy(manifest)
+    telegram = next(
+        item for item in non_launchd_invalid["services"]
+        if item["logical_id"] == "telegram"
+    )
+    telegram["launchd_label"] = "invented.scheduler"
 
-    errors = list(Draft202012Validator(schema).iter_errors(invalid))
+    non_launchd_errors = list(
+        Draft202012Validator(schema).iter_errors(non_launchd_invalid)
+    )
 
-    assert errors
+    assert non_launchd_errors
+
+    launchd_invalid = deepcopy(manifest)
+    scheduler = next(
+        item for item in launchd_invalid["services"]
+        if item["service_id"] == "application-scheduler"
+    )
+    del scheduler["launchd_label"]
+
+    launchd_errors = list(
+        Draft202012Validator(schema).iter_errors(launchd_invalid)
+    )
+
+    assert launchd_errors
 
 
 def test_control_plane_cannot_depend_on_ubuntu():

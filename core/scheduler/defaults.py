@@ -8,6 +8,7 @@ def create_default_jobs() -> JobRegistry:
         name="heartbeat",
         command="heartbeat",
         interval_seconds=30,
+        run_on_start=True,
     )
 
     registry.add(

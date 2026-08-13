@@ -12,6 +12,7 @@ def test_job_registry_add():
 
     assert job.name == "doctor"
     assert job.enabled is True
+    assert job.run_on_start is False
 
 
 def test_job_registry_list():
