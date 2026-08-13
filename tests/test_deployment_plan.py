@@ -13,7 +13,7 @@ def test_full_deployment_plan_is_read_only():
     assert result["valid"] is True
     assert result["read_only"] is True
     assert result["profile"] == "mac-standalone-production"
-    assert result["service_count"] == 6
+    assert result["service_count"] == 8
     assert result["errors"] == []
 
 

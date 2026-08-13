@@ -21,7 +21,7 @@ def test_production_manifest_is_valid():
 
     assert result["valid"] is True
     assert result["profile"] == "mac-standalone-production"
-    assert result["service_count"] == 6
+    assert result["service_count"] == 8
     assert result["errors"] == []
 
 

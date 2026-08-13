@@ -13,13 +13,12 @@ class HeartbeatStore:
                 "scheduler.db"
             )
         )
-        self.db_path.parent.mkdir(parents=True, exist_ok=True)
-        self._init_db()
 
     def _connect(self):
         return sqlite3.connect(self.db_path)
 
     def _init_db(self):
+        self.db_path.parent.mkdir(parents=True, exist_ok=True)
         with self._connect() as conn:
             conn.execute("""
                 CREATE TABLE IF NOT EXISTS heartbeat (
@@ -30,6 +29,7 @@ class HeartbeatStore:
             """)
 
     def beat(self, status: str = "ALIVE"):
+        self._init_db()
         created = datetime.utcnow().isoformat()
 
         with self._connect() as conn:
@@ -44,15 +44,21 @@ class HeartbeatStore:
         }
 
     def latest(self):
-        with self._connect() as conn:
-            row = conn.execute(
-                """
-                SELECT status, created
-                FROM heartbeat
-                ORDER BY id DESC
-                LIMIT 1
-                """
-            ).fetchone()
+        if not self.db_path.is_file():
+            return None
+        try:
+            uri = f"file:{self.db_path.resolve()}?mode=ro"
+            with sqlite3.connect(uri, uri=True) as conn:
+                row = conn.execute(
+                    """
+                    SELECT status, created
+                    FROM heartbeat
+                    ORDER BY id DESC
+                    LIMIT 1
+                    """
+                ).fetchone()
+        except sqlite3.Error:
+            return None
 
         if not row:
             return None

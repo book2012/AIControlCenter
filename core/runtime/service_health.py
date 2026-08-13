@@ -1,36 +1,41 @@
 import subprocess
-from datetime import datetime, timedelta
+from collections.abc import Callable
+from datetime import datetime, timedelta, timezone
 
 from core.scheduler.heartbeat import HeartbeatStore
+from core.runtime.service_topology import (
+    ServiceTopology,
+    TopologyConfigurationError,
+)
 
 
 class ServiceHealth:
-    SERVICES = {
-        "api": "aicontrolcenter-api",
-        "telegram": "aicontrolcenter-telegram",
-        "scheduler": "aicontrolcenter-scheduler",
-    }
-
     def __init__(
         self,
         heartbeat: HeartbeatStore | None = None,
         heartbeat_timeout_seconds: int = 90,
+        topology: ServiceTopology | None = None,
+        launchd_inspector: Callable[[str], str] | None = None,
     ):
         self.heartbeat = heartbeat or HeartbeatStore()
         self.heartbeat_timeout_seconds = heartbeat_timeout_seconds
+        self.topology = topology or ServiceTopology()
+        self.launchd_inspector = launchd_inspector or self.launchd_status
 
-    def systemd_status(self, unit: str) -> str:
+    def launchd_status(self, label: str) -> str:
         try:
             result = subprocess.run(
-                ["systemctl", "is-active", unit],
+                ["/bin/launchctl", "print", f"system/{label}"],
                 capture_output=True,
                 text=True,
                 timeout=5,
                 check=False,
             )
-            return result.stdout.strip() or "unknown"
+            if result.returncode != 0:
+                return "STOPPED"
+            return "RUNNING" if "state = running" in result.stdout else "STOPPED"
         except (OSError, subprocess.SubprocessError):
-            return "unavailable"
+            return "UNAVAILABLE"
 
     def heartbeat_status(self):
         latest = self.heartbeat.latest()
@@ -43,7 +48,9 @@ class ServiceHealth:
             }
 
         created = datetime.fromisoformat(latest["created"])
-        fresh = datetime.utcnow() - created <= timedelta(
+        if created.tzinfo is None:
+            created = created.replace(tzinfo=timezone.utc)
+        fresh = datetime.now(timezone.utc) - created <= timedelta(
             seconds=self.heartbeat_timeout_seconds
         )
 
@@ -54,25 +61,50 @@ class ServiceHealth:
         }
 
     def status(self):
-        services = {
-            name: {
-                "unit": unit,
-                "status": self.systemd_status(unit),
-            }
-            for name, unit in self.SERVICES.items()
-        }
-
         heartbeat = self.heartbeat_status()
+        try:
+            topology_services = self.topology.runtime_services()
+        except TopologyConfigurationError:
+            return {
+                "healthy": False,
+                "services": {},
+                "scheduler_heartbeat": heartbeat,
+                "topology": {"status": "INVALID"},
+            }
 
-        healthy = (
-            all(item["status"] == "active" for item in services.values())
-            and heartbeat["fresh"]
+        services = {}
+        for service in topology_services:
+            if service.lifecycle == "launchd":
+                state = self.launchd_inspector(service.launchd_label or "")
+            elif service.deployment_status == "NOT_DEPLOYED":
+                state = "NOT_DEPLOYED"
+            else:
+                state = "UNAVAILABLE"
+            services[service.logical_id] = {
+                "service_id": service.service_id,
+                "required": service.required,
+                "lifecycle": service.lifecycle,
+                "status": state,
+                **(
+                    {"launchd_label": service.launchd_label}
+                    if service.launchd_label is not None
+                    else {}
+                ),
+            }
+
+        healthy = all(
+            not item["required"] or item["status"] == "RUNNING"
+            for item in services.values()
         )
+        scheduler = services.get("scheduler")
+        if scheduler and scheduler["required"] and not heartbeat["fresh"]:
+            healthy = False
 
         return {
             "healthy": healthy,
             "services": services,
             "scheduler_heartbeat": heartbeat,
+            "topology": {"status": "VALID"},
         }
 
     def format_text(self):
@@ -84,7 +116,7 @@ class ServiceHealth:
         ]
 
         for name, item in data["services"].items():
-            marker = "✅" if item["status"] == "active" else "❌"
+            marker = "✅" if item["status"] == "RUNNING" else "❌"
             lines.append(f"{marker} {name}: {item['status']}")
 
         heartbeat = data["scheduler_heartbeat"]

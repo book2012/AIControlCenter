@@ -3,6 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 
 import pytest
+from jsonschema import Draft202012Validator
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -11,12 +12,15 @@ MANIFEST_PATH = ROOT / "config/services/mac-standalone-production.json"
 
 REQUIRED_SERVICE_FIELDS = {
     "service_id",
+    "logical_id",
+    "runtime_health",
     "role",
     "owner",
     "required",
     "production_status",
     "runtime",
     "supervisor",
+    "lifecycle",
     "ubuntu_dependency",
     "state_policy",
 }
@@ -105,8 +109,45 @@ def test_schema_document_is_valid_json():
 
 def test_mac_service_manifest_contract_is_valid():
     manifest = load_json(MANIFEST_PATH)
+    schema = load_json(SCHEMA_PATH)
 
     assert validate_manifest(manifest) == []
+    assert list(Draft202012Validator(schema).iter_errors(manifest)) == []
+
+
+def test_runtime_health_topology_has_approved_semantics():
+    manifest = load_json(MANIFEST_PATH)
+    services = {
+        item["logical_id"]: item
+        for item in manifest["services"]
+        if item["runtime_health"]
+    }
+
+    assert services["api"]["launchd_label"] == "com.aicontrolcenter.api"
+    assert services["api"]["port"] == 58081
+    assert services["api"]["lifecycle"] == "launchd"
+    assert services["api"]["required"] is True
+    homepage_api = next(
+        item for item in manifest["services"] if item["logical_id"] == "homepage-api"
+    )
+    assert homepage_api["lifecycle"] == "embedded"
+    assert homepage_api["port"] == 58081
+    assert services["telegram"]["lifecycle"] == "not_deployed"
+    assert services["telegram"]["required"] is False
+    assert "launchd_label" not in services["telegram"]
+    assert services["scheduler"]["lifecycle"] == "not_deployed"
+    assert services["scheduler"]["required"] is True
+
+
+def test_launchd_label_is_conditional_on_launchd_lifecycle():
+    schema = load_json(SCHEMA_PATH)
+    manifest = load_json(MANIFEST_PATH)
+    invalid = deepcopy(manifest)
+    invalid["services"][-1]["launchd_label"] = "invented.scheduler"
+
+    errors = list(Draft202012Validator(schema).iter_errors(invalid))
+
+    assert errors
 
 
 def test_control_plane_cannot_depend_on_ubuntu():

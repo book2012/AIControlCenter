@@ -33,6 +33,13 @@ Authorization read inside a heredoc uses `/dev/tty`; expected-absence probes
 must be safe under `set -e` and `pipefail`; generated wrapper redirections must
 remain atomic; and JSON gates validate the actual emitted versioned schema.
 
+Runtime health consumes `config/services/mac-standalone-production.json` as its
+single service-topology contract. Logical identity, required/optional policy,
+lifecycle, deployment state, and launchd labels are defined there; inspection
+adapters only observe the lifecycle identifiers supplied by that contract.
+Malformed topology fails closed. Runtime-health and scheduler-heartbeat reads
+must not create, migrate, or update persistent state.
+
 Endpoint-local success is not equivalent to whole-runtime health. A recovered
 canonical API/Homepage may be operational while `/runtime/health` truthfully
 reports degraded dependencies or stale heartbeats. Operational status must
