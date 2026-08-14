@@ -48,6 +48,7 @@ class CapabilityObservation:
                 "read_only": True,
                 "production_authorization": False,
                 "infrastructure_mutation": False,
+                "platform_business_policy_ownership": False,
                 "action_execution": False,
             },
         }

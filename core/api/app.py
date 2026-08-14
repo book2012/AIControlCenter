@@ -2,7 +2,7 @@ from fastapi import FastAPI
 
 from core.config.loader import ConfigLoader
 
-from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, notifications, openclaw, planner, providers, runtime, scheduler, shopping, storage, tasks, workers
+from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, n8n, notifications, openclaw, planner, providers, runtime, scheduler, shopping, storage, tasks, workers
 from core.api.routes.ollama import router as ollama_router
 from core.api.routes.model_governance import router as model_governance_router
 from core.api.routes.governance_audit import router as governance_audit_router
@@ -32,9 +32,24 @@ class _UnavailableOpenClawObserver:
         )
 
 
+class _UnavailableN8nObserver:
+    """Platform-neutral fallback that performs no integration discovery."""
+
+    def observe(self) -> CapabilityObservation:
+        return CapabilityObservation(
+            provider="n8n", service_id="n8n",
+            status=CapabilityStatus.UNAVAILABLE,
+            available=False, healthy=False, ready=False, capabilities=(),
+            configuration={"status": "UNKNOWN"},
+            runtime={"kind": "UNKNOWN", "transport": "UNKNOWN"},
+            evidence=(), error={"error_type": "ObserverNotConfigured"},
+        )
+
+
 def create_app(
     service_health: ServiceHealth | None = None,
     openclaw_status_service: CapabilityStatusService | None = None,
+    n8n_status_service: CapabilityStatusService | None = None,
 ) -> FastAPI:
     ConfigLoader().load()
     app = FastAPI(
@@ -46,12 +61,16 @@ def create_app(
     app.state.openclaw_status_service = openclaw_status_service or CapabilityStatusService(
         _UnavailableOpenClawObserver()
     )
+    app.state.n8n_status_service = n8n_status_service or CapabilityStatusService(
+        _UnavailableN8nObserver()
+    )
     app.state.shopping_runtime = build_shopping_runtime()
 
     app.include_router(health.router)
     app.include_router(homepage.router)
     app.include_router(runtime.router)
     app.include_router(openclaw.router)
+    app.include_router(n8n.router)
     app.include_router(notifications.router)
     app.include_router(memory.router)
     app.include_router(knowledge.router)

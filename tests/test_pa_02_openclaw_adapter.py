@@ -122,6 +122,7 @@ def test_contract_has_no_execution_or_production_operation():
     assert result["governance"] == {
         "authority": "AICONTROLCENTER", "read_only": True,
         "production_authorization": False, "infrastructure_mutation": False,
+        "platform_business_policy_ownership": False,
         "action_execution": False,
     }
 

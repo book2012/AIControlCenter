@@ -3,6 +3,7 @@
 from core.api.app import create_app
 from core.runtime.service_health import ServiceHealth
 from integrations.openclaw import build_openclaw_status_service
+from integrations.n8n import build_n8n_status_service
 from ops.macos.launchd import application_scheduler_logs
 
 
@@ -12,4 +13,5 @@ service_health = ServiceHealth(
 app = create_app(
     service_health=service_health,
     openclaw_status_service=build_openclaw_status_service(),
+    n8n_status_service=build_n8n_status_service(),
 )
