@@ -2,49 +2,16 @@ from fastapi import FastAPI
 
 from core.config.loader import ConfigLoader
 
-from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, n8n, notifications, openclaw, planner, providers, runtime, scheduler, shopping, storage, tasks, workers
+from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, n8n, notifications, openclaw, planner, providers, runtime, scheduler, shopping, storage, tasks, workers, woocommerce
 from core.api.routes.ollama import router as ollama_router
 from core.api.routes.model_governance import router as model_governance_router
 from core.api.routes.governance_audit import router as governance_audit_router
 from core.api.routes.deployment import router as deployment_router
 from core.runtime.service_health import ServiceHealth
-from core.capabilities import CapabilityObservation, CapabilityStatus
+from core.capabilities import CapabilityGovernanceExtensions, UnavailableCapabilityObserver
 from core.capabilities.service import CapabilityStatusService
 from core.shopping.runtime_composition import build_shopping_runtime
 from core.notifications import NotificationPlatform
-
-
-class _UnavailableOpenClawObserver:
-    """Platform-neutral fallback that performs no integration discovery."""
-
-    def observe(self) -> CapabilityObservation:
-        return CapabilityObservation(
-            provider="openclaw",
-            service_id="openclaw",
-            status=CapabilityStatus.UNAVAILABLE,
-            available=False,
-            healthy=False,
-            ready=False,
-            capabilities=(),
-            configuration={"status": "UNKNOWN"},
-            runtime={"kind": "UNKNOWN"},
-            evidence=(),
-            error={"error_type": "ObserverNotConfigured"},
-        )
-
-
-class _UnavailableN8nObserver:
-    """Platform-neutral fallback that performs no integration discovery."""
-
-    def observe(self) -> CapabilityObservation:
-        return CapabilityObservation(
-            provider="n8n", service_id="n8n",
-            status=CapabilityStatus.UNAVAILABLE,
-            available=False, healthy=False, ready=False, capabilities=(),
-            configuration={"status": "UNKNOWN"},
-            runtime={"kind": "UNKNOWN", "transport": "UNKNOWN"},
-            evidence=(), error={"error_type": "ObserverNotConfigured"},
-        )
 
 
 def create_app(
@@ -52,6 +19,7 @@ def create_app(
     openclaw_status_service: CapabilityStatusService | None = None,
     n8n_status_service: CapabilityStatusService | None = None,
     notification_platform: NotificationPlatform | None = None,
+    woocommerce_status_service: CapabilityStatusService | None = None,
 ) -> FastAPI:
     ConfigLoader().load()
     app = FastAPI(
@@ -61,12 +29,20 @@ def create_app(
     )
     app.state.service_health = service_health or ServiceHealth()
     app.state.openclaw_status_service = openclaw_status_service or CapabilityStatusService(
-        _UnavailableOpenClawObserver()
+        UnavailableCapabilityObserver("openclaw", "openclaw")
     )
     app.state.n8n_status_service = n8n_status_service or CapabilityStatusService(
-        _UnavailableN8nObserver()
+        UnavailableCapabilityObserver("n8n", "n8n", include_transport=True)
     )
     app.state.notification_platform = notification_platform or NotificationPlatform()
+    app.state.woocommerce_status_service = woocommerce_status_service or CapabilityStatusService(
+        UnavailableCapabilityObserver(
+            "woocommerce", "woocommerce", include_configuration_facts=True, include_transport=True,
+            governance_extensions=CapabilityGovernanceExtensions(
+                commerce_engine_only=True, automatic_retry=False,
+            ),
+        )
+    )
     app.state.shopping_runtime = build_shopping_runtime()
 
     app.include_router(health.router)
@@ -84,6 +60,7 @@ def create_app(
     app.include_router(brain.router)
     app.include_router(dashboard.router)
     app.include_router(shopping.router)
+    app.include_router(woocommerce.router)
     app.include_router(storage.router)
     app.include_router(backup.router)
     app.include_router(planner.router)

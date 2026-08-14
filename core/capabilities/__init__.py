@@ -1,5 +1,14 @@
 """AIControlCenter-owned external capability contracts."""
 
-from .contracts import CapabilityObservation, CapabilityObserver, CapabilityStatus
+from .contracts import (
+    CapabilityGovernanceExtensions,
+    CapabilityObservation,
+    CapabilityObserver,
+    CapabilityStatus,
+    UnavailableCapabilityObserver,
+)
 
-__all__ = ("CapabilityObservation", "CapabilityObserver", "CapabilityStatus")
+__all__ = (
+    "CapabilityGovernanceExtensions", "CapabilityObservation", "CapabilityObserver",
+    "CapabilityStatus", "UnavailableCapabilityObserver",
+)
