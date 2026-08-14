@@ -2100,6 +2100,57 @@ rollback after controlled mutation failure. Next:
 the AI Home Datacenter project is complete.
 
 <!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## Application Scheduler deployment readiness
+
+The existing runtime `ServiceHealth` projection observes Scheduler runtime
+health and readiness through an injected macOS log inspector; it is not a
+deployment lifecycle executor. The canonical Scheduler bootstrap lifecycle
+gate is `application_scheduler_bootstrap.py`. Dry-run and apply both consume
+the same read-only log contract and probe registration eligibility; apply alone
+may perform exactly one bootstrap after all gates pass.
+
+The immutable Production API runner uses
+`ops.macos.runtime.application:app`, whose outer macOS composition injects the
+log inspector into `core.api.app.create_app(...)`. Core has no `ops.*` import
+and remains fail-closed without an injected adapter.
+
+The contract can also be checked directly:
+
+```bash
+PYTHONDONTWRITEBYTECODE=1 python3 -B \
+  ops/macos/launchd/application_scheduler_logs.py validate
+```
+
+It requires `/var/log/aicontrolcenter` to remain `root:wheel 0755` and both
+Application Scheduler logs to be regular, non-symlink `kyouhan:staff 0640`
+files. Missing files require a separate, bounded
+`application_scheduler_logs.py provision` invocation. The Python root check is
+only a local executor precondition—not human authorization. The outer governed
+executor owns and must consume authorization immediately before
+one bounded Production invocation. Provisioning never invokes launchctl and
+never retries, rolls back, or repairs an invalid existing file. Bootstrap does
+not provision, kickstart, retry, or roll back.
+
+Application Scheduler Production recovery was already operational before the
+recurrence-prevention closeout. Focused recurrence validation passed. Canonical
+deployment regression invocation #1 failed with 13 test failures caused by
+umask-sensitive Scheduler fixtures and a controlled-live test that hashed the
+independently mutable real-home AIControlCenter tree. Only those test defects
+were corrected; Product contracts were not weakened. The corrected focused
+scope passed 39 tests under umask `077`, with the controlled live root
+explicitly confined to `/private/tmp`. Canonical deployment regression
+invocation #2 passed with `RC=0`. Exactly two canonical invocations were made
+because code/test changes occurred after invocation #1; no test count is
+claimed for invocation #2.
+
+No Production mutation occurred during recurrence-prevention validation, and
+no additional activation, bootstrap, log provisioning, kickstart, retry, or
+rollback was performed. Final milestone:
+
+`OPS-01B_RECURRENCE_PREVENTION_VALIDATED_AND_CLOSED`
+
+WordPress and Shadow work remain separate future work.
+
 ## Production Runtime Health
 
 Current Production release:

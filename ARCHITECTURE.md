@@ -1984,6 +1984,50 @@ Production PID was unchanged, canonical secret metadata was preserved, the
 candidate was absent, and Production mutation was zero.
 
 <!-- AIHD_RUNTIME_HEALTH_PRODUCTION_2026_08_13 -->
+## OPS-01B Application Scheduler log readiness
+
+Application Scheduler lifecycle readiness includes an explicit launchd log
+contract. `/var/log/aicontrolcenter` must remain a real `root:wheel 0755`
+directory. The Scheduler stdout and stderr paths must each be real,
+non-symlink `kyouhan:staff 0640` files.
+
+The existing `core.runtime.service_health.ServiceHealth` runtime-observation
+projection receives this contract through its application composition adapter
+and fails overall health closed when required Scheduler log readiness is
+missing, invalid, or cannot be inspected. It imports no `ops.*` adapter.
+The immutable Production runner launches `ops.macos.runtime.application:app`.
+That outer macOS composition root injects
+`application_scheduler_logs.inspect_contract` into the platform-neutral
+`core.api.app.create_app(...)` factory; the core default remains fail-closed.
+`application_scheduler_bootstrap.py` is the canonical Scheduler deployment
+lifecycle gate. It consumes the same read-only log contract and performs the
+service-registration eligibility probe in dry-run and apply modes. Apply alone
+may issue exactly one bootstrap after all gates pass.
+`application_scheduler_logs.py validate` exposes the same read-only contract.
+Its separate bounded `provision` primitive may create only missing files;
+it does not remediate an invalid existing object, invoke `launchctl`, retry,
+roll back, bootstrap, or kickstart. Root identity is only a local execution
+precondition, not human authorization. The outer governed executor owns and
+must consume authorization immediately before each bounded Production
+invocation.
+
+Application Scheduler Production recovery was already operational before this
+recurrence-prevention closeout. Focused recurrence validation passed. The first
+canonical deployment regression invocation then failed with 13 test failures:
+Scheduler fixtures were sensitive to the process umask, and one controlled-live
+test hashed the independently mutable real-home AIControlCenter tree. Those
+defects were corrected only in tests, without weakening Product contracts. The
+corrected focused scope passed 39 tests under umask `077`, with the controlled
+live root explicitly confined to `/private/tmp`. Because test changes followed
+the first invocation, the canonical regression was invoked exactly twice; the
+second invocation passed with `RC=0`. No canonical test count is asserted for
+that passing invocation.
+
+No Production mutation occurred during recurrence-prevention validation. No
+additional activation, bootstrap, log provisioning, kickstart, retry, or
+rollback was performed. OPS-01B recurrence prevention is validated, and
+OPS-01B is closed. WordPress and Shadow work remain separate future work.
+
 ## Production Runtime Health Operational Contract — 2026-08-13
 
 The Runtime Health model is deployed to Production release

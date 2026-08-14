@@ -1,5 +1,44 @@
 # CHANGELOG
 
+## 2026-08-14 — OPS-01B Scheduler log recurrence prevention
+
+- Added a JSON-first, fail-closed readiness contract for the Application
+  Scheduler launchd stdout/stderr files and their root-owned parent directory.
+- Added a provisioning primitive bounded to creating only missing
+  `kyouhan:staff 0640` Scheduler log files. Its local checks are executor
+  preconditions, not human authorization; the outer governed executor retains
+  the human authorization boundary. Invalid existing files are never repaired
+  automatically.
+- Integrated the contract into the existing runtime `ServiceHealth`
+  observation/readiness projection through application composition, leaving
+  `core.runtime` adapter-injected and free of direct `ops.*` dependencies.
+- Added `ops.macos.runtime.application:app` as the outer macOS Production API
+  composition root and changed the immutable canonical runner to launch it;
+  `core.api.app` remains the platform-neutral factory with a fail-closed
+  default when no Scheduler log adapter is supplied.
+- Made `application_scheduler_bootstrap.py` the canonical Scheduler deployment
+  lifecycle gate. Dry-run and apply share log-contract and registration-probe
+  eligibility checks; only apply may execute one bootstrap after those gates.
+- Kept Scheduler log provisioning separate from bootstrap/kickstart; the
+  provisioning primitive has no retry or rollback path, does not modify
+  Scheduler business logic, and does not invoke lifecycle operations.
+- Application Scheduler Production recovery was already operational before
+  recurrence-prevention closeout; this validation performed no Production
+  mutation and no additional activation, bootstrap, log provisioning,
+  kickstart, retry, or rollback.
+- Focused recurrence validation passed. Canonical deployment regression
+  invocation #1 failed with 13 test failures caused by umask-sensitive
+  Scheduler fixtures and a controlled-live test that hashed the independently
+  mutable real-home AIControlCenter tree.
+- Corrected only those test defects without weakening Product contracts. The
+  corrected focused scope passed 39 tests under umask `077`, with the
+  controlled live root explicitly confined to `/private/tmp`.
+- Canonical deployment regression invocation #2 passed with `RC=0`. The
+  closeout used exactly two canonical invocations because code/test changes
+  occurred after invocation #1; no canonical test count is claimed for #2.
+- Marked `OPS-01B_RECURRENCE_PREVENTION_VALIDATED_AND_CLOSED`; OPS-01B is
+  closed. Deferred WordPress and Shadow work remains separate future work.
+
 ## 2026-08-13 — Bytecode-safe canonical API recovery
 
 - Released Runtime and immutable Source `ef07532bd3d7` from commit

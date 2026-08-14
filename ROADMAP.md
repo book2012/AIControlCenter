@@ -2286,9 +2286,9 @@ Completed:
 - [x] Confirm that `healthy=false` correctly represents the currently missing
   required Application Scheduler rather than a canonical API failure.
 
-Next observability milestone:
+OPS-01B final milestone:
 
-`OPS-01B — Application Scheduler Service & Fresh Heartbeat`
+`OPS-01B_RECURRENCE_PREVENTION_VALIDATED_AND_CLOSED`
 
 Goals:
 
@@ -2297,11 +2297,42 @@ Goals:
 - produce a fresh durable heartbeat;
 - converge Runtime Health from truthful degraded state to `healthy=true`.
 
+OPS-01B recurrence prevention added a reusable,
+fail-closed Scheduler log readiness contract consumed by the existing runtime
+`ServiceHealth` observation through an injected adapter and by the canonical
+deployment lifecycle gate, `application_scheduler_bootstrap.py`. Dry-run and
+apply share read-only eligibility checks, including service registration; apply
+alone may issue one bootstrap. Missing-file provisioning remains separate.
+Executor preconditions do not attest to human authorization; that decision
+remains with the outer governed executor immediately before one bounded
+Production invocation. There is no kickstart, retry, rollback, or automatic
+remediation.
+
+The immutable Production API entrypoint is now the outer macOS composition
+`ops.macos.runtime.application:app`; `core.api.app` remains platform-neutral
+and has no direct `ops.*` dependency.
+
+Application Scheduler Production recovery was already operational before this
+closeout. Focused recurrence validation passed. Canonical deployment regression
+invocation #1 failed with 13 test failures caused by umask-sensitive Scheduler
+fixtures and a controlled-live test that hashed the independently mutable
+real-home AIControlCenter tree. The defects were corrected only in tests,
+without weakening Product contracts. The corrected focused scope passed 39
+tests under umask `077`, with the controlled live root explicitly confined to
+`/private/tmp`. Canonical deployment regression invocation #2 passed with
+`RC=0`. Exactly two canonical invocations were made because code/test changes
+occurred after invocation #1; no canonical test count is claimed for #2.
+
+No Production mutation occurred during recurrence-prevention validation. No
+additional activation, bootstrap, log provisioning, kickstart, retry, or
+rollback was performed. OPS-01B recurrence prevention is validated and
+OPS-01B is closed.
+
 Separate maintenance work:
 
 - Shadow `:18100` release alignment;
 - explicit candidate/release selector for Shadow tooling;
 - removal of legacy automatic external rollback semantics.
 
-Notion synchronization remains deferred until the designated final
-documentation phase unless separately performed and verified.
+No Notion synchronization is claimed. WordPress and Shadow work remain
+deferred as separate future work.

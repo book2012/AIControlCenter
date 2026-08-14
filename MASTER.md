@@ -2593,9 +2593,43 @@ the canonical API. Ubuntu remains a stateless on-demand infrastructure Worker
 and does not own AI workloads, application scheduling, business logic or
 platform-wide state.
 
-Next production observability milestone:
+OPS-01B final milestone:
 
-`APPLICATION_SCHEDULER_PRODUCTION_OPERATIONAL`
+`OPS-01B_RECURRENCE_PREVENTION_VALIDATED_AND_CLOSED`
+
+OPS-01B lifecycle readiness requires the root-owned `0755` canonical log
+directory and regular, non-symlink `kyouhan:staff 0640` Scheduler stdout and
+stderr files. Read-only validation and missing-file provisioning are separate
+from launchd activation. There is no automatic remediation, activation, retry,
+or rollback. The existing runtime `ServiceHealth` projection observes log
+readiness through an injected adapter and owns no deployment lifecycle
+mutation. The canonical Scheduler deployment lifecycle gate is
+`application_scheduler_bootstrap.py`; dry-run and apply share read-only
+contract and registration probes, while only apply may issue one bootstrap
+after eligibility passes. Root identity is only an executor precondition and
+does not constitute human authorization; the outer governed executor retains
+that boundary.
+
+The canonical immutable API runner now targets
+`ops.macos.runtime.application:app`. This outer macOS composition supplies the
+Scheduler log inspector to the platform-neutral core application factory.
+
+Application Scheduler Production recovery was already operational before the
+recurrence-prevention closeout. Focused recurrence validation passed. Canonical
+deployment regression invocation #1 failed with 13 test failures caused by
+umask-sensitive Scheduler fixtures and a controlled-live test that hashed the
+independently mutable real-home AIControlCenter tree. Only test defects were
+corrected, without weakening Product contracts. The corrected focused scope
+passed 39 tests under umask `077`, with the controlled live root explicitly
+confined to `/private/tmp`. Canonical deployment regression invocation #2
+passed with `RC=0`. Exactly two canonical invocations were made because
+code/test changes occurred after invocation #1; no canonical test count is
+claimed for invocation #2.
+
+No Production mutation occurred during recurrence-prevention validation. No
+additional activation, bootstrap, log provisioning, kickstart, retry, or
+rollback was performed. OPS-01B recurrence prevention is validated and
+OPS-01B is closed.
 
 Shadow release alignment is a separate maintenance Sprint and is not a blocker
 for the active Production release.
