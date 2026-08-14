@@ -2,16 +2,40 @@ from fastapi import FastAPI
 
 from core.config.loader import ConfigLoader
 
-from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, notifications, planner, providers, runtime, scheduler, shopping, storage, tasks, workers
+from core.api.routes import agents, automation, backup, brain, conversations, dashboard, datacenter, health, homepage, knowledge, memory, notifications, openclaw, planner, providers, runtime, scheduler, shopping, storage, tasks, workers
 from core.api.routes.ollama import router as ollama_router
 from core.api.routes.model_governance import router as model_governance_router
 from core.api.routes.governance_audit import router as governance_audit_router
 from core.api.routes.deployment import router as deployment_router
 from core.runtime.service_health import ServiceHealth
+from core.capabilities import CapabilityObservation, CapabilityStatus
+from core.capabilities.service import CapabilityStatusService
 from core.shopping.runtime_composition import build_shopping_runtime
 
 
-def create_app(service_health: ServiceHealth | None = None) -> FastAPI:
+class _UnavailableOpenClawObserver:
+    """Platform-neutral fallback that performs no integration discovery."""
+
+    def observe(self) -> CapabilityObservation:
+        return CapabilityObservation(
+            provider="openclaw",
+            service_id="openclaw",
+            status=CapabilityStatus.UNAVAILABLE,
+            available=False,
+            healthy=False,
+            ready=False,
+            capabilities=(),
+            configuration={"status": "UNKNOWN"},
+            runtime={"kind": "UNKNOWN"},
+            evidence=(),
+            error={"error_type": "ObserverNotConfigured"},
+        )
+
+
+def create_app(
+    service_health: ServiceHealth | None = None,
+    openclaw_status_service: CapabilityStatusService | None = None,
+) -> FastAPI:
     ConfigLoader().load()
     app = FastAPI(
         title="AIControlCenter",
@@ -19,11 +43,15 @@ def create_app(service_health: ServiceHealth | None = None) -> FastAPI:
         version="0.1.0",
     )
     app.state.service_health = service_health or ServiceHealth()
+    app.state.openclaw_status_service = openclaw_status_service or CapabilityStatusService(
+        _UnavailableOpenClawObserver()
+    )
     app.state.shopping_runtime = build_shopping_runtime()
 
     app.include_router(health.router)
     app.include_router(homepage.router)
     app.include_router(runtime.router)
+    app.include_router(openclaw.router)
     app.include_router(notifications.router)
     app.include_router(memory.router)
     app.include_router(knowledge.router)
