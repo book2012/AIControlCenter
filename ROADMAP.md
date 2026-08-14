@@ -1,5 +1,41 @@
 # Roadmap
 
+## PA-03 — n8n Control Plane Adapter v1
+
+- [x] Establish n8n as a replaceable external automation capability while
+  retaining all Control Plane and business/customer authority in
+  AIControlCenter.
+- [x] Preserve dependency direction `ops.macos.runtime.application` →
+  `integrations.n8n` → `core.capabilities`, with injection into
+  `core.api.create_app` and no `ops.*` or `integrations.*` imports from core.
+- [x] Reuse existing `core.capabilities` contracts and
+  `CapabilityStatusService`; create no second capability framework.
+- [x] Add only GET `/api/capabilities/n8n`, with no mutating method, workflow
+  execution or enable/disable, webhook or credential creation, schedule
+  mutation, Production authorization, or infrastructure mutation.
+- [x] Validate the canonical manifest/schema before trusting the unique optional
+  n8n identity: `NOT_DEPLOYED`, `runtime_health=false`,
+  `runtime=UNASSIGNED`, and `supervisor=UNASSIGNED`.
+- [x] Omit a PA-01 `service_platform` lifecycle definition because no
+  sufficiently proven executable, lifecycle, log, or runtime identity exists.
+- [x] Keep configuration, authentication, runtime, and transport `UNKNOWN`
+  unless explicitly injected; invent no endpoint/environment/auth convention.
+- [x] Keep platform-neutral `create_app` discovery-free and fail-closed with
+  value-free `UNAVAILABLE` evidence; inject the adapter only at macOS outer
+  composition and truthfully project `NOT_DEPLOYED`.
+- [x] Keep secret/config evidence value-free and explicitly project
+  `platform_business_policy_ownership=false` for external capabilities while
+  preserving PA-02 OpenClaw compatibility.
+- [x] Pass focused PA-03 validation with 96 tests and canonical deployment
+  regression with `RC=0` on exactly one PA-03 canonical invocation.
+- [x] Close PA-03 after Git closeout at milestone
+  `N8N_CONTROL_PLANE_ADAPTER_V1_VALIDATED`.
+
+PA-03 is validated. `git diff --check` passed; no Production mutation or n8n
+workflow, credential, Docker, launchd, `runtime/current`, or live-service
+operation occurred. No Notion synchronization is claimed. OPS-01B, PA-01, and
+PA-02 remain closed and unchanged.
+
 ## PA-02 — OpenClaw Adapter v1
 
 - [x] Discover existing manifest identity, adapter/API/config conventions, and

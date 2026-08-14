@@ -1,5 +1,45 @@
 # CHANGELOG
 
+## 2026-08-14 — PA-03 n8n Control Plane Adapter v1
+
+- Validated PA-03 and marked it closed after Git closeout at milestone
+  `N8N_CONTROL_PLANE_ADAPTER_V1_VALIDATED`.
+- Established n8n as a replaceable external automation capability, not the
+  AIControlCenter Control Plane. AIControlCenter retains business logic,
+  workflow and orchestration policy, Production authorization, governance,
+  audit, deployment control, infrastructure mutation authority, and
+  business/customer state.
+- Established dependency direction `ops.macos.runtime.application` →
+  `integrations.n8n` → `core.capabilities`, with injection into
+  `core.api.create_app`; core imports neither `ops.*` nor `integrations.*`.
+  Reused existing `core.capabilities` contracts and `CapabilityStatusService`
+  rather than creating a second capability framework.
+- Added only `GET /api/capabilities/n8n`. No POST/PUT/PATCH/DELETE capability
+  implementation, workflow execution or enable/disable, webhook or credential
+  creation, schedule mutation, Production authorization, or infrastructure
+  mutation exists.
+- Validated the canonical manifest/schema before trusting the unique optional
+  n8n identity. Current truth is `NOT_DEPLOYED`, `runtime_health=false`,
+  `runtime=UNASSIGNED`, and `supervisor=UNASSIGNED`. No sufficiently proven
+  executable/lifecycle/log/runtime identity exists, so no PA-01
+  `service_platform` lifecycle definition was added.
+- Kept configuration, authentication, runtime, and transport `UNKNOWN` unless
+  explicitly injected as evidence. Platform-neutral `create_app` performs no
+  discovery and fails closed with value-free `UNAVAILABLE` evidence; macOS
+  composition injects the adapter and projects `NOT_DEPLOYED`. No invented n8n
+  endpoint, environment, or authentication convention is used.
+- Kept secret/config evidence value-free: URLs, API keys, tokens, cookies,
+  headers, webhook secrets, environment values, configuration contents, and
+  exception messages are not projected. Shared governance now explicitly
+  reports `platform_business_policy_ownership=false` for external capabilities;
+  PA-02 OpenClaw remains compatible.
+- Recorded focused PA-03 validation of 96 passed tests and canonical deployment
+  regression `RC=0` on exactly one PA-03 canonical invocation. `git diff
+  --check` passed. No Production mutation or n8n workflow, credential, Docker,
+  launchd, `runtime/current`, or live-service operation occurred. No Notion
+  synchronization is claimed. OPS-01B, PA-01, and PA-02 remain closed and
+  unchanged.
+
 ## 2026-08-14 — PA-02 OpenClaw Adapter v1
 
 - Validated PA-02 and marked it closed after Git closeout at milestone

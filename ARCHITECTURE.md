@@ -1,5 +1,49 @@
 # AI Home Datacenter Architecture
 
+## PA-03 — n8n external automation capability boundary
+
+Status after Git closeout: `N8N_CONTROL_PLANE_ADAPTER_V1_VALIDATED`; PA-03 is
+closed. n8n is a replaceable external automation capability, not the
+AIControlCenter Control Plane. AIControlCenter retains business logic, workflow
+and orchestration policy, Production authorization, governance, audit,
+deployment control, infrastructure mutation authority, and business/customer
+state.
+
+The final dependency direction is `ops.macos.runtime.application` →
+`integrations.n8n` → `core.capabilities`, with dependency injection into
+`core.api.create_app`. Core imports neither `ops.*` nor `integrations.*`.
+Existing `core.capabilities` contracts and `CapabilityStatusService` are reused;
+there is no second capability framework. Platform-neutral `create_app`
+performs no n8n discovery and fails closed with value-free `UNAVAILABLE`
+evidence when no adapter is injected. macOS outer application composition
+injects the n8n adapter and truthfully projects `NOT_DEPLOYED`.
+
+Canonical manifest/schema validation occurs before the unique n8n identity is
+trusted. Current canonical truth is optional, `NOT_DEPLOYED`,
+`runtime_health=false`, `runtime=UNASSIGNED`, and `supervisor=UNASSIGNED`. No
+sufficiently proven executable, lifecycle, log, or runtime identity exists;
+therefore PA-03 adds no PA-01 `service_platform` lifecycle definition.
+Configuration, authentication, runtime, and transport remain `UNKNOWN` unless
+explicitly injected as evidence. Implementation uses no invented n8n endpoint,
+environment, or authentication convention.
+
+The only PA-03 v1 API projection is `GET /api/capabilities/n8n`; no
+POST/PUT/PATCH/DELETE capability implementation exists. PA-03 provides no
+workflow execution, workflow enable/disable, webhook creation, credential
+creation, schedule mutation, Production authorization, or infrastructure
+mutation. Secret/config evidence is value-free: URLs, API keys, tokens,
+cookies, headers, webhook secrets, environment values, configuration contents,
+and exception messages are not projected. Shared governance explicitly states
+`platform_business_policy_ownership=false` for external capabilities, and
+PA-02 OpenClaw remains compatible.
+
+Focused PA-03 validation passed 96 tests. The canonical deployment regression
+passed with `RC=0` on exactly one PA-03 canonical invocation, and
+`git diff --check` passed. No Production mutation or n8n workflow, credential,
+Docker, launchd, `runtime/current`, or live-service operation occurred. No
+Notion synchronization is claimed. OPS-01B, PA-01, and PA-02 remain closed and
+unchanged.
+
 ## PA-02 — OpenClaw external capability boundary
 
 Status after Git closeout: `OPENCLAW_ADAPTER_V1_VALIDATED`; PA-02 is closed.
