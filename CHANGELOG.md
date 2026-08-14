@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## 2026-08-14 — PA-01 Control Plane Service Platform v1
+
+- Closed PA-01 after Git closeout at milestone
+  `CONTROL_PLANE_SERVICE_PLATFORM_V1_VALIDATED`.
+- Introduced Control Plane Service Platform v1. The canonical service manifest
+  is the service-definition source of truth; `ServiceDefinition` is a pure core
+  service-level contract; `ServiceHealth` remains sole owner of aggregate
+  runtime health; and `core` has zero direct `ops.*` imports.
+- Added macOS outer composition in `ops/macos/runtime/service_platform.py`.
+  `inspect_platform_services()` composes `ServiceTopology.platform_services()`,
+  existing `ServiceHealth` launchd/heartbeat observation, strict filesystem
+  readiness, and immutable runtime/source validation.
+- Kept stable owner/group names resolved only at the macOS boundary. Exact file
+  type, symlink, mode, owner, and group validation remains fail-closed. Only
+  `ENOENT` is missing; other filesystem/identity inspection errors fail closed
+  with value-free evidence.
+- Reused the authoritative immutable-source validator for canonical immutable
+  `runtime/current` and Source validation without executing Production worktree
+  code.
+- Kept lifecycle inspect-only. Dry-run bootstrap planning metadata requires
+  `NOT_DEPLOYED`, trusted launchd observation, ready filesystem, and immutable
+  runtime/source preconditions. It carries no authorization and performs no
+  mutation, retry, rollback, or kickstart.
+- Used Application Scheduler and canonical API as reference services without
+  changing their validated Production lifecycle behavior. The canonical API
+  entrypoint remains `ops.macos.runtime.application:app`; Shadow remains
+  separate.
+- Final focused validation passed 94 tests under umask `077`. The final PA-01
+  candidate passed exactly one canonical deployment-regression invocation with
+  `RC=0`. `git diff --check` passed. No Production mutation occurred.
+- No Notion synchronization is claimed. WordPress and Shadow maintenance
+  remains deferred and separate.
+
 ## 2026-08-14 — OPS-01B Scheduler log recurrence prevention
 
 - Added a JSON-first, fail-closed readiness contract for the Application

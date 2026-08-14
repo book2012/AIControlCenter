@@ -1,5 +1,35 @@
 # AIControlCenter
 
+## PA-01 Control Plane Service Platform v1
+
+PA-01 is closed after Git closeout at milestone
+`CONTROL_PLANE_SERVICE_PLATFORM_V1_VALIDATED`. The canonical service manifest
+is the service-definition source of truth. Pure-core `ServiceDefinition`
+describes a service; `ServiceHealth` remains sole owner of aggregate runtime
+health; and `core` has zero direct `ops.*` imports.
+
+The macOS composition in `ops/macos/runtime/service_platform.py` provides
+`inspect_platform_services()`, combining `ServiceTopology.platform_services()`,
+existing `ServiceHealth` launchd/heartbeat observation, strict filesystem
+readiness, and authoritative immutable `runtime/current`/Source validation
+without executing Production worktree code. Stable owner/group names resolve
+only at the macOS boundary. Exact file type, symlink, mode, owner, and group
+checks fail closed. Only `ENOENT` means missing; other inspection failures
+produce value-free evidence.
+
+Lifecycle remains inspect-only. Dry-run bootstrap planning metadata is eligible
+only for `NOT_DEPLOYED` with trusted launchd observation, ready filesystem, and
+immutable runtime/source preconditions. It has no authorization and performs no
+mutation, retry, rollback, or kickstart. Application Scheduler and canonical
+API behavior did not change; the API entrypoint remains
+`ops.macos.runtime.application:app`, and Shadow remains separate.
+
+Final focused validation passed 94 tests under umask `077`; exactly one
+canonical deployment-regression invocation for the final candidate passed with
+`RC=0`; `git diff --check` passed; and no Production mutation occurred. No
+Notion synchronization is claimed. WordPress and Shadow maintenance remains
+deferred and separate.
+
 ## Canonical Production API and Homepage
 
 Current Production release: `ef07532bd3d7`, from commit

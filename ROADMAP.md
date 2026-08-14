@@ -1,5 +1,36 @@
 # Roadmap
 
+## PA-01 — Control Plane Service Platform v1
+
+- [x] Introduce Control Plane Service Platform v1 with the canonical service
+  manifest as the service-definition source of truth.
+- [x] Keep `ServiceDefinition` pure core, `ServiceHealth` sole owner of
+  aggregate runtime health, and `core` free of direct `ops.*` imports.
+- [x] Compose macOS inspection in `ops/macos/runtime/service_platform.py` from
+  `ServiceTopology.platform_services()`, existing launchd/heartbeat
+  observation, strict filesystem readiness, and immutable runtime/source
+  validation.
+- [x] Resolve stable owner/group names only at the macOS boundary. Validate
+  exact file type, symlink, mode, owner, and group fail-closed; treat only
+  `ENOENT` as missing and use value-free evidence for other inspection errors.
+- [x] Reuse the authoritative immutable-source validator without executing
+  Production worktree code.
+- [x] Keep lifecycle inspect-only. Limit bootstrap planning metadata to
+  `NOT_DEPLOYED` with trusted launchd observation, ready filesystem, and
+  immutable runtime/source preconditions. Dry-run has no authorization and no
+  mutation, retry, rollback, or kickstart.
+- [x] Preserve validated Application Scheduler and canonical API Production
+  lifecycle behavior; keep `ops.macos.runtime.application:app` canonical and
+  Shadow separate.
+- [x] Pass 94 focused tests under umask `077` and exactly one final-candidate
+  canonical deployment-regression invocation with `RC=0`.
+- [x] Pass `git diff --check`; confirm no Production mutation.
+- [x] Close PA-01 after Git closeout at milestone
+  `CONTROL_PLANE_SERVICE_PLATFORM_V1_VALIDATED`.
+
+No Notion synchronization is claimed. WordPress and Shadow maintenance remains
+deferred and separate.
+
 ## Canonical API recovery and runtime-health follow-up
 
 - [x] Remediate privileged canonical refresh/bootstrap bytecode creation by

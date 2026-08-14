@@ -1,5 +1,41 @@
 # AI Home Datacenter Architecture
 
+## PA-01 — Control Plane Service Platform v1
+
+Status after Git closeout: `CONTROL_PLANE_SERVICE_PLATFORM_V1_VALIDATED`;
+PA-01 is closed.
+
+PA-01 introduced Control Plane Service Platform v1. The canonical service
+manifest is the service-definition source of truth, and `ServiceDefinition` is
+a pure core service-level contract. `ServiceHealth` remains the sole owner of
+aggregate runtime health, and `core` has zero direct `ops.*` imports.
+
+The macOS outer composition is `ops/macos/runtime/service_platform.py`. Its
+`inspect_platform_services()` composes `ServiceTopology.platform_services()`,
+existing `ServiceHealth` launchd and heartbeat observation, strict filesystem
+readiness, and immutable runtime/source validation. Filesystem contracts use
+stable owner/group names resolved only at the macOS boundary. Exact file type,
+symlink, mode, owner, and group validation remains fail-closed. Only `ENOENT`
+is missing; other filesystem or identity inspection errors fail closed with
+value-free evidence.
+
+Canonical immutable `runtime/current` and Source validation reuses the existing
+authoritative immutable-source validator and does not execute Production
+worktree code. PA-01 lifecycle capability remains inspect-only. Dry-run may
+describe bootstrap as planning metadata only, eligible only for `NOT_DEPLOYED`
+with trusted launchd observation, ready filesystem, and immutable runtime/source
+preconditions. It includes no authorization and performs no mutation, retry,
+rollback, or kickstart.
+
+Application Scheduler and canonical API were reference services without
+changes to validated Production lifecycle behavior. The canonical API
+entrypoint remains `ops.macos.runtime.application:app`; Shadow remains separate.
+Final focused validation passed 94 tests under umask `077`. The final candidate
+passed the canonical deployment regression with `RC=0` on exactly one canonical
+invocation. `git diff --check` passed. No Production mutation occurred. No
+Notion synchronization is claimed. WordPress and Shadow maintenance remains
+deferred and separate.
+
 ## Immutable Production Source and canonical process recovery invariants
 
 The Mac mini M4 remains the always-on Brain and sole Control Plane. Host Caddy

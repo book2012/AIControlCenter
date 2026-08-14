@@ -1,5 +1,39 @@
 # MASTER
 
+## PA-01 — Control Plane Service Platform v1 — CLOSED
+
+Milestone after Git closeout: `CONTROL_PLANE_SERVICE_PLATFORM_V1_VALIDATED`.
+
+The canonical service manifest is the service-definition source of truth.
+`ServiceDefinition` is a pure core service-level contract, `ServiceHealth`
+remains sole owner of aggregate runtime health, and `core` has zero direct
+`ops.*` imports. macOS outer composition is
+`ops/macos/runtime/service_platform.py`; `inspect_platform_services()` composes
+`ServiceTopology.platform_services()`, existing `ServiceHealth` launchd and
+heartbeat observation, strict filesystem readiness, and immutable
+runtime/source validation.
+
+Stable filesystem owner/group names resolve only at the macOS boundary. Exact
+file type, symlink, mode, owner, and group validation is fail-closed. Only
+`ENOENT` is missing; other filesystem/identity inspection errors fail closed
+with value-free evidence. Canonical immutable `runtime/current` and Source
+validation reuses the authoritative immutable-source validator and does not
+execute Production worktree code.
+
+Lifecycle remains inspect-only. Dry-run may describe bootstrap planning only
+for `NOT_DEPLOYED` with trusted launchd observation, ready filesystem, and
+immutable runtime/source preconditions. It has no authorization and performs no
+mutation, retry, rollback, or kickstart. Application Scheduler and canonical
+API were reference services only; validated Production lifecycle behavior did
+not change. The API entrypoint remains `ops.macos.runtime.application:app`, and
+Shadow remains separate.
+
+Final evidence: 94 focused tests passed under umask `077`; exactly one canonical
+deployment-regression invocation for the final candidate passed with `RC=0`;
+`git diff --check` passed; Production mutation was zero. No Notion
+synchronization is claimed. WordPress and Shadow maintenance remains deferred
+and separate.
+
 ## Authoritative Production checkpoint — 2026-08-13
 
 Status: `CANONICAL_API_HOMEPAGE_RECOVERY_COMPLETE`.
