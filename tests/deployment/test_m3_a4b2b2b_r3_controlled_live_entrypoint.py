@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import dataclasses
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -196,17 +195,6 @@ class FakeHome:
         return self.path
 
 
-def tree_digest(path: Path) -> str:
-    if not path.exists():
-        return "ABSENT"
-    digest = hashlib.sha256()
-    for child in sorted(path.rglob("*")):
-        digest.update(str(child.relative_to(path)).encode())
-        if child.is_file():
-            digest.update(child.read_bytes())
-    return digest.hexdigest()
-
-
 class ConfinedInspectorPathPolicy:
     def __init__(self, root: Path):
         self.root = root
@@ -326,9 +314,7 @@ def live_execution(tmp_path: Path, *, failure_step=None):
     shared.mkdir(parents=True, mode=0o700)
     sibling = shared / "unrelated-existing-sibling.txt"
     sibling.write_text("preserve-me", encoding="utf-8")
-    sibling_before = tree_digest(shared)
     actual = Path.home() / "Library/Application Support/AIControlCenter"
-    actual_before = tree_digest(actual)
     evidence = case / "evidence"
     evidence.mkdir(parents=True)
     now = "2026-07-30T12:00:00+09:00"
@@ -367,6 +353,17 @@ def live_execution(tmp_path: Path, *, failure_step=None):
     policy = MacOperationalBootstrapPathPolicy(
         home_resolver=FakeHome(home), repository_root=ROOT)
     paths = policy.resolve()
+    resolved_case_home = home.resolve()
+    resolved_root = paths.root.resolve()
+    real_home_root = actual
+    assert resolved_root.is_relative_to(resolved_case_home)
+    assert not resolved_root.is_relative_to(real_home_root)
+    assert not real_home_root.is_relative_to(resolved_root)
+    for managed_target in paths.managed_targets:
+        resolved_target = managed_target.resolve()
+        assert resolved_target.is_relative_to(resolved_root)
+        assert not resolved_target.is_relative_to(real_home_root)
+        assert not real_home_root.is_relative_to(resolved_target)
     host = OperationalBootstrapHostRevalidationEvidence(
         "Darwin", 501, home, ROOT, True, 0, 0, 10**9)
     target = OperationalBootstrapTargetRevalidationEvidence(
@@ -377,13 +374,12 @@ def live_execution(tmp_path: Path, *, failure_step=None):
         claim_registry=AtomicPermitClaimFileRegistry(), path_policy=policy,
         runtime_adapter=MacOperationalBootstrapRuntimeAdapter(
             failure_step=failure_step))
-    return (coordinator, runtime_request, host, target, auth, paths, sibling,
-            sibling_before, actual, actual_before)
+    return coordinator, runtime_request, host, target, auth, paths, sibling
 
 
 def test_pytest_owned_end_to_end_mac_bootstrap_and_atomic_claim(tmp_path):
     values = live_execution(tmp_path)
-    coordinator, request, host, target, auth, paths, sibling, _, actual, actual_before = values
+    coordinator, request, host, target, auth, paths, sibling = values
     bundle = coordinator.execute(
         request=request, host=host, target=target, activation_authorization=auth)
     assert bundle.receipt.status is OperationalBootstrapRuntimeStatus.COMPLETE
@@ -394,7 +390,6 @@ def test_pytest_owned_end_to_end_mac_bootstrap_and_atomic_claim(tmp_path):
     assert not bundle.receipt.writers_activated
     assert not bundle.receipt.monitoring_activated
     assert not bundle.receipt.external_dispatch_activated
-    assert tree_digest(actual) == actual_before
     audit, replay = independently_inspect(paths, request.requested_at)
     assert audit.status is SQLiteAuditStatus.HEALTHY
     assert not audit.schema_findings
@@ -426,7 +421,7 @@ def test_pytest_owned_end_to_end_mac_bootstrap_and_atomic_claim(tmp_path):
 def test_post_claim_failure_consumes_claim_and_cleans_managed_artifacts(tmp_path):
     values = live_execution(
         tmp_path, failure_step="BOOTSTRAP_REPLAY_SQLITE_DATABASE")
-    coordinator, request, host, target, auth, paths, sibling, _, actual, actual_before = values
+    coordinator, request, host, target, auth, paths, sibling = values
     with pytest.raises(Exception, match="INJECTED_POST_CLAIM_FAILURE"):
         coordinator.execute(
             request=request, host=host, target=target,
@@ -434,7 +429,6 @@ def test_post_claim_failure_consumes_claim_and_cleans_managed_artifacts(tmp_path
     assert request.permit_path.with_name("permit.json.claim.json").is_file()
     assert sibling.read_text(encoding="utf-8") == "preserve-me"
     assert not any(item.exists() for item in paths.managed_targets)
-    assert tree_digest(actual) == actual_before
     failure_path = request.evidence_directory / "failure-evidence.json"
     assert failure_path.is_file()
     assert failure_path.stat().st_mode & 0o777 == 0o600

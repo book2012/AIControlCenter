@@ -22,12 +22,11 @@ def prepare_runtime(tmp_path: Path, runtime_id: str = VALID_ID) -> tuple[Path, P
     data = application / "data"
     release.mkdir(parents=True)
     source.joinpath("ops/macos/runtime").mkdir(parents=True)
-    source.joinpath("core/api").mkdir(parents=True)
     data.mkdir(parents=True)
     release.joinpath(".aicontrolcenter-source-commit").write_text(COMMIT)
     source.joinpath(".aicontrolcenter-source-commit").write_text(COMMIT)
     source.joinpath("ops/macos/runtime/runtime-source-artifact.py").write_text("# validator\n")
-    source.joinpath("core/api/app.py").write_text("# app\n")
+    source.joinpath("ops/macos/runtime/application.py").write_text("# app\n")
     invocation_log = tmp_path / "python-invocations"
     python = release / "bin/python"
     python.parent.mkdir()
@@ -54,7 +53,7 @@ def test_direct_child_of_physical_venv_root_passes_containment(tmp_path: Path) -
     invocations = log.read_text().splitlines()
     assert len(invocations) == 2
     assert "runtime-source-artifact.py validate" in invocations[0]
-    assert "-m uvicorn core.api.app:app --host 127.0.0.1 --port 58081" in invocations[1]
+    assert "-m uvicorn ops.macos.runtime.application:app --host 127.0.0.1 --port 58081" in invocations[1]
 
 
 def test_release_directly_under_runtime_fails(tmp_path: Path) -> None:

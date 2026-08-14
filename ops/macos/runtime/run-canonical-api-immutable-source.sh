@@ -67,7 +67,7 @@ if [[ ! -x "$PYTHON_PATH" || ! -d "$SOURCE_ROOT" || -L "$SOURCE_ROOT" ]]; then
   echo "AIControlCenter immutable runtime/source is unavailable" >&2
   exit 78
 fi
-if [[ ! -f "$SOURCE_MARKER" || ! -f "$RUNTIME_MARKER" || ! -f "$VALIDATOR" || ! -f "$SOURCE_ROOT/core/api/app.py" ]]; then
+if [[ ! -f "$SOURCE_MARKER" || ! -f "$RUNTIME_MARKER" || ! -f "$VALIDATOR" || ! -f "$SOURCE_ROOT/ops/macos/runtime/application.py" ]]; then
   echo "AIControlCenter canonical source identity is unavailable" >&2
   exit 78
 fi
@@ -100,6 +100,6 @@ export AICONTROLCENTER_RUNTIME_RELEASE="$RUNTIME_ID"
 export PYTHONPATH="$SOURCE_ROOT"
 
 cd "$SOURCE_ROOT"
-exec "$PYTHON_PATH" -P -m uvicorn core.api.app:app \
+exec "$PYTHON_PATH" -P -m uvicorn ops.macos.runtime.application:app \
   --host "$HOST" \
   --port "$PORT"

@@ -25,6 +25,7 @@ class CommandRouter:
         self,
         memory=None,
         automation=None,
+        service_health: ServiceHealth | None = None,
     ):
         self.dashboard = DashboardAPI()
         self.storage = StorageRegistry()
@@ -40,7 +41,7 @@ class CommandRouter:
         self.scheduler_status = SchedulerStatusService()
         self.memory = memory or MemoryManager()
         self.project = ProjectStatusService()
-        self.service_health = ServiceHealth()
+        self.service_health = service_health or ServiceHealth()
         self.knowledge = KnowledgeSearch()
         self.homepage = HomepageStatusService()
         self.planner = PlannerAgent()

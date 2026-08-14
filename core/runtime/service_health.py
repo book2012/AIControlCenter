@@ -8,6 +8,13 @@ from core.runtime.service_topology import (
 )
 
 
+def unavailable_scheduler_log_inspector() -> dict:
+    return {
+        "scheduler_log_contract_ready": False,
+        "inspection_error": {"error_type": "AdapterNotConfigured"},
+    }
+
+
 class ServiceHealth:
     def __init__(
         self,
@@ -15,11 +22,15 @@ class ServiceHealth:
         heartbeat_timeout_seconds: int = 90,
         topology: ServiceTopology | None = None,
         launchd_inspector: Callable[[str], str] | None = None,
+        scheduler_log_inspector: Callable[[], dict] | None = None,
     ):
         self.heartbeat = heartbeat or HeartbeatStore()
         self.heartbeat_timeout_seconds = heartbeat_timeout_seconds
         self.topology = topology or ServiceTopology()
         self.launchd_inspector = launchd_inspector or self.launchd_status
+        self.scheduler_log_inspector = (
+            scheduler_log_inspector or unavailable_scheduler_log_inspector
+        )
 
     def launchd_status(self, label: str) -> str:
         try:
@@ -45,12 +56,24 @@ class ServiceHealth:
     def status(self):
         heartbeat = self.heartbeat_status()
         try:
+            scheduler_logs = self.scheduler_log_inspector()
+            scheduler_logs_ready = (
+                scheduler_logs.get("scheduler_log_contract_ready") is True
+            )
+        except Exception as exc:
+            scheduler_logs = {
+                "scheduler_log_contract_ready": False,
+                "inspection_error": {"error_type": type(exc).__name__},
+            }
+            scheduler_logs_ready = False
+        try:
             topology_services = self.topology.runtime_services()
         except TopologyConfigurationError:
             return {
                 "healthy": False,
                 "services": {},
                 "scheduler_heartbeat": heartbeat,
+                "scheduler_log_readiness": scheduler_logs,
                 "topology": {"status": "INVALID"},
             }
 
@@ -79,13 +102,17 @@ class ServiceHealth:
             for item in services.values()
         )
         scheduler = services.get("scheduler")
-        if scheduler and scheduler["required"] and not heartbeat["fresh"]:
+        if (
+            scheduler and scheduler["required"]
+            and (not heartbeat["fresh"] or not scheduler_logs_ready)
+        ):
             healthy = False
 
         return {
             "healthy": healthy,
             "services": services,
             "scheduler_heartbeat": heartbeat,
+            "scheduler_log_readiness": scheduler_logs,
             "topology": {"status": "VALID"},
         }
 

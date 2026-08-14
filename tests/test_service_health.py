@@ -19,11 +19,21 @@ class FakeHeartbeat:
         return {"status": "ALIVE", "created": self.created.isoformat()}
 
 
-def health(*, heartbeat=None, launchd_state="RUNNING", topology=None):
+def health(
+    *, heartbeat=None, launchd_state="RUNNING", topology=None,
+    scheduler_log_inspector=None,
+):
     return ServiceHealth(
         heartbeat=heartbeat or FakeHeartbeat(),
         topology=topology,
         launchd_inspector=lambda _label: launchd_state,
+        scheduler_log_inspector=scheduler_log_inspector or (
+            lambda: {
+                "parent": {"valid": True},
+                "logs": [{"valid": True}, {"valid": True}],
+                "scheduler_log_contract_ready": True,
+            }
+        ),
     )
 
 
@@ -119,6 +129,48 @@ def test_scheduler_health_requires_launchd_running_and_fresh_heartbeat():
     assert health(heartbeat=fresh, launchd_state="STOPPED").status()["healthy"] is False
 
 
+def test_scheduler_lifecycle_readiness_fails_closed_when_logs_are_missing():
+    readiness = {
+        "scheduler_log_contract_ready": False,
+        "logs": [{"path": "/missing", "exists": False, "valid": False}],
+    }
+    result = health(scheduler_log_inspector=lambda: readiness).status()
+    assert result["services"]["scheduler"]["status"] == "RUNNING"
+    assert result["scheduler_log_readiness"] == readiness
+    assert result["healthy"] is False
+
+
+def test_scheduler_lifecycle_readiness_fails_closed_when_logs_are_invalid():
+    readiness = {
+        "scheduler_log_contract_ready": False,
+        "logs": [{"path": "/invalid", "exists": True, "valid": False}],
+    }
+    assert health(scheduler_log_inspector=lambda: readiness).status()["healthy"] is False
+
+
+def test_scheduler_lifecycle_readiness_fails_closed_on_inspector_error():
+    def fail():
+        raise PermissionError(13, "not disclosed")
+
+    result = health(scheduler_log_inspector=fail).status()
+    assert result["healthy"] is False
+    assert result["scheduler_log_readiness"] == {
+        "scheduler_log_contract_ready": False,
+        "inspection_error": {"error_type": "PermissionError"},
+    }
+    assert "not disclosed" not in repr(result)
+
+
+def test_core_has_no_direct_ops_imports():
+    direct_imports = []
+    for source_path in (ROOT / "core").rglob("*.py"):
+        for line_number, line in enumerate(source_path.read_text().splitlines(), 1):
+            if line.startswith(("from ops.", "import ops.")):
+                direct_imports.append(f"{source_path.relative_to(ROOT)}:{line_number}")
+
+    assert direct_imports == []
+
+
 def test_legacy_linux_service_projection_is_absent():
     source = (ROOT / "core/runtime/service_health.py").read_text()
 
@@ -126,3 +178,5 @@ def test_legacy_linux_service_projection_is_absent():
     assert '"aicontrolcenter-api"' not in source
     assert '"aicontrolcenter-telegram"' not in source
     assert '"aicontrolcenter-scheduler"' not in source
+    assert "from ops." not in source
+    assert "import ops." not in source

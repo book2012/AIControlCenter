@@ -62,7 +62,7 @@ def build_plan(root: Path, home: Path, uid: int) -> dict[str, Any]:
         "contract": {
             "label": LABEL,
             "service": f"gui/{uid}/{LABEL}",
-            "app": "core.api.app:app",
+            "app": "ops.macos.runtime.application:app",
             "host": HOST,
             "port": PORT,
             "data_root": str(resolved["data_root"]),

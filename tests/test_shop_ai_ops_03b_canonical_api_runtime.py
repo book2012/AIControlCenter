@@ -22,7 +22,7 @@ def load_iac() -> ModuleType:
 
 def test_canonical_runtime_contract_is_isolated_from_shadow() -> None:
     source = RUNNER.read_text(encoding="utf-8")
-    assert "core.api.app:app" in source
+    assert "ops.macos.runtime.application:app" in source
     assert "AICONTROLCENTER_CANONICAL_HOST:-127.0.0.1" in source
     assert "AICONTROLCENTER_CANONICAL_PORT:-58081" in source
     assert "core.api.shadow:app" not in source
@@ -85,7 +85,7 @@ def test_iac_plan_is_pure_and_activation_is_next_task_only() -> None:
     assert plan["contract"] == {
         "label": "com.aicontrolcenter.api",
         "service": "gui/501/com.aicontrolcenter.api",
-        "app": "core.api.app:app",
+        "app": "ops.macos.runtime.application:app",
         "host": "127.0.0.1",
         "port": 58081,
         "data_root": "/Users/operator/Library/Application Support/AIControlCenter/data",

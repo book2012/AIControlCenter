@@ -32,7 +32,7 @@ def test_canonical_system_contract_and_plan() -> None:
         "stdout_log": "/var/log/aicontrolcenter/canonical-api.stdout.log",
         "stderr_log": "/var/log/aicontrolcenter/canonical-api.stderr.log",
         "application_user": "kyouhan", "application_group": "staff",
-        "application": "core.api.app:app", "host": "127.0.0.1", "port": 58081,
+        "application": "ops.macos.runtime.application:app", "host": "127.0.0.1", "port": 58081,
         "data_root": "/Users/kyouhan/Library/Application Support/AIControlCenter/data",
     }
     json.dumps(result)

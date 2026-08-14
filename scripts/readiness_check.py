@@ -6,6 +6,7 @@ import requests
 
 from core.runtime.env_validation import EnvironmentTemplateValidator
 from core.runtime.service_health import ServiceHealth
+from ops.macos.launchd.application_scheduler_logs import inspect_contract
 
 
 def command_ok(command: list[str]) -> bool:
@@ -36,7 +37,9 @@ def main() -> int:
     except requests.RequestException:
         checks["api"] = False
 
-    checks["services"] = ServiceHealth().status()["healthy"]
+    checks["services"] = ServiceHealth(
+        scheduler_log_inspector=inspect_contract,
+    ).status()["healthy"]
 
     print("AIControlCenter Production Readiness")
     print()
