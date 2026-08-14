@@ -3053,3 +3053,39 @@ heartbeat is stale. The canonical API is `RUNNING`, Telegram is optional
 - Repair the Shadow explicit-release selector contract.
 - Replace legacy automatic external rollback semantics with the current bounded
   governance lifecycle contract.
+
+## 2026-08-15 — PA-05 WooCommerce Headless Adapter v1 validated
+
+- Closed PA-05 at milestone
+  `WOOCOMMERCE_HEADLESS_ADAPTER_V1_VALIDATED`.
+- Preserved AIControlCenter as the sole Control Plane and `core.shopping` as
+  authority for ProductDraft lifecycle, shopping policy, workflow,
+  recommendation, customer automation, governance, and business logic.
+  WordPress remains CMS-only; WooCommerce remains commerce-engine-only; the
+  replaceable `integrations.woocommerce` adapter remains read-only.
+- Kept `ops.macos.runtime.application` as the outer composition root and
+  verified `CORE_OPS_IMPORT_COUNT=0` and `CORE_INTEGRATIONS_IMPORT_COUNT=0`.
+- Added only `GET /shopping/providers/woocommerce`; no mutation endpoint or
+  create/update/delete, execute, retry, or Production mutation action exists.
+- Recorded canonical WooCommerce deployment, configuration, and authentication
+  as `UNKNOWN`, catalog/API availability as unproven, and default capability
+  status as fail-closed `UNAVAILABLE`. Manifest evidence requires exactly one
+  validated identity; invalid, ambiguous, or unreadable lookup failures invent
+  none.
+- Preserved AIControlCenter-owned reserved governance facts through typed,
+  boolean-only `CapabilityGovernanceExtensions`; WooCommerce extension facts
+  are `commerce_engine_only=true` and `automatic_retry=false`.
+- Consolidated unavailable fallbacks in `UnavailableCapabilityObserver` and
+  preserved platform-neutral `create_app` plus PA-02/PA-03 outward fail-closed
+  compatibility without WooCommerce, n8n, or OpenClaw discovery.
+- Final focused validation passed 91 tests after the final architecture
+  correction. Canonical deployment regression passed `RC=0` and was executed
+  exactly once for PA-05.
+- No Production WooCommerce request, external commerce I/O, WordPress,
+  WooCommerce, Shopping SQLite, Docker, launchd, `runtime/current`, Caddy,
+  Ubuntu, credential, database, plugin, or theme mutation occurred.
+- Set the next production sprint to `SHOP-CMS-01 — WordPress + WooCommerce
+  Runtime Foundation`, which will establish runtime, persistent-state, secret,
+  backup, health/readiness, manifest, and activation architecture before
+  storefront exposure. No deployed Production WordPress/WooCommerce runtime,
+  public storefront availability, or Notion synchronization is claimed.

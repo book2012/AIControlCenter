@@ -2463,3 +2463,48 @@ Separate maintenance work:
 
 No Notion synchronization is claimed. WordPress and Shadow work remain
 deferred as separate future work.
+
+## PA-05 — WooCommerce Headless Adapter v1
+
+Status: **VALIDATED**
+
+Milestone: `WOOCOMMERCE_HEADLESS_ADAPTER_V1_VALIDATED`
+
+- [x] Preserve AIControlCenter as sole Control Plane and `core.shopping` as
+  owner of ProductDraft lifecycle, product policy, workflow, recommendation,
+  customer automation, governance, and shopping business logic.
+- [x] Preserve WordPress as CMS-only and WooCommerce as
+  commerce-engine-only.
+- [x] Keep `integrations.woocommerce` replaceable and read-only, with
+  `ops.macos.runtime.application` as the outer composition root.
+- [x] Verify `CORE_OPS_IMPORT_COUNT=0` and
+  `CORE_INTEGRATIONS_IMPORT_COUNT=0`.
+- [x] Fail closed to `UNAVAILABLE` while WooCommerce deployment,
+  configuration, authentication, and catalog/API availability remain
+  `UNKNOWN` or unproven.
+- [x] Emit no invented `canonical_manifest` evidence for missing, duplicate,
+  malformed, schema-invalid, or unreadable lookups; require exactly one
+  successfully returned identity for validated evidence.
+- [x] Preserve AIControlCenter-owned reserved governance facts through typed,
+  boolean-only extensions; record `commerce_engine_only=true` and
+  `automatic_retry=false` for WooCommerce.
+- [x] Consolidate fallbacks in `UnavailableCapabilityObserver` and keep
+  platform-neutral `create_app` free of WooCommerce, n8n, and OpenClaw
+  discovery, preserving PA-02/PA-03 outward fail-closed compatibility.
+- [x] Expose only `GET /shopping/providers/woocommerce`, with no mutation
+  endpoint or product, order, inventory, customer, coupon, execute, retry, or
+  Production mutation action.
+- [x] Pass 91 focused tests after the final architecture correction and one
+  PA-05 canonical deployment regression with `RC=0`.
+- [x] Perform no Production WooCommerce request, external commerce I/O, or
+  WordPress, WooCommerce, Shopping SQLite, Docker, launchd,
+  `runtime/current`, Caddy, Ubuntu, credential, database, plugin, or theme
+  mutation.
+
+## Next production sprint — SHOP-CMS-01
+
+`SHOP-CMS-01 — WordPress + WooCommerce Runtime Foundation` will establish the
+actual runtime, persistent-state, secret, backup, health/readiness, manifest,
+and activation architecture before public storefront exposure. The Production
+WordPress/WooCommerce runtime is not yet claimed deployed, public storefront
+availability is not yet claimed, and no Notion synchronization is claimed.

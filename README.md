@@ -2318,3 +2318,49 @@ Control Plane.
 The existing Shadow service on `127.0.0.1:18100` is not part of public ingress.
 Shadow release alignment is a separate maintenance concern and is not required
 for the current Production release.
+
+## PA-05 — WooCommerce Headless Adapter v1
+
+PA-05 is validated. Milestone:
+`WOOCOMMERCE_HEADLESS_ADAPTER_V1_VALIDATED`.
+
+AIControlCenter remains the sole Control Plane and owns shopping business
+logic. `core.shopping` remains authoritative for ProductDraft lifecycle,
+product policy, workflow, recommendation, customer automation, governance,
+and business logic. WordPress remains CMS-only; WooCommerce remains
+commerce-engine-only. `integrations.woocommerce` is replaceable and read-only,
+and `ops.macos.runtime.application` is the outer composition root. Core imports
+neither `ops.*` nor `integrations.*`.
+
+PA-05 exposes only `GET /shopping/providers/woocommerce`. It adds no
+POST/PUT/PATCH/DELETE endpoint and no create/update/delete product, order,
+inventory, customer, coupon, execute, retry, or Production mutation action.
+The canonical Production manifest contains no WooCommerce identity, but
+absence is not treated as `NOT_DEPLOYED`. Deployment, configuration, and
+authentication remain `UNKNOWN`; catalog/API availability is unproven; the
+default is fail-closed `UNAVAILABLE`. Invalid or ambiguous lookups invent no
+manifest evidence, and validated evidence requires exactly one successfully
+returned WooCommerce identity.
+
+Governance remains owned by `core.capabilities`; typed boolean-only extensions
+cannot override `authority=AICONTROLCENTER`, `read_only=true`,
+`production_authorization=false`, `infrastructure_mutation=false`,
+`platform_business_policy_ownership=false`, or `action_execution=false`.
+WooCommerce adds `commerce_engine_only=true` and `automatic_retry=false`.
+Provider fallbacks use `UnavailableCapabilityObserver`; platform-neutral
+`create_app` performs no WooCommerce, n8n, or OpenClaw external discovery, so
+PA-02 and PA-03 outward fail-closed behavior remains compatible.
+
+Final focused validation passed 91 tests after the final architecture
+correction. Canonical deployment regression passed `RC=0` in exactly one
+PA-05 execution. Import checks recorded `CORE_OPS_IMPORT_COUNT=0` and
+`CORE_INTEGRATIONS_IMPORT_COUNT=0`. No Production WooCommerce request or
+external commerce I/O occurred, and no WordPress, WooCommerce, Shopping
+SQLite, Docker, launchd, `runtime/current`, Caddy, Ubuntu, credential,
+database, plugin, or theme mutation occurred.
+
+Next production sprint: `SHOP-CMS-01 — WordPress + WooCommerce Runtime
+Foundation`. It will establish the actual runtime, persistent-state, secret,
+backup, health/readiness, manifest, and activation architecture before public
+storefront exposure. The Production runtime and public storefront are not yet
+claimed available. No Notion synchronization is claimed.
