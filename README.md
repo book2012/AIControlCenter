@@ -1,5 +1,39 @@
 # AIControlCenter
 
+## PA-04 Notification Platform v1
+
+PA-04 is validated and closed after Git closeout at milestone
+`NOTIFICATION_PLATFORM_V1_VALIDATED`. AIControlCenter owns notification intent,
+routing policy, provider selection, governance, authorization, audit, retry
+policy, and the future delivery lifecycle; providers own transport capability
+only. `core.notifications` is provider-neutral,
+`integrations.notifications` contains observation-only adapters, and
+`ops.macos.runtime.application` is the outer composition root. Core imports
+neither `ops.*` nor `integrations.*`.
+
+Provider observations fail closed. Only explicitly `AVAILABLE`, configured and
+available providers are routable. Invalid identities are never echoed and
+normalize to `UNKNOWN`. Telegram is the optional, `NOT_DEPLOYED` reference
+provider; readiness/configuration require explicit observation, and no runtime
+or network convention is inferred. Provider status and routing status are
+separate, and v1 has no delivery lifecycle because execution is absent.
+
+The exact new read-only surface is `GET /api/notifications/platform` and
+`GET /api/notifications/providers`; it offers no mutation, send, retry,
+transport, Production authorization, or infrastructure operation. Existing
+`GET /notifications` and `POST /notifications` remain compatible and are
+**LEGACY / OUTSIDE PA-04 SCOPE**. PA-04 neither calls nor depends on that
+surface.
+
+Final focused validation passed 85 tests after identity hardening; exactly one
+canonical PA-04 regression invocation passed with `RC=0`; `git diff --check`
+passed; and both core import counts are zero. No Production mutation,
+Production notification, external provider I/O, or PA-04 execution occurred.
+Legacy POST was exercised only through TestClient tests. No Notion
+synchronization is claimed. OPS-01B and PA-01 through PA-03 remain closed and
+unchanged. See
+[`docs/architecture/PA-04-NOTIFICATION-PLATFORM.md`](docs/architecture/PA-04-NOTIFICATION-PLATFORM.md).
+
 ## PA-03 n8n Control Plane Adapter v1
 
 PA-03 is validated and marked closed after Git closeout at milestone

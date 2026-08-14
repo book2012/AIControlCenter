@@ -1,5 +1,58 @@
 # AI Home Datacenter Architecture
 
+## PA-04 — Notification Platform v1
+
+Status after Git closeout: `NOTIFICATION_PLATFORM_V1_VALIDATED`; PA-04 is
+validated and closed. AIControlCenter owns notification intent, routing policy,
+provider selection, governance, authorization, audit, retry policy, and the
+future delivery lifecycle. External notification providers own transport
+capability only. n8n, OpenClaw, WordPress, providers, and Ubuntu own neither
+platform-wide notification business logic nor Production authorization.
+
+`core.notifications` is the provider-neutral domain/platform boundary;
+`integrations.notifications` contains replaceable observation-only provider
+adapters; and `ops.macos.runtime.application` is the outer composition root.
+Core imports neither `ops.*` nor `integrations.*`
+(`CORE_OPS_IMPORT_COUNT=0`, `CORE_INTEGRATIONS_IMPORT_COUNT=0`). Provider and
+routing statuses are separate: provider statuses are `AVAILABLE`,
+`UNAVAILABLE`, `NOT_CONFIGURED`, `NOT_DEPLOYED`, `DEGRADED`, and `UNKNOWN`;
+routing statuses are `PLANNED` and `BLOCKED`. V1 defines no actual delivery
+lifecycle because provider execution is not implemented.
+
+Observations normalize fail-closed. Only explicitly `AVAILABLE`,
+`configured=true`, `available=true` providers are routable; malformed,
+contradictory, exception-producing, mismatched, duplicate, or invalid providers
+are not. Identities are bounded by `^[a-z0-9][a-z0-9._-]{0,63}$`; invalid
+identities are never echoed and become literal `UNKNOWN`. Telegram is the known
+reference provider: canonical truth is optional and `NOT_DEPLOYED`, while
+configuration/readiness remain unknown unless explicitly observed. `DEPLOYED`
+or `PRODUCTION` alone proves no availability, and no environment, credential,
+endpoint, host, port, authentication, or network convention is inferred.
+
+`core.capabilities.manifest` is the narrow shared canonical metadata lookup. It
+validates its Draft 2020-12 schema and the manifest, requires exactly one
+requested `service_id`, and fails closed for all invalid or unreadable input.
+OpenClaw and n8n reuse it without changing PA-02/PA-03 outward behavior; it is
+not a second `ServiceTopology` or lifecycle framework.
+
+The exact new API is `GET /api/notifications/platform` and
+`GET /api/notifications/providers`. It contains no action route, delivery,
+retry, transport execution, Production authorization, or infrastructure
+mutation. Existing `GET /notifications` and `POST /notifications` remain
+unchanged and explicitly **LEGACY / OUTSIDE PA-04 SCOPE**; PA-04 does not call,
+wrap, expand, authorize, or depend on them. Migration/deprecation is future,
+separately governed work.
+
+Final exact-code focused validation passed 85 tests after identity hardening;
+the canonical regression passed `RC=0` on exactly one PA-04 invocation; and
+`git diff --check` passed. No Production mutation, Production notification,
+external provider I/O, or PA-04 execution occurred. Legacy POST was exercised
+only by TestClient compatibility tests. No launchd, Docker, `runtime/current`,
+credential, Caddy, WordPress, Ubuntu, or live-provider mutation occurred. No
+Notion synchronization is claimed. OPS-01B and PA-01 through PA-03 remain
+closed and unchanged. See
+[`docs/architecture/PA-04-NOTIFICATION-PLATFORM.md`](docs/architecture/PA-04-NOTIFICATION-PLATFORM.md).
+
 ## PA-03 — n8n external automation capability boundary
 
 Status after Git closeout: `N8N_CONTROL_PLANE_ADAPTER_V1_VALIDATED`; PA-03 is

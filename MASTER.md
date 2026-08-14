@@ -1,5 +1,47 @@
 # MASTER
 
+## PA-04 — Notification Platform v1 — CLOSED
+
+Milestone after Git closeout: `NOTIFICATION_PLATFORM_V1_VALIDATED`.
+
+AIControlCenter owns notification intent, routing policy, provider selection,
+governance, authorization, audit, retry policy, and the future delivery
+lifecycle; external providers own transport capability only. n8n, OpenClaw,
+WordPress, providers, and Ubuntu own no platform-wide notification business
+logic or Production authorization. `core.notifications` is provider-neutral,
+`integrations.notifications` holds replaceable observation-only adapters, and
+`ops.macos.runtime.application` is outer composition. Core imports neither
+`ops.*` nor `integrations.*`; both verified counts are zero.
+
+Provider and routing statuses are separate. Provider observations fail closed,
+and only explicitly `AVAILABLE`, configured, and available providers route.
+Malformed, contradictory, exceptional, mismatched, duplicate, or invalid
+providers do not. Identities match `^[a-z0-9][a-z0-9._-]{0,63}$`; invalid values
+are never echoed and normalize to literal `UNKNOWN`. Telegram is the known
+optional, `NOT_DEPLOYED` reference provider; configuration/readiness are
+unknown absent explicit evidence, and no runtime/network convention is inferred.
+V1 has no delivery lifecycle because execution is not implemented.
+
+`core.capabilities.manifest` now provides narrow, fail-closed, schema-validated
+canonical service metadata lookup for exactly one requested identity. OpenClaw
+and n8n reuse it with unchanged outward behavior; it is not another topology or
+lifecycle framework.
+
+The exact new API consists of `GET /api/notifications/platform` and
+`GET /api/notifications/providers`, with no action, send, retry, execution,
+Production authorization, or infrastructure operation. Existing GET/POST
+`/notifications` remains unchanged, **LEGACY / OUTSIDE PA-04 SCOPE**, and
+independent of PA-04. Its migration/deprecation is separately governed future
+work.
+
+Final exact-code focused validation passed 85 tests after identity hardening;
+one canonical PA-04 regression invocation passed with `RC=0`; and `git diff
+--check` passed. No Production mutation, notification, external provider I/O,
+or PA-04 execution occurred. Legacy POST ran only in TestClient compatibility
+tests. No launchd, Docker, `runtime/current`, credential, Caddy, WordPress,
+Ubuntu, or live-provider mutation occurred. No Notion synchronization is
+claimed. OPS-01B and PA-01 through PA-03 remain closed and unchanged.
+
 ## PA-03 — n8n Control Plane Adapter v1 — CLOSED
 
 Milestone after Git closeout: `N8N_CONTROL_PLANE_ADAPTER_V1_VALIDATED`.

@@ -1,5 +1,42 @@
 # Roadmap
 
+## PA-04 — Notification Platform v1
+
+- [x] Validate and close PA-04 after Git closeout at milestone
+  `NOTIFICATION_PLATFORM_V1_VALIDATED`.
+- [x] Keep notification intent, routing, provider choice, governance,
+  authorization, audit, retry policy, and future delivery lifecycle in
+  AIControlCenter; providers own transport only.
+- [x] Establish `core.notifications` as provider-neutral,
+  `integrations.notifications` as observation-only adapters, and
+  `ops.macos.runtime.application` as outer composition; verify zero core
+  imports from both `ops.*` and `integrations.*`.
+- [x] Separate provider and routing statuses; define no actual delivery
+  lifecycle while provider execution is absent.
+- [x] Normalize all observations fail-closed, route only explicit
+  `AVAILABLE`/configured/available evidence, and harden provider identities to
+  `^[a-z0-9][a-z0-9._-]{0,63}$` with literal `UNKNOWN` for invalid input.
+- [x] Record Telegram as optional and `NOT_DEPLOYED`, with no inferred
+  readiness, configuration, environment, credential, endpoint, host, port,
+  authentication, or network convention.
+- [x] Reuse narrow `core.capabilities.manifest` lookup in OpenClaw and n8n while
+  preserving PA-02/PA-03 outward behavior and avoiding a second topology or
+  lifecycle framework.
+- [x] Add exactly GET `/api/notifications/platform` and
+  `/api/notifications/providers`, with no PA-04 mutation, delivery, retry,
+  transport, Production authorization, or infrastructure operation.
+- [x] Preserve GET/POST `/notifications` unchanged as **LEGACY / OUTSIDE PA-04
+  SCOPE**; defer migration/deprecation to separately governed future work.
+- [x] Record 85 passing exact-code focused tests after identity hardening and
+  canonical regression `RC=0` on exactly one PA-04 invocation.
+
+No Production mutation, Production notification, external provider I/O, or
+PA-04 notification execution occurred. Legacy POST ran only through TestClient
+compatibility tests. No launchd, Docker, `runtime/current`, credential, Caddy,
+WordPress, Ubuntu, or live-provider mutation occurred. `git diff --check`
+passed. No Notion synchronization is claimed. OPS-01B and PA-01 through PA-03
+remain closed and unchanged.
+
 ## PA-03 — n8n Control Plane Adapter v1
 
 - [x] Establish n8n as a replaceable external automation capability while
