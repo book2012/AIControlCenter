@@ -2307,3 +2307,31 @@ health/readiness, manifest, and activation architecture before public
 storefront exposure. This does not claim an existing Production
 WordPress/WooCommerce runtime, public storefront availability, or Notion
 synchronization.
+
+## SHOP-CMS-01A — Runtime Foundation Phase A
+
+SHOP-CMS-01A is validated and closed at milestone
+`SHOPPING_RUNTIME_FOUNDATION_VALIDATED`. The Mac mini M4 owns the single
+`shopping-runtime` lifecycle (`docker-compose-on-colima`, `NOT_DEPLOYED`);
+WordPress and MariaDB are components, while WooCommerce is the hosted
+`wordpress-plugin-commerce-engine` capability with
+`activation_authorized=false`. AIControlCenter remains the sole Control Plane
+and retains shopping business logic, governance, authorization, audit,
+orchestration, and deployment control. Ubuntu remains stateless and owns no
+shopping application or commerce state.
+
+Phase A validated fail-closed read-only inspection, Mac-owned named volumes
+`ai-shopping-wordpress` and `ai-shopping-database`, logical database export,
+WordPress archive/checksum/metadata verification, loopback-only WordPress, no
+MariaDB host port, separated untracked credentials, and bounded mutation
+governance. Canonical #1 found only two stale service-count expectations
+(`3151 passed, 2 failed, 5 deselected`); corrections passed targeted (2),
+focused compatibility (47), and canonical #2 (`RC=0`). Exactly two canonical
+invocations were used. Core direct outer-package import counts remain zero.
+
+No Production, Docker, Colima, WordPress, WooCommerce, commerce database,
+Caddy, or Ubuntu mutation occurred. No runtime, WordPress, MariaDB,
+WooCommerce, storefront, Caddy storefront route, or Notion sync is claimed.
+Next: `SHOP-CMS-01B — bounded Production runtime activation`, milestone
+`SHOPPING_RUNTIME_ACTIVATED`; future storefront milestone
+`SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.

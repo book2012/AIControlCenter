@@ -2508,3 +2508,43 @@ actual runtime, persistent-state, secret, backup, health/readiness, manifest,
 and activation architecture before public storefront exposure. The Production
 WordPress/WooCommerce runtime is not yet claimed deployed, public storefront
 availability is not yet claimed, and no Notion synchronization is claimed.
+
+## SHOP-CMS-01A — Runtime Foundation Phase A
+
+Status: **VALIDATED AND CLOSED**
+
+Milestone: `SHOPPING_RUNTIME_FOUNDATION_VALIDATED`
+
+- [x] Model one Mac-owned, Ubuntu-independent `shopping-runtime` lifecycle
+  (`docker-compose-on-colima`, `NOT_DEPLOYED`).
+- [x] Model WooCommerce as the hosted `wordpress-plugin-commerce-engine`
+  capability with activation unauthorized, not an independent daemon.
+- [x] Preserve AIControlCenter as sole Control Plane; WordPress as CMS;
+  WooCommerce as commerce engine/provider-record owner; Ubuntu as stateless.
+- [x] Validate fail-closed discovery/readiness, named-volume and backup/restore
+  contracts, secret separation, loopback WordPress exposure, no MariaDB host
+  port, and bounded mutation governance.
+- [x] Complete validation: 72 initial focused passes; canonical #1 `3151
+  passed, 2 failed, 5 deselected` with only two stale service-count tests;
+  corrected targeted 2 passed; focused compatibility 47 passed; canonical #2
+  `RC=0`; exactly two canonical invocations.
+- [x] Preserve zero direct core imports of outer `ops` and `integrations`.
+- [x] Perform no Production/runtime mutation and claim no runtime/storefront
+  availability or Notion synchronization.
+
+## Next phase — SHOP-CMS-01B
+
+`SHOP-CMS-01B — bounded Production runtime activation`
+
+1. Preflight and secret/storage readiness.
+2. Dedicated Colima profile activation.
+3. Read-only reconciliation.
+4. Separately authorized image/runtime provisioning if required.
+5. Bounded WordPress + MariaDB startup.
+6. Read-only health validation.
+7. Separately authorized WordPress/WooCommerce bootstrap.
+8. WooCommerce API/catalog readiness validation.
+
+Next runtime milestone: `SHOPPING_RUNTIME_ACTIVATED`.
+
+Future storefront milestone: `SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.

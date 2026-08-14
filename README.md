@@ -2364,3 +2364,27 @@ Foundation`. It will establish the actual runtime, persistent-state, secret,
 backup, health/readiness, manifest, and activation architecture before public
 storefront exposure. The Production runtime and public storefront are not yet
 claimed available. No Notion synchronization is claimed.
+
+## SHOP-CMS-01A — WordPress + WooCommerce Runtime Foundation
+
+Phase A is validated and closed at milestone
+`SHOPPING_RUNTIME_FOUNDATION_VALIDATED`. The canonical lifecycle is one
+Mac-owned, Ubuntu-independent `shopping-runtime`, currently `NOT_DEPLOYED`,
+using Docker Compose on the dedicated `aicontrolcenter-commerce` Colima
+profile. WordPress and MariaDB are stack components, not independent lifecycle
+services. WooCommerce is a WordPress-hosted capability, not a daemon, and is
+`NOT_DEPLOYED` with activation unauthorized.
+
+The profile was observed stopped and the active default Docker daemon was
+unavailable, so no runtime/container, WordPress, MariaDB, WooCommerce,
+storefront, or storefront-routing availability is claimed. Active Caddy and
+canonical FastAPI public behavior remained unchanged. No Production/runtime
+mutation or Notion synchronization occurred.
+
+Validation: 72 initial focused passes; canonical #1 `3151 passed, 2 failed, 5
+deselected` due only to stale 8-to-9 service-count expectations; corrected
+targeted 2 passed; focused compatibility 47 passed; canonical #2 `RC=0`.
+Exactly two canonical invocations were used. Next:
+`SHOP-CMS-01B — bounded Production runtime activation`, milestone
+`SHOPPING_RUNTIME_ACTIVATED`; future storefront milestone
+`SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.

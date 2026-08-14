@@ -3089,3 +3089,27 @@ heartbeat is stale. The canonical API is `RUNNING`, Telegram is optional
   backup, health/readiness, manifest, and activation architecture before
   storefront exposure. No deployed Production WordPress/WooCommerce runtime,
   public storefront availability, or Notion synchronization is claimed.
+
+## 2026-08-15 — SHOP-CMS-01A Runtime Foundation validated
+
+- Closed SHOP-CMS-01A at milestone
+  `SHOPPING_RUNTIME_FOUNDATION_VALIDATED`.
+- Established one Mac-owned `shopping-runtime` lifecycle and one hosted
+  `woocommerce` capability. AIControlCenter remains the sole Control Plane;
+  Ubuntu remains stateless with no shopping or commerce state.
+- Validated stopped dedicated-Colima discovery, unavailable active default
+  Docker daemon, fail-closed inspection, Mac-owned volumes, logical database
+  backup, WordPress archive verification, credential separation,
+  loopback-only WordPress, and no MariaDB host port.
+- Recorded 72 initial focused passes. Canonical #1 (`3151 passed, 2 failed, 5
+  deselected`) exposed two stale service-count expectations, not a runtime
+  defect. Corrections passed 2 targeted and 47 focused compatibility tests;
+  canonical #2 passed with `RC=0`. Exactly two canonical invocations were
+  made. Core direct `ops` and `integrations` imports remain 0.
+- Performed no Production, Docker, Colima, WordPress, WooCommerce, commerce
+  database, Caddy, or Ubuntu mutation. Claimed no runtime, online WordPress,
+  running MariaDB, activated WooCommerce, public storefront, active storefront
+  routing, Production activation, or Notion synchronization.
+- Set next phase to `SHOP-CMS-01B — bounded Production runtime activation`,
+  next milestone `SHOPPING_RUNTIME_ACTIVATED`, and future storefront milestone
+  `SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.
