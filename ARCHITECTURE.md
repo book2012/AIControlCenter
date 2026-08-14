@@ -1,5 +1,45 @@
 # AI Home Datacenter Architecture
 
+## PA-02 — OpenClaw external capability boundary
+
+Status after Git closeout: `OPENCLAW_ADAPTER_V1_VALIDATED`; PA-02 is closed.
+OpenClaw is an optional, replaceable external capability, not a Control Plane.
+AIControlCenter retains business logic, governance, Production authorization,
+deployment control, workflow policy, infrastructure mutation authority, audit,
+and business/customer state.
+
+The final dependency direction is
+`ops.macos.runtime.application` → `integrations.openclaw` →
+`core.capabilities`, with the macOS outer composition injecting the adapter into
+`core.api.create_app`. Core imports neither `ops.*` nor `integrations.*`.
+Platform-neutral `create_app` performs no OpenClaw discovery and, without an
+injected adapter, fails closed with value-free `UNAVAILABLE` evidence. The
+macOS outer composition injects the adapter and truthfully projects
+`NOT_DEPLOYED` from the schema-validated canonical manifest.
+
+The canonical manifest identifies exactly one OpenClaw entry as optional,
+`NOT_DEPLOYED`, and `runtime_health=false`; it is schema-validated before that
+unique entry is trusted. No trustworthy launchd, runtime, or Service Platform
+identity is proven, so PA-02 adds no `service_platform` lifecycle definition.
+Endpoint, authentication, transport, and runtime identity remain
+`UNKNOWN`/unproven by default. The implementation uses no `OPENCLAW_ENDPOINT`
+or `OPENCLAW_API_KEY` convention.
+
+The only API surface is `GET /api/capabilities/openclaw`; no
+POST/PUT/PATCH/DELETE capability implementation exists. PA-02 v1 provides no
+prompt forwarding, tool/action execution, lifecycle execution, Production
+authorization, or infrastructure mutation. Secret/config evidence is
+value-free: no endpoint URL, key, token, cookie, header, environment value,
+credential value, or exception message is projected.
+
+Focused PA-02 validation passed 79 tests. The canonical deployment regression
+passed with `RC=0` on exactly one PA-02 canonical invocation, and
+`git diff --check` passed. No Production mutation or additional deployment,
+`launchctl`, `runtime/current`, credential, or live-service operation occurred.
+No Notion synchronization is claimed. PA-01 and OPS-01B remain closed and
+unchanged; WordPress and unrelated Shadow maintenance remain separate future
+work.
+
 ## PA-01 — Control Plane Service Platform v1
 
 Status after Git closeout: `CONTROL_PLANE_SERVICE_PLATFORM_V1_VALIDATED`;

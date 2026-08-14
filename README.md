@@ -1,5 +1,34 @@
 # AIControlCenter
 
+## PA-02 OpenClaw Adapter v1
+
+PA-02 is validated and closed after Git closeout at milestone
+`OPENCLAW_ADAPTER_V1_VALIDATED`. OpenClaw is an optional, replaceable external
+capability, not a Control Plane. AIControlCenter retains business logic,
+governance, Production authorization, deployment control, workflow policy,
+infrastructure mutation authority, audit, and business/customer state.
+
+The dependency direction is `ops.macos.runtime.application` →
+`integrations.openclaw` → `core.capabilities`, with dependency injection into
+`core.api.create_app`; core imports neither `ops.*` nor `integrations.*`.
+Platform-neutral `create_app` performs no discovery and fails closed with
+value-free `UNAVAILABLE` evidence without injection. macOS composition injects
+the adapter and projects the schema-validated manifest truth: optional,
+`NOT_DEPLOYED`, and `runtime_health=false`.
+
+The only API surface is `GET /api/capabilities/openclaw`; no mutating capability
+method, prompt forwarding, tool/action or lifecycle execution, Production
+authorization, or infrastructure mutation exists. No trustworthy
+launchd/runtime/Service Platform identity is proven, so no `service_platform`
+lifecycle definition was added. Endpoint, authentication, transport, and
+runtime identity remain `UNKNOWN`/unproven by default, with no
+`OPENCLAW_ENDPOINT` or `OPENCLAW_API_KEY` convention. Evidence projects no
+secret/config values or exception messages. Focused validation passed 79 tests;
+the canonical deployment regression passed with `RC=0` on exactly one PA-02
+canonical invocation. No Production mutation or additional live-service
+operation occurred, and no Notion synchronization is claimed. See
+[`docs/architecture/PA-02-OPENCLAW-ADAPTER.md`](docs/architecture/PA-02-OPENCLAW-ADAPTER.md).
+
 ## PA-01 Control Plane Service Platform v1
 
 PA-01 is closed after Git closeout at milestone

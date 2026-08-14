@@ -1,5 +1,39 @@
 # CHANGELOG
 
+## 2026-08-14 — PA-02 OpenClaw Adapter v1
+
+- Validated PA-02 and marked it closed after Git closeout at milestone
+  `OPENCLAW_ADAPTER_V1_VALIDATED`.
+- Added a replaceable outer OpenClaw adapter with final dependency direction
+  `ops.macos.runtime.application` → `integrations.openclaw` →
+  `core.capabilities`, injected into `core.api.create_app`; core imports neither
+  `ops.*` nor `integrations.*`.
+- Added only `GET /api/capabilities/openclaw`. No POST/PUT/PATCH/DELETE
+  capability implementation, prompt forwarding, tool/action execution,
+  lifecycle execution, Production authorization, or infrastructure mutation
+  exists.
+- Reused the canonical optional `NOT_DEPLOYED` manifest identity without adding
+  an unproven launchd/runtime/Service Platform lifecycle definition and retained
+  `runtime_health=false`. The manifest is schema-validated before its unique
+  OpenClaw entry is trusted.
+- Kept endpoint, authentication, transport, and runtime identity
+  `UNKNOWN`/unproven by default. Platform-neutral `create_app` performs no
+  discovery and fails closed with value-free `UNAVAILABLE` evidence; macOS
+  composition injects the adapter and projects `NOT_DEPLOYED`. No
+  `OPENCLAW_ENDPOINT` or `OPENCLAW_API_KEY` convention is used.
+- Kept secret/config evidence value-free: no endpoint URL, key, token, cookie,
+  header, environment value, credential value, or exception message is
+  projected.
+- Preserved AIControlCenter authority over business logic, Production
+  authorization, governance, deployment control, workflow policy,
+  infrastructure mutation, audit, and business/customer state.
+- Recorded focused PA-02 validation of 79 passed tests and canonical deployment
+  regression `RC=0` on exactly one PA-02 canonical invocation. No Production
+  mutation or additional deployment, `launchctl`, `runtime/current`,
+  credential, or live-service operation occurred. No Notion synchronization is
+  claimed. PA-01 and OPS-01B remain closed and unchanged; WordPress and
+  unrelated Shadow maintenance remain separate future work.
+
 ## 2026-08-14 — PA-01 Control Plane Service Platform v1
 
 - Closed PA-01 after Git closeout at milestone

@@ -1,5 +1,28 @@
 # Roadmap
 
+## PA-02 — OpenClaw Adapter v1
+
+- [x] Discover existing manifest identity, adapter/API/config conventions, and
+  local OpenClaw presence using read-only commands only.
+- [x] Add a vendor-neutral capability observation port and AIControlCenter-owned
+  facade with an outer `integrations.openclaw` adapter.
+- [x] Project fail-closed, JSON-compatible status through GET-only
+  `/api/capabilities/openclaw` with value-free secret/config evidence.
+- [x] Preserve the existing optional `NOT_DEPLOYED`, `runtime_health=false`
+  service topology and avoid an unproven Service Platform lifecycle identity.
+- [x] Exclude prompts, tools, actions, Production authorization, deployment
+  governance, infrastructure mutation, and business/customer state.
+- [x] Pass focused PA-02 validation with 79 tests and canonical deployment
+  regression with `RC=0` on exactly one PA-02 canonical invocation.
+- [x] Close PA-02 after Git closeout at milestone
+  `OPENCLAW_ADAPTER_V1_VALIDATED`.
+
+PA-02 is validated. `git diff --check` passed; no Production mutation or
+additional deployment, `launchctl`, `runtime/current`, credential, or
+live-service operation occurred. No Notion synchronization is claimed. PA-01
+and OPS-01B remain closed and unchanged. WordPress and unrelated Shadow
+maintenance remain separate future work.
+
 ## PA-01 — Control Plane Service Platform v1
 
 - [x] Introduce Control Plane Service Platform v1 with the canonical service
