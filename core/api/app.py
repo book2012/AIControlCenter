@@ -11,6 +11,7 @@ from core.runtime.service_health import ServiceHealth
 from core.capabilities import CapabilityObservation, CapabilityStatus
 from core.capabilities.service import CapabilityStatusService
 from core.shopping.runtime_composition import build_shopping_runtime
+from core.notifications import NotificationPlatform
 
 
 class _UnavailableOpenClawObserver:
@@ -50,6 +51,7 @@ def create_app(
     service_health: ServiceHealth | None = None,
     openclaw_status_service: CapabilityStatusService | None = None,
     n8n_status_service: CapabilityStatusService | None = None,
+    notification_platform: NotificationPlatform | None = None,
 ) -> FastAPI:
     ConfigLoader().load()
     app = FastAPI(
@@ -64,6 +66,7 @@ def create_app(
     app.state.n8n_status_service = n8n_status_service or CapabilityStatusService(
         _UnavailableN8nObserver()
     )
+    app.state.notification_platform = notification_platform or NotificationPlatform()
     app.state.shopping_runtime = build_shopping_runtime()
 
     app.include_router(health.router)

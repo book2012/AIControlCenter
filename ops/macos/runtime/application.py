@@ -4,6 +4,8 @@ from core.api.app import create_app
 from core.runtime.service_health import ServiceHealth
 from integrations.openclaw import build_openclaw_status_service
 from integrations.n8n import build_n8n_status_service
+from integrations.notifications import build_telegram_notification_adapter
+from core.notifications import NotificationPlatform, NotificationProviderRegistry
 from ops.macos.launchd import application_scheduler_logs
 
 
@@ -14,4 +16,7 @@ app = create_app(
     service_health=service_health,
     openclaw_status_service=build_openclaw_status_service(),
     n8n_status_service=build_n8n_status_service(),
+    notification_platform=NotificationPlatform(NotificationProviderRegistry((
+        build_telegram_notification_adapter(),
+    ))),
 )

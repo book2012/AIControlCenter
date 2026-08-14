@@ -2,11 +2,9 @@
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
-from jsonschema import Draft202012Validator
-
+from core.capabilities.manifest import CapabilityManifestError, lookup_service_metadata
 from core.capabilities.service import CapabilityStatusService
 
 from .adapter import N8nAdapter, N8nConfiguration, ReadonlyObserver
@@ -29,15 +27,11 @@ def build_n8n_status_service(
 ) -> CapabilityStatusService:
     deployment_status = "UNKNOWN"
     try:
-        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
-        schema = json.loads(schema_path.read_text(encoding="utf-8"))
-        if list(Draft202012Validator(schema).iter_errors(manifest)):
-            raise ValueError("invalid canonical manifest")
-        matches = [item for item in manifest["services"] if item.get("service_id") == "n8n"]
-        if len(matches) != 1:
-            raise ValueError("ambiguous n8n identity")
-        deployment_status = matches[0]["production_status"]
-    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError):
+        metadata = lookup_service_metadata(
+            "n8n", manifest_path=manifest_path, schema_path=schema_path,
+        )
+        deployment_status = metadata["production_status"]
+    except (CapabilityManifestError, KeyError, TypeError):
         pass
     return CapabilityStatusService(N8nAdapter(N8nConfiguration(
         deployment_status=deployment_status,
