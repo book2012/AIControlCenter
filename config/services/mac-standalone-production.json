@@ -24,7 +24,46 @@
       "health_endpoint": "/health",
       "dashboard_endpoint": "/dashboard",
       "ubuntu_dependency": false,
-      "state_policy": "control-plane-owned"
+      "state_policy": "control-plane-owned",
+      "service_platform": {
+        "immutable_runtime": {
+          "runtime_root": "/Users/kyouhan/Library/Application Support/AIControlCenter/runtime"
+        },
+        "application_entrypoint": "ops.macos.runtime.application:app",
+        "log_parent": {
+          "path": "/var/log/aicontrolcenter",
+          "type": "directory",
+          "mode": 493,
+          "owner": "root",
+          "group": "wheel"
+        },
+        "logs": [
+          {
+            "path": "/var/log/aicontrolcenter/canonical-api.stdout.log",
+            "type": "file",
+            "mode": 416,
+            "owner": "kyouhan",
+            "group": "staff"
+          },
+          {
+            "path": "/var/log/aicontrolcenter/canonical-api.stderr.log",
+            "type": "file",
+            "mode": 416,
+            "owner": "kyouhan",
+            "group": "staff"
+          }
+        ],
+        "health_observation": "launchd",
+        "lifecycle_capabilities": [
+          "inspect"
+        ],
+        "lifecycle_planning": {
+          "bounded_action": "bootstrap",
+          "eligible_statuses": [
+            "NOT_DEPLOYED"
+          ]
+        }
+      }
     },
     {
       "service_id": "homepage-api",
@@ -133,7 +172,46 @@
       "lifecycle": "launchd",
       "launchd_label": "com.aicontrolcenter.application-scheduler",
       "ubuntu_dependency": false,
-      "state_policy": "heartbeat-observed"
+      "state_policy": "heartbeat-observed",
+      "service_platform": {
+        "immutable_runtime": {
+          "runtime_root": "/Users/kyouhan/Library/Application Support/AIControlCenter/runtime"
+        },
+        "application_entrypoint": "core.scheduler.daemon",
+        "log_parent": {
+          "path": "/var/log/aicontrolcenter",
+          "type": "directory",
+          "mode": 493,
+          "owner": "root",
+          "group": "wheel"
+        },
+        "logs": [
+          {
+            "path": "/var/log/aicontrolcenter/application-scheduler.stdout.log",
+            "type": "file",
+            "mode": 416,
+            "owner": "kyouhan",
+            "group": "staff"
+          },
+          {
+            "path": "/var/log/aicontrolcenter/application-scheduler.stderr.log",
+            "type": "file",
+            "mode": 416,
+            "owner": "kyouhan",
+            "group": "staff"
+          }
+        ],
+        "health_observation": "heartbeat",
+        "lifecycle_capabilities": [
+          "inspect"
+        ],
+        "lifecycle_planning": {
+          "bounded_action": "bootstrap",
+          "eligible_statuses": [
+            "NOT_DEPLOYED"
+          ]
+        }
+      }
     }
   ]
 }

@@ -144,27 +144,188 @@
         },
         "powered_off_allowed": {
           "type": "boolean"
+        },
+        "service_platform": {
+          "$ref": "#/$defs/servicePlatform"
         }
       },
       "allOf": [
         {
           "if": {
-            "properties": {"lifecycle": {"const": "launchd"}},
-            "required": ["lifecycle"]
+            "properties": {
+              "lifecycle": {
+                "const": "launchd"
+              }
+            },
+            "required": [
+              "lifecycle"
+            ]
           },
-          "then": {"required": ["launchd_label"]},
-          "else": {"not": {"required": ["launchd_label"]}}
+          "then": {
+            "required": [
+              "launchd_label"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "launchd_label"
+              ]
+            }
+          }
         },
         {
           "if": {
-            "properties": {"lifecycle": {"const": "not_deployed"}},
-            "required": ["lifecycle"]
+            "properties": {
+              "lifecycle": {
+                "const": "not_deployed"
+              }
+            },
+            "required": [
+              "lifecycle"
+            ]
           },
           "then": {
-            "properties": {"production_status": {"const": "NOT_DEPLOYED"}}
+            "properties": {
+              "production_status": {
+                "const": "NOT_DEPLOYED"
+              }
+            }
           }
         }
       ]
+    },
+    "servicePlatform": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "application_entrypoint",
+        "immutable_runtime",
+        "log_parent",
+        "logs",
+        "health_observation",
+        "lifecycle_capabilities",
+        "lifecycle_planning"
+      ],
+      "properties": {
+        "application_entrypoint": {
+          "type": "string",
+          "minLength": 1
+        },
+        "health_observation": {
+          "enum": [
+            "launchd",
+            "heartbeat"
+          ]
+        },
+        "lifecycle_capabilities": {
+          "const": [
+            "inspect"
+          ]
+        },
+        "lifecycle_planning": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "bounded_action",
+            "eligible_statuses"
+          ],
+          "properties": {
+            "bounded_action": {
+              "const": "bootstrap"
+            },
+            "eligible_statuses": {
+              "const": [
+                "NOT_DEPLOYED"
+              ]
+            }
+          }
+        },
+        "immutable_runtime": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "runtime_root"
+          ],
+          "properties": {
+            "runtime_root": {
+              "type": "string",
+              "pattern": "^/"
+            }
+          }
+        },
+        "log_parent": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "path",
+            "type",
+            "mode",
+            "owner",
+            "group"
+          ],
+          "properties": {
+            "path": {
+              "type": "string",
+              "pattern": "^/"
+            },
+            "type": {
+              "const": "directory"
+            },
+            "mode": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 4095
+            },
+            "owner": {
+              "type": "string",
+              "minLength": 1
+            },
+            "group": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "logs": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "path",
+              "type",
+              "mode",
+              "owner",
+              "group"
+            ],
+            "properties": {
+              "path": {
+                "type": "string",
+                "pattern": "^/"
+              },
+              "type": {
+                "const": "file"
+              },
+              "mode": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4095
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              },
+              "group": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
     }
   }
 }

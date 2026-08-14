@@ -5,16 +5,20 @@
 from __future__ import annotations
 
 import argparse
-import errno
 import grp
 import json
 import os
 from pathlib import Path
 import pwd
-import stat
 import subprocess
 import sys
 from typing import Any, Callable, Sequence
+
+REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+if str(REPOSITORY_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPOSITORY_ROOT))
+
+from ops.macos.runtime.service_platform import inspect_path
 
 
 sys.dont_write_bytecode = True
@@ -34,43 +38,6 @@ def default_runner(argv: Sequence[str]) -> subprocess.CompletedProcess[str]:
         list(argv), text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
         check=False, env=environment,
     )
-
-
-def inspect_path(
-    path: Path, *, expected_type: str, expected_uid: int,
-    expected_gid: int, expected_mode: int,
-) -> dict[str, Any]:
-    result: dict[str, Any] = {
-        "path": str(path), "exists": False, "regular_file": False,
-        "directory": False, "symlink": False, "owner_matches": False,
-        "group_matches": False, "mode_matches": False, "inspection_error": None,
-        "valid": False,
-    }
-    try:
-        metadata = path.lstat()
-    except OSError as error:
-        if error.errno == errno.ENOENT:
-            return result
-        result["inspection_error"] = {
-            "error_type": type(error).__name__,
-            "errno": errno.errorcode.get(error.errno, "UNKNOWN"),
-        }
-        return result
-    result.update({
-        "exists": True,
-        "regular_file": stat.S_ISREG(metadata.st_mode),
-        "directory": stat.S_ISDIR(metadata.st_mode),
-        "symlink": stat.S_ISLNK(metadata.st_mode),
-        "owner_matches": metadata.st_uid == expected_uid,
-        "group_matches": metadata.st_gid == expected_gid,
-        "mode_matches": stat.S_IMODE(metadata.st_mode) == expected_mode,
-    })
-    type_matches = result["regular_file"] if expected_type == "file" else result["directory"]
-    result["valid"] = bool(
-        type_matches and not result["symlink"] and result["owner_matches"]
-        and result["group_matches"] and result["mode_matches"]
-    )
-    return result
 
 
 def inspect_contract(
