@@ -17,12 +17,22 @@ def load_manifest() -> dict:
 
 
 def test_production_manifest_is_valid():
+    manifest = load_manifest()
     result = run_validation(MANIFEST_PATH)
 
     assert result["valid"] is True
     assert result["profile"] == "mac-standalone-production"
-    assert result["service_count"] == 8
+    assert result["service_count"] == len(manifest["services"])
     assert result["errors"] == []
+
+    shopping_services = [
+        service
+        for service in manifest["services"]
+        if service["service_id"] == "shopping-runtime"
+    ]
+    assert len(shopping_services) == 1
+    assert shopping_services[0]["production_status"] == "NOT_DEPLOYED"
+    assert shopping_services[0]["ubuntu_dependency"] is False
 
 
 def test_control_plane_cannot_depend_on_ubuntu():

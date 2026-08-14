@@ -83,6 +83,22 @@
       "state_policy": "read-only-projection"
     },
     {
+      "service_id": "shopping-runtime",
+      "logical_id": "shopping-runtime",
+      "runtime_health": true,
+      "role": "cms-commerce-runtime-stack",
+      "owner": "aicontrolcenter",
+      "required": false,
+      "production_status": "NOT_DEPLOYED",
+      "runtime": "docker-compose-on-colima",
+      "supervisor": "docker-compose",
+      "lifecycle": "not_deployed",
+      "listen_host": "127.0.0.1",
+      "health_endpoint": "/wp-json/",
+      "ubuntu_dependency": false,
+      "state_policy": "mac-owned-docker-volumes"
+    },
+    {
       "service_id": "ubuntu-main",
       "logical_id": "ubuntu-main",
       "runtime_health": false,

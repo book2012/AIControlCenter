@@ -53,7 +53,7 @@ class WooCommerceAdapter:
             "transport": config.transport_kind or "UNKNOWN",
         }
         evidence = (
-            ({"type": "canonical_manifest", "deployment_status": config.deployment_status},)
+            ({"type": "canonical_capability_manifest", "deployment_status": config.deployment_status},)
             if config.manifest_entry_observed else ()
         )
         if config.deployment_status == "NOT_DEPLOYED":

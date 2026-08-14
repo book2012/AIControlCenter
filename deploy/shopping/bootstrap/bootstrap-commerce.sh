@@ -83,21 +83,7 @@ fi
 if wp theme is-active "$STOREFRONT_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
     printf "%s\n" "[BOOTSTRAP][06/07] Storefront theme already active"
 else
-    STOREFRONT_ACTIVATION_ATTEMPT=1
-    STOREFRONT_ACTIVATION_MAX_ATTEMPTS=3
-    while [ "$STOREFRONT_ACTIVATION_ATTEMPT" -le "$STOREFRONT_ACTIVATION_MAX_ATTEMPTS" ]; do
-        STOREFRONT_ACTIVATION_RC=0
-        wp theme activate "$STOREFRONT_SLUG" --path="$WP_PATH" --quiet || STOREFRONT_ACTIVATION_RC=$?
-        if wp theme is-active "$STOREFRONT_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
-            break
-        fi
-        if [ "$STOREFRONT_ACTIVATION_ATTEMPT" -ge "$STOREFRONT_ACTIVATION_MAX_ATTEMPTS" ]; then
-            printf "%s\n" "[BOOTSTRAP][FAIL] Storefront activation postcondition failed after bounded attempts rc=$STOREFRONT_ACTIVATION_RC" >&2
-            exit 1
-        fi
-        sleep 1
-        STOREFRONT_ACTIVATION_ATTEMPT=$((STOREFRONT_ACTIVATION_ATTEMPT + 1))
-    done
+    wp theme activate "$STOREFRONT_SLUG" --path="$WP_PATH" --quiet
     wp theme is-active "$STOREFRONT_SLUG" --path="$WP_PATH" >/dev/null 2>&1
     printf "%s\n" "[BOOTSTRAP][06/07] Storefront theme activated"
 fi

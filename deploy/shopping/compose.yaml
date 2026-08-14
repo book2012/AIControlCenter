@@ -10,6 +10,9 @@ services:
       MARIADB_USER: ${SHOPPING_DB_USER}
       MARIADB_PASSWORD: ${SHOPPING_DB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${SHOPPING_DB_ROOT_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
     volumes:
       - shopping_database:/var/lib/mysql
     networks:
@@ -61,6 +64,8 @@ services:
       start_period: 60s
 
   wordpress-cli:
+    profiles:
+      - activation
     build:
       context: .
       dockerfile: bootstrap/Dockerfile

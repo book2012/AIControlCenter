@@ -134,22 +134,15 @@ def test_storefront_bootstrap_installs_pinned_theme_before_activation():
 
     assert install in source
     assert source.index(install) < source.index(active_check)
-    activation = "wp theme activate \"$STOREFRONT_SLUG\" --path=\"$WP_PATH\" --quiet || STOREFRONT_ACTIVATION_RC=$?"
-    loop_start = "while [ \"$STOREFRONT_ACTIVATION_ATTEMPT\" -le \"$STOREFRONT_ACTIVATION_MAX_ATTEMPTS\" ]; do"
-    postcondition = "if wp theme is-active \"$STOREFRONT_SLUG\" --path=\"$WP_PATH\" >/dev/null 2>&1; then"
+    activation = "wp theme activate \"$STOREFRONT_SLUG\" --path=\"$WP_PATH\" --quiet"
     install_position = source.index(install)
     initial_check_position = source.index(active_check, install_position)
-    loop_position = source.index(loop_start, initial_check_position)
-    activation_position = source.index(activation, loop_position)
-    postcondition_position = source.index(postcondition, activation_position)
-    terminal_assertion_position = source.index(final_assertion, postcondition_position + len(postcondition))
-    assert install_position < initial_check_position < loop_position < activation_position < postcondition_position < terminal_assertion_position
+    activation_position = source.index(activation, initial_check_position)
+    terminal_assertion_position = source.index(final_assertion, activation_position)
+    assert install_position < initial_check_position < activation_position < terminal_assertion_position
     assert source.count(activation) == 1
-    assert "STOREFRONT_ACTIVATION_ATTEMPT=1" in source
-    assert "STOREFRONT_ACTIVATION_MAX_ATTEMPTS=3" in source
-    assert "STOREFRONT_ACTIVATION_ATTEMPT=$((STOREFRONT_ACTIVATION_ATTEMPT + 1))" in source
-    assert "sleep 1" in source
-    assert "Storefront activation postcondition failed after bounded attempts" in source
+    assert "STOREFRONT_ACTIVATION_ATTEMPT" not in source
+    assert "sleep 1" not in source
     assert "wp theme get \"$STOREFRONT_SLUG\" --field=version --path=\"$WP_PATH\"" in source
     assert "Storefront theme version mismatch" in source
     assert "storefront plugin" not in source

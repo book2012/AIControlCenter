@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "profile": "mac-standalone-production",
+  "capabilities": [
+    {
+      "capability_id": "woocommerce",
+      "host_service_id": "shopping-runtime",
+      "kind": "wordpress-plugin-commerce-engine",
+      "production_status": "NOT_DEPLOYED",
+      "activation_authorized": false
+    }
+  ]
+}

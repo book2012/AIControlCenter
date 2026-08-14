@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 from core.deployment.plan import build_deployment_plan
@@ -8,13 +9,18 @@ MANIFEST = ROOT / "config/services/mac-standalone-production.json"
 
 
 def test_full_deployment_plan_is_read_only():
+    manifest = json.loads(MANIFEST.read_text())
     result = build_deployment_plan(MANIFEST)
 
     assert result["valid"] is True
     assert result["read_only"] is True
     assert result["profile"] == "mac-standalone-production"
-    assert result["service_count"] == 8
+    assert result["service_count"] == len(manifest["services"])
     assert result["errors"] == []
+    assert sum(
+        plan["service_id"] == "shopping-runtime"
+        for plan in result["plans"]
+    ) == 1
 
 
 def test_ollama_plan_requires_install_and_start():

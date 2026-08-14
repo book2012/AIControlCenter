@@ -15,13 +15,13 @@ def observe(configuration=None, observer=None):
     return WooCommerceAdapter(configuration or WooCommerceConfiguration(), observer).observe().to_dict()
 
 
-def test_canonical_manifest_has_no_woocommerce_identity_and_default_is_value_free():
+def test_canonical_service_manifest_has_no_woocommerce_identity_and_capability_is_fail_closed():
     canonical = json.loads(Path("config/services/mac-standalone-production.json").read_text())
     assert [item for item in canonical["services"] if item["service_id"] == "woocommerce"] == []
     result = build_woocommerce_status_service().status()
-    assert result["status"] == "UNAVAILABLE"
-    assert result["error"] == {"error_type": "IndeterminateDeploymentStatus"}
-    assert result["evidence"] == []
+    assert result["status"] == "NOT_DEPLOYED"
+    assert result["error"] is None
+    assert result["evidence"] == [{"type": "canonical_capability_manifest", "deployment_status": "NOT_DEPLOYED"}]
     assert result["configuration"] == {
         "status": "UNKNOWN", "configuration_configured": None,
         "authentication_configured": None,
@@ -42,10 +42,8 @@ def test_malformed_or_schema_invalid_manifest_fails_closed(tmp_path, contents):
 
 
 def test_duplicate_manifest_identity_fails_closed(tmp_path):
-    canonical = json.loads(Path("config/services/mac-standalone-production.json").read_text())
-    template = dict(next(item for item in canonical["services"] if item["service_id"] == "n8n"))
-    template.update(service_id="woocommerce", logical_id="woocommerce")
-    canonical["services"].extend([template, template])
+    canonical = json.loads(Path("config/capabilities/mac-standalone-production.json").read_text())
+    canonical["capabilities"].append(dict(canonical["capabilities"][0]))
     manifest = tmp_path / "manifest.json"
     manifest.write_text(json.dumps(canonical))
     result = build_woocommerce_status_service(manifest_path=manifest).status()
@@ -64,15 +62,13 @@ def test_unreadable_manifest_fails_closed_without_path_or_exception_leak(tmp_pat
 
 
 def test_successful_injected_manifest_identity_is_truthful_evidence(tmp_path):
-    canonical = json.loads(Path("config/services/mac-standalone-production.json").read_text())
-    entry = next(item for item in canonical["services"] if item["service_id"] == "n8n")
-    entry["service_id"] = "woocommerce"
-    entry["logical_id"] = "woocommerce"
+    canonical = json.loads(Path("config/capabilities/mac-standalone-production.json").read_text())
+    entry = canonical["capabilities"][0]
     manifest = tmp_path / "manifest.json"
     manifest.write_text(json.dumps(canonical))
     result = build_woocommerce_status_service(manifest_path=manifest).status()
     assert result["evidence"] == [{
-        "type": "canonical_manifest", "deployment_status": entry["production_status"],
+        "type": "canonical_capability_manifest", "deployment_status": entry["production_status"],
     }]
 
 
@@ -194,5 +190,8 @@ def test_core_has_no_outer_imports_and_macos_injects_adapter():
     assert imports == []
     from ops.macos.runtime.application import app as canonical_app
     result = canonical_app.state.woocommerce_status_service.status()
-    assert result["status"] == "UNAVAILABLE"
-    assert result["evidence"] == []
+    assert result["status"] == "NOT_DEPLOYED"
+    assert result["evidence"] == [{
+        "type": "canonical_capability_manifest",
+        "deployment_status": "NOT_DEPLOYED",
+    }]
