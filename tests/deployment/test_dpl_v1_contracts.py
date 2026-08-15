@@ -18,6 +18,7 @@ from core.deployment.contracts import (
 from core.deployment.contracts.canonical import CanonicalJSONError
 
 FIXTURES = Path(__file__).parents[1] / "fixtures" / "deployment"
+ROOT = Path(__file__).parents[2]
 CONTRACT_FIXTURES = {
     "ImmutableDeploymentPackage": "immutable-deployment-package.json",
     "InventoryResult": "inventory-result.json",
@@ -63,6 +64,22 @@ def test_valid_schema_fixtures(contract: str) -> None:
         contract_name=contract,
         payload=_fixture(contract),
     )
+
+
+def test_ingress_fixture_matches_shopping_wordpress_port_contract() -> None:
+    port_variable = "SHOPPING_WORDPRESS_PORT"
+    env_values = dict(
+        line.split("=", 1)
+        for line in (ROOT / "deploy/shopping/.env.example").read_text("utf-8").splitlines()
+        if line and not line.startswith("#") and "=" in line
+    )
+    upstream = _fixture("IngressContract")["upstream"]
+
+    assert upstream == {
+        "host": "127.0.0.1",
+        "port_source": port_variable,
+        "port": int(env_values[port_variable]),
+    }
 
 
 def test_unknown_schema_version_and_contract_are_rejected() -> None:

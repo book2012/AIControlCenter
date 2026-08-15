@@ -6,7 +6,12 @@ from pathlib import Path
 import yaml
 from jsonschema import Draft202012Validator
 
-from ops.macos.shopping.runtime_inspector import CommandResult, build_plan, inspect_runtime
+from ops.macos.shopping.runtime_inspector import (
+    CommandResult,
+    _compose_rows,
+    build_plan,
+    inspect_runtime,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -29,6 +34,23 @@ def test_compose_isolated_persistent_and_fail_closed() -> None:
     assert data["services"]["wordpress-cli"]["profiles"] == ["activation"]
     assert all(service["restart"] == "unless-stopped" for service in (db, wp))
     assert "utf8mb4" in " ".join(db["command"])
+
+
+def test_wordpress_desired_port_is_loopback_only_and_not_control_plane_reserved() -> None:
+    wordpress_port = int(
+        (ROOT / "deploy/shopping/.env.example").read_text().split("SHOPPING_WORDPRESS_PORT=", 1)[1].splitlines()[0]
+    )
+    assert compose()["services"]["wordpress"]["ports"] == [
+        "127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80"
+    ]
+    services = json.loads((ROOT / "config/services/mac-standalone-production.json").read_text())["services"]
+    reserved = {
+        service["port"]
+        for service in services
+        if service.get("role") == "control-plane" and "port" in service
+    }
+    assert wordpress_port == 58082
+    assert wordpress_port not in reserved
 
 
 def test_compose_secret_references_are_value_free() -> None:
@@ -67,7 +89,27 @@ def test_missing_runtime_fails_closed_without_docker_inspection() -> None:
     assert len(calls) == 1 and calls[0][:2] == ("colima", "status")
 
 
-def test_stopped_and_malformed_docker_inspection_fail_closed() -> None:
+def test_compose_rows_accepts_array_object_ndjson_and_empty() -> None:
+    database = {"Service": "database", "State": "running", "Health": "healthy"}
+    wordpress = {"Service": "wordpress", "State": "running", "Health": "healthy"}
+    assert _compose_rows(json.dumps([database, wordpress])) == [database, wordpress]
+    assert _compose_rows(json.dumps(database)) == [database]
+    assert _compose_rows(f"{json.dumps(database)}\n\n{json.dumps(wordpress)}\n") == [database, wordpress]
+    assert _compose_rows(" \n\t") == []
+
+
+def test_compose_rows_rejects_malformed_ndjson_scalar_and_non_object_row() -> None:
+    malformed = '{"Service":"database"}\nnot-json\n{"Service":"wordpress"}'
+    for stdout in (malformed, '"scalar"', '[{"Service":"database"}, 1]'):
+        try:
+            _compose_rows(stdout)
+        except (json.JSONDecodeError, ValueError):
+            pass
+        else:
+            raise AssertionError("malformed Compose output was accepted")
+
+
+def test_stopped_service_fails_closed() -> None:
     def stopped(argv):
         if argv[0] == "colima":
             return CommandResult(0, "running")
@@ -75,17 +117,82 @@ def test_stopped_and_malformed_docker_inspection_fail_closed() -> None:
             {"Service": "database", "State": "running", "Health": "healthy"},
             {"Service": "wordpress", "State": "exited", "Health": ""},
         ]))
-    assert inspect_runtime(stopped)["error_type"] == "RuntimeNotHealthy"
+    result = inspect_runtime(stopped)
+    assert result["error_type"] == "RuntimeNotHealthy"
+    assert result["healthy"] is result["ready"] is False
+
+
+def test_malformed_ndjson_fails_closed() -> None:
     def malformed(argv):
-        return CommandResult(0, "running" if argv[0] == "colima" else "not-json")
+        stdout = "running" if argv[0] == "colima" else '{"Service":"database"}\nnot-json'
+        return CommandResult(0, stdout)
     result = inspect_runtime(malformed)
     assert result["error_type"] == "MalformedDockerInspection"
     assert result["healthy"] is result["ready"] is False
 
 
+def test_empty_compose_observation_is_valid_not_deployed_runtime() -> None:
+    def runner(argv):
+        return CommandResult(0, "running" if argv[0] == "colima" else " \n")
+    result = inspect_runtime(runner)
+    assert result["available"] is True
+    assert result["healthy"] is result["ready"] is False
+    assert result["error_type"] == "RuntimeNotDeployed"
+
+
+def test_healthy_ndjson_runtime_is_ready_but_woocommerce_is_not() -> None:
+    rows = (
+        '{"Service":"database","State":"running","Health":"healthy"}\n'
+        '{"Service":"wordpress","State":"running","Health":"healthy"}\n'
+    )
+    def runner(argv):
+        return CommandResult(0, "running" if argv[0] == "colima" else rows)
+    result = inspect_runtime(runner)
+    assert result["database"] == {"present": True, "running": True, "healthy": True}
+    assert result["wordpress"] == {"present": True, "running": True, "healthy": True}
+    assert result["available"] is result["healthy"] is result["ready"] is True
+    assert result["woocommerce"]["ready"] is False
+    assert result["error_type"] is None
+
+
+def test_healthy_runtime_on_reserved_control_plane_port_fails_ready_closed() -> None:
+    services = json.loads((ROOT / "config/services/mac-standalone-production.json").read_text())["services"]
+    reserved_port = next(service["port"] for service in services if service.get("role") == "control-plane")
+    rows = [
+        {"Service": "database", "State": "running", "Health": "healthy"},
+        {
+            "Service": "wordpress", "State": "running", "Health": "healthy",
+            "Publishers": [{"URL": "127.0.0.1", "TargetPort": 80, "PublishedPort": reserved_port, "Protocol": "tcp"}],
+        },
+    ]
+    def runner(argv):
+        return CommandResult(0, "running" if argv[0] == "colima" else json.dumps(rows))
+    result = inspect_runtime(runner)
+    assert result["available"] is result["healthy"] is True
+    assert result["ready"] is False
+    assert result["error_type"] == "PortCollision"
+
+
+def test_healthy_runtime_without_publisher_observation_does_not_invent_collision() -> None:
+    rows = [
+        {"Service": "database", "State": "running", "Health": "healthy"},
+        {"Service": "wordpress", "State": "running", "Health": "healthy"},
+    ]
+    def runner(argv):
+        return CommandResult(0, "running" if argv[0] == "colima" else json.dumps(rows))
+    assert inspect_runtime(runner)["error_type"] is None
+
+
+def test_compose_inspection_failure_precedes_stdout_parsing() -> None:
+    def runner(argv):
+        return CommandResult(0, "running") if argv[0] == "colima" else CommandResult(1, "not-json")
+    assert inspect_runtime(runner)["error_type"] == "DockerInspectionUnavailable"
+
+
 def test_plans_are_non_mutating_single_attempt_and_mac_owned() -> None:
     source = (ROOT / "ops/macos/shopping/runtime_inspector.py").read_text()
     assert "UbuntuWorkerClient" not in source and "ssh" not in source.lower()
+    assert all(token not in source for token in ('"restart"', '"pull"', '"build"', '"up"', '"down"'))
     for kind in ("backup", "restore", "activation"):
         plan = build_plan(kind)
         assert plan["mutation_performed"] is False

@@ -4,7 +4,7 @@
   "public_edge": {"owner": "host-caddy", "sole_public_edge": true, "direct_public_application_ports": false},
   "runtime": {"owner": "mac-control-plane", "ubuntu_runtime_allowed": false},
   "engines": {"cms": "wordpress", "commerce": "woocommerce", "business_logic_owner": "aicontrolcenter"},
-  "upstream": {"host": "127.0.0.1", "port_source": "SHOPPING_WORDPRESS_PORT", "port": 58081},
+  "upstream": {"host": "127.0.0.1", "port_source": "SHOPPING_WORDPRESS_PORT", "port": 58082},
   "database": {"engine": "mariadb", "public_exposure": false, "host_published_port": false},
   "production_writes": false
 }

@@ -12,6 +12,7 @@ from typing import Callable, Sequence
 
 ROOT = Path(__file__).resolve().parents[3]
 COMPOSE = ROOT / "deploy/shopping/compose.yaml"
+SERVICE_MANIFEST = ROOT / "config/services/mac-standalone-production.json"
 CONTEXT = "colima-aicontrolcenter-commerce"
 PROFILE = "aicontrolcenter-commerce"
 PROJECT = "ai-shopping"
@@ -43,12 +44,47 @@ def _json(stdout: str) -> object:
 
 
 def _compose_rows(stdout: str) -> list[dict[str, object]]:
-    value = _json(stdout)
+    stripped = stdout.strip()
+    if not stripped:
+        return []
+    try:
+        value = _json(stripped)
+    except json.JSONDecodeError:
+        rows = [_json(line) for line in stripped.splitlines() if line.strip()]
+        if any(not isinstance(row, dict) for row in rows):
+            raise ValueError("compose NDJSON row is not an object")
+        return rows
     if isinstance(value, dict):
-        value = [value]
-    if not isinstance(value, list) or any(not isinstance(row, dict) for row in value):
-        raise ValueError("compose output is not an object array")
-    return value
+        return [value]
+    if isinstance(value, list) and all(isinstance(row, dict) for row in value):
+        return value
+    raise ValueError("compose output is not an object or object array")
+
+
+def _reserved_control_plane_ports() -> set[int]:
+    manifest = _json(SERVICE_MANIFEST.read_text())
+    if not isinstance(manifest, dict) or not isinstance(manifest.get("services"), list):
+        raise ValueError("service manifest has no services array")
+    return {
+        port
+        for service in manifest["services"]
+        if isinstance(service, dict) and service.get("role") == "control-plane"
+        for port in (service.get("port"),)
+        if isinstance(port, int)
+    }
+
+
+def _published_ports(row: dict[str, object]) -> set[int]:
+    publishers = row.get("Publishers")
+    if not isinstance(publishers, list):
+        return set()
+    return {
+        port
+        for publisher in publishers
+        if isinstance(publisher, dict)
+        for port in (publisher.get("PublishedPort"),)
+        if isinstance(port, int)
+    }
 
 
 def inspect_runtime(runner: Runner = _run) -> dict[str, object]:
@@ -94,7 +130,17 @@ def inspect_runtime(runner: Runner = _run) -> dict[str, object]:
             "kind": "wordpress-hosted-capability", "ready": False,
             "reason": "Capability activation and API readability require separate observation",
         }
-        if not healthy:
+        wordpress_row = by_service.get("wordpress")
+        port_collision = bool(
+            healthy
+            and wordpress_row is not None
+            and _published_ports(wordpress_row) & _reserved_control_plane_ports()
+        )
+        if port_collision:
+            result.update(ready=False, error_type="PortCollision")
+        elif not wordpress["present"] and not database["present"]:
+            result["error_type"] = "RuntimeNotDeployed"
+        elif not healthy:
             result["error_type"] = "RuntimeNotHealthy"
         return result
     except (json.JSONDecodeError, TypeError, ValueError):
