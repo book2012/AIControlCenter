@@ -2548,3 +2548,32 @@ Milestone: `SHOPPING_RUNTIME_FOUNDATION_VALIDATED`
 Next runtime milestone: `SHOPPING_RUNTIME_ACTIVATED`.
 
 Future storefront milestone: `SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.
+
+## SHOP-CMS-01B — Activation phase current state
+
+Status: **IN PROGRESS / NOT ACTIVATED**
+
+- [x] Keep `SHOPPING_RUNTIME_FOUNDATION_VALIDATED` achieved.
+- [x] Validate bounded Compose JSON array, object, NDJSON, and empty-output
+  parsing with fail-closed malformed/scalar/non-object handling.
+- [x] Set desired loopback WordPress binding to `58082`, keep MariaDB
+  unpublished, derive reserved ports from the canonical service manifest, and
+  classify a healthy publisher on a reserved port as `PortCollision`.
+- [x] Consume exactly one dedicated Colima-start authorization; observe stored
+  WordPress/MariaDB containers and volumes during later read-only
+  reconciliation without treating restart-policy effects as Compose-up
+  authorization.
+- [ ] Perform a separately human-authorized WordPress port cutover from the
+  conflicting live `58081` binding to desired `58082`.
+- [ ] Reconcile the cutover read-only and prove WordPress application
+  readiness.
+- [ ] Supply controlled bootstrap secrets and separately authorize
+  WooCommerce bootstrap; prove namespace/API/catalog readiness independently
+  of container health.
+- [ ] Achieve `SHOPPING_RUNTIME_ACTIVATED`.
+- [ ] Begin `SHOP-STOREFRONT-01` only after runtime activation.
+
+The service manifest and WooCommerce capability remain `NOT_DEPLOYED`. No
+port cutover, Compose mutation, WooCommerce activation, automatic retry or
+rollback, new Production authorization, Caddy mutation, Ubuntu mutation, or
+Notion synchronization occurred during the correction closeout.

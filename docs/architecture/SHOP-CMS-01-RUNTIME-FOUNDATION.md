@@ -132,3 +132,64 @@ storefront listener was claimed. WordPress is not claimed online, MariaDB is
 not claimed running, WooCommerce is not claimed activated, storefront routing
 is not claimed active, and no Notion synchronization is claimed. Active Caddy
 and canonical FastAPI public behavior remained unchanged.
+
+## Phase B activation-phase correction and current state
+
+SHOP-CMS-01B corrected the inspection and desired-port contracts without
+rewriting the Phase A observation above. The Compose parser now accepts
+bounded JSON array, single-object, NDJSON, and empty-output shapes. Malformed,
+scalar, and non-object content remains fail-closed, while a valid empty
+observation is distinguishable from malformed inspection. WooCommerce
+readiness is never inferred from WordPress/database container health.
+
+The desired WordPress host port is `58082`; exposure remains loopback-only as
+`127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80`, and MariaDB remains unpublished.
+The ingress fixture derives and matches `SHOPPING_WORDPRESS_PORT=58082`. The
+runtime inspector derives reserved Control Plane ports from the canonical
+service manifest. A healthy runtime that publishes WordPress on a reserved
+Control Plane port fails readiness with `error_type=PortCollision`.
+
+### Observed activation history
+
+One dedicated Colima activation authorization was consumed exactly once, and
+the Colima start succeeded. It was not retried. Later read-only reconciliation
+was not a new Production mutation. Existing stored WordPress and MariaDB
+containers became running/healthy under restart policy after the authorized
+start, and their persistent volumes were observed. This was a runtime side
+effect of starting Colima, not an independently authorized Compose up.
+
+The previous runtime publisher was observed on reserved canonical FastAPI port
+`58081` and is correctly classified `PortCollision`. The prior WordPress REST
+observation returned a FastAPI-style 404 because the request reached FastAPI,
+not WordPress. Desired future binding is `58082`, but no port cutover has been
+performed. WooCommerce namespace/API/catalog readiness remains unproven, and
+shopping secret files required for a future controlled bootstrap were absent
+during the read-only audit.
+
+The canonical service manifest and WooCommerce capability retain
+`production_status=NOT_DEPLOYED`. `SHOPPING_RUNTIME_FOUNDATION_VALIDATED`
+remains achieved; `SHOPPING_RUNTIME_ACTIVATED=false`. The next operational
+action is a separately human-authorized WordPress port cutover to `58082`,
+followed by read-only reconciliation. WooCommerce bootstrap/readiness is
+subsequent work, and `SHOP-STOREFRONT-01` remains after runtime activation.
+
+### Phase B correction validation and safety
+
+Focused exact-code validation passed 77 tests with 9 warnings. The canonical
+deployment regression was executed exactly once after the final code/test
+corrections and passed with `3163 passed, 5 deselected, 447 warnings`, `RC=0`.
+Direct core imports of outer `ops` and `integrations` remain 0. Implementation
+commit: `9fcd02342a37a93874e912e86404f85267e2f0bb`.
+
+- `COLIMA_START_RETRIED=false`
+- `AUTOMATIC_RETRY=false`
+- `AUTOMATIC_ROLLBACK=false`
+- `NEW_PRODUCTION_AUTHORIZATION_CONSUMED=false`
+- `PORT_CUTOVER_MUTATION=false`
+- `DOCKER_COMPOSE_MUTATION=false`
+- `WORDPRESS_MUTATION=false`
+- `WOOCOMMERCE_MUTATION=false`
+- `COMMERCE_DB_MUTATION=false`
+- `CADDY_MUTATION=false`
+- `UBUNTU_MUTATION=false`
+- `NOTION_SYNC=false`

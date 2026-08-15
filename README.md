@@ -2388,3 +2388,34 @@ Exactly two canonical invocations were used. Next:
 `SHOP-CMS-01B — bounded Production runtime activation`, milestone
 `SHOPPING_RUNTIME_ACTIVATED`; future storefront milestone
 `SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.
+
+## SHOP-CMS-01B — Runtime Foundation activation phase
+
+The corrected desired contract publishes WordPress only on
+`127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80`, with
+`SHOPPING_WORDPRESS_PORT=58082`; MariaDB has no host port. Reserved Control
+Plane ports come from the canonical service manifest, and even a healthy
+WordPress container fails runtime readiness with `error_type=PortCollision`
+when it publishes on one. Compose JSON inspection accepts bounded array,
+single-object, NDJSON, and empty-output shapes, rejects malformed/scalar/
+non-object content, and distinguishes valid empty observation from malformed
+inspection. WooCommerce readiness is never inferred from container health.
+
+The dedicated Colima start authorization was consumed exactly once and
+succeeded. Read-only reconciliation then observed existing stored WordPress
+and MariaDB containers running/healthy under restart policy and persistent
+volumes; it did not authorize or perform Compose up. The live WordPress
+publisher remained on reserved FastAPI port `58081`, so it was correctly
+classified `PortCollision`; the earlier FastAPI-style REST 404 came from the
+canonical FastAPI listener, not WordPress. No port cutover to `58082` occurred.
+Required bootstrap secret files were absent, and WooCommerce namespace/API/
+catalog readiness remains unproven.
+
+The service manifest and WooCommerce capability remain `NOT_DEPLOYED`.
+`SHOPPING_RUNTIME_FOUNDATION_VALIDATED` remains achieved, while
+`SHOPPING_RUNTIME_ACTIVATED=false`. Next is a separately human-authorized
+WordPress port cutover to `58082` followed by read-only reconciliation;
+WooCommerce bootstrap/readiness and `SHOP-STOREFRONT-01` follow activation.
+No additional Production authorization, automatic retry/rollback, Compose,
+WordPress, WooCommerce, database, Caddy, Ubuntu, or port-cutover mutation was
+performed, and no Notion synchronization is claimed.

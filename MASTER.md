@@ -2872,3 +2872,32 @@ storefront, routing, activation, or Notion availability is claimed.
 Next: `SHOP-CMS-01B — bounded Production runtime activation`, milestone
 `SHOPPING_RUNTIME_ACTIVATED`. Future storefront milestone:
 `SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.
+
+## SHOP-CMS-01B — Activation-phase current state
+
+Status: **CORRECTION VALIDATED; RUNTIME ACTIVATION NOT ACHIEVED**
+
+The desired WordPress contract is loopback-only
+`127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80` with port `58082`; MariaDB remains
+unpublished. The inspector derives reserved Control Plane ports from the
+canonical service manifest and reports `PortCollision` even for healthy
+containers when WordPress publishes on a reserved port. It accepts bounded
+Compose JSON array, object, NDJSON, and empty observations, rejects malformed/
+scalar/non-object data fail-closed, and never equates container health with
+WooCommerce readiness.
+
+Exactly one authorized Colima start succeeded. Later read-only reconciliation
+observed existing stored WordPress and MariaDB containers running/healthy
+under restart policy and persistent volumes. This observation was not a new
+Production mutation or an independently authorized Compose up. The existing
+publisher remains on canonical FastAPI port `58081`; its REST 404 was FastAPI,
+not WordPress. No cutover to `58082` has occurred, bootstrap secrets were not
+present, and WooCommerce readiness has not been proven.
+
+ServiceTopology and the WooCommerce capability remain `NOT_DEPLOYED`;
+`SHOPPING_RUNTIME_ACTIVATED=false`. A desired-state package is not activation
+authorization. Next is a separate human authorization for the exact WordPress
+port cutover, followed by read-only reconciliation. WooCommerce bootstrap and
+readiness are subsequent; `SHOP-STOREFRONT-01` remains after activation.
+AIControlCenter remains the Control Plane, Host Caddy the only public edge,
+and Ubuntu a stateless worker.

@@ -3113,3 +3113,36 @@ heartbeat is stale. The canonical API is `RUNNING`, Telegram is optional
 - Set next phase to `SHOP-CMS-01B — bounded Production runtime activation`,
   next milestone `SHOPPING_RUNTIME_ACTIVATED`, and future storefront milestone
   `SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.
+
+## 2026-08-15 — SHOP-CMS-01B activation-phase correction validated
+
+- Corrected the bounded Docker Compose JSON parser to accept array,
+  single-object, NDJSON, and empty-output observations while rejecting
+  malformed, scalar, and non-object content fail-closed; valid empty output is
+  now distinct from malformed inspection.
+- Prevented WooCommerce readiness inference from container health. Derived
+  reserved Control Plane ports from the canonical service manifest and made a
+  healthy WordPress publisher on a reserved port fail readiness with
+  `error_type=PortCollision`.
+- Set the desired ingress/Compose contract to
+  `SHOPPING_WORDPRESS_PORT=58082`, loopback-only at
+  `127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80`; MariaDB remains unpublished.
+- Recorded the activation history: one dedicated Colima-start authorization
+  was consumed exactly once and succeeded. Later read-only reconciliation
+  observed stored WordPress and MariaDB containers running/healthy under
+  restart policy and persistent volumes; this was not an authorized Compose
+  up. The live WordPress publisher remained on reserved FastAPI port `58081`
+  and was correctly classified `PortCollision`; no cutover occurred.
+- Recorded that the earlier WordPress REST observation reached FastAPI and
+  returned its 404, WooCommerce readiness remains unproven, and required
+  bootstrap secret files were absent. Service/capability status remains
+  `NOT_DEPLOYED`; `SHOPPING_RUNTIME_ACTIVATED=false`.
+- Validation evidence: focused exact-code validation `77 passed, 9 warnings`;
+  canonical deployment regression `3163 passed, 5 deselected, 447 warnings`,
+  `RC=0`, executed exactly once after final code/test corrections; direct core
+  imports of `ops` and `integrations` remain 0; implementation commit
+  `9fcd02342a37a93874e912e86404f85267e2f0bb`.
+- No Production port cutover or WooCommerce activation occurred. No automatic
+  retry/rollback, new Production authorization, Docker Compose, WordPress,
+  WooCommerce, commerce database, Caddy, or Ubuntu mutation occurred, and no
+  Notion synchronization is claimed.

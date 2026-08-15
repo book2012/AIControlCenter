@@ -2335,3 +2335,37 @@ WooCommerce, storefront, Caddy storefront route, or Notion sync is claimed.
 Next: `SHOP-CMS-01B — bounded Production runtime activation`, milestone
 `SHOPPING_RUNTIME_ACTIVATED`; future storefront milestone
 `SHOPPING_STOREFRONT_ONLINE_READ_ONLY`.
+
+## SHOP-CMS-01B — Runtime Foundation activation phase correction
+
+The desired shopping WordPress host port is `58082`, published only as
+`127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80`; MariaDB remains unpublished. The
+runtime inspector derives reserved Control Plane ports from the canonical
+service manifest. A healthy runtime that publishes WordPress on a reserved
+Control Plane port fails readiness with `error_type=PortCollision`. The
+ingress contract fixture derives the same `SHOPPING_WORDPRESS_PORT=58082`.
+
+Compose inspection remains read-only and fail-closed. Its bounded parser
+accepts a JSON array, one JSON object, NDJSON, or empty output; malformed,
+scalar, or non-object content is rejected. A valid empty observation is
+distinct from malformed inspection. Container health never proves
+WooCommerce readiness; plugin/API and catalog readability require separate
+read-only evidence.
+
+One dedicated Colima-start authorization was consumed exactly once, and the
+start succeeded. Subsequent reconciliation was read-only, not a new
+Production mutation. Existing stored WordPress and MariaDB containers became
+running/healthy under restart policy, with persistent volumes observed; this
+was a side effect of the authorized Colima start, not an independently
+authorized Compose up. The live WordPress publisher was observed on reserved
+FastAPI port `58081` and is therefore `PortCollision`; the earlier REST 404
+was FastAPI's response, not WordPress evidence. No cutover to `58082` has
+occurred, shopping bootstrap secret files were absent, and WooCommerce
+readiness remains unproven.
+
+Canonical service and capability status remains `NOT_DEPLOYED`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. Desired state is not activation authority:
+the next operation is a separate human-authorized port cutover to `58082`,
+followed by read-only reconciliation. WooCommerce bootstrap/readiness and
+`SHOP-STOREFRONT-01` remain later work. AIControlCenter remains the sole
+Control Plane; Host Caddy the sole public edge; Ubuntu remains stateless.
