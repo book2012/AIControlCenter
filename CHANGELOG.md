@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2026-08-16 — SM-01A Shopping secret contract and preflight validated
+
+- Added the value-free canonical Shopping secret contract at
+  `deploy/shopping/config/secret-contract.json` and made it the single metadata
+  authority; Python does not duplicate the exact canonical key table.
+- Added the read-only, structurally fail-closed preflight with action-specific
+  `runtime_cutover` and `bootstrap` required-key resolution, presence-only
+  evaluation, distinct not-evaluated state, and fail-closed handling for
+  unsupported actions, unknown supplied key names, missing names, and invalid
+  contract structure.
+- Preserved secret-independent read-only monitoring and plain
+  `${SHOPPING_*}` Compose interpolation. No secret value was read, inspected,
+  serialized, or materialized.
+- Recorded that no Secret Backend or Secret Materialization exists; no
+  SOPS/age/Keychain backend is implemented or selected as deployed truth.
+- Focused final validation passed `111 passed, 9 warnings`. Canonical regression
+  passed `3179 passed, 5 deselected, 447 warnings`, `RC=0`, executed exactly
+  once on final code. Implementation commit:
+  `ffdf034ed9e1587328b6ecad35a6fcbe1381d8b0`.
+- Performed no Production mutation or port cutover, consumed no new Production
+  authorization, queried no Keychain, and performed no Notion synchronization.
+  Shopping service and WooCommerce capability remain `NOT_DEPLOYED`;
+  `SHOPPING_RUNTIME_ACTIVATED=false`.
+- Set the next development milestone to
+  `SM-01B — Secret Delivery Backend v1`.
+
 ## 2026-08-15 — PA-04 Notification Platform v1
 
 - Validated PA-04 and marked it closed after Git closeout at milestone

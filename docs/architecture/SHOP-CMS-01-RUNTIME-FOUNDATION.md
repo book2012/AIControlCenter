@@ -31,9 +31,30 @@ The physical named-volume mountpoints cannot be truthfully resolved while the pr
 
 ## Secrets
 
-`deploy/shopping/.env.example` defines names for the loopback port, database name/user/password/root password, site URL/title, and WordPress admin user/password/email. Compose references substitutions only. Local `deploy/shopping/.env`, `.env.admin`, and `.env.woocommerce` are ignored. The broader repository also ignores `configs/secrets/*.env` while allowing examples. Existing WordPress application-password and WooCommerce consumer credential conventions are environment/secret-file based. No value was read, copied, printed, or committed. Docker secrets are not currently evidenced.
+SM-01A establishes `deploy/shopping/config/secret-contract.json` as the single,
+value-free canonical secret-metadata authority. Its read-only Python consumer
+validates structure, resolves action-specific required names, and checks only
+whether names are supplied; it neither inspects nor serializes values. The
+exact canonical key table is not duplicated in Python. Unsupported actions,
+unknown supplied names, missing required names, and invalid structure fail
+closed, while not-evaluated remains distinct from pass/fail.
 
-Before activation, credentials must be delivered through a permission-restricted untracked file and checked for presence and file permissions without printing values. WooCommerce read credentials remain separate from the WordPress bootstrap administrator credential.
+The contract's current `runtime_cutover` requirements are
+`SHOPPING_WORDPRESS_PORT`, `SHOPPING_DB_NAME`, `SHOPPING_DB_USER`,
+`SHOPPING_DB_PASSWORD`, and `SHOPPING_DB_ROOT_PASSWORD`. Its current
+`bootstrap` requirements add `SHOPPING_SITE_URL`, `SHOPPING_SITE_TITLE`,
+`SHOPPING_ADMIN_USER`, `SHOPPING_ADMIN_PASSWORD`, and
+`SHOPPING_ADMIN_EMAIL`. Secret-classified names are
+`SHOPPING_ADMIN_PASSWORD`, `SHOPPING_DB_PASSWORD`, and
+`SHOPPING_DB_ROOT_PASSWORD`.
+
+Compose intentionally continues to use plain `${SHOPPING_*}` interpolation so
+read-only runtime observation is independent of secret material. `.env.admin`
+and `.env.woocommerce` are not runtime authorities. No Secret Backend,
+including SOPS/age or Keychain, is implemented or selected as deployed truth;
+no secret materialization exists. See
+[SM-01 Secret Management](SM-01-SECRET-MANAGEMENT.md). The next development
+milestone is `SM-01B — Secret Delivery Backend v1`.
 
 ## Ownership and canonical identity
 

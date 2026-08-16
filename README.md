@@ -1,5 +1,29 @@
 # AIControlCenter
 
+## SM-01A Shopping Secret Contract & Fail-Closed Preflight v1
+
+SM-01A is complete as a documentation and implementation milestone. Its
+single canonical, value-free metadata authority is
+`deploy/shopping/config/secret-contract.json`; the Python preflight reads and
+validates that JSON without duplicating the exact canonical key table. The
+preflight is read-only, resolves action-specific required names, checks
+presence only, and fails closed for malformed contracts, unsupported actions,
+unknown supplied names, or missing required names. It neither reads nor emits
+secret values and provides no authorization or mutation capability.
+
+Only the contract and preflight layers exist. No secret delivery backend,
+SOPS/age/Keychain deployed selection, secret materialization, or Production
+mutation layer exists. Compose keeps plain `${SHOPPING_*}` interpolation so
+runtime observation remains independent of secret material. The Shopping
+service and WooCommerce capability remain `NOT_DEPLOYED`;
+`SHOPPING_RUNTIME_ACTIVATED=false`; no port cutover or Production activation
+occurred. The desired loopback WordPress binding remains
+`127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80` at port `58082`, with MariaDB
+unpublished.
+
+See [SM-01 Secret Management](docs/architecture/SM-01-SECRET-MANAGEMENT.md).
+Next development milestone: `SM-01B — Secret Delivery Backend v1`.
+
 ## PA-04 Notification Platform v1
 
 PA-04 is validated and closed after Git closeout at milestone

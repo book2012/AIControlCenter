@@ -1,5 +1,33 @@
 # MASTER
 
+## SM-01A — Shopping Secret Contract & Fail-Closed Preflight v1 — CLOSED
+
+SM-01A implementation and validation are complete. The canonical, value-free
+metadata authority is `deploy/shopping/config/secret-contract.json`.
+`ops/macos/shopping/secret_preflight.py` is a read-only consumer and validator;
+it does not duplicate the exact canonical key table. It validates structure,
+resolves action-specific required names, and performs presence-only evaluation.
+Unsupported actions, unknown supplied names, missing required names, and
+invalid structure fail closed; not-evaluated is distinct from pass/fail.
+
+Only layers 1 (Secret Contract) and 2 (Secret Preflight) exist. Layer 3
+(Secret Backend), layer 4 (Secret Materialization), and layer 5
+(Authorization / Mutation) are not implemented by SM-01A. No SOPS, age, or
+Keychain backend is selected as deployed truth. The preflight performs no
+authorization, mutation, secret read, Keychain query, runtime access, or
+materialization. Compose remains plain `${SHOPPING_*}` interpolation, keeping
+read-only monitoring independent of secret material.
+
+AIControlCenter on the Mac remains the sole Control Plane; Ubuntu remains a
+stateless infrastructure worker with no secret ownership. Shopping service and
+WooCommerce capability remain `NOT_DEPLOYED`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. No Production port cutover, activation, or
+new Production authorization occurred. Next:
+`SM-01B — Secret Delivery Backend v1`; it must retain replaceable backends,
+value-free monitoring/preflight, Mac Control Plane ownership, no Ubuntu secret
+ownership, and one exact human authorization immediately before each bounded
+Production mutation invocation, without automatic retry or rollback.
+
 ## PA-04 — Notification Platform v1 — CLOSED
 
 Milestone after Git closeout: `NOTIFICATION_PLATFORM_V1_VALIDATED`.

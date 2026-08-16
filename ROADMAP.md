@@ -1,5 +1,42 @@
 # Roadmap
 
+## SM-01A — Shopping Secret Contract & Fail-Closed Preflight v1
+
+Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
+
+- [x] Establish `deploy/shopping/config/secret-contract.json` as the single,
+  value-free canonical Shopping secret-metadata authority.
+- [x] Implement the Python preflight as a read-only JSON consumer without an
+  exact duplicate key table.
+- [x] Separate `runtime_cutover` and `bootstrap` required-key resolution.
+- [x] Validate structure fail-closed and evaluate presence only; reject
+  unsupported actions, unknown supplied names, and missing required names.
+- [x] Keep not-evaluated distinct from pass/fail and grant no authorization.
+- [x] Keep read-only monitoring independent of secret material and retain
+  plain `${SHOPPING_*}` Compose interpolation.
+- [x] Complete focused validation: `111 passed, 9 warnings`.
+- [x] Complete exactly one final-code canonical regression: `3179 passed, 5
+  deselected, 447 warnings`, `RC=0`.
+- [x] Close implementation at commit
+  `ffdf034ed9e1587328b6ecad35a6fcbe1381d8b0` with no Production mutation,
+  secret-value read, backend/materialization, or Notion synchronization.
+
+## Next development milestone — SM-01B
+
+`SM-01B — Secret Delivery Backend v1`
+
+- [ ] Preserve Mac Control Plane ownership and a replaceable backend
+  architecture.
+- [ ] Preserve value-free monitoring/preflight and assign no secret ownership
+  to Ubuntu.
+- [ ] Require human authorization immediately before Production mutation:
+  one authorization equals one bounded invocation, with no automatic retry or
+  rollback.
+- [ ] Implement a backend only after its design and deployed truth are
+  explicitly selected; SM-01A selected neither SOPS/age nor Keychain.
+- [ ] `SHOPPING_RUNTIME_ACTIVATED`
+- [ ] `SHOPPING_STOREFRONT_ONLINE_READ_ONLY` (only after runtime activation)
+
 ## PA-04 — Notification Platform v1
 
 - [x] Validate and close PA-04 after Git closeout at milestone

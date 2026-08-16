@@ -1,5 +1,34 @@
 # AI Home Datacenter Architecture
 
+## SM-01A — Shopping Secret Contract & Fail-Closed Preflight v1
+
+SM-01A is implementation- and validation-complete. The value-free JSON
+contract at `deploy/shopping/config/secret-contract.json` is the single
+canonical Shopping secret-metadata authority. The read-only consumer at
+`ops/macos/shopping/secret_preflight.py` validates the contract structurally,
+resolves required names by action, and evaluates presence only. It never
+inspects or serializes values. Unsupported actions, unknown supplied names,
+invalid contract structure, and missing required names fail closed;
+not-evaluated remains distinct from pass or fail.
+
+Only the Secret Contract and Secret Preflight layers exist. No Secret Backend
+has been selected or implemented, including SOPS, age, or Keychain; Secret
+Materialization and Authorization / Mutation are also absent. The preflight
+grants no authorization and performs no mutation, Keychain query, secret
+materialization, or Docker, Colima, runtime, Caddy, WordPress, WooCommerce,
+MariaDB, or Ubuntu access. Compose intentionally retains plain
+`${SHOPPING_*}` interpolation so read-only runtime observation remains
+secret-independent.
+
+The desired WordPress binding remains
+`127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80` with desired port `58082`; MariaDB
+remains unpublished. Shopping service and WooCommerce capability status remain
+`NOT_DEPLOYED`, and `SHOPPING_RUNTIME_ACTIVATED=false`. SM-01A performed no
+Production activation or port cutover and consumed no Production
+authorization. See
+[SM-01 Secret Management](docs/architecture/SM-01-SECRET-MANAGEMENT.md).
+Next: `SM-01B — Secret Delivery Backend v1`.
+
 ## PA-04 — Notification Platform v1
 
 Status after Git closeout: `NOTIFICATION_PLATFORM_V1_VALIDATED`; PA-04 is
