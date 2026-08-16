@@ -1,14 +1,18 @@
 # SM-01 — Shopping Secret Management
 
-Status: **SM-01A IMPLEMENTATION AND VALIDATION COMPLETE**
+Status: **SM-01B-01 IMPLEMENTATION AND VALIDATION COMPLETE**
 
-Current milestone: `SM-01A — Shopping Secret Contract & Fail-Closed Preflight
-v1`
+Current milestone: `SM-01B-01 — SOPS/age Secret Backend Inspection v1`
 
-Next development milestone: `SM-01B — Secret Delivery Backend v1`
+Milestone identifier: `SM_01B_01_SECRET_BACKEND_INSPECTION_VALIDATED`
+
+Next development milestone: `SM-01B-02 — SOPS/age Toolchain & Identity
+Provisioning`
 
 This architecture separates metadata, evaluation, delivery, materialization,
-and mutation authority. After SM-01A, only layers 1 and 2 exist.
+and mutation authority. SM-01A established layers 1 and 2. SM-01B-01 adds the
+architecture and read-only inspection portion of layer 3; it does not deploy
+the toolchain or backend.
 
 ## 1. Secret Contract — implemented
 
@@ -63,14 +67,36 @@ Compose intentionally remains plain `${SHOPPING_*}` interpolation. This keeps
 read-only runtime observation independent of secret material. Neither
 `.env.admin` nor `.env.woocommerce` is a runtime authority.
 
-## 3. Secret Backend — not implemented
+## 3. Secret Backend — architecture/inspection implemented; provisioning not deployed
 
-SM-01A implements and selects no delivery backend. SOPS, age, and Keychain are
-not implemented or selected as deployed truth. A future backend must be
-replaceable and remain owned by the Mac Control Plane. Ubuntu must not own,
+SM-01B-01 selects SOPS+age as the replaceable Shopping secret-backend
+architecture. This selection is not deployment. Production status remains
+`NOT_DEPLOYED`; SOPS installation, age installation, age key generation,
+encrypted Shopping payload provisioning, and secret materialization are all
+false.
+
+`config/shopping-secret-backend.json` is the canonical backend definition and
+`config/schemas/shopping-secret-backend.schema.json` its canonical schema.
+`core/secrets/ports.py` is the vendor-neutral port. SOPS+age specifics are
+isolated in the read-only macOS outer adapter
+`ops/macos/shopping/sops_age_backend.py`; core imports from `ops` and
+`integrations` remain zero. JSON Schema and runtime safety validation are
+aligned.
+
+Identity custody is portable: base `control-plane-home`, relative path
+`.config/sops/age/keys.txt`. No concrete `/Users/<username>` path is canonical;
+`control_plane_home` is dependency-injected. The adapter does not discover
+HOME, environment, pwd, Keychain, runtime, Docker, Colima, or network. It uses
+metadata-only `lstat` inspection and never reads identity or payload contents.
+
+The canonical logical encrypted payload path is
+`deploy/shopping/secrets/shopping.enc.yaml`. The metadata policy requires two
+recipient roles, `control-plane` and `offline-recovery`, but stores no recipient
+material in the canonical definition. `materialization_implemented=false`.
+AIControlCenter on the Mac remains the sole Control Plane; Ubuntu must not own,
 persist, select, or govern Shopping secrets.
 
-`SM-01B — Secret Delivery Backend v1` is the next development milestone.
+`SM-01B-02 — SOPS/age Toolchain & Identity Provisioning` is future work.
 
 ## 4. Secret Materialization — not implemented
 
@@ -79,7 +105,7 @@ container, file, or command input. SM-01A reads no secret value and defines no
 materialization lifecycle. Presence-only preflight must remain value-free even
 after a backend is introduced.
 
-## 5. Authorization / Mutation — not implemented by SM-01A
+## 5. Authorization / Mutation — not implemented
 
 A valid contract or successful preflight is not authorization. A desired-state
 package is not activation authority. Any future Production mutation requires
@@ -103,9 +129,38 @@ Shopping service and WooCommerce capability status remain `NOT_DEPLOYED`.
 `SHOPPING_RUNTIME_ACTIVATED=false`
 
 SM-01A performed no Production shopping runtime activation, port cutover,
-secret delivery, backend selection, materialization, or new Production
-authorization. `SHOPPING_STOREFRONT_ONLINE_READ_ONLY` remains future work after
-runtime activation.
+secret delivery, materialization, or new Production authorization. SM-01B-01
+selected only an architecture and performed metadata-only inspection: it did
+not install SOPS or age, generate an age key, provision an encrypted payload,
+materialize secrets, inspect Production runtime, query Keychain, read secret
+values, or mutate Production. `SHOPPING_STOREFRONT_ONLINE_READ_ONLY` remains
+future work after runtime activation.
+
+Historical MariaDB credential continuity remains unresolved. Introducing
+SOPS+age cannot recover or silently replace historical MariaDB credentials.
+Production runtime cutover remains blocked on an explicit
+continuity/recovery/rotation strategy.
+
+## SM-01B-01 validation record
+
+- Focused final validation: `66 passed`
+- Canonical regression: `3205 passed, 5 deselected, 447 warnings`, `RC=0`,
+  executed exactly once on final implementation code
+- Post-canonical exact six-file scope: PASS
+- Staged scope: PASS
+- Staged diff check: `RC=0`
+- Implementation commit/push: PASS
+- Git upstream counts: `0 0`
+- Implementation commit: `1ada572a75cf4313f65288e81134777948900cda`
+- Production mutation: false
+- Secret values read: false
+- Keychain query: false
+- SOPS installation: false
+- age installation and key generation: false
+- Secret provisioning/materialization: false
+- Runtime inspection and activation: false
+
+SM-01B overall delivery is not complete.
 
 ## SM-01A validation record
 

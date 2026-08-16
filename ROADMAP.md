@@ -21,19 +21,27 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   `ffdf034ed9e1587328b6ecad35a6fcbe1381d8b0` with no Production mutation,
   secret-value read, backend/materialization, or Notion synchronization.
 
-## Next development milestone — SM-01B
+## SM-01B — Secret Delivery Backend v1
 
-`SM-01B — Secret Delivery Backend v1`
-
-- [ ] Preserve Mac Control Plane ownership and a replaceable backend
-  architecture.
-- [ ] Preserve value-free monitoring/preflight and assign no secret ownership
-  to Ubuntu.
-- [ ] Require human authorization immediately before Production mutation:
-  one authorization equals one bounded invocation, with no automatic retry or
-  rollback.
-- [ ] Implement a backend only after its design and deployed truth are
-  explicitly selected; SM-01A selected neither SOPS/age nor Keychain.
+- [x] `SM-01B-01 — SOPS/age Secret Backend Inspection v1`: implementation and
+  validation complete at `SM_01B_01_SECRET_BACKEND_INSPECTION_VALIDATED`.
+- [x] Select SOPS+age as the replaceable backend architecture while keeping
+  deployed truth `NOT_DEPLOYED`.
+- [x] Preserve Mac Control Plane ownership, value-free monitoring, portable
+  identity custody outside the repository, offline recovery recipient policy,
+  and no Ubuntu secret ownership.
+- [x] Keep core vendor-neutral with zero imports from `ops` and `integrations`;
+  isolate SOPS+age metadata-only inspection in the macOS outer adapter.
+- [ ] `SM-01B-02 — SOPS/age Toolchain & Identity Provisioning`.
+- [ ] Provision SOPS/age tooling, identity, and encrypted payload only through
+  a separately authorized future mutation; architecture selection is not
+  deployment or activation authority.
+- [ ] Require human authorization immediately before each mutating
+  provisioning step: one authorization equals one bounded invocation, with no
+  automatic retry or rollback.
+- [ ] Resolve historical MariaDB credential continuity through an explicit
+  continuity/recovery/rotation strategy; SOPS+age cannot recover or silently
+  replace historical credentials.
 - [ ] `SHOPPING_RUNTIME_ACTIVATED`
 - [ ] `SHOPPING_STOREFRONT_ONLINE_READ_ONLY` (only after runtime activation)
 

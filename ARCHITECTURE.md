@@ -1,5 +1,41 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-01 — SOPS/age Secret Backend Inspection v1
+
+Status: implementation and validation complete at milestone
+`SM_01B_01_SECRET_BACKEND_INSPECTION_VALIDATED` and implementation commit
+`1ada572a75cf4313f65288e81134777948900cda`.
+
+SOPS+age is the selected replaceable Shopping secret-backend architecture; it
+is not deployed. The canonical definition and schema are
+`config/shopping-secret-backend.json` and
+`config/schemas/shopping-secret-backend.schema.json`. The vendor-neutral port
+is `core/secrets/ports.py`; SOPS+age details remain in the read-only macOS
+outer adapter `ops/macos/shopping/sops_age_backend.py`. Core imports from
+`ops` and `integrations` remain zero.
+
+AIControlCenter on the Mac remains the sole Control Plane. Ubuntu remains a
+stateless infrastructure worker and owns no Shopping secrets. Identity custody
+is portable from injected `control_plane_home` plus
+`.config/sops/age/keys.txt`; no concrete user path is canonical. The adapter
+discovers no HOME, environment, pwd, Keychain, runtime, Docker, Colima, or
+network state. It performs metadata-only `lstat` inspection and reads neither
+the identity nor encrypted payload contents. The canonical logical encrypted
+payload path is `deploy/shopping/secrets/shopping.enc.yaml`. Its metadata
+policy requires `control-plane` and `offline-recovery` recipients without
+storing recipient material in the definition. Schema and runtime safety
+validation are aligned.
+
+Production truth remains `NOT_DEPLOYED`; SOPS installation, age installation,
+age key generation, encrypted payload provisioning, secret materialization,
+and Production mutation did not occur. `materialization_implemented=false` and
+`SHOPPING_RUNTIME_ACTIVATED=false`. No secret values, Keychain, or Production
+runtime were inspected. Historical MariaDB credential continuity remains
+unresolved: this architecture cannot recover or silently replace historical
+credentials, and runtime cutover remains blocked on an explicit continuity,
+recovery, or rotation strategy. Next: `SM-01B-02 — SOPS/age Toolchain &
+Identity Provisioning`; SM-01B overall is not complete.
+
 ## SM-01A — Shopping Secret Contract & Fail-Closed Preflight v1
 
 SM-01A is implementation- and validation-complete. The value-free JSON

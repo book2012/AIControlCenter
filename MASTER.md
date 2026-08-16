@@ -1,5 +1,33 @@
 # MASTER
 
+## SM-01B-01 — SOPS/age Secret Backend Inspection v1 — CLOSED
+
+Implementation and validation are complete at
+`SM_01B_01_SECRET_BACKEND_INSPECTION_VALIDATED`, implementation commit
+`1ada572a75cf4313f65288e81134777948900cda`. SOPS+age is the selected
+replaceable architecture, but is `NOT_DEPLOYED`. The canonical definition and
+schema, vendor-neutral core port, and macOS metadata-only outer adapter preserve
+zero core imports from `ops` and `integrations`.
+
+The Mac remains sole Control Plane; Ubuntu remains stateless and owns no
+Shopping secrets. Identity custody is portable through injected
+`control_plane_home` and `.config/sops/age/keys.txt`. The adapter performs only
+`lstat` metadata inspection, never content reads or discovery through HOME,
+environment, pwd, Keychain, runtime, Docker, Colima, or network. The logical
+encrypted payload is `deploy/shopping/secrets/shopping.enc.yaml`; policy
+requires `control-plane` and `offline-recovery` roles without storing recipient
+material.
+
+SOPS/age installation, key generation, encrypted payload provisioning,
+materialization, Production mutation, runtime inspection, secret-value reads,
+and Keychain queries did not occur. `materialization_implemented=false` and
+`SHOPPING_RUNTIME_ACTIVATED=false`. Historical MariaDB credential continuity
+remains unresolved and runtime cutover is blocked on an explicit
+continuity/recovery/rotation strategy. Next is `SM-01B-02 — SOPS/age Toolchain
+& Identity Provisioning`; SM-01B overall is not complete. Any future mutating
+provisioning requires fresh human authorization immediately before one bounded
+invocation, with no automatic retry or rollback.
+
 ## SM-01A — Shopping Secret Contract & Fail-Closed Preflight v1 — CLOSED
 
 SM-01A implementation and validation are complete. The canonical, value-free

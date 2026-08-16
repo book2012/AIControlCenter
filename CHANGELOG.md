@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## 2026-08-16 — SM-01B-01 SOPS/age Secret Backend Inspection v1
+
+- Completed implementation and validation at milestone
+  `SM_01B_01_SECRET_BACKEND_INSPECTION_VALIDATED`, implementation commit
+  `1ada572a75cf4313f65288e81134777948900cda`.
+- Selected SOPS+age as the replaceable Shopping secret-backend architecture,
+  without claiming deployment. Added canonical definition/schema, a
+  vendor-neutral core port, and a read-only macOS outer adapter; core imports
+  from both `ops` and `integrations` remain zero.
+- Kept the Mac as sole Control Plane and Ubuntu stateless with no secret
+  ownership. Defined portable injected identity custody and metadata-only
+  `lstat` inspection of the identity and encrypted-payload paths; no contents,
+  recipient material, HOME/environment/pwd, Keychain, runtime, Docker, Colima,
+  or network state are read or discovered.
+- Preserved the two-recipient metadata policy (`control-plane` and
+  `offline-recovery`) and aligned JSON Schema with runtime safety validation.
+- Focused final validation passed `66 passed`. Canonical regression passed
+  `3205 passed, 5 deselected, 447 warnings`, `RC=0`, exactly once on final
+  implementation code. Exact six-file post-canonical scope, staged scope, and
+  staged diff checks passed; implementation commit/push passed with upstream
+  counts `0 0`.
+- Production status remains `NOT_DEPLOYED`; SOPS installation, age
+  installation, key generation, encrypted payload provisioning,
+  materialization, Production mutation, runtime inspection, secret-value read,
+  and Keychain query did not occur. `materialization_implemented=false` and
+  `SHOPPING_RUNTIME_ACTIVATED=false`.
+- Historical MariaDB credential continuity remains unresolved; the new
+  architecture neither recovers nor silently replaces historical credentials.
+  Runtime cutover remains blocked on an explicit continuity/recovery/rotation
+  strategy.
+- Set `SM-01B-02 — SOPS/age Toolchain & Identity Provisioning` as the next
+  milestone. SM-01B overall is not complete.
+
 ## 2026-08-16 — SM-01A Shopping secret contract and preflight validated
 
 - Added the value-free canonical Shopping secret contract at

@@ -1,5 +1,34 @@
 # AIControlCenter
 
+## SM-01B-01 SOPS/age Secret Backend Inspection v1
+
+SM-01B-01 implementation and validation are complete at
+`SM_01B_01_SECRET_BACKEND_INSPECTION_VALIDATED` (implementation commit
+`1ada572a75cf4313f65288e81134777948900cda`). SOPS+age is the selected
+replaceable Shopping secret-backend architecture, not a deployed backend.
+Canonical metadata is in `config/shopping-secret-backend.json` with its schema
+at `config/schemas/shopping-secret-backend.schema.json`; the vendor-neutral
+port is `core/secrets/ports.py`, and macOS-specific metadata-only inspection is
+isolated in `ops/macos/shopping/sops_age_backend.py`.
+
+The Mac remains the sole Control Plane; Ubuntu owns no secrets. Portable age
+identity custody uses injected `control_plane_home` plus
+`.config/sops/age/keys.txt`, never a canonical `/Users/<username>` path. The
+adapter reads no identity or encrypted payload contents and performs no HOME,
+environment, pwd, Keychain, runtime, Docker, Colima, or network discovery. The
+logical encrypted payload is `deploy/shopping/secrets/shopping.enc.yaml`; its
+value-free policy requires `control-plane` and `offline-recovery` recipient
+roles while storing no recipient material.
+
+Production status remains `NOT_DEPLOYED`. SOPS and age were not installed; no
+key, encrypted payload, materialization, Production mutation, runtime
+inspection, secret-value read, or Keychain query occurred.
+`materialization_implemented=false` and `SHOPPING_RUNTIME_ACTIVATED=false`.
+Historical MariaDB credential continuity remains unresolved and blocks runtime
+cutover pending an explicit continuity, recovery, or rotation strategy. Next:
+`SM-01B-02 — SOPS/age Toolchain & Identity Provisioning`; SM-01B overall is
+not complete.
+
 ## SM-01A Shopping Secret Contract & Fail-Closed Preflight v1
 
 SM-01A is complete as a documentation and implementation milestone. Its
