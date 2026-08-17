@@ -1,5 +1,36 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-02D-02B — Shopping Secret Provisioning Capabilities v1
+
+Status: implementation, validation, and Git closeout complete at
+`SM_01B_02D_02B_SECRET_PROVISIONING_CAPABILITIES_VALIDATED=true`.
+Implementation commit: `bffe28a153eb83d3c61e04d38f2ab96892a6feb5`.
+
+Five narrow Shopping secret provisioning capabilities are validated. They use
+explicit `expected_uid` injection with no ambient UID or HOME authority and a
+fixed, trusted Homebrew executable boundary. No generic shell or argv execution
+API is exposed. Existing targets are protected by no-overwrite/no-clobber
+behavior; mutation uncertainty fails closed; and there is no automatic retry,
+rollback, or compensation. Python does not read the private control-plane age
+identity to derive recipients. Offline recovery remains limited to public
+recipient metadata, and the value-free evidence contract remains intact.
+
+Focused validation recorded `421 passed`. Canonical regression recorded `3387
+passed, 5 deselected, 447 warnings in 132.49s`, `RC=0`, with canonical execution
+count exactly `1`. Git closeout: PASS. Upstream divergence: `0 0`.
+`PRODUCTION_MUTATION=false`, `AUTHORIZATION_CONSUMED=false`,
+`SECRET_VALUES_READ=false`, `RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`,
+`COLIMA_ACCESS=false`, and `NOTION_SYNC=false`.
+
+Actual SOPS/age installation, age identity creation, recipient registration,
+secret materialization, and runtime activation have not occurred. Historical
+MariaDB credential continuity remains explicitly unresolved.
+`SHOPPING_RUNTIME_ACTIVATED` remains the future Production milestone. Notion
+remains deferred until after Runtime Activation. Next engineering recommendation:
+`SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1` —
+generic Governance-owned, Mac Control Plane only, replay-safe and durable, with
+no Shopping business logic.
+
 ## SM-01B-02D-01B — Shopping Provisioning Governance Coordinator v1
 
 Status: implementation and validation complete at

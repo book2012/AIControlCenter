@@ -1,5 +1,36 @@
 # AIControlCenter
 
+## SM-01B-02D-02B Shopping Secret Provisioning Capabilities v1
+
+Implementation, validation, and Git closeout are complete at
+`SM_01B_02D_02B_SECRET_PROVISIONING_CAPABILITIES_VALIDATED=true`, implementation
+commit `bffe28a153eb83d3c61e04d38f2ab96892a6feb5`.
+
+The validated implementation provides five narrow Shopping secret provisioning
+capabilities with explicit `expected_uid` injection and no ambient UID/HOME
+authority. It fixes execution to a trusted Homebrew executable boundary and
+exposes no generic shell/argv API. No-overwrite/no-clobber behavior is enforced;
+mutation uncertainty fails closed; and no automatic retry, rollback, or
+compensation exists. Python does not read the private control-plane age identity
+for recipient derivation. Offline recovery remains public-recipient-metadata
+only, and evidence remains value-free.
+
+Focused validation recorded `421 passed`; canonical regression recorded `3387
+passed, 5 deselected, 447 warnings in 132.49s`, `RC=0`, executed exactly once.
+Git closeout: PASS. Upstream divergence: `0 0`. The closeout records
+`PRODUCTION_MUTATION=false`, `AUTHORIZATION_CONSUMED=false`,
+`SECRET_VALUES_READ=false`, `RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`,
+`COLIMA_ACCESS=false`, and `NOTION_SYNC=false`.
+
+Actual SOPS/age installation, age identity creation, recipient registration,
+secret materialization, and runtime activation have not occurred. Historical
+MariaDB credential continuity remains explicitly unresolved, and
+`SHOPPING_RUNTIME_ACTIVATED` remains the future Production milestone. Notion is
+deferred until after Runtime Activation. Next engineering recommendation:
+`SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1` —
+generic Governance-owned, Mac Control Plane only, replay-safe and durable, with
+no Shopping business logic.
+
 ## SM-01B-02D-01B Shopping Provisioning Governance Coordinator v1
 
 Status: implementation and validation complete at

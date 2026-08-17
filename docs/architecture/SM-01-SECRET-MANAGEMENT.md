@@ -1,14 +1,14 @@
 # SM-01 — Shopping Secret Management
 
-Status: **SM-01B-02D-01B IMPLEMENTATION AND VALIDATION COMPLETE**
+Status: **SM-01B-02D-02B IMPLEMENTATION, VALIDATION, AND GIT CLOSEOUT COMPLETE**
 
-Current milestone: `SM-01B-02D-01B — Shopping Provisioning Governance Coordinator v1`
+Current milestone: `SM-01B-02D-02B — Shopping Secret Provisioning Capabilities v1`
 
-Milestone identifier: `SM_01B_02D_01B_SHOPPING_PROVISIONING_GOVERNANCE_COORDINATOR_VALIDATED`
+Milestone identifier: `SM_01B_02D_02B_SECRET_PROVISIONING_CAPABILITIES_VALIDATED=true`
 
-Implementation commit: `8229288d68d46383082cec48ffc726bd0dbee09a`
+Implementation commit: `bffe28a153eb83d3c61e04d38f2ab96892a6feb5`
 
-Next engineering milestone: `SM-01B-02D-02 — Concrete Provisioning Capabilities v1`
+Next engineering recommendation: `SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1`
 
 This architecture separates metadata, evaluation, delivery, materialization,
 and mutation authority. SM-01A established layers 1 and 2. SM-01B-01 adds the
@@ -56,6 +56,19 @@ or `MALFORMED` causes zero consumption and zero invocation. Post-consumption
 drift stops with consumed authorization and zero invocation. `FAILED` or
 `UNCERTAIN` stops after one attempt. There is no automatic retry, rollback, or
 compensation.
+
+SM-01B-02D-02B validates five narrow Shopping secret provisioning capabilities.
+They require explicit `expected_uid` injection and derive no authority from an
+ambient UID or HOME. Execution is constrained to a fixed trusted Homebrew
+executable boundary, and no generic shell or argv execution API is exposed.
+Existing targets use no-overwrite/no-clobber behavior. Mutation uncertainty is
+fail-closed, with no automatic retry, rollback, or compensation.
+
+Python does not read the private control-plane age identity to derive a
+recipient. Offline recovery remains public-recipient-metadata only, and the
+value-free evidence contract remains intact. The next recommendation is generic
+Governance-owned, Mac Control Plane only, replay-safe and durable, and contains
+no Shopping business logic.
 
 ## 1. Secret Contract — implemented
 
@@ -199,6 +212,44 @@ continuity/recovery/rotation strategy.
 
 Offline-recovery private custody remains external. SM-01B-02C does not recover,
 rotate, replace, derive, invent, or validate historical MariaDB credentials.
+
+Actual SOPS/age installation, age identity creation, recipient registration,
+secret materialization, and runtime activation have not occurred. Notion
+remains deferred until after Runtime Activation.
+
+## SM-01B-02D-02B validation record
+
+- Status: implementation, validation, and Git closeout complete
+- Milestone: `SM_01B_02D_02B_SECRET_PROVISIONING_CAPABILITIES_VALIDATED=true`
+- Implementation commit: `bffe28a153eb83d3c61e04d38f2ab96892a6feb5`
+- Focused validation: `421 passed`
+- Canonical regression: `3387 passed, 5 deselected, 447 warnings in 132.49s`
+- Canonical execution count: exactly `1`
+- Canonical RC: `0`
+- Git closeout: PASS
+- Upstream divergence: `0 0`
+- `PRODUCTION_MUTATION=false`
+- `AUTHORIZATION_CONSUMED=false`
+- `SECRET_VALUES_READ=false`
+- `RUNTIME_INSPECTION=false`
+- `DOCKER_ACCESS=false`
+- `COLIMA_ACCESS=false`
+- `NOTION_SYNC=false`
+
+The five narrow capabilities preserve explicit `expected_uid` injection, no
+ambient UID/HOME authority, the fixed trusted Homebrew executable boundary, no
+generic shell/argv execution API, no-overwrite/no-clobber behavior, fail-closed
+mutation uncertainty, and no automatic retry, rollback, or compensation.
+Python does not read the private control-plane age identity for recipient
+derivation. Offline recovery remains public-recipient-metadata only, and the
+value-free evidence contract remains intact.
+
+Historical MariaDB credential continuity remains explicitly unresolved.
+`SHOPPING_RUNTIME_ACTIVATED` remains the future Production milestone. Next
+engineering recommendation: `SM-01B-02D-03 — Durable Authorization Consumption
+& Evidence Store v1` — generic Governance-owned, Mac Control Plane only,
+replay-safe and durable, with no Shopping business logic. Notion remains
+deferred until after Runtime Activation.
 
 ## SM-01B-02D-01B validation record
 

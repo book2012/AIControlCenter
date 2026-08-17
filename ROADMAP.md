@@ -95,7 +95,25 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   rollback, or compensation.
 - [x] Record focused `181 passed` and canonical `3349 passed, 5 deselected,
   447 warnings`, `RC=0`, canonical execution count exactly `1`.
-- [ ] `SM-01B-02D-02 — Concrete Provisioning Capabilities v1`.
+- [x] Close `SM-01B-02D-02B — Shopping Secret Provisioning Capabilities v1`
+  at `SM_01B_02D_02B_SECRET_PROVISIONING_CAPABILITIES_VALIDATED=true`, implementation
+  commit `bffe28a153eb83d3c61e04d38f2ab96892a6feb5`.
+- [x] Validate five narrow capabilities with explicit `expected_uid` injection,
+  no ambient UID/HOME authority, a fixed trusted Homebrew executable boundary,
+  no generic shell/argv API, no-overwrite/no-clobber behavior, fail-closed
+  mutation uncertainty, and no automatic retry, rollback, or compensation.
+- [x] Keep Python from reading the private control-plane age identity for
+  recipient derivation; keep offline recovery public-recipient-metadata only
+  and preserve the value-free evidence contract.
+- [x] Record focused `421 passed`; canonical `3387 passed, 5 deselected, 447
+  warnings in 132.49s`, `RC=0`, canonical execution count exactly `1`; Git
+  closeout PASS; upstream divergence `0 0`.
+- [x] Record `PRODUCTION_MUTATION=false`, `AUTHORIZATION_CONSUMED=false`,
+  `SECRET_VALUES_READ=false`, `RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`,
+  `COLIMA_ACCESS=false`, and `NOTION_SYNC=false`.
+- [ ] `SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1`:
+  generic Governance-owned, Mac Control Plane only, replay-safe and durable,
+  with no Shopping business logic.
 - [ ] Resolve historical MariaDB credential continuity through an explicit
   continuity/recovery/rotation strategy; SOPS+age cannot recover or silently
   replace historical credentials.
@@ -104,9 +122,12 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
 
 SM-01B overall remains incomplete. Mac AIControlCenter remains the sole Control
 Plane; Ubuntu remains a stateless worker with no Shopping secret ownership.
-Offline-recovery private custody remains external. SM-01B-02D-01B does not recover,
+Offline-recovery private custody remains external. SM-01B-02D-02B does not recover,
 rotate, replace, derive, invent, or validate unresolved historical MariaDB
 credentials. Authorization-consumption evidence grants no execution authority.
+Actual SOPS/age installation, age identity creation, recipient registration,
+secret materialization, and runtime activation have not occurred. Notion
+remains deferred until after Runtime Activation.
 Production remains `PRODUCTION_STATUS_NOT_DEPLOYED=true`;
 `MATERIALIZATION_IMPLEMENTED=false`;
 `SOPS_INSTALLATION=false`; `AGE_INSTALLATION=false`;
