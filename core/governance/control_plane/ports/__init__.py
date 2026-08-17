@@ -7,6 +7,11 @@ from .audit import (
     GovernanceAuditQuery,
     GovernanceAuditQueryResult,
 )
+from .authorization_consumption import (
+    AuthorizationConsumptionCommand,
+    AuthorizationConsumptionPort,
+    AuthorizationConsumptionResult,
+)
 from .evidence import EvidencePersistencePort, EvidencePersistenceReceipt
 from .execution import ControlledExecutionPort, PostconditionValidationPort
 from .git_evidence import GitReadonlyEvidencePort
@@ -14,7 +19,9 @@ from .preconditions import PreconditionObservationPort
 from .runtime_identity import RuntimeIdentityObservationPort
 
 __all__ = (
-    "AuditPersistenceReceipt", "ControlledExecutionPort", "EvidencePersistencePort",
+    "AuditPersistenceReceipt", "AuthorizationConsumptionCommand",
+    "AuthorizationConsumptionPort", "AuthorizationConsumptionResult",
+    "ControlledExecutionPort", "EvidencePersistencePort",
     "EvidencePersistenceReceipt", "GitReadonlyEvidencePort", "GovernanceAuditEventRecord",
     "GovernanceAuditPort", "GovernanceAuditQuery", "GovernanceAuditQueryResult",
     "PostconditionValidationPort", "PreconditionObservationPort", "RuntimeIdentityObservationPort",
