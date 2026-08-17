@@ -32,6 +32,7 @@ class ProvisioningObservations:
     age_keygen_executable_present: bool
     control_plane_identity_metadata_safe_present: bool
     control_plane_recipient_metadata_registered_valid: bool
+    offline_recovery_inbox_ready: bool
     offline_recovery_public_metadata_registered_valid: bool
 
 
@@ -90,6 +91,10 @@ class SopsAgeProvisioningInspector:
                 () if identity_ready else ("CONTROL_PLANE_IDENTITY_NOT_READY",)),
             "OFFLINE_RECOVERY_RECIPIENT_VALID": (
                 Readiness.READY if observed.offline_recovery_public_metadata_registered_valid else Readiness.MISSING, ()),
+            "OFFLINE_RECOVERY_INBOX_READY": (
+                Readiness.READY if observed.offline_recovery_inbox_ready else Readiness.MISSING,
+                (),
+            ),
         }
         return tuple(
             plan_for(

@@ -18,6 +18,7 @@ from ops.macos.shopping.secret_provisioning_adapters import (
     CONTROL_PLANE_IDENTITY_CREATE,
     CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE,
     OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE,
+    OFFLINE_RECOVERY_RECIPIENT_INTAKE,
     SHOPPING_SECRET_PROVISIONING,
     SOPS_INSTALL_ENSURE,
     AdapterRequestRejected,
@@ -26,6 +27,7 @@ from ops.macos.shopping.secret_provisioning_adapters import (
     ControlPlaneRecipientRegisterValidateAdapter,
     MutationOutcome,
     OfflineRecoveryRecipientRegisterValidateAdapter,
+    OfflineRecoveryRecipientIntakeAdapter,
     SopsInstallEnsureAdapter,
 )
 
@@ -39,6 +41,7 @@ ACTIONS = (
     CONTROL_PLANE_IDENTITY_CREATE,
     CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE,
     OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE,
+    OFFLINE_RECOVERY_RECIPIENT_INTAKE,
 )
 
 
@@ -75,12 +78,17 @@ class FakeRegisterOfflineRecoveryPublicMetadata(FakeCapability):
     register_offline_recovery_public_metadata = FakeCapability._call
 
 
+class FakeIntakeOfflineRecoveryPublicRecipient(FakeCapability):
+    intake_offline_recovery_public_recipient = FakeCapability._call
+
+
 CASES = (
     (SOPS_INSTALL_ENSURE, SopsInstallEnsureAdapter, FakeEnsureSopsTool),
     (AGE_INSTALL_ENSURE, AgeInstallEnsureAdapter, FakeEnsureAgeTooling),
     (CONTROL_PLANE_IDENTITY_CREATE, ControlPlaneIdentityCreateAdapter, FakeCreateControlPlaneAgeIdentity),
     (CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE, ControlPlaneRecipientRegisterValidateAdapter, FakeRegisterControlPlaneRecipientMetadata),
     (OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE, OfflineRecoveryRecipientRegisterValidateAdapter, FakeRegisterOfflineRecoveryPublicMetadata),
+    (OFFLINE_RECOVERY_RECIPIENT_INTAKE, OfflineRecoveryRecipientIntakeAdapter, FakeIntakeOfflineRecoveryPublicRecipient),
 )
 
 
@@ -269,6 +277,10 @@ def test_offline_recovery_capability_accepts_no_private_identity_input() -> None
     signature = inspect.signature(FakeRegisterOfflineRecoveryPublicMetadata.register_offline_recovery_public_metadata)
     assert tuple(signature.parameters) == ("self",)
     signature = inspect.signature(OfflineRecoveryRecipientRegisterValidateAdapter.__init__)
+    assert tuple(signature.parameters) == ("self", "capability")
+    signature = inspect.signature(FakeIntakeOfflineRecoveryPublicRecipient.intake_offline_recovery_public_recipient)
+    assert tuple(signature.parameters) == ("self",)
+    signature = inspect.signature(OfflineRecoveryRecipientIntakeAdapter.__init__)
     assert tuple(signature.parameters) == ("self", "capability")
 
 

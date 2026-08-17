@@ -17,16 +17,25 @@ from ops.macos.shopping.secret_provisioning_capabilities import (
     ConcreteCreateControlPlaneAgeIdentity,
     ConcreteEnsureAgeTooling,
     ConcreteEnsureSopsTool,
+    ConcreteIntakeOfflineRecoveryPublicRecipient,
     ConcreteRegisterControlPlaneRecipientMetadata,
     ConcreteRegisterOfflineRecoveryPublicMetadata,
+    OfflineRecoveryPublicRecipient,
 )
 from ops.macos.shopping.secret_provisioning_observations import executable_present
 
 ROOT = Path(__file__).resolve().parents[1]
+VALID_RECIPIENT = "age1qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq5cu47z"
 
 
 def metadata() -> dict[str, object]:
     return json.loads((ROOT / "config/shopping-secret-backend.json").read_text())
+
+
+def intake_policy() -> dict[str, object]:
+    return json.loads(
+        (ROOT / "config/shopping-secret-provisioning.json").read_text()
+    )["offline_recovery_intake_policy"]
 
 
 def make_safe_parents(path: Path, home: Path) -> None:
@@ -38,11 +47,14 @@ def make_safe_parents(path: Path, home: Path) -> None:
 
 
 class Runner:
-    def __init__(self, *, returncode: int = 0, raises: bool = False, output: bytes = b"") -> None:
-        self.returncode = returncode; self.raises = raises; self.output = output; self.calls = []
+    def __init__(self, *, returncode: int = 0, raises: bool = False,
+                 output: bytes = b"", before_call=None) -> None:
+        self.returncode = returncode; self.raises = raises; self.output = output
+        self.before_call = before_call; self.calls = []
 
     def __call__(self, argv, **kwargs):
         self.calls.append((argv, kwargs))
+        if self.before_call: self.before_call()
         if self.raises: raise TimeoutError
         if self.output and hasattr(kwargs["stdout"], "write"): kwargs["stdout"].write(self.output)
         return SimpleNamespace(returncode=self.returncode)
@@ -54,6 +66,7 @@ class Runner:
     (ConcreteCreateControlPlaneAgeIdentity, "create_control_plane_age_identity"),
     (ConcreteRegisterControlPlaneRecipientMetadata, "register_control_plane_recipient_metadata"),
     (ConcreteRegisterOfflineRecoveryPublicMetadata, "register_offline_recovery_public_metadata"),
+    (ConcreteIntakeOfflineRecoveryPublicRecipient, "intake_offline_recovery_public_recipient"),
 ])
 def test_exact_protocol_method_is_zero_arg(capability, method) -> None:
     assert list(inspect.signature(getattr(capability, method)).parameters) == ["self"]
@@ -158,6 +171,158 @@ def test_offline_recovery_is_public_only_and_atomic(tmp_path: Path) -> None:
     destination = tmp_path / ".config/aicontrolcenter/shopping-secrets/recipients/offline-recovery.txt"
     assert destination.exists() and stat_mode(destination) == 0o600 and stat_mode(destination.parent) == 0o700
     assert not list(destination.parent.glob(".*.tmp-*"))
+
+
+def intake_capability(tmp_path: Path, *, runner: Runner | None = None):
+    destination = tmp_path / ".config/aicontrolcenter/shopping-secrets/inbox/offline-recovery.txt"
+    make_safe_parents(destination, tmp_path)
+    return ConcreteIntakeOfflineRecoveryPublicRecipient(
+        control_plane_home=tmp_path, intake_policy=intake_policy(),
+        expected_uid=os.getuid(), expected_gid=os.getgid(),
+        public_recipient=OfflineRecoveryPublicRecipient(VALID_RECIPIENT),
+        process_runner=runner or Runner(), executable_observer=lambda path: path == AGE,
+    ), destination
+
+
+def test_typed_public_recipient_boundary_is_exact_and_value_free() -> None:
+    value = OfflineRecoveryPublicRecipient(VALID_RECIPIENT)
+    assert "age1" not in repr(value) and "age1" not in str(value)
+    for invalid in ("", "age1bad", VALID_RECIPIENT + "\n", VALID_RECIPIENT + " extra",
+                    VALID_RECIPIENT + "\n" + VALID_RECIPIENT):
+        with pytest.raises(ValueError, match="^INVALID_OFFLINE_RECOVERY_PUBLIC_RECIPIENT$") as error:
+            OfflineRecoveryPublicRecipient(invalid)
+        if invalid:
+            assert invalid not in str(error.value)
+
+
+def test_intake_fixed_target_no_clobber_and_fixed_age_validation(tmp_path: Path) -> None:
+    destination = tmp_path / ".config/aicontrolcenter/shopping-secrets/inbox/offline-recovery.txt"
+    destination_states: list[bool] = []
+    runner = Runner(before_call=lambda: destination_states.append(destination.exists()))
+    capability, destination = intake_capability(tmp_path, runner=runner)
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.COMPLETED
+    assert destination_states == [False]
+    assert destination.read_text() == VALID_RECIPIENT + "\n"
+    assert stat_mode(destination) == 0o600
+    assert runner.calls[0][0] == (
+        str(AGE), "--encrypt", "--recipient", VALID_RECIPIENT
+    )
+    options = runner.calls[0][1]
+    assert options["shell"] is False
+    assert options["stdin"] is subprocess.DEVNULL
+    assert options["stdout"] is subprocess.DEVNULL
+    assert options["stderr"] is subprocess.DEVNULL
+    assert options["env"] == {"PATH": "/opt/homebrew/bin:/usr/bin:/bin", "LANG": "C", "LC_ALL": "C"}
+    original = destination.read_bytes()
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    assert destination.read_bytes() == original and len(runner.calls) == 2
+
+
+def test_intake_requires_safe_existing_owned_parent_chain(tmp_path: Path) -> None:
+    destination = tmp_path / ".config/aicontrolcenter/shopping-secrets/inbox/offline-recovery.txt"
+    capability = ConcreteIntakeOfflineRecoveryPublicRecipient(
+        control_plane_home=tmp_path, intake_policy=intake_policy(),
+        expected_uid=os.getuid(), expected_gid=os.getgid(),
+        public_recipient=OfflineRecoveryPublicRecipient(VALID_RECIPIENT),
+        process_runner=Runner(), executable_observer=lambda _: True,
+    )
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    assert not destination.exists()
+    unsafe = tmp_path / ".config"
+    unsafe.symlink_to(tmp_path / "elsewhere", target_is_directory=True)
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+
+
+def test_intake_rejects_symlink_target_and_preserves_no_clobber(tmp_path: Path) -> None:
+    capability, destination = intake_capability(tmp_path)
+    elsewhere = tmp_path / "elsewhere"; elsewhere.write_text("public"); elsewhere.chmod(0o600)
+    destination.symlink_to(elsewhere)
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    destination.unlink(); destination.write_text("existing"); destination.chmod(0o644)
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    assert stat_mode(destination) == 0o644
+
+
+@pytest.mark.parametrize("runner", [Runner(returncode=1), Runner(raises=True)])
+def test_intake_prevalidation_failure_is_failed_without_mutation(
+    tmp_path: Path, runner: Runner,
+) -> None:
+    capability, destination = intake_capability(tmp_path, runner=runner)
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    assert not destination.exists()
+    assert len(runner.calls) == 1
+
+
+def test_intake_rejects_unsafe_parent_mode(tmp_path: Path) -> None:
+    capability, destination = intake_capability(tmp_path)
+    destination.parent.chmod(0o755)
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    assert not destination.exists()
+
+
+def test_intake_rejects_broadened_policy_and_wrong_gid(tmp_path: Path) -> None:
+    capability, destination = intake_capability(tmp_path)
+    broadened = intake_policy(); broadened["relative_path"] = "arbitrary.txt"
+    rejected = ConcreteIntakeOfflineRecoveryPublicRecipient(
+        control_plane_home=tmp_path, intake_policy=broadened,
+        expected_uid=os.getuid(), expected_gid=os.getgid(),
+        public_recipient=OfflineRecoveryPublicRecipient(VALID_RECIPIENT),
+        process_runner=Runner(), executable_observer=lambda _: True,
+    )
+    assert rejected.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    wrong_gid = ConcreteIntakeOfflineRecoveryPublicRecipient(
+        control_plane_home=tmp_path, intake_policy=intake_policy(),
+        expected_uid=os.getuid(), expected_gid=os.getgid() + 1,
+        public_recipient=OfflineRecoveryPublicRecipient(VALID_RECIPIENT),
+        process_runner=Runner(), executable_observer=lambda _: True,
+    )
+    assert wrong_gid.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    assert not destination.exists()
+
+    wrong_uid = ConcreteIntakeOfflineRecoveryPublicRecipient(
+        control_plane_home=tmp_path, intake_policy=intake_policy(),
+        expected_uid=os.getuid() + 1, expected_gid=os.getgid(),
+        public_recipient=OfflineRecoveryPublicRecipient(VALID_RECIPIENT),
+        process_runner=Runner(), executable_observer=lambda _: True,
+    )
+    assert wrong_uid.intake_offline_recovery_public_recipient() is MutationOutcome.FAILED
+    assert not destination.exists()
+
+
+def test_intake_ambiguity_after_creation_is_uncertain_without_cleanup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    capability, destination = intake_capability(tmp_path)
+    monkeypatch.setattr(
+        "ops.macos.shopping.secret_provisioning_capabilities.os.write",
+        lambda descriptor, payload: (_ for _ in ()).throw(OSError("injected write failure")),
+    )
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.UNCERTAIN
+    assert destination.exists()
+
+
+def test_intake_parent_rebind_after_creation_is_uncertain_without_cleanup(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    capability, destination = intake_capability(tmp_path)
+    original_parent = destination.parent
+    displaced_parent = original_parent.with_name("inbox-created-by-mutation")
+    real_fsync = os.fsync
+
+    def rebind_after_write(descriptor: int) -> None:
+        real_fsync(descriptor)
+        original_parent.rename(displaced_parent)
+        original_parent.mkdir(mode=0o700)
+        replacement = original_parent / destination.name
+        replacement.write_bytes(b"safe-looking-replacement\n")
+        replacement.chmod(0o600)
+
+    monkeypatch.setattr(os, "fsync", rebind_after_write)
+    assert capability.intake_offline_recovery_public_recipient() is MutationOutcome.UNCERTAIN
+    created = displaced_parent / destination.name
+    assert created.exists()
+    assert created.read_text() == VALID_RECIPIENT + "\n"
+    assert destination.read_bytes() == b"safe-looking-replacement\n"
 
 
 @pytest.mark.parametrize("kind", [

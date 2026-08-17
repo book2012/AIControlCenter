@@ -181,6 +181,7 @@ def coordinator(*, consumer=None, observer=None, executions=None, validator=None
         control_plane_identity_create=executions[PROVISIONING_ACTIONS[2]],
         control_plane_recipient_register_validate=executions[PROVISIONING_ACTIONS[3]],
         offline_recovery_recipient_register_validate=executions[PROVISIONING_ACTIONS[4]],
+        offline_recovery_recipient_intake=executions[PROVISIONING_ACTIONS[5]],
     )
     return value, consumer, observer, executions, validator
 
@@ -240,7 +241,7 @@ def test_allow_single_invocation_denial_after_consumption_stops(monkeypatch):
 
 
 @pytest.mark.parametrize("action", PROVISIONING_ACTIONS)
-def test_exact_five_actions_route_only_to_exact_injected_adapter(action):
+def test_exact_six_actions_route_only_to_exact_injected_adapter(action):
     value_plan = plan(Readiness.MISSING, action)
     value, consumer, _, executions, validator = coordinator()
     result = value.coordinate(value_plan, lifecycle(value_plan))
@@ -250,6 +251,18 @@ def test_exact_five_actions_route_only_to_exact_injected_adapter(action):
     }
     assert validator.count == 1
     assert result.disposition is CoordinatorDisposition.CLOSEOUT
+
+
+def test_intake_and_registration_are_separate_fresh_authorized_mutations():
+    registration_action, intake_action = PROVISIONING_ACTIONS[-2:]
+    executions = {action: Execution() for action in PROVISIONING_ACTIONS}
+    value, consumer, _, _, _ = coordinator(executions=executions)
+    intake_plan = plan(Readiness.MISSING, intake_action)
+    intake_result = value.coordinate(intake_plan, lifecycle(intake_plan))
+    assert intake_result.authorization_consumed is True
+    assert executions[intake_action].count == 1
+    assert executions[registration_action].count == 0
+    assert consumer.count == 1
 
 
 def test_unknown_action_fails_closed_before_consumption_and_invocation():

@@ -32,7 +32,9 @@ def executable_present(path: Path) -> bool:
     return stat.S_ISREG(metadata.st_mode) and os.access(resolved, os.X_OK)
 
 
-def observe_file(path: Path, *, expected_uid: int, maximum_mode: int) -> FileObservation:
+def observe_file(
+    path: Path, *, expected_uid: int, maximum_mode: int, expected_gid: int | None = None
+) -> FileObservation:
     try:
         metadata = path.lstat()
     except OSError:
@@ -42,7 +44,10 @@ def observe_file(path: Path, *, expected_uid: int, maximum_mode: int) -> FileObs
     return FileObservation(
         regular_file=regular,
         symlink_rejected=symlink,
-        expected_ownership=regular and metadata.st_uid == expected_uid,
+        expected_ownership=(
+            regular and metadata.st_uid == expected_uid
+            and (expected_gid is None or metadata.st_gid == expected_gid)
+        ),
         safe_mode=regular and stat.S_IMODE(metadata.st_mode) & ~maximum_mode == 0,
         nonempty=regular and metadata.st_size > 0,
     )

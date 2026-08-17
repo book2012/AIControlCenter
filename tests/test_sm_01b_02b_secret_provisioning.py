@@ -32,6 +32,7 @@ def observations(**overrides: bool) -> ProvisioningObservations:
         "age_keygen_executable_present": True,
         "control_plane_identity_metadata_safe_present": True,
         "control_plane_recipient_metadata_registered_valid": True,
+        "offline_recovery_inbox_ready": True,
         "offline_recovery_public_metadata_registered_valid": True,
     }
     values.update(overrides)
@@ -93,6 +94,7 @@ def test_canonical_json_is_the_only_exact_action_table() -> None:
         "SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE",
         "SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE",
         "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE",
+        "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE",
     ]
     source = INSPECTOR_PATH.read_text(encoding="utf-8")
     assert not [identifier for identifier in identifiers if identifier in source]
@@ -241,9 +243,30 @@ def test_offline_recovery_uses_public_metadata_presence_only(registered: bool) -
             age_keygen_executable_present=True,
             control_plane_identity_metadata_safe_present=True,
             control_plane_recipient_metadata_registered_valid=True,
+            offline_recovery_inbox_ready=True,
             offline_recovery_public_metadata_registered_valid=registered,
             offline_recovery_private_identity=True,
         )
+
+
+@pytest.mark.parametrize("ready", [True, False])
+def test_offline_recovery_intake_is_a_distinct_sixth_action(ready: bool) -> None:
+    plans = inspect(offline_recovery_inbox_ready=ready)
+    intake = action("OFFLINE_RECOVERY_INTAKE", plans)
+    registration = action("OFFLINE_RECOVERY_REGISTER_VALIDATE", plans)
+    assert intake.action != registration.action
+    assert intake.current_readiness is (Readiness.READY if ready else Readiness.MISSING)
+    assert registration.current_readiness is Readiness.READY
+    policy = load_provisioning_definition()["offline_recovery_intake_policy"]
+    assert policy == {
+        "base": "control-plane-home",
+        "relative_path": ".config/aicontrolcenter/shopping-secrets/inbox/offline-recovery.txt",
+        "required_owner": "control-plane-user",
+        "maximum_mode": "0600",
+        "external_to_repository": True,
+        "no_clobber": True,
+        "public_recipient_only": True,
+    }
 
 
 def test_value_free_plan_projection_has_only_allowed_facts() -> None:

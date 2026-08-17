@@ -21,6 +21,9 @@ CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE = (
 OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE = (
     "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE"
 )
+OFFLINE_RECOVERY_RECIPIENT_INTAKE = (
+    "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE"
+)
 SHOPPING_SECRET_PROVISIONING = "SHOPPING_SECRET_PROVISIONING"
 
 
@@ -54,6 +57,10 @@ class RegisterControlPlaneRecipientMetadata(Protocol):
 
 class RegisterOfflineRecoveryPublicMetadata(Protocol):
     def register_offline_recovery_public_metadata(self) -> MutationOutcome: ...
+
+
+class IntakeOfflineRecoveryPublicRecipient(Protocol):
+    def intake_offline_recovery_public_recipient(self) -> MutationOutcome: ...
 
 
 def _validate_request(
@@ -169,11 +176,27 @@ class OfflineRecoveryRecipientRegisterValidateAdapter:
         return _receipt(request, outcome)
 
 
+class OfflineRecoveryRecipientIntakeAdapter:
+    ACTION = OFFLINE_RECOVERY_RECIPIENT_INTAKE
+
+    def __init__(self, capability: IntakeOfflineRecoveryPublicRecipient) -> None:
+        self._capability = capability
+
+    def invoke_once(self, request: GovernanceExecutionRequest) -> GovernanceExecutionReceipt:
+        request = _validate_request(request, self.ACTION)
+        try:
+            outcome = self._capability.intake_offline_recovery_public_recipient()
+        except Exception:
+            outcome = MutationOutcome.UNCERTAIN
+        return _receipt(request, outcome)
+
+
 __all__ = (
     "AGE_INSTALL_ENSURE",
     "CONTROL_PLANE_IDENTITY_CREATE",
     "CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE",
     "OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE",
+    "OFFLINE_RECOVERY_RECIPIENT_INTAKE",
     "SOPS_INSTALL_ENSURE",
     "SHOPPING_SECRET_PROVISIONING",
     "AdapterRequestRejected",
@@ -182,5 +205,6 @@ __all__ = (
     "ControlPlaneRecipientRegisterValidateAdapter",
     "MutationOutcome",
     "OfflineRecoveryRecipientRegisterValidateAdapter",
+    "OfflineRecoveryRecipientIntakeAdapter",
     "SopsInstallEnsureAdapter",
 )

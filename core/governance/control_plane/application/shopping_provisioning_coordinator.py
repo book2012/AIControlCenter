@@ -41,12 +41,16 @@ CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE = (
 OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE = (
     "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE"
 )
+OFFLINE_RECOVERY_RECIPIENT_INTAKE = (
+    "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE"
+)
 PROVISIONING_ACTIONS = (
     SOPS_INSTALL_ENSURE,
     AGE_INSTALL_ENSURE,
     CONTROL_PLANE_IDENTITY_CREATE,
     CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE,
     OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE,
+    OFFLINE_RECOVERY_RECIPIENT_INTAKE,
 )
 
 
@@ -132,6 +136,7 @@ class ShoppingProvisioningGovernanceCoordinator:
         age_install: ControlledExecutionPort,
         control_plane_identity_create: ControlledExecutionPort,
         control_plane_recipient_register_validate: ControlledExecutionPort,
+        offline_recovery_recipient_intake: ControlledExecutionPort,
         offline_recovery_recipient_register_validate: ControlledExecutionPort,
     ) -> None:
         self._authorization_consumption = authorization_consumption
@@ -144,6 +149,7 @@ class ShoppingProvisioningGovernanceCoordinator:
             CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE: (
                 control_plane_recipient_register_validate
             ),
+            OFFLINE_RECOVERY_RECIPIENT_INTAKE: offline_recovery_recipient_intake,
             OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE: (
                 offline_recovery_recipient_register_validate
             ),
@@ -341,6 +347,7 @@ __all__ = (
     "CONTROL_PLANE_RECIPIENT_REGISTER_VALIDATE",
     "CoordinatorDisposition",
     "OFFLINE_RECOVERY_RECIPIENT_REGISTER_VALIDATE",
+    "OFFLINE_RECOVERY_RECIPIENT_INTAKE",
     "PROVISIONING_ACTIONS",
     "SHOPPING_SECRET_PROVISIONING",
     "SOPS_INSTALL_ENSURE",
