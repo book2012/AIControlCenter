@@ -1,14 +1,14 @@
 # SM-01 — Shopping Secret Management
 
-Status: **SM-01B-02C IMPLEMENTATION AND VALIDATION COMPLETE**
+Status: **SM-01B-02D-01A IMPLEMENTATION VALIDATED; DOCUMENTATION CLOSEOUT PENDING UNTIL COMMIT**
 
-Current milestone: `SM-01B-02C — Bounded Mutation Adapters v1`
+Current milestone: `SM-01B-02D-01A — Generic Governance Authorization Consumption Boundary v1`
 
-Milestone identifier: `SM_01B_02C_BOUNDED_MUTATION_ADAPTERS_VALIDATED`
+Milestone identifier: `SM_01B_02D_01A_GENERIC_GOVERNANCE_AUTHORIZATION_CONSUMPTION_BOUNDARY_VALIDATED`
 
-Implementation commit: `5a811cb1f9c782acb4f3e537596fb47ae0c599ff`
+Implementation commit: `01e57cabd39cbc594f128e06527332b3c515c249`
 
-Next development milestone: `SM-01B-02D — Authorized Toolchain & Identity Provisioning v1`
+Next engineering milestone: `SM-01B-02D-01B — Shopping Provisioning Governance Coordinator`
 
 This architecture separates metadata, evaluation, delivery, materialization,
 and mutation authority. SM-01A established layers 1 and 2. SM-01B-01 adds the
@@ -31,6 +31,20 @@ identity namespace over the full `execution_request_id`. They provide no
 generic shell/argv/package-manager execution framework and create no parallel
 governance framework. Implementing bounded adapters is not authorization to
 execute them.
+
+SM-01B-02D-01A resolves the previous SM-01B-02D-00 blocker with the generic
+SEC-02 `AuthorizationConsumptionPort` and immutable
+`AuthorizationConsumptionCommand` and `AuthorizationConsumptionResult`.
+Authorization consumption is a generic Governance boundary, not a
+Shopping-specific boundary. `consume_once` is its only API.
+
+`consume_once` requires `AUTHORIZED` authorization, `AVAILABLE` mutation
+budget, exact lifecycle/authorization/target/action-scope/mutation-budget
+bindings, and a matching zero-invocation budget line item. It returns only
+`CONSUMED` authorization, exactly `CONSUMED` zero-invocation mutation budget,
+a `COMMITTED` `GovernanceAuthorizationConsumptionReceipt`, and an exact-bound
+`GovernanceExecutionRequest`. The result is evidence and grants no execution
+authority.
 
 ## 1. Secret Contract — implemented
 
@@ -132,12 +146,16 @@ container, file, or command input. SM-01A reads no secret value and defines no
 materialization lifecycle. Presence-only preflight must remain value-free even
 after a backend is introduced.
 
-## 5. Authorization / Mutation — bounded adapters implemented; execution not authorized
+## 5. Authorization / Mutation — generic consumption boundary implemented; execution not authorized
 
 A valid contract or successful preflight is not authorization. A desired-state
 package is not activation authority. Any future Production mutation requires
-explicit human authorization immediately before execution. One authorization
-maps to one exact, bounded invocation. There is no automatic retry or rollback.
+explicit human authorization immediately before execution. One human
+authorization lifecycle maps to one exact, bounded Production mutation.
+Invocation still requires current read-only precondition recollection,
+followed by SEC-02 `ALLOW_SINGLE_INVOCATION`, and then
+`ControlledExecutionPort.invoke_once`. There is NO automatic retry, NO
+automatic rollback, and NO compensation.
 
 AIControlCenter on the Mac mini M4 remains the sole Control Plane and owns
 governance, policy, orchestration, approval, authorization, audit, deployment
@@ -170,6 +188,37 @@ continuity/recovery/rotation strategy.
 
 Offline-recovery private custody remains external. SM-01B-02C does not recover,
 rotate, replace, derive, invent, or validate historical MariaDB credentials.
+
+## SM-01B-02D-01A validation record
+
+- Status: implementation validated; documentation closeout pending until this
+  change is committed
+- Implementation commit: `01e57cabd39cbc594f128e06527332b3c515c249`
+- Previous blocker `SM-01B-02D-00`: RESOLVED
+- Focused validation: `114 passed`
+- Canonical regression: `3331 passed, 5 deselected, 447 warnings`, `RC=0`
+- Canonical execution count: exactly `1`
+- `PRODUCTION_STATUS_NOT_DEPLOYED=true`
+- `MATERIALIZATION_IMPLEMENTED=false`
+- `PRODUCTION_MUTATION=false`
+- `AUTHORIZATION_CONSUMED=false`
+- `SECRET_VALUES_READ=false`
+- `RUNTIME_INSPECTION=false`
+- `DOCKER_ACCESS=false`
+- `COLIMA_ACCESS=false`
+- `NOTION_SYNC=false`
+
+Authorization-consumption result evidence grants no execution authority. One
+human authorization lifecycle remains required per bounded Production
+mutation. Historical MariaDB credential continuity remains unresolved, and
+`SHOPPING_RUNTIME_ACTIVATED` remains the Production milestone.
+
+Next engineering work is `SM-01B-02D-01B — Shopping Provisioning Governance
+Coordinator`: compose planner -> human authorization -> generic authorization
+consumption -> read-only precondition recollection -> SEC-02 policy -> one
+bounded adapter invocation -> read-only postcondition validation -> closeout.
+It must not create a parallel governance framework or generic shell execution
+API.
 
 ## SM-01B-02C validation record
 

@@ -65,10 +65,28 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   warnings`, `RC=0`, executed exactly once on final implementation code; exact
   three-file implementation scope, post-canonical scope, staged scope, staged
   diff check, commit, push, and upstream alignment `0 0` all passed.
-- [ ] `SM-01B-02D — Authorized Toolchain & Identity Provisioning v1`.
-- [ ] Require human authorization immediately before each future mutating
-  provisioning step: one authorization equals one bounded invocation, with no
-  automatic retry or rollback.
+- [x] Validate `SM-01B-02D-01A — Generic Governance Authorization Consumption
+  Boundary v1` implementation at commit
+  `01e57cabd39cbc594f128e06527332b3c515c249`; documentation closeout remains
+  pending until this change is committed.
+- [x] Resolve the SM-01B-02D-00 blocker through the generic SEC-02
+  `AuthorizationConsumptionPort`, immutable command/result, and only
+  `consume_once`; consumption is Governance, not Shopping-specific.
+- [x] Require `AUTHORIZED` authorization, `AVAILABLE` mutation budget, exact
+  lifecycle/authorization/target/action-scope/mutation-budget bindings, and a
+  matching zero-invocation budget line item; return only consumed evidence and
+  an exact-bound request that grants no execution authority.
+- [x] Record focused `114 passed` and canonical `3331 passed, 5 deselected,
+  447 warnings`, `RC=0`, canonical execution count exactly `1`.
+- [ ] `SM-01B-02D-01B — Shopping Provisioning Governance Coordinator`:
+  planner -> human authorization -> generic authorization consumption ->
+  read-only precondition recollection -> SEC-02 `ALLOW_SINGLE_INVOCATION` ->
+  one bounded adapter invocation -> read-only postcondition validation ->
+  closeout, without a parallel governance framework or generic shell execution
+  API.
+- [ ] Preserve one human authorization lifecycle per bounded Production
+  mutation, with NO automatic retry, NO automatic rollback, and NO
+  compensation.
 - [ ] Resolve historical MariaDB credential continuity through an explicit
   continuity/recovery/rotation strategy; SOPS+age cannot recover or silently
   replace historical credentials.
@@ -77,16 +95,18 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
 
 SM-01B overall remains incomplete. Mac AIControlCenter remains the sole Control
 Plane; Ubuntu remains a stateless worker with no Shopping secret ownership.
-Offline-recovery private custody remains external. SM-01B-02C does not recover,
+Offline-recovery private custody remains external. SM-01B-02D-01A does not recover,
 rotate, replace, derive, invent, or validate unresolved historical MariaDB
-credentials. Adapter implementation is not authorization to execute adapters.
-Production remains `production_status=NOT_DEPLOYED`;
-`materialization_implemented=false`;
+credentials. Authorization-consumption evidence grants no execution authority.
+Production remains `PRODUCTION_STATUS_NOT_DEPLOYED=true`;
+`MATERIALIZATION_IMPLEMENTED=false`;
 `SOPS_INSTALLATION=false`; `AGE_INSTALLATION=false`;
 `AGE_KEY_GENERATION=false`; `OFFLINE_RECOVERY_KEY_GENERATION=false`;
 `SECRET_PAYLOAD_CREATION=false`; `SECRET_MATERIALIZATION=false`;
-`AUTHORIZATION_CONSUMED=false`; `RUNTIME_INSPECTION=false`;
-`PRODUCTION_MUTATION=false`; `SHOPPING_RUNTIME_ACTIVATED=false`.
+`AUTHORIZATION_CONSUMED=false`; `SECRET_VALUES_READ=false`;
+`RUNTIME_INSPECTION=false`; `DOCKER_ACCESS=false`; `COLIMA_ACCESS=false`;
+`PRODUCTION_MUTATION=false`; `NOTION_SYNC=false`;
+`SHOPPING_RUNTIME_ACTIVATED=false`.
 
 ## PA-04 — Notification Platform v1
 

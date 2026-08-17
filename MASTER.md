@@ -1,5 +1,44 @@
 # MASTER
 
+## SM-01B-02D-01A — Generic Governance Authorization Consumption Boundary v1 — IMPLEMENTATION VALIDATED
+
+Status: implementation validated; documentation closeout pending until this
+change is committed. Implementation commit:
+`01e57cabd39cbc594f128e06527332b3c515c249`.
+
+The previous SM-01B-02D-00 blocker is resolved by the generic SEC-02
+`AuthorizationConsumptionPort` with immutable `AuthorizationConsumptionCommand`
+and `AuthorizationConsumptionResult`. Authorization consumption is a generic
+Governance boundary, not a Shopping-specific boundary. `consume_once` is its
+only API. It requires `AUTHORIZED` authorization, `AVAILABLE` mutation budget,
+exact lifecycle/authorization/target/action-scope/mutation-budget bindings, and
+a matching zero-invocation budget line item. It returns only `CONSUMED`
+authorization, exactly `CONSUMED` zero-invocation mutation budget, a
+`COMMITTED` `GovernanceAuthorizationConsumptionReceipt`, and an exact-bound
+`GovernanceExecutionRequest`. The result is evidence and grants no execution
+authority.
+
+Invocation still requires current read-only precondition recollection,
+followed by SEC-02 `ALLOW_SINGLE_INVOCATION`, and then
+`ControlledExecutionPort.invoke_once`. There is NO automatic retry, NO
+automatic rollback, and NO compensation. One human authorization lifecycle is
+required per bounded Production mutation.
+
+Focused validation recorded `114 passed`. Canonical regression recorded `3331
+passed, 5 deselected, 447 warnings`, `RC=0`, with canonical execution count
+exactly `1`. Production truth remains `PRODUCTION_STATUS_NOT_DEPLOYED=true`,
+`MATERIALIZATION_IMPLEMENTED=false`, `PRODUCTION_MUTATION=false`,
+`AUTHORIZATION_CONSUMED=false`, `SECRET_VALUES_READ=false`,
+`RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`, `COLIMA_ACCESS=false`, and
+`NOTION_SYNC=false`. Historical MariaDB credential continuity remains
+unresolved; `SHOPPING_RUNTIME_ACTIVATED` remains the Production milestone.
+
+Next engineering work is `SM-01B-02D-01B — Shopping Provisioning Governance
+Coordinator`: compose planner -> human authorization -> generic authorization
+consumption -> read-only precondition recollection -> SEC-02 policy -> one
+bounded adapter invocation -> read-only postcondition validation -> closeout,
+without a parallel governance framework or generic shell execution API.
+
 ## SM-01B-02C — Bounded Mutation Adapters v1 — CLOSED
 
 Milestone `SM_01B_02C_BOUNDED_MUTATION_ADAPTERS_VALIDATED` is complete at
