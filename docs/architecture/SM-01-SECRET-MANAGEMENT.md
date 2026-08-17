@@ -1,18 +1,29 @@
 # SM-01 — Shopping Secret Management
 
-Status: **SM-01B-01 IMPLEMENTATION AND VALIDATION COMPLETE**
+Status: **SM-01B-02B IMPLEMENTATION AND VALIDATION COMPLETE**
 
-Current milestone: `SM-01B-01 — SOPS/age Secret Backend Inspection v1`
+Current milestone: `SM-01B-02B — Provisioning Planner v1`
 
-Milestone identifier: `SM_01B_01_SECRET_BACKEND_INSPECTION_VALIDATED`
+Milestone identifier: `SM_01B_02B_PROVISIONING_PLANNER_VALIDATED`
 
-Next development milestone: `SM-01B-02 — SOPS/age Toolchain & Identity
-Provisioning`
+Implementation commit: `2330eca7e8ed99ba50cb9f99bad1abba4a4d9876`
+
+Next development milestone: `SM-01B-02C — Bounded Mutation Adapters v1`
 
 This architecture separates metadata, evaluation, delivery, materialization,
 and mutation authority. SM-01A established layers 1 and 2. SM-01B-01 adds the
 architecture and read-only inspection portion of layer 3; it does not deploy
 the toolchain or backend.
+
+SM-01B-02B adds a provisioning planner, not provisioning execution. The
+canonical provisioning definition and Draft 2020-12 schema define exactly five
+typed actions. Core `ProvisioningPlan` is vendor-neutral and value-free.
+Malformed input emits only sanitized `UNKNOWN_ACTION` or
+`MALFORMED_CONFIGURATION` evidence. The read-only macOS provisioning inspector
+performs planning only, and core imports from `ops` and `integrations` remain
+zero. Future execution must reuse SEC-02 `ControlledExecutionPort`; it must not
+create a parallel governance framework. Implementing bounded adapters is not
+authorization to execute them.
 
 ## 1. Secret Contract — implemented
 
@@ -96,7 +107,8 @@ material in the canonical definition. `materialization_implemented=false`.
 AIControlCenter on the Mac remains the sole Control Plane; Ubuntu must not own,
 persist, select, or govern Shopping secrets.
 
-`SM-01B-02 — SOPS/age Toolchain & Identity Provisioning` is future work.
+`SM-01B-02B — Provisioning Planner v1` is validated. `SM-01B-02C — Bounded
+Mutation Adapters v1` is future work.
 
 ## 4. Secret Materialization — not implemented
 
@@ -140,6 +152,39 @@ Historical MariaDB credential continuity remains unresolved. Introducing
 SOPS+age cannot recover or silently replace historical MariaDB credentials.
 Production runtime cutover remains blocked on an explicit
 continuity/recovery/rotation strategy.
+
+Offline-recovery custody remains external. SM-01B-02B does not recover,
+replace, rotate, or invent historical MariaDB credentials.
+
+## SM-01B-02B validation record
+
+- Milestone: `SM_01B_02B_PROVISIONING_PLANNER_VALIDATED`
+- Implementation commit: `2330eca7e8ed99ba50cb9f99bad1abba4a4d9876`
+- Focused final validation: `73 passed`
+- Canonical regression: `3236 passed, 5 deselected, 447 warnings`, `RC=0`,
+  executed exactly once on final implementation code
+- Exact six-file implementation scope: PASS
+- Post-canonical scope: PASS
+- Staged scope: PASS
+- Staged diff check: PASS
+- Commit: PASS
+- Push: PASS
+- Upstream alignment: PASS (`0 0`)
+- Production truth: `NOT_DEPLOYED`
+- `materialization_implemented=false`
+- `SOPS_INSTALLATION=false`
+- `AGE_INSTALLATION=false`
+- `AGE_KEY_GENERATION=false`
+- `OFFLINE_RECOVERY_KEY_GENERATION=false`
+- `SECRET_PAYLOAD_CREATION=false`
+- `SECRET_MATERIALIZATION=false`
+- `AUTHORIZATION_CONSUMED=false`
+- `RUNTIME_INSPECTION=false`
+- `PRODUCTION_MUTATION=false`
+- `SHOPPING_RUNTIME_ACTIVATED=false`
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu remains a stateless
+worker with no Shopping secret ownership. SM-01B overall remains incomplete.
 
 ## SM-01B-01 validation record
 

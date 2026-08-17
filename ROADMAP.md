@@ -32,10 +32,23 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   and no Ubuntu secret ownership.
 - [x] Keep core vendor-neutral with zero imports from `ops` and `integrations`;
   isolate SOPS+age metadata-only inspection in the macOS outer adapter.
-- [ ] `SM-01B-02 — SOPS/age Toolchain & Identity Provisioning`.
-- [ ] Provision SOPS/age tooling, identity, and encrypted payload only through
-  a separately authorized future mutation; architecture selection is not
-  deployment or activation authority.
+- [x] Close `SM-01B-02B — Provisioning Planner v1` at
+  `SM_01B_02B_PROVISIONING_PLANNER_VALIDATED`, implementation commit
+  `2330eca7e8ed99ba50cb9f99bad1abba4a4d9876`.
+- [x] Define exactly five typed actions in the canonical provisioning
+  definition and Draft 2020-12 schema; keep core `ProvisioningPlan`
+  vendor-neutral and value-free.
+- [x] Emit only sanitized `UNKNOWN_ACTION` or `MALFORMED_CONFIGURATION`
+  evidence for malformed input; keep the read-only macOS inspector planning
+  only and core import counts from `ops` and `integrations` at zero.
+- [x] Record focused `73 passed` and canonical `3236 passed, 5 deselected, 447
+  warnings`, `RC=0`, executed exactly once on final implementation code; exact
+  six-file implementation scope, post-canonical scope, staged scope, staged
+  diff check, commit, push, and upstream alignment all passed.
+- [ ] `SM-01B-02C — Bounded Mutation Adapters v1`.
+- [ ] Implement bounded adapters behind SEC-02 `ControlledExecutionPort`
+  without creating a parallel governance framework. Adapter implementation is
+  not authorization to execute it.
 - [ ] Require human authorization immediately before each mutating
   provisioning step: one authorization equals one bounded invocation, with no
   automatic retry or rollback.
@@ -44,6 +57,17 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   replace historical credentials.
 - [ ] `SHOPPING_RUNTIME_ACTIVATED`
 - [ ] `SHOPPING_STOREFRONT_ONLINE_READ_ONLY` (only after runtime activation)
+
+SM-01B overall remains incomplete. Mac AIControlCenter remains the sole Control
+Plane; Ubuntu remains a stateless worker with no Shopping secret ownership.
+Offline-recovery custody remains external, and SM-01B-02B does not recover,
+replace, rotate, or invent unresolved historical MariaDB credentials.
+Production remains `NOT_DEPLOYED`; `materialization_implemented=false`;
+`SOPS_INSTALLATION=false`; `AGE_INSTALLATION=false`;
+`AGE_KEY_GENERATION=false`; `OFFLINE_RECOVERY_KEY_GENERATION=false`;
+`SECRET_PAYLOAD_CREATION=false`; `SECRET_MATERIALIZATION=false`;
+`AUTHORIZATION_CONSUMED=false`; `RUNTIME_INSPECTION=false`;
+`PRODUCTION_MUTATION=false`; `SHOPPING_RUNTIME_ACTIVATED=false`.
 
 ## PA-04 — Notification Platform v1
 

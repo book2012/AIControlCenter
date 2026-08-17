@@ -1,5 +1,40 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-02B — Provisioning Planner v1
+
+Status: implementation and validation complete at milestone
+`SM_01B_02B_PROVISIONING_PLANNER_VALIDATED`, implementation commit
+`2330eca7e8ed99ba50cb9f99bad1abba4a4d9876`.
+
+The canonical provisioning definition and its Draft 2020-12 schema define
+exactly five typed actions. Core `ProvisioningPlan` is vendor-neutral and
+value-free. Malformed input emits only sanitized `UNKNOWN_ACTION` or
+`MALFORMED_CONFIGURATION` evidence. The read-only macOS provisioning inspector
+performs planning only; it does not execute a plan. Core imports from `ops` and
+`integrations` remain zero. Future execution must reuse SEC-02
+`ControlledExecutionPort` and must not create a parallel governance framework.
+
+AIControlCenter on the Mac remains the sole Control Plane. Ubuntu remains a
+stateless worker with no Shopping secret ownership. Offline-recovery custody
+remains external. Historical MariaDB credential continuity remains unresolved;
+SM-01B-02B does not recover, replace, rotate, or invent historical credentials.
+Production truth remains `NOT_DEPLOYED` and
+`materialization_implemented=false`.
+
+`SOPS_INSTALLATION=false`, `AGE_INSTALLATION=false`,
+`AGE_KEY_GENERATION=false`, `OFFLINE_RECOVERY_KEY_GENERATION=false`,
+`SECRET_PAYLOAD_CREATION=false`, `SECRET_MATERIALIZATION=false`,
+`AUTHORIZATION_CONSUMED=false`, `RUNTIME_INSPECTION=false`,
+`PRODUCTION_MUTATION=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Final implementation evidence recorded `73 passed` focused and `3236 passed,
+5 deselected, 447 warnings`, `RC=0` canonical regression, executed exactly once
+on final implementation code. Exact six-file implementation scope,
+post-canonical scope, staged scope, staged diff check, commit, push, and
+upstream alignment all passed. Next development milestone:
+`SM-01B-02C — Bounded Mutation Adapters v1`. Implementing adapters is not
+authorization to execute them. SM-01B overall remains incomplete.
+
 ## SM-01B-01 — SOPS/age Secret Backend Inspection v1
 
 Status: implementation and validation complete at milestone

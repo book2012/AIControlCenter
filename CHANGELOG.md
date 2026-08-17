@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## 2026-08-17 — SM-01B-02B Provisioning Planner v1
+
+- Closed implementation and validation at
+  `SM_01B_02B_PROVISIONING_PLANNER_VALIDATED`, implementation commit
+  `2330eca7e8ed99ba50cb9f99bad1abba4a4d9876`.
+- Established a canonical provisioning definition and Draft 2020-12 schema
+  defining exactly five typed actions. Core `ProvisioningPlan` is
+  vendor-neutral and value-free; malformed input emits only sanitized
+  `UNKNOWN_ACTION`/`MALFORMED_CONFIGURATION` evidence. The read-only macOS
+  provisioning inspector performs planning only. Core imports from `ops` and
+  `integrations` remain zero.
+- Required future execution to reuse SEC-02 `ControlledExecutionPort`; no
+  parallel governance framework may be created. Adapter implementation is not
+  authorization to execute an adapter.
+- Recorded final implementation validation: focused `73 passed`; canonical
+  `3236 passed, 5 deselected, 447 warnings`, `RC=0`, executed exactly once on
+  final implementation code. Exact six-file implementation scope,
+  post-canonical scope, staged scope, staged diff check, commit, push, and
+  upstream alignment all passed.
+- Preserved Mac AIControlCenter as sole Control Plane and Ubuntu as a stateless
+  worker with no Shopping secret ownership. Offline-recovery custody remains
+  external. Historical MariaDB credential continuity remains unresolved;
+  SM-01B-02B did not recover, replace, rotate, or invent credentials.
+- Production remains `NOT_DEPLOYED`; `materialization_implemented=false`;
+  `SOPS_INSTALLATION=false`; `AGE_INSTALLATION=false`;
+  `AGE_KEY_GENERATION=false`; `OFFLINE_RECOVERY_KEY_GENERATION=false`;
+  `SECRET_PAYLOAD_CREATION=false`; `SECRET_MATERIALIZATION=false`;
+  `AUTHORIZATION_CONSUMED=false`; `RUNTIME_INSPECTION=false`;
+  `PRODUCTION_MUTATION=false`; `SHOPPING_RUNTIME_ACTIVATED=false`.
+- Set `SM-01B-02C — Bounded Mutation Adapters v1` as the next development
+  milestone. SM-01B overall remains incomplete.
+
 ## 2026-08-16 — SM-01B-01 SOPS/age Secret Backend Inspection v1
 
 - Completed implementation and validation at milestone

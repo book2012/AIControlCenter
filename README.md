@@ -1,5 +1,36 @@
 # AIControlCenter
 
+## SM-01B-02B Provisioning Planner v1
+
+SM-01B-02B is implementation- and validation-complete at
+`SM_01B_02B_PROVISIONING_PLANNER_VALIDATED`, implementation commit
+`2330eca7e8ed99ba50cb9f99bad1abba4a4d9876`. The canonical provisioning
+definition and Draft 2020-12 schema define exactly five typed actions. The core
+`ProvisioningPlan` is vendor-neutral and value-free; malformed input exposes
+only sanitized `UNKNOWN_ACTION` or `MALFORMED_CONFIGURATION` evidence. The
+read-only macOS provisioning inspector plans only. Core imports from `ops` and
+`integrations` remain zero. Any future execution must reuse SEC-02
+`ControlledExecutionPort`, without a parallel governance framework.
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu remains a stateless
+worker and owns no Shopping secrets. Offline-recovery custody remains external,
+and historical MariaDB credential continuity remains unresolved. This
+milestone does not recover, replace, rotate, or invent historical credentials.
+Production remains `NOT_DEPLOYED`; `materialization_implemented=false`.
+`SOPS_INSTALLATION=false`, `AGE_INSTALLATION=false`,
+`AGE_KEY_GENERATION=false`, `OFFLINE_RECOVERY_KEY_GENERATION=false`,
+`SECRET_PAYLOAD_CREATION=false`, `SECRET_MATERIALIZATION=false`,
+`AUTHORIZATION_CONSUMED=false`, `RUNTIME_INSPECTION=false`,
+`PRODUCTION_MUTATION=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Recorded final implementation validation is `73 passed` focused and `3236
+passed, 5 deselected, 447 warnings`, `RC=0` canonical regression, run exactly
+once on final implementation code. Exact six-file implementation scope,
+post-canonical scope, staged scope, staged diff check, commit, push, and
+upstream alignment passed. Next: `SM-01B-02C — Bounded Mutation Adapters v1`;
+adapter implementation is not execution authorization. SM-01B remains
+incomplete.
+
 ## SM-01B-01 SOPS/age Secret Backend Inspection v1
 
 SM-01B-01 implementation and validation are complete at
