@@ -1,5 +1,49 @@
 # MASTER
 
+## SM-01B-02C — Bounded Mutation Adapters v1 — CLOSED
+
+Milestone `SM_01B_02C_BOUNDED_MUTATION_ADAPTERS_VALIDATED` is complete at
+implementation commit `5a811cb1f9c782acb4f3e537596fb47ae0c599ff`.
+SM-01B-02C implements bounded mutation adapter code only for the exact
+`SHOPPING_SECRET_PROVISIONING` target and five exact actions:
+`SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`.
+
+The adapters reuse SEC-02 `ControlledExecutionPort`, accept only the exact
+target/action, invoke at most one narrow injected capability, issue or consume
+no authorization, and perform no retry, rollback, or compensation. Their
+value-free `GovernanceExecutionReceipt` evidence uses a deterministic,
+injective receipt-identity namespace over the full `execution_request_id`.
+Offline-recovery private custody remains external. No generic
+shell/argv/package-manager execution framework or parallel governance
+framework exists.
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu remains a stateless
+infrastructure worker with no Shopping secret ownership. Historical MariaDB
+credential continuity remains unresolved; SM-01B-02C does not recover, rotate,
+replace, derive, invent, or validate historical credentials.
+
+Production truth remains `production_status=NOT_DEPLOYED`;
+`materialization_implemented=false`; `SOPS_INSTALLATION=false`;
+`AGE_INSTALLATION=false`; `AGE_KEY_GENERATION=false`;
+`OFFLINE_RECOVERY_KEY_GENERATION=false`; `SECRET_PAYLOAD_CREATION=false`;
+`SECRET_MATERIALIZATION=false`; `AUTHORIZATION_CONSUMED=false`;
+`RUNTIME_INSPECTION=false`; `PRODUCTION_MUTATION=false`;
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Final evidence: focused `128 passed`; canonical `3288 passed, 5 deselected,
+447 warnings`, `RC=0`, executed exactly once on final implementation code.
+Exact three-file implementation scope, post-canonical scope, staged scope,
+staged diff check, commit, push, and upstream alignment `0 0` all passed. Next
+development milestone is `SM-01B-02D — Authorized Toolchain & Identity
+Provisioning v1`. Adapter implementation is not authorization to execute
+adapters. Each future Production mutation requires separate human
+authorization immediately before exactly one bounded invocation, with no
+automatic retry or rollback. SM-01B overall remains incomplete.
+
 ## SM-01B-02B — Provisioning Planner v1 — CLOSED
 
 Milestone `SM_01B_02B_PROVISIONING_PLANNER_VALIDATED` is complete at

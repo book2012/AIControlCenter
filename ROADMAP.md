@@ -45,11 +45,28 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   warnings`, `RC=0`, executed exactly once on final implementation code; exact
   six-file implementation scope, post-canonical scope, staged scope, staged
   diff check, commit, push, and upstream alignment all passed.
-- [ ] `SM-01B-02C — Bounded Mutation Adapters v1`.
-- [ ] Implement bounded adapters behind SEC-02 `ControlledExecutionPort`
-  without creating a parallel governance framework. Adapter implementation is
-  not authorization to execute it.
-- [ ] Require human authorization immediately before each mutating
+- [x] Close `SM-01B-02C — Bounded Mutation Adapters v1` at
+  `SM_01B_02C_BOUNDED_MUTATION_ADAPTERS_VALIDATED`, implementation commit
+  `5a811cb1f9c782acb4f3e537596fb47ae0c599ff`.
+- [x] Implement code-only adapters behind SEC-02 `ControlledExecutionPort`
+  for exact target `SHOPPING_SECRET_PROVISIONING` and the five exact Shopping
+  provisioning actions: `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+  `SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+  `SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+  `SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`, and
+  `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`. Each accepts
+  only the exact target/action, invokes at most one narrow injected capability,
+  emits value-free
+  `GovernanceExecutionReceipt` evidence with a deterministic injective
+  namespace over the full `execution_request_id`, and has no authorization,
+  retry, rollback, compensation, generic shell/argv/package-manager framework,
+  or parallel governance framework.
+- [x] Record focused `128 passed` and canonical `3288 passed, 5 deselected, 447
+  warnings`, `RC=0`, executed exactly once on final implementation code; exact
+  three-file implementation scope, post-canonical scope, staged scope, staged
+  diff check, commit, push, and upstream alignment `0 0` all passed.
+- [ ] `SM-01B-02D — Authorized Toolchain & Identity Provisioning v1`.
+- [ ] Require human authorization immediately before each future mutating
   provisioning step: one authorization equals one bounded invocation, with no
   automatic retry or rollback.
 - [ ] Resolve historical MariaDB credential continuity through an explicit
@@ -60,9 +77,11 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
 
 SM-01B overall remains incomplete. Mac AIControlCenter remains the sole Control
 Plane; Ubuntu remains a stateless worker with no Shopping secret ownership.
-Offline-recovery custody remains external, and SM-01B-02B does not recover,
-replace, rotate, or invent unresolved historical MariaDB credentials.
-Production remains `NOT_DEPLOYED`; `materialization_implemented=false`;
+Offline-recovery private custody remains external. SM-01B-02C does not recover,
+rotate, replace, derive, invent, or validate unresolved historical MariaDB
+credentials. Adapter implementation is not authorization to execute adapters.
+Production remains `production_status=NOT_DEPLOYED`;
+`materialization_implemented=false`;
 `SOPS_INSTALLATION=false`; `AGE_INSTALLATION=false`;
 `AGE_KEY_GENERATION=false`; `OFFLINE_RECOVERY_KEY_GENERATION=false`;
 `SECRET_PAYLOAD_CREATION=false`; `SECRET_MATERIALIZATION=false`;

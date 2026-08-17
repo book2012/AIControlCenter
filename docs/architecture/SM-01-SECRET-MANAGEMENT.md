@@ -1,29 +1,36 @@
 # SM-01 — Shopping Secret Management
 
-Status: **SM-01B-02B IMPLEMENTATION AND VALIDATION COMPLETE**
+Status: **SM-01B-02C IMPLEMENTATION AND VALIDATION COMPLETE**
 
-Current milestone: `SM-01B-02B — Provisioning Planner v1`
+Current milestone: `SM-01B-02C — Bounded Mutation Adapters v1`
 
-Milestone identifier: `SM_01B_02B_PROVISIONING_PLANNER_VALIDATED`
+Milestone identifier: `SM_01B_02C_BOUNDED_MUTATION_ADAPTERS_VALIDATED`
 
-Implementation commit: `2330eca7e8ed99ba50cb9f99bad1abba4a4d9876`
+Implementation commit: `5a811cb1f9c782acb4f3e537596fb47ae0c599ff`
 
-Next development milestone: `SM-01B-02C — Bounded Mutation Adapters v1`
+Next development milestone: `SM-01B-02D — Authorized Toolchain & Identity Provisioning v1`
 
 This architecture separates metadata, evaluation, delivery, materialization,
 and mutation authority. SM-01A established layers 1 and 2. SM-01B-01 adds the
 architecture and read-only inspection portion of layer 3; it does not deploy
 the toolchain or backend.
 
-SM-01B-02B adds a provisioning planner, not provisioning execution. The
+SM-01B-02B adds a provisioning planner. SM-01B-02C implements bounded mutation
+adapter code only. The
 canonical provisioning definition and Draft 2020-12 schema define exactly five
 typed actions. Core `ProvisioningPlan` is vendor-neutral and value-free.
 Malformed input emits only sanitized `UNKNOWN_ACTION` or
 `MALFORMED_CONFIGURATION` evidence. The read-only macOS provisioning inspector
 performs planning only, and core imports from `ops` and `integrations` remain
-zero. Future execution must reuse SEC-02 `ControlledExecutionPort`; it must not
-create a parallel governance framework. Implementing bounded adapters is not
-authorization to execute them.
+zero. The adapters reuse SEC-02 `ControlledExecutionPort`, accept only exact
+target `SHOPPING_SECRET_PROVISIONING` and an exact action, and invoke at most
+one narrow injected capability. They issue or consume no authorization; do not
+retry, rollback, or compensate; and produce value-free
+`GovernanceExecutionReceipt` evidence with a deterministic injective receipt
+identity namespace over the full `execution_request_id`. They provide no
+generic shell/argv/package-manager execution framework and create no parallel
+governance framework. Implementing bounded adapters is not authorization to
+execute them.
 
 ## 1. Secret Contract — implemented
 
@@ -107,8 +114,16 @@ material in the canonical definition. `materialization_implemented=false`.
 AIControlCenter on the Mac remains the sole Control Plane; Ubuntu must not own,
 persist, select, or govern Shopping secrets.
 
-`SM-01B-02B — Provisioning Planner v1` is validated. `SM-01B-02C — Bounded
-Mutation Adapters v1` is future work.
+`SM-01B-02B — Provisioning Planner v1` and `SM-01B-02C — Bounded Mutation
+Adapters v1` are validated. The five exact actions remain:
+
+- `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`
+- `SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`
+- `SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`
+- `SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`
+- `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`
+
+Offline-recovery private custody remains external.
 
 ## 4. Secret Materialization — not implemented
 
@@ -117,7 +132,7 @@ container, file, or command input. SM-01A reads no secret value and defines no
 materialization lifecycle. Presence-only preflight must remain value-free even
 after a backend is introduced.
 
-## 5. Authorization / Mutation — not implemented
+## 5. Authorization / Mutation — bounded adapters implemented; execution not authorized
 
 A valid contract or successful preflight is not authorization. A desired-state
 package is not activation authority. Any future Production mutation requires
@@ -153,8 +168,43 @@ SOPS+age cannot recover or silently replace historical MariaDB credentials.
 Production runtime cutover remains blocked on an explicit
 continuity/recovery/rotation strategy.
 
-Offline-recovery custody remains external. SM-01B-02B does not recover,
-replace, rotate, or invent historical MariaDB credentials.
+Offline-recovery private custody remains external. SM-01B-02C does not recover,
+rotate, replace, derive, invent, or validate historical MariaDB credentials.
+
+## SM-01B-02C validation record
+
+- Milestone: `SM_01B_02C_BOUNDED_MUTATION_ADAPTERS_VALIDATED`
+- Implementation commit: `5a811cb1f9c782acb4f3e537596fb47ae0c599ff`
+- Focused final validation: `128 passed`
+- Canonical final validation: `3288 passed, 5 deselected, 447 warnings`,
+  `RC=0`, executed exactly once on final implementation code
+- Exact three-file implementation scope: PASS
+- Post-canonical scope: PASS
+- Staged scope: PASS
+- Staged diff check: PASS
+- Commit: PASS
+- Push: PASS
+- Upstream alignment: PASS (`0 0`)
+- `production_status=NOT_DEPLOYED`
+- `materialization_implemented=false`
+- `SOPS_INSTALLATION=false`
+- `AGE_INSTALLATION=false`
+- `AGE_KEY_GENERATION=false`
+- `OFFLINE_RECOVERY_KEY_GENERATION=false`
+- `SECRET_PAYLOAD_CREATION=false`
+- `SECRET_MATERIALIZATION=false`
+- `AUTHORIZATION_CONSUMED=false`
+- `RUNTIME_INSPECTION=false`
+- `PRODUCTION_MUTATION=false`
+- `SHOPPING_RUNTIME_ACTIVATED=false`
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu remains a stateless
+infrastructure worker with no Shopping secret ownership. Adapter implementation
+is not authorization to execute adapters. Each future Production mutation
+requires separate human authorization immediately before exactly one bounded
+invocation. There is no automatic retry or rollback. Next development
+milestone: `SM-01B-02D — Authorized Toolchain & Identity Provisioning v1`.
+SM-01B overall remains incomplete.
 
 ## SM-01B-02B validation record
 
