@@ -78,15 +78,24 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   an exact-bound request that grants no execution authority.
 - [x] Record focused `114 passed` and canonical `3331 passed, 5 deselected,
   447 warnings`, `RC=0`, canonical execution count exactly `1`.
-- [ ] `SM-01B-02D-01B — Shopping Provisioning Governance Coordinator`:
-  planner -> human authorization -> generic authorization consumption ->
-  read-only precondition recollection -> SEC-02 `ALLOW_SINGLE_INVOCATION` ->
-  one bounded adapter invocation -> read-only postcondition validation ->
-  closeout, without a parallel governance framework or generic shell execution
-  API.
-- [ ] Preserve one human authorization lifecycle per bounded Production
-  mutation, with NO automatic retry, NO automatic rollback, and NO
-  compensation.
+- [x] Close `SM-01B-02D-01B — Shopping Provisioning Governance Coordinator
+  v1` at
+  `SM_01B_02D_01B_SHOPPING_PROVISIONING_GOVERNANCE_COORDINATOR_VALIDATED`,
+  implementation commit `8229288d68d46383082cec48ffc726bd0dbee09a`.
+- [x] Enforce planner -> explicit human-authorized lifecycle -> read-only
+  precondition -> SEC-02 `ALLOW_AUTHORIZATION_CONSUMPTION` ->
+  `AuthorizationConsumptionPort.consume_once` -> fresh read-only precondition
+  -> SEC-02 `ALLOW_SINGLE_INVOCATION` -> exactly one of five bounded
+  `ControlledExecutionPort` adapters -> read-only postcondition -> closeout or
+  stop.
+- [x] Record that consumption evidence grants no execution authority;
+  `READY`/`BLOCKED`/`MALFORMED` cause zero consumption and zero invocation;
+  post-consumption drift stops with consumed authorization and zero invocation;
+  `FAILED`/`UNCERTAIN` stop after one attempt; and there is no automatic retry,
+  rollback, or compensation.
+- [x] Record focused `181 passed` and canonical `3349 passed, 5 deselected,
+  447 warnings`, `RC=0`, canonical execution count exactly `1`.
+- [ ] `SM-01B-02D-02 — Concrete Provisioning Capabilities v1`.
 - [ ] Resolve historical MariaDB credential continuity through an explicit
   continuity/recovery/rotation strategy; SOPS+age cannot recover or silently
   replace historical credentials.
@@ -95,7 +104,7 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
 
 SM-01B overall remains incomplete. Mac AIControlCenter remains the sole Control
 Plane; Ubuntu remains a stateless worker with no Shopping secret ownership.
-Offline-recovery private custody remains external. SM-01B-02D-01A does not recover,
+Offline-recovery private custody remains external. SM-01B-02D-01B does not recover,
 rotate, replace, derive, invent, or validate unresolved historical MariaDB
 credentials. Authorization-consumption evidence grants no execution authority.
 Production remains `PRODUCTION_STATUS_NOT_DEPLOYED=true`;
@@ -107,6 +116,10 @@ Production remains `PRODUCTION_STATUS_NOT_DEPLOYED=true`;
 `RUNTIME_INSPECTION=false`; `DOCKER_ACCESS=false`; `COLIMA_ACCESS=false`;
 `PRODUCTION_MUTATION=false`; `NOTION_SYNC=false`;
 `SHOPPING_RUNTIME_ACTIVATED=false`.
+Mac AIControlCenter remains the sole Control Plane; Ubuntu remains a stateless
+worker. Core has no dependency on `ops.macos`, and no generic shell or argv
+execution API exists. This validation activity recorded
+`MATERIALIZATION_IMPLEMENTED=false`.
 
 ## PA-04 — Notification Platform v1
 

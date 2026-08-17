@@ -1,14 +1,14 @@
 # SM-01 — Shopping Secret Management
 
-Status: **SM-01B-02D-01A IMPLEMENTATION VALIDATED; DOCUMENTATION CLOSEOUT PENDING UNTIL COMMIT**
+Status: **SM-01B-02D-01B IMPLEMENTATION AND VALIDATION COMPLETE**
 
-Current milestone: `SM-01B-02D-01A — Generic Governance Authorization Consumption Boundary v1`
+Current milestone: `SM-01B-02D-01B — Shopping Provisioning Governance Coordinator v1`
 
-Milestone identifier: `SM_01B_02D_01A_GENERIC_GOVERNANCE_AUTHORIZATION_CONSUMPTION_BOUNDARY_VALIDATED`
+Milestone identifier: `SM_01B_02D_01B_SHOPPING_PROVISIONING_GOVERNANCE_COORDINATOR_VALIDATED`
 
-Implementation commit: `01e57cabd39cbc594f128e06527332b3c515c249`
+Implementation commit: `8229288d68d46383082cec48ffc726bd0dbee09a`
 
-Next engineering milestone: `SM-01B-02D-01B — Shopping Provisioning Governance Coordinator`
+Next engineering milestone: `SM-01B-02D-02 — Concrete Provisioning Capabilities v1`
 
 This architecture separates metadata, evaluation, delivery, materialization,
 and mutation authority. SM-01A established layers 1 and 2. SM-01B-01 adds the
@@ -45,6 +45,17 @@ bindings, and a matching zero-invocation budget line item. It returns only
 a `COMMITTED` `GovernanceAuthorizationConsumptionReceipt`, and an exact-bound
 `GovernanceExecutionRequest`. The result is evidence and grants no execution
 authority.
+
+SM-01B-02D-01B enforces planner -> explicit human-authorized lifecycle ->
+read-only precondition -> SEC-02 `ALLOW_AUTHORIZATION_CONSUMPTION` ->
+`AuthorizationConsumptionPort.consume_once` -> fresh read-only precondition ->
+SEC-02 `ALLOW_SINGLE_INVOCATION` -> exactly one of five bounded
+`ControlledExecutionPort` adapters -> read-only postcondition -> closeout or
+stop. Consumption evidence grants no execution authority. `READY`, `BLOCKED`,
+or `MALFORMED` causes zero consumption and zero invocation. Post-consumption
+drift stops with consumed authorization and zero invocation. `FAILED` or
+`UNCERTAIN` stops after one attempt. There is no automatic retry, rollback, or
+compensation.
 
 ## 1. Secret Contract — implemented
 
@@ -189,14 +200,13 @@ continuity/recovery/rotation strategy.
 Offline-recovery private custody remains external. SM-01B-02C does not recover,
 rotate, replace, derive, invent, or validate historical MariaDB credentials.
 
-## SM-01B-02D-01A validation record
+## SM-01B-02D-01B validation record
 
-- Status: implementation validated; documentation closeout pending until this
-  change is committed
-- Implementation commit: `01e57cabd39cbc594f128e06527332b3c515c249`
-- Previous blocker `SM-01B-02D-00`: RESOLVED
-- Focused validation: `114 passed`
-- Canonical regression: `3331 passed, 5 deselected, 447 warnings`, `RC=0`
+- Status: implementation and validation complete
+- Milestone: `SM_01B_02D_01B_SHOPPING_PROVISIONING_GOVERNANCE_COORDINATOR_VALIDATED`
+- Implementation commit: `8229288d68d46383082cec48ffc726bd0dbee09a`
+- Focused validation: `181 passed`
+- Canonical regression: `3349 passed, 5 deselected, 447 warnings`, `RC=0`
 - Canonical execution count: exactly `1`
 - `PRODUCTION_STATUS_NOT_DEPLOYED=true`
 - `MATERIALIZATION_IMPLEMENTED=false`
@@ -213,12 +223,10 @@ human authorization lifecycle remains required per bounded Production
 mutation. Historical MariaDB credential continuity remains unresolved, and
 `SHOPPING_RUNTIME_ACTIVATED` remains the Production milestone.
 
-Next engineering work is `SM-01B-02D-01B — Shopping Provisioning Governance
-Coordinator`: compose planner -> human authorization -> generic authorization
-consumption -> read-only precondition recollection -> SEC-02 policy -> one
-bounded adapter invocation -> read-only postcondition validation -> closeout.
-It must not create a parallel governance framework or generic shell execution
-API.
+Mac AIControlCenter remains the sole Control Plane; Ubuntu remains a stateless
+worker. Core has no dependency on `ops.macos`. No generic shell or argv
+execution API exists. Next engineering milestone is
+`SM-01B-02D-02 — Concrete Provisioning Capabilities v1`.
 
 ## SM-01B-02C validation record
 

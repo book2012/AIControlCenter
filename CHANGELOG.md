@@ -1,42 +1,35 @@
 # CHANGELOG
 
-## 2026-08-17 — SM-01B-02D-01A Generic Governance Authorization Consumption Boundary v1
+## 2026-08-17 — SM-01B-02D-01B Shopping Provisioning Governance Coordinator v1
 
-Implementation is validated; documentation closeout remains pending until this
-change is committed. Implementation commit:
-`01e57cabd39cbc594f128e06527332b3c515c249`.
+Closed implementation and validation at
+`SM_01B_02D_01B_SHOPPING_PROVISIONING_GOVERNANCE_COORDINATOR_VALIDATED`.
+Implementation commit: `8229288d68d46383082cec48ffc726bd0dbee09a`.
 
-The previous SM-01B-02D-00 blocker is resolved by the generic SEC-02
-`AuthorizationConsumptionPort` with immutable `AuthorizationConsumptionCommand`
-and `AuthorizationConsumptionResult`. Consumption is a generic Governance
-boundary, not Shopping-specific, and `consume_once` is its only API. It
-requires `AUTHORIZED` authorization, `AVAILABLE` mutation budget, exact
-lifecycle/authorization/target/action-scope/mutation-budget bindings, and a
-matching zero-invocation budget line item. It returns only `CONSUMED`
-authorization, exactly `CONSUMED` zero-invocation mutation budget, a
-`COMMITTED` `GovernanceAuthorizationConsumptionReceipt`, and exact-bound
-`GovernanceExecutionRequest`. The result is evidence and grants no execution
-authority.
+The coordinator enforces planner -> explicit human-authorized lifecycle ->
+read-only precondition -> SEC-02 `ALLOW_AUTHORIZATION_CONSUMPTION` ->
+`AuthorizationConsumptionPort.consume_once` -> fresh read-only precondition ->
+SEC-02 `ALLOW_SINGLE_INVOCATION` -> exactly one of five bounded
+`ControlledExecutionPort` adapters -> read-only postcondition -> closeout or
+stop. Consumption evidence grants no execution authority. `READY`, `BLOCKED`,
+or `MALFORMED` causes zero consumption and zero invocation. Post-consumption
+drift stops with consumed authorization and zero invocation. `FAILED` or
+`UNCERTAIN` stops after one attempt. There is no automatic retry, rollback, or
+compensation.
 
-Invocation remains current read-only precondition recollection -> SEC-02
-`ALLOW_SINGLE_INVOCATION` -> `ControlledExecutionPort.invoke_once`. Preserve
-NO automatic retry, NO automatic rollback, NO compensation, and one human
-authorization lifecycle per bounded Production mutation.
-
-Validation recorded focused `114 passed`; canonical `3331 passed, 5
+Validation recorded focused `181 passed`; canonical `3349 passed, 5
 deselected, 447 warnings`, `RC=0`, canonical execution count exactly `1`.
-`PRODUCTION_STATUS_NOT_DEPLOYED=true`, `MATERIALIZATION_IMPLEMENTED=false`,
 `PRODUCTION_MUTATION=false`, `AUTHORIZATION_CONSUMED=false`,
 `SECRET_VALUES_READ=false`, `RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`,
-`COLIMA_ACCESS=false`, and `NOTION_SYNC=false`. Historical MariaDB credential
+`COLIMA_ACCESS=false`, `MATERIALIZATION_IMPLEMENTED=false`, and
+`NOTION_SYNC=false`. Historical MariaDB credential
 continuity remains unresolved; `SHOPPING_RUNTIME_ACTIVATED` remains the
 Production milestone.
 
-Next engineering work is `SM-01B-02D-01B — Shopping Provisioning Governance
-Coordinator`: planner -> human authorization -> generic authorization
-consumption -> read-only precondition recollection -> SEC-02 policy -> one
-bounded adapter invocation -> read-only postcondition validation -> closeout,
-without a parallel governance framework or generic shell execution API.
+Mac AIControlCenter remains the sole Control Plane; Ubuntu remains a stateless
+worker. Core has no dependency on `ops.macos`, and no generic shell or argv
+execution API exists. Next engineering milestone:
+`SM-01B-02D-02 — Concrete Provisioning Capabilities v1`.
 
 ## 2026-08-17 — SM-01B-02C Bounded Mutation Adapters v1
 
