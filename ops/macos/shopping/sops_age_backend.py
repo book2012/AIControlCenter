@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 import stat
 from collections.abc import Callable, Mapping
@@ -34,7 +33,8 @@ def validate_definition(definition: object) -> None:
     if not isinstance(definition, dict) or set(definition) != {
         "schema_version", "definition_id", "owner", "backend_kind",
         "production_status", "value_free", "materialization_implemented",
-        "encrypted_payload", "identity_custody", "recipient_policy",
+        "encrypted_payload", "identity_custody", "control_plane_recipient",
+        "offline_recovery_inbox", "offline_recovery_recipient", "recipient_policy",
     }:
         raise BackendDefinitionError("definition fields do not match schema v1")
     expected = {
@@ -75,6 +75,25 @@ def validate_definition(definition: object) -> None:
         raise BackendDefinitionError("identity relative path is invalid")
     if not isinstance(policy, dict) or policy != {"minimum_recipients": 2, "roles": ["control-plane", "offline-recovery"], "recipient_material_stored": False}:
         raise BackendDefinitionError("recipient policy is invalid")
+    portable_paths = {
+        "control_plane_recipient": (".config/aicontrolcenter/shopping-secrets/recipients/control-plane.txt", False),
+        "offline_recovery_inbox": (".config/aicontrolcenter/shopping-secrets/inbox/offline-recovery.txt", True),
+        "offline_recovery_recipient": (".config/aicontrolcenter/shopping-secrets/recipients/offline-recovery.txt", False),
+    }
+    for key, (expected_path, has_external_custody) in portable_paths.items():
+        metadata = definition[key]
+        expected_keys = {"base", "relative_path", "required_owner", "maximum_mode"}
+        if has_external_custody:
+            expected_keys.add("private_identity_custody")
+        if not isinstance(metadata, dict) or set(metadata) != expected_keys:
+            raise BackendDefinitionError("portable recipient metadata is invalid")
+        if (metadata.get("base"), metadata.get("relative_path"), metadata.get("required_owner"), metadata.get("maximum_mode")) != ("control-plane-home", expected_path, "control-plane-user", "0600"):
+            raise BackendDefinitionError("portable recipient path policy is invalid")
+        path = Path(metadata["relative_path"])
+        if path.is_absolute() or ".." in path.parts:
+            raise BackendDefinitionError("portable recipient path is invalid")
+        if has_external_custody and metadata.get("private_identity_custody") != "external":
+            raise BackendDefinitionError("offline recovery private custody is invalid")
 
 
 def _safe_file(path: Path, expected_uid: int, maximum_mode: int) -> tuple[bool, bool, bool]:
@@ -96,13 +115,15 @@ class SopsAgeBackendAdapter:
         executable_resolver: Callable[[str], str | None],
         control_plane_home: Path,
         repository_root: Path = ROOT,
-        expected_uid: int | None = None,
+        expected_uid: int,
     ) -> None:
         self._definition = dict(definition)
         self._resolver = executable_resolver
         self._root = repository_root
         self._control_plane_home = control_plane_home
-        self._expected_uid = os.getuid() if expected_uid is None else expected_uid
+        if not isinstance(expected_uid, int) or isinstance(expected_uid, bool) or expected_uid < 0:
+            raise ValueError("INVALID_EXPECTED_UID")
+        self._expected_uid = expected_uid
 
     def inspect(self) -> SecretBackendInspection:
         try:
