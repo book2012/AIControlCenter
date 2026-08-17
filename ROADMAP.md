@@ -126,18 +126,25 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   corrected-tree canonical `3433 passed, 5 deselected, 447 warnings in 135.93s`,
   `RC=0`, exactly once after final fixture correction; Git closeout PASS,
   pushed, divergence `0 0`.
-- [ ] Govern the operational public-recipient inbox/intake write boundary and
-  define explicit Production-readiness authorization gates while keeping the
-  offline-recovery private identity external to the Production Mac.
+- [x] Complete and validate `SM-01B-02D-04A — Governed Offline Public Recipient
+  Intake v1` at implementation commit
+  `6e1aa0135b652b199f05a4911c0f45817a8529f4`: add the sixth exact action,
+  preserve external private-identity custody, separate intake from later
+  registration authorization, and bind the fixed Mac inbox mutation to trusted
+  descriptor/inode evidence. Focused `163 passed`; canonical `3457 passed, 5
+  deselected, 447 warnings in 133.23s`, `RC=0`; Git closeout PASS, clean,
+  divergence `0 0`.
+- [x] Land the 04A documentation closeout and mark `SM-01B-02D-04A` CLOSED.
+- [ ] Complete `SM-01B-02D-04B` as the next engineering milestone.
+- [ ] After 04B, resolve historical MariaDB credential continuity through an
+  explicit continuity/recovery/rotation strategy; SOPS+age cannot recover or
+  silently replace historical credentials.
 - [ ] After all readiness gates pass, execute each Production mutation under
   its own explicit human authorization: SOPS installation, age installation,
   control-plane identity creation, each public-recipient registration/intake
   write, each secret payload/materialization mutation, and later runtime cutover
   remain separately bounded; no authorization covers multiple mutations or
   grants retry authority.
-- [ ] Resolve historical MariaDB credential continuity through an explicit
-  continuity/recovery/rotation strategy; SOPS+age cannot recover or silently
-  replace historical credentials.
 - [ ] `SHOPPING_RUNTIME_ACTIVATED`
 - [ ] `SHOPPING_STOREFRONT_ONLINE_READ_ONLY` (only after runtime activation)
 

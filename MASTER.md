@@ -1,5 +1,33 @@
 # MASTER
 
+## SM-01B-02D-04A — Governed Offline Public Recipient Intake v1 — IMPLEMENTATION VALIDATED
+
+Implementation commit `6e1aa0135b652b199f05a4911c0f45817a8529f4` is
+validated and Git-closed; documentation closeout is complete, so 04A is CLOSED. The sixth exact action is
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`. It moves only one typed,
+already-public age recipient into the fixed, no-clobber Mac Control Plane inbox
+under descriptor/inode-bound filesystem checks. The private recovery identity
+remains external.
+
+Intake and the existing
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE` action are
+separate Production mutations. Each requires a fresh human authorization,
+budget, execution request, and durable consumption record. Mac AIControlCenter
+remains the sole Control Plane and Governance authority; Ubuntu remains a
+stateless worker with no AI workload, business logic, or Governance state.
+`SM-01B-02D-03` remains CLOSED and its durable port, SQLite adapter/path
+policy, and semantics are unchanged;
+`CORE_GOVERNANCE_SEMANTICS_CHANGE_REQUIRED=false`.
+
+Validation: focused `163 passed`; canonical `3457 passed, 5 deselected, 447
+warnings in 133.23s`, `RC=0`; implementation closeout PASS, clean, divergence
+`0 0`. No Production mutation or recipient intake occurred. Historical
+MariaDB credential continuity remains unresolved and still blocks DB-secret
+payload/materialization, database validation, DB/runtime cutover, and
+`SHOPPING_RUNTIME_ACTIVATED`. Current next engineering milestone:
+`SM-01B-02D-04B`. The next Production milestone remains
+`SHOPPING_RUNTIME_ACTIVATED`; Notion is deferred until then.
+
 ## SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1 — VALIDATED
 
 `SM_01B_02D_03_DURABLE_AUTHORIZATION_CONSUMPTION_VALIDATED=true` at commit

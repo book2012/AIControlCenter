@@ -1,5 +1,88 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-02D-04A — Governed Offline Public Recipient Intake v1
+
+Implementation and validation are complete at commit
+`6e1aa0135b652b199f05a4911c0f45817a8529f4`; documentation closeout is complete and 04A is CLOSED. The canonical provisioning definition now
+contains the exact sixth action
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`. It accepts one typed,
+value-redacted, syntactically valid age public recipient and performs one
+bounded Governance-controlled intake mutation into the Mac Control Plane's
+fixed inbox. The existing later action remains
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`.
+
+**Intake and registration are separate actions.** Each requires a separate
+fresh human authorization, mutation budget, execution request, and durable
+authorization-consumption record. One authorization never covers both. The
+flow is external offline-recovery custody -> already-public age recipient
+metadata -> bounded intake -> fixed Control Plane inbox -> later separately
+authorized registration.
+
+The private offline-recovery identity remains external to the Production Mac:
+it is never generated or stored there, never read by Python, and never queried
+from the Production Mac. Only already-public age recipient metadata may enter
+AIControlCenter. The canonical no-clobber, public-recipient-only inbox policy is
+base `control-plane-home`, relative path
+`.config/aicontrolcenter/shopping-secrets/inbox/offline-recovery.txt`, outside
+Git, owned by the expected Control Plane uid/gid, with mode no broader than
+`0600`. No generic file-write, arbitrary destination-path, or arbitrary
+shell/argv API is exposed, and parent directories are never created implicitly.
+
+Before any filesystem mutation, the typed boundary proves exactly one bounded
+syntactically valid age public recipient and the fixed trusted age executable
+prevalidates it. The fixed existing parent chain is then traversed
+descriptor-relative with no-follow/directory semantics; every directory is
+checked with `fstat` for expected ownership and safe mode. The leaf is created
+with exclusive no-follow semantics (`O_CREAT | O_EXCL | O_NOFOLLOW`), and the
+mutation boundary is crossed immediately after successful creation. From that
+point, any inability to prove the result is `UNCERTAIN`, with no automatic
+deletion or cleanup.
+
+Created-leaf metadata is verified on its descriptor: regular-file type,
+expected uid/gid, mode no broader than `0600`, bounded expected size, and
+`st_dev`/`st_ino` identity. Postcondition validation performs a fresh trusted
+parent traversal. The original and fresh final-parent device/inode identities
+must match, and the canonical leaf device/inode must match the leaf actually
+created. Parent or path rebinding therefore cannot be classified
+`COMPLETED`. There is no retry, rollback, compensation, repair, recovery,
+claim stealing, lease recovery, or stranded-claim recovery; evidence remains
+value-free and excludes recipient contents, secrets, stdout, stderr,
+environment values, and private identity material.
+
+Mac mini M4 remains the sole Brain and Control Plane. AIControlCenter remains
+the single orchestration, Governance, policy, authorization, audit, and
+business-logic authority. Ubuntu remains only a stateless infrastructure
+worker: it owns no AI workload, business logic, Governance state, application
+state, or Control Plane authority.
+
+Production semantics remain one human authorization = one bounded Production
+mutation. Authorization consumption is factual evidence and grants zero
+execution authority. After consumption, the coordinator recollects current
+read-only preconditions, compares current state, reruns SEC-02, requires
+`ALLOW_SINGLE_INVOCATION`, and invokes exactly one `ControlledExecutionPort`
+action. `FAILED` and `UNCERTAIN` both consume authorization; any retry is an
+entirely new Production mutation attempt. Automatic retry, authorization
+reuse, automatic external rollback, and compensation remain prohibited.
+
+`SM-01B-02D-03` remains CLOSED. 04A changed neither the durable
+`AuthorizationConsumptionPort`, its SQLite adapter or path policy, nor core
+durable-consumption semantics; `CORE_GOVERNANCE_SEMANTICS_CHANGE_REQUIRED=false`.
+
+Validation recorded focused `163 passed` and canonical `3457 passed, 5
+deselected, 447 warnings in 133.23s`, `RC=0`; the warnings are not 04A
+failures. Implementation Git closeout passed at the commit above with a clean
+tree and upstream divergence `0 0`.
+
+No Production filesystem mutation, real recipient intake, SOPS or age
+installation, Control Plane identity creation, recipient registration, or
+runtime cutover occurred during implementation or validation.
+`SHOPPING_RUNTIME_ACTIVATED=false`; Notion remains deferred until that
+milestone. Historical MariaDB credentials remain unresolved. SOPS+age does not
+recover them. This did not block 04A, but it still blocks DB-secret payload
+creation with historical credentials, DB-secret materialization,
+database-dependent validation, WordPress/WooCommerce DB cutover, runtime
+cutover, and `SHOPPING_RUNTIME_ACTIVATED`. Next: `SM-01B-02D-04B`.
+
 ## SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1
 
 Validated at `SM_01B_02D_03_DURABLE_AUTHORIZATION_CONSUMPTION_VALIDATED=true`;

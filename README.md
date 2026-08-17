@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## SM-01B-02D-04A Governed Offline Public Recipient Intake v1
+
+04A implementation and validation are complete at
+`6e1aa0135b652b199f05a4911c0f45817a8529f4`; implementation and documentation closeout are complete, so the milestone is CLOSED. The provisioning model now has a
+sixth bounded action,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`, for one typed,
+value-redacted, already-public age recipient at the fixed Mac Control Plane
+inbox. It is separate from
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`; each action
+requires its own fresh authorization, budget, request, and durable consumption
+record.
+
+The private offline-recovery identity stays external to the Production Mac.
+The intake is fixed-path, outside Git, no-clobber, owner/mode checked, and
+descriptor/inode bound; ambiguous post-mutation outcomes are `UNCERTAIN` with
+no cleanup or retry. Validation: focused `163 passed`; canonical `3457 passed,
+5 deselected, 447 warnings in 133.23s`, `RC=0`; implementation Git closeout
+PASS, clean, divergence `0 0`. No Production intake or other Production
+mutation occurred. MariaDB continuity remains unresolved, Notion remains
+deferred, and `SHOPPING_RUNTIME_ACTIVATED=false`. Next: `SM-01B-02D-04B`.
+
 ## SM-01B-02D-03 Durable Authorization Consumption & Evidence Store v1
 
 Validated at `SM_01B_02D_03_DURABLE_AUTHORIZATION_CONSUMPTION_VALIDATED=true`;

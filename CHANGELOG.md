@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 2026-08-18 — SM-01B-02D-04A Governed Offline Public Recipient Intake v1
+
+- Added the exact sixth provisioning action,
+  `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`, as a typed,
+  value-redacted boundary for exactly one already-public age recipient.
+- Kept intake separate from
+  `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`; each needs a
+  fresh human authorization, mutation budget, execution request, and durable
+  authorization-consumption record.
+- Hardened the fixed, outside-Git Mac Control Plane inbox with trusted age
+  prevalidation before mutation, safe existing descriptor-relative parent
+  traversal, exclusive no-follow creation, owner/mode/size checks, fresh-parent
+  and created-leaf device/inode binding, and `UNCERTAIN` after any ambiguous
+  post-creation outcome. No generic write/path/shell API, cleanup, retry,
+  rollback, compensation, repair, or recovery was added.
+- Preserved external private-identity custody, value-free evidence, Mac-only
+  Control Plane authority, stateless Ubuntu, and unchanged durable
+  authorization-consumption semantics
+  (`CORE_GOVERNANCE_SEMANTICS_CHANGE_REQUIRED=false`).
+- Recorded focused `163 passed` and canonical `3457 passed, 5 deselected, 447
+  warnings in 133.23s`, `RC=0`; the warnings are not 04A failures.
+  Implementation commit `6e1aa0135b652b199f05a4911c0f45817a8529f4` and Git
+  closeout PASS, clean, upstream divergence `0 0`.
+- Performed no real Production recipient intake, filesystem mutation,
+  installation, identity creation, registration, or runtime cutover. MariaDB
+  continuity remains unresolved; Notion is deferred and
+  `SHOPPING_RUNTIME_ACTIVATED=false`.
+
 ## 2026-08-18 — SM-01B-02D-03 Durable Authorization Consumption & Evidence Store v1
 
 - Closed `SM_01B_02D_03_DURABLE_AUTHORIZATION_CONSUMPTION_VALIDATED=true` at

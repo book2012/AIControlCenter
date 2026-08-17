@@ -1,5 +1,36 @@
 # Project History
 
+## 2026-08-18 — Governed offline public-recipient intake boundary
+
+SM-01B-02D-04A established recipient intake as a distinct governed mutation,
+not a side effect of registration. External custody first supplies only an
+already-public age recipient to the fixed Mac Control Plane inbox; a later
+registration/validation action consumes a different fresh authorization,
+mutation budget, execution request, and durable consumption record. This
+separation prevents one authorization from silently covering two filesystem or
+registration effects and preserves the one-human-authorization/one-bounded-
+Production-mutation rule.
+
+The private offline-recovery identity stays external because importing,
+generating, storing, reading, or querying it on the Production Mac would expand
+the Control Plane's custody and secret-exposure boundary unnecessarily. Python
+receives only a typed, value-redacted public-recipient object, and durable
+evidence contains no recipient value or private material.
+
+The fixed inbox uses descriptor-relative, no-follow traversal and descriptor
+metadata checks because pathname checks alone cannot prove that the validated
+parent and leaf remain the objects mutated. Exclusive leaf creation identifies
+the mutation boundary; fresh traversal plus parent and leaf `st_dev`/`st_ino`
+comparison proves that the canonical path still names the actual created
+object. Rebinding or any other post-creation ambiguity therefore becomes
+`UNCERTAIN`, never `COMPLETED`, and triggers no automatic cleanup, retry,
+rollback, compensation, or recovery.
+
+This decision did not change the closed durable authorization-consumption
+architecture. It performed no Production intake or filesystem mutation and did
+not resolve historical MariaDB credential continuity. Implementation was
+validated at `6e1aa0135b652b199f05a4911c0f45817a8529f4`; documentation closeout is complete, 04A is CLOSED, and 04B is next.
+
 ## 2026-08-13 — Canonical API recovery after immutable Source contamination
 
 Release `9a7216a75323` reached canonical bootstrap exactly once, but canonical
