@@ -1,5 +1,56 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1
+
+Validated at `SM_01B_02D_03_DURABLE_AUTHORIZATION_CONSUMPTION_VALIDATED=true`;
+implementation commit `681a9e342fde47c7bcb9d3aa2d497b737a19e052`. This is generic
+Governance owned by the Mac AIControlCenter Control Plane, not Shopping business
+logic or Ubuntu state. `AuthorizationConsumptionPort` is unchanged and
+`CORE_SEMANTICS_CHANGE_REQUIRED=false`.
+
+The Governance-owned SQLite adapter keeps Production state external to
+Git/source at
+`~/Library/Application Support/AIControlCenter/governance/authorization-consumption.sqlite3`.
+It validates path ownership, does not mutate or force the shared application-state
+parent to `0700`, and enforces Governance subtree `0700` and database `0600`.
+A durable `DURABLY_CLAIMED` barrier precedes the final transaction, which
+atomically records authorization `CONSUMED`, mutation budget `CONSUMED`, zero
+invocation/completed/uncertain accounting, and a `COMMITTED` receipt. Protected
+lifecycle, authorization, budget, claim, execution, request, and decision
+identities use replay-protected, value-free canonical binding/integrity digests;
+no secret values persist.
+
+A new `consume_once` after `COMMITTED` fails closed as repeated consumption and
+never returns a historical `AuthorizationConsumptionResult`. A stranded
+`DURABLY_CLAIMED` record fails closed. There is no claim stealing, lease,
+expiry, automatic recovery, retry, rollback, or compensation. Only the same
+invocation with ambiguous final commit acknowledgement may reconcile, and only
+when its exact expected `COMMITTED` record validates.
+
+Consumption evidence grants no execution authority; remaining budget is
+accounting, not retry authority. Callers must recollect/recompare current
+read-only preconditions and rerun SEC-02. `ControlledExecutionPort` may run only
+after `ALLOW_SINGLE_INVOCATION`; replay cannot resurrect invocation authority.
+
+Validation recorded focused `372 passed`; corrected-tree canonical `3433
+passed, 5 deselected, 447 warnings in 135.93s`, `RC=0`, executed exactly once
+after final fixture correction. Implementation Git closeout PASS;
+implementation pushed; upstream divergence `0 0`.
+`PRODUCTION_MUTATION=false`, `AUTHORIZATION_CONSUMED=false`,
+`SECRET_VALUES_READ=false`, `RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`,
+`COLIMA_ACCESS=false`, `NOTION_SYNC=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
+SM-01B remains incomplete and no Production provisioning occurred. SOPS/age
+installation, control-plane age identity creation, recipient registration,
+secret payload/materialization, and runtime activation remain outstanding.
+Historical MariaDB credential continuity remains unresolved; SOPS+age does not
+recover historical credentials. The offline-recovery private identity remains
+external to the Production Mac; only public recipient metadata may enter the
+Mac Control Plane, and the operational public-recipient inbox/intake write
+boundary requires explicit governance before Production activation. Notion
+remains deferred until `SHOPPING_RUNTIME_ACTIVATED`.
+
 ## SM-01B-02D-02B — Shopping Secret Provisioning Capabilities v1
 
 Status: implementation, validation, and Git closeout complete at

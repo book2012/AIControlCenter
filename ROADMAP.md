@@ -111,9 +111,30 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
 - [x] Record `PRODUCTION_MUTATION=false`, `AUTHORIZATION_CONSUMED=false`,
   `SECRET_VALUES_READ=false`, `RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`,
   `COLIMA_ACCESS=false`, and `NOTION_SYNC=false`.
-- [ ] `SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1`:
-  generic Governance-owned, Mac Control Plane only, replay-safe and durable,
-  with no Shopping business logic.
+- [x] Close `SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store
+  v1` at `SM_01B_02D_03_DURABLE_AUTHORIZATION_CONSUMPTION_VALIDATED=true`, commit
+  `681a9e342fde47c7bcb9d3aa2d497b737a19e052`: generic Mac Control Plane
+  Governance, unchanged `AuthorizationConsumptionPort`,
+  `CORE_SEMANTICS_CHANGE_REQUIRED=false`, no Shopping logic or Ubuntu state.
+- [x] Persist externally at
+  `~/Library/Application Support/AIControlCenter/governance/authorization-consumption.sqlite3`
+  with ownership validation, unchanged shared parent, Governance `0700`, and
+  database `0600`; enforce durable claim, atomic consumption, value-free replay
+  protection, fail-closed fresh replay/stranded claims, and exact same-invocation
+  ambiguous-commit reconciliation only.
+- [x] Preserve execution-authority separation and record focused `372 passed`,
+  corrected-tree canonical `3433 passed, 5 deselected, 447 warnings in 135.93s`,
+  `RC=0`, exactly once after final fixture correction; Git closeout PASS,
+  pushed, divergence `0 0`.
+- [ ] Govern the operational public-recipient inbox/intake write boundary and
+  define explicit Production-readiness authorization gates while keeping the
+  offline-recovery private identity external to the Production Mac.
+- [ ] After all readiness gates pass, execute each Production mutation under
+  its own explicit human authorization: SOPS installation, age installation,
+  control-plane identity creation, each public-recipient registration/intake
+  write, each secret payload/materialization mutation, and later runtime cutover
+  remain separately bounded; no authorization covers multiple mutations or
+  grants retry authority.
 - [ ] Resolve historical MariaDB credential continuity through an explicit
   continuity/recovery/rotation strategy; SOPS+age cannot recover or silently
   replace historical credentials.

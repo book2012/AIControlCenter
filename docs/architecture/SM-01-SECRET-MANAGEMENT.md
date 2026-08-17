@@ -1,14 +1,15 @@
 # SM-01 — Shopping Secret Management
 
-Status: **SM-01B-02D-02B IMPLEMENTATION, VALIDATION, AND GIT CLOSEOUT COMPLETE**
+Status: **SM-01B-02D-03 IMPLEMENTATION, VALIDATION, AND GIT CLOSEOUT COMPLETE**
 
-Current milestone: `SM-01B-02D-02B — Shopping Secret Provisioning Capabilities v1`
+Current milestone: `SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1`
 
-Milestone identifier: `SM_01B_02D_02B_SECRET_PROVISIONING_CAPABILITIES_VALIDATED=true`
+Milestone identifier: `SM_01B_02D_03_DURABLE_AUTHORIZATION_CONSUMPTION_VALIDATED=true`
 
-Implementation commit: `bffe28a153eb83d3c61e04d38f2ab96892a6feb5`
+Implementation commit: `681a9e342fde47c7bcb9d3aa2d497b737a19e052`
 
-Next engineering recommendation: `SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1`
+Next engineering recommendation: govern the public-recipient inbox/intake write
+boundary and define explicit Production-readiness authorization gates.
 
 This architecture separates metadata, evaluation, delivery, materialization,
 and mutation authority. SM-01A established layers 1 and 2. SM-01B-01 adds the
@@ -69,6 +70,49 @@ recipient. Offline recovery remains public-recipient-metadata only, and the
 value-free evidence contract remains intact. The next recommendation is generic
 Governance-owned, Mac Control Plane only, replay-safe and durable, and contains
 no Shopping business logic.
+
+SM-01B-02D-03 implements that generic Mac Control Plane Governance boundary,
+not Shopping logic or Ubuntu state. `AuthorizationConsumptionPort` is unchanged;
+`CORE_SEMANTICS_CHANGE_REQUIRED=false`. Its Governance-owned SQLite Production
+store remains outside Git/source at
+`~/Library/Application Support/AIControlCenter/governance/authorization-consumption.sqlite3`.
+Ownership is validated, the shared application-state parent is not mutated or
+forced to `0700`, Governance is `0700`, and the database is `0600`.
+
+The durable `DURABLY_CLAIMED` barrier precedes an atomic final transaction
+recording authorization and mutation budget `CONSUMED`, zero
+invocation/completed/uncertain accounting, and the `COMMITTED` receipt.
+Lifecycle, authorization, budget, claim, execution, request, and decision
+identities use replay-protected, value-free canonical binding/integrity digests;
+no secret values persist. Fresh replay after `COMMITTED` never receives the
+historical `AuthorizationConsumptionResult` and fails closed, as does a stranded
+claim. There is no claim stealing, lease, expiry, automatic recovery, retry,
+rollback, or compensation. Only the same invocation with ambiguous final commit
+acknowledgement may reconcile against its exact expected validated `COMMITTED`
+record.
+
+Consumption evidence grants no execution authority; remaining budget is
+accounting, not retry authority. Recollect/recompare current read-only
+preconditions, rerun SEC-02, and require `ALLOW_SINGLE_INVOCATION` before
+`ControlledExecutionPort`. Replay cannot resurrect invocation authority.
+
+Validation recorded focused `372 passed`; corrected-tree canonical `3433
+passed, 5 deselected, 447 warnings in 135.93s`, `RC=0`, exactly once after final
+fixture correction; Git closeout PASS, pushed, divergence `0 0`.
+`PRODUCTION_MUTATION=false`, `AUTHORIZATION_CONSUMED=false`,
+`SECRET_VALUES_READ=false`, `RUNTIME_INSPECTION=false`, `DOCKER_ACCESS=false`,
+`COLIMA_ACCESS=false`, `NOTION_SYNC=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
+SM-01B remains incomplete and no Production provisioning occurred. Actual
+SOPS/age installation, control-plane age identity creation, recipient
+registration, secret payload/materialization, and runtime activation remain
+outstanding. MariaDB credential continuity is explicitly unresolved and
+SOPS+age cannot recover historical credentials. The offline-recovery private
+identity remains external to the Production Mac; only public recipient metadata
+may enter the Mac Control Plane, and its operational inbox/intake write boundary
+requires explicit governance before Production activation. Notion remains
+deferred until `SHOPPING_RUNTIME_ACTIVATED`.
 
 ## 1. Secret Contract — implemented
 
