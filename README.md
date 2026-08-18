@@ -5,8 +5,18 @@
 `PHASE_B2B_1A` is implemented at
 `aa049e2940707ff9209a730ecfbcc5f705062171` as exactly 16 new files and 924
 insertions of repository-only, value-free prerequisite contracts. Implementation,
-focused validation, architecture review, canonical validation, and Git closeout
-are closed; documentation is `IN_CLOSEOUT`.
+focused validation, architecture review, canonical validation, and implementation
+Git closeout are closed. The prior reviewed documentation snapshot and its
+documentation Git closeout are evidenced by
+`099258ce3470f57e9260a1f671b404ed9d42a623`; that commit is not this
+reconciliation's commit.
+
+This exact six-document reconciliation is the `FINAL CLOSURE CANDIDATE` while
+uncommitted. `PHASE_B2B_1A=CLOSED` becomes authoritative only after the commit
+containing this exact reconciliation is committed, normally pushed, and the
+post-push checks show clean Git status and upstream divergence `0 0`. When those
+conditions pass, the same rule records documentation Git and repository
+closeout as closed; no second documentation mutation is required.
 
 After a blocked initial review, import-root handling, Git-scope validation, and
 B1 enum reuse were corrected. Focused validation was `49 passed in 0.14s`;

@@ -7,7 +7,17 @@ Milestone `PHASE_B2B_1A` is implemented at commit
 insertions. It adds repository-only, value-free prerequisite contracts for the
 later concrete MariaDB continuity validation boundary. Implementation, focused
 validation, architecture review, canonical validation, and implementation Git
-closeout are `CLOSED`; documentation is `IN_CLOSEOUT`.
+closeout are `CLOSED`. The prior reviewed documentation snapshot and its
+documentation Git closeout are evidenced by
+`099258ce3470f57e9260a1f671b404ed9d42a623`; that commit does not contain this
+six-document reconciliation.
+
+This exact six-document reconciliation is the `FINAL CLOSURE CANDIDATE` while
+it remains uncommitted. `PHASE_B2B_1A=CLOSED` becomes authoritative when the
+commit containing this exact reconciliation is committed, normally pushed,
+then followed by clean Git status and upstream divergence `0 0`. Once those
+conditions pass, this rule records repository and documentation Git closeout as
+`CLOSED` without a second documentation mutation.
 
 The driver facts are `DRIVER_FAMILY=PYMYSQL`, `DRIVER_VERSION=1.2.0`,
 `DRIVER_MODE=SYNCHRONOUS_ONE_SHOT`, `AUTH_PLUGIN_STATE=UNRESOLVED`, and

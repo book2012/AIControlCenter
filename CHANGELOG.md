@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 2026-08-18 — MariaDB Continuity Phase B2B-1A final closure candidate
+
+- Prepared this exact six-document reconciliation as the `FINAL CLOSURE
+  CANDIDATE` while uncommitted; it does not claim that its own Git closeout has
+  completed.
+- Preserved implementation, focused validation, architecture review, canonical
+  validation, and implementation Git closeout as `CLOSED`, and recorded
+  `099258ce3470f57e9260a1f671b404ed9d42a623` only as evidence for the prior
+  reviewed documentation snapshot and its documentation Git closeout.
+- Defined the self-activating transition: `PHASE_B2B_1A=CLOSED` becomes
+  authoritative only when the commit containing this exact reconciliation is
+  committed, normally pushed, followed by clean Git status, and followed by
+  upstream divergence `0 0`; passing those checks requires no second
+  documentation mutation.
+- Preserved the prior `IN_CLOSEOUT` chronology, all validation evidence, the
+  exactly-once canonical policy, runtime false/unavailable facts, architecture
+  invariants, and the read-only next milestone
+  `PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY`.
+
 ## 2026-08-18 — MariaDB Continuity Phase B2B-1A implementation closeout
 
 - Implemented `PHASE_B2B_1A` at

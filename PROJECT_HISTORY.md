@@ -1,5 +1,27 @@
 # Project History
 
+## 2026-08-18 — MariaDB Continuity Phase B2B-1A final closure candidate
+
+The prior reviewed documentation snapshot and its documentation Git closeout
+completed at `099258ce3470f57e9260a1f671b404ed9d42a623`; that commit does not
+contain this reconciliation. Implementation, focused validation, architecture
+review, canonical validation, and implementation Git closeout remain `CLOSED`.
+This exact six-document reconciliation is the `FINAL CLOSURE CANDIDATE` while
+uncommitted and does not claim completion of its own Git closeout.
+
+`PHASE_B2B_1A=CLOSED` becomes authoritative only when the commit containing this
+exact reconciliation is committed, normally pushed, followed by clean Git
+status, and followed by upstream divergence `0 0`. Once those conditions pass,
+this rule records documentation Git and repository closeout as `CLOSED` without
+a second documentation mutation. The earlier historical entry that documentation
+entered `IN_CLOSEOUT` remains preserved below.
+
+The next milestone remains exactly
+`PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY`. It begins read-only and authorizes
+no PyMySQL installation, requirements change, Production access, MariaDB
+authentication, credential material acquisition, SQL execution, numeric MariaDB
+loopback-port deployment, or runtime activation.
+
 ## 2026-08-18 — MariaDB Continuity Phase B2B-1A
 
 `PHASE_B2B_1A` was implemented at

@@ -1,6 +1,6 @@
 # Roadmap
 
-## MariaDB Continuity Phase B2B-1A — documentation in closeout
+## MariaDB Continuity Phase B2B-1A — final closure candidate
 
 - [x] Close implementation at `aa049e2940707ff9209a730ecfbcc5f705062171`
   with exactly 16 new files and 924 insertions of repository-only, value-free
@@ -22,11 +22,21 @@
 - [x] Preserve B2A/B1/Phase A history, Mac Control Plane ownership, stateless
   Ubuntu, `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six Shopping
   actions, and target-only `SHOPPING_SECRET_PROVISIONING`.
-- [ ] Complete documentation closeout and final documentation review.
+- [x] Preserve the prior reviewed documentation snapshot and its documentation
+  Git closeout evidence at `099258ce3470f57e9260a1f671b404ed9d42a623`.
+- [x] Establish the self-activating closure rule for this exact six-document
+  `FINAL CLOSURE CANDIDATE`: its containing commit must be committed, normally
+  pushed, then verified with clean Git status and upstream divergence `0 0`.
 
 Phase status: implementation `CLOSED`; focused validation `CLOSED`; architecture
 review `CLOSED`; canonical validation `CLOSED`; implementation Git closeout
-`CLOSED`; documentation `IN_CLOSEOUT`.
+`CLOSED`. While uncommitted, this exact reconciliation is the `FINAL CLOSURE
+CANDIDATE`; `099258ce3470f57e9260a1f671b404ed9d42a623` is prior documentation
+evidence, not its commit. `PHASE_B2B_1A=CLOSED` becomes authoritative only when
+the commit containing this exact reconciliation is committed, normally pushed,
+followed by clean Git status, and followed by upstream divergence `0 0`. Passing
+those checks makes documentation Git and repository closeout `CLOSED` under this
+rule without requiring a second documentation mutation.
 
 ### Next boundary
 
