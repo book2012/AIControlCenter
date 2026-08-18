@@ -1,5 +1,41 @@
 # Roadmap
 
+## MariaDB Continuity Phase B2B-1A — documentation in closeout
+
+- [x] Close implementation at `aa049e2940707ff9209a730ecfbcc5f705062171`
+  with exactly 16 new files and 924 insertions of repository-only, value-free
+  prerequisite contracts.
+- [x] Correct blocked review findings: `node.module` import-root detection;
+  external Git closeout for exact untracked scope; direct frozen B1
+  `DataIdentityCategory` and `ContinuityEvidenceCategory` reuse; explicit enum
+  identity/type tests.
+- [x] Close focused validation (`49 passed in 0.14s`) and architecture review #2
+  (`PASS`).
+- [x] Run canonical exactly once after final architecture `PASS`: `3673 passed,
+  5 deselected, 459 warnings in 134.90s`, `RC=0`; no rerun without code/test
+  changes.
+- [x] Close implementation Git state (`PASS`).
+- [x] Preserve runtime false/unavailable facts, no Production/MariaDB/SQL/
+  Docker/Colima/secret/Notion access, no PyMySQL install or requirements change,
+  unassigned port, undeployed target, `PRODUCTION_VALIDATION_READY=false`, and
+  `SHOPPING_RUNTIME_ACTIVATED=false`.
+- [x] Preserve B2A/B1/Phase A history, Mac Control Plane ownership, stateless
+  Ubuntu, `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six Shopping
+  actions, and target-only `SHOPPING_SECRET_PROVISIONING`.
+- [ ] Complete documentation closeout and final documentation review.
+
+Phase status: implementation `CLOSED`; focused validation `CLOSED`; architecture
+review `CLOSED`; canonical validation `CLOSED`; implementation Git closeout
+`CLOSED`; documentation `IN_CLOSEOUT`.
+
+### Next boundary
+
+`PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY`
+
+It must begin read-only and implies no PyMySQL installation, requirements
+change, Production access, MariaDB authentication, credential acquisition, SQL
+execution, numeric loopback-port deployment, or runtime activation.
+
 ## MariaDB Continuity Phase B2A — documentation closeout complete
 
 - [x] Close implementation at `6063ce08b62e99331f5d442afc9d2a71703bcabf`.

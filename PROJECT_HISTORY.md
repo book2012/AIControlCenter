@@ -1,5 +1,36 @@
 # Project History
 
+## 2026-08-18 — MariaDB Continuity Phase B2B-1A
+
+`PHASE_B2B_1A` was implemented at
+`aa049e2940707ff9209a730ecfbcc5f705062171` as exactly 16 new files and 924
+insertions of repository-only, value-free prerequisite contracts.
+
+The initial final architecture review was `BLOCKED`: `ImportFrom` guards used
+aliases instead of `node.module`; an internal pytest assertion could not
+correctly validate untracked Git scope; the proposed vocabulary lost some of
+the five frozen B1 `DataIdentityCategory` meanings; and a duplicate
+`ContinuityEvidenceCategory` made compatibility ambiguous. The correction fixed
+root detection, moved exact untracked scope to external Git closeout, directly
+reused both frozen B1 enum types, and tested enum identity/type reuse.
+
+Corrected focused validation returned `49 passed in 0.14s`; final architecture
+review #2 returned `PASS`. Canonical then ran exactly once and returned `3673
+passed, 5 deselected, 459 warnings in 134.90s`, `RC=0`; policy forbids rerun
+without later code/test changes. Git implementation closeout returned `PASS`.
+
+No Production, MariaDB, SQL, Docker, Colima, secret-value, dependency, or
+Notion boundary was crossed. PyMySQL remained uninstalled, requirements
+unchanged, the port unassigned, target undeployed, Production validation not
+ready, and Shopping runtime inactive. Mac remained sole Control Plane; Ubuntu
+remained stateless. B2A/B1/Phase A history,
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, all exact six actions, and
+target-only `SHOPPING_SECRET_PROVISIONING` were preserved. Documentation entered
+`IN_CLOSEOUT`; next was named `PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY`, a
+read-only boundary implying no installation, requirements change, Production
+access, authentication, credential acquisition, SQL, port deployment, or
+activation.
+
 ## 2026-08-18 — MariaDB continuity Phase B2A implementation and validation closed
 
 Phase B2A closed implementation and validation at

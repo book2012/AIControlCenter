@@ -1,5 +1,52 @@
 # MASTER
 
+## Current authoritative state — MariaDB Continuity Phase B2B-1A
+
+`PHASE_B2B_1A` is implemented at
+`aa049e2940707ff9209a730ecfbcc5f705062171` with exactly 16 new files and 924
+insertions of repository-only, value-free prerequisite contracts. Implementation,
+focused validation, architecture review, canonical validation, and Git
+implementation closeout are `CLOSED`; documentation is `IN_CLOSEOUT`.
+
+Current truth: `DRIVER_FAMILY=PYMYSQL`, `DRIVER_VERSION=1.2.0`,
+`DRIVER_MODE=SYNCHRONOUS_ONE_SHOT`, `AUTH_PLUGIN_STATE=UNRESOLVED`,
+`PYMYSQL_COMPATIBILITY_ESTABLISHED=false`. Credentials remain symbolic and
+Mac-Control-Plane-owned; canonical availability is false; FD/inode binding is
+future work. Expected database/account identity, required grants, historical
+data identity, and historical continuity baselines all remain unavailable.
+The fixed categories are `CREDENTIAL_ACCEPTED`, `EXPECTED_DATABASE_IDENTITY`,
+`EXPECTED_ACCOUNT_IDENTITY`, `REQUIRED_GRANTS`, `EXPECTED_DATA_IDENTITY`, and
+`DECLARED_DATA_CONTINUITY`. `FIXED_SQL_TEXT_AVAILABLE=false`,
+`ARBITRARY_SQL_ALLOWED=false`, `MARIADB_LOOPBACK_PORT_STATE=UNASSIGNED`, and
+`TARGET_DEPLOYED=false`.
+
+Review #1 was blocked by incorrect `ImportFrom` root inspection, invalid
+permanent pytest validation of untracked scope, incomplete reuse of the five
+frozen B1 data-identity meanings, and a duplicate continuity-evidence enum.
+The correction uses `node.module`, leaves exact untracked scope to external Git
+closeout, directly reuses both B1 enum types, and tests enum identity/type reuse.
+Corrected focused validation: `49 passed in 0.14s`; review #2: `PASS`; canonical
+exactly once afterward: `3673 passed, 5 deselected, 459 warnings in 134.90s`,
+`RC=0`. Canonical must not rerun absent code/test changes. Git implementation
+closeout: `PASS`.
+
+Runtime remains `PRODUCTION_ACCESS_GATE=NOT_PERFORMED`,
+`MARIADB_AUTHENTICATION=NOT_PERFORMED`, `SECRET_VALUES_READ=NO`,
+`SQL_EXECUTION=NOT_PERFORMED`, `DOCKER_ACCESS=NOT_PERFORMED`,
+`COLIMA_ACCESS=NOT_PERFORMED`, `PRODUCTION_AUTHORIZATION_CONSUMED=NO`,
+`PYMYSQL_INSTALLED=NO`, `REQUIREMENTS_CHANGED=NO`,
+`NOTION_SYNC=NOT_PERFORMED`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Mac AIControlCenter remains the sole Control Plane; Ubuntu remains stateless
+with no AI workload, business logic, application state, or governance authority.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six Shopping actions
+remain unchanged and `SHOPPING_SECRET_PROVISIONING` remains target-only.
+Next is `PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY`, beginning read-only and
+authorizing no installation, requirements change, Production access, MariaDB
+authentication, credential acquisition, SQL, numeric-port deployment, or
+runtime activation.
+
 ## MariaDB Continuity Phase B2A — CLOSED
 
 Implementation commit: `6063ce08b62e99331f5d442afc9d2a71703bcabf`.

@@ -1,5 +1,32 @@
 # AIControlCenter
 
+## Current status — MariaDB Continuity Phase B2B-1A
+
+`PHASE_B2B_1A` is implemented at
+`aa049e2940707ff9209a730ecfbcc5f705062171` as exactly 16 new files and 924
+insertions of repository-only, value-free prerequisite contracts. Implementation,
+focused validation, architecture review, canonical validation, and Git closeout
+are closed; documentation is `IN_CLOSEOUT`.
+
+After a blocked initial review, import-root handling, Git-scope validation, and
+B1 enum reuse were corrected. Focused validation was `49 passed in 0.14s`;
+review #2 was `PASS`; canonical ran exactly once afterward with `3673 passed, 5
+deselected, 459 warnings in 134.90s`, `RC=0`; Git closeout was `PASS`.
+
+PyMySQL `1.2.0` remains an uninstalled synchronous one-shot contract with
+unresolved auth plugin and compatibility false. Credentials remain symbolic and
+Mac-owned; identity, grants, and historical baselines remain unavailable. No
+fixed/arbitrary SQL, assigned port, deployed target, Production/MariaDB access,
+secret read, Docker/Colima access, dependency change, or Notion sync occurred.
+`PRODUCTION_VALIDATION_READY=false`; `SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Mac remains the sole Control Plane; Ubuntu remains stateless.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six Shopping actions
+remain unchanged and `SHOPPING_SECRET_PROVISIONING` remains target-only. Next is
+the read-only `PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY` boundary, authorizing
+no installation, requirements change, Production/authentication/credential/SQL
+access, numeric-port deployment, or activation.
+
 ## MariaDB Continuity Phase B2A — documentation closeout
 
 Phase B2A implementation and validation are closed at

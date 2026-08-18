@@ -1,5 +1,70 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Phase B2B-1A — Repository-Only Prerequisite Contracts
+
+Milestone `PHASE_B2B_1A` is implemented at commit
+`aa049e2940707ff9209a730ecfbcc5f705062171` with exactly 16 new files and 924
+insertions. It adds repository-only, value-free prerequisite contracts for the
+later concrete MariaDB continuity validation boundary. Implementation, focused
+validation, architecture review, canonical validation, and implementation Git
+closeout are `CLOSED`; documentation is `IN_CLOSEOUT`.
+
+The driver facts are `DRIVER_FAMILY=PYMYSQL`, `DRIVER_VERSION=1.2.0`,
+`DRIVER_MODE=SYNCHRONOUS_ONE_SHOT`, `AUTH_PLUGIN_STATE=UNRESOLVED`, and
+`PYMYSQL_COMPATIBILITY_ESTABLISHED=false`. The credential source remains
+symbolic and Mac-Control-Plane-owned; canonical credential availability is
+false, and FD/inode binding is a future concrete-source requirement. Expected
+database identity, expected account identity, required grants profile,
+historical data identity baseline, and historical data continuity baseline all
+have `available=false`.
+
+The fixed validation profile categories are exactly `CREDENTIAL_ACCEPTED`,
+`EXPECTED_DATABASE_IDENTITY`, `EXPECTED_ACCOUNT_IDENTITY`, `REQUIRED_GRANTS`,
+`EXPECTED_DATA_IDENTITY`, and `DECLARED_DATA_CONTINUITY`.
+`FIXED_SQL_TEXT_AVAILABLE=false`; `ARBITRARY_SQL_ALLOWED=false`;
+`MARIADB_LOOPBACK_PORT_STATE=UNASSIGNED`; `TARGET_DEPLOYED=false`.
+
+Architecture review #1 was `BLOCKED`: `ImportFrom` AST guards inspected aliases
+rather than `node.module`; an internal pytest Git assertion could not correctly
+validate untracked scope; the proposed data-identity vocabulary lost some of
+the five frozen B1 `DataIdentityCategory` meanings; and a duplicate
+`ContinuityEvidenceCategory` made type compatibility ambiguous. The correction
+handles `Import` roots through imported alias names and `ImportFrom` roots
+through `node.module`, makes exact untracked scope an external Git closeout gate
+rather than a permanent repository-state pytest assertion, reuses both frozen
+B1 enum types directly, and explicitly tests enum identity/type reuse. Corrected
+focused validation was `49 passed in
+0.14s`; final architecture review #2 was `PASS`.
+
+Canonical regression ran exactly once after final architecture `PASS`:
+`3673 passed, 5 deselected, 459 warnings in 134.90s`, `RC=0`. It must not be
+rerun without subsequent code/test changes. Git implementation closeout was
+`PASS` at the implementation commit.
+
+Runtime truth remains `PRODUCTION_ACCESS_GATE=NOT_PERFORMED`,
+`MARIADB_AUTHENTICATION=NOT_PERFORMED`, `SECRET_VALUES_READ=NO`,
+`SQL_EXECUTION=NOT_PERFORMED`, `DOCKER_ACCESS=NOT_PERFORMED`,
+`COLIMA_ACCESS=NOT_PERFORMED`, `PRODUCTION_AUTHORIZATION_CONSUMED=NO`,
+`PYMYSQL_INSTALLED=NO`, `REQUIREMENTS_CHANGED=NO`, and
+`NOTION_SYNC=NOT_PERFORMED`. Thus `PRODUCTION_VALIDATION_READY=false` and
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu remains a stateless
+infrastructure worker and receives no AI workload, business logic, application
+state, or governance authority. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+The exact six actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`.
+`SHOPPING_SECRET_PROVISIONING` remains target-only, not a seventh action.
+
+Next is `PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY`. It must begin read-only and
+implies no PyMySQL installation, requirements change, Production access,
+MariaDB authentication, credential acquisition, SQL execution, numeric
+loopback-port deployment, or runtime activation.
+
 ## MariaDB Continuity Phase B2A — Value-Free Continuity Contracts
 
 Status: `PHASE_B2A_IMPLEMENTATION_STATUS=CLOSED`,

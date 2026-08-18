@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## 2026-08-18 — MariaDB Continuity Phase B2B-1A implementation closeout
+
+- Implemented `PHASE_B2B_1A` at
+  `aa049e2940707ff9209a730ecfbcc5f705062171`: exactly 16 new files and 924
+  insertions of repository-only, value-free prerequisite contracts.
+- Architecture review #1 was `BLOCKED` by incorrect `ImportFrom` alias-based
+  root inspection, an invalid permanent pytest approach to untracked Git scope,
+  incomplete preservation of the five frozen B1 `DataIdentityCategory`
+  meanings, and a duplicate `ContinuityEvidenceCategory`.
+- Corrected root detection through `node.module`, assigned exact untracked scope
+  to the external Git closeout gate, directly reused both frozen B1 enum types,
+  and explicitly tested enum identity/type reuse. Corrected focused validation:
+  `49 passed in 0.14s`; final architecture review #2: `PASS`.
+- Canonical executed exactly once after final architecture `PASS`: `3673 passed,
+  5 deselected, 459 warnings in 134.90s`, `RC=0`; it must not be rerun without
+  code/test changes. Git implementation closeout: `PASS`.
+- Preserved PyMySQL `1.2.0` synchronous one-shot, unresolved auth plugin and
+  compatibility false; symbolic Mac-owned credentials; unavailable identity,
+  grants, and historical baselines; no fixed/arbitrary SQL; unassigned port;
+  undeployed target.
+- Production/MariaDB/SQL/Docker/Colima/Notion access was `NOT_PERFORMED`;
+  secret values read `NO`; authorization consumed `NO`; PyMySQL installed `NO`;
+  requirements changed `NO`; `PRODUCTION_VALIDATION_READY=false` and
+  `SHOPPING_RUNTIME_ACTIVATED=false`.
+- Preserved all B2A/B1/Phase A invariants,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, Mac as sole Control Plane,
+  Ubuntu as stateless worker, the exact six Shopping actions, and target-only
+  `SHOPPING_SECRET_PROVISIONING`. Documentation is `IN_CLOSEOUT`; next is the
+  read-only `PHASE_B2B_1B_CONCRETE_READINESS_DISCOVERY` boundary with no
+  installation, Production/authentication/credential/SQL access, numeric-port
+  deployment, requirements change, or activation implied.
+
 ## 2026-08-18 — MariaDB Continuity Phase B2A documentation closeout
 
 - Recorded Phase B2A implementation and validation as closed at
