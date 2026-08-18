@@ -36,6 +36,7 @@ def test_closed_evidence_categories_and_canonical_false_readiness():
     assert source.continuity_baseline_available is False
     assert source.mandatory_provenance_facts_available is False
     assert source.ready is False
+    assert source.artifact_existence_alone_sufficient is False
     assert all(getattr(source, item.name) is False for item in fields(source) if item.name.endswith("available") or item.name == "bound_to_data_identity_baseline")
 
 

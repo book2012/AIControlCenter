@@ -16,6 +16,7 @@ class LineageSource:
     recovery_verification_available: bool = field(default=False, init=False)
     bound_to_data_identity_baseline: bool = field(default=False, init=False)
     continuity_baseline_available: bool = field(default=False, init=False)
+    artifact_existence_alone_sufficient: bool = field(default=False, init=False)
 
     @property
     def mandatory_provenance_facts_available(self) -> bool:
@@ -35,6 +36,7 @@ class LineageSource:
             "recovery_verification_available": self.recovery_verification_available,
             "bound_to_data_identity_baseline": self.bound_to_data_identity_baseline,
             "continuity_baseline_available": self.continuity_baseline_available,
+            "artifact_existence_alone_sufficient": self.artifact_existence_alone_sufficient,
             "mandatory_provenance_facts_available": self.mandatory_provenance_facts_available,
             "ready": self.ready,
             "authorization_authority": False,

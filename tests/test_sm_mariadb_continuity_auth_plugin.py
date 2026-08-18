@@ -10,9 +10,13 @@ from core.secrets.mariadb_continuity_auth_plugin import (
     PYMYSQL_COMPATIBILITY_ESTABLISHED,
     AuthPluginState,
     CanonicalAuthPluginReadiness,
+    ExternalEvidenceClass,
+    ExternalEvidenceDescriptor,
+    HistoricalAuthPluginEvidenceContract,
     RuntimeAuthPluginEvidence,
     RuntimeEvidenceState,
     canonical_auth_plugin_readiness,
+    canonical_historical_auth_plugin_evidence_contract,
 )
 
 
@@ -63,3 +67,17 @@ def test_no_driver_or_network_import_and_no_plugin_name_field():
     roots = imported_roots(tree)
     assert roots.isdisjoint({"pymysql", "mysqldb", "mysql", "mariadb", "sqlalchemy", "socket", "requests", "urllib", "httpx", "aiohttp", "subprocess", "docker"})
     assert {item.name for item in fields(CanonicalAuthPluginReadiness)}.isdisjoint({"plugin_name", "name", "value"})
+
+
+def test_external_historical_descriptor_is_value_free_and_cannot_self_activate():
+    evidence = canonical_historical_auth_plugin_evidence_contract()
+    assert evidence.descriptor is ExternalEvidenceDescriptor.EXTERNAL_VALUE_FREE_REDACTED_HISTORICAL_AUTH_PLUGIN_ATTESTATION_DESCRIPTOR
+    assert evidence.acceptable_evidence_classes == tuple(ExternalEvidenceClass)
+    assert evidence.authoritative_evidence_available is evidence.ready is False
+    assert evidence.production_authority is False
+    assert all((evidence.independent_pre_existing_historical_evidence_required,
+                evidence.account_binding_required, evidence.provenance_required,
+                evidence.timestamp_required, evidence.immutable_integrity_identity_required,
+                evidence.trusted_issuer_required, evidence.credential_material_forbidden))
+    with pytest.raises(TypeError):
+        HistoricalAuthPluginEvidenceContract(authoritative_evidence_available=True)

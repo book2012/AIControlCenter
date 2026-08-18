@@ -4,6 +4,10 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Protocol
 
+from core.secrets.mariadb_continuity_auth_plugin import (
+    AUTH_PLUGIN_STATE,
+    PYMYSQL_COMPATIBILITY_ESTABLISHED,
+)
 from core.secrets.mariadb_continuity_observations import (
     MariaDBContinuityRuntimeObservation,
 )
@@ -12,7 +16,6 @@ from core.secrets.mariadb_continuity_observations import (
 DRIVER_FAMILY = "PYMYSQL"
 DRIVER_VERSION = "1.2.0"
 DRIVER_MODE = "SYNCHRONOUS_ONE_SHOT"
-AUTH_PLUGIN_STATE = "UNRESOLVED"
 
 
 class FixedValidationOperation(str, Enum):
@@ -36,7 +39,12 @@ class PyMySQLDriverReadiness:
     dependency_declared: bool = field(default=True, init=False)
     driver_installed: bool = field(default=False, init=False)
     driver_imported: bool = field(default=False, init=False)
-    pymysql_compatibility_established: bool = field(default=False, init=False)
+    pymysql_compatibility_established: bool = field(
+        default=PYMYSQL_COMPATIBILITY_ESTABLISHED, init=False
+    )
+    authoritative_exact_auth_plugin_identification_required: bool = field(default=True, init=False)
+    exact_plugin_support_evidence_for_pymysql_1_2_0_required: bool = field(default=True, init=False)
+    compatibility_proof_available: bool = field(default=False, init=False)
 
     @property
     def ready(self) -> bool:
@@ -44,6 +52,7 @@ class PyMySQLDriverReadiness:
             self.driver_installed
             and self.driver_imported
             and self.pymysql_compatibility_established
+            and self.compatibility_proof_available
             and self.auth_plugin_state != "UNRESOLVED"
         )
 
@@ -58,6 +67,9 @@ class PyMySQLDriverReadiness:
             "driver_installed": self.driver_installed,
             "driver_imported": self.driver_imported,
             "pymysql_compatibility_established": self.pymysql_compatibility_established,
+            "authoritative_exact_auth_plugin_identification_required": self.authoritative_exact_auth_plugin_identification_required,
+            "exact_plugin_support_evidence_for_pymysql_1_2_0_required": self.exact_plugin_support_evidence_for_pymysql_1_2_0_required,
+            "compatibility_proof_available": self.compatibility_proof_available,
             "ready": self.ready,
             "authorization_authority": False,
             "capability_authority": False,

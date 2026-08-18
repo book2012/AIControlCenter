@@ -5,6 +5,9 @@ from pathlib import Path
 
 import pytest
 
+from core.secrets.mariadb_continuity_auth_plugin import (
+    AUTH_PLUGIN_STATE as CANONICAL_AUTH_PLUGIN_STATE,
+)
 from core.secrets.mariadb_continuity_attempt import AttemptState, MariaDBContinuityAttempt
 from core.secrets.mariadb_continuity_observations import MariaDBContinuityRuntimeObservation
 from ops.macos.shopping.mariadb_continuity_pymysql_adapter import (
@@ -19,9 +22,7 @@ PRODUCTION = ROOT / "ops/macos/shopping/mariadb_continuity_pymysql_adapter.py"
 REQUIREMENTS = ROOT / "requirements.txt"
 PRESERVED = (
     "core/secrets/mariadb_continuity_attempt.py",
-    "core/secrets/mariadb_continuity_sources.py",
     "ops/macos/shopping/mariadb_continuity_target.py",
-    "core/secrets/mariadb_continuity_prerequisites.py",
     "ops/macos/shopping/mariadb_continuity_validation_composition.py",
     "core/secrets/mariadb_continuity_validation.py",
     "core/secrets/mariadb_continuity_validation_port.py",
@@ -39,15 +40,46 @@ SIX_ACTIONS = (
 def test_exact_driver_metadata_is_fail_closed_and_unforgeable() -> None:
     readiness = canonical_driver_readiness()
     assert (DRIVER_FAMILY, DRIVER_VERSION, DRIVER_MODE) == ("PYMYSQL", "1.2.0", "SYNCHRONOUS_ONE_SHOT")
-    assert AUTH_PLUGIN_STATE == "UNRESOLVED"
+    assert AUTH_PLUGIN_STATE == CANONICAL_AUTH_PLUGIN_STATE == "UNRESOLVED"
     assert readiness.maximum_future_connection_count_per_authorization == 1
     assert readiness.dependency_declared is True
     assert readiness.driver_installed is False
     assert readiness.driver_imported is False
     assert readiness.pymysql_compatibility_established is False
+    assert readiness.compatibility_proof_available is False
+    assert readiness.authoritative_exact_auth_plugin_identification_required is True
+    assert readiness.exact_plugin_support_evidence_for_pymysql_1_2_0_required is True
     assert readiness.ready is False
     with pytest.raises(TypeError):
         PyMySQLDriverReadiness(ready=True)
+    with pytest.raises(TypeError):
+        PyMySQLDriverReadiness(auth_plugin_state="caller-plugin")
+    with pytest.raises(TypeError):
+        PyMySQLDriverReadiness(pymysql_compatibility_established=True)
+    with pytest.raises(TypeError):
+        PyMySQLDriverReadiness(compatibility_proof_available=True)
+
+    ready_expression = next(
+        node.value
+        for node in ast.walk(ast.parse(PRODUCTION.read_text()))
+        if isinstance(node, ast.Return)
+        and isinstance(node.value, ast.Call)
+        and isinstance(node.value.func, ast.Name)
+        and node.value.func.id == "bool"
+    )
+    ready_attributes = {
+        node.attr for node in ast.walk(ready_expression) if isinstance(node, ast.Attribute)
+    }
+    assert "compatibility_proof_available" in ready_attributes
+
+    object.__setattr__(readiness, "driver_installed", True)
+    object.__setattr__(readiness, "driver_imported", True)
+    object.__setattr__(readiness, "pymysql_compatibility_established", True)
+    object.__setattr__(readiness, "auth_plugin_state", "AUTHORITATIVELY_IDENTIFIED")
+    assert readiness.compatibility_proof_available is False
+    assert readiness.ready is False
+    object.__setattr__(readiness, "compatibility_proof_available", True)
+    assert readiness.ready is True
 
 
 def test_exact_dependency_pin_is_declaration_only() -> None:

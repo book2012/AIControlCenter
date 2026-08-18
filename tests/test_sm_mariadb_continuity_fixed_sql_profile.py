@@ -8,6 +8,7 @@ import pytest
 from core.secrets.mariadb_continuity_fixed_sql_profile import (
     ARBITRARY_SQL_ALLOWED,
     FIXED_SQL_TEXT_AVAILABLE,
+    FIXED_SQL_TEXT_ALLOWED_NOW,
     FixedOperationProfile,
     FixedSQLProfileContract,
     FixedValidationCategory,
@@ -35,6 +36,8 @@ def test_option_a_profile_and_exact_closed_categories():
     profile = canonical_fixed_sql_profile()
     assert [item.value for item in profile.validation_categories] == EXPECTED
     assert profile.fixed_sql_text_available is FIXED_SQL_TEXT_AVAILABLE is False
+    assert profile.fixed_sql_text_allowed_now is FIXED_SQL_TEXT_ALLOWED_NOW is False
+    assert profile.authoritative_identity_grants_data_lineage_prerequisites_required is True
     assert profile.arbitrary_sql_allowed is ARBITRARY_SQL_ALLOWED is False
 
 

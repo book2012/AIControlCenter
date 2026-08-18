@@ -4,7 +4,7 @@ from pathlib import Path
 
 import pytest
 
-from ops.macos.shopping.mariadb_continuity_identity_descriptor_source import IdentityDescriptorCategory, IdentityDescriptorSource, canonical_identity_descriptor_source
+from ops.macos.shopping.mariadb_continuity_identity_descriptor_source import DescriptorOwner, IdentityDescriptorCategory, IdentityDescriptorSource, canonical_identity_descriptor_source
 
 
 FILE = Path(__file__).parents[1] / "ops/macos/shopping/mariadb_continuity_identity_descriptor_source.py"
@@ -23,6 +23,10 @@ def imported_roots(tree: ast.AST) -> set[str]:
 def test_exact_categories_and_canonical_unavailability():
     assert [item.value for item in IdentityDescriptorCategory] == ["EXPECTED_DATABASE_IDENTITY", "EXPECTED_ACCOUNT_IDENTITY", "REQUIRED_GRANTS_PROFILE"]
     source = canonical_identity_descriptor_source()
+    assert source.owner is DescriptorOwner.MAC_CONTROL_PLANE
+    assert source.independent_from_credential_evidence is True
+    assert source.independent_from_compose_container_volume_identity_alone is True
+    assert source.versionable_closed_profile_required is source.fail_closed_when_unavailable is True
     assert source.expected_database_identity_available is False
     assert source.expected_account_identity_available is False
     assert source.required_grants_profile_available is False

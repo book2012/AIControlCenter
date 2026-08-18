@@ -7,6 +7,8 @@ import pytest
 
 from core.secrets.mariadb_continuity_prerequisites import (
     MariaDBContinuityPrerequisites,
+    ProductionBoundary,
+    canonical_production_boundary_facts,
     canonical_phase_a_prerequisites,
 )
 
@@ -42,6 +44,17 @@ def test_phase_a_is_value_free_and_not_ready() -> None:
         "secret_values_read": False, "production_access_performed": False,
         "value_free": True,
     }
+
+
+def test_package_1_authoritative_facts_are_absent_from_legacy_dto() -> None:
+    assert {
+        "authoritative_auth_plugin_evidence_available",
+        "pymysql_compatibility_established",
+        "expected_database_identity_available",
+        "expected_account_identity_available",
+        "required_grants_profile_available",
+        "fixed_sql_text_available",
+    }.isdisjoint(READINESS)
 
 
 def test_readiness_requires_every_exact_true() -> None:
@@ -83,3 +96,19 @@ def test_static_architecture_is_inert() -> None:
     }
     assert imported.isdisjoint(FORBIDDEN_IMPORTS)
     assert not any(term in source.lower() for term in ("select ", "insert ", "update ", "delete "))
+
+
+def test_production_boundaries_are_factual_and_zero_authority() -> None:
+    facts = canonical_production_boundary_facts()
+    assert not hasattr(facts, "production_validation_ready")
+    assert not hasattr(facts, "ready")
+    assert facts.boundaries == tuple(ProductionBoundary)
+    assert facts.continuity_validation_mutation_budget == 0
+    assert facts.maximum_connection_auth_attempts == 1
+    assert facts.production_authorization_reuse_allowed is False
+    projection = facts.to_projection()
+    assert all(projection[name] is False for name in (
+        "authorization_authority", "capability_authority", "execution_authority",
+        "mutation_authority", "retry_authority", "reconnect_authority", "rollback_authority",
+    ))
+    assert "production_validation_ready" not in projection

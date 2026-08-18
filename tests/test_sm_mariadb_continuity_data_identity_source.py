@@ -29,6 +29,12 @@ def test_closed_categories_and_historical_baseline_unavailable():
     assert all(type(item) is DataIdentityCategory for item in source.fact_categories)
     assert source.historical_data_identity_baseline_available is False
     assert source.ready is False
+    assert source.complete_five_category_coverage_required is True
+    assert source.infrastructure_names_alone_sufficient is False
+    assert all((source.independently_established_historical_source_required,
+                source.provenance_required, source.immutable_identity_required,
+                source.timestamp_required, source.trusted_issuer_required,
+                source.baseline_binding_required))
     with pytest.raises(TypeError):
         DataIdentitySource(historical_data_identity_baseline_available=True)
     with pytest.raises(TypeError):

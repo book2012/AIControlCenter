@@ -6,6 +6,7 @@ from typing import Any
 
 
 FIXED_SQL_TEXT_AVAILABLE = False
+FIXED_SQL_TEXT_ALLOWED_NOW = False
 ARBITRARY_SQL_ALLOWED = False
 
 
@@ -32,14 +33,18 @@ class FixedSQLProfileContract:
         default=tuple(FixedValidationCategory), init=False
     )
     fixed_sql_text_available: bool = field(default=False, init=False)
+    fixed_sql_text_allowed_now: bool = field(default=False, init=False)
     arbitrary_sql_allowed: bool = field(default=False, init=False)
+    authoritative_identity_grants_data_lineage_prerequisites_required: bool = field(default=True, init=False)
 
     def to_projection(self) -> dict[str, Any]:
         return {
             "profile": self.profile.value,
             "validation_categories": tuple(item.value for item in self.validation_categories),
             "fixed_sql_text_available": self.fixed_sql_text_available,
+            "fixed_sql_text_allowed_now": self.fixed_sql_text_allowed_now,
             "arbitrary_sql_allowed": self.arbitrary_sql_allowed,
+            "authoritative_identity_grants_data_lineage_prerequisites_required": self.authoritative_identity_grants_data_lineage_prerequisites_required,
             "authorization_authority": False,
             "capability_authority": False,
             "execution_authority": False,

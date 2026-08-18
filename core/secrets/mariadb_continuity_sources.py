@@ -37,6 +37,7 @@ class CredentialSourceContract:
     regular_non_symlink_file_required: bool = field(default=True, init=False)
     file_mode_0600_required: bool = field(default=True, init=False)
     explicit_trusted_uid_gid_required: bool = field(default=True, init=False)
+    fd_inode_binding_required: bool = field(default=True, init=False)
     ambient_home_uid_authority: bool = field(default=False, init=False)
     environment_transport: bool = field(default=False, init=False)
     argv_transport: bool = field(default=False, init=False)
@@ -58,6 +59,11 @@ class ExpectedIdentityContract:
         default=SourceCategory.EXPECTED_IDENTITY_DESCRIPTOR, init=False
     )
     independent_from_credential_evidence: bool = field(default=True, init=False)
+    mac_control_plane_owned: bool = field(default=True, init=False)
+    value_free: bool = field(default=True, init=False)
+    versionable_closed_profile_required: bool = field(default=True, init=False)
+    fail_closed_when_unavailable: bool = field(default=True, init=False)
+    authority: bool = field(default=False, init=False)
     fixed_canonical_profile: bool = field(default=True, init=False)
     expected_database_facts: bool = field(default=True, init=False)
     expected_account_facts: bool = field(default=True, init=False)
@@ -73,6 +79,12 @@ class DataIdentityContract:
         default=SourceCategory.DATA_IDENTITY_BASELINE, init=False
     )
     independent_historical_baseline_required: bool = field(default=True, init=False)
+    provenance_required: bool = field(default=True, init=False)
+    immutable_identity_required: bool = field(default=True, init=False)
+    timestamp_required: bool = field(default=True, init=False)
+    trusted_issuer_required: bool = field(default=True, init=False)
+    baseline_binding_required: bool = field(default=True, init=False)
+    complete_five_category_coverage_required: bool = field(default=True, init=False)
     allowed_categories: tuple[DataIdentityCategory, ...] = field(
         default_factory=lambda: tuple(DataIdentityCategory), init=False
     )
@@ -87,6 +99,12 @@ class DataContinuityContract:
     independently_verified_historical_lineage_required: bool = field(
         default=True, init=False
     )
+    independent_historical_provenance_required: bool = field(default=True, init=False)
+    immutable_artifact_identity_required: bool = field(default=True, init=False)
+    source_lineage_required: bool = field(default=True, init=False)
+    timestamp_metadata_required: bool = field(default=True, init=False)
+    recovery_verification_required: bool = field(default=True, init=False)
+    complete_data_identity_baseline_binding_required: bool = field(default=True, init=False)
     allowed_categories: tuple[ContinuityEvidenceCategory, ...] = field(
         default_factory=lambda: tuple(ContinuityEvidenceCategory), init=False
     )

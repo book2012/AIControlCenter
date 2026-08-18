@@ -12,6 +12,9 @@ from core.secrets.mariadb_continuity_descriptors import (
     ContinuityMetadataFacts,
     DescriptorAvailability,
     DescriptorCategory,
+    RecoverEvidenceGate,
+    RecoverInsufficientNextDecision,
+    canonical_recover_evidence_decision,
     canonical_continuity_metadata_facts,
     canonical_descriptor_availability,
 )
@@ -68,3 +71,12 @@ from mariadb import Connection
 from sqlalchemy import create_engine
 """)
     assert {"pymysql", "mariadb", "sqlalchemy"} <= imported_roots(tree)
+
+
+def test_recover_evidence_decision_is_factual_and_non_authorizing():
+    decision = canonical_recover_evidence_decision()
+    assert decision.gate is RecoverEvidenceGate.RECOVER_EVIDENCE_INSUFFICIENT
+    assert decision.next_decision is RecoverInsufficientNextDecision.HUMAN_STRATEGY_DECISION_REQUIRED
+    assert not any((decision.recover_validation_authorized, decision.rotate_authorized,
+                    decision.replace_authorized, decision.strategy_executed))
+    assert all(decision.to_projection()[name] is False for name in AUTHORITY)

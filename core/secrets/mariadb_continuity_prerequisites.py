@@ -1,12 +1,18 @@
 """Value-free readiness facts for future MariaDB continuity validation."""
 
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, field, fields
 from enum import Enum
 from typing import Any
 
 
 class InspectionMode(str, Enum):
     READ_ONLY = "READ_ONLY"
+
+
+class ProductionBoundary(str, Enum):
+    MARIADB_LOOPBACK_PORT_DEPLOYMENT = "MARIADB_LOOPBACK_PORT_DEPLOYMENT"
+    MARIADB_CREDENTIAL_SLOT_PROVISIONING = "MARIADB_CREDENTIAL_SLOT_PROVISIONING"
+    MARIADB_CONTINUITY_VALIDATION = "MARIADB_CONTINUITY_VALIDATION"
 
 
 @dataclass(frozen=True, slots=True)
@@ -69,3 +75,39 @@ class MariaDBContinuityPrerequisites:
 
 def canonical_phase_a_prerequisites() -> MariaDBContinuityPrerequisites:
     return MariaDBContinuityPrerequisites.phase_a()
+
+
+@dataclass(frozen=True, slots=True)
+class ProductionBoundaryFacts:
+    boundaries: tuple[ProductionBoundary, ...] = field(default=tuple(ProductionBoundary), init=False)
+    loopback_port_deployment_separate_production_mutation: bool = field(default=True, init=False)
+    credential_slot_provisioning_separate_production_mutation: bool = field(default=True, init=False)
+    continuity_validation_separate_read_only_production_access_boundary: bool = field(default=True, init=False)
+    fresh_human_authorization_required_for_each_boundary: bool = field(default=True, init=False)
+    continuity_validation_mutation_budget: int = field(default=0, init=False)
+    maximum_connection_auth_attempts: int = field(default=1, init=False)
+    production_authorization_reuse_allowed: bool = field(default=False, init=False)
+
+    def to_projection(self) -> dict[str, Any]:
+        return {
+            "boundaries": tuple(item.value for item in self.boundaries),
+            "loopback_port_deployment_separate_production_mutation": self.loopback_port_deployment_separate_production_mutation,
+            "credential_slot_provisioning_separate_production_mutation": self.credential_slot_provisioning_separate_production_mutation,
+            "continuity_validation_separate_read_only_production_access_boundary": self.continuity_validation_separate_read_only_production_access_boundary,
+            "fresh_human_authorization_required_for_each_boundary": self.fresh_human_authorization_required_for_each_boundary,
+            "continuity_validation_mutation_budget": self.continuity_validation_mutation_budget,
+            "maximum_connection_auth_attempts": self.maximum_connection_auth_attempts,
+            "production_authorization_reuse_allowed": self.production_authorization_reuse_allowed,
+            "authorization_authority": False,
+            "capability_authority": False,
+            "execution_authority": False,
+            "mutation_authority": False,
+            "retry_authority": False,
+            "reconnect_authority": False,
+            "rollback_authority": False,
+            "value_free": True,
+        }
+
+
+def canonical_production_boundary_facts() -> ProductionBoundaryFacts:
+    return ProductionBoundaryFacts()

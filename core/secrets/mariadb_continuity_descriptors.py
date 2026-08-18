@@ -15,6 +15,14 @@ class DescriptorCategory(str, Enum):
     DATA_CONTINUITY_BASELINE = "DATA_CONTINUITY_BASELINE"
 
 
+class RecoverEvidenceGate(str, Enum):
+    RECOVER_EVIDENCE_INSUFFICIENT = "RECOVER_EVIDENCE_INSUFFICIENT"
+
+
+class RecoverInsufficientNextDecision(str, Enum):
+    HUMAN_STRATEGY_DECISION_REQUIRED = "HUMAN_STRATEGY_DECISION_REQUIRED"
+
+
 def _authority_projection() -> dict[str, bool]:
     return {
         "authorization_authority": False,
@@ -98,3 +106,29 @@ def canonical_descriptor_availability() -> DescriptorAvailability:
 
 def canonical_continuity_metadata_facts() -> ContinuityMetadataFacts:
     return ContinuityMetadataFacts()
+
+
+@dataclass(frozen=True, slots=True)
+class RecoverEvidenceDecision:
+    gate: RecoverEvidenceGate = field(default=RecoverEvidenceGate.RECOVER_EVIDENCE_INSUFFICIENT, init=False)
+    next_decision: RecoverInsufficientNextDecision = field(default=RecoverInsufficientNextDecision.HUMAN_STRATEGY_DECISION_REQUIRED, init=False)
+    recover_validation_authorized: bool = field(default=False, init=False)
+    rotate_authorized: bool = field(default=False, init=False)
+    replace_authorized: bool = field(default=False, init=False)
+    strategy_executed: bool = field(default=False, init=False)
+
+    def to_projection(self) -> dict[str, Any]:
+        projection: dict[str, Any] = {
+            "gate": self.gate.value,
+            "next_decision": self.next_decision.value,
+            "recover_validation_authorized": self.recover_validation_authorized,
+            "rotate_authorized": self.rotate_authorized,
+            "replace_authorized": self.replace_authorized,
+            "strategy_executed": self.strategy_executed,
+        }
+        projection.update(_authority_projection())
+        return projection
+
+
+def canonical_recover_evidence_decision() -> RecoverEvidenceDecision:
+    return RecoverEvidenceDecision()

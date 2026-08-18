@@ -22,7 +22,6 @@ PRESERVED = {
     "core/secrets/mariadb_continuity_validation.py": "ebf5b7e6bc02eaaf3d789525d92f8274758eba75f3dc7bda75577722a6dccb66",
     "core/secrets/mariadb_continuity_validation_port.py": "fd91b54225472d38549351693edb0c1469fe6816131575eaa6c590b1f4f76c1c",
     "ops/macos/shopping/mariadb_continuity_validation_adapter.py": "298872771a7c67c3bdf2504b2bb1fc8073394c794f23b50403af27f76926b987",
-    "core/secrets/mariadb_continuity_prerequisites.py": "4f5331b0fb2e791d27ec2c37a86f213af59dd28c2a23d847441f4f5d55391095",
     "ops/macos/shopping/mariadb_continuity_validation_composition.py": "d8a2fc40e99f1fea176f1f63df3395f98bead368019ee972a19d4d07472acbef",
 }
 
@@ -60,6 +59,7 @@ def test_credential_contract_preserves_every_frozen_characteristic():
     assert all(true_facts)
     assert not any(false_facts)
     assert contract.acquisition_maximum == 1
+    assert contract.fd_inode_binding_required is True
 
 
 def test_identity_and_continuity_independence_contracts():
