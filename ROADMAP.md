@@ -1,5 +1,50 @@
 # Roadmap
 
+## MariaDB Continuity Validation Prerequisite / Phase A
+
+- [x] Close Phase A as repository-complete after documentation closeout at
+  implementation commit `ccf3ce00f7f6602d2cc6a84ec5632c7088cae418`.
+- [x] Provide only value-free prerequisite/readiness facts and a Mac Control
+  Plane process-local composition boundary with non-serializable one-shot human
+  presence, canonical binding, concurrent exactly-once consumption before
+  assembly, permanent consumption after failure, redacted exceptions, and no
+  capability invocation.
+- [x] Preserve `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six
+  Shopping secret provisioning actions, Mac AIControlCenter as sole Control
+  Plane, and Ubuntu as a stateless infrastructure worker.
+- [x] Record focused `13 passed in 0.07s`, final architecture review `PASS`, and
+  canonical `3556 passed, 5 deselected, 447 warnings`, `RC=0`, executed exactly
+  once on the final reviewed implementation tree. Post-commit canonical rerun:
+  `NOT_RUN`.
+- [x] Record Production access/authentication, runtime inspection, Docker,
+  Colima, and Notion as `NOT_PERFORMED`, with secret values read `NO`.
+
+Phase A is not Production validation readiness. It added no driver, Production
+credential source/material verification, SQL, connectivity, canonical target,
+identity/continuity baseline, real Production capability/authentication,
+consumer compatibility validation, mutation authority, or activation.
+`PRODUCTION_VALIDATION_READY=false`; `SHOPPING_RUNTIME_ACTIVATED=false`;
+historical MariaDB credential continuity remains unresolved.
+
+## Phase B architecture discovery
+
+The next development boundary is Phase B preparation, without Production
+invocation. No successor `SM-01B-02D` identifier is assigned by repository
+evidence. Phase B must separately resolve:
+
+- [ ] MariaDB driver selection and dependency pinning.
+- [ ] A fixed Mac Control Plane driver boundary.
+- [ ] A canonical loopback target/profile contract.
+- [ ] A protected external historical credential source.
+- [ ] An independent expected database/account identity descriptor.
+- [ ] An independent data-identity baseline.
+- [ ] An independent historical data-continuity baseline.
+- [ ] No retry, reconnect, or pooling semantics.
+- [ ] A fixed read-only SQL surface design.
+
+Actual Production validation readiness must not be claimed until every
+prerequisite is truthfully available.
+
 ## SM-01A — Shopping Secret Contract & Fail-Closed Preflight v1
 
 Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
@@ -196,11 +241,10 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   architecture failure, with no code/test change between runs. Push `PASS`;
   final Git clean/divergence `0 0`; no Production/runtime/Docker/Colima/Notion
   access and no secret-value read.
-- [ ] Under separate explicit human authorization, perform one Production
-  MariaDB historical credential continuity validation through the 06 boundary,
-  obtain trustworthy value-free factual evidence, then make a human strategy
-  decision. Until then continuity remains `UNRESOLVED`; do not select
-  `RECOVER`, `ROTATE`, or `REPLACE`.
+- [ ] Complete Phase B architecture discovery before considering any real
+  Production validation. Until every prerequisite is truthfully available,
+  continuity remains `UNRESOLVED`; do not select `RECOVER`, `ROTATE`, or
+  `REPLACE`.
 - [ ] After all readiness gates pass, execute each Production mutation under
   its own explicit human authorization: SOPS installation, age installation,
   control-plane identity creation, each public-recipient registration/intake

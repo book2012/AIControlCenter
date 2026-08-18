@@ -1,5 +1,41 @@
 # Project History
 
+## 2026-08-18 — MariaDB Continuity Validation Prerequisite / Phase A
+
+Phase A became repository-complete after documentation closeout at implementation
+commit `ccf3ce00f7f6602d2cc6a84ec5632c7088cae418`. It introduced only value-free
+MariaDB prerequisite/readiness facts and a Mac Control Plane process-local
+composition boundary. Its non-serializable one-shot `HumanPresenceGrant`
+prohibits direct construction, has private inert Phase-A test issuance only,
+binds canonical requests, enforces concurrent exactly-once consumption before
+assembly, remains consumed after failure, redacts exceptions, and invokes no
+capability during composition.
+
+The phase did not add a driver, Production credential source/material
+verification, SQL, connectivity, canonical deployed target, identity or
+continuity baseline, real Production validation capability/authentication,
+consumer compatibility validation, mutation authority, or runtime activation.
+Thus `PRODUCTION_VALIDATION_READY=false`, `SHOPPING_RUNTIME_ACTIVATED=false`,
+and historical MariaDB credential continuity remains unresolved.
+
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; all six Shopping secret
+provisioning actions remained unchanged. Mac AIControlCenter remained the sole
+Control Plane and Ubuntu a stateless infrastructure worker.
+
+Recorded evidence was focused `13 passed in 0.07s`, final architecture review
+`PASS`, and canonical `3556 passed, 5 deselected, 447 warnings`, `RC=0`, run
+exactly once on the final reviewed implementation tree. No post-commit canonical
+rerun occurred. Production access/authentication, runtime inspection, Docker,
+Colima, and Notion were not performed, and no secret values were read.
+
+The next current development boundary became Phase B architecture discovery.
+Preparation covers MariaDB driver selection and dependency pinning, a fixed Mac
+Control Plane driver boundary, the canonical loopback target/profile contract,
+protected external historical credentials, independent expected DB/account
+identity, data-identity, and historical continuity descriptors or baselines, no
+retry/reconnect/pooling semantics, and a fixed read-only SQL surface design. No
+successor `SM-01B-02D` milestone is assigned without repository evidence.
+
 ## 2026-08-18 — MariaDB historical credential continuity validation boundary
 
 SM-01B-02D-06 is CLOSED at implementation commit

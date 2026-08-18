@@ -1,5 +1,38 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Validation Prerequisite / Phase A
+
+Status: repository-complete after documentation closeout. Implementation commit:
+`ccf3ce00f7f6602d2cc6a84ec5632c7088cae418`.
+
+Phase A adds only value-free MariaDB continuity prerequisite/readiness facts and
+a process-local composition boundary owned by the Mac AIControlCenter Control
+Plane. Its `HumanPresenceGrant` is non-serializable and one-shot: direct
+construction is prohibited, only private inert Phase-A test issuance exists,
+requests are canonically bound, concurrent use is exactly-once, and the grant is
+consumed before assembly and remains consumed if assembly fails. Exceptions are
+redacted, and composition invokes no capability.
+
+Phase A adds no MariaDB driver, Production credential source, credential
+material verification, SQL, network connectivity, canonical deployed
+Mac-reachable MariaDB target, identity or continuity baseline, real Production
+validation capability, Production authentication, consumer compatibility
+validation, mutation authority, or runtime activation. Consequently,
+`PRODUCTION_VALIDATION_READY=false`, `SHOPPING_RUNTIME_ACTIVATED=false`, and
+historical MariaDB credential continuity remains unresolved.
+
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The exact six Shopping secret
+provisioning actions and the Mac AIControlCenter sole-Control-Plane/Ubuntu
+stateless-worker architecture are preserved.
+
+Evidence: focused validation `13 passed in 0.07s`; final architecture review
+`FINAL_PHASE_A_ARCHITECTURE_REVIEW_GATE=PASS`; canonical regression `3556
+passed, 5 deselected, 447 warnings`, `RC=0`, executed exactly once on the final
+reviewed implementation tree. The canonical rerun after the implementation
+commit was `NOT_RUN`. Production access and MariaDB authentication were
+`NOT_PERFORMED`; runtime, Docker, Colima, and Notion access were
+`NOT_PERFORMED`; secret values read: `NO`.
+
 ## SM-01B-02D-06 — MariaDB Historical Credential Continuity Validation Boundary v1
 
 Status: CLOSED at implementation commit
@@ -46,10 +79,10 @@ No Production MariaDB authentication or historical-credential validation
 occurred, so continuity remains `UNRESOLVED`. No `RECOVER` confirmation,
 `ROTATE`, `REPLACE`, DB account/grant or encrypted-payload mutation, secret
 materialization, WordPress/WooCommerce DB-client cutover, runtime cutover, or
-old-account retirement occurred; `SHOPPING_RUNTIME_ACTIVATED=false`. A future,
-separately explicitly human-authorized Production validation operation must
-produce trustworthy value-free evidence before a human selects any strategy.
-The 06 implementation itself authorizes no such operation.
+old-account retirement occurred; `SHOPPING_RUNTIME_ACTIVATED=false`. Phase B
+architecture discovery is the next development boundary and must precede any
+future, separately explicitly human-authorized Production validation. The 06
+implementation itself authorizes no such operation.
 
 Focused validation: `33 passed in 0.08s`. Final architecture review: `PASS`,
 `CRITICAL=NONE`, `HIGH=NONE`, `MEDIUM=NONE`, `LOW=NONE`. The canonical

@@ -1,5 +1,35 @@
 # AIControlCenter
 
+## MariaDB Continuity Validation Prerequisite / Phase A
+
+Phase A is repository-complete after documentation closeout at implementation
+commit `ccf3ce00f7f6602d2cc6a84ec5632c7088cae418`. It provides only value-free
+MariaDB prerequisite/readiness facts and a Mac Control Plane process-local
+composition boundary. The non-serializable one-shot `HumanPresenceGrant` has
+prohibited direct construction, private inert Phase-A test issuance only,
+canonical request binding, concurrent exactly-once use, consume-before-assembly
+and permanent consumption after failure, redacted exceptions, and no capability
+invocation during composition.
+
+It does not provide a driver, Production credential source/material
+verification, SQL, connectivity, canonical target, identity/continuity
+baseline, real Production validation capability/authentication, consumer
+compatibility validation, mutation authority, or activation. This is not
+Production validation readiness: `PRODUCTION_VALIDATION_READY=false`,
+`SHOPPING_RUNTIME_ACTIVATED=false`, and historical MariaDB credential continuity
+remains unresolved.
+
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The exact six Shopping secret
+provisioning actions are preserved. Mac AIControlCenter remains the sole Control
+Plane; Ubuntu remains a stateless infrastructure worker.
+
+Evidence: focused `13 passed in 0.07s`; final architecture review `PASS`;
+canonical `3556 passed, 5 deselected, 447 warnings`, `RC=0`, executed exactly
+once on the final reviewed implementation tree; canonical rerun after commit
+`NOT_RUN`. Production access and MariaDB authentication were `NOT_PERFORMED`;
+runtime, Docker, Colima, and Notion were `NOT_PERFORMED`; secret values read
+`NO`.
+
 ## SM-01B-02D-06 MariaDB Historical Credential Continuity Validation Boundary v1
 
 SM-01B-02D-06 is CLOSED at implementation commit
@@ -30,10 +60,10 @@ No Production MariaDB authentication or historical-credential validation took
 place. Continuity remains `UNRESOLVED`; no `RECOVER` confirmation, `ROTATE`,
 `REPLACE`, DB/grant/payload mutation, materialization, DB-client/runtime
 cutover, old-account retirement, or activation occurred, and
-`SHOPPING_RUNTIME_ACTIVATED=false`. The next direction is a separately
-explicitly human-authorized Production validation using 06, followed by a
-human strategy decision based on trustworthy value-free evidence. 06 itself
-does not authorize it.
+`SHOPPING_RUNTIME_ACTIVATED=false`. Phase B architecture discovery is the next
+development boundary and must precede any separately explicitly
+human-authorized Production validation. 06 itself does not authorize such an
+operation.
 
 Validation: focused `33 passed in 0.08s`; architecture review `PASS`, all
 severities `NONE`. Canonical was accidentally run twice on the same unchanged
