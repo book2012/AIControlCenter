@@ -4,9 +4,10 @@
 
 Status: `PHASE_B2A_IMPLEMENTATION_STATUS=CLOSED`,
 `PHASE_B2A_VALIDATION_STATUS=CLOSED`,
-`PHASE_B2A_DOCUMENTATION_STATUS=IN_CLOSEOUT`, and
-`PHASE_B2A_REPOSITORY_STATUS=OPEN`. Implementation commit:
-`6063ce08b62e99331f5d442afc9d2a71703bcabf`.
+`PHASE_B2A_DOCUMENTATION_STATUS=CLOSED`, and
+`PHASE_B2A_REPOSITORY_STATUS=CLOSED`. Implementation commit:
+`6063ce08b62e99331f5d442afc9d2a71703bcabf`. Documentation closeout commit:
+`cfb1d7eae4b9676373ba31c485330b8449cd90f3`.
 
 Phase B2A adds value-free MariaDB continuity contracts only. Canonical current
 truth remains separate from constructible runtime observations.
@@ -75,8 +76,8 @@ six actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
 `SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
 `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
 `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`.
-`SHOPPING_SECRET_PROVISIONING` remains target-only. After repository closeout,
-the next development boundary is `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only. Repository closeout is
+complete. The next development boundary is `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`;
 Phase B2B is not implemented here.
 
 ## MariaDB Continuity Phase B1 — Factual Attempt and Contract Architecture

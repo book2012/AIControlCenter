@@ -1,6 +1,6 @@
 # Roadmap
 
-## MariaDB Continuity Phase B2A — documentation closeout current
+## MariaDB Continuity Phase B2A — documentation closeout complete
 
 - [x] Close implementation at `6063ce08b62e99331f5d442afc9d2a71703bcabf`.
 - [x] Close validation: initial focused `21 passed in 0.35s`; first final review
@@ -37,18 +37,19 @@
 - [x] Preserve Mac as sole Control Plane, Ubuntu as stateless worker,
   `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six historical
   Shopping actions, and target-only `SHOPPING_SECRET_PROVISIONING`.
-- [ ] Complete Phase B2A documentation closeout and final read-only review.
+- [x] Complete Phase B2A documentation closeout and final read-only review at
+  `cfb1d7eae4b9676373ba31c485330b8449cd90f3`.
 
 Phase status: `PHASE_B2A_IMPLEMENTATION_STATUS=CLOSED`,
 `PHASE_B2A_VALIDATION_STATUS=CLOSED`,
-`PHASE_B2A_DOCUMENTATION_STATUS=IN_CLOSEOUT`,
-`PHASE_B2A_REPOSITORY_STATUS=OPEN`.
+`PHASE_B2A_DOCUMENTATION_STATUS=CLOSED`,
+`PHASE_B2A_REPOSITORY_STATUS=CLOSED`.
 
-### Next boundary after Phase B2A repository closeout
+### Next boundary after completed Phase B2A repository closeout
 
 `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`
 
-Do not implement Phase B2B during Phase B2A closeout. No PyMySQL installation,
+Phase B2B is not implemented. No PyMySQL installation,
 requirements change, numeric MariaDB port, deployed target, credential
 availability, authentication, SQL, Production readiness, or Shopping runtime
 activation is claimed.

@@ -3,8 +3,8 @@
 ## 2026-08-18 — MariaDB Continuity Phase B2A documentation closeout
 
 - Recorded Phase B2A implementation and validation as closed at
-  `6063ce08b62e99331f5d442afc9d2a71703bcabf`; documentation is in closeout and
-  repository status remains open.
+  `6063ce08b62e99331f5d442afc9d2a71703bcabf`; documentation and repository
+  closeout completed at `cfb1d7eae4b9676373ba31c485330b8449cd90f3`.
 - Added value-free continuity contracts only. Canonical current truth remains
   separate from constructible observations. Runtime states are exactly
   `CONFIRMED`, `REJECTED`, `NOT_EVALUATED`, and `UNCERTAIN`; complete validation

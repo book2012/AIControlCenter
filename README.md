@@ -3,9 +3,10 @@
 ## MariaDB Continuity Phase B2A — documentation closeout
 
 Phase B2A implementation and validation are closed at
-`6063ce08b62e99331f5d442afc9d2a71703bcabf`; documentation is in closeout and
-repository status remains open. It adds only value-free MariaDB continuity
-contracts. Canonical truth stays separate from constructible observations.
+`6063ce08b62e99331f5d442afc9d2a71703bcabf`; documentation and repository
+closeout completed at `cfb1d7eae4b9676373ba31c485330b8449cd90f3`.
+It adds only value-free MariaDB continuity contracts. Canonical truth stays
+separate from constructible observations.
 Runtime observation states are exactly `CONFIRMED`, `REJECTED`,
 `NOT_EVALUATED`, and `UNCERTAIN`; all six mandatory facts must be confirmed for
 complete validation. Projections grant no authorization, capability, execution,
@@ -54,8 +55,8 @@ Mac AIControlCenter remains the sole Control Plane; Ubuntu remains stateless.
 `SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
 `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
 `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
-`SHOPPING_SECRET_PROVISIONING` remains target-only. After repository closeout,
-the next boundary is `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`; B2B is not
+`SHOPPING_SECRET_PROVISIONING` remains target-only. Repository closeout is
+complete. The next boundary is `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`; B2B is not
 implemented now.
 
 ## MariaDB Continuity Phase B1 — closed implementation boundary

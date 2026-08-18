@@ -4,7 +4,9 @@
 
 Phase B2A closed implementation and validation at
 `6063ce08b62e99331f5d442afc9d2a71703bcabf`; documentation entered closeout
-while repository status remained open. It added only value-free contracts,
+while repository status remained open, then documentation and repository
+closeout completed at `cfb1d7eae4b9676373ba31c485330b8449cd90f3`.
+It added only value-free contracts,
 separating canonical current truth from constructible observations. Runtime
 states became exactly `CONFIRMED`, `REJECTED`, `NOT_EVALUATED`, and `UNCERTAIN`,
 with complete validation derived only from all six mandatory facts confirmed.
