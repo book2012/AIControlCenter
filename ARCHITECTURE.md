@@ -1,5 +1,51 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-02D-05 — MariaDB Credential Continuity Decision Model v1
+
+Status: CLOSED. Implementation commit:
+`9f168cc475345e7d2c949f375ef5c44f2ad2fda9`. `ContinuityDecision` is a
+fail-closed public factual decision model. Its exact states are `UNRESOLVED`,
+`STRATEGY_DECLARED`, `VALIDATION_REQUIRED`, and `RESOLVED`; its exact
+strategies are `RECOVER`, `ROTATE`, and `REPLACE`. `RESOLVED` and caller-supplied
+`validation_confirmed` are factual metadata only. Neither grants authority,
+and trustworthy Production acquisition of validation confirmation remains a
+future separately bounded validation concern. Strategy selection grants zero
+authority. `mutation_authority` remains `false`; `capability_id` remains
+`null`.
+
+The model stores and transports no credential or secret value. It introduces
+no password, username, secret-derived hash/digest, private identity, recipient
+value, arbitrary path, environment value, stdout/stderr, command, argv,
+executable, callback, port, authorization, mutation budget, execution request,
+or execution receipt. The six existing Shopping provisioning actions remain
+exactly `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`.
+`SHOPPING_SECRET_PROVISIONING` is a target identifier, not a seventh action.
+
+No change was made to `AuthorizationConsumptionPort`, durable SQLite
+authorization consumption, mutation budgets, `ControlledExecutionPort`,
+SEC-02 semantics, postcondition semantics, Governance audit/evidence,
+`ShoppingProvisioningGovernanceCoordinator`, `secret_provisioning_adapters.py`,
+config, schema, or inspectors. This milestone implements no Production
+credential validation or execution, including `RECOVER`,
+`MARIADB_CREDENTIAL_ROTATE`, `MARIADB_CREDENTIAL_REPLACE`, recovery, rotation,
+replacement, DB secret payload creation/materialization, DB-dependent
+validation, WordPress/WooCommerce DB cutover, runtime cutover, or
+`SHOPPING_RUNTIME_ACTIVATED`. It does not claim historical credentials were
+recovered, validated, rotated, replaced, materialized, or activated.
+
+Mac mini M4 AIControlCenter remains the sole Control Plane. Ubuntu remains a
+stateless infrastructure worker; no authority is delegated to WordPress,
+WooCommerce, n8n, Ubuntu, or external recovery custody systems. Focused
+validation: `39 passed in 0.04s`. Canonical validation: `3510 passed`, `5
+deselected`, `447 warnings`, `RC=0`. Final architecture review: `PASS`, with
+`CRITICAL=NONE`, `HIGH=NONE`, `MEDIUM=NONE`, and `LOW=NONE`. Implementation
+push: `PASS`. Production access: `NOT_PERFORMED`. Notion sync: `NOT_PERFORMED`.
+
 ## SM-01B-02D-04B — Provisioning Runtime Composition & Read-Only Postconditions v1
 
 Status: CLOSED at implementation commit `a4cb53d5398dffdc33366ac042fdb7813f6d4577`

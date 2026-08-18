@@ -150,9 +150,29 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   `CANONICAL_GATE=PASS`; implementation push/clean/divergence `0 0`/closeout
   PASS. Production access and Notion sync were not performed; canonical was not
   rerun for documentation closeout.
-- [ ] After 04B, resolve historical MariaDB credential continuity through an
-  explicit continuity/recovery/rotation strategy; SOPS+age cannot recover or
-  silently replace historical credentials.
+- [x] Close `SM-01B-02D-05 — MariaDB Credential Continuity Decision Model v1`
+  at implementation commit `9f168cc475345e7d2c949f375ef5c44f2ad2fda9`.
+  Preserve exact fail-closed factual states `UNRESOLVED`, `STRATEGY_DECLARED`,
+  `VALIDATION_REQUIRED`, `RESOLVED` and strategies `RECOVER`, `ROTATE`,
+  `REPLACE`; `RESOLVED`, strategy selection, and caller-supplied
+  `validation_confirmed` grant zero authority. Trustworthy Production
+  acquisition of confirmation remains a separately bounded future validation
+  concern; `mutation_authority=false`, `capability_id=null`.
+- [x] Preserve zero credential/secret values and zero new credential,
+  identity, recipient, path, environment, process, execution, authorization,
+  or mutation surfaces; preserve the exact six provisioning actions and keep
+  `SHOPPING_SECRET_PROVISIONING` a target rather than a seventh action.
+- [x] Keep authorization consumption/durable SQLite, mutation budgets,
+  `ControlledExecutionPort`, SEC-02/postconditions, Governance audit/evidence,
+  coordinator, adapters, config, schema, and inspectors unchanged. Implement
+  no Production validation, recovery/rotation/replacement, payload,
+  materialization, DB-dependent validation, cutover, or activation, and claim
+  no historical credential recovery, validation, rotation, replacement,
+  materialization, or activation.
+- [x] Record focused `39 passed in 0.04s`; canonical `3510 passed`, `5
+  deselected`, `447 warnings`, `RC=0`; final architecture review `PASS` with
+  `CRITICAL=NONE`, `HIGH=NONE`, `MEDIUM=NONE`, `LOW=NONE`; implementation push
+  `PASS`; Production access and Notion sync `NOT_PERFORMED`.
 - [ ] After all readiness gates pass, execute each Production mutation under
   its own explicit human authorization: SOPS installation, age installation,
   control-plane identity creation, each public-recipient registration/intake

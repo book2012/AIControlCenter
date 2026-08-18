@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## 2026-08-18 — SM-01B-02D-05 MariaDB Credential Continuity Decision Model v1
+
+- CLOSED at implementation commit `9f168cc475345e7d2c949f375ef5c44f2ad2fda9`.
+  Added fail-closed public factual `ContinuityDecision` metadata with exactly
+  `UNRESOLVED`, `STRATEGY_DECLARED`, `VALIDATION_REQUIRED`, `RESOLVED` and
+  strategies `RECOVER`, `ROTATE`, `REPLACE`. `RESOLVED`, strategy selection,
+  and caller-supplied `validation_confirmed` grant zero authority; trustworthy
+  Production acquisition of confirmation remains separately bounded future
+  validation. `mutation_authority=false`; `capability_id=null`.
+- Stored and transported no credential or secret value and introduced no
+  password, username, secret-derived hash/digest, private identity, recipient
+  value, arbitrary path, environment value, stdout/stderr, command, argv,
+  executable, callback, port, authorization, mutation budget, execution
+  request, or execution receipt.
+- Preserved the exact six Shopping provisioning actions and kept
+  `SHOPPING_SECRET_PROVISIONING` as a target, not a seventh action. Changed
+  neither `AuthorizationConsumptionPort`, durable SQLite consumption, mutation
+  budgets, `ControlledExecutionPort`, SEC-02/postconditions, Governance
+  audit/evidence, coordinator, adapters, config, schema, nor inspectors.
+- Implemented no Production validation, recovery/rotation/replacement
+  execution, `MARIADB_CREDENTIAL_ROTATE`, `MARIADB_CREDENTIAL_REPLACE`, DB
+  payload/materialization, DB-dependent validation, DB/runtime cutover, or
+  activation; made no claim historical credentials were recovered, validated,
+  rotated, replaced, materialized, or activated.
+- Preserved Mac mini M4 AIControlCenter as sole Control Plane and Ubuntu as a
+  stateless worker, with no authority delegated to WordPress, WooCommerce, n8n,
+  Ubuntu, or external recovery custody systems.
+- Focused validation: `39 passed in 0.04s`. Canonical: `3510 passed`, `5
+  deselected`, `447 warnings`, `RC=0`. Final architecture review: `PASS`;
+  `CRITICAL=NONE`, `HIGH=NONE`, `MEDIUM=NONE`, `LOW=NONE`. Implementation push:
+  `PASS`. Production access and Notion sync: `NOT_PERFORMED`.
+
 ## 2026-08-18 — SM-01B-02D-04B Provisioning Runtime Composition & Read-Only Postconditions v1
 
 - CLOSED 04B at `a4cb53d5398dffdc33366ac042fdb7813f6d4577` (`feat(shopping):

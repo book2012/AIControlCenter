@@ -1,5 +1,41 @@
 # AIControlCenter
 
+## SM-01B-02D-05 MariaDB Credential Continuity Decision Model v1
+
+SM-01B-02D-05 is CLOSED at implementation commit
+`9f168cc475345e7d2c949f375ef5c44f2ad2fda9`. `ContinuityDecision` is a
+fail-closed public factual model with exactly four states—`UNRESOLVED`,
+`STRATEGY_DECLARED`, `VALIDATION_REQUIRED`, `RESOLVED`—and exactly three
+strategies—`RECOVER`, `ROTATE`, `REPLACE`. `RESOLVED`, strategy selection, and
+caller-supplied `validation_confirmed` grant zero authority. Trustworthy
+Production acquisition of confirmation remains a future separately bounded
+validation concern. `mutation_authority=false`; `capability_id=null`.
+
+It stores/transports no credential or secret value and introduces no password,
+username, secret-derived hash/digest, private identity, recipient value,
+arbitrary path, environment value, stdout/stderr, command, argv, executable,
+callback, port, authorization, mutation budget, execution request, or receipt.
+All six existing Shopping provisioning actions remain unchanged;
+`SHOPPING_SECRET_PROVISIONING` is their target identifier, not a seventh action.
+
+The milestone changes no authorization-consumption port or durable SQLite
+semantics, budget, controlled-execution, SEC-02, postcondition, Governance
+audit/evidence, coordinator, adapter, config, schema, or inspector behavior. It
+does not implement or claim Production credential validation, recovery,
+rotation, replacement, `MARIADB_CREDENTIAL_ROTATE`,
+`MARIADB_CREDENTIAL_REPLACE`, DB payload/materialization, DB-dependent
+validation, WordPress/WooCommerce DB cutover, runtime cutover, or
+`SHOPPING_RUNTIME_ACTIVATED`. Historical credentials were not claimed
+recovered, validated, rotated, replaced, materialized, or activated.
+
+Mac mini M4 AIControlCenter remains the sole Control Plane. Ubuntu remains a
+stateless infrastructure worker; WordPress, WooCommerce, n8n, Ubuntu, and
+external recovery custody systems receive no delegated authority. Validation:
+focused `39 passed in 0.04s`; canonical `3510 passed`, `5 deselected`, `447
+warnings`, `RC=0`. Final architecture review: `PASS`, `CRITICAL=NONE`,
+`HIGH=NONE`, `MEDIUM=NONE`, `LOW=NONE`. Implementation push: `PASS`. Production
+access: `NOT_PERFORMED`. Notion sync: `NOT_PERFORMED`.
+
 ## SM-01B-02D-04B Provisioning Runtime Composition & Read-Only Postconditions v1
 
 SM-01B-02D-04B is CLOSED at implementation commit

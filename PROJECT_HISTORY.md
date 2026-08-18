@@ -1,5 +1,38 @@
 # Project History
 
+## 2026-08-18 — MariaDB credential continuity decision model
+
+SM-01B-02D-05 — MariaDB Credential Continuity Decision Model v1 is CLOSED at
+implementation commit `9f168cc475345e7d2c949f375ef5c44f2ad2fda9`.
+`ContinuityDecision` records only fail-closed public facts: exact states
+`UNRESOLVED`, `STRATEGY_DECLARED`, `VALIDATION_REQUIRED`, `RESOLVED`; exact
+strategies `RECOVER`, `ROTATE`, `REPLACE`. `RESOLVED`, strategy selection, and
+caller-supplied `validation_confirmed` grant no authority. Trustworthy
+Production acquisition of confirmation remains a future separately bounded
+validation concern. `mutation_authority=false`; `capability_id=null`.
+
+The decision model stores/transports no credential or secret value and adds no
+password, username, secret-derived digest, private identity, recipient, path,
+environment, process-output, command/argv/executable/callback/port,
+authorization, budget, execution request, or receipt surface. The six Shopping
+provisioning actions remain unchanged, and `SHOPPING_SECRET_PROVISIONING` is
+still only their target. Authorization consumption, durable SQLite, budgets,
+controlled execution, SEC-02, postconditions, audit/evidence, coordinator,
+adapters, config, schema, and inspectors are unchanged.
+
+This was a decision-model milestone, not Production credential validation or
+recovery/rotation/replacement execution. It added no MariaDB rotate/replace
+action, secret payload/materialization, DB validation, DB/runtime cutover, or
+activation, and claims no historical credential was recovered, validated,
+rotated, replaced, materialized, or activated. Mac mini M4 AIControlCenter
+remains the sole Control Plane; Ubuntu remains stateless, with no authority
+delegated to WordPress, WooCommerce, n8n, Ubuntu, or external custody systems.
+
+Focused validation recorded `39 passed in 0.04s`; canonical recorded
+`3510 passed`, `5 deselected`, `447 warnings`, `RC=0`. Final architecture review
+`PASS`: `CRITICAL=NONE`, `HIGH=NONE`, `MEDIUM=NONE`, `LOW=NONE`.
+Implementation push `PASS`; Production access and Notion sync `NOT_PERFORMED`.
+
 ## 2026-08-18 — Provisioning runtime composition and read-only postconditions
 
 SM-01B-02D-04B CLOSED at `a4cb53d5398dffdc33366ac042fdb7813f6d4577`.

@@ -1,5 +1,43 @@
 # MASTER
 
+## SM-01B-02D-05 — MariaDB Credential Continuity Decision Model v1 — CLOSED
+
+Implementation commit `9f168cc475345e7d2c949f375ef5c44f2ad2fda9` closes the
+fail-closed public factual `ContinuityDecision` model. Exact states:
+`UNRESOLVED`, `STRATEGY_DECLARED`, `VALIDATION_REQUIRED`, `RESOLVED`. Exact
+strategies: `RECOVER`, `ROTATE`, `REPLACE`. `RESOLVED`, strategy selection, and
+caller-supplied `validation_confirmed` grant zero authority. Trustworthy
+Production acquisition of that confirmation is a future separately bounded
+validation concern. `mutation_authority=false`; `capability_id=null`.
+
+No credential or secret value is stored or transported. No password, username,
+secret-derived hash/digest, private identity, recipient value, arbitrary path,
+environment value, stdout/stderr, command, argv, executable, callback, port,
+authorization, mutation budget, execution request, or execution receipt was
+introduced. The six provisioning actions remain exactly the two tool ensures,
+Control Plane identity creation, two recipient registration/validation actions,
+and offline-recovery intake; `SHOPPING_SECRET_PROVISIONING` remains a target
+identifier and is not a seventh action.
+
+There is no change to `AuthorizationConsumptionPort`, durable SQLite
+authorization consumption, mutation budgets, `ControlledExecutionPort`, SEC-02
+or postcondition semantics, Governance audit/evidence,
+`ShoppingProvisioningGovernanceCoordinator`, `secret_provisioning_adapters.py`,
+config, schema, or inspectors. No Production credential validation,
+`MARIADB_CREDENTIAL_ROTATE`, `MARIADB_CREDENTIAL_REPLACE`, recovery, rotation,
+replacement, DB secret payload/materialization, DB-dependent validation,
+WordPress/WooCommerce DB cutover, runtime cutover, or activation was
+implemented or claimed. Historical credentials were not claimed recovered,
+validated, rotated, replaced, materialized, or activated.
+
+Mac mini M4 AIControlCenter remains the sole Control Plane; Ubuntu remains a
+stateless infrastructure worker. No authority is delegated to WordPress,
+WooCommerce, n8n, Ubuntu, or external recovery custody systems. Focused:
+`39 passed in 0.04s`. Canonical: `3510 passed`, `5 deselected`, `447 warnings`,
+`RC=0`. Architecture review: `PASS`; `CRITICAL=NONE`, `HIGH=NONE`,
+`MEDIUM=NONE`, `LOW=NONE`. Implementation push: `PASS`. Production access:
+`NOT_PERFORMED`. Notion sync: `NOT_PERFORMED`.
+
 ## SM-01B-02D-04B — Provisioning Runtime Composition & Read-Only Postconditions v1 — CLOSED
 
 Commit `a4cb53d5398dffdc33366ac042fdb7813f6d4577` adds Mac-Control-Plane-owned,
