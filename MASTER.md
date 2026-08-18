@@ -1,5 +1,72 @@
 # MASTER
 
+## MariaDB Continuity Phase B2A — IMPLEMENTATION AND VALIDATION CLOSED
+
+Implementation commit: `6063ce08b62e99331f5d442afc9d2a71703bcabf`.
+Documentation is `IN_CLOSEOUT`; repository status is `OPEN`.
+
+Phase B2A adds only value-free MariaDB continuity contracts and keeps canonical
+current truth separate from constructible runtime observations. The exact
+runtime states are `CONFIRMED`, `REJECTED`, `NOT_EVALUATED`, and `UNCERTAIN`;
+complete validation requires all six mandatory facts `CONFIRMED`. Projections
+grant zero authorization, capability, execution, mutation, retry, reconnect,
+and rollback authority.
+
+The single fixed protected slot is validated by metadata only: parent exact
+`0700`, directory, non-symlink, expected uid/gid; leaf non-empty regular
+non-symlink, no broader than `0600`, expected uid/gid. The reason vocabulary is
+closed and contradictory observations are rejected. A consistent manually
+constructed positive remains an inert value-free factual/fake DTO without
+readiness or authority. Trusted evidence is separately produced by
+`observe_fixed_protected_source`; no credential value, enumeration, or fallback
+exists.
+
+Target `CLOSED_SYMBOLIC_PRODUCTION_MARIADB_PROFILE` remains Mac-owned with
+`numeric_loopback_port_assigned=false`, `target_deployed=false`, and
+`production_target_ready=false`. No numeric loopback port is assigned. Driver
+contract: `DRIVER_FAMILY=PYMYSQL`, `DRIVER_VERSION=1.2.0`,
+`DRIVER_MODE=SYNCHRONOUS_ONE_SHOT`, `AUTH_PLUGIN_STATE=UNRESOLVED`, and
+`maximum_future_connection_count_per_authorization=1`. PyMySQL import/install
+is absent; requirements remain unchanged; there is no network, SQL, retry,
+reconnect, or pooling.
+
+Production files are `core/secrets/mariadb_continuity_observations.py` and the
+three `ops/macos/shopping/mariadb_continuity_{protected_sources,pymysql_adapter,target_resolver}.py`
+files. Tests are the matching four
+`tests/test_sm_mariadb_continuity_{observations,protected_sources,pymysql_adapter,target_resolver}.py`
+files.
+
+Validation history: initial focused `21 passed in 0.35s`; first final review
+`BLOCKED`; corrected focused `31 passed in 0.13s`; final read-only review #2
+`PASS`; canonical exactly once on final reviewed state: `3624 passed, 5
+deselected, 455 warnings in 134.66s`, `RC=0`. Focused and canonical post-commit
+reruns: `NOT_RUN`.
+
+Normal push, clean Git, and divergence `0 0` passed. The second closeout attempt
+failed closed on its stale expected pre-commit HEAD and created no second
+commit, push, or implementation change; this is duplicate-closeout protection,
+not a defect.
+
+Runtime truth: `PRODUCTION_ACCESS_GATE=NOT_PERFORMED`,
+`MARIADB_AUTHENTICATION=NOT_PERFORMED`, `SECRET_VALUES_READ=NO`,
+`SQL_EXECUTION=NOT_PERFORMED`, `DOCKER_ACCESS=NOT_PERFORMED`,
+`COLIMA_ACCESS=NOT_PERFORMED`, `NOTION_SYNC=NOT_PERFORMED`,
+`PYMYSQL_INSTALLED=NO`, `REQUIREMENTS_CHANGED=NO`,
+`MARIADB_LOOPBACK_PORT_STATE=UNASSIGNED`, `PRODUCTION_VALIDATION_READY=false`,
+and `SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Mac AIControlCenter remains the sole Control Plane and Ubuntu a stateless
+infrastructure worker. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact
+six actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`.
+`SHOPPING_SECRET_PROVISIONING` remains target-only. The next boundary after
+repository closeout is `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`; it is not
+implemented now.
+
 ## MariaDB Continuity Phase B1 — IMPLEMENTATION AND VALIDATION COMPLETE
 
 Implementation commit: `acdbd859872b842691c293b5e094472b344d304b`.

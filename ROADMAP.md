@@ -1,5 +1,58 @@
 # Roadmap
 
+## MariaDB Continuity Phase B2A — documentation closeout current
+
+- [x] Close implementation at `6063ce08b62e99331f5d442afc9d2a71703bcabf`.
+- [x] Close validation: initial focused `21 passed in 0.35s`; first final review
+  `BLOCKED`; corrected focused `31 passed in 0.13s`; final read-only review #2
+  `PASS`; canonical exactly once on final reviewed state, `3624 passed, 5
+  deselected, 455 warnings in 134.66s`, `RC=0`; both post-commit reruns
+  `NOT_RUN`.
+- [x] Add value-free contracts only; keep canonical truth separate from
+  constructible observation states exactly `CONFIRMED`, `REJECTED`,
+  `NOT_EVALUATED`, and `UNCERTAIN`; derive completion only when all six facts
+  are confirmed; grant zero authorization, capability, execution, mutation,
+  retry, reconnect, and rollback authority.
+- [x] Add one-slot metadata validation: `0700` non-symlink directory parent and
+  non-empty regular non-symlink leaf no broader than `0600`, both with expected
+  uid/gid; closed reasons; contradiction rejection; inert manual positives;
+  separate trusted `observe_fixed_protected_source`; no value read,
+  enumeration, or fallback.
+- [x] Preserve Mac-owned `CLOSED_SYMBOLIC_PRODUCTION_MARIADB_PROFILE` with no
+  numeric loopback port, no deployment, and no readiness.
+- [x] Define only the future PyMySQL `1.2.0` synchronous one-shot contract,
+  unresolved auth plugin and one future connection maximum per authorization;
+  add no import/install, requirements change, network, SQL, retry, reconnect,
+  or pooling.
+- [x] Limit implementation to
+  `core/secrets/mariadb_continuity_observations.py`, the three continuity files
+  under `ops/macos/shopping/`, and their four matching test files.
+- [x] Record normal push, clean Git, and divergence `0 0`; record the duplicate
+  closeout stale-HEAD rejection as successful protection that created no second
+  commit, push, or implementation change.
+- [x] Preserve runtime truth: Production access, authentication, SQL, Docker,
+  Colima, and Notion `NOT_PERFORMED`; values read `NO`; PyMySQL installed and
+  requirements changed `NO`; auth plugin unresolved; port unassigned;
+  `PRODUCTION_VALIDATION_READY=false`; `SHOPPING_RUNTIME_ACTIVATED=false`.
+- [x] Preserve Mac as sole Control Plane, Ubuntu as stateless worker,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six historical
+  Shopping actions, and target-only `SHOPPING_SECRET_PROVISIONING`.
+- [ ] Complete Phase B2A documentation closeout and final read-only review.
+
+Phase status: `PHASE_B2A_IMPLEMENTATION_STATUS=CLOSED`,
+`PHASE_B2A_VALIDATION_STATUS=CLOSED`,
+`PHASE_B2A_DOCUMENTATION_STATUS=IN_CLOSEOUT`,
+`PHASE_B2A_REPOSITORY_STATUS=OPEN`.
+
+### Next boundary after Phase B2A repository closeout
+
+`PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`
+
+Do not implement Phase B2B during Phase B2A closeout. No PyMySQL installation,
+requirements change, numeric MariaDB port, deployed target, credential
+availability, authentication, SQL, Production readiness, or Shopping runtime
+activation is claimed.
+
 ## MariaDB Continuity Phase B1 — implementation and validation complete
 
 - [x] Close Phase B1 at implementation commit

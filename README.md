@@ -1,5 +1,63 @@
 # AIControlCenter
 
+## MariaDB Continuity Phase B2A — documentation closeout
+
+Phase B2A implementation and validation are closed at
+`6063ce08b62e99331f5d442afc9d2a71703bcabf`; documentation is in closeout and
+repository status remains open. It adds only value-free MariaDB continuity
+contracts. Canonical truth stays separate from constructible observations.
+Runtime observation states are exactly `CONFIRMED`, `REJECTED`,
+`NOT_EVALUATED`, and `UNCERTAIN`; all six mandatory facts must be confirmed for
+complete validation. Projections grant no authorization, capability, execution,
+mutation, retry, reconnect, or rollback authority.
+
+The fixed protected source is metadata-only: parent exact `0700`, directory,
+non-symlink, expected uid/gid; leaf non-empty regular non-symlink, permissions
+no broader than `0600`, expected uid/gid. Reasons are a closed vocabulary and
+contradictions are rejected. A manually constructed positive is only an inert
+value-free factual/fake DTO, never readiness or authority. Trusted filesystem
+evidence is separately produced by `observe_fixed_protected_source`; no secret
+value is read, and there is no enumeration or fallback.
+
+Target `CLOSED_SYMBOLIC_PRODUCTION_MARIADB_PROFILE` is owned by
+`MAC_CONTROL_PLANE`; its numeric port is unassigned, it is undeployed, and it
+is not ready. The contract specifies PyMySQL `1.2.0`, synchronous one-shot,
+unresolved auth plugin, and at most one future connection per authorization.
+PyMySQL is neither imported nor installed, `requirements.txt` is unchanged,
+and Phase B2A contains no network, SQL, retry, reconnect, or pooling.
+
+Implementation is limited to
+`core/secrets/mariadb_continuity_observations.py` and the protected-source,
+PyMySQL-adapter, and target-resolver modules under `ops/macos/shopping/`, with
+their four matching `tests/test_sm_mariadb_continuity_*.py` test files.
+
+Evidence: initial focused `21 passed in 0.35s`; first final architecture review
+`BLOCKED`; corrected focused `31 passed in 0.13s`; final read-only architecture
+review #2 `PASS`; canonical exactly once on final reviewed code/test state,
+`3624 passed, 5 deselected, 455 warnings in 134.66s`, `RC=0`. Post-commit focused
+and canonical reruns were `NOT_RUN`. Normal push, final clean check, and
+divergence `0 0` passed. A duplicate closeout correctly failed closed on stale
+expected pre-commit HEAD and made no second commit, push, or implementation
+change.
+
+Runtime remains: no Production access, MariaDB authentication, SQL, Docker,
+Colima, or Notion sync; no secret values read; PyMySQL not installed;
+requirements unchanged; auth plugin unresolved; MariaDB loopback port
+unassigned; `PRODUCTION_VALIDATION_READY=false`; and
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Mac AIControlCenter remains the sole Control Plane; Ubuntu remains stateless.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The six preserved actions are
+`SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only. After repository closeout,
+the next boundary is `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`; B2B is not
+implemented now.
+
 ## MariaDB Continuity Phase B1 — closed implementation boundary
 
 Phase B1 is implementation- and validation-complete at

@@ -1,5 +1,84 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Phase B2A — Value-Free Continuity Contracts
+
+Status: `PHASE_B2A_IMPLEMENTATION_STATUS=CLOSED`,
+`PHASE_B2A_VALIDATION_STATUS=CLOSED`,
+`PHASE_B2A_DOCUMENTATION_STATUS=IN_CLOSEOUT`, and
+`PHASE_B2A_REPOSITORY_STATUS=OPEN`. Implementation commit:
+`6063ce08b62e99331f5d442afc9d2a71703bcabf`.
+
+Phase B2A adds value-free MariaDB continuity contracts only. Canonical current
+truth remains separate from constructible runtime observations.
+`MariaDBContinuityRuntimeObservation` supports exactly `CONFIRMED`, `REJECTED`,
+`NOT_EVALUATED`, and `UNCERTAIN`; `complete_validation` is true only when all
+six mandatory runtime facts are `CONFIRMED`. Every projection grants zero
+authorization, capability, execution, mutation, retry, reconnect, and rollback
+authority.
+
+Protected-source validation is metadata-only for one fixed slot. The parent
+must be a `0700` directory, non-symlink, with expected uid and gid. The leaf
+must be a non-empty regular non-symlink file, have permissions no broader than
+`0600`, and have expected uid and gid. `ProtectedSourceReason` is closed;
+contradictory `ProtectedSourceObservation` construction is rejected. A
+logically consistent manually constructed positive observation is only an
+inert, value-free factual/fake DTO and grants no readiness or authority.
+Trusted filesystem evidence is produced separately by
+`observe_fixed_protected_source`. No credential value is read; there is no
+enumeration or fallback.
+
+The target remains `CLOSED_SYMBOLIC_PRODUCTION_MARIADB_PROFILE`, owned by
+`MAC_CONTROL_PLANE`, with `numeric_loopback_port_assigned=false`,
+`target_deployed=false`, and `production_target_ready=false`. No numeric
+MariaDB loopback port is assigned. The driver contract is `DRIVER_FAMILY=PYMYSQL`,
+`DRIVER_VERSION=1.2.0`, `DRIVER_MODE=SYNCHRONOUS_ONE_SHOT`,
+`AUTH_PLUGIN_STATE=UNRESOLVED`, and
+`maximum_future_connection_count_per_authorization=1`. Actual PyMySQL import
+and installation are absent; `requirements.txt` is unchanged. Phase B2A has no
+network, SQL, retry, reconnect, or pooling.
+
+Exact production files are `core/secrets/mariadb_continuity_observations.py`,
+`ops/macos/shopping/mariadb_continuity_protected_sources.py`,
+`ops/macos/shopping/mariadb_continuity_pymysql_adapter.py`, and
+`ops/macos/shopping/mariadb_continuity_target_resolver.py`. Exact test files are
+`tests/test_sm_mariadb_continuity_observations.py`,
+`tests/test_sm_mariadb_continuity_protected_sources.py`,
+`tests/test_sm_mariadb_continuity_pymysql_adapter.py`, and
+`tests/test_sm_mariadb_continuity_target_resolver.py`.
+
+Validation history: initial focused `21 passed in 0.35s`; first final
+architecture review `BLOCKED`; corrected focused `31 passed in 0.13s`; final
+read-only architecture review #2 `PASS`; canonical exactly once on the final
+reviewed code/test state, `3624 passed, 5 deselected, 455 warnings in 134.66s`,
+`RC=0`. Focused and canonical reruns after the implementation commit were both
+`NOT_RUN`.
+
+The normal implementation push, final Git clean check, and final upstream
+divergence `0 0` passed. A second implementation-closeout invocation was
+rejected fail-closed because its expected pre-commit HEAD was stale after the
+successful commit. This was successful duplicate-closeout protection: it made
+no second commit, second push, or implementation change.
+
+Runtime truth remains `PRODUCTION_ACCESS_GATE=NOT_PERFORMED`,
+`MARIADB_AUTHENTICATION=NOT_PERFORMED`, `SECRET_VALUES_READ=NO`,
+`SQL_EXECUTION=NOT_PERFORMED`, `DOCKER_ACCESS=NOT_PERFORMED`,
+`COLIMA_ACCESS=NOT_PERFORMED`, `NOTION_SYNC=NOT_PERFORMED`,
+`PYMYSQL_INSTALLED=NO`, `REQUIREMENTS_CHANGED=NO`,
+`AUTH_PLUGIN_STATE=UNRESOLVED`, `MARIADB_LOOPBACK_PORT_STATE=UNASSIGNED`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Mac AIControlCenter remains the sole Control Plane; Ubuntu remains a stateless
+infrastructure worker. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The exact
+six actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`.
+`SHOPPING_SECRET_PROVISIONING` remains target-only. After repository closeout,
+the next development boundary is `PHASE_B2B_CONCRETE_INTEGRATION_DISCOVERY`;
+Phase B2B is not implemented here.
+
 ## MariaDB Continuity Phase B1 — Factual Attempt and Contract Architecture
 
 Status: **IMPLEMENTATION-COMPLETE AND VALIDATION-COMPLETE** at implementation
