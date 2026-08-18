@@ -1,5 +1,28 @@
 # MASTER
 
+## SM-01B-02D-04B — Provisioning Runtime Composition & Read-Only Postconditions v1 — CLOSED
+
+Commit `a4cb53d5398dffdc33366ac042fdb7813f6d4577` adds Mac-Control-Plane-owned,
+JSON-first deterministic, read-only, structural and value-free readiness
+composition; Ubuntu remains stateless. Readiness is closed to `READY`,
+`MISSING`, `BLOCKED`, `UNSAFE`, `MALFORMED`, with false/false -> `MISSING`,
+true/false -> `BLOCKED`, true/true -> `READY`, and contradictory false/true ->
+fail-closed `MALFORMED` for payload/runtime dependencies. Malformed blocks
+readiness and activation.
+
+Six actions, separate offline intake/registration, Governance authorization,
+durable consumption, and `ControlledExecutionPort` remain unchanged. No
+mutation API, payload, materialization, or cutover occurred;
+`materialization_implemented=false`, `SHOPPING_RUNTIME_ACTIVATED=false`.
+Unresolved MariaDB continuity blocks DB readiness/materialization, validation,
+DB cutover and activation. No recovery/replacement is claimed; dedicated
+Shopping materialization architecture is future work.
+
+Focused `47 passed`; canonical `3471 passed, 5 deselected, 447 warnings` in
+approximately `133.97s`, `CANONICAL_RC=0`, `CANONICAL_GATE=PASS`; implementation
+push, clean, divergence `0 0`, closeout PASS. Production access and Notion sync
+were not performed; canonical was not rerun for docs closeout.
+
 ## SM-01B-02D-04A — Governed Offline Public Recipient Intake v1 — IMPLEMENTATION VALIDATED
 
 Implementation commit `6e1aa0135b652b199f05a4911c0f45817a8529f4` is
@@ -24,8 +47,7 @@ warnings in 133.23s`, `RC=0`; implementation closeout PASS, clean, divergence
 `0 0`. No Production mutation or recipient intake occurred. Historical
 MariaDB credential continuity remains unresolved and still blocks DB-secret
 payload/materialization, database validation, DB/runtime cutover, and
-`SHOPPING_RUNTIME_ACTIVATED`. Current next engineering milestone:
-`SM-01B-02D-04B`. The next Production milestone remains
+`SHOPPING_RUNTIME_ACTIVATED`. 04B is CLOSED. The next Production milestone remains
 `SHOPPING_RUNTIME_ACTIVATED`; Notion is deferred until then.
 
 ## SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1 — VALIDATED

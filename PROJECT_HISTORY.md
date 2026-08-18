@@ -1,5 +1,29 @@
 # Project History
 
+## 2026-08-18 — Provisioning runtime composition and read-only postconditions
+
+SM-01B-02D-04B CLOSED at `a4cb53d5398dffdc33366ac042fdb7813f6d4577`.
+Mac AIControlCenter remains the sole Control Plane and Ubuntu stateless. The
+JSON-first deterministic read-only projection is structural/value-free and
+excludes secret/recipient values, private identities, arbitrary paths,
+stdout/stderr, environment values, and mutation authority.
+
+Readiness is closed to `READY`, `MISSING`, `BLOCKED`, `UNSAFE`, `MALFORMED`;
+configured/ready false/false, true/false, true/true, false/true map to
+`MISSING`, `BLOCKED`, `READY`, fail-closed `MALFORMED`. Malformed blocks
+readiness/activation. Six actions, separate offline intake/registration,
+Governance authorization, durable consumption, and `ControlledExecutionPort`
+remain unchanged. No mutation API/payload/materialization/cutover occurred;
+`materialization_implemented=false`, `SHOPPING_RUNTIME_ACTIVATED=false`.
+
+MariaDB continuity remains unresolved and blocks DB readiness/materialization,
+validation/cutover, and activation. 04B claims no recovery/replacement;
+dedicated Shopping materialization architecture is future work. Focused `47
+passed`; canonical `3471 passed, 5 deselected, 447 warnings` in approximately
+`133.97s`, `CANONICAL_RC=0`, `CANONICAL_GATE=PASS`; implementation Git closeout
+PASS with divergence `0 0`. Production and Notion were not accessed; canonical
+was not rerun for docs closeout.
+
 ## 2026-08-18 — Governed offline public-recipient intake boundary
 
 SM-01B-02D-04A established recipient intake as a distinct governed mutation,
@@ -29,7 +53,8 @@ rollback, compensation, or recovery.
 This decision did not change the closed durable authorization-consumption
 architecture. It performed no Production intake or filesystem mutation and did
 not resolve historical MariaDB credential continuity. Implementation was
-validated at `6e1aa0135b652b199f05a4911c0f45817a8529f4`; documentation closeout is complete, 04A is CLOSED, and 04B is next.
+validated at `6e1aa0135b652b199f05a4911c0f45817a8529f4`; documentation
+closeout is complete, 04A is CLOSED, and 04B is now CLOSED as documented above.
 
 ## 2026-08-13 — Canonical API recovery after immutable Source contamination
 

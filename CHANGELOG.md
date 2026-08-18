@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-08-18 — SM-01B-02D-04B Provisioning Runtime Composition & Read-Only Postconditions v1
+
+- CLOSED 04B at `a4cb53d5398dffdc33366ac042fdb7813f6d4577` (`feat(shopping):
+  add secret provisioning readiness composition`). Added Mac-Control-Plane-owned,
+  JSON-first deterministic read-only, structural, value-free readiness composition.
+- Closed readiness to `READY`, `MISSING`, `BLOCKED`, `UNSAFE`, `MALFORMED`;
+  configured/ready false/false, true/false, true/true, false/true map to
+  `MISSING`, `BLOCKED`, `READY`, fail-closed `MALFORMED`. Malformed blocks
+  overall readiness and activation.
+- Preserved six actions, separate offline intake/registration, and unchanged
+  Governance authorization, durable consumption, and `ControlledExecutionPort`.
+  No mutation API/payload/materialization/cutover; `materialization_implemented=false`,
+  `SHOPPING_RUNTIME_ACTIVATED=false`.
+- MariaDB continuity remains unresolved and blocks DB readiness/materialization,
+  validation/cutover, and runtime activation. Recovery/replacement is not
+  claimed; dedicated Shopping materialization architecture is future work.
+- Recorded focused `47 passed`; canonical `3471 passed, 5 deselected, 447
+  warnings` in approximately `133.97s`, `CANONICAL_RC=0`, `CANONICAL_GATE=PASS`;
+  implementation push/clean/divergence `0 0`/closeout PASS. Production and
+  Notion were not accessed; canonical was not rerun for docs closeout.
+
 ## 2026-08-18 — SM-01B-02D-04A Governed Offline Public Recipient Intake v1
 
 - Added the exact sixth provisioning action,

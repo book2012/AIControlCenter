@@ -1,5 +1,33 @@
 # AIControlCenter
 
+## SM-01B-02D-04B Provisioning Runtime Composition & Read-Only Postconditions v1
+
+SM-01B-02D-04B is CLOSED at implementation commit
+`a4cb53d5398dffdc33366ac042fdb7813f6d4577` (`feat(shopping): add secret
+provisioning readiness composition`). Mac AIControlCenter remains the sole
+Control Plane and Ubuntu an optional stateless worker. Its JSON-first,
+deterministic, read-only projection is structural and value-free, excluding
+secret/recipient values, private identities, arbitrary paths, stdout/stderr,
+environment values, and mutation authority.
+
+Readiness is closed to `READY`, `MISSING`, `BLOCKED`, `UNSAFE`, and
+`MALFORMED`. Configured/ready false/false, true/false, true/true, and false/true
+map to `MISSING`, `BLOCKED`, `READY`, and fail-closed `MALFORMED`; malformed
+state blocks readiness and activation. All six actions remain unchanged,
+offline intake and registration remain separate, and Governance authorization,
+durable consumption, and `ControlledExecutionPort` semantics are unchanged.
+No mutation API, payload, materialization, or cutover was added or performed;
+`materialization_implemented=false`, `SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Historical MariaDB continuity remains unresolved and blocks DB payload
+readiness/materialization, DB validation and cutover, and runtime activation.
+04B claims no credential recovery/replacement; dedicated Shopping
+materialization architecture remains future work. Validation: focused `47
+passed`; canonical `3471 passed, 5 deselected, 447 warnings` in approximately
+`133.97s`, `CANONICAL_RC=0`, `CANONICAL_GATE=PASS`; implementation push, clean,
+divergence `0 0`, and closeout gates PASS. Production access and Notion sync
+were not performed; canonical was not rerun for docs closeout.
+
 ## SM-01B-02D-04A Governed Offline Public Recipient Intake v1
 
 04A implementation and validation are complete at
@@ -19,7 +47,8 @@ no cleanup or retry. Validation: focused `163 passed`; canonical `3457 passed,
 5 deselected, 447 warnings in 133.23s`, `RC=0`; implementation Git closeout
 PASS, clean, divergence `0 0`. No Production intake or other Production
 mutation occurred. MariaDB continuity remains unresolved, Notion remains
-deferred, and `SHOPPING_RUNTIME_ACTIVATED=false`. Next: `SM-01B-02D-04B`.
+deferred, and `SHOPPING_RUNTIME_ACTIVATED=false`. 04B is CLOSED as documented
+above.
 
 ## SM-01B-02D-03 Durable Authorization Consumption & Evidence Store v1
 

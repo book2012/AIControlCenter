@@ -135,7 +135,21 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   deselected, 447 warnings in 133.23s`, `RC=0`; Git closeout PASS, clean,
   divergence `0 0`.
 - [x] Land the 04A documentation closeout and mark `SM-01B-02D-04A` CLOSED.
-- [ ] Complete `SM-01B-02D-04B` as the next engineering milestone.
+- [x] Close `SM-01B-02D-04B — Provisioning Runtime Composition & Read-Only
+  Postconditions v1` at `a4cb53d5398dffdc33366ac042fdb7813f6d4577`:
+  Mac-Control-Plane-owned JSON-first deterministic, read-only, value-free
+  composition; closed `READY`/`MISSING`/`BLOCKED`/`UNSAFE`/`MALFORMED`
+  vocabulary and fail-closed contradictory configured/readiness state.
+- [x] Preserve six actions, separate offline intake/registration, unchanged
+  Governance/durable-consumption/`ControlledExecutionPort`, and
+  `materialization_implemented=false`; no payload, materialization, cutover, or
+  activation. MariaDB continuity remains blocking; dedicated Shopping
+  materialization architecture is future work.
+- [x] Record focused `47 passed`; canonical `3471 passed, 5 deselected, 447
+  warnings` in approximately `133.97s`, `CANONICAL_RC=0`,
+  `CANONICAL_GATE=PASS`; implementation push/clean/divergence `0 0`/closeout
+  PASS. Production access and Notion sync were not performed; canonical was not
+  rerun for documentation closeout.
 - [ ] After 04B, resolve historical MariaDB credential continuity through an
   explicit continuity/recovery/rotation strategy; SOPS+age cannot recover or
   silently replace historical credentials.

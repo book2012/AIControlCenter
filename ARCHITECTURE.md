@@ -1,5 +1,39 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-02D-04B — Provisioning Runtime Composition & Read-Only Postconditions v1
+
+Status: CLOSED at implementation commit `a4cb53d5398dffdc33366ac042fdb7813f6d4577`
+(`feat(shopping): add secret provisioning readiness composition`). The Mac mini
+M4 AIControlCenter remains the sole Control Plane; Ubuntu remains an optional
+stateless infrastructure worker. The composition is read-only, JSON-first,
+deterministic, structural, and value-free: it exposes no secret/recipient
+values, private identities, arbitrary paths, stdout/stderr, environment values,
+or mutation authority.
+
+The closed readiness vocabulary is `READY`, `MISSING`, `BLOCKED`, `UNSAFE`,
+and `MALFORMED`. For secret payloads and runtime dependencies,
+configured/ready false/false maps to `MISSING`, true/false to `BLOCKED`,
+true/true to `READY`, and contradictory false/true to fail-closed `MALFORMED`;
+malformed state blocks overall readiness and activation. File/executable
+observations remain structural.
+
+All six provisioning actions remain unchanged; offline recovery intake and
+registration remain separate. Governance authorization, durable consumption,
+and `ControlledExecutionPort` semantics are unchanged. No mutation API, secret
+payload, materialization, or runtime cutover was added or performed;
+`materialization_implemented=false` and `SHOPPING_RUNTIME_ACTIVATED=false`.
+Historical MariaDB credential continuity remains unresolved and blocks DB
+payload readiness/materialization, DB-dependent validation,
+WordPress/WooCommerce DB cutover, runtime cutover, and activation. 04B claims
+neither recovery nor replacement; a dedicated Shopping secret-materialization
+coordinator/adapter/capability architecture remains future work.
+
+Validation recorded focused `47 passed`; canonical `3471 passed, 5 deselected,
+447 warnings` in approximately `133.97s`, `CANONICAL_RC=0`, and
+`CANONICAL_GATE=PASS`. Implementation push, final clean, upstream divergence
+`0 0`, and closeout gates passed. Production access and Notion sync were not
+performed. Canonical was not rerun for documentation closeout.
+
 ## SM-01B-02D-04A — Governed Offline Public Recipient Intake v1
 
 Implementation and validation are complete at commit
@@ -81,7 +115,7 @@ milestone. Historical MariaDB credentials remain unresolved. SOPS+age does not
 recover them. This did not block 04A, but it still blocks DB-secret payload
 creation with historical credentials, DB-secret materialization,
 database-dependent validation, WordPress/WooCommerce DB cutover, runtime
-cutover, and `SHOPPING_RUNTIME_ACTIVATED`. Next: `SM-01B-02D-04B`.
+cutover, and `SHOPPING_RUNTIME_ACTIVATED`. 04B is CLOSED as documented above.
 
 ## SM-01B-02D-03 — Durable Authorization Consumption & Evidence Store v1
 
