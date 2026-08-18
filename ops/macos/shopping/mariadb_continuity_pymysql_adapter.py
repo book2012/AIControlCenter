@@ -33,8 +33,19 @@ class PyMySQLDriverReadiness:
     driver_mode: str = field(default=DRIVER_MODE, init=False)
     auth_plugin_state: str = field(default=AUTH_PLUGIN_STATE, init=False)
     maximum_future_connection_count_per_authorization: int = field(default=1, init=False)
+    dependency_declared: bool = field(default=True, init=False)
+    driver_installed: bool = field(default=False, init=False)
     driver_imported: bool = field(default=False, init=False)
-    ready: bool = field(default=False, init=False)
+    pymysql_compatibility_established: bool = field(default=False, init=False)
+
+    @property
+    def ready(self) -> bool:
+        return bool(
+            self.driver_installed
+            and self.driver_imported
+            and self.pymysql_compatibility_established
+            and self.auth_plugin_state != "UNRESOLVED"
+        )
 
     def to_projection(self) -> dict[str, Any]:
         return {
@@ -43,7 +54,10 @@ class PyMySQLDriverReadiness:
             "driver_mode": self.driver_mode,
             "auth_plugin_state": self.auth_plugin_state,
             "maximum_future_connection_count_per_authorization": self.maximum_future_connection_count_per_authorization,
+            "dependency_declared": self.dependency_declared,
+            "driver_installed": self.driver_installed,
             "driver_imported": self.driver_imported,
+            "pymysql_compatibility_established": self.pymysql_compatibility_established,
             "ready": self.ready,
             "authorization_authority": False,
             "capability_authority": False,

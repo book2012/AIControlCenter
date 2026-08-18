@@ -23,10 +23,14 @@ def test_symbolic_mac_source_is_canonically_unavailable():
     source = canonical_auth_plugin_evidence_source()
     assert tuple(EvidenceSourceOwner) == (EvidenceSourceOwner.MAC_CONTROL_PLANE,)
     assert source.owner is EvidenceSourceOwner.MAC_CONTROL_PLANE
+    assert source.auth_plugin_state == "UNRESOLVED"
     assert source.authoritative_evidence_available is False
+    assert source.pymysql_compatibility_established is False
     assert source.ready is False
     with pytest.raises(TypeError):
         AuthPluginEvidenceSource(authoritative_evidence_available=True)
+    with pytest.raises(TypeError):
+        AuthPluginEvidenceSource(pymysql_compatibility_established=True)
 
 
 def test_source_projection_is_value_free_and_zero_authority():

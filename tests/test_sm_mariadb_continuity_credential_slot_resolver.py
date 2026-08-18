@@ -26,11 +26,29 @@ def test_closed_mac_owned_slot_and_future_requirements():
     assert tuple(ResolverOwner) == (ResolverOwner.MAC_CONTROL_PLANE,)
     assert resolution.owner is ResolverOwner.MAC_CONTROL_PLANE
     assert resolution.fixed_authoritative_slot_required is True
+    assert resolution.fixed_closed_source_required is True
     assert resolution.protected_parent_required is True
+    assert resolution.protected_parent_exact_mode_0700_required is True
+    assert resolution.regular_non_symlink_leaf_required is True
+    assert resolution.leaf_permissions_no_broader_than_0600_required is True
     assert resolution.trusted_uid_gid_required is True
     assert resolution.fd_inode_binding_future_requirement is True
     assert resolution.one_value_acquisition_maximum is True
+    assert resolution.maximum_acquisitions_per_authorization == 1
     assert resolution.acquisition_after_capability_consumption_required is True
+    assert all(
+        getattr(resolution, name) is True
+        for name in (
+            "fallback_forbidden",
+            "enumeration_forbidden",
+            "candidate_iteration_forbidden",
+            "environment_or_home_authority_forbidden",
+            "secret_value_in_argv_forbidden",
+            "secret_value_in_json_forbidden",
+            "secret_value_in_logs_forbidden",
+            "secret_value_hashing_forbidden",
+        )
+    )
     assert resolution.canonical_credential_available is False
     assert resolution.ready is False
 
@@ -49,7 +67,7 @@ def test_no_path_home_environment_fallback_enumeration_or_content_read():
     calls = {node.func.attr if isinstance(node.func, ast.Attribute) else node.func.id for node in ast.walk(tree) if isinstance(node, ast.Call) and isinstance(node.func, (ast.Attribute, ast.Name))}
     assert calls.isdisjoint({"getenv", "expanduser", "home", "iterdir", "glob", "rglob", "listdir", "walk", "open", "read", "read_text", "read_bytes", "observe_fixed_protected_source"})
     names = {item.name.lower() for item in fields(CredentialSlotResolution)}
-    assert names.isdisjoint({"path", "home", "host", "port", "value", "password", "token", "candidates", "fallback"})
+    assert names.isdisjoint({"path", "home", "host", "port", "value", "password", "token", "candidates"})
 
 
 def test_projection_is_value_free_and_zero_authority():

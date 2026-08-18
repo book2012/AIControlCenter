@@ -9,6 +9,7 @@ from core.secrets.mariadb_continuity_sources import ContinuityEvidenceCategory
 @dataclass(frozen=True, slots=True)
 class LineageSource:
     evidence_categories: tuple[ContinuityEvidenceCategory, ...] = field(default=tuple(ContinuityEvidenceCategory), init=False)
+    independent_historical_provenance_required: bool = field(default=True, init=False)
     immutable_artifact_identity_available: bool = field(default=False, init=False)
     source_lineage_available: bool = field(default=False, init=False)
     timestamp_metadata_available: bool = field(default=False, init=False)
@@ -27,6 +28,7 @@ class LineageSource:
     def to_projection(self) -> dict[str, Any]:
         return {
             "evidence_categories": tuple(item.value for item in self.evidence_categories),
+            "independent_historical_provenance_required": self.independent_historical_provenance_required,
             "immutable_artifact_identity_available": self.immutable_artifact_identity_available,
             "source_lineage_available": self.source_lineage_available,
             "timestamp_metadata_available": self.timestamp_metadata_available,

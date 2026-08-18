@@ -32,6 +32,7 @@ def test_closed_evidence_categories_and_canonical_false_readiness():
     assert DescriptorContinuityEvidenceCategory is ContinuityEvidenceCategory
     assert source.evidence_categories == tuple(ContinuityEvidenceCategory)
     assert all(type(item) is ContinuityEvidenceCategory for item in source.evidence_categories)
+    assert source.independent_historical_provenance_required is True
     assert source.continuity_baseline_available is False
     assert source.mandatory_provenance_facts_available is False
     assert source.ready is False

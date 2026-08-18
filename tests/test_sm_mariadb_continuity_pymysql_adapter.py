@@ -16,6 +16,7 @@ from ops.macos.shopping.mariadb_continuity_pymysql_adapter import (
 
 ROOT = Path(__file__).parents[1]
 PRODUCTION = ROOT / "ops/macos/shopping/mariadb_continuity_pymysql_adapter.py"
+REQUIREMENTS = ROOT / "requirements.txt"
 PRESERVED = (
     "core/secrets/mariadb_continuity_attempt.py",
     "core/secrets/mariadb_continuity_sources.py",
@@ -40,9 +41,22 @@ def test_exact_driver_metadata_is_fail_closed_and_unforgeable() -> None:
     assert (DRIVER_FAMILY, DRIVER_VERSION, DRIVER_MODE) == ("PYMYSQL", "1.2.0", "SYNCHRONOUS_ONE_SHOT")
     assert AUTH_PLUGIN_STATE == "UNRESOLVED"
     assert readiness.maximum_future_connection_count_per_authorization == 1
-    assert readiness.driver_imported is readiness.ready is False
+    assert readiness.dependency_declared is True
+    assert readiness.driver_installed is False
+    assert readiness.driver_imported is False
+    assert readiness.pymysql_compatibility_established is False
+    assert readiness.ready is False
     with pytest.raises(TypeError):
         PyMySQLDriverReadiness(ready=True)
+
+
+def test_exact_dependency_pin_is_declaration_only() -> None:
+    lines = REQUIREMENTS.read_text().splitlines()
+    assert lines.count("PyMySQL==1.2.0") == 1
+    assert not any(line.lower().startswith("pymysql") for line in lines if line != "PyMySQL==1.2.0")
+    readiness = canonical_driver_readiness()
+    assert readiness.dependency_declared is True
+    assert readiness.driver_installed is readiness.driver_imported is readiness.ready is False
 
 
 def test_contract_has_one_closed_operation_and_no_forbidden_runtime_surface() -> None:
