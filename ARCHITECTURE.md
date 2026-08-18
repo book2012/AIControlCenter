@@ -1,5 +1,57 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Phase B2B-1D Package-1 — Zero-Authority Readiness Architecture
+
+Package-1 implementation is complete at `cacc659fd518c751544a8062ce0c36813f1c7bcc`;
+implementation Git closeout and final architecture review #3 are `PASS`.
+Focused validation returned `79 passed in 0.20s`. Canonical ran exactly once on
+the final reviewed code/test state: `3678 passed, 5 deselected, 467 warnings in
+133.11s`, `CANONICAL_RC=0`; rerun is prohibited without a code/test change.
+
+This is repository-safe, value-free, zero-authority readiness architecture. It
+requires authoritative external historical auth-plugin evidence, makes that
+evidence the single source of truth, prohibits caller overrides, and defines
+compatibility-proof semantics. Current truth fails closed:
+`AUTH_PLUGIN_STATE=UNRESOLVED`, authoritative evidence is unavailable, PyMySQL
+compatibility is not established, and compatibility proof is unavailable. The
+prior `PyMySQL==1.2.0` declaration is not installation, runtime import, or
+compatibility proof; `PYMYSQL_INSTALLED=NO` and `driver_imported=false`.
+
+Expected database/account/grants identity must be Mac-owned and independent of
+credential evidence. Historical identity requires all five frozen categories:
+`WORDPRESS_IDENTITY`, `SITE_IDENTITY`, `APPLICATION_IDENTITY`,
+`CLOSED_SCHEMA_CHARACTERISTICS`, and `CLOSED_TABLE_CHARACTERISTICS`.
+Continuity reuses exactly `LOGICAL_EXPORT`, `RECOVERY_ARTIFACT`, and
+`PERSISTENT_VOLUME_SNAPSHOT`, with independent historical lineage/provenance.
+Insufficient `RECOVER` evidence requires a human strategy decision.
+
+The operation profile is fixed and closed, but fixed SQL text remains
+unavailable and SQL is prohibited. Production has zero mutation budget, at
+most one connection/auth attempt per distinct future human authorization, no
+authorization reuse, and no retry, reconnect, or rollback authority. No
+aggregate Production-readiness authority exists. The Phase-A legacy
+prerequisite DTO, including `production_validation_ready`, retains its legacy
+semantics and is not Package-1 authority.
+
+No Production access, MariaDB authentication/connection, credential-value
+read, or SQL occurred. `compatibility_proof_available=false`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+Mac mini AIControlCenter remains sole Control Plane; Ubuntu remains a stateless
+infrastructure worker. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The exact
+six Shopping actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only.
+
+Package-1 is not yet authoritatively `CLOSED`. Closure self-activates only
+after final documentation review passes, these exact six docs are committed
+and normally pushed, Git is clean, and upstream divergence is `0 0`; no future
+documentation commit SHA is asserted. Production validation must not start.
+Next is a B2B-1D architecture/evidence boundary, not Production invocation.
+
 ## MariaDB Continuity Phase B2B-1C — Repository-Safe Concrete Readiness
 
 `PHASE_B2B_1C` implementation is complete at

@@ -1,5 +1,40 @@
 # Roadmap
 
+## MariaDB Continuity Phase B2B-1D Package-1 — documentation closeout candidate
+
+- [x] Implement at `cacc659fd518c751544a8062ce0c36813f1c7bcc`; Git closeout
+  `PASS`; focused `79 passed in 0.20s`; architecture review #3 `PASS`.
+- [x] Run canonical exactly once: `3678 passed, 5 deselected, 467 warnings in
+  133.11s`, `RC=0`; no rerun without code/test change.
+- [x] Add repository-safe, value-free, zero-authority auth-plugin evidence,
+  compatibility-proof, Mac-owned identity, complete five-category data
+  identity, exact three-category lineage/provenance, insufficient-`RECOVER`
+  human decision, and fixed closed profile architecture.
+- [x] Keep auth unresolved; PyMySQL uninstalled/unimported and compatibility
+  unproven; fixed SQL unavailable/prohibited; Production mutation zero; one
+  future attempt per non-reusable authorization; no retry/reconnect/rollback.
+- [x] Add no aggregate readiness authority; preserve Phase-A legacy DTO,
+  exact six actions, target-only `SHOPPING_SECRET_PROVISIONING`, Mac ownership,
+  stateless Ubuntu, `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, and runtime
+  false/not-performed truth.
+- [ ] Pass final documentation review for exactly these six docs.
+- [ ] Commit and normally push exactly these six docs; verify clean Git and
+  upstream divergence `0 0`.
+
+Package-1 is not authoritatively `CLOSED`; the two remaining gates self-activate
+closure without a second edit or predeclared SHA. Production validation must
+not start.
+
+### Next B2B-1D architecture/evidence boundary
+
+Resolve authoritative historical auth-plugin evidence; exact PyMySQL `1.2.0`
+compatibility proof; trusted database/account/grants identity; complete five
+data-identity categories; complete three continuity categories with independent
+historical provenance; then fixed SQL/profile architecture, concrete target and
+credential acquisition boundaries, and one-shot composition. Do not freeze a
+further decomposition here. Only later may explicit human authorization permit
+one Production MariaDB validation.
+
 ## MariaDB Continuity Phase B2B-1C — documentation closeout candidate
 
 - [x] Complete implementation at

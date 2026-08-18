@@ -1,5 +1,37 @@
 # MASTER
 
+## Current documentation candidate — MariaDB Continuity Phase B2B-1D Package-1
+
+Implemented at `cacc659fd518c751544a8062ce0c36813f1c7bcc`; implementation Git
+closeout and architecture review #3 passed. Focused was `79 passed in 0.20s`;
+canonical ran exactly once: `3678 passed, 5 deselected, 467 warnings in
+133.11s`, `RC=0`. Reruns are `NOT_RUN`; canonical requires code/test change.
+
+Package-1 is repository-safe, value-free, and zero-authority. Auth-plugin
+evidence must be external, historical, authoritative, canonical, and not
+caller-overridable. `AUTH_PLUGIN_STATE=UNRESOLVED`; evidence, compatibility,
+and proof are unavailable. The prior `PyMySQL==1.2.0` declaration is not
+installation/import/proof. Identity is Mac-owned and independent; all five
+`DataIdentityCategory` and exact three `ContinuityEvidenceCategory` values need
+independent historical provenance. Insufficient `RECOVER` evidence requires a
+human decision. The fixed closed profile contains no available/allowed SQL.
+
+Production mutation budget is zero: at most one future connection/auth attempt
+per distinct human authorization, with no reuse, retry, reconnect, or rollback.
+No aggregate readiness authority was added; Phase-A legacy
+`production_validation_ready` semantics remain unchanged. No Production
+access, authentication/connection, secret read, or SQL occurred;
+`PYMYSQL_INSTALLED=NO`, `driver_imported=false`,
+`compatibility_proof_available=false`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
+Mac mini AIControlCenter remains sole Control Plane; Ubuntu remains stateless.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six Shopping actions
+remain unchanged and `SHOPPING_SECRET_PROVISIONING` remains target-only.
+Package-1 is not `CLOSED`; final review, exact-six-doc commit/push, clean Git,
+and divergence `0 0` self-activate closure without a predeclared SHA. Next is a
+B2B-1D architecture/evidence boundary, not Production validation.
+
 ## Current documentation candidate — MariaDB Continuity Phase B2B-1C
 
 Implementation is complete at `d4802054366178c6e3282ad089e393726f2d9309`

@@ -1,5 +1,30 @@
 # CHANGELOG
 
+## 2026-08-18 — MariaDB Continuity Phase B2B-1D Package-1 documentation candidate
+
+- Recorded implementation `cacc659fd518c751544a8062ce0c36813f1c7bcc`, Git
+  closeout `PASS`, focused `79 passed in 0.20s`, architecture review #3 `PASS`,
+  and canonical-once `3678 passed, 5 deselected, 467 warnings in 133.11s`,
+  `RC=0`. Reruns are `NOT_RUN`; canonical rerun requires code/test change.
+- Added repository-safe, value-free, zero-authority contracts for authoritative
+  historical auth-plugin evidence, its single source of truth, override
+  prohibition, compatibility proof, Mac-owned identity, complete five-category
+  data identity, exact three-category continuity lineage, independent
+  provenance, and human strategy choice when `RECOVER` evidence is insufficient.
+- Preserved fail-closed auth truth and the prior `PyMySQL==1.2.0` declaration as
+  declaration only: no installation/import and no compatibility proof.
+- Fixed the closed operation profile while keeping fixed SQL unavailable and
+  prohibited; preserved zero Production mutation, one future attempt maximum
+  per non-reusable human authorization, and no retry/reconnect/rollback.
+- Added no aggregate readiness authority; preserved the Phase-A legacy
+  `production_validation_ready` DTO, exact six Shopping actions, target-only
+  `SHOPPING_SECRET_PROVISIONING`, Mac ownership, stateless Ubuntu, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- No Production access, MariaDB authentication/connection, secret read, or SQL
+  occurred; readiness/runtime remain false. Package-1 is not `CLOSED`: review,
+  exact-six-doc commit/push, clean Git, and divergence `0 0` self-activate
+  closure. Next is a B2B-1D evidence/architecture boundary, not Production.
+
 ## 2026-08-18 — MariaDB Continuity Phase B2B-1C documentation closeout candidate
 
 - Recorded completed implementation at

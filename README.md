@@ -1,5 +1,36 @@
 # AIControlCenter
 
+## Current status — MariaDB Continuity Phase B2B-1D Package-1 documentation candidate
+
+Implementation is complete at `cacc659fd518c751544a8062ce0c36813f1c7bcc`;
+Git closeout and architecture review #3 passed. Focused was `79 passed in
+0.20s`; canonical ran once: `3678 passed, 5 deselected, 467 warnings in
+133.11s`, `RC=0`. Reruns are `NOT_RUN`; canonical requires code/test change.
+
+Package-1 is repository-safe, value-free, and zero-authority. It defines
+fail-closed contracts for authoritative historical auth-plugin evidence,
+canonical truth and override prohibition, compatibility proof, Mac-owned
+independent identity, complete five-category data identity, exact
+three-category continuity lineage with independent provenance, human decision
+on insufficient `RECOVER` evidence, and a fixed closed operation profile.
+`AUTH_PLUGIN_STATE=UNRESOLVED`; evidence, PyMySQL compatibility, and proof are
+unavailable. The prior `PyMySQL==1.2.0` declaration is not installation/import
+or proof. Fixed SQL remains unavailable and prohibited.
+
+Production has zero mutation budget, at most one future connection/auth attempt
+per distinct human authorization, no authorization reuse, and no
+retry/reconnect/rollback. There is no aggregate readiness authority; Phase-A
+legacy `production_validation_ready` DTO semantics remain unchanged. No
+Production access, MariaDB authentication/connection, secret read, or SQL
+occurred. Readiness/runtime remain false.
+
+Mac mini AIControlCenter remains sole Control Plane; Ubuntu remains stateless.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six Shopping actions
+remain unchanged and `SHOPPING_SECRET_PROVISIONING` remains target-only.
+Package-1 is not `CLOSED`: final review, exact-six-doc commit/push, clean Git,
+and divergence `0 0` self-activate closure. No future SHA is claimed. Next is a
+B2B-1D architecture/evidence boundary, not immediate Production validation.
+
 ## Current status — MariaDB Continuity Phase B2B-1C documentation closeout candidate
 
 Implementation is complete at `d4802054366178c6e3282ad089e393726f2d9309`
