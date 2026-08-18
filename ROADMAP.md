@@ -1,5 +1,49 @@
 # Roadmap
 
+## MariaDB Continuity Phase B2B-1C — documentation closeout candidate
+
+- [x] Complete implementation at
+  `d4802054366178c6e3282ad089e393726f2d9309` with `9 files changed`, `91
+  insertions`, and `4 deletions`.
+- [x] Complete focused validation: `42 passed in 0.16s`.
+- [x] Complete final architecture review: `PASS`.
+- [x] Run canonical exactly once after final architecture review: `3674 passed,
+  5 deselected, 463 warnings in 134.93s`, `CANONICAL_RC=0`; do not rerun absent
+  code/test changes.
+- [x] Complete implementation Git closeout: `PASS`.
+- [x] Declare exactly `PyMySQL==1.2.0` while preserving
+  `PYMYSQL_INSTALLED=NO`, `driver_imported=false`,
+  `PYMYSQL_COMPATIBILITY_ESTABLISHED=false`, `AUTH_PLUGIN_STATE=UNRESOLVED`,
+  and driver readiness false.
+- [x] Preserve the symbolic credential boundary and its fixed-source,
+  permission, trusted-owner, future FD/inode, single post-consumption
+  acquisition, no-fallback, no-enumeration, no-ambient-authority, and
+  no-secret-transport/hash requirements.
+- [x] Preserve the frozen B1 `ContinuityEvidenceCategory` values exactly and
+  `independent_historical_provenance_required=true`.
+- [x] Add no database connection, SQL, retry, reconnect, pooling,
+  `ControlledExecutionPort` use, Governance semantics change, or Production
+  authority.
+- [x] Preserve Mac Control Plane ownership, stateless Ubuntu,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six Shopping actions,
+  target-only `SHOPPING_SECRET_PROVISIONING`, and all runtime false/not-performed
+  facts.
+- [ ] Pass final documentation review for this exact six-document state.
+- [ ] Create and normally push its containing documentation commit, then verify
+  clean Git status and upstream divergence `0 0`.
+
+Phase status: implementation, focused validation, final architecture review,
+canonical-once validation, and implementation Git closeout are complete. This
+exact state is only the documentation closeout candidate; the entire
+`PHASE_B2B_1C` is not yet authoritatively closed. It becomes `CLOSED` after the
+two remaining gates above pass. That rule self-activates closure, so no second
+documentation mutation is required merely to record the documentation commit
+SHA.
+
+Production validation must not start. The next milestone after authoritative
+B2B-1C closure remains a separate architecture/discovery boundary, not a
+Production invocation.
+
 ## MariaDB Continuity Phase B2B-1A — final closure candidate
 
 - [x] Close implementation at `aa049e2940707ff9209a730ecfbcc5f705062171`

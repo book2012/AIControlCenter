@@ -1,5 +1,44 @@
 # CHANGELOG
 
+## 2026-08-18 — MariaDB Continuity Phase B2B-1C documentation closeout candidate
+
+- Recorded completed implementation at
+  `d4802054366178c6e3282ad089e393726f2d9309`: `9 files changed`, `91
+  insertions`, `4 deletions`; implementation Git closeout `PASS`.
+- Recorded focused validation `42 passed in 0.16s`, final architecture review
+  `PASS`, and the exactly-once post-review canonical result `3674 passed, 5
+  deselected, 463 warnings in 134.93s`, `CANONICAL_RC=0`. No rerun is required
+  absent code/test changes.
+- Recorded the exact dependency declaration `PyMySQL==1.2.0` and preserved
+  `DRIVER_FAMILY=PYMYSQL`, `DRIVER_VERSION=1.2.0`, and
+  `DRIVER_MODE=SYNCHRONOUS_ONE_SHOT`. The declaration establishes neither
+  installation, import, compatibility, nor readiness: `PYMYSQL_INSTALLED=NO`,
+  `driver_imported=false`, `PYMYSQL_COMPATIBILITY_ESTABLISHED=false`, and
+  `AUTH_PLUGIN_STATE=UNRESOLVED`.
+- Preserved the symbolic-only credential boundary with no concrete path or
+  value read. Future requirements remain a fixed closed source, exact `0700`
+  protected parent, regular non-symlink leaf no broader than `0600`, trusted
+  uid/gid, FD/inode binding, and at most one acquisition per authorization only
+  after capability consumption; no fallback, enumeration, candidate iteration,
+  environment/`HOME` authority, argv/JSON/log secret, or secret hashing.
+- Preserved frozen B1 `ContinuityEvidenceCategory` as exactly `LOGICAL_EXPORT`,
+  `RECOVERY_ARTIFACT`, and `PERSISTENT_VOLUME_SNAPSHOT`, with
+  `independent_historical_provenance_required=true`. Added no connection, SQL,
+  retry, reconnect, pooling, `ControlledExecutionPort` use, Governance semantics
+  change, or Production authority.
+- Preserved Mac Control Plane ownership, stateless Ubuntu,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six Shopping actions,
+  and target-only `SHOPPING_SECRET_PROVISIONING`.
+- Preserved runtime truth: Production access and MariaDB authentication
+  `NOT_PERFORMED`, secret values read `NO`, SQL `NOT_PERFORMED`,
+  `PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+- This six-document state is only the documentation closeout candidate.
+  `PHASE_B2B_1C` becomes authoritatively `CLOSED` after final documentation
+  review, creation and normal push of its containing documentation commit,
+  clean Git status, and upstream divergence `0 0`. That self-activating rule
+  requires no second mutation to record the commit SHA. The next milestone
+  remains a separate architecture/discovery boundary, not Production invocation.
+
 ## 2026-08-18 — MariaDB Continuity Phase B2B-1A final closure candidate
 
 - Prepared this exact six-document reconciliation as the `FINAL CLOSURE

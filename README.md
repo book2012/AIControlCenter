@@ -1,5 +1,48 @@
 # AIControlCenter
 
+## Current status — MariaDB Continuity Phase B2B-1C documentation closeout candidate
+
+Implementation is complete at `d4802054366178c6e3282ad089e393726f2d9309`
+(`9 files changed`, `91 insertions`, `4 deletions`) and implementation Git
+closeout is `PASS`. Focused validation was `42 passed in 0.16s`; final
+architecture review was `PASS`; canonical ran exactly once afterward with
+`3674 passed, 5 deselected, 463 warnings in 134.93s`, `CANONICAL_RC=0`. No
+focused or canonical rerun is required unless code or tests change.
+
+This six-document update is the documentation closeout candidate.
+`PHASE_B2B_1C` is not yet authoritatively closed. It becomes closed only after
+final documentation review passes, the containing documentation commit is
+created and normally pushed, Git status is clean, and upstream divergence is
+`0 0`. No second documentation edit is needed merely to record that commit SHA.
+
+`requirements.txt` now declares exactly `PyMySQL==1.2.0`. The driver contract
+remains `PYMYSQL` `1.2.0`, synchronous one-shot. Declaration is not runtime
+proof: `PYMYSQL_INSTALLED=NO`, `driver_imported=false`,
+`PYMYSQL_COMPATIBILITY_ESTABLISHED=false`, `AUTH_PLUGIN_STATE=UNRESOLVED`, and
+driver readiness remains false.
+
+Credentials remain symbolic only, with no concrete path or value read. Future
+requirements remain a fixed closed source, exact `0700` protected parent,
+regular non-symlink leaf no broader than `0600`, trusted uid/gid, FD/inode
+binding, one acquisition maximum per authorization only after capability
+consumption, and no fallback, enumeration, candidate iteration,
+environment/`HOME` authority, argv/JSON/log secret, or secret hashing.
+
+The B1 `ContinuityEvidenceCategory` type remains frozen with exactly
+`LOGICAL_EXPORT`, `RECOVERY_ARTIFACT`, and `PERSISTENT_VOLUME_SNAPSHOT`;
+`independent_historical_provenance_required=true`. There is no database
+connection, SQL, retry, reconnect, pooling, `ControlledExecutionPort` use,
+Governance semantics change, or Production authority.
+
+Mac remains the sole Control Plane; Ubuntu remains stateless.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six Shopping actions
+remain unchanged and `SHOPPING_SECRET_PROVISIONING` remains target-only.
+Production access and MariaDB authentication were `NOT_PERFORMED`, secret
+values read `NO`, SQL execution `NOT_PERFORMED`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+Do not begin Production validation. After authoritative closure, the next
+milestone remains a separate architecture/discovery boundary.
+
 ## Current status — MariaDB Continuity Phase B2B-1A
 
 `PHASE_B2B_1A` is implemented at

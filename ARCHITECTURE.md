@@ -1,5 +1,62 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Phase B2B-1C — Repository-Safe Concrete Readiness
+
+`PHASE_B2B_1C` implementation is complete at
+`d4802054366178c6e3282ad089e393726f2d9309` (`9 files changed`, `91
+insertions`, `4 deletions`), and implementation Git closeout is `PASS`.
+Focused validation returned `42 passed in 0.16s`; final architecture review was
+`PASS`; canonical then ran exactly once and returned `3674 passed, 5
+deselected, 463 warnings in 134.93s`, `CANONICAL_RC=0`. No focused or canonical
+rerun is required unless code or tests change.
+
+This exact six-document mutation is the documentation closeout candidate, not
+an authoritative claim that all of `PHASE_B2B_1C` is closed. The phase becomes
+authoritatively `CLOSED` only after this exact state passes final documentation
+review, its containing documentation commit is created and normally pushed,
+Git status is clean, and upstream divergence is `0 0`. Once those gates pass,
+the rule is self-activating: no second documentation mutation is required
+merely to write that documentation commit SHA back into these documents.
+
+The concrete dependency declaration is exactly `PyMySQL==1.2.0` in
+`requirements.txt`, with `DRIVER_FAMILY=PYMYSQL`, `DRIVER_VERSION=1.2.0`, and
+`DRIVER_MODE=SYNCHRONOUS_ONE_SHOT`. Declaration does not establish installation,
+import, compatibility, or readiness: `PYMYSQL_INSTALLED=NO`,
+`driver_imported=false`, `PYMYSQL_COMPATIBILITY_ESTABLISHED=false`,
+`AUTH_PLUGIN_STATE=UNRESOLVED`, and driver readiness remains false.
+
+The credential boundary remains symbolic only: there is no concrete credential
+path and no value was read. A future source must be fixed and closed, have a
+protected parent of exact mode `0700`, a regular non-symlink leaf no broader
+than `0600`, trusted uid/gid, and future FD/inode binding. Acquisition is at
+most once per authorization, only after capability consumption, with no
+fallback, enumeration, candidate iteration, environment or `HOME` authority,
+argv/JSON/log secret transport, or secret hashing.
+
+`ContinuityEvidenceCategory` remains the frozen B1 type with exactly
+`LOGICAL_EXPORT`, `RECOVERY_ARTIFACT`, and `PERSISTENT_VOLUME_SNAPSHOT`;
+`independent_historical_provenance_required=true`. B2B-1C adds no database
+connection, SQL, retry, reconnect, pooling, `ControlledExecutionPort` use,
+Governance semantics change, or Production authority.
+
+Mac AIControlCenter remains the sole Control Plane and Ubuntu remains an
+optional stateless infrastructure worker. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+The exact six Shopping actions remain
+`SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only.
+
+Runtime truth remains `PRODUCTION_ACCESS_GATE=NOT_PERFORMED`,
+`MARIADB_AUTHENTICATION=NOT_PERFORMED`, `SECRET_VALUES_READ=NO`,
+`SQL_EXECUTION=NOT_PERFORMED`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. Production validation must not begin. After
+authoritative B2B-1C closure, the next milestone remains a separate
+architecture/discovery boundary, not a Production invocation.
+
 ## MariaDB Continuity Phase B2B-1A — Repository-Only Prerequisite Contracts
 
 Milestone `PHASE_B2B_1A` is implemented at commit
