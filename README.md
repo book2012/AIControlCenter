@@ -1,5 +1,51 @@
 # AIControlCenter
 
+## SM-01B-02D-06 MariaDB Historical Credential Continuity Validation Boundary v1
+
+SM-01B-02D-06 is CLOSED at implementation commit
+`3c93ad39586080db618ee090a7548806c024c44a`. It is a Mac mini M4
+AIControlCenter-owned, value-free, read-only boundary—not a Production mutation
+boundary or `ControlledExecutionPort`. It uses no `GovernanceMutationBudget`,
+and its factual result/evidence grants no mutation, authorization, execution,
+retry, or rollback authority.
+
+Outcomes are exactly `VALIDATED`, `REJECTED`, `UNAVAILABLE`, `UNSAFE`,
+`MALFORMED`, `UNCERTAIN`. `VALIDATED` requires `attempted_count=1` and separate
+`CONFIRMED` facts for credential acceptance, expected database identity,
+expected account identity, required grants, data identity, and data continuity.
+Authentication alone is insufficient; consumer compatibility stays
+`NOT_EVALUATED`; `UNCERTAIN` fails closed. There is no retry, fallback,
+candidate iteration, guessing, automatic rollback, or compensation.
+
+The future Production capability is externally supplied, non-factual,
+non-serializable authority metadata, absent from request/result/projection, not
+minted by core, and usable at most once per application validation invocation.
+06 has no real MariaDB client or Production capability. It leaves authorization
+consumption/durable SQLite, Governance execution, SEC-02/postconditions/audit,
+the coordinator, config, schemas, 05 `ContinuityDecision`, and the exact six
+Shopping provisioning actions unchanged; `SHOPPING_SECRET_PROVISIONING` is
+still a target, not an action.
+
+No Production MariaDB authentication or historical-credential validation took
+place. Continuity remains `UNRESOLVED`; no `RECOVER` confirmation, `ROTATE`,
+`REPLACE`, DB/grant/payload mutation, materialization, DB-client/runtime
+cutover, old-account retirement, or activation occurred, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. The next direction is a separately
+explicitly human-authorized Production validation using 06, followed by a
+human strategy decision based on trustworthy value-free evidence. 06 itself
+does not authorize it.
+
+Validation: focused `33 passed in 0.08s`; architecture review `PASS`, all
+severities `NONE`. Canonical was accidentally run twice on the same unchanged
+final-reviewed tree; both successful runs reported `3543 passed`, `5
+deselected`, `447 warnings`, `RC=0`. This duplicate run is an operational
+process deviation, not a code or architecture failure; no code/test change
+occurred between runs. Push `PASS`; final Git clean, divergence `0 0`.
+Production access, runtime inspection, Docker, Colima, and Notion sync were not
+performed; secret values read: `NO`. Mac mini M4 remains sole Control Plane;
+Ubuntu remains stateless, and no authority is delegated to WordPress,
+WooCommerce, n8n, Ubuntu, MariaDB, or external recovery custody systems.
+
 ## SM-01B-02D-05 MariaDB Credential Continuity Decision Model v1
 
 SM-01B-02D-05 is CLOSED at implementation commit

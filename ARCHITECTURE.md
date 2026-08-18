@@ -1,5 +1,70 @@
 # AI Home Datacenter Architecture
 
+## SM-01B-02D-06 — MariaDB Historical Credential Continuity Validation Boundary v1
+
+Status: CLOSED at implementation commit
+`3c93ad39586080db618ee090a7548806c024c44a`. This is a Mac mini M4
+AIControlCenter-owned, value-free, read-only MariaDB historical credential
+continuity validation boundary. It is neither a Production mutation boundary
+nor `ControlledExecutionPort`, uses no `GovernanceMutationBudget`, and grants
+zero mutation, authorization, execution, retry, or rollback authority. Its
+result and evidence are factual metadata only.
+
+The exact outcomes are `VALIDATED`, `REJECTED`, `UNAVAILABLE`, `UNSAFE`,
+`MALFORMED`, and fail-closed `UNCERTAIN`. `VALIDATED` requires
+`attempted_count=1` plus separate `CONFIRMED` factual observations for
+credential acceptance, expected database identity, expected account identity,
+required grants, data identity, and data continuity. Authentication acceptance
+alone is insufficient; consumer compatibility remains `NOT_EVALUATED`. There
+is no automatic retry, fallback credential, candidate iteration, credential
+guessing, automatic rollback, or compensation.
+
+The future Production access capability is externally supplied,
+non-factual, non-serializable authority metadata. It is absent from the
+request, result, and projection, is not minted by core, and may be invoked at
+most once per application validation invocation. This implementation adds the
+domain and port in `core/secrets/mariadb_continuity_validation.py` and
+`core/secrets/mariadb_continuity_validation_port.py`, plus the outer adapter in
+`ops/macos/shopping/mariadb_continuity_validation_adapter.py`. It implements no
+real MariaDB client and no real Production capability.
+
+There is no change to `AuthorizationConsumptionPort`, durable SQLite
+authorization consumption, Governance execution semantics, SEC-02,
+postcondition semantics, Governance audit/evidence,
+`ShoppingProvisioningGovernanceCoordinator`, config, schemas, or SM-01B-02D-05
+`ContinuityDecision`. No seventh action was added. The exact six existing
+Shopping provisioning actions remain
+`SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains a target identifier, not an action.
+
+No Production MariaDB authentication or historical-credential validation
+occurred, so continuity remains `UNRESOLVED`. No `RECOVER` confirmation,
+`ROTATE`, `REPLACE`, DB account/grant or encrypted-payload mutation, secret
+materialization, WordPress/WooCommerce DB-client cutover, runtime cutover, or
+old-account retirement occurred; `SHOPPING_RUNTIME_ACTIVATED=false`. A future,
+separately explicitly human-authorized Production validation operation must
+produce trustworthy value-free evidence before a human selects any strategy.
+The 06 implementation itself authorizes no such operation.
+
+Focused validation: `33 passed in 0.08s`. Final architecture review: `PASS`,
+`CRITICAL=NONE`, `HIGH=NONE`, `MEDIUM=NONE`, `LOW=NONE`. The canonical
+regression gate was accidentally executed twice on the same unchanged,
+final-reviewed implementation tree; both runs reported `3543 passed`, `5
+deselected`, `447 warnings`, `RC=0`. This duplicate execution is an operational
+process deviation, not a code or architecture failure, and no code or test
+change occurred between runs. Implementation push: `PASS`; final Git clean,
+upstream divergence `0 0`. Production access, runtime inspection, Docker,
+Colima, and Notion sync: `NOT_PERFORMED`. Secret values read: `NO`.
+
+Mac mini M4 AIControlCenter remains the sole Control Plane; Ubuntu remains a
+stateless infrastructure worker. No authority is delegated to WordPress,
+WooCommerce, n8n, Ubuntu, MariaDB, or external recovery custody systems.
+
 ## SM-01B-02D-05 — MariaDB Credential Continuity Decision Model v1
 
 Status: CLOSED. Implementation commit:

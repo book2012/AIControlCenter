@@ -173,6 +173,34 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
   deselected`, `447 warnings`, `RC=0`; final architecture review `PASS` with
   `CRITICAL=NONE`, `HIGH=NONE`, `MEDIUM=NONE`, `LOW=NONE`; implementation push
   `PASS`; Production access and Notion sync `NOT_PERFORMED`.
+- [x] Close `SM-01B-02D-06 — MariaDB Historical Credential Continuity
+  Validation Boundary v1` at implementation commit
+  `3c93ad39586080db618ee090a7548806c024c44a`: Mac mini M4
+  AIControlCenter-owned, value-free and read-only; no Production mutation
+  boundary, `ControlledExecutionPort`, mutation budget, real MariaDB client, or
+  real Production capability; factual results/evidence grant zero authority.
+- [x] Implement exact outcomes `VALIDATED`, `REJECTED`, `UNAVAILABLE`, `UNSAFE`,
+  `MALFORMED`, `UNCERTAIN`; require `attempted_count=1` and separate confirmed
+  credential acceptance, expected database/account identities, required grants,
+  data identity, and data continuity for `VALIDATED`. Keep consumer compatibility
+  `NOT_EVALUATED`, uncertainty fail-closed, and prohibit retry, fallback,
+  iteration, guessing, rollback, and compensation.
+- [x] Preserve 05 `ContinuityDecision`, Governance/SEC-02/postconditions/audit,
+  config, schemas, coordinator, durable authorization consumption, and the exact
+  six actions. Define only an externally supplied, non-factual, non-serializable
+  future capability, absent from serialized facts and invocable at most once.
+- [x] Record focused `33 passed in 0.08s`; architecture review `PASS` with all
+  severities `NONE`; canonical accidentally executed twice on the same unchanged
+  final-reviewed tree, both `3543 passed, 5 deselected, 447 warnings`, `RC=0`.
+  Record the duplicate as an operational process deviation, not a code or
+  architecture failure, with no code/test change between runs. Push `PASS`;
+  final Git clean/divergence `0 0`; no Production/runtime/Docker/Colima/Notion
+  access and no secret-value read.
+- [ ] Under separate explicit human authorization, perform one Production
+  MariaDB historical credential continuity validation through the 06 boundary,
+  obtain trustworthy value-free factual evidence, then make a human strategy
+  decision. Until then continuity remains `UNRESOLVED`; do not select
+  `RECOVER`, `ROTATE`, or `REPLACE`.
 - [ ] After all readiness gates pass, execute each Production mutation under
   its own explicit human authorization: SOPS installation, age installation,
   control-plane identity creation, each public-recipient registration/intake
@@ -184,9 +212,11 @@ Status: **IMPLEMENTATION AND VALIDATION COMPLETE**
 
 SM-01B overall remains incomplete. Mac AIControlCenter remains the sole Control
 Plane; Ubuntu remains a stateless worker with no Shopping secret ownership.
-Offline-recovery private custody remains external. SM-01B-02D-02B does not recover,
-rotate, replace, derive, invent, or validate unresolved historical MariaDB
-credentials. Authorization-consumption evidence grants no execution authority.
+Offline-recovery private custody remains external. SM-01B-02D-06 provides the
+completed read-only validation boundary but performed no Production validation;
+it does not recover, rotate, replace, derive, invent, authenticate with, or
+resolve historical MariaDB credentials. Authorization-consumption and 06
+validation evidence grant no execution authority.
 Actual SOPS/age installation, age identity creation, recipient registration,
 secret materialization, and runtime activation have not occurred. Notion
 remains deferred until after Runtime Activation.
