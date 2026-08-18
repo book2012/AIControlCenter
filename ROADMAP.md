@@ -1,5 +1,66 @@
 # Roadmap
 
+## MariaDB Continuity Phase B1 — implementation and validation complete
+
+- [x] Close Phase B1 at implementation commit
+  `acdbd859872b842691c293b5e094472b344d304b`.
+- [x] Enforce factual one-shot state flow `NEW -> AUTHORIZED -> CONSUMED ->
+  PRE_ATTEMPT -> ATTEMPT_INITIATED -> TERMINAL`; preserve
+  `attempted_count=0` for pre-attempt termination and `attempted_count=1` after
+  initiation; prohibit skipped/reverse/repeated/post-terminal transitions and
+  a second attempt. `AUTHORIZED` grants no authority.
+- [x] Freeze the value-free source categories as `CREDENTIAL_SOURCE`,
+  `EXPECTED_IDENTITY_DESCRIPTOR`, `DATA_IDENTITY_BASELINE`, and
+  `DATA_CONTINUITY_BASELINE`; keep all four current availability facts false
+  and reject unsupported positive or contradictory public construction.
+- [x] Preserve the Mac-owned external fixed credential slot outside Git with
+  `0700` parent, `0600` regular non-symlink file, explicit trusted uid/gid, no
+  ambient `HOME`/UID authority, no env/argv/JSON secret/Governance transport,
+  no secret log/hash, fallback, enumeration, or candidate iteration, and one
+  acquisition maximum only after capability consumption. No credential was
+  read or verified.
+- [x] Define `CLOSED_SYMBOLIC_PRODUCTION_MARIADB_PROFILE`, owner
+  `MAC_CONTROL_PLANE`, with `canonical_target_contract_defined=true`,
+  `numeric_loopback_port_assigned=false`, `target_deployed=false`, and derived
+  `production_target_ready=false`. Add no caller host/port/DSN/URL/database/
+  username and assign no numeric MariaDB port.
+- [x] Add no PyMySQL, driver, SQL, network, filesystem credential reader,
+  environment/argv credential transport, retry, reconnect, pooling, Production
+  access, or MariaDB authentication. Keep `PRODUCTION_VALIDATION_READY=false`
+  and `SHOPPING_RUNTIME_ACTIVATED=false`; Production/authentication/runtime/
+  Docker/Colima/Notion `NOT_PERFORMED`, secret values read `NO`, PyMySQL
+  installed `NO`, requirements changed `NO`.
+- [x] Preserve `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, Mac
+  AIControlCenter as sole Control Plane, Ubuntu as stateless worker, and the
+  exact six actions: `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+  `SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+  `SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+  `SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+  `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+  `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`.
+  `SHOPPING_SECRET_PROVISIONING` remains target-only.
+- [x] Record initial focused `22 passed in 0.07s`; first architecture review
+  `BLOCKED` for public factual forgeability/contradiction handling and missing
+  associated coverage; correction `PASS`; corrected focused `37 passed in
+  0.06s`; final read-only review `PASS`; canonical exactly once after final
+  reviewed code/test state,
+  `3593 passed, 5 deselected, 447 warnings in 133.58s`, `RC=0`; post-commit
+  canonical rerun `NOT_RUN`.
+
+### Phase B2 — future development boundary
+
+- [ ] Select and pin a PyMySQL dependency.
+- [ ] Build a synchronous one-shot Mac driver adapter.
+- [ ] Resolve the fixed loopback target.
+- [ ] Implement the protected credential source reader.
+- [ ] Implement independent expected DB/account/grants, data identity, and
+  continuity lineage baseline readers.
+- [ ] Define fixed parameterized read-only SQL, one connection only, with no
+  retry, reconnect, or pooling.
+
+Phase B2 is not implemented and is not Production-ready. No new numeric
+SM-01B-02D milestone identifier is assigned without repository evidence.
+
 ## MariaDB Continuity Validation Prerequisite / Phase A
 
 - [x] Close Phase A as repository-complete after documentation closeout at

@@ -1,5 +1,71 @@
 # MASTER
 
+## MariaDB Continuity Phase B1 — IMPLEMENTATION AND VALIDATION COMPLETE
+
+Implementation commit: `acdbd859872b842691c293b5e094472b344d304b`.
+
+The factual one-shot state model is `NEW -> AUTHORIZED -> CONSUMED ->
+PRE_ATTEMPT -> ATTEMPT_INITIATED -> TERMINAL`. `PRE_ATTEMPT -> TERMINAL` keeps
+`attempted_count=0`; `ATTEMPT_INITIATED -> TERMINAL` keeps
+`attempted_count=1`. No skip, reversal, repetition, post-terminal transition,
+or second attempt is allowed. `AUTHORIZED` is factual and grants no authority.
+
+The frozen value-free sources are exactly `CREDENTIAL_SOURCE`,
+`EXPECTED_IDENTITY_DESCRIPTOR`, `DATA_IDENTITY_BASELINE`, and
+`DATA_CONTINUITY_BASELINE`. Their current availability remains false:
+`credential_material_available=false`,
+`expected_identity_descriptor_available=false`,
+`data_identity_baseline_available=false`, and
+`data_continuity_baseline_available=false`. Public construction rejects
+unsupported positive and contradictory source facts.
+
+Credential custody remains Mac-Control-Plane-owned through one external fixed
+slot outside Git, a `0700` protected parent, a `0600` regular non-symlink file,
+and explicit trusted uid/gid. There is no ambient `HOME`/UID authority,
+env/argv/JSON secret/Governance transport, secret logging/hash, fallback,
+enumeration, or candidate iteration. Acquisition is at most once and only
+after capability consumption. No actual credential was verified or read.
+
+Target `CLOSED_SYMBOLIC_PRODUCTION_MARIADB_PROFILE` is owned by
+`MAC_CONTROL_PLANE`. `canonical_target_contract_defined=true`,
+`numeric_loopback_port_assigned=false`, `target_deployed=false`, and
+`production_target_ready=false`; readiness derives strictly from numeric port
+assignment AND deployment. Callers provide no host, port, DSN, URL, database,
+or username, and Phase B1 assigns no numeric MariaDB port.
+
+No PyMySQL, MariaDB driver, SQL, network, filesystem credential-source
+implementation, env/argv credential transport, retry, reconnect, pooling,
+Production access, or MariaDB authentication was added or performed.
+`PRODUCTION_VALIDATION_READY=false`; `SHOPPING_RUNTIME_ACTIVATED=false`.
+`PRODUCTION_ACCESS_GATE=NOT_PERFORMED`;
+`MARIADB_AUTHENTICATION=NOT_PERFORMED`; runtime, Docker, Colima, and Notion
+access were `NOT_PERFORMED`; secret values read `NO`; PyMySQL installed `NO`;
+requirements changed `NO`.
+
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The exact six unchanged actions
+are `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains a target only. Mac AIControlCenter is the
+sole Control Plane; Ubuntu remains a stateless infrastructure worker.
+
+Validation history: initial focused `22 passed in 0.07s`; first architecture
+review `BLOCKED` for public factual forgeability, contradiction handling, and
+associated test coverage; correction `PASS`; corrected focused `37 passed in
+0.06s`; final read-only architecture review `PASS`. Canonical executed exactly
+once after final reviewed code/test state: `3593 passed, 5 deselected, 447
+warnings in 133.58s`, `RC=0`. Canonical rerun after commit: `NOT_RUN`.
+
+Phase B2 remains future work only and may cover PyMySQL selection/pinning, a
+synchronous one-shot Mac adapter, fixed loopback resolution, a protected
+credential reader, independent expected DB/account/grants and identity/
+continuity baseline readers, and fixed parameterized read-only SQL using one
+connection with no retry, reconnect, or pooling. It is not implemented or
+Production-ready, and no new numeric milestone identifier is asserted.
+
 ## MariaDB Continuity Validation Prerequisite / Phase A — CLOSED
 
 Repository-complete after documentation closeout. Implementation commit:
