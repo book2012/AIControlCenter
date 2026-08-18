@@ -15,6 +15,11 @@ from ops.macos.shopping.sops_age_backend import (
     DEFINITION_PATH as BACKEND_DEFINITION_PATH,
     validate_definition as validate_backend_definition,
 )
+from ops.macos.shopping.secret_provisioning_observations import (
+    FileObservation,
+    ReadinessState,
+    RuntimeProvisioningObservations,
+)
 
 ROOT = Path(__file__).resolve().parents[3]
 PROVISIONING_DEFINITION_PATH = ROOT / "config/shopping-secret-provisioning.json"
@@ -110,6 +115,139 @@ class SopsAgeProvisioningInspector:
             for item in self._definition["actions"]
             for readiness, prerequisites in (states[item["planner_rule"]],)
         )
+
+    def inspect_readiness_composition(
+        self, observations: RuntimeProvisioningObservations
+    ) -> dict[str, Any]:
+        """Project injected postconditions without reading values or granting authority."""
+        materialization_implemented = self._definition.get("materialization_implemented") is True
+        facts: dict[str, dict[str, Any]] = {
+            "sops": self._executable_fact(observations.sops),
+            "age": self._executable_fact(observations.age),
+            "age_keygen": self._executable_fact(observations.age_keygen),
+            "control_plane_identity": self._file_fact(observations.control_plane_identity),
+            "control_plane_recipient_registration": self._boolean_fact(
+                observations.control_plane_recipient_registered, "registered"
+            ),
+            "offline_recovery_inbox": {
+                **self._file_fact(observations.offline_recovery_inbox),
+                "fixed_canonical_artifact": True,
+                "contents_inspected": False,
+            },
+            "offline_recovery_recipient_registration": self._boolean_fact(
+                observations.offline_recovery_recipient_registered, "registered"
+            ),
+            "secret_payload": {
+                "state": self._configured_state(
+                    observations.secret_payload_configured,
+                    observations.secret_payload_ready,
+                ),
+                "configured": observations.secret_payload_configured,
+                "ready": observations.secret_payload_ready,
+            },
+            "secret_materialization": {
+                "state": (
+                    ReadinessState.MISSING.value
+                    if not materialization_implemented
+                    else ReadinessState.BLOCKED.value
+                ),
+                "implemented": materialization_implemented,
+                "ready": False,
+            },
+            "runtime_dependencies": {
+                "state": self._configured_state(
+                    observations.runtime_dependencies_configured,
+                    observations.runtime_dependencies_ready,
+                ),
+                "configured": observations.runtime_dependencies_configured,
+                "ready": observations.runtime_dependencies_ready,
+            },
+            "mariadb_continuity": {
+                "state": ReadinessState.BLOCKED.value,
+                "reason_codes": ["MARIADB_HISTORICAL_CREDENTIAL_CONTINUITY_UNRESOLVED"],
+                "credential_values_inspected": False,
+                "blocks": [
+                    "DB_SECRET_PAYLOAD", "DB_SECRET_MATERIALIZATION",
+                    "DB_DEPENDENT_VALIDATION", "WORDPRESS_WOOCOMMERCE_DB_CUTOVER",
+                    "RUNTIME_CUTOVER", "SHOPPING_RUNTIME_ACTIVATED",
+                ],
+            },
+        }
+        activation_blocked = (
+            facts["mariadb_continuity"]["state"] != ReadinessState.READY.value
+            or facts["secret_payload"]["state"] != ReadinessState.READY.value
+            or facts["secret_materialization"]["state"] != ReadinessState.READY.value
+            or facts["runtime_dependencies"]["state"] != ReadinessState.READY.value
+        )
+        facts["runtime_activation"] = {
+            "state": ReadinessState.BLOCKED.value if activation_blocked else ReadinessState.READY.value,
+            "ready": not activation_blocked,
+            "activated": False,
+        }
+        reason_codes = sorted({
+            reason
+            for fact in facts.values()
+            for reason in fact.get("reason_codes", [])
+        })
+        for name, fact in facts.items():
+            if fact["state"] != ReadinessState.READY.value and not fact.get("reason_codes"):
+                reason_codes.append(f"{name.upper()}_{fact['state']}")
+        return {
+            "schema_version": "1.0",
+            "inspection": "READ_ONLY",
+            "owner": "MAC_MINI_M4_AICONTROLCENTER_CONTROL_PLANE",
+            "value_free": True,
+            "secret_values_read": False,
+            "mutation_authority": False,
+            "facts": facts,
+            "overall_state": (
+                ReadinessState.READY.value
+                if all(fact["state"] == ReadinessState.READY.value for fact in facts.values())
+                else ReadinessState.BLOCKED.value
+            ),
+            "reason_codes": sorted(set(reason_codes)),
+        }
+
+    @staticmethod
+    def _configured_state(configured: bool, ready: bool) -> str:
+        if not configured:
+            return (
+                ReadinessState.MALFORMED if ready else ReadinessState.MISSING
+            ).value
+        return (ReadinessState.READY if ready else ReadinessState.BLOCKED).value
+
+    @staticmethod
+    def _executable_fact(observation: Any) -> dict[str, Any]:
+        state = ReadinessState.READY if observation.ready else (
+            ReadinessState.MISSING if not observation.present else ReadinessState.UNSAFE
+        )
+        return {
+            "state": state.value, "present": observation.present,
+            "trusted": observation.trusted, "executable": observation.executable,
+            "ready": observation.ready,
+        }
+
+    @staticmethod
+    def _file_fact(observation: FileObservation) -> dict[str, Any]:
+        state = ReadinessState.READY if observation.ready else (
+            ReadinessState.MISSING if not observation.regular_file and not observation.symlink_rejected
+            else ReadinessState.UNSAFE
+        )
+        return {
+            "state": state.value, "present": observation.regular_file or observation.symlink_rejected,
+            "regular_file": observation.regular_file,
+            "symlink_rejected": observation.symlink_rejected,
+            "expected_ownership": observation.expected_ownership,
+            "safe_mode": observation.safe_mode, "nonempty": observation.nonempty,
+            "ready": observation.ready,
+        }
+
+    @staticmethod
+    def _boolean_fact(ready: bool, name: str) -> dict[str, Any]:
+        return {
+            "state": (ReadinessState.READY if ready else ReadinessState.MISSING).value,
+            name: ready, "ready": ready,
+        }
 
     def _malformed_plans(self) -> tuple[ProvisioningPlan, ...]:
         return (plan_for(

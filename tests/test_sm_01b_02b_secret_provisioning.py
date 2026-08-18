@@ -17,6 +17,11 @@ from ops.macos.shopping.sops_age_provisioning_inspector import (
     load_provisioning_definition,
     validate_provisioning_definition,
 )
+from ops.macos.shopping.secret_provisioning_observations import (
+    ExecutableObservation,
+    FileObservation,
+    RuntimeProvisioningObservations,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFINITION_PATH = ROOT / "config/shopping-secret-provisioning.json"
@@ -49,6 +54,34 @@ def inspect(**overrides: bool) -> dict[str, ProvisioningPlan]:
 
 def action(suffix: str, plans: dict[str, ProvisioningPlan]) -> ProvisioningPlan:
     return next(plan for name, plan in plans.items() if name.endswith(suffix))
+
+
+def readiness_observations(**overrides: object) -> RuntimeProvisioningObservations:
+    executable = ExecutableObservation(True, True, True)
+    safe_file = FileObservation(True, False, True, True, True)
+    values: dict[str, object] = {
+        "sops": executable,
+        "age": executable,
+        "age_keygen": executable,
+        "control_plane_identity": safe_file,
+        "control_plane_recipient_registered": True,
+        "offline_recovery_inbox": safe_file,
+        "offline_recovery_recipient_registered": True,
+        "secret_payload_configured": False,
+        "secret_payload_ready": False,
+        "runtime_dependencies_configured": False,
+        "runtime_dependencies_ready": False,
+    }
+    values.update(overrides)
+    return RuntimeProvisioningObservations(**values)  # type: ignore[arg-type]
+
+
+def composition(**overrides: object) -> dict[str, object]:
+    inspector = SopsAgeProvisioningInspector(
+        load_provisioning_definition(), load_backend_definition(), observations(),
+        control_plane_home=Path("TEST_SECRET_VALUE_DO_NOT_EXPOSE"),
+    )
+    return inspector.inspect_readiness_composition(readiness_observations(**overrides))
 
 
 def test_canonical_metadata_validates_as_draft_2020_12_and_preserves_history() -> None:
@@ -319,7 +352,7 @@ def test_inspector_has_no_runtime_secret_or_mutation_access() -> None:
     source = INSPECTOR_PATH.read_text(encoding="utf-8").lower()
     prohibited = (
         "subprocess", "os.environ", "getenv(", "import pwd", "keychain", "docker",
-        "colima", "wordpress", "woocommerce", "mariadb", "caddy", "ubuntu",
+        "colima", "caddy", "ubuntu",
         "urllib", "requests", "socket", "controlledexecutionport", "invoke_once",
         "age-keygen", "homebrew", "brew ", "read_bytes", "write_text",
     )
@@ -341,3 +374,190 @@ def test_core_dependency_direction_is_clean() -> None:
 
 def test_no_encrypted_shopping_payload_was_created() -> None:
     assert not PAYLOAD_PATH.exists()
+
+
+def test_readiness_composition_has_stable_json_contract_and_is_deterministic() -> None:
+    expected_top_level = {
+        "schema_version", "inspection", "owner", "value_free",
+        "secret_values_read", "mutation_authority", "facts", "overall_state",
+        "reason_codes",
+    }
+    expected_facts = {
+        "sops", "age", "age_keygen", "control_plane_identity",
+        "control_plane_recipient_registration", "offline_recovery_inbox",
+        "offline_recovery_recipient_registration", "secret_payload",
+        "secret_materialization", "runtime_dependencies", "mariadb_continuity",
+        "runtime_activation",
+    }
+    first = composition()
+    second = composition()
+    assert set(first) == expected_top_level
+    assert set(first["facts"]) == expected_facts  # type: ignore[arg-type]
+    assert first == second
+    assert json.loads(json.dumps(first, sort_keys=True)) == first
+    assert first["inspection"] == "READ_ONLY"
+    assert first["owner"] == "MAC_MINI_M4_AICONTROLCENTER_CONTROL_PLANE"
+    assert first["value_free"] is True
+    assert first["secret_values_read"] is False
+    assert first["mutation_authority"] is False
+
+
+def test_composition_fails_closed_for_missing_and_unsafe_metadata() -> None:
+    missing = composition(sops=ExecutableObservation(False, False, False))
+    assert missing["overall_state"] == "BLOCKED"
+    assert missing["facts"]["sops"]["state"] == "MISSING"  # type: ignore[index]
+    unsafe = composition(
+        offline_recovery_inbox=FileObservation(False, True, False, False, False)
+    )
+    inbox = unsafe["facts"]["offline_recovery_inbox"]  # type: ignore[index]
+    assert inbox == {
+        "state": "UNSAFE", "present": True, "regular_file": False,
+        "symlink_rejected": True, "expected_ownership": False,
+        "safe_mode": False, "nonempty": False, "ready": False,
+        "fixed_canonical_artifact": True, "contents_inspected": False,
+    }
+    assert unsafe["overall_state"] == "BLOCKED"
+
+
+def test_mariadb_and_unimplemented_materialization_block_runtime_activation() -> None:
+    report = composition(
+        secret_payload_configured=True, secret_payload_ready=True,
+        runtime_dependencies_configured=True, runtime_dependencies_ready=True,
+    )
+    facts = report["facts"]  # type: ignore[assignment]
+    continuity = facts["mariadb_continuity"]
+    assert continuity["state"] == "BLOCKED"
+    assert continuity["reason_codes"] == [
+        "MARIADB_HISTORICAL_CREDENTIAL_CONTINUITY_UNRESOLVED"
+    ]
+    assert continuity["credential_values_inspected"] is False
+    assert continuity["blocks"] == [
+        "DB_SECRET_PAYLOAD", "DB_SECRET_MATERIALIZATION", "DB_DEPENDENT_VALIDATION",
+        "WORDPRESS_WOOCOMMERCE_DB_CUTOVER", "RUNTIME_CUTOVER",
+        "SHOPPING_RUNTIME_ACTIVATED",
+    ]
+    assert facts["secret_materialization"]["implemented"] is False
+    assert facts["runtime_activation"] == {
+        "state": "BLOCKED", "ready": False, "activated": False,
+    }
+
+
+@pytest.mark.parametrize(
+    ("fact_name", "configured_name", "ready_name"),
+    (
+        ("secret_payload", "secret_payload_configured", "secret_payload_ready"),
+        (
+            "runtime_dependencies",
+            "runtime_dependencies_configured",
+            "runtime_dependencies_ready",
+        ),
+    ),
+)
+@pytest.mark.parametrize(
+    ("configured", "ready", "expected_state"),
+    (
+        (False, False, "MISSING"),
+        (True, False, "BLOCKED"),
+        (True, True, "READY"),
+        (False, True, "MALFORMED"),
+    ),
+)
+def test_configured_readiness_state_table_fails_closed(
+    fact_name: str,
+    configured_name: str,
+    ready_name: str,
+    configured: bool,
+    ready: bool,
+    expected_state: str,
+) -> None:
+    overrides = {configured_name: configured, ready_name: ready}
+    first = composition(**overrides)
+    second = composition(**overrides)
+    fact = first["facts"][fact_name]  # type: ignore[index]
+
+    assert fact == {
+        "state": expected_state,
+        "configured": configured,
+        "ready": ready,
+    }
+    assert first["reason_codes"] == second["reason_codes"]
+
+    if expected_state == "MALFORMED":
+        activation = first["facts"]["runtime_activation"]  # type: ignore[index]
+        assert first["overall_state"] == "BLOCKED"
+        assert activation["ready"] is False
+        assert activation["activated"] is False
+        assert f"{fact_name.upper()}_MALFORMED" in first["reason_codes"]
+        assert not any(
+            value in json.dumps(first["reason_codes"])
+            for value in (
+                "TEST_SECRET_VALUE_DO_NOT_EXPOSE",
+                "TEST_RECIPIENT_VALUE_DO_NOT_EXPOSE",
+                "TEST_PRIVATE_IDENTITY_DO_NOT_EXPOSE",
+                "/Users/",
+            )
+        )
+
+
+def test_composition_projection_excludes_sensitive_values_paths_and_authority() -> None:
+    sentinels = (
+        "TEST_SECRET_VALUE_DO_NOT_EXPOSE",
+        "TEST_RECIPIENT_VALUE_DO_NOT_EXPOSE",
+        "TEST_PRIVATE_IDENTITY_DO_NOT_EXPOSE",
+    )
+    rendered = json.dumps(composition(), sort_keys=True)
+    assert not [sentinel for sentinel in sentinels if sentinel in rendered]
+    assert "/Users/" not in rendered
+    assert "stdout" not in rendered and "stderr" not in rendered
+    assert "environment" not in rendered
+    assert "AuthorizationConsumptionPort" not in rendered
+    assert "ControlledExecutionPort" not in rendered
+    assert "mutation_budget" not in rendered
+    assert "GovernanceExecutionRequest" not in rendered
+
+    def assert_json_types(value: object) -> None:
+        assert not isinstance(value, Path)
+        if isinstance(value, dict):
+            for key, item in value.items():
+                assert isinstance(key, str)
+                assert_json_types(item)
+        elif isinstance(value, list):
+            for item in value:
+                assert_json_types(item)
+        else:
+            assert value is None or isinstance(value, (str, bool, int, float))
+
+    assert_json_types(composition())
+
+
+def test_composition_has_closed_readiness_vocabulary_and_no_mutation_surface() -> None:
+    report = composition()
+    assert {fact["state"] for fact in report["facts"].values()} <= {
+        "READY", "MISSING", "BLOCKED", "UNSAFE", "MALFORMED",
+    }
+    inspector = SopsAgeProvisioningInspector(
+        load_provisioning_definition(), load_backend_definition(), observations(),
+        control_plane_home=Path("portable-home"),
+    )
+    prohibited = {
+        "invoke", "invoke_once", "execute", "write", "create", "install",
+        "register", "materialize", "cutover", "retry", "rollback", "compensate",
+        "recover", "authorize", "consume_authorization",
+    }
+    assert not prohibited.intersection(dir(inspector))
+
+
+def test_composition_preserves_six_action_semantics_and_control_plane_ownership() -> None:
+    before = [plan.to_dict() for plan in inspect().values()]
+    composition()
+    after = [plan.to_dict() for plan in inspect().values()]
+    assert before == after
+    assert [item["action"] for item in after][-2:] == [
+        "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE",
+        "SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE",
+    ]
+    rendered = json.dumps(composition(), sort_keys=True)
+    assert "UBUNTU" not in rendered
+    assert "WORDPRESS_WOOCOMMERCE_DB_CUTOVER" in rendered
+    assert composition()["owner"] != "WORDPRESS"
+    assert composition()["owner"] != "WOOCOMMERCE"

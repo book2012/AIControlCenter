@@ -5,16 +5,63 @@ from __future__ import annotations
 import os
 import stat
 from dataclasses import dataclass
+from enum import Enum
 from pathlib import Path
 
 
-@dataclass(frozen=True)
+class ReadinessState(str, Enum):
+    READY = "READY"
+    MISSING = "MISSING"
+    BLOCKED = "BLOCKED"
+    UNSAFE = "UNSAFE"
+    MALFORMED = "MALFORMED"
+
+
+@dataclass(frozen=True, slots=True)
+class ExecutableObservation:
+    present: bool
+    trusted: bool
+    executable: bool
+
+    @property
+    def ready(self) -> bool:
+        return self.present and self.trusted and self.executable
+
+
+@dataclass(frozen=True, slots=True)
 class FileObservation:
     regular_file: bool
     symlink_rejected: bool
     expected_ownership: bool
     safe_mode: bool
     nonempty: bool
+
+    @property
+    def ready(self) -> bool:
+        return (
+            self.regular_file
+            and not self.symlink_rejected
+            and self.expected_ownership
+            and self.safe_mode
+            and self.nonempty
+        )
+
+
+@dataclass(frozen=True, slots=True)
+class RuntimeProvisioningObservations:
+    """Injected read-only facts; this boundary accepts no artifact values or paths."""
+
+    sops: ExecutableObservation
+    age: ExecutableObservation
+    age_keygen: ExecutableObservation
+    control_plane_identity: FileObservation
+    control_plane_recipient_registered: bool
+    offline_recovery_inbox: FileObservation
+    offline_recovery_recipient_registered: bool
+    secret_payload_configured: bool
+    secret_payload_ready: bool
+    runtime_dependencies_configured: bool
+    runtime_dependencies_ready: bool
 
 
 def executable_present(path: Path) -> bool:
@@ -79,7 +126,10 @@ def syntactically_valid_public_metadata(path: Path, *, expected_uid: int) -> boo
 
 
 __all__ = (
+    "ExecutableObservation",
     "FileObservation",
+    "ReadinessState",
+    "RuntimeProvisioningObservations",
     "executable_present",
     "observe_file",
     "structurally_safe_identity",
