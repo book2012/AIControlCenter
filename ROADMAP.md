@@ -1,38 +1,31 @@
 # Roadmap
 
-## MariaDB Continuity Integrated WU-05 — documentation closeout
+## MariaDB Continuity Integrated WU-09 — documentation closeout
 
-- [x] Record `MARIADB_CONTINUITY_INTEGRATED_WU_01_DISCOVERY_GATE=PASS`,
-  `MARIADB_CONTINUITY_INTEGRATED_WU_01_ARCHITECTURE_FREEZE_GATE=PASS`,
-  `MARIADB_CONTINUITY_INTEGRATED_WU_02_IMPLEMENTATION_GATE=PASS`,
-  `MARIADB_CONTINUITY_INTEGRATED_WU_03_FOCUSED_GATE=PASS`, and
-  `FOCUSED_RESULT=79 passed in 0.18s`.
-- [x] Record
-  `MARIADB_CONTINUITY_INTEGRATED_WU_03_FINAL_ARCHITECTURE_REVIEW_GATE=PASS`,
-  `MARIADB_CONTINUITY_INTEGRATED_WU_04_CANONICAL_GATE=PASS`,
-  `CANONICAL_RESULT=3725 passed, 5 deselected, 491 warnings`, and
-  `CANONICAL_RC=0`.
-- [x] Record `IMPLEMENTATION_GIT_CLOSEOUT=PASS`,
-  `IMPLEMENTATION_COMMIT=834d1e8dc191ccd0bd0b8dcec702a5f3a791e3a3`,
-  `GIT_PUSH=PASS`, `AHEAD=0`, and `BEHIND=0`.
-- [x] Preserve generic `account_binding_*` semantics and direct type reuse; add
-  independent timestamp, expected-database, expected-account, and
-  required-grants binding requirement/result pairs and the explicit PyMySQL
-  1.2.0 compatibility-proof requirement.
-- [x] Preserve fail-closed behavior, caller-positive-fact injection
-  prohibition, evidence separation, zero authority, zero I/O, zero network,
-  zero SQL, and factual-only legacy readiness.
-- [x] Preserve Mac sole Control Plane, stateless Ubuntu,
-  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, unchanged exact six Shopping
-  actions, and target-only `SHOPPING_SECRET_PROVISIONING`.
-- [x] Keep `RECOVER` evidence insufficient, `ROTATE_AUTHORIZED=false`,
-  `REPLACE_AUTHORIZED=false`, `STRATEGY_EXECUTED=false`,
-  `PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
-- [x] Record `PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
+- [x] `MARIADB_CONTINUITY_INTEGRATED_WU_07_DISCOVERY_RECONCILE_GATE=PASS`.
+- [x] `MARIADB_CONTINUITY_INTEGRATED_WU_07_IMPLEMENTATION_GATE=PASS`.
+- [x] `MARIADB_CONTINUITY_INTEGRATED_WU_07_FOCUSED_GATE=PASS`.
+- [x] `FOCUSED_RESULT=17 passed in 0.07s`.
+- [x] `MARIADB_CONTINUITY_INTEGRATED_WU_07_FINAL_ARCHITECTURE_REVIEW_GATE=PASS`.
+- [x] `MARIADB_CONTINUITY_INTEGRATED_WU_08_CANONICAL_GATE=PASS`.
+- [x] `CANONICAL_RESULT=3733 passed, 5 deselected, 495 warnings`.
+- [x] `CANONICAL_RC=0`.
+- [x] `IMPLEMENTATION_GIT_CLOSEOUT=PASS`.
+- [x] `IMPLEMENTATION_COMMIT=63370cfdf4ea0c80ca54395dd5913317ba529dca`.
+- [x] `GIT_PUSH=PASS`; implementation closeout divergence was `AHEAD=0`, `BEHIND=0`.
+- [x] Preserve the closed twelve-category repository-only Evidence Acquisition Descriptor Contract.
+- [x] Preserve descriptor/source/existence/acquisition/admission/verification/authority separation.
+- [x] Preserve fail-closed, value-free, zero-authority, zero-I/O, zero-network, zero-SQL semantics.
+- [x] Preserve Mac AIControlCenter as sole Control Plane and Ubuntu as stateless infrastructure worker.
+- [x] Preserve `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- [x] Preserve the exact six Shopping actions and target-only `SHOPPING_SECRET_PROVISIONING`.
+- [x] Preserve `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+- [x] Preserve `ROTATE_AUTHORIZED=false`, `REPLACE_AUTHORIZED=false`, and `STRATEGY_EXECUTED=false`.
+- [x] Preserve `PRODUCTION_VALIDATION_READY=false` and `SHOPPING_RUNTIME_ACTIVATED=false`.
+- [x] Preserve `PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
   `SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`,
   `PYMYSQL_ACTIVITY=NONE`, and `NOTION_SYNC=NOT_PERFORMED`.
-- [ ] Complete documentation Git closeout without claiming evidence existence,
-  sufficient `RECOVER`, Production readiness, or runtime activation.
+- [ ] Complete exact-six-document Git closeout.
 
 No focused or canonical validation is rerun for this documentation-only work.
 

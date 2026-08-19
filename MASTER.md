@@ -1,27 +1,36 @@
 # MASTER
 
-## Current status — MariaDB Continuity Integrated WU-05 documentation closeout
+## Current status — MariaDB Continuity Integrated WU-09 documentation closeout
 
-Exact chronology: `MARIADB_CONTINUITY_INTEGRATED_WU_01_DISCOVERY_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_01_ARCHITECTURE_FREEZE_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_02_IMPLEMENTATION_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_03_FOCUSED_GATE=PASS`,
-`FOCUSED_RESULT=79 passed in 0.18s`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_03_FINAL_ARCHITECTURE_REVIEW_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_04_CANONICAL_GATE=PASS`,
-`CANONICAL_RESULT=3725 passed, 5 deselected, 491 warnings`, `CANONICAL_RC=0`,
+Exact chronology: `MARIADB_CONTINUITY_INTEGRATED_WU_07_DISCOVERY_RECONCILE_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_07_IMPLEMENTATION_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_07_FOCUSED_GATE=PASS`,
+`FOCUSED_RESULT=17 passed in 0.07s`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_07_FINAL_ARCHITECTURE_REVIEW_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_08_CANONICAL_GATE=PASS`,
+`CANONICAL_RESULT=3733 passed, 5 deselected, 495 warnings`, `CANONICAL_RC=0`,
 `IMPLEMENTATION_GIT_CLOSEOUT=PASS`,
-`IMPLEMENTATION_COMMIT=834d1e8dc191ccd0bd0b8dcec702a5f3a791e3a3`, `GIT_PUSH=PASS`,
+`IMPLEMENTATION_COMMIT=63370cfdf4ea0c80ca54395dd5913317ba529dca`, `GIT_PUSH=PASS`,
 `AHEAD=0`, and `BEHIND=0`.
 
-Evidence readiness preserves generic `account_binding_*` semantics, direct
-type reuse, fail-closed behavior, caller-positive-fact injection prohibition,
-evidence separation, zero authority, zero I/O, zero network, zero SQL, and
-factual-only legacy readiness. Independent requirement/result pairs cover
-timestamp, expected-database, expected-account, and required-grants binding;
-PyMySQL 1.2.0 compatibility proof is explicitly required. No evidence is
-asserted to exist or to have passed verification, and `RECOVER` evidence
-remains insufficient.
+The exact four-file implementation is complete and validated. Its closed
+twelve-category contract classifies auth-plugin authoritative evidence, PyMySQL
+1.2.0 compatibility evidence, expected database identity, expected account
+identity, required grants, five-category data identity, three-category
+continuity lineage, timestamp evidence, immutable integrity binding, trusted
+issuer, account binding, and baseline binding. It is repository-only,
+value-free, fail-closed, and zero-authority.
+
+Descriptor classification and source identity remain separate from source
+existence, acquisition, evidence existence, admission, verification,
+authoritative evidence, provenance, integrity, timestamp, issuer,
+account/baseline binding, identity completeness, continuity completeness,
+`RECOVER` sufficiency, Production readiness, and authority. The contract
+locates, retrieves, ingests, parses, admits, and verifies nothing. All those
+downstream facts remain false or unavailable. Positive caller facts, caller
+source paths, arbitrary reference strings, external evidence values, and
+secret-bearing content are prohibited; I/O, network, SQL, Production access,
+runtime mutation, and acquisition/admission/verification authority are absent.
 
 Mac AIControlCenter remains sole Control Plane; Ubuntu remains a stateless
 infrastructure worker; `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact

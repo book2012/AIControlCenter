@@ -1,27 +1,36 @@
 # AIControlCenter
 
-## Current milestone — MariaDB Continuity Integrated WU-05 documentation closeout
+## Current milestone — MariaDB Continuity Integrated WU-09 documentation closeout
 
-Exact chronology: `MARIADB_CONTINUITY_INTEGRATED_WU_01_DISCOVERY_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_01_ARCHITECTURE_FREEZE_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_02_IMPLEMENTATION_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_03_FOCUSED_GATE=PASS`,
-`FOCUSED_RESULT=79 passed in 0.18s`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_03_FINAL_ARCHITECTURE_REVIEW_GATE=PASS`,
-`MARIADB_CONTINUITY_INTEGRATED_WU_04_CANONICAL_GATE=PASS`,
-`CANONICAL_RESULT=3725 passed, 5 deselected, 491 warnings`, `CANONICAL_RC=0`,
+Exact chronology: `MARIADB_CONTINUITY_INTEGRATED_WU_07_DISCOVERY_RECONCILE_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_07_IMPLEMENTATION_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_07_FOCUSED_GATE=PASS`,
+`FOCUSED_RESULT=17 passed in 0.07s`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_07_FINAL_ARCHITECTURE_REVIEW_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_08_CANONICAL_GATE=PASS`,
+`CANONICAL_RESULT=3733 passed, 5 deselected, 495 warnings`, `CANONICAL_RC=0`,
 `IMPLEMENTATION_GIT_CLOSEOUT=PASS`,
-`IMPLEMENTATION_COMMIT=834d1e8dc191ccd0bd0b8dcec702a5f3a791e3a3`, `GIT_PUSH=PASS`,
+`IMPLEMENTATION_COMMIT=63370cfdf4ea0c80ca54395dd5913317ba529dca`, `GIT_PUSH=PASS`,
 `AHEAD=0`, and `BEHIND=0`.
 
-The integration preserves generic `account_binding_*` semantics and adds
-independent requirement/result pairs for timestamp, expected-database,
-expected-account, and required-grants binding. Explicit PyMySQL 1.2.0
-compatibility proof is required. Direct type reuse, fail-closed behavior,
-caller-positive-fact injection prohibition, evidence separation, zero
-authority, zero I/O, zero network, zero SQL, and factual-only legacy readiness
-remain unchanged. It does not claim evidence exists or has been verified, and
-`RECOVER` evidence remains insufficient.
+Implementation and validation are complete for the exact four-file,
+repository-only, value-free, fail-closed, zero-authority Evidence Acquisition
+Descriptor Contract. Its closed classifications are auth-plugin authoritative
+evidence; PyMySQL 1.2.0 compatibility evidence; expected database identity;
+expected account identity; required grants; five-category data identity;
+three-category continuity lineage; timestamp evidence; immutable integrity
+binding; trusted issuer; account binding; and baseline binding.
+
+These are descriptors, not sources or evidence. Descriptor classification,
+source identity, source existence, acquisition, evidence existence, admission,
+verification, authoritative evidence, provenance, integrity, timestamp, issuer,
+account/baseline binding, identity completeness, continuity completeness,
+`RECOVER` sufficiency, Production readiness, and authority remain strictly
+separate. Nothing is located, retrieved, ingested, parsed, admitted, or verified;
+no historical evidence or downstream positive fact is established. Caller
+positive-fact/source-path/reference injection, external evidence values, and
+secret-bearing content are prohibited. I/O, network, SQL, Production access,
+runtime mutation, and acquisition/admission/verification authority remain zero.
 
 Mac AIControlCenter remains sole Control Plane; Ubuntu remains a stateless
 infrastructure worker. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact
