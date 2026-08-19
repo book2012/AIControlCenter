@@ -1,5 +1,52 @@
 # CHANGELOG
 
+## 2026-08-19 — MariaDB Continuity Phase B2B-1D Package-2 documentation candidate
+
+- Recorded `PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` at
+  implementation commit `0c6cf471da9e918e798f8a71fb2d28a4afc98d46`, with
+  implementation and Git closeout `PASS`, focused `29 passed in 0.05s`, final
+  architecture review `PASS`, and exactly-once post-review canonical `3707
+  passed, 5 deselected, 471 warnings`, `RC=0`. Warnings are not failures; no
+  focused or canonical rerun followed implementation Git closeout.
+- Recorded implementation scope as
+  `core/secrets/mariadb_continuity_evidence_reference_manifest.py` and
+  `ops/macos/shopping/mariadb_continuity_evidence_reference_source.py`, with
+  focused tests in
+  `tests/test_sm_mariadb_continuity_evidence_reference_manifest.py` and
+  `tests/test_sm_mariadb_continuity_evidence_reference_source.py`.
+- Documented repository-only, immutable, fail-closed, value-free, zero-authority
+  separation of requirement, reference state, existence, provenance validity,
+  authority, compatibility, and reference-local readiness. `VerificationState`
+  is exactly `UNAVAILABLE`, `REFERENCED_UNVERIFIED`, `VERIFICATION_REQUIRED`,
+  and `VERIFIED_EXTERNAL_REFERENCE`; verified/reference readiness remains local
+  factual state, not existence, provenance, canonical availability,
+  compatibility, aggregate readiness, `RECOVER` sufficiency, Production
+  validation readiness, or authorization/capability/execution/mutation authority.
+- Recorded the five exact non-B1 categories and direct reuse—without duplicate
+  enums—of all five frozen `DataIdentityCategory` values and all three frozen
+  `ContinuityEvidenceCategory` values.
+- Froze value-free manifest safety: no caller-supplied reference; no assertion
+  of existence, authority, compatibility, or readiness; no secret, credential
+  hash, arbitrary free text, or SQL; and no I/O, network, or Production trigger.
+  Source projections grant no authorization, capability, execution, mutation,
+  retry, reconnect, or rollback authority.
+- Preserved unresolved auth plugin, unavailable authoritative evidence,
+  compatibility false, incomplete five/three category evidence, and insufficient
+  `RECOVER` evidence. The human `RECOVER` decision remains zero-authority;
+  ROTATE/REPLACE are unauthorized and strategy execution is false. Fixed SQL,
+  numeric port, target deployment, concrete credential path, and credential
+  reader remain false/unavailable.
+- No Production access, MariaDB authentication, secret read, SQL, PyMySQL
+  installation, or Notion sync occurred; Production readiness and Shopping
+  runtime remain false. Preserved Mac Control Plane ownership, stateless Ubuntu,
+  factual-only legacy `production_validation_ready`,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, the exact six Shopping actions,
+  and target-only `SHOPPING_SECRET_PROVISIONING`.
+- This edit is not Package-2 closure. Final documentation review, exact-six-doc
+  commit and normal push, clean-tree verification, and divergence `0 0`
+  self-activate closure without a second SHA-recording edit. Only afterward is
+  the next work the next MariaDB continuity evidence/strategy boundary.
+
 ## 2026-08-18 — MariaDB Continuity Phase B2B-1D Package-1 documentation candidate
 
 - Recorded implementation `cacc659fd518c751544a8062ce0c36813f1c7bcc`, Git

@@ -1,5 +1,62 @@
 # MASTER
 
+## Current documentation candidate — MariaDB Continuity Phase B2B-1D Package-2
+
+`PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` is implemented at
+`0c6cf471da9e918e798f8a71fb2d28a4afc98d46`. Implementation and implementation
+Git closeout are `PASS`; focused was `29 passed in 0.05s`; final architecture
+review was `PASS`; canonical ran exactly once afterward: `3707 passed, 5
+deselected, 471 warnings`, `RC=0`. Warnings are not failures. Focused and
+canonical reruns after Git closeout are `NOT_RUN`.
+
+Package-2 is repository-only, immutable, fail-closed, value-free, and
+zero-authority. It independently models evidence requirement, reference state,
+existence, provenance validity, authority, compatibility, and reference-local
+readiness. `VerificationState` is exactly `UNAVAILABLE`,
+`REFERENCED_UNVERIFIED`, `VERIFICATION_REQUIRED`, and
+`VERIFIED_EXTERNAL_REFERENCE`. The verified state and
+`reference_readiness_established` remain factual and reference-local only; they
+do not establish evidence existence, provenance authority, canonical
+availability, compatibility, readiness, `RECOVER` sufficiency, Production
+validation readiness, or authorization/capability/execution/mutation authority.
+
+Non-B1 requirements are exactly `AUTH_PLUGIN_HISTORICAL_EVIDENCE`,
+`PYMYSQL_1_2_0_COMPATIBILITY_EVIDENCE`, `EXPECTED_DATABASE_IDENTITY`,
+`EXPECTED_ACCOUNT_IDENTITY`, and `REQUIRED_GRANTS_PROFILE`. The implementation
+directly reuses frozen `DataIdentityCategory` (`WORDPRESS_IDENTITY`,
+`SITE_IDENTITY`, `APPLICATION_IDENTITY`, `CLOSED_SCHEMA_CHARACTERISTICS`,
+`CLOSED_TABLE_CHARACTERISTICS`) and frozen `ContinuityEvidenceCategory`
+(`LOGICAL_EXPORT`, `RECOVERY_ARTIFACT`, `PERSISTENT_VOLUME_SNAPSHOT`); there are
+no duplicate enums.
+
+`MANIFEST_VALUE_FREE=true`. References cannot be caller-supplied; assert
+existence, authority, compatibility, or readiness; contain secret values,
+credential hashes, arbitrary free text, or SQL; or trigger I/O, network, or
+Production access. Projection authority is exactly false for authorization,
+capability, execution, mutation, retry, reconnect, and rollback; `value_free=true`.
+
+Preserved truth: `AUTH_PLUGIN_STATE=UNRESOLVED`, authoritative auth-plugin
+evidence unavailable, PyMySQL compatibility false, five-category identity and
+three-category continuity lineage incomplete, and `RECOVER` evidence
+insufficient. `HUMAN_STRATEGY_DECISION=RECOVER` with zero authority confers no
+execution, Production, credential, validation, or mutation authority. ROTATE
+and REPLACE remain unauthorized; strategy execution remains false. Fixed SQL,
+numeric loopback port, Production deployment, concrete credential path, and a
+credential value reader remain false/unavailable.
+
+No Production access, MariaDB authentication, secret-value read, SQL, PyMySQL
+installation, or Notion sync occurred. Production validation and Shopping
+runtime remain false. Mac AIControlCenter remains sole Control Plane; Ubuntu is
+stateless. Legacy `production_validation_ready` is factual-only.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six Shopping actions
+remain unchanged and `SHOPPING_SECRET_PROVISIONING` remains target-only.
+
+Package-2 is not closed by this edit. Passing final documentation review,
+committing and normally pushing exactly these six documents, then verifying a
+clean tree and divergence `0 0`, self-activates closure without another edit to
+record the documentation SHA. The next work only after closeout is the next
+MariaDB continuity evidence/strategy boundary.
+
 ## Current documentation candidate — MariaDB Continuity Phase B2B-1D Package-1
 
 Implemented at `cacc659fd518c751544a8062ce0c36813f1c7bcc`; implementation Git

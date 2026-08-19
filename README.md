@@ -1,5 +1,70 @@
 # AIControlCenter
 
+## Current status — MariaDB Continuity Phase B2B-1D Package-2 documentation candidate
+
+`PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` is implemented at
+`0c6cf471da9e918e798f8a71fb2d28a4afc98d46`; implementation and Git closeout
+passed. Focused validation was `29 passed in 0.05s`; final architecture review
+was `PASS`; canonical ran exactly once afterward and returned `3707 passed, 5
+deselected, 471 warnings`, `RC=0`. Warnings are not failures, and no focused or
+canonical rerun followed implementation Git closeout.
+
+The manifest is repository-only, immutable, fail-closed, value-free, and
+zero-authority. Evidence requirement, reference state, existence, provenance
+validity, authority, compatibility, and reference-local readiness are seven
+separate facts; none implies another. `VerificationState` is exactly
+`UNAVAILABLE`, `REFERENCED_UNVERIFIED`, `VERIFICATION_REQUIRED`, and
+`VERIFIED_EXTERNAL_REFERENCE`. The last state and
+`reference_readiness_established` are reference-local facts only—not evidence
+existence/provenance authority, canonical availability, compatibility, aggregate
+readiness, `RECOVER` sufficiency, Production validation readiness, or any
+authorization/capability/execution/mutation authority.
+
+The five required non-B1 categories are `AUTH_PLUGIN_HISTORICAL_EVIDENCE`,
+`PYMYSQL_1_2_0_COMPATIBILITY_EVIDENCE`, `EXPECTED_DATABASE_IDENTITY`,
+`EXPECTED_ACCOUNT_IDENTITY`, and `REQUIRED_GRANTS_PROFILE`. Existing frozen
+types are reused directly: `DataIdentityCategory` contains `WORDPRESS_IDENTITY`,
+`SITE_IDENTITY`, `APPLICATION_IDENTITY`, `CLOSED_SCHEMA_CHARACTERISTICS`, and
+`CLOSED_TABLE_CHARACTERISTICS`; `ContinuityEvidenceCategory` contains
+`LOGICAL_EXPORT`, `RECOVERY_ARTIFACT`, and `PERSISTENT_VOLUME_SNAPSHOT`. No
+duplicate enums were introduced.
+
+Safety remains frozen: `MANIFEST_VALUE_FREE=true`; references cannot be caller
+supplied, assert existence/authority/compatibility/readiness, contain secret
+values, credential hashes, arbitrary free text, or SQL, or trigger I/O, network,
+or Production access. Source projections have authorization, capability,
+execution, mutation, retry, reconnect, and rollback authority all `false`, with
+`value_free=true`.
+
+Current truth is unchanged: auth plugin unresolved; authoritative auth-plugin
+evidence unavailable; PyMySQL compatibility false; five-category identity and
+three-category continuity lineage incomplete; and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`. `RECOVER` is the human
+strategy decision under zero authority, not execution, Production, credential,
+validation, or mutation authority. ROTATE and REPLACE remain unauthorized and
+no strategy was executed. Fixed SQL, numeric loopback port, deployed Production
+target, concrete credential path, and credential value reader remain unavailable
+or false.
+
+Production access and MariaDB authentication were not performed; secret values
+were not read; SQL, PyMySQL installation, and Notion sync were not performed.
+`PRODUCTION_VALIDATION_READY=false`; `SHOPPING_RUNTIME_ACTIVATED=false`. Mac
+AIControlCenter remains sole Control Plane; Ubuntu remains stateless. Legacy
+`production_validation_ready` stays factual-only.
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the six actions remain
+`SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only.
+
+This is a documentation candidate, not Package-2 closure. Final documentation
+review, commit and normal push of exactly these six documents, clean Git, and
+divergence `0 0` self-activate closure without a second SHA-recording edit. Only
+then is the next work the next MariaDB continuity evidence/strategy boundary.
+
 ## Current status — MariaDB Continuity Phase B2B-1D Package-1 documentation candidate
 
 Implementation is complete at `cacc659fd518c751544a8062ce0c36813f1c7bcc`;

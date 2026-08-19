@@ -1,5 +1,58 @@
 # Project History
 
+## 2026-08-19 — Phase B2B-1D Package-2 implemented; documentation in closeout
+
+`PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` completed at
+`0c6cf471da9e918e798f8a71fb2d28a4afc98d46`; implementation and Git closeout
+passed. Focused returned `29 passed in 0.05s`; final architecture review passed;
+canonical ran exactly once afterward and returned `3707 passed, 5 deselected,
+471 warnings`, `RC=0`. The warnings were not failures. No focused or canonical
+rerun followed implementation closeout.
+
+The repository-only, immutable, fail-closed, value-free, zero-authority package
+separated evidence requirement, reference state, existence, provenance
+validity, authority, compatibility, and reference-local readiness so none
+implied another. Its exact verification states became `UNAVAILABLE`,
+`REFERENCED_UNVERIFIED`, `VERIFICATION_REQUIRED`, and
+`VERIFIED_EXTERNAL_REFERENCE`. Verified external reference and
+`reference_readiness_established` remained reference-local facts only and did
+not establish authoritative existence, provenance authority, canonical
+availability, compatibility, readiness, `RECOVER` sufficiency, Production
+validation readiness, or authorization/capability/execution/mutation authority.
+
+The five exact non-B1 requirements were auth-plugin historical evidence,
+PyMySQL 1.2.0 compatibility evidence, expected database identity, expected
+account identity, and required grants profile. The package directly reused the
+five frozen `DataIdentityCategory` values and three frozen
+`ContinuityEvidenceCategory` values; no duplicate enum was created. Frozen
+safety kept the manifest value-free, prohibited caller-supplied references and
+all assertions of existence/authority/compatibility/readiness, prohibited
+secret values, credential hashes, arbitrary free text, and SQL, and prohibited
+I/O, network, and Production triggers. Source projections granted no
+authorization, capability, execution, mutation, retry, reconnect, or rollback
+authority.
+
+Auth plugin remained unresolved, authoritative evidence unavailable,
+compatibility false, five-category identity and three-category continuity
+lineage incomplete, and `RECOVER` evidence insufficient. The human `RECOVER`
+decision remained zero-authority and conferred no execution, Production,
+credential, validation, or mutation authority; ROTATE/REPLACE remained
+unauthorized and no strategy executed. Fixed SQL, numeric port, deployed target,
+concrete credential path, and credential reader remained unavailable.
+
+No Production access, MariaDB authentication, secret read, SQL, PyMySQL
+installation, or Notion sync occurred. Production validation and Shopping
+runtime stayed false. Mac AIControlCenter remained sole Control Plane; Ubuntu
+remained stateless. Legacy `production_validation_ready` stayed factual-only;
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, all exact six Shopping actions
+were unchanged, and `SHOPPING_SECRET_PROVISIONING` remained target-only.
+
+This six-document state entered closeout as a candidate, not as Package-2
+closure. Final review, its exact-six-doc commit and normal push, clean Git, and
+divergence `0 0` self-activate closure without a second SHA-recording mutation.
+Only after closeout does work move to the next MariaDB continuity
+evidence/strategy boundary.
+
 ## 2026-08-18 — MariaDB Continuity Phase B2B-1D Package-1 implementation closeout
 
 Implementation `cacc659fd518c751544a8062ce0c36813f1c7bcc`, implementation Git

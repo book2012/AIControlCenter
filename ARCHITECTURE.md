@@ -1,5 +1,96 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Phase B2B-1D Package-2 — External Evidence Reference Manifest
+
+`PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` is implemented
+at `0c6cf471da9e918e798f8a71fb2d28a4afc98d46`; implementation and implementation
+Git closeout are `PASS`. Focused validation returned `29 passed in 0.05s`, final
+architecture review returned `PASS`, and canonical then ran exactly once and
+returned `3707 passed, 5 deselected, 471 warnings`, `RC=0`. Warnings are not
+failures. Neither focused nor canonical was rerun after implementation Git
+closeout.
+
+Implementation is confined to
+`core/secrets/mariadb_continuity_evidence_reference_manifest.py` and
+`ops/macos/shopping/mariadb_continuity_evidence_reference_source.py`; focused
+coverage is in
+`tests/test_sm_mariadb_continuity_evidence_reference_manifest.py` and
+`tests/test_sm_mariadb_continuity_evidence_reference_source.py`.
+
+The package is repository-only, immutable, fail-closed, value-free, and
+zero-authority. It separately represents (1) evidence requirement, (2) evidence
+reference state, (3) evidence existence, (4) provenance validity, (5) authority,
+(6) compatibility, and (7) reference-local readiness; no one implies another.
+`VerificationState` is exactly `UNAVAILABLE`, `REFERENCED_UNVERIFIED`,
+`VERIFICATION_REQUIRED`, and `VERIFIED_EXTERNAL_REFERENCE`.
+`VERIFIED_EXTERNAL_REFERENCE` and `reference_readiness_established` are factual,
+reference-local states only. They establish neither authoritative evidence
+existence, provenance authority, canonical availability, compatibility,
+readiness, `RECOVER` sufficiency, Production validation readiness, nor
+authorization, capability, execution, or mutation authority.
+
+Required non-B1 evidence categories are exactly
+`AUTH_PLUGIN_HISTORICAL_EVIDENCE`, `PYMYSQL_1_2_0_COMPATIBILITY_EVIDENCE`,
+`EXPECTED_DATABASE_IDENTITY`, `EXPECTED_ACCOUNT_IDENTITY`, and
+`REQUIRED_GRANTS_PROFILE`. The package directly reuses the frozen
+`DataIdentityCategory` values `WORDPRESS_IDENTITY`, `SITE_IDENTITY`,
+`APPLICATION_IDENTITY`, `CLOSED_SCHEMA_CHARACTERISTICS`, and
+`CLOSED_TABLE_CHARACTERISTICS`, and directly reuses the frozen
+`ContinuityEvidenceCategory` values `LOGICAL_EXPORT`, `RECOVERY_ARTIFACT`, and
+`PERSISTENT_VOLUME_SNAPSHOT`; no duplicate enums exist.
+
+Frozen manifest safety is exact: `MANIFEST_VALUE_FREE=true`;
+`REFERENCE_CAN_BE_CALLER_SUPPLIED=false`; `REFERENCE_ASSERTS_EXISTENCE=false`;
+`REFERENCE_ASSERTS_AUTHORITY=false`; `REFERENCE_ASSERTS_COMPATIBILITY=false`;
+`REFERENCE_ASSERTS_READINESS=false`; `REFERENCE_CAN_CONTAIN_SECRET_VALUE=false`;
+`REFERENCE_CAN_CONTAIN_CREDENTIAL_HASH=false`;
+`REFERENCE_CAN_CONTAIN_ARBITRARY_FREE_TEXT=false`; `REFERENCE_CAN_CONTAIN_SQL=false`;
+`REFERENCE_CAN_TRIGGER_IO=false`; `REFERENCE_CAN_TRIGGER_NETWORK=false`; and
+`REFERENCE_CAN_TRIGGER_PRODUCTION_ACCESS=false`. Source projections preserve
+`authorization_authority=false`, `capability_authority=false`,
+`execution_authority=false`, `mutation_authority=false`, `retry_authority=false`,
+`reconnect_authority=false`, `rollback_authority=false`, and `value_free=true`.
+
+Current state remains `AUTH_PLUGIN_STATE=UNRESOLVED`,
+`AUTHORITATIVE_AUTH_PLUGIN_EVIDENCE_AVAILABLE=false`,
+`PYMYSQL_COMPATIBILITY_ESTABLISHED=false`,
+`FIVE_CATEGORY_DATA_IDENTITY_COMPLETE=false`,
+`THREE_CATEGORY_CONTINUITY_LINEAGE_COMPLETE=false`, and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+`HUMAN_STRATEGY_DECISION=RECOVER` was selected under
+`RECOVER_DECISION_AUTHORITY_GATE=ZERO_AUTHORITY`; it supplies no execution,
+Production, credential, validation, or mutation authority. `ROTATE_AUTHORIZED=false`,
+`REPLACE_AUTHORIZED=false`, and `STRATEGY_EXECUTED=false`.
+`FIXED_SQL_TEXT_AVAILABLE=false`, `NUMERIC_LOOPBACK_PORT_ASSIGNED=false`,
+`PRODUCTION_TARGET_DEPLOYED=false`, `CONCRETE_CREDENTIAL_PATH_DEFINED=false`, and
+`CREDENTIAL_VALUE_READER_IMPLEMENTED=false`.
+
+No Production access or MariaDB authentication occurred; no secret value was
+read; SQL, PyMySQL installation, and Notion sync were not performed.
+Temporal truth is exactly `PRODUCTION_ACCESS_GATE=NOT_PERFORMED`,
+`MARIADB_AUTHENTICATION=NOT_PERFORMED`, `SECRET_VALUES_READ=NO`,
+`SQL_EXECUTION=NOT_PERFORMED`, `PYMYSQL_INSTALLED=NO`, and
+`NOTION_SYNC=NOT_PERFORMED`. `PRODUCTION_VALIDATION_READY=false` and
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+Mac AIControlCenter remains the sole Control Plane and Ubuntu an optional
+stateless infrastructure worker. Legacy `production_validation_ready` remains
+factual-only. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six
+Shopping actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only.
+
+Package-2 is not yet closed at this documentation-edit step. Successful final
+documentation review, commit and normal push of these exact six documents,
+followed by clean-tree verification and upstream divergence `0 0`, self-activate
+Package-2 closure without a second SHA-recording documentation mutation. Only
+after that closeout is the next work the next MariaDB continuity
+evidence/strategy boundary; it grants no Production or strategy-execution
+authority.
+
 ## MariaDB Continuity Phase B2B-1D Package-1 — Zero-Authority Readiness Architecture
 
 Package-1 implementation is complete at `cacc659fd518c751544a8062ce0c36813f1c7bcc`;

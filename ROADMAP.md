@@ -1,5 +1,52 @@
 # Roadmap
 
+## MariaDB Continuity Phase B2B-1D Package-2 — documentation closeout candidate
+
+- [x] Implement `PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST`
+  at `0c6cf471da9e918e798f8a71fb2d28a4afc98d46`; implementation and Git
+  closeout `PASS`.
+- [x] Complete focused validation: `29 passed in 0.05s`; complete final
+  architecture review: `PASS`; run canonical exactly once afterward: `3707
+  passed, 5 deselected, 471 warnings`, `RC=0`. Warnings are not failures; no
+  focused or canonical rerun followed Git closeout.
+- [x] Add repository-only, immutable, fail-closed, value-free, zero-authority
+  representation of seven independent facts: requirement, reference state,
+  existence, provenance validity, authority, compatibility, and reference-local
+  readiness.
+- [x] Freeze `VerificationState` as `UNAVAILABLE`, `REFERENCED_UNVERIFIED`,
+  `VERIFICATION_REQUIRED`, and `VERIFIED_EXTERNAL_REFERENCE`; keep verified
+  reference and `reference_readiness_established` local-only and non-authoritative.
+- [x] Add exactly five non-B1 evidence requirements while directly reusing all
+  five frozen `DataIdentityCategory` and all three frozen
+  `ContinuityEvidenceCategory` values, with no duplicate enums.
+- [x] Freeze value-free manifest prohibitions on caller supply, assertions,
+  secrets/hashes/free text/SQL, I/O, network, and Production access; preserve
+  projection authorization/capability/execution/mutation/retry/reconnect/rollback
+  authority as false.
+- [x] Preserve unresolved/unavailable/incomplete evidence state and
+  `RECOVER_EVIDENCE_INSUFFICIENT`; keep human `RECOVER` selected under zero
+  authority, ROTATE/REPLACE unauthorized, and strategy unexecuted.
+- [x] Preserve fixed SQL unavailable, numeric loopback port unassigned, target
+  undeployed, concrete credential path undefined, and credential reader absent.
+- [x] Preserve no Production/MariaDB/secret/SQL/PyMySQL-install/Notion activity,
+  Production readiness and Shopping runtime false, Mac sole Control Plane,
+  stateless Ubuntu, factual-only legacy readiness, unchanged exact six Shopping
+  actions, target-only `SHOPPING_SECRET_PROVISIONING`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- [ ] Pass final documentation review for exactly these six root documents.
+- [ ] Commit and normally push exactly these six documents; verify clean Git
+  and upstream divergence `0 0`.
+
+Package-2 is not yet closed. The last two gates self-activate closure without a
+second SHA-recording documentation mutation. Production validation and strategy
+execution remain unauthorized.
+
+### Next work after Package-2 closeout
+
+Proceed only to the next MariaDB continuity evidence/strategy boundary.
+`RECOVER` remains selected but its evidence remains insufficient; do not
+silently authorize ROTATE, REPLACE, Production access, or execution.
+
 ## MariaDB Continuity Phase B2B-1D Package-1 — documentation closeout candidate
 
 - [x] Implement at `cacc659fd518c751544a8062ce0c36813f1c7bcc`; Git closeout
