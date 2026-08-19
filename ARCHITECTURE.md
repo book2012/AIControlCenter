@@ -1,5 +1,40 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Integrated WU-05 — Evidence Readiness Documentation Closeout
+
+Exact chronology: `MARIADB_CONTINUITY_INTEGRATED_WU_01_DISCOVERY_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_01_ARCHITECTURE_FREEZE_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_02_IMPLEMENTATION_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_03_FOCUSED_GATE=PASS`,
+`FOCUSED_RESULT=79 passed in 0.18s`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_03_FINAL_ARCHITECTURE_REVIEW_GATE=PASS`,
+`MARIADB_CONTINUITY_INTEGRATED_WU_04_CANONICAL_GATE=PASS`,
+`CANONICAL_RESULT=3725 passed, 5 deselected, 491 warnings`, `CANONICAL_RC=0`,
+`IMPLEMENTATION_GIT_CLOSEOUT=PASS`,
+`IMPLEMENTATION_COMMIT=834d1e8dc191ccd0bd0b8dcec702a5f3a791e3a3`, `GIT_PUSH=PASS`,
+`AHEAD=0`, and `BEHIND=0`.
+
+The integrated evidence-readiness contract preserves generic
+`account_binding_*` semantics and adds independent requirement/result pairs for
+timestamp binding, expected database binding, expected account binding, and
+required grants binding, plus an explicit PyMySQL 1.2.0 compatibility-proof
+requirement. It preserves direct type reuse, fail-closed behavior, the
+caller-positive-fact injection prohibition, evidence separation, zero
+authority, zero I/O, zero network, zero SQL, and factual-only legacy readiness.
+These requirements and false/unavailable results do not claim evidence exists
+or has been verified.
+
+Mac AIControlCenter remains sole Control Plane; Ubuntu remains a stateless
+infrastructure worker. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact
+six Shopping actions remain unchanged; `SHOPPING_SECRET_PROVISIONING` remains
+target-only; `RECOVER` evidence remains insufficient;
+`ROTATE_AUTHORIZED=false`; `REPLACE_AUTHORIZED=false`;
+`STRATEGY_EXECUTED=false`; `PRODUCTION_VALIDATION_READY=false`; and
+`SHOPPING_RUNTIME_ACTIVATED=false`. Operational truth is
+`PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
+`SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`,
+`PYMYSQL_ACTIVITY=NONE`, and `NOTION_SYNC=NOT_PERFORMED`.
+
 ## MariaDB Continuity Phase B2B-1D Package-4 — External Evidence Admission and Verification Boundary
 
 `PHASE_B2B_1D_PACKAGE_4_EXTERNAL_EVIDENCE_ADMISSION_AND_VERIFICATION_BOUNDARY` is a
