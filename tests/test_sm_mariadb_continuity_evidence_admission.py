@@ -58,8 +58,12 @@ def test_admission_verification_and_downstream_facts_are_independent():
             contract.authoritative_evidence_exists,
             contract.provenance_valid,
             contract.integrity_binding_valid,
+            contract.timestamp_binding_valid,
             contract.issuer_valid,
             contract.account_binding_valid,
+            contract.expected_database_binding_valid,
+            contract.expected_account_binding_valid,
+            contract.required_grants_binding_valid,
             contract.baseline_binding_valid,
             contract.compatible,
             contract.five_category_data_identity_complete,
@@ -67,6 +71,35 @@ def test_admission_verification_and_downstream_facts_are_independent():
             contract.recover_evidence_sufficient,
             contract.production_validation_ready,
         )
+    )
+
+
+def test_all_historical_evidence_requirements_are_closed_and_independent():
+    contract = canonical_external_evidence_admission_contract()
+    assert contract.evidence_requirements == tuple(EvidenceRequirementCategory)
+    assert contract.admissible_reference_identity_classes == tuple(
+        EvidenceReferenceIdentityClass
+    )
+    assert all(
+        requirement is True
+        for requirement in (
+            contract.repository_defined_identity_required,
+            contract.independent_historical_source_required,
+            contract.provenance_verification_required,
+            contract.immutable_integrity_binding_verification_required,
+            contract.timestamp_binding_verification_required,
+            contract.trusted_issuer_verification_required,
+            contract.account_binding_verification_required,
+            contract.expected_database_binding_verification_required,
+            contract.expected_account_binding_verification_required,
+            contract.required_grants_binding_verification_required,
+            contract.baseline_binding_verification_required,
+            contract.pymysql_1_2_0_compatibility_proof_required,
+        )
+    )
+    assert contract.data_identity_categories == tuple(DataIdentityCategory)
+    assert contract.continuity_evidence_categories == tuple(
+        ContinuityEvidenceCategory
     )
 
 

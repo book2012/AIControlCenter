@@ -44,7 +44,19 @@ class ExternalEvidenceAdmissionContract:
     timestamp_binding_verification_required: bool = field(default=True, init=False)
     trusted_issuer_verification_required: bool = field(default=True, init=False)
     account_binding_verification_required: bool = field(default=True, init=False)
+    expected_database_binding_verification_required: bool = field(
+        default=True, init=False
+    )
+    expected_account_binding_verification_required: bool = field(
+        default=True, init=False
+    )
+    required_grants_binding_verification_required: bool = field(
+        default=True, init=False
+    )
     baseline_binding_verification_required: bool = field(default=True, init=False)
+    pymysql_1_2_0_compatibility_proof_required: bool = field(
+        default=True, init=False
+    )
 
     reference_presented: bool = field(default=False, init=False)
     reference_admitted: bool = field(default=False, init=False)
@@ -56,8 +68,12 @@ class ExternalEvidenceAdmissionContract:
     authoritative_evidence_exists: bool = field(default=False, init=False)
     provenance_valid: bool = field(default=False, init=False)
     integrity_binding_valid: bool = field(default=False, init=False)
+    timestamp_binding_valid: bool = field(default=False, init=False)
     issuer_valid: bool = field(default=False, init=False)
     account_binding_valid: bool = field(default=False, init=False)
+    expected_database_binding_valid: bool = field(default=False, init=False)
+    expected_account_binding_valid: bool = field(default=False, init=False)
+    required_grants_binding_valid: bool = field(default=False, init=False)
     baseline_binding_valid: bool = field(default=False, init=False)
     compatible: bool = field(default=False, init=False)
     five_category_data_identity_complete: bool = field(default=False, init=False)
