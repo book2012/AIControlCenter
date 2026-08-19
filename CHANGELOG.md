@@ -1,5 +1,33 @@
 # CHANGELOG
 
+## 2026-08-20 — MariaDB Continuity Phase B2B-1D Package-4 documentation candidate
+
+- Recorded discovery and Architecture Freeze `PASS`, exact four-file
+  implementation, focused `8 passed in 0.05s`, self-review `PASS`, and Final
+  Architecture Review `PASS` across all frozen gates.
+- Recorded sandbox canonical `2 failed, 3722 passed, 5 deselected, 481 warnings`,
+  `RC=1`, as `ENVIRONMENT_ONLY_FAILURE`: two unrelated dashboard audit-SQLite
+  open failures. Host audit-parent preflight was writable; authoritative host
+  canonical passed with `3724 passed, 5 deselected, 487 warnings`, `RC=0`.
+- No code/test correction followed final review and no canonical rerun followed
+  the host pass. Implementation commit
+  `9f63463dc9f1c48fdda0ceaba698fead6dd3fab2` and its normal push are `PASS`;
+  current HEAD and upstream are aligned at that commit with divergence `0 0`.
+  Documentation Git closeout remains pending, so Package-4 is not `CLOSED`.
+- Documented only a repository-only, value-free, zero-authority, zero-I/O,
+  zero-network, fail-closed external evidence admission and verification
+  boundary contract. Presentation, admission, verification, reference-local
+  verification, all evidence/provenance/integrity/issuer/binding/compatibility
+  facts, completeness, `RECOVER` sufficiency, readiness, and authority remain
+  separate. No ingestion, retrieval, verification execution, Production access,
+  MariaDB/credential validation, SQL, activation, or historical evidence is
+  claimed.
+- Preserved unavailable auth-plugin/PyMySQL evidence, false five/three-category
+  completeness, insufficient `RECOVER`, unauthorized ROTATE/REPLACE, unexecuted
+  strategy, false readiness/runtime, Mac sole Control Plane, stateless Ubuntu,
+  factual-only legacy readiness, unchanged Phase-06 semantics and exact six
+  Shopping actions, and target-only `SHOPPING_SECRET_PROVISIONING`.
+
 ## 2026-08-20 — MariaDB Continuity Phase B2B-1D Package-3 documentation candidate
 
 - Recorded `PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT`

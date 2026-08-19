@@ -1,5 +1,64 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Phase B2B-1D Package-4 — External Evidence Admission and Verification Boundary
+
+`PHASE_B2B_1D_PACKAGE_4_EXTERNAL_EVIDENCE_ADMISSION_AND_VERIFICATION_BOUNDARY` is a
+repository-only external evidence admission and verification boundary contract.
+Chronology: discovery `PASS`; Architecture Freeze `PASS`; exact four-file
+implementation in `core/secrets/mariadb_continuity_evidence_admission.py`,
+`ops/macos/shopping/mariadb_continuity_evidence_admission_source.py`,
+`tests/test_sm_mariadb_continuity_evidence_admission.py`, and
+`tests/test_sm_mariadb_continuity_evidence_admission_source.py`; focused `8 passed
+in 0.05s`; self-review `PASS`; Final Architecture Review `PASS` across all frozen
+gates. The sandbox canonical was `2 failed, 3722 passed, 5 deselected, 481
+warnings`, `RC=1`; both unrelated dashboard failures were audit-SQLite sandbox
+open failures, classified `ENVIRONMENT_ONLY_FAILURE`. Host preflight established
+`HOST_AUDIT_PATH_WRITABLE=YES`; authoritative supported-host canonical passed
+with `3724 passed, 5 deselected, 487 warnings`, `RC=0`. No code/test correction
+followed final review and no canonical rerun followed the host pass.
+
+The contract is `repository_only=true`, `value_free=true`,
+`zero_authority=true`, `zero_io=true`, `zero_network=true`, and
+`fail_closed=true`. It preserves
+`caller_positive_fact_injection_allowed=false`,
+`arbitrary_reference_string_allowed=false`,
+`actual_evidence_values_accepted=false`, and
+`credential_values_accepted=false`. Reference presentation is separate from admission,
+verification result, reference-local verification, evidence existence,
+provenance, integrity, issuer, account/baseline binding, compatibility,
+identity/lineage completeness, `RECOVER` sufficiency, Production readiness, and
+authority. Current state is `reference_presented=false`,
+`reference_admitted=false`, `reference_verification_required=true`,
+`reference_verification_result=UNAVAILABLE`, `reference_local_verified=false`;
+`authoritative_evidence_exists=false`, `provenance_valid=false`,
+`integrity_binding_valid=false`, `issuer_valid=false`,
+`account_binding_valid=false`, `baseline_binding_valid=false`,
+`compatible=false`, `FIVE_CATEGORY_DATA_IDENTITY_COMPLETE=false`, and
+`THREE_CATEGORY_CONTINUITY_LINEAGE_COMPLETE=false`. Consequently,
+`recover_evidence_sufficient=false` and `production_validation_ready=false`.
+
+This is not evidence ingestion/retrieval, authoritative verification execution,
+Production access, MariaDB or credential validation, SQL, or runtime activation;
+no historical evidence is claimed. Preserved truth is
+`AUTH_PLUGIN_AUTHORITATIVE_EVIDENCE=UNAVAILABLE`,
+`PYMYSQL_COMPATIBILITY_EVIDENCE=UNAVAILABLE`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+`ROTATE_AUTHORIZED=false`, `REPLACE_AUTHORIZED=false`,
+`STRATEGY_EXECUTED=false`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. Mac AIControlCenter remains sole Control
+Plane; Ubuntu remains stateless; legacy readiness remains factual-only;
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six Shopping actions
+remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`; and
+`SHOPPING_SECRET_PROVISIONING` remains target-only. Implementation commit
+`9f63463dc9f1c48fdda0ceaba698fead6dd3fab2` and its normal push are `PASS`;
+current HEAD and upstream are aligned at that commit with divergence `0 0`.
+Documentation Git closeout remains pending, so Package-4 is not `CLOSED`.
+
 ## MariaDB Continuity Phase B2B-1D Package-3 — External Evidence Attestation Reference Contract
 
 `PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT` is

@@ -1,5 +1,30 @@
 # Project History
 
+## 2026-08-20 — MariaDB Continuity Phase B2B-1D Package-4 documentation preparation
+
+Package-4 discovery, Architecture Freeze, exact four-file implementation,
+focused (`8 passed in 0.05s`), self-review, and Final Architecture Review all
+passed. Sandbox canonical (`2 failed, 3722 passed, 5 deselected, 481 warnings`,
+`RC=1`) had two unrelated audit-SQLite environment failures. Host preflight was
+writable; authoritative host canonical passed (`3724 passed, 5 deselected, 487
+warnings`, `RC=0`). No code/test correction followed final review and no
+canonical rerun followed host pass. Implementation commit
+`9f63463dc9f1c48fdda0ceaba698fead6dd3fab2` and its normal push passed; current
+HEAD and upstream are aligned at that commit with divergence `0 0`. Documentation
+Git closeout remains pending, so Package-4 is not `CLOSED`.
+
+The delivered scope is only a repository-only, value-free, zero-authority,
+zero-I/O, zero-network, fail-closed external evidence admission and verification
+boundary contract. It preserves every presentation, admission, verification,
+evidence, provenance, integrity, issuer, binding, compatibility, completeness,
+sufficiency, readiness, and authority separation. It performs no ingestion,
+retrieval, authoritative verification, Production/MariaDB/credential validation,
+SQL, or activation and claims no historical evidence. Unavailable evidence,
+incomplete five/three categories, insufficient `RECOVER`, unauthorized
+ROTATE/REPLACE, unexecuted strategy, false readiness/runtime, Mac ownership,
+stateless Ubuntu, factual-only legacy readiness, unchanged Phase-06 semantics
+and six actions, and target-only provisioning are preserved.
+
 ## 2026-08-20 — MariaDB Continuity Phase B2B-1D Package-3 implementation and validation complete
 
 `PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT`

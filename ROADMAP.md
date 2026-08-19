@@ -1,5 +1,32 @@
 # Roadmap
 
+## MariaDB Continuity Phase B2B-1D Package-4 — documentation closeout candidate
+
+- [x] Discovery and Architecture Freeze `PASS`.
+- [x] Exact four-file implementation; focused `8 passed in 0.05s`; self-review
+  and Final Architecture Review `PASS`.
+- [x] Classify sandbox canonical (`2 failed, 3722 passed, 5 deselected, 481
+  warnings`, `RC=1`) as two unrelated audit-SQLite environment failures.
+- [x] Confirm writable host preflight and authoritative host canonical (`3724
+  passed, 5 deselected, 487 warnings`, `RC=0`).
+- [x] Confirm no post-review correction and no post-host-pass canonical rerun.
+- [x] Complete implementation Git closeout and normal push at
+  `9f63463dc9f1c48fdda0ceaba698fead6dd3fab2`; verify current HEAD/upstream
+  alignment and divergence `0 0`.
+- [ ] Complete exact-six-document Git closeout.
+
+Package-4 is only a repository-only, value-free, zero-authority, zero-I/O,
+zero-network, fail-closed external evidence admission and verification boundary
+contract. All presentation/admission/verification and downstream fact/authority
+layers remain separate. No ingestion, retrieval, authoritative verification,
+Production access, MariaDB/credential validation, SQL, activation, or historical
+evidence is claimed. Unavailable auth-plugin/PyMySQL evidence, incomplete
+five/three categories, insufficient `RECOVER`, unauthorized ROTATE/REPLACE,
+unexecuted strategy, false readiness/runtime, Mac sole Control Plane, stateless
+Ubuntu, factual-only legacy readiness, unchanged Phase-06 semantics and exact
+six actions, and target-only provisioning remain frozen.
+Documentation Git closeout remains pending, so Package-4 is not `CLOSED`.
+
 ## MariaDB Continuity Phase B2B-1D Package-3 — documentation closeout candidate
 
 - [x] Implement

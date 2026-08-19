@@ -1,5 +1,32 @@
 # AIControlCenter
 
+## Current milestone — MariaDB Continuity Phase B2B-1D Package-4
+
+Package-4 is a repository-only external evidence admission and verification
+boundary contract. Discovery, Architecture Freeze, exact four-file
+implementation, focused `8 passed in 0.05s`, self-review, and Final Architecture
+Review passed. Sandbox canonical failed only because two unrelated dashboard
+tests could not open audit SQLite (`2 failed, 3722 passed, 5 deselected, 481
+warnings`, `RC=1`; `ENVIRONMENT_ONLY_FAILURE`). Host preflight was writable and
+authoritative host canonical passed (`3724 passed, 5 deselected, 487 warnings`,
+`RC=0`). No correction followed review and no canonical rerun followed host
+pass. Implementation commit `9f63463dc9f1c48fdda0ceaba698fead6dd3fab2`
+and its normal push passed; current HEAD and upstream are aligned at that commit
+with divergence `0 0`. Documentation Git closeout remains pending, so Package-4
+is not `CLOSED`.
+
+The contract is value-free, zero-authority, zero-I/O, zero-network, fail-closed,
+accepts no positive caller facts, arbitrary references, evidence, or credentials,
+and keeps presentation, admission, verification, reference-local verification,
+existence, provenance, integrity, issuer, bindings, compatibility, completeness,
+sufficiency, readiness, and authority separate. It is not ingestion, retrieval,
+verification execution, Production access, MariaDB/credential validation, SQL,
+or activation and claims no historical evidence. Auth-plugin/PyMySQL evidence
+remains unavailable; five/three categories incomplete; `RECOVER` insufficient;
+ROTATE/REPLACE unauthorized; strategy/readiness/runtime false. Mac remains sole
+Control Plane; Ubuntu stateless; legacy readiness factual-only; Phase-06 and the
+exact six Shopping actions unchanged; provisioning target-only.
+
 ## Current milestone — MariaDB Continuity Phase B2B-1D Package-3
 
 `PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT` is
