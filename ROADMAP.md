@@ -1,5 +1,46 @@
 # Roadmap
 
+## MariaDB Continuity Phase B2B-1D Package-3 — documentation closeout candidate
+
+- [x] Implement
+  `PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT` at
+  `1f9790fe1c96a6c20135508e4bcfbfce5d897546`; pass implementation Git closeout
+  and push; verify clean worktree and divergence `0 0`.
+- [x] Pass Architecture Freeze; record initial focused `8 passed in 0.05s` and
+  review #1 `BLOCKED` on the incorrect canonical
+  `VERIFIED_EXTERNAL_REFERENCE` default.
+- [x] Correct canonical state to `VERIFICATION_REQUIRED`; pass focused `9 passed
+  in 0.05s`, review #2, and canonical #1 (`3716 passed, 5 deselected, 475
+  warnings`, `RC=0`).
+- [x] Correct trailing EOF blank lines in exactly two files after preflight
+  blocked; preserve semantics (`NO_CHANGE`), reconcile architecture, preserve
+  all prior gates, and pass corrected canonical (`3716 passed, 5 deselected,
+  479 warnings`, `RC=0`).
+- [x] Record late focused on the identical committed snapshot as `9 passed in
+  0.04s`; record canonical after implementation Git closeout as `NOT_RUN`.
+- [x] Freeze repository-only, immutable, fail-closed, value-free,
+  zero-authority, zero-I/O, zero-network semantics; accept no evidence values,
+  positive caller facts, or arbitrary reference strings.
+- [x] Keep `VERIFIED_EXTERNAL_REFERENCE` reference-local with zero promotion;
+  directly reuse `EvidenceRequirementCategory`, `VerificationState`,
+  `DataIdentityCategory`, and `ContinuityEvidenceCategory`.
+- [x] Preserve unavailable/incomplete/insufficient evidence, unauthorized
+  ROTATE/REPLACE, unexecuted strategy, false Production readiness/runtime, Mac
+  sole Control Plane, stateless Ubuntu, factual-only legacy readiness, exact six
+  Shopping actions, target-only `SHOPPING_SECRET_PROVISIONING`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- [ ] Pass final documentation review for exactly these six root documents.
+- [ ] Complete documentation Git closeout for exactly these six documents.
+
+Package-3 implementation and validation are complete. Repository milestone
+closure remains pending the final two documentation gates. No actual historical
+evidence or sufficient `RECOVER` evidence is claimed; Production readiness and
+Shopping runtime remain false.
+
+### Next step
+
+`PHASE_B2B_1D_PACKAGE_3_FINAL_DOCUMENTATION_REVIEW`
+
 ## MariaDB Continuity Phase B2B-1D Package-2 — documentation closeout candidate
 
 - [x] Implement `PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST`

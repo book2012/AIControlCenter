@@ -1,5 +1,60 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Phase B2B-1D Package-3 — External Evidence Attestation Reference Contract
+
+`PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT` is
+implementation-complete and validation-complete at
+`1f9790fe1c96a6c20135508e4bcfbfce5d897546`. Implementation Git closeout and
+push passed; the final worktree was clean with upstream divergence `0 0`.
+Architecture Freeze passed. Initial focused validation was `8 passed in 0.05s`;
+architecture review #1 blocked the incorrect canonical default
+`VERIFIED_EXTERNAL_REFERENCE`. After correction, focused was `9 passed in
+0.05s`, review #2 passed, and canonical #1 was `3716 passed, 5 deselected, 475
+warnings`, `RC=0`.
+
+Git closeout preflight later blocked because `git diff --check` found trailing
+EOF blank lines in exactly two Package-3 files. The EOF-only correction passed
+`SEMANTIC_CHANGE_GATE=NO_CHANGE`; post-correction architecture reconcile and
+`ALL_PRIOR_ARCHITECTURE_GATES_PRESERVED` passed. Corrected canonical was `3716
+passed, 5 deselected, 479 warnings`, `RC=0`. After commit and push, late focused
+validation on the identical committed snapshot was `9 passed in 0.04s`; no
+canonical rerun followed implementation Git closeout.
+
+The canonical reference state is `VERIFICATION_REQUIRED`.
+`VERIFIED_EXTERNAL_REFERENCE` remains a separate reference-local,
+zero-promotion semantic state only. The contract and Mac projection are
+repository-only, immutable, fail-closed, value-free, zero-authority, zero-I/O,
+and zero-network. They accept no actual evidence values, caller-positive fact
+injection, or arbitrary reference strings, and directly reuse
+`EvidenceRequirementCategory`, `VerificationState`, `DataIdentityCategory`, and
+`ContinuityEvidenceCategory`.
+
+Truth remains `AUTH_PLUGIN_AUTHORITATIVE_EVIDENCE=UNAVAILABLE`,
+`PYMYSQL_COMPATIBILITY_EVIDENCE=UNAVAILABLE`,
+`FIVE_CATEGORY_DATA_IDENTITY_COMPLETE=false`,
+`THREE_CATEGORY_CONTINUITY_LINEAGE_COMPLETE=false`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+`ROTATE_AUTHORIZED=false`, `REPLACE_AUTHORIZED=false`,
+`STRATEGY_EXECUTED=false`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. No actual historical evidence or sufficient
+`RECOVER` evidence is claimed.
+
+Mac AIControlCenter remains the sole Control Plane and Ubuntu a stateless
+infrastructure worker. Legacy `production_validation_ready` remains
+factual-only. `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; the exact six
+Shopping actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only.
+
+Repository milestone closure remains pending final documentation review and
+documentation Git closeout for exactly these six documents. This milestone
+grants no Production access, MariaDB authentication, secret read, SQL execution,
+PyMySQL activity, Notion sync, Production validation, or runtime activation.
+
 ## MariaDB Continuity Phase B2B-1D Package-2 — External Evidence Reference Manifest
 
 `PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` is implemented

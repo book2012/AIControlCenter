@@ -1,5 +1,42 @@
 # Project History
 
+## 2026-08-20 — MariaDB Continuity Phase B2B-1D Package-3 implementation and validation complete
+
+`PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT`
+completed implementation and validation at
+`1f9790fe1c96a6c20135508e4bcfbfce5d897546`. Implementation Git closeout and
+push passed; the final worktree was clean with divergence `0 0`.
+
+Architecture Freeze passed. Initial focused was `8 passed in 0.05s`; review #1
+blocked an incorrect canonical `VERIFIED_EXTERNAL_REFERENCE` default. After
+correction, focused was `9 passed in 0.05s`, review #2 passed, and canonical #1
+was `3716 passed, 5 deselected, 475 warnings`, `RC=0`. Closeout preflight then
+blocked on trailing EOF blank lines in exactly two files. The EOF-only change
+had `SEMANTIC_CHANGE_GATE=NO_CHANGE`; architecture reconcile and all prior gates
+passed; corrected canonical was `3716 passed, 5 deselected, 479 warnings`,
+`RC=0`. Late focused on the identical committed snapshot was `9 passed in
+0.04s`; canonical was not rerun after implementation Git closeout.
+
+The final canonical state is `VERIFICATION_REQUIRED`;
+`VERIFIED_EXTERNAL_REFERENCE` remains separate, reference-local, and
+zero-promotion. Package-3 is repository-only, immutable, fail-closed,
+value-free, zero-authority, zero-I/O, and zero-network. It accepts no evidence
+values, positive caller fact injection, or arbitrary references, and directly
+reuses `EvidenceRequirementCategory`, `VerificationState`,
+`DataIdentityCategory`, and `ContinuityEvidenceCategory`.
+
+No actual historical evidence is claimed. Auth-plugin and PyMySQL evidence are
+unavailable; five-category identity and three-category lineage are incomplete;
+`RECOVER` evidence is insufficient; ROTATE/REPLACE are unauthorized; strategy
+is unexecuted; Production readiness and Shopping runtime are false.
+
+Mac AIControlCenter remained sole Control Plane and Ubuntu stateless. Legacy
+readiness remained factual-only; the exact six Shopping actions, target-only
+`SHOPPING_SECRET_PROVISIONING`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO` were preserved. Repository
+milestone closure awaits final documentation review and documentation Git
+closeout of exactly the six root documents.
+
 ## 2026-08-19 — Phase B2B-1D Package-2 implemented; documentation in closeout
 
 `PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` completed at

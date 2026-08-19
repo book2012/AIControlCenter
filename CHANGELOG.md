@@ -1,5 +1,40 @@
 # CHANGELOG
 
+## 2026-08-20 — MariaDB Continuity Phase B2B-1D Package-3 documentation candidate
+
+- Recorded `PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT`
+  as implementation-complete and validation-complete at
+  `1f9790fe1c96a6c20135508e4bcfbfce5d897546`; implementation Git closeout and
+  push passed, with final clean worktree and upstream divergence `0 0`.
+- Recorded Architecture Freeze `PASS`; initial focused `8 passed in 0.05s`;
+  review #1 `BLOCKED` on the incorrect canonical
+  `VERIFIED_EXTERNAL_REFERENCE` default; correction `PASS`; corrected focused
+  `9 passed in 0.05s`; and review #2 `PASS`.
+- Recorded canonical #1 `3716 passed, 5 deselected, 475 warnings`, `RC=0`.
+  Closeout preflight then blocked on trailing EOF blank lines in exactly two
+  files. The EOF-only correction had `SEMANTIC_CHANGE_GATE=NO_CHANGE`;
+  architecture reconcile and all prior gates passed; corrected canonical was
+  `3716 passed, 5 deselected, 479 warnings`, `RC=0`.
+- Recorded late focused on the identical committed snapshot as `9 passed in
+  0.04s`; no canonical rerun occurred after implementation Git closeout.
+- Documented canonical `VERIFICATION_REQUIRED`, with
+  `VERIFIED_EXTERNAL_REFERENCE` separate, reference-local, and zero-promotion.
+  Package-3 is repository-only, immutable, fail-closed, value-free,
+  zero-authority, zero-I/O, and zero-network; it accepts no evidence values,
+  caller-positive fact injection, or arbitrary reference strings.
+- Documented direct reuse of `EvidenceRequirementCategory`, `VerificationState`,
+  `DataIdentityCategory`, and `ContinuityEvidenceCategory`.
+- Preserved unavailable auth-plugin/PyMySQL evidence, incomplete five/three
+  categories, insufficient `RECOVER` evidence, unauthorized ROTATE/REPLACE,
+  unexecuted strategy, and false Production readiness/runtime. No actual
+  historical evidence is claimed.
+- Preserved Mac sole Control Plane, stateless Ubuntu, factual-only legacy
+  readiness, the exact six Shopping actions, target-only
+  `SHOPPING_SECRET_PROVISIONING`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- Repository milestone closure remains pending final documentation review and
+  documentation Git closeout of exactly these six documents.
+
 ## 2026-08-19 — MariaDB Continuity Phase B2B-1D Package-2 documentation candidate
 
 - Recorded `PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` at

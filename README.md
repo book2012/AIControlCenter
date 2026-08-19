@@ -1,5 +1,42 @@
 # AIControlCenter
 
+## Current milestone — MariaDB Continuity Phase B2B-1D Package-3
+
+`PHASE_B2B_1D_PACKAGE_3_EXTERNAL_EVIDENCE_ATTESTATION_REFERENCE_CONTRACT` is
+implementation-complete and validation-complete at
+`1f9790fe1c96a6c20135508e4bcfbfce5d897546`. Implementation Git closeout and
+push passed, followed by a clean worktree and divergence `0 0`.
+
+Architecture Freeze passed. Initial focused was `8 passed in 0.05s`; review #1
+blocked an incorrect canonical `VERIFIED_EXTERNAL_REFERENCE` default. Corrected
+focused was `9 passed in 0.05s`, review #2 passed, and canonical #1 was `3716
+passed, 5 deselected, 475 warnings`, `RC=0`. Closeout preflight later blocked
+only on trailing EOF blank lines in exactly two files. The correction was
+semantically unchanged; architecture reconcile and all prior gates passed;
+corrected canonical was `3716 passed, 5 deselected, 479 warnings`, `RC=0`. Late
+focused on the identical committed snapshot was `9 passed in 0.04s`. No
+canonical rerun occurred after implementation Git closeout.
+
+Canonical reference state is `VERIFICATION_REQUIRED`.
+`VERIFIED_EXTERNAL_REFERENCE` remains a separate reference-local,
+zero-promotion state only. Package-3 is repository-only, immutable,
+fail-closed, value-free, zero-authority, zero-I/O, and zero-network. It accepts
+no actual evidence values, caller-positive fact injection, or arbitrary
+reference strings, and directly reuses `EvidenceRequirementCategory`,
+`VerificationState`, `DataIdentityCategory`, and `ContinuityEvidenceCategory`.
+
+Auth-plugin and PyMySQL evidence remain unavailable; five-category identity and
+three-category lineage incomplete; `RECOVER` evidence insufficient;
+ROTATE/REPLACE unauthorized; strategy unexecuted; Production readiness and
+Shopping runtime false. No actual historical evidence is claimed.
+
+Mac AIControlCenter remains sole Control Plane and Ubuntu stateless. Legacy
+readiness stays factual-only; the exact six Shopping actions, target-only
+`SHOPPING_SECRET_PROVISIONING`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO` remain unchanged. Repository
+milestone closure awaits final documentation review and documentation Git
+closeout of exactly these six documents.
+
 ## Current status — MariaDB Continuity Phase B2B-1D Package-2 documentation candidate
 
 `PHASE_B2B_1D_PACKAGE_2_EXTERNAL_EVIDENCE_REFERENCE_MANIFEST` is implemented at
