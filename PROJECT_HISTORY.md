@@ -1,5 +1,52 @@
 # Project History
 
+## 2026-08-20 — Protected External Evidence Fixed Source Slot implementation closeout
+
+The repository-owned symbolic Fixed Source Slot layer established exactly four
+`ProtectedExternalEvidenceFixedSourceSlotIdentity` values:
+`AUTH_PLUGIN_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+`PYMYSQL_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+`DATA_IDENTITY_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`, and
+`CONTINUITY_LINEAGE_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`. An immutable one-to-one
+mapping runs from `ProtectedExternalEvidenceSourceProfileIdentity` to Fixed
+Source Slot Identity. `CALLER_SLOT_SELECTION_ALLOWED=false` and
+`CALLER_PATH_INJECTION_ALLOWED=false`.
+
+The semantic chain remained `EvidenceAcquisitionCategory` != Source Bundle
+Identity != Protected Source Profile Identity != Fixed Source Slot Identity !=
+Concrete Source Location != Source Existence != Metadata Safety != Content
+Acquisition != Admission != Verification != Authority. Fixed Source Slot Identity
+was symbolic only. `CONCRETE_PATH_ESTABLISHED=false`,
+`SOURCE_EXISTENCE_ESTABLISHED=false`,
+`HISTORICAL_EVIDENCE_EXISTENCE_ESTABLISHED=false`,
+`METADATA_INSPECTION_PERFORMED=false`, `SOURCE_METADATA_SAFE=false`, and
+`CONTENT_ACQUISITION_PERFORMED=false`. `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`
+and `PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`.
+
+Protection requirements remained future policy only: Mac ownership outside Git,
+exact `0700` parent, regular non-symlink leaf no broader than `0600`, trusted
+uid/gid, future FD/inode binding and explicit human authorization, future
+one-shot acquisition with at most one acquisition per authorization, and no
+fallback, enumeration, candidate iteration, environment/HOME authority, secret
+transport through argv or JSON, secret logging, or secret hashing. None was
+represented as operationally satisfied.
+
+Chronology was implementation -> focused `40 passed in 0.14s` -> final
+architecture review `PASS` -> canonical exactly once, `3765 passed, 5 deselected,
+507 warnings in 134.47s`, `CANONICAL_RC=0` -> no correction -> no rerun -> commit
+`7ccebffcce281590d57f4f8fc93d9e53032bb822` -> push `PASS` -> `AHEAD=0`,
+`BEHIND=0`. Implementation Git closeout passed.
+
+This was preparation inside authoritative Macro-WU-06; it did not acquire or
+evaluate actual historical evidence, factually evaluate
+`RECOVER_EVIDENCE_SUFFICIENT`, complete Macro-WU-06, or start Macro-WU-07.
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` remained authoritative.
+
+All governance, exact-six-action, target-only provisioning, Mac sole-Control-
+Plane, stateless-Ubuntu, and no-activity facts remained unchanged. There was no
+Governance, `ControlledExecutionPort`, or authorization behavior change.
+
 ## 2026-08-20 — Protected External Evidence Source Profile implementation closeout
 
 Protected source profile discovery/freeze and the exact four-file implementation

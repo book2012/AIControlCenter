@@ -1,36 +1,44 @@
 # CHANGELOG
 
-## 2026-08-20 — Protected External Evidence Source Profile documentation closeout
+## 2026-08-20 — Protected External Evidence Fixed Source Slot documentation closeout
 
-- Recorded discovery/freeze and exact four-file implementation of the four closed
-  symbolic `ProtectedExternalEvidenceSourceProfileIdentity` values and their
-  immutable, repository-owned, one-to-one
-  `BUNDLE_TO_PROTECTED_SOURCE_PROFILE_MAPPING` from the existing four
-  `EvidenceReferenceIdentityClass` bundle identities. Caller selection is closed.
-- Recorded focused `37 passed in 0.13s`, authoritative final architecture review
-  `PASS`, and canonical exactly once afterward: `3753 passed, 5 deselected, 503
-  warnings`, `CANONICAL_RC=0`; no code/test correction or canonical rerun followed.
+- Recorded exactly four symbolic `ProtectedExternalEvidenceFixedSourceSlotIdentity`
+  values: `AUTH_PLUGIN_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+  `PYMYSQL_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+  `DATA_IDENTITY_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`, and
+  `CONTINUITY_LINEAGE_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`, with immutable,
+  repository-owned, one-to-one mapping from
+  `ProtectedExternalEvidenceSourceProfileIdentity`. Preserved
+  `CALLER_SLOT_SELECTION_ALLOWED=false` and `CALLER_PATH_INJECTION_ALLOWED=false`.
+- Recorded focused `40 passed in 0.14s`, authoritative final architecture review
+  `PASS`, and canonical exactly once afterward: `3765 passed, 5 deselected, 507
+  warnings in 134.47s`, `CANONICAL_RC=0`; no code/test correction or canonical
+  rerun followed.
 - Recorded implementation commit
-  `a206a6aad23ba79a548bf3f7498a4c3883fec067`, normal push `PASS`, `AHEAD=0`,
+  `7ccebffcce281590d57f4f8fc93d9e53032bb822`, implementation push `PASS`, `AHEAD=0`,
   `BEHIND=0`, and implementation Git closeout `PASS`.
-- Preserved exact semantic separation: `EvidenceAcquisitionCategory` != bundle
-  identity != protected source profile identity != concrete source location !=
-  source existence != metadata safety != acquisition != admission != verification
-  != authority; a profile identity establishes none of those downstream facts.
+- Preserved exact semantic separation: `EvidenceAcquisitionCategory` != Source
+  Bundle Identity != Protected Source Profile Identity != Fixed Source Slot
+  Identity != Concrete Source Location != Source Existence != Metadata Safety !=
+  Content Acquisition != Admission != Verification != Authority. Fixed Source
+  Slot Identity is symbolic only and establishes none of those downstream facts.
   Preserved `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`,
   `repository_only=true`, `value_free=true`, `fail_closed=true`, and
   `zero_authority=true`.
-- Preserved the full classification/bundle/location/existence/metadata-safety/
-  acquisition/admission/verification/authority separation and all governance,
-  exact-six-action, target-only `SHOPPING_SECRET_PROVISIONING`, and operational
-  no-activity facts.
-- This protected-source-profile milestone is repository preparation inside
+- Recorded all concrete-path, existence, historical-existence, metadata-inspection,
+  metadata-safety, and content-acquisition facts as false; offline acquisition
+  remains unknown and Production access unjustified. Protection requirements are
+  future policy only: Mac-owned outside Git, exact `0700` parent, regular
+  non-symlink leaf no broader than `0600`, trusted uid/gid, future FD/inode and
+  human authorization binding, future one-shot acquisition, and all required
+  no-fallback/no-enumeration/no-secret-transport/logging/hashing constraints.
+- This fixed-source-slot milestone is repository preparation inside
   authoritative Macro-WU-06 and is not authoritative Macro-WU-07.
   `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
   `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; original Macro-WU-07 remains the
   later factual `RECOVER_EVIDENCE_SUFFICIENT` decision. Actual acquisition and
-  offline evaluation have not occurred; evidence existence, source location,
-  and metadata safety are not established. `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`
+  offline evaluation have not occurred; `RECOVER_EVIDENCE_SUFFICIENT` has not
+  been factually evaluated. `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`
   and `PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`.
 - Preserved `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
   `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
@@ -38,10 +46,12 @@
   `STRATEGY_EXECUTED=false`, `PRODUCTION_VALIDATION_READY=false`, and
   `SHOPPING_RUNTIME_ACTIVATED=false`. Operational truth remains
   `PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
-  `SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`,
+  `SECRET_VALUES_READ=NO`, `METADATA_INSPECTION=NOT_PERFORMED`,
+  `CONTENT_ACQUISITION=NOT_PERFORMED`, `SQL_EXECUTION=NOT_PERFORMED`,
   `PYMYSQL_ACTIVITY=NONE`, and `NOTION_SYNC=NOT_PERFORMED`.
 - Preserved Mac AIControlCenter as sole Control Plane and Ubuntu as a stateless
   infrastructure worker with no Control Plane authority.
+- No Governance, `ControlledExecutionPort`, or authorization behavior changed.
 
 ## 2026-08-20 — MariaDB Continuity Integrated WU-07/WU-08 closeout
 

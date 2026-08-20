@@ -1,6 +1,62 @@
 # AIControlCenter
 
-## Current milestone — Protected External Evidence Source Profile documentation closeout
+## Current milestone — Protected External Evidence Fixed Source Slot documentation closeout
+
+The repository owns exactly four symbolic
+`ProtectedExternalEvidenceFixedSourceSlotIdentity` values:
+`AUTH_PLUGIN_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+`PYMYSQL_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+`DATA_IDENTITY_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`, and
+`CONTINUITY_LINEAGE_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`. Its immutable
+one-to-one mapping starts at `ProtectedExternalEvidenceSourceProfileIdentity`.
+`CALLER_SLOT_SELECTION_ALLOWED=false`; `CALLER_PATH_INJECTION_ALLOWED=false`.
+
+The required separation is `EvidenceAcquisitionCategory` != Source Bundle
+Identity != Protected Source Profile Identity != Fixed Source Slot Identity !=
+Concrete Source Location != Source Existence != Metadata Safety != Content
+Acquisition != Admission != Verification != Authority. Fixed Source Slot Identity
+is symbolic only. `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`.
+It establishes no path, source or historical-evidence existence, metadata
+inspection or safety, or content acquisition:
+`CONCRETE_PATH_ESTABLISHED=false`, `SOURCE_EXISTENCE_ESTABLISHED=false`,
+`HISTORICAL_EVIDENCE_EXISTENCE_ESTABLISHED=false`,
+`METADATA_INSPECTION_PERFORMED=false`, `SOURCE_METADATA_SAFE=false`, and
+`CONTENT_ACQUISITION_PERFORMED=false`. `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN` and
+`PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`.
+
+Protection requirements are future policy only, not current operational facts:
+Mac Control Plane ownership outside Git; protected parent exact mode `0700`;
+regular non-symlink leaf no broader than `0600`; explicit trusted uid/gid; future
+FD/inode binding, explicit human authorization, and one-shot acquisition; maximum
+one acquisition per future authorization; no fallback, enumeration, candidate
+iteration, environment/HOME authority, argv or JSON secret-value transport,
+secret logging, or secret hashing.
+
+Validation chronology: focused `40 passed in 0.14s`; authoritative final
+architecture review `PASS`; canonical exactly once, `3765 passed, 5 deselected,
+507 warnings in 134.47s`, `CANONICAL_RC=0`; no later code/test correction and no
+rerun. Commit `7ccebffcce281590d57f4f8fc93d9e53032bb822`, implementation
+push, and Git closeout passed with `AHEAD=0`, `BEHIND=0`.
+
+This is repository preparation inside authoritative Macro-WU-06. Actual
+historical evidence acquisition and offline evaluation have not occurred, and
+`RECOVER_EVIDENCE_SUFFICIENT` has not been factually evaluated.
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; do not start Macro-WU-07.
+
+All governance remains unchanged, including
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+`ROTATE_AUTHORIZED=false`, `REPLACE_AUTHORIZED=false`,
+`STRATEGY_EXECUTED=false`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. The exact six Shopping actions are unchanged;
+`SHOPPING_SECRET_PROVISIONING` remains target-only. No Governance,
+`ControlledExecutionPort`, or authorization behavior changed. Mac AIControlCenter
+remains sole Control Plane; Ubuntu remains stateless and has no Control Plane
+authority. No Production, MariaDB, metadata, content, SQL, PyMySQL, secret-value,
+or Notion activity was performed.
+
+## Prior milestone — Protected External Evidence Source Profile documentation closeout
 
 The repository now has four closed symbolic
 `ProtectedExternalEvidenceSourceProfileIdentity` values:

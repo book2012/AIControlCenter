@@ -1,6 +1,6 @@
 # AI Home Datacenter Architecture
 
-## Protected External Evidence Source Profile — Documentation Closeout
+## Protected External Evidence Fixed Source Slot — Documentation Closeout
 
 This repository-preparation submilestone belongs inside authoritative Macro-WU-06
 Actual Historical Evidence Acquisition + Offline Evaluation; it is not
@@ -11,39 +11,51 @@ remains the later factual `RECOVER_EVIDENCE_SUFFICIENT` decision. This contract
 completed neither actual historical evidence acquisition nor offline evidence
 evaluation, and does not close Macro-WU-06.
 
-Protected source profile discovery/freeze and the exact four-file implementation
-established four closed symbolic `ProtectedExternalEvidenceSourceProfileIdentity`
-values: `AUTH_PLUGIN_PROTECTED_SOURCE_PROFILE`,
-`PYMYSQL_PROTECTED_SOURCE_PROFILE`, `DATA_IDENTITY_PROTECTED_SOURCE_PROFILE`, and
-`CONTINUITY_LINEAGE_PROTECTED_SOURCE_PROFILE`. The existing four
-`EvidenceReferenceIdentityClass` bundle identities map one-to-one to them through
-immutable repository-owned `BUNDLE_TO_PROTECTED_SOURCE_PROFILE_MAPPING`; caller
-selection remains closed. The contract is `repository_only=true`,
-`value_free=true`, `fail_closed=true`, and `zero_authority=true`.
+The exact four-file implementation established exactly four symbolic
+`ProtectedExternalEvidenceFixedSourceSlotIdentity` values:
+`AUTH_PLUGIN_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+`PYMYSQL_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`,
+`DATA_IDENTITY_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`, and
+`CONTINUITY_LINEAGE_PROTECTED_EVIDENCE_FIXED_SOURCE_SLOT`. The repository owns
+an immutable one-to-one mapping from
+`ProtectedExternalEvidenceSourceProfileIdentity` to
+`ProtectedExternalEvidenceFixedSourceSlotIdentity`.
+`CALLER_SLOT_SELECTION_ALLOWED=false` and `CALLER_PATH_INJECTION_ALLOWED=false`.
 
-Architecture separation is exact: `EvidenceAcquisitionCategory` != source bundle
-identity != protected source profile identity != concrete source location !=
-source existence != metadata safety != acquisition != admission != verification
-!= authority. A profile identity is not any downstream fact in that chain.
+Architecture separation is exact: `EvidenceAcquisitionCategory` != Source Bundle
+Identity != Protected Source Profile Identity != Fixed Source Slot Identity !=
+Concrete Source Location != Source Existence != Metadata Safety != Content
+Acquisition != Admission != Verification != Authority. Fixed Source Slot Identity
+is symbolic only and is not any downstream fact in that chain.
 `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`.
 
-Chronology: protected source profile discovery/freeze -> exact four-file
-implementation -> focused `37 passed in 0.13s` -> authoritative final
-architecture review `PASS` -> canonical exactly once -> `3753 passed, 5
-deselected, 503 warnings` with `CANONICAL_RC=0` -> no code/test correction -> no
-canonical rerun -> implementation commit
-`a206a6aad23ba79a548bf3f7498a4c3883fec067` -> normal push -> `AHEAD=0` and
-`BEHIND=0`. `IMPLEMENTATION_GIT_CLOSEOUT=PASS` and `GIT_PUSH=PASS`.
+Chronology: exact four-file implementation -> focused `40 passed in 0.14s` ->
+authoritative final architecture review `PASS` -> canonical exactly once ->
+`3765 passed, 5 deselected, 507 warnings in 134.47s` with `CANONICAL_RC=0` -> no
+code/test correction -> no canonical rerun -> implementation commit
+`7ccebffcce281590d57f4f8fc93d9e53032bb822` -> implementation push `PASS` ->
+`AHEAD=0` and `BEHIND=0`. `IMPLEMENTATION_GIT_CLOSEOUT=PASS` and `GIT_PUSH=PASS`.
 
-Current facts remain fail-closed: `concrete_source_location_established=false`,
-`source_exists=false`, `historical_evidence_exists=false`,
-`source_metadata_safe=false`, `content_acquired=false`,
-`evidence_admitted=false`, `evidence_verified=false`, and `authority=false`.
+Current facts remain fail-closed: `CONCRETE_PATH_ESTABLISHED=false`,
+`SOURCE_EXISTENCE_ESTABLISHED=false`,
+`HISTORICAL_EVIDENCE_EXISTENCE_ESTABLISHED=false`,
+`METADATA_INSPECTION_PERFORMED=false`, `SOURCE_METADATA_SAFE=false`,
+`CONTENT_ACQUISITION_PERFORMED=false`.
 `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN` and
 `PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`. Actual historical evidence
 acquisition and offline evaluation have not occurred; historical evidence
 existence, a concrete source location, and source metadata safety are not
-established. Therefore authoritative Macro-WU-06 remains `IN_PROGRESS`.
+established, and `RECOVER_EVIDENCE_SUFFICIENT` has not been factually evaluated.
+Therefore authoritative Macro-WU-06 remains `IN_PROGRESS`.
+
+Protection requirements are future policy only, not operationally satisfied.
+They require Mac Control Plane ownership outside Git; a protected parent at
+exact mode `0700`; a regular non-symlink leaf with permissions no broader than
+`0600`; an explicit trusted uid/gid; future FD/inode binding, explicit human
+authorization, and one-shot acquisition; maximum one acquisition per future
+authorization; and no fallback, enumeration, candidate iteration,
+environment/HOME authority, argv secret transport, JSON secret-value transport,
+secret logging, or secret hashing.
 
 Preserved governance is `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
 `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, `ROTATE_AUTHORIZED=false`,
@@ -57,8 +69,11 @@ The exact six Shopping actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`
 `SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
 `SHOPPING_SECRET_PROVISIONING` remains target-only. Operational truth is
 `PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
-`SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`, `PYMYSQL_ACTIVITY=NONE`,
-and `NOTION_SYNC=NOT_PERFORMED`.
+`SECRET_VALUES_READ=NO`, `METADATA_INSPECTION=NOT_PERFORMED`,
+`CONTENT_ACQUISITION=NOT_PERFORMED`, `SQL_EXECUTION=NOT_PERFORMED`,
+`PYMYSQL_ACTIVITY=NONE`, and `NOTION_SYNC=NOT_PERFORMED`.
+
+No Governance, `ControlledExecutionPort`, or authorization behavior changed.
 
 Mac AIControlCenter remains the sole Control Plane. Ubuntu remains a stateless
 infrastructure worker and has no Control Plane authority.

@@ -1,6 +1,36 @@
 # Roadmap
 
-## Protected External Evidence Source Profile — documentation closeout
+## Protected External Evidence Fixed Source Slot — documentation closeout
+
+- [x] Implement exactly four symbolic
+  `ProtectedExternalEvidenceFixedSourceSlotIdentity` values and the immutable,
+  repository-owned, one-to-one mapping from
+  `ProtectedExternalEvidenceSourceProfileIdentity`; preserve
+  `CALLER_SLOT_SELECTION_ALLOWED=false` and `CALLER_PATH_INJECTION_ALLOWED=false`.
+- [x] Preserve the complete semantic chain through Fixed Source Slot Identity,
+  Concrete Source Location, Source Existence, Metadata Safety, Content
+  Acquisition, Admission, Verification, and Authority; keep Fixed Source Slot
+  Identity symbolic only and all required downstream facts false or unknown.
+- [x] Record protection requirements strictly as future policy and preserve all
+  Mac ownership, mode, leaf, uid/gid, binding, authorization, one-shot,
+  no-fallback, no-enumeration, no-environment-authority, and no-secret-transport,
+  logging, or hashing requirements without claiming operational satisfaction.
+- [x] Pass focused validation: `40 passed in 0.14s`.
+- [x] Pass authoritative final architecture review.
+- [x] Run canonical exactly once: `3765 passed, 5 deselected, 507 warnings in
+  134.47s`, `CANONICAL_RC=0`; no code/test correction followed and canonical was
+  not rerun.
+- [x] Complete implementation commit
+  `7ccebffcce281590d57f4f8fc93d9e53032bb822`, implementation push, and Git
+  closeout with `AHEAD=0`, `BEHIND=0`.
+- [x] Preserve all architecture, governance, exact-six-action, target-only
+  provisioning, macro-program, and operational no-activity facts; Macro-WU-06
+  remains `IN_PROGRESS` and Macro-WU-07 has not started.
+- [ ] Complete exact-six-document documentation Git closeout.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
+## Protected External Evidence Source Profile — prior documentation closeout
 
 - [x] Complete protected source profile discovery/freeze.
 - [x] Complete exact four-file implementation of four closed symbolic
