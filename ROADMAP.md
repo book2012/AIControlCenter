@@ -18,7 +18,7 @@
   `c3760d2fd9bb0810d3e285ec203b40e5b7b77814`, `AHEAD=0`, `BEHIND=0`.
 - [x] Preserve all governance, architecture, Shopping, Control Plane, no-activity,
   and Macro-WU-06 facts; do not start or imply Macro-WU-07.
-- [ ] Complete exact-six-document documentation Git closeout.
+- [x] Complete exact-six-document documentation Git closeout at `7826c16c530ae696691b9476ddcec0bb4bd5768d` with normal push and `AHEAD=0`, `BEHIND=0`.
 
 No focused or canonical validation is rerun for this documentation-only work.
 
