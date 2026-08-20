@@ -1,6 +1,61 @@
 # AIControlCenter
 
-## Current milestone — MariaDB Continuity Evidence Source Binding documentation closeout
+## Current milestone — Protected External Evidence Source Profile documentation closeout
+
+The repository now has four closed symbolic
+`ProtectedExternalEvidenceSourceProfileIdentity` values:
+`AUTH_PLUGIN_PROTECTED_SOURCE_PROFILE`, `PYMYSQL_PROTECTED_SOURCE_PROFILE`,
+`DATA_IDENTITY_PROTECTED_SOURCE_PROFILE`, and
+`CONTINUITY_LINEAGE_PROTECTED_SOURCE_PROFILE`. The existing four
+`EvidenceReferenceIdentityClass` bundle identities map one-to-one to these
+profiles through immutable, repository-owned
+`BUNDLE_TO_PROTECTED_SOURCE_PROFILE_MAPPING`; caller selection remains closed.
+The exact four-file implementation is complete and remains
+`repository_only=true`, `value_free=true`, `fail_closed=true`, and
+`zero_authority=true`.
+
+The semantic boundary is exact: `EvidenceAcquisitionCategory` != source bundle
+identity != protected source profile identity != concrete source location !=
+source existence != metadata safety != acquisition != admission != verification
+!= authority. A protected profile identity establishes none of those downstream
+facts. `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`.
+
+Current factual state remains `concrete_source_location_established=false`,
+`source_exists=false`, `historical_evidence_exists=false`,
+`source_metadata_safe=false`, `content_acquired=false`,
+`evidence_admitted=false`, `evidence_verified=false`, and `authority=false`.
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN` and
+`PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`. Actual historical evidence was
+not acquired or evaluated offline; its existence, concrete location, and
+metadata safety are not established.
+
+Validation chronology was protected source profile discovery/freeze, exact
+four-file implementation, focused `37 passed in 0.13s`, authoritative final
+architecture review `PASS`, and canonical exactly once with `3753 passed, 5
+deselected, 503 warnings` and `CANONICAL_RC=0`. No code/test correction followed
+and canonical was not rerun. Implementation commit
+`a206a6aad23ba79a548bf3f7498a4c3883fec067` was pushed normally;
+`IMPLEMENTATION_GIT_CLOSEOUT=PASS`, `GIT_PUSH=PASS`, `AHEAD=0`, and `BEHIND=0`.
+
+This is not authoritative Macro-WU-07. It is repository preparation inside
+authoritative Macro-WU-06 Actual Historical Evidence Acquisition + Offline
+Evaluation. `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`,
+and `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; original Macro-WU-07 remains the
+later factual `RECOVER_EVIDENCE_SUFFICIENT` decision. Macro-WU-06 remains open.
+
+Governance remains `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, `ROTATE_AUTHORIZED=false`,
+`REPLACE_AUTHORIZED=false`, `STRATEGY_EXECUTED=false`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+Mac AIControlCenter remains sole Control Plane; Ubuntu remains a stateless
+infrastructure worker with no Control Plane authority. The exact six Shopping
+actions remain unchanged; `SHOPPING_SECRET_PROVISIONING` remains target-only.
+Operational truth remains `PRODUCTION_ACCESS=NOT_PERFORMED`,
+`MARIADB_ACTIVITY=NONE`, `SECRET_VALUES_READ=NO`,
+`SQL_EXECUTION=NOT_PERFORMED`, `PYMYSQL_ACTIVITY=NONE`, and
+`NOTION_SYNC=NOT_PERFORMED`.
+
+## Prior milestone — MariaDB Continuity Evidence Source Binding documentation closeout
 
 The source-binding contract now has four closed typed protected-source bundle
 identities and a total, unique set of twelve `EvidenceAcquisitionCategory`

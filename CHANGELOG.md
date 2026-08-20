@@ -1,40 +1,37 @@
 # CHANGELOG
 
-## 2026-08-20 — MariaDB Continuity Evidence Source Binding documentation closeout
+## 2026-08-20 — Protected External Evidence Source Profile documentation closeout
 
-- Recorded discovery/freeze of four closed typed protected-source bundle
-  identities and exactly twelve total, unique `EvidenceAcquisitionCategory`
-  mappings. The boundary is repository-only, value-free, fail-closed, zero-I/O,
-  zero-authority, and performed no Production access.
-- Recorded WU-11 chronology: exact four-file implementation and initial focused
-  pass; architecture finding for caller-selectable bundle/category construction;
-  removal of the permanent Git-state test; closed caller bundle construction
-  with immutable `MappingProxyType` mapping preserved; corrected focused pass;
-  and final hardening so `_canonical_bundle` accepts identity only and derives
-  categories exclusively from `CATEGORY_TO_BUNDLE_MAPPING`, with no helper
-  accepting caller category tuples. Final focused result was `26 passed in
-  0.11s`; authoritative final architecture review was `PASS`.
-- Recorded WU-12 canonical exactly once after the final corrected review:
-  `3742 passed, 5 deselected, 499 warnings`, `CANONICAL_RC=0`. Warnings were
-  non-failing; no code/test correction or canonical rerun followed.
+- Recorded discovery/freeze and exact four-file implementation of the four closed
+  symbolic `ProtectedExternalEvidenceSourceProfileIdentity` values and their
+  immutable, repository-owned, one-to-one
+  `BUNDLE_TO_PROTECTED_SOURCE_PROFILE_MAPPING` from the existing four
+  `EvidenceReferenceIdentityClass` bundle identities. Caller selection is closed.
+- Recorded focused `37 passed in 0.13s`, authoritative final architecture review
+  `PASS`, and canonical exactly once afterward: `3753 passed, 5 deselected, 503
+  warnings`, `CANONICAL_RC=0`; no code/test correction or canonical rerun followed.
 - Recorded implementation commit
-  `795d93c6e9f577a0e222c9617c23468b354d7a5b`, normal push `PASS`, `AHEAD=0`,
+  `a206a6aad23ba79a548bf3f7498a4c3883fec067`, normal push `PASS`, `AHEAD=0`,
   `BEHIND=0`, and implementation Git closeout `PASS`.
-- Preserved `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`,
+- Preserved exact semantic separation: `EvidenceAcquisitionCategory` != bundle
+  identity != protected source profile identity != concrete source location !=
+  source existence != metadata safety != acquisition != admission != verification
+  != authority; a profile identity establishes none of those downstream facts.
+  Preserved `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`,
   `repository_only=true`, `value_free=true`, `fail_closed=true`, and
-  `zero_authority=true`; frozen canonical instances, four identities, twelve
-  total unique categories, impossible direct caller construction, and no
-  permanent Git-state test.
+  `zero_authority=true`.
 - Preserved the full classification/bundle/location/existence/metadata-safety/
   acquisition/admission/verification/authority separation and all governance,
   exact-six-action, target-only `SHOPPING_SECRET_PROVISIONING`, and operational
   no-activity facts.
-- These `SOURCE_BINDING WU-10/WU-11/WU-12` labels are repository preparation
-  inside authoritative Macro-WU-06, not integrated-program Macro-WUs.
+- This protected-source-profile milestone is repository preparation inside
+  authoritative Macro-WU-06 and is not authoritative Macro-WU-07.
   `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
   `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; original Macro-WU-07 remains the
-  later factual `RECOVER_EVIDENCE_SUFFICIENT` decision. No historical evidence
-  acquisition or offline evaluation was completed.
+  later factual `RECOVER_EVIDENCE_SUFFICIENT` decision. Actual acquisition and
+  offline evaluation have not occurred; evidence existence, source location,
+  and metadata safety are not established. `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`
+  and `PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`.
 - Preserved `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
   `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
   `ROTATE_AUTHORIZED=false`, `REPLACE_AUTHORIZED=false`,
@@ -43,6 +40,8 @@
   `PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
   `SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`,
   `PYMYSQL_ACTIVITY=NONE`, and `NOTION_SYNC=NOT_PERFORMED`.
+- Preserved Mac AIControlCenter as sole Control Plane and Ubuntu as a stateless
+  infrastructure worker with no Control Plane authority.
 
 ## 2026-08-20 — MariaDB Continuity Integrated WU-07/WU-08 closeout
 

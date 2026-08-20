@@ -1,6 +1,48 @@
 # Roadmap
 
-## MariaDB Continuity Evidence Source Binding — documentation closeout
+## Protected External Evidence Source Profile — documentation closeout
+
+- [x] Complete protected source profile discovery/freeze.
+- [x] Complete exact four-file implementation of four closed symbolic
+  `ProtectedExternalEvidenceSourceProfileIdentity` values and immutable,
+  repository-owned, one-to-one `BUNDLE_TO_PROTECTED_SOURCE_PROFILE_MAPPING`
+  from the existing four `EvidenceReferenceIdentityClass` bundle identities;
+  keep caller selection closed.
+- [x] Preserve `repository_only=true`, `value_free=true`, `fail_closed=true`,
+  `zero_authority=true`, and
+  `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`.
+- [x] Preserve `EvidenceAcquisitionCategory` != source bundle identity !=
+  protected source profile identity != concrete source location != source
+  existence != metadata safety != acquisition != admission != verification !=
+  authority.
+- [x] Preserve false concrete-location, source-existence, historical-evidence,
+  metadata-safety, acquired-content, admission, verification, and authority
+  facts; preserve `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN` and
+  `PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`.
+- [x] Pass focused `37 passed in 0.13s` and authoritative final architecture
+  review `PASS`.
+- [x] Run canonical exactly once after review: `3753 passed, 5 deselected, 503
+  warnings`, `CANONICAL_RC=0`; make no later code/test correction and do not
+  rerun canonical.
+- [x] Complete implementation commit
+  `a206a6aad23ba79a548bf3f7498a4c3883fec067`, normal push, implementation Git
+  closeout, and verify `AHEAD=0`, `BEHIND=0`.
+- [x] Preserve Mac AIControlCenter as sole Control Plane and Ubuntu as a
+  stateless infrastructure worker with no Control Plane authority.
+- [x] Preserve all governance, exact-six-action, target-only provisioning, and
+  operational no-activity facts.
+- [x] Record that actual historical evidence acquisition and offline evaluation
+  have not occurred and evidence existence, concrete location, and metadata
+  safety are not established.
+- [x] Keep this submilestone inside authoritative Macro-WU-06; preserve
+  `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; retain authoritative Macro-WU-07 as
+  the later factual `RECOVER_EVIDENCE_SUFFICIENT` decision.
+- [ ] Complete exact-six-document documentation Git closeout.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
+## MariaDB Continuity Evidence Source Binding — prior documentation closeout
 
 - [x] Freeze four closed typed protected-source bundle identities and exactly
   twelve total unique `EvidenceAcquisitionCategory` mappings.

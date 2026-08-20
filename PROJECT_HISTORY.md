@@ -1,5 +1,53 @@
 # Project History
 
+## 2026-08-20 — Protected External Evidence Source Profile implementation closeout
+
+Protected source profile discovery/freeze and the exact four-file implementation
+established four closed symbolic `ProtectedExternalEvidenceSourceProfileIdentity`
+values: `AUTH_PLUGIN_PROTECTED_SOURCE_PROFILE`,
+`PYMYSQL_PROTECTED_SOURCE_PROFILE`, `DATA_IDENTITY_PROTECTED_SOURCE_PROFILE`, and
+`CONTINUITY_LINEAGE_PROTECTED_SOURCE_PROFILE`. Immutable, repository-owned
+`BUNDLE_TO_PROTECTED_SOURCE_PROFILE_MAPPING` maps the existing four
+`EvidenceReferenceIdentityClass` bundle identities one-to-one to those profiles;
+caller selection remains closed. The contract preserved `repository_only=true`,
+`value_free=true`, `fail_closed=true`, and `zero_authority=true`.
+
+Chronology was discovery/freeze -> exact four-file implementation -> focused
+`37 passed in 0.13s` -> authoritative final architecture review `PASS` ->
+canonical exactly once -> `3753 passed, 5 deselected, 503 warnings`,
+`CANONICAL_RC=0` -> no code/test correction -> no canonical rerun -> commit
+`a206a6aad23ba79a548bf3f7498a4c3883fec067` -> normal push -> `AHEAD=0`,
+`BEHIND=0`. Implementation Git closeout and push both passed.
+
+The exact separation remained `EvidenceAcquisitionCategory` != source bundle
+identity != protected source profile identity != concrete source location !=
+source existence != metadata safety != acquisition != admission != verification
+!= authority. `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`.
+All downstream facts remained false: concrete location, source existence,
+historical evidence existence, metadata safety, content acquisition, admission,
+verification, and authority. `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN` and
+`PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`.
+
+No actual historical evidence acquisition or offline evaluation occurred, and
+historical evidence existence, a concrete source location, and metadata safety
+were not established. This was a repository-preparation substep inside
+authoritative Macro-WU-06, not authoritative Macro-WU-07. Consequently
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; original Macro-WU-07 remained the
+later factual `RECOVER_EVIDENCE_SUFFICIENT` decision.
+
+Mac AIControlCenter remained the sole Control Plane; Ubuntu remained a stateless
+infrastructure worker with no Control Plane authority. Preserved governance was
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+`ROTATE_AUTHORIZED=false`, `REPLACE_AUTHORIZED=false`,
+`STRATEGY_EXECUTED=false`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`. The exact six Shopping actions remained
+unchanged and `SHOPPING_SECRET_PROVISIONING` remained target-only. Operational
+truth was `PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
+`SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`, `PYMYSQL_ACTIVITY=NONE`,
+and `NOTION_SYNC=NOT_PERFORMED`.
+
 ## 2026-08-20 — MariaDB Continuity Evidence Source Binding implementation closeout
 
 Discovery/freeze established four closed typed protected-source bundle identities
