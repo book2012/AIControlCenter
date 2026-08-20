@@ -1,5 +1,58 @@
 # MASTER
 
+## Current status — Authoritative Mac base path policy implementation closed
+
+`MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION=CLOSED` applies
+only to this repository implementation/documentation submilestone. Macro-WU06
+is not complete: `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. Mac AIControlCenter remains sole
+Control Plane; Ubuntu remains a stateless zero-authority infrastructure worker.
+
+`AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity` is symbolic only;
+`AuthoritativeMacProtectedEvidenceBasePathPolicy` is repository-owned and
+value-free. Its mapping from `ProtectedExternalEvidenceBaseLocationIdentity` is
+immutable and closed, and its canonical factory accepts no caller path, home, or
+suffix. No runtime account-home resolver exists and production/source code uses
+no `Path.home`, `HOME`, `os.environ`, `os.getenv`, `sys.argv`, `pwd.getpwuid`,
+`os.getuid`, or `os.getgid`.
+
+There is zero filesystem I/O; no filesystem adapter, metadata inspector, content
+reader, or Production adapter; and zero authorization, capability, execution,
+mutation, retry, reconnect, rollback, acquisition, admission, or verification
+authority. Governance core and SEC-02 semantics are unchanged; there is no
+`ControlledExecutionPort` coupling.
+
+Repository policy identity != exact suffix policy != runtime account-home
+resolution != concrete path != source existence != metadata inspection !=
+metadata safety != content acquisition != admission != verification !=
+authority. The exact suffix remains unresolved and must not be guessed. No
+directory, path, existence, inspection, acquisition, or Production access was
+established or performed.
+
+Commit `ab9de4a08c35de3805983346cf7f1a6d9accccdb`; push `PASS`; focused `6
+passed in 0.05s`; final architecture review `PASS`; canonical `3805 passed, 5
+deselected, 519 warnings`; `CANONICAL_RC=0`. Warnings were non-failing.
+
+Preserved flags are `BASE_PATH_POLICY_LAYER_REQUIRED=true`,
+`AUTHORITATIVE_BASE_PATH_POLICY_DEFINED=true`,
+`AUTHORITATIVE_BASE_LOCATION_ALREADY_EXISTS=false`,
+`EXACT_PROTECTED_EVIDENCE_SUFFIX_ESTABLISHED=false`,
+`CONCRETE_PATH_VALUE_ESTABLISHED=false`, `SOURCE_EXISTENCE_ESTABLISHED=false`,
+`HISTORICAL_EVIDENCE_EXISTENCE_ESTABLISHED=false`,
+`METADATA_INSPECTION_PERFORMED=false`, `SOURCE_METADATA_SAFE=false`,
+`CONTENT_ACQUISITION_PERFORMED=false`, `EVIDENCE_ADMITTED=false`,
+`EVIDENCE_VERIFIED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`,
+`PRODUCTION_VALIDATION_READY=false`, `SHOPPING_RUNTIME_ACTIVATED=false`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Next is architecture discovery/freeze for the future exact protected-evidence
+suffix policy, without implementing or guessing the suffix, selecting a
+directory, establishing a path, or adding a runtime resolver.
+
 ## Current status — Protected external evidence source access and metadata inspection boundary closed
 
 `MACRO_WU_06_PROTECTED_EXTERNAL_EVIDENCE_SOURCE_ACCESS_AND_METADATA_INSPECTION_BOUNDARY=CLOSED`
@@ -40,10 +93,11 @@ Production-justification facts remain false or unknown as frozen.
 `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
 `PRODUCTION_VALIDATION_READY=false`, `SHOPPING_RUNTIME_ACTIVATED=false`,
 `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
-`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. Next is
-`MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`, repository-only,
-value-free, zero filesystem I/O/access and without resolution, existence check,
-inspection, or runtime resolver. The exact suffix remains unresolved.
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. At that earlier closeout, the next
+milestone was `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`;
+it is now closed as recorded above. It is repository-only, value-free, zero
+filesystem I/O/access, and without resolution, existence check, inspection, or
+runtime resolver. The exact suffix remains unresolved.
 
 ## Current status — Protected External Evidence Concrete Source Location Descriptor documentation closeout
 

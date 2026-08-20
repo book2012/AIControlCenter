@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## 2026-08-20 — Authoritative Mac base path policy implementation closeout
+
+- Closed `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION` as a
+  repository-only implementation/documentation submilestone; Macro-WU06 remains
+  `IN_PROGRESS` with seven authoritative WUs remaining across WU06-WU12.
+- Established symbolic-only `AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity`
+  and repository-owned, value-free
+  `AuthoritativeMacProtectedEvidenceBasePathPolicy`, with an immutable closed
+  mapping from `ProtectedExternalEvidenceBaseLocationIdentity`. Its canonical
+  factory accepts no caller path, home, or suffix input.
+- Recorded no runtime account-home resolver; no production/source use of
+  `Path.home`, `HOME`, `os.environ`, `os.getenv`, `sys.argv`, `pwd.getpwuid`,
+  `os.getuid`, or `os.getgid`; zero filesystem I/O; and no filesystem adapter,
+  metadata inspector, content reader, or Production adapter.
+- Preserved zero authorization/capability/execution/mutation/retry/reconnect/
+  rollback/acquisition/admission/verification authority, unchanged Governance
+  core and SEC-02 semantics, and no `ControlledExecutionPort` coupling.
+- Preserved policy identity != exact suffix policy != runtime home resolution !=
+  concrete path != existence != inspection != safety != acquisition != admission
+  != verification != authority. The suffix remains unresolved and unguessed; no
+  directory, path, source existence, inspection, or Production access occurred.
+- Recorded commit `ab9de4a08c35de3805983346cf7f1a6d9accccdb`, push `PASS`,
+  `AHEAD=0`, `BEHIND=0`, focused `6 passed in 0.05s`, architecture review `PASS`,
+  and canonical `3805 passed, 5 deselected, 519 warnings`, `CANONICAL_RC=0`; the
+  warnings were non-failing.
+- Preserved `BASE_PATH_POLICY_LAYER_REQUIRED=true`,
+  `AUTHORITATIVE_BASE_PATH_POLICY_DEFINED=true`, all required downstream
+  false/unknown facts, `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- Next: architecture discovery/freeze for the future exact protected-evidence
+  suffix policy, without implementing or guessing a suffix, selecting a
+  directory, establishing a path, or adding a runtime resolver.
+
 ## 2026-08-20 — Protected external evidence source access and metadata inspection boundary closeout
 
 - Closed `MACRO_WU_06_PROTECTED_EXTERNAL_EVIDENCE_SOURCE_ACCESS_AND_METADATA_INSPECTION_BOUNDARY`
@@ -34,8 +67,9 @@
   path-authority, `RECOVER`, Production-readiness, and runtime facts.
 - Preserved `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
   `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` because acquisition/evaluation have
-  not occurred. Next is repository-only, value-free, zero-I/O
-  `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`, without path
+  not occurred. At that closeout, the next repository-only milestone was
+  `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`; it is now
+  closed as recorded above. It remains value-free and zero-I/O, without path
   resolution, existence check, inspection, runtime resolver, or access; the
   protected-evidence suffix remains unresolved.
 

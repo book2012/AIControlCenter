@@ -1,5 +1,53 @@
 # Project History
 
+## 2026-08-20 — Authoritative Mac base path policy implementation
+
+The repository-only implementation/documentation submilestone
+`MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION` closed at commit
+`ab9de4a08c35de3805983346cf7f1a6d9accccdb`; push passed with `AHEAD=0` and
+`BEHIND=0`. Focused validation was `6 passed in 0.05s`, final architecture review
+was `PASS`, and canonical was `3805 passed, 5 deselected, 519 warnings` with
+`CANONICAL_RC=0`. The warnings were non-failing.
+
+The implementation established symbolic-only
+`AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity` and repository-owned,
+value-free `AuthoritativeMacProtectedEvidenceBasePathPolicy`, with an immutable
+closed mapping from `ProtectedExternalEvidenceBaseLocationIdentity`. The
+canonical factory accepts no caller path, home, or suffix. No runtime home
+resolver exists; production/source implementation uses none of `Path.home`,
+`HOME`, `os.environ`, `os.getenv`, `sys.argv`, `pwd.getpwuid`, `os.getuid`, or
+`os.getgid`.
+
+It established zero filesystem I/O and no filesystem adapter, metadata
+inspector, content reader, or Production adapter. It granted zero authorization,
+capability, execution, mutation, retry, reconnect, rollback, acquisition,
+admission, or verification authority. Governance core and SEC-02 semantics did
+not change, and `ControlledExecutionPort` was not coupled.
+
+Repository policy identity != exact suffix policy != runtime account-home
+resolution != concrete path != source existence != metadata inspection !=
+metadata safety != content acquisition != admission != verification !=
+authority. The exact suffix remained unresolved and unguessed. No directory,
+path, existence, inspection, acquisition, or Production access was established.
+
+All requested state remains preserved, including
+`BASE_PATH_POLICY_LAYER_REQUIRED=true`,
+`AUTHORITATIVE_BASE_PATH_POLICY_DEFINED=true`, every required downstream
+existence/metadata/content/admission/verification flag as false,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`,
+`PRODUCTION_VALIDATION_READY=false`, `SHOPPING_RUNTIME_ACTIVATED=false`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+`RECOVER_EVIDENCE_SUFFICIENT=false`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Mac AIControlCenter remains sole Control Plane; Ubuntu remains a stateless
+zero-authority infrastructure worker. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. Next is architecture discovery/freeze
+for the future exact suffix policy, without suffix implementation, directory
+selection, path establishment, or a runtime resolver.
+
 ## 2026-08-20 — Protected external evidence source access and metadata inspection boundary closeout
 
 The repository-only, path-free, zero-authority implementation submilestone
@@ -43,7 +91,8 @@ Production readiness, and false Shopping runtime were preserved.
 
 Actual historical acquisition and offline evaluation did not occur, so
 `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
-`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. The next repository-only milestone is
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. At that time, the next repository-only
+milestone was
 `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`, initially
 value-free with zero filesystem I/O/access and no resolution, source check,
 metadata inspection, or runtime resolver. The exact suffix remains unresolved.

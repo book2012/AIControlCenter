@@ -1,5 +1,39 @@
 # Roadmap
 
+## Authoritative Mac Base Path Policy Implementation — documentation closeout
+
+- [x] Close `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION` as a
+  repository-only implementation/documentation submilestone; keep
+  `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- [x] Record symbolic-only policy identity, repository-owned value-free policy,
+  immutable closed mapping from `ProtectedExternalEvidenceBaseLocationIdentity`,
+  and canonical factory accepting no caller path, home, or suffix input.
+- [x] Record no runtime home resolver; no production/source use of `Path.home`,
+  `HOME`, `os.environ`, `os.getenv`, `sys.argv`, `pwd.getpwuid`, `os.getuid`, or
+  `os.getgid`; zero filesystem I/O; and no filesystem, metadata, content, or
+  Production adapter.
+- [x] Preserve zero authorization/capability/execution/mutation/retry/reconnect/
+  rollback/acquisition/admission/verification authority; unchanged Governance
+  core and SEC-02 semantics; and no `ControlledExecutionPort` coupling.
+- [x] Preserve policy identity != exact suffix policy != runtime home resolution
+  != concrete path != existence != inspection != safety != acquisition !=
+  admission != verification != authority. Establish no exact suffix, directory,
+  path, source existence, metadata fact, or Production access.
+- [x] Record commit `ab9de4a08c35de3805983346cf7f1a6d9accccdb`, push `PASS`,
+  `AHEAD=0`, `BEHIND=0`, focused `6 passed in 0.05s`, architecture review `PASS`,
+  canonical `3805 passed, 5 deselected, 519 warnings`, and `CANONICAL_RC=0`;
+  warnings are non-failing.
+- [x] Preserve `BASE_PATH_POLICY_LAYER_REQUIRED=true`,
+  `AUTHORITATIVE_BASE_PATH_POLICY_DEFINED=true`, every required false/unknown
+  downstream fact, `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- [ ] Next repository architecture activity: discover and freeze the future
+  exact protected-evidence suffix policy. Do not implement or guess the suffix,
+  select a directory name, establish a path, or add a runtime resolver.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
 ## Protected External Evidence Source Access and Metadata Inspection Boundary — documentation closeout
 
 - [x] Close the named boundary as a repository implementation submilestone only;
@@ -35,8 +69,9 @@
   select no suffix/path now.
 - [x] Preserve all frozen false/unknown path, existence, metadata, acquisition,
   path-authority, `RECOVER`, Production-readiness, and runtime facts.
-- [ ] Next: `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`,
-  repository-only, value-free, zero filesystem I/O, zero
+- [x] Subsequently completed:
+  `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`, repository-only,
+  value-free, zero filesystem I/O, zero
   Production/protected-source access, no path resolution, source-existence check,
   metadata inspection, or runtime resolver. The exact protected-evidence suffix remains unresolved and
   must not be guessed.
