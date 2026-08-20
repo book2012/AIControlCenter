@@ -1,0 +1,130 @@
+"""Value-free repository policy for the authoritative Mac evidence base."""
+
+from dataclasses import dataclass, field, fields
+from enum import Enum
+from types import MappingProxyType
+from typing import Mapping
+
+from core.secrets.mariadb_continuity_evidence_attestation_reference import (
+    RecoverEvidenceGate,
+    SemanticsChangeRequired,
+)
+from core.secrets.mariadb_continuity_evidence_concrete_source_location import (
+    ProtectedExternalEvidenceBaseLocationIdentity,
+)
+from core.secrets.mariadb_continuity_evidence_source_profile import (
+    OfflineAcquisitionAssessment,
+)
+
+
+class AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity(str, Enum):
+    """The sole closed policy identity; it is neither a suffix nor a path."""
+
+    AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_BASE_PATH_POLICY = (
+        "AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_BASE_PATH_POLICY"
+    )
+
+
+BASE_LOCATION_TO_AUTHORITATIVE_MAC_BASE_PATH_POLICY_MAPPING: Mapping[
+    ProtectedExternalEvidenceBaseLocationIdentity,
+    AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity,
+] = MappingProxyType({
+    ProtectedExternalEvidenceBaseLocationIdentity.PROTECTED_EXTERNAL_EVIDENCE_BASE_LOCATION:
+        AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity.AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_BASE_PATH_POLICY,
+})
+
+
+@dataclass(frozen=True, slots=True, init=False)
+class AuthoritativeMacProtectedEvidenceBasePathPolicy:
+    """Canonical policy definition carrying no runtime or filesystem value."""
+
+    base_location_identity: ProtectedExternalEvidenceBaseLocationIdentity = field(init=False)
+    identity: AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity = field(init=False)
+    frozen: bool = field(default=True, init=False)
+    slotted: bool = field(default=True, init=False)
+    repository_owned: bool = field(default=True, init=False)
+    mac_control_plane_owned: bool = field(default=True, init=False)
+    value_free: bool = field(default=True, init=False)
+    fail_closed: bool = field(default=True, init=False)
+    zero_authority: bool = field(default=True, init=False)
+    base_path_policy_layer_required: bool = field(default=True, init=False)
+    authoritative_base_path_policy_defined: bool = field(default=True, init=False)
+    authoritative_base_location_already_exists: bool = field(default=False, init=False)
+    exact_protected_evidence_suffix_established: bool = field(default=False, init=False)
+    concrete_path_value_established: bool = field(default=False, init=False)
+    source_existence_established: bool = field(default=False, init=False)
+    historical_evidence_existence_established: bool = field(default=False, init=False)
+    metadata_inspection_performed: bool = field(default=False, init=False)
+    source_metadata_safe: bool = field(default=False, init=False)
+    content_acquisition_performed: bool = field(default=False, init=False)
+    evidence_admitted: bool = field(default=False, init=False)
+    evidence_verified: bool = field(default=False, init=False)
+    recover_evidence_sufficient: bool = field(default=False, init=False)
+    offline_acquisition_possible: OfflineAcquisitionAssessment = field(
+        default=OfflineAcquisitionAssessment.UNKNOWN, init=False
+    )
+    production_access_currently_justified: bool = field(default=False, init=False)
+    production_validation_ready: bool = field(default=False, init=False)
+    shopping_runtime_activated: bool = field(default=False, init=False)
+    caller_base_path_selection_allowed: bool = field(default=False, init=False)
+    caller_path_injection_allowed: bool = field(default=False, init=False)
+    caller_suffix_injection_allowed: bool = field(default=False, init=False)
+    environment_path_authority_allowed: bool = field(default=False, init=False)
+    home_environment_authority_allowed: bool = field(default=False, init=False)
+    argv_path_authority_allowed: bool = field(default=False, init=False)
+    fallback_allowed: bool = field(default=False, init=False)
+    path_enumeration_allowed: bool = field(default=False, init=False)
+    candidate_iteration_allowed: bool = field(default=False, init=False)
+    runtime_home_resolver_available: bool = field(default=False, init=False)
+    filesystem_io_allowed: bool = field(default=False, init=False)
+    authorization_authority: bool = field(default=False, init=False)
+    capability_authority: bool = field(default=False, init=False)
+    execution_authority: bool = field(default=False, init=False)
+    mutation_authority: bool = field(default=False, init=False)
+    retry_authority: bool = field(default=False, init=False)
+    reconnect_authority: bool = field(default=False, init=False)
+    rollback_authority: bool = field(default=False, init=False)
+    acquisition_authority: bool = field(default=False, init=False)
+    admission_authority: bool = field(default=False, init=False)
+    verification_authority: bool = field(default=False, init=False)
+    production_access_allowed: bool = field(default=False, init=False)
+    protected_source_access_allowed: bool = field(default=False, init=False)
+    mariadb_access_allowed: bool = field(default=False, init=False)
+    sql_allowed: bool = field(default=False, init=False)
+    process_allowed: bool = field(default=False, init=False)
+    ubuntu_access_allowed: bool = field(default=False, init=False)
+    recover_evidence_gate: RecoverEvidenceGate = field(
+        default=RecoverEvidenceGate.RECOVER_EVIDENCE_INSUFFICIENT, init=False
+    )
+    sm_01b_02d_06_semantics_change_required: SemanticsChangeRequired = field(
+        default=SemanticsChangeRequired.NO, init=False
+    )
+
+    def __init__(self) -> None:
+        raise TypeError(
+            "AuthoritativeMacProtectedEvidenceBasePathPolicy is constructed only "
+            "by canonical repository policy"
+        )
+
+
+def _canonical_authoritative_mac_base_path_policy(
+) -> AuthoritativeMacProtectedEvidenceBasePathPolicy:
+    policy = object.__new__(AuthoritativeMacProtectedEvidenceBasePathPolicy)
+    base_identity = (
+        ProtectedExternalEvidenceBaseLocationIdentity.PROTECTED_EXTERNAL_EVIDENCE_BASE_LOCATION
+    )
+    object.__setattr__(policy, "base_location_identity", base_identity)
+    object.__setattr__(
+        policy,
+        "identity",
+        BASE_LOCATION_TO_AUTHORITATIVE_MAC_BASE_PATH_POLICY_MAPPING[base_identity],
+    )
+    for policy_field in fields(AuthoritativeMacProtectedEvidenceBasePathPolicy):
+        if policy_field.name not in {"base_location_identity", "identity"}:
+            object.__setattr__(policy, policy_field.name, policy_field.default)
+    return policy
+
+
+def canonical_authoritative_mac_protected_evidence_base_path_policy(
+) -> AuthoritativeMacProtectedEvidenceBasePathPolicy:
+    return _canonical_authoritative_mac_base_path_policy()
