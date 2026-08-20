@@ -1,5 +1,30 @@
 # Roadmap
 
+## Trusted Mac Account-Home Policy Architecture Contract
+
+- [x] Freeze a Darwin-only, non-root process identity policy.
+- [x] Define `os.getuid()` as real UID and `os.geteuid()` as effective UID;
+  require equality and bind the single equal UID as account identity.
+- [x] Freeze the future lookup rule as `pwd.getpwuid(bound_uid).pw_dir` without
+  executing it or implementing a runtime resolver.
+- [x] Reject `HOME`, `Path.home`, `expanduser`, caller/argv home or path,
+  fallback, enumeration, and candidate iteration as authority.
+- [x] Keep existing Governance, bootstrap, Shopping, and runtime home patterns
+  as design evidence only; preserve unchanged Governance/SEC-02 and no
+  `ControlledExecutionPort` coupling.
+- [x] Preserve the exact suffix as relative to a future trusted home while
+  establishing no trusted home, absolute/concrete path, filesystem I/O,
+  protected-source/Production access, downstream evidence fact, or authority.
+- [x] Preserve Mac sole Control Plane, stateless zero-authority Ubuntu,
+  insufficient `RECOVER`, `MACRO_WU_06=IN_PROGRESS`, seven remaining
+  authoritative WUs, and range WU06-WU12.
+- [ ] Next repository activity: separately implement the repository-owned
+  trusted Mac account-home policy. Runtime account-home resolution remains a
+  distinct future boundary; this contract establishes no trusted home value or
+  concrete protected-evidence path.
+
+No focused or canonical validation is run for this architecture-only work.
+
 ## Authoritative Mac Protected Evidence Suffix Policy Implementation — documentation closeout
 
 - [x] Establish the exact suffix architecture contract first at

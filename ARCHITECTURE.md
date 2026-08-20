@@ -1,5 +1,31 @@
 # AI Home Datacenter Architecture
 
+## Trusted Mac Account-Home Policy Architecture Contract
+
+The trusted account-home boundary for future protected external evidence path
+composition is frozen in
+[`docs/architecture/MACRO-WU-06-TRUSTED-MAC-ACCOUNT-HOME-POLICY-CONTRACT.md`](docs/architecture/MACRO-WU-06-TRUSTED-MAC-ACCOUNT-HOME-POLICY-CONTRACT.md).
+The platform must be Darwin; root is rejected. `os.getuid()` supplies the real
+UID and `os.geteuid()` supplies the effective UID. They must be equal, and the
+single bound UID is the account identity. The future lookup rule is
+`pwd.getpwuid(bound_uid).pw_dir`; this work neither executes it nor implements a
+runtime resolver.
+
+`HOME`, `Path.home`, `expanduser`, caller-selected home/path, argv home/path,
+fallback, enumeration, and candidate iteration are rejected as authority.
+Existing Governance paths, operational bootstrap resolution, Shopping
+`control_plane_home`, and runtime home conventions remain non-authoritative
+design evidence only. The exact suffix remains relative and uncomposed. No
+trusted home, absolute/concrete path, filesystem I/O, source access, metadata
+fact, acquisition, admission, verification, or authority is established.
+
+Mac AIControlCenter remains sole Control Plane; Ubuntu remains stateless with
+zero authority. Governance and SEC-02 remain separate and unchanged, and
+`ControlledExecutionPort` is not coupled. `RECOVER_EVIDENCE_GATE` remains
+`RECOVER_EVIDENCE_INSUFFICIENT`; `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## Authoritative Mac Protected Evidence Suffix Policy Implementation — Documentation Closeout
 
 The exact suffix architecture contract was established first at commit
