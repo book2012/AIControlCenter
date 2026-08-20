@@ -1,5 +1,48 @@
 # Roadmap
 
+## Protected External Evidence Source Access and Metadata Inspection Boundary — documentation closeout
+
+- [x] Close the named boundary as a repository implementation submilestone only;
+  preserve `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- [x] Preserve Mac sole Control Plane, stateless zero-authority Ubuntu, and the
+  repository-owned, path-free, zero-authority request boundary with symbolic
+  identity only and `mutation_budget=0`.
+- [x] Preserve exact request-instance binding (not dataclass equality),
+  pre-consumption same-source/different-request and cross-source rejection,
+  non-consuming mismatch, at-most-once original success, rejected reuse, and
+  exactly-once concurrent consumption.
+- [x] Keep inert test provenance and inert `SAFE_BOUND` distinct from operational
+  evidence; preserve no supported `HUMAN_AUTHORIZED_OPERATIONAL_INSPECTION`
+  issuer and false operational metadata/path issuer and Production inspection
+  availability flags.
+- [x] Keep legacy `observe_fixed_protected_source` isolated/unreachable; preserve
+  no caller path/callback, HOME/environment, argv, fallback, enumeration, or
+  iteration authority; unchanged Governance/SEC-02; no `ControlledExecutionPort`.
+- [x] Record commit `daff799d35709da31434ebb280e0771073b12b52`, push `PASS`,
+  focused `27 passed`, review `PASS`, canonical
+  `3799 passed, 5 deselected, 515 warnings`, and `CANONICAL_RC=0`; warnings are
+  not failures.
+- [x] Record no Production/protected-source access, metadata inspection, content
+  acquisition, or MariaDB/SQL/PyMySQL/Docker/Colima/Ubuntu activity.
+- [x] Freeze `BASE_PATH_POLICY_LAYER_REQUIRED=YES`, proposed
+  `AuthoritativeMacProtectedEvidenceBasePathPolicy` and
+  `AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity`; retain the existing
+  base-location identity as symbolic-only input.
+- [x] Preserve repository policy != runtime account-home resolution != concrete
+  path != existence != inspection != safety. Permit a future trusted
+  `pwd.getpwuid(os.getuid()).pw_dir` resolver only after exact suffix policy;
+  select no suffix/path now.
+- [x] Preserve all frozen false/unknown path, existence, metadata, acquisition,
+  path-authority, `RECOVER`, Production-readiness, and runtime facts.
+- [ ] Next: `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`,
+  repository-only, value-free, zero filesystem I/O, zero
+  Production/protected-source access, no path resolution, source-existence check,
+  metadata inspection, or runtime resolver. The exact protected-evidence suffix remains unresolved and
+  must not be guessed.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
 ## Protected External Evidence Concrete Source Location Descriptor — documentation closeout
 
 - [x] Implement exactly four closed symbolic Concrete Source Location identities

@@ -1,5 +1,78 @@
 # AI Home Datacenter Architecture
 
+## Protected External Evidence Source Access and Metadata Inspection Boundary — Documentation Closeout
+
+`MACRO_WU_06_PROTECTED_EXTERNAL_EVIDENCE_SOURCE_ACCESS_AND_METADATA_INSPECTION_BOUNDARY`
+is `CLOSED` as a repository implementation submilestone only; Macro-WU-06 is not
+closed. Mac AIControlCenter remains the sole Control Plane, and Ubuntu remains a
+stateless infrastructure worker with zero authority here.
+
+The metadata boundary is repository-owned, path-free, and zero-authority.
+`ProtectedSourceMetadataInspectionRequest` carries only the closed symbolic
+source identity with `mutation_budget=0`. Capability binding uses exact
+request-instance identity, not dataclass structural equality.
+Same-source/different-request and cross-source substitutions are rejected before
+consumption; a mismatched request does not consume the capability; the original exact request
+succeeds at most once; subsequent reuse is rejected; and concurrent consumption
+remains exactly once.
+
+Inert test classification provenance is explicitly distinct from operational
+factual evidence, and inert `SAFE_BOUND` is not operational evidence. No
+supported `HUMAN_AUTHORIZED_OPERATIONAL_INSPECTION` evidence issuer exists.
+`OPERATIONAL_METADATA_EVIDENCE_ISSUER_IMPLEMENTED=false`,
+`OPERATIONAL_CANONICAL_PATH_ISSUER_IMPLEMENTED=false`, and
+`PRODUCTION_OPERATIONAL_INSPECTION_AVAILABLE=false`. Legacy
+`observe_fixed_protected_source` remains isolated and is not reachable through
+the new boundary. No caller path, callback, HOME/environment, argv, fallback,
+enumeration, or candidate-iteration authority exists. Governance/SEC-02
+semantics are unchanged, and `ControlledExecutionPort` is not reused.
+
+Focused validation was exactly `27 passed`; final architecture review was
+`PASS`; canonical was exactly `3799 passed, 5 deselected, 515 warnings` with
+`CANONICAL_RC=0`. Warnings were not failures. Implementation commit
+`daff799d35709da31434ebb280e0771073b12b52` was pushed successfully. Production
+access, protected-source access, metadata inspection, and content acquisition
+were not performed. No MariaDB, SQL, PyMySQL, Docker, Colima, or Ubuntu activity
+occurred.
+
+The completed architecture discovery/freeze records
+`BASE_PATH_POLICY_LAYER_REQUIRED=YES`, with proposed layer
+`AuthoritativeMacProtectedEvidenceBasePathPolicy` and proposed identity model
+`AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity`. Existing
+`ProtectedExternalEvidenceBaseLocationIdentity.PROTECTED_EXTERNAL_EVIDENCE_BASE_LOCATION`
+is symbolic input only and does not establish a filesystem path. Repository-owned
+base-path policy != runtime account-home resolution != concrete path != source
+existence != metadata inspection != metadata safety. A future Mac runtime resolver
+may use trusted OS account identity semantics such as
+`pwd.getpwuid(os.getuid()).pw_dir`, but only after exact repository-owned path
+suffix policy is established. No authoritative exact filesystem suffix or path
+has been selected.
+
+Frozen state is `CONCRETE_PATH_VALUE_ESTABLISHED=false`,
+`AUTHORITATIVE_BASE_LOCATION_ALREADY_EXISTS=false`,
+`SOURCE_EXISTENCE_ESTABLISHED=false`,
+`HISTORICAL_EVIDENCE_EXISTENCE_ESTABLISHED=false`,
+`METADATA_INSPECTION_PERFORMED=false`, `SOURCE_METADATA_SAFE=false`,
+`CONTENT_ACQUISITION_PERFORMED=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+and `PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`. Also frozen are
+`CALLER_BASE_PATH_SELECTION_ALLOWED=false`, `CALLER_PATH_INJECTION_ALLOWED=false`,
+`ENVIRONMENT_PATH_AUTHORITY_ALLOWED=false`, `HOME_ENVIRONMENT_AUTHORITY_ALLOWED=false`,
+`FALLBACK_ALLOWED=false`, `PATH_ENUMERATION_ALLOWED=false`, and
+`CANDIDATE_ITERATION_ALLOWED=false`.
+
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+Actual historical evidence acquisition and offline evaluation have not occurred,
+so `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` remain authoritative.
+
+The next repository-only submilestone is
+`MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`. Its initial
+implementation remains value-free, with zero filesystem I/O, zero Production
+access, no concrete path resolution, no source-existence check, no metadata
+inspection, no runtime resolver yet, and no protected-source access. The exact
+protected-evidence suffix remains unresolved and must not be guessed.
+
 ## Protected External Evidence Concrete Source Location Descriptor — Documentation Closeout
 
 Exactly four closed symbolic `ProtectedExternalEvidenceConcreteSourceLocationIdentity`

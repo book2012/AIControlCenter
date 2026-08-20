@@ -1,5 +1,44 @@
 # CHANGELOG
 
+## 2026-08-20 — Protected external evidence source access and metadata inspection boundary closeout
+
+- Closed `MACRO_WU_06_PROTECTED_EXTERNAL_EVIDENCE_SOURCE_ACCESS_AND_METADATA_INSPECTION_BOUNDARY`
+  as a repository implementation submilestone only; Macro-WU-06 remains open.
+- Preserved Mac sole Control Plane, stateless zero-authority Ubuntu,
+  repository-owned path-free zero-authority metadata inspection,
+  symbolic-source-only `ProtectedSourceMetadataInspectionRequest`, and `mutation_budget=0`.
+- Preserved exact request-instance capability binding (not dataclass equality):
+  pre-consumption same-source/different-request and cross-source rejection,
+  non-consuming mismatches, at-most-once original success, rejected reuse, and
+  exactly-once concurrency.
+- Kept inert test provenance distinct from operational evidence; inert
+  `SAFE_BOUND` is not operational evidence. No supported
+  `HUMAN_AUTHORIZED_OPERATIONAL_INSPECTION` issuer exists; all operational issuer,
+  canonical path issuer, and Production inspection availability flags remain false.
+- Kept legacy `observe_fixed_protected_source` isolated and unreachable; added no
+  caller path/callback, HOME/environment, argv, fallback, enumeration, iteration,
+  Governance/SEC-02 change, or `ControlledExecutionPort` reuse.
+- Recorded focused `27 passed`, architecture review `PASS`, canonical
+  `3799 passed, 5 deselected, 515 warnings`, `CANONICAL_RC=0`, and successful
+  push of `daff799d35709da31434ebb280e0771073b12b52`; warnings were non-failing.
+- Recorded no Production/protected-source access, inspection/acquisition, or
+  MariaDB/SQL/PyMySQL/Docker/Colima/Ubuntu activity.
+- Froze `BASE_PATH_POLICY_LAYER_REQUIRED=YES`, proposed
+  `AuthoritativeMacProtectedEvidenceBasePathPolicy` and
+  `AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity`, and retained the
+  existing base-location identity as symbolic-only input. Repository policy,
+  runtime home resolution, concrete path, existence, inspection, and safety are
+  distinct; `pwd.getpwuid(os.getuid()).pw_dir` is only a possible future trusted
+  resolver after exact suffix policy. No exact suffix/path is established.
+- Preserved all requested false/unknown path, existence, metadata, acquisition,
+  path-authority, `RECOVER`, Production-readiness, and runtime facts.
+- Preserved `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` because acquisition/evaluation have
+  not occurred. Next is repository-only, value-free, zero-I/O
+  `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`, without path
+  resolution, existence check, inspection, runtime resolver, or access; the
+  protected-evidence suffix remains unresolved.
+
 ## 2026-08-20 — Protected External Evidence Concrete Source Location Descriptor documentation closeout
 
 - Recorded exactly four closed symbolic Concrete Source Location identities and

@@ -1,5 +1,53 @@
 # Project History
 
+## 2026-08-20 — Protected external evidence source access and metadata inspection boundary closeout
+
+The repository-only, path-free, zero-authority implementation submilestone
+`MACRO_WU_06_PROTECTED_EXTERNAL_EVIDENCE_SOURCE_ACCESS_AND_METADATA_INSPECTION_BOUNDARY`
+closed at `daff799d35709da31434ebb280e0771073b12b52`; its push and final architecture
+review passed. Focused validation was `27 passed`; canonical was
+`3799 passed, 5 deselected, 515 warnings`, `CANONICAL_RC=0`. Warnings were
+non-failing.
+
+Mac AIControlCenter remained sole Control Plane; Ubuntu remained stateless with
+zero authority. `ProtectedSourceMetadataInspectionRequest` carried only closed
+symbolic source identity with `mutation_budget=0`. Capability binding used exact
+request-instance identity rather than dataclass equality.
+Same-source/different-request and cross-source substitutions failed before
+consumption; mismatches did not consume; the original exact request could succeed at most once; reuse failed;
+and concurrent consumption remained exactly once.
+
+Inert test provenance, including inert `SAFE_BOUND`, remained distinct from
+operational factual evidence. No supported
+`HUMAN_AUTHORIZED_OPERATIONAL_INSPECTION` issuer existed;
+`OPERATIONAL_METADATA_EVIDENCE_ISSUER_IMPLEMENTED=false`,
+`OPERATIONAL_CANONICAL_PATH_ISSUER_IMPLEMENTED=false`, and
+`PRODUCTION_OPERATIONAL_INSPECTION_AVAILABLE=false`. Legacy
+`observe_fixed_protected_source` stayed isolated and unreachable. No caller path
+or callback, HOME/environment, argv, fallback, enumeration, or iteration
+authority existed. Governance/SEC-02 stayed unchanged and
+`ControlledExecutionPort` was not reused. Production/protected-source access,
+metadata inspection, content acquisition, and MariaDB/SQL/PyMySQL/Docker/Colima/
+Ubuntu activity did not occur.
+
+Discovery froze `BASE_PATH_POLICY_LAYER_REQUIRED=YES`, proposed
+`AuthoritativeMacProtectedEvidenceBasePathPolicy` and
+`AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity`, and kept the existing
+base-location identity symbolic only. Repository policy, runtime account-home
+resolution, concrete path, source existence, metadata inspection, and safety
+remained distinct. `pwd.getpwuid(os.getuid()).pw_dir` remained only a possible
+future trusted resolver after exact suffix policy; no exact suffix/path was
+selected. All requested path/existence/inspection/safety/acquisition and
+path-authority facts remained false or unknown; insufficient `RECOVER`, false
+Production readiness, and false Shopping runtime were preserved.
+
+Actual historical acquisition and offline evaluation did not occur, so
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. The next repository-only milestone is
+`MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION`, initially
+value-free with zero filesystem I/O/access and no resolution, source check,
+metadata inspection, or runtime resolver. The exact suffix remains unresolved.
+
 ## 2026-08-20 — Protected External Evidence Concrete Source Location Descriptor implementation closeout
 
 The implementation added exactly four closed symbolic Concrete Source Location
