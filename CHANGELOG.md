@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 2026-08-20 — Protected External Evidence Concrete Source Location Descriptor documentation closeout
+
+- Recorded exactly four closed symbolic Concrete Source Location identities and
+  their immutable one-to-one mapping from the four Fixed Source Slot identities.
+  This establishes descriptors only, not authoritative base, path, existence,
+  metadata, acquisition, admission, verification, sufficiency, or authority.
+- Preserved the exact semantic chain through Concrete Source Location Descriptor,
+  Concrete Path Value, Source Existence, Metadata Inspection, Metadata Safety,
+  Content Acquisition, Admission, Verification, and Authority.
+- Kept `PROTECTED_EXTERNAL_EVIDENCE_BASE_LOCATION` symbolic repository policy
+  identity only. All downstream factual flags remain false, offline acquisition
+  unknown, Production access unjustified, and all caller/environment/HOME/argv,
+  fallback, enumeration, and candidate-iteration authority prohibited.
+- Classified reverse lookup solely as deterministic closed immutable mapping
+  traversal to recover canonical profile identity—not discovery, probing,
+  fallback, iteration, caller selection, or environment authority.
+- Reused Fixed Source Slot protection requirements as future policy only,
+  including Mac/outside-Git ownership, `0700` parent, non-symlink leaf no broader
+  than `0600`, uid/gid and future FD/inode/human authorization binding, one-shot
+  maximum-one acquisition, and every no-secret-transport/logging/hashing rule.
+- Recorded focused `7 passed in 0.06s`, final architecture review `PASS`,
+  canonical exactly once (`3772 passed, 5 deselected, 511 warnings in 134.12s
+  (0:02:14)`, `CANONICAL_RC=0`), no correction/rerun, and implementation Git
+  closeout `PASS` at `c3760d2fd9bb0810d3e285ec203b40e5b7b77814`, divergence 0/0.
+- Preserved all Governance, `ControlledExecutionPort`, authorization/mutation,
+  Control Plane, Shopping, and target-only provisioning semantics. Kept
+  Macro-WU-06 in progress with seven WUs remaining over WU06-WU12; no acquisition
+  or evaluation occurred, sufficiency was not evaluated, and WU-07 did not start.
+
 ## 2026-08-20 — Protected External Evidence Fixed Source Slot documentation closeout
 
 - Recorded exactly four symbolic `ProtectedExternalEvidenceFixedSourceSlotIdentity`

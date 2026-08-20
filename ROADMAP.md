@@ -1,6 +1,28 @@
 # Roadmap
 
-## Protected External Evidence Fixed Source Slot — documentation closeout
+## Protected External Evidence Concrete Source Location Descriptor — documentation closeout
+
+- [x] Implement exactly four closed symbolic Concrete Source Location identities
+  with immutable one-to-one mapping from the four Fixed Source Slot identities.
+- [x] Preserve descriptor/path/existence/metadata/acquisition/admission/
+  verification/authority separation and symbolic-only base identity.
+- [x] Preserve every path-authority prohibition and classify reverse lookup only
+  as deterministic closed-mapping traversal for canonical profile recovery.
+- [x] Reuse Fixed Source Slot protection requirements as future policy only,
+  without claiming operational satisfaction.
+- [x] Pass focused validation: `7 passed in 0.06s`.
+- [x] Pass authoritative final architecture review.
+- [x] Run canonical exactly once: `3772 passed, 5 deselected, 511 warnings in
+  134.12s (0:02:14)`, `CANONICAL_RC=0`; no correction or rerun followed.
+- [x] Complete implementation Git closeout at
+  `c3760d2fd9bb0810d3e285ec203b40e5b7b77814`, `AHEAD=0`, `BEHIND=0`.
+- [x] Preserve all governance, architecture, Shopping, Control Plane, no-activity,
+  and Macro-WU-06 facts; do not start or imply Macro-WU-07.
+- [ ] Complete exact-six-document documentation Git closeout.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
+## Protected External Evidence Fixed Source Slot — prior documentation closeout
 
 - [x] Implement exactly four symbolic
   `ProtectedExternalEvidenceFixedSourceSlotIdentity` values and the immutable,

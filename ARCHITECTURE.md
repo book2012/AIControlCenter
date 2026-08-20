@@ -1,5 +1,70 @@
 # AI Home Datacenter Architecture
 
+## Protected External Evidence Concrete Source Location Descriptor — Documentation Closeout
+
+Exactly four closed symbolic `ProtectedExternalEvidenceConcreteSourceLocationIdentity`
+values map one-to-one and immutably from the four
+`ProtectedExternalEvidenceFixedSourceSlotIdentity` values. This layer establishes
+only a Concrete Source Location Descriptor. It establishes no Authoritative Mac
+Base Path, Concrete Path Value, Source Existence, Historical Evidence Existence,
+Metadata Inspection, Metadata Safety, Content Acquisition, Admission,
+Verification, `RECOVER` Evidence Sufficiency, or Authority.
+
+Semantic separation is exact: `EvidenceAcquisitionCategory` != Source Bundle
+Identity != Protected Source Profile Identity != Fixed Source Slot Identity !=
+Concrete Source Location Descriptor != Concrete Path Value != Source Existence
+!= Metadata Inspection != Metadata Safety != Content Acquisition != Admission
+!= Verification != Authority. `PROTECTED_EXTERNAL_EVIDENCE_BASE_LOCATION` is a
+closed repository policy identity only—not a filesystem path, directory
+existence fact, resolved path, metadata-safe location, or acquisition source.
+
+Current facts are `AUTHORITATIVE_BASE_LOCATION_ALREADY_EXISTS=false`,
+`CONCRETE_PATH_VALUE_ESTABLISHED=false`, `SOURCE_EXISTENCE_ESTABLISHED=false`,
+`HISTORICAL_EVIDENCE_EXISTENCE_ESTABLISHED=false`,
+`METADATA_INSPECTION_PERFORMED=false`, `SOURCE_METADATA_SAFE=false`,
+`CONTENT_ACQUISITION_PERFORMED=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+and `PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`. Location/path authority is
+closed: caller location selection and path injection, environment/HOME/argv
+authority, fallback, path enumeration, and candidate iteration are all false.
+
+Internal reverse lookup is deterministic traversal of a closed immutable
+repository mapping solely to recover canonical profile identity. It is not
+filesystem or path discovery, candidate iteration, fallback, probing, caller
+selection, or environment authority.
+
+Descriptors reuse canonical Fixed Source Slot protection requirements without
+claiming operational satisfaction: Mac Control Plane ownership outside Git;
+protected parent exact `0700`; regular non-symlink leaf no broader than `0600`;
+explicit trusted uid/gid; future FD/inode binding, explicit human authorization,
+and one-shot acquisition; maximum one acquisition per future authorization; no
+fallback, enumeration, candidate iteration, environment/HOME authority, argv or
+JSON secret-value transport, secret logging, or secret hashing.
+
+Chronology: focused `7 passed in 0.06s`; authoritative final architecture review
+`PASS`; canonical exactly once, `3772 passed, 5 deselected, 511 warnings in
+134.12s (0:02:14)`, `CANONICAL_RC=0`; no code/test correction and no canonical
+rerun; implementation Git closeout
+`CONCRETE_SOURCE_LOCATION_IMPLEMENTATION_GIT_CLOSEOUT=PASS` at
+`c3760d2fd9bb0810d3e285ec203b40e5b7b77814`, `AHEAD=0`, `BEHIND=0`.
+
+No Governance or `ControlledExecutionPort` behavior changed. No authorization,
+mutation-budget, SEC-02, durable-consumption, SQLite-governance, capability,
+retry, rollback, or Production-mutation semantics changed. Preserved governance
+is `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, `ROTATE_AUTHORIZED=false`,
+`REPLACE_AUTHORIZED=false`, `STRATEGY_EXECUTED=false`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+The exact six Shopping secret actions remain unchanged and
+`SHOPPING_SECRET_PROVISIONING` remains target-only.
+
+Mac AIControlCenter remains sole Control Plane; Ubuntu remains a stateless
+infrastructure worker with zero Control Plane authority. This is repository
+preparation inside Macro-WU-06 Actual Historical Evidence Acquisition + Offline
+Evaluation. Neither activity occurred; `RECOVER_EVIDENCE_SUFFICIENT` has not
+been factually evaluated, and Macro-WU-07 has not started.
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## Protected External Evidence Fixed Source Slot — Documentation Closeout
 
 This repository-preparation submilestone belongs inside authoritative Macro-WU-06

@@ -1,5 +1,46 @@
 # AIControlCenter
 
+## Current milestone — Protected External Evidence Concrete Source Location Descriptor documentation closeout
+
+Exactly four closed symbolic Concrete Source Location identities map one-to-one
+and immutably from the four Fixed Source Slot identities. This establishes only
+descriptors—not an Authoritative Mac Base Path, Concrete Path Value, existence,
+metadata inspection/safety, acquisition, admission, verification, `RECOVER`
+sufficiency, or authority.
+
+The exact chain is category != bundle != protected profile != fixed slot !=
+Concrete Source Location Descriptor != Concrete Path Value != Source Existence
+!= Metadata Inspection != Metadata Safety != Content Acquisition != Admission
+!= Verification != Authority. `PROTECTED_EXTERNAL_EVIDENCE_BASE_LOCATION` is
+closed repository policy identity only, not a filesystem path, existence fact,
+resolved path, metadata-safe location, or acquisition source. All downstream
+facts remain false, offline acquisition `UNKNOWN`, and Production access
+unjustified.
+
+All caller/environment/HOME/argv path authority, fallback, enumeration, and
+candidate iteration remain prohibited. Reverse lookup is deterministic traversal
+of the closed immutable mapping solely to recover canonical profile identity,
+not discovery, probing, fallback, iteration, caller selection, or environment
+authority. Fixed Source Slot protections are future requirements only: Mac
+ownership outside Git; exact `0700` parent; regular non-symlink leaf no broader
+than `0600`; trusted uid/gid; future FD/inode and human authorization binding;
+one-shot acquisition, maximum one per authorization; and no fallback,
+enumeration, candidate iteration, environment/HOME authority, argv/JSON secret
+transport, secret logging, or secret hashing.
+
+Chronology: focused `7 passed in 0.06s`; final architecture review `PASS`;
+canonical exactly once, `3772 passed, 5 deselected, 511 warnings in 134.12s
+(0:02:14)`, `CANONICAL_RC=0`; no correction or rerun; implementation Git
+closeout `PASS` at `c3760d2fd9bb0810d3e285ec203b40e5b7b77814`, `AHEAD=0`,
+`BEHIND=0`.
+
+Governance, `ControlledExecutionPort`, all authorization/mutation semantics,
+Mac sole Control Plane, stateless zero-authority Ubuntu, exact-six Shopping
+actions, and target-only provisioning remain unchanged. This is preparation in
+Macro-WU-06. Acquisition and offline evaluation did not occur, sufficiency was
+not evaluated, and Macro-WU-07 did not start. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## Current milestone — Protected External Evidence Fixed Source Slot documentation closeout
 
 The repository owns exactly four symbolic

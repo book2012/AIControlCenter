@@ -1,5 +1,37 @@
 # Project History
 
+## 2026-08-20 — Protected External Evidence Concrete Source Location Descriptor implementation closeout
+
+The implementation added exactly four closed symbolic Concrete Source Location
+identities with immutable one-to-one mapping from the four Fixed Source Slot
+identities. It established descriptors only, preserving the full separation from
+authoritative base, concrete path, existence, metadata inspection/safety,
+acquisition, admission, verification, `RECOVER` sufficiency, and authority.
+`PROTECTED_EXTERNAL_EVIDENCE_BASE_LOCATION` remained closed repository policy
+identity only—not a path, existence fact, resolved path, safe location, or
+acquisition source. All downstream facts stayed false, offline acquisition
+unknown, and Production access unjustified.
+
+All caller/environment/HOME/argv path authority, fallback, enumeration, and
+candidate iteration stayed prohibited. Reverse lookup was only deterministic
+closed-mapping traversal to recover canonical profile identity, never discovery,
+probing, fallback, iteration, caller selection, or environment authority. Fixed
+Source Slot protection requirements were reused only as future policy; no
+operational satisfaction was claimed.
+
+Focused validation was `7 passed in 0.06s`; final architecture review `PASS`;
+canonical ran exactly once with `3772 passed, 5 deselected, 511 warnings in
+134.12s (0:02:14)`, `CANONICAL_RC=0`; no correction or rerun followed.
+Implementation Git closeout passed at
+`c3760d2fd9bb0810d3e285ec203b40e5b7b77814`, `AHEAD=0`, `BEHIND=0`.
+
+Governance, `ControlledExecutionPort`, authorization/mutation semantics, Mac
+sole Control Plane, stateless zero-authority Ubuntu, exact-six Shopping actions,
+and target-only provisioning remained unchanged. This stayed preparation inside
+Macro-WU-06; no acquisition/evaluation occurred, sufficiency was not evaluated,
+and Macro-WU-07 did not start. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## 2026-08-20 — Protected External Evidence Fixed Source Slot implementation closeout
 
 The repository-owned symbolic Fixed Source Slot layer established exactly four
