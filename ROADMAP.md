@@ -35,7 +35,7 @@
   zero-authority, no-Production-access semantics; all required governance flags,
   exact six Shopping actions, target-only `SHOPPING_SECRET_PROVISIONING`, and
   operational no-activity truth.
-- [ ] Complete exact-six-document Git closeout.
+- [x] Complete exact-six-document Git closeout.
 
 No focused or canonical validation is rerun for this documentation-only work.
 
