@@ -38,7 +38,7 @@
   `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
   `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; retain authoritative Macro-WU-07 as
   the later factual `RECOVER_EVIDENCE_SUFFICIENT` decision.
-- [ ] Complete exact-six-document documentation Git closeout.
+- [x] Complete exact-six-document documentation Git closeout.
 
 No focused or canonical validation is rerun for this documentation-only work.
 
