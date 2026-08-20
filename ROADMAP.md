@@ -26,7 +26,7 @@
 - [x] Preserve all architecture, governance, exact-six-action, target-only
   provisioning, macro-program, and operational no-activity facts; Macro-WU-06
   remains `IN_PROGRESS` and Macro-WU-07 has not started.
-- [ ] Complete exact-six-document documentation Git closeout.
+- [x] Complete exact-six-document documentation Git closeout.
 
 No focused or canonical validation is rerun for this documentation-only work.
 
