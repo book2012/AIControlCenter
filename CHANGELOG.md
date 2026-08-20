@@ -1,5 +1,38 @@
 # CHANGELOG
 
+## 2026-08-21 — Authoritative Mac protected evidence suffix policy implementation closeout
+
+- Recorded chronology: exact suffix architecture contract established at
+  `e1e66ac17b3506a4bff4bd0a9322fc7360ca6536`; repository policy implemented and
+  Git-closed at `6c7b18ab942024120b06d1eb0235c7b67b7916df`.
+- Closed only
+  `MACRO_WU_06_AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY_IMPLEMENTATION`;
+  preserved `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- Established the exact repository-owned relative suffix
+  `Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`
+  and preserved its strict separation from base identities, runtime trusted Mac
+  account-home resolution, absolute/concrete path, existence, inspection,
+  safety, acquisition, admission, verification, and authority.
+- Preserved no caller/environment/HOME/argv/fallback/enumeration/iteration path
+  authority; zero filesystem I/O and zero protected-source/Production access;
+  no MariaDB/SQL/PyMySQL, Docker/Colima, Ubuntu, Governance-core, SEC-02, or
+  `ControlledExecutionPort` coupling; and isolated/unreachable legacy observer.
+- Preserved every required false/unestablished downstream fact,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- Recorded focused `6 passed in 0.06s`, Final Architecture Review `PASS`, and
+  canonical `3811 passed, 5 deselected, 523 warnings in 134.83s`,
+  `CANONICAL_RC=0`; warnings were non-failing.
+- Preserved Mac AIControlCenter as sole Control Plane and Ubuntu as a stateless
+  infrastructure worker with zero Control Plane authority.
+- Next repository activity: architecture-discover/freeze the trusted Mac
+  account-home resolution boundary before any concrete path composition or
+  runtime resolver. The next Production-relevant milestone remains actual
+  historical evidence acquisition and offline evaluation completion under
+  Macro-WU06.
+
 ## 2026-08-20 — Authoritative Mac base path policy implementation closeout
 
 - Closed `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION` as a

@@ -1,5 +1,38 @@
 # Roadmap
 
+## Authoritative Mac Protected Evidence Suffix Policy Implementation — documentation closeout
+
+- [x] Establish the exact suffix architecture contract first at
+  `e1e66ac17b3506a4bff4bd0a9322fc7360ca6536`.
+- [x] Implement and Git-close
+  `MACRO_WU_06_AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY_IMPLEMENTATION`
+  at `6c7b18ab942024120b06d1eb0235c7b67b7916df`.
+- [x] Own exactly the relative suffix
+  `Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`
+  without establishing an absolute/concrete path or runtime home resolver.
+- [x] Preserve strict identity/value/resolution/path/existence/inspection/safety/
+  acquisition/admission/verification/authority separation and every caller,
+  environment/HOME, argv, fallback, enumeration, and iteration prohibition.
+- [x] Preserve zero filesystem I/O, zero protected-source/Production access, no
+  MariaDB/SQL/PyMySQL or Docker/Colima mutation, no Ubuntu authority, unchanged
+  Governance/SEC-02, no `ControlledExecutionPort`, and isolated legacy observer.
+- [x] Record focused `6 passed in 0.06s`, Final Architecture Review `PASS`,
+  canonical `3811 passed, 5 deselected, 523 warnings in 134.83s`, and
+  `CANONICAL_RC=0`; warnings were non-failing.
+- [x] Keep every required downstream fact false/unestablished,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, insufficient `RECOVER`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- [x] Keep Mac AIControlCenter sole Control Plane, Ubuntu stateless with zero
+  Control Plane authority, `MACRO_WU_06=IN_PROGRESS`, seven authoritative WUs
+  remaining, and range WU06-WU12.
+- [ ] Next repository activity: architecture-discover/freeze the trusted Mac
+  account-home resolution boundary before any concrete path composition or
+  runtime resolver.
+- [ ] Next Production-relevant milestone: complete actual historical evidence
+  acquisition and offline evaluation under Macro-WU06.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
 ## Protected External Evidence Exact Suffix Architecture Contract
 
 - [x] Resolve
@@ -20,9 +53,9 @@
   facts; keep `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
   `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
   `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
-- [ ] Next repository milestone:
+- [x] Subsequently completed repository milestone:
   `MACRO_WU_06_AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY_IMPLEMENTATION`.
-  Do not implement the policy or trusted account-home resolver in this work.
+  This did not implement a trusted account-home resolver.
 
 No focused or canonical validation is run for this architecture-only work.
 

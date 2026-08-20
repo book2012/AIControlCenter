@@ -1,5 +1,35 @@
 # Project History
 
+## 2026-08-21 — Authoritative Mac protected evidence suffix policy implementation
+
+Chronology is explicit: the exact suffix architecture contract was established
+at `e1e66ac17b3506a4bff4bd0a9322fc7360ca6536`; the repository policy was then
+implemented and Git-closed at `6c7b18ab942024120b06d1eb0235c7b67b7916df`.
+The implementation submilestone closed with focused `6 passed in 0.06s`, Final
+Architecture Review `PASS`, and canonical `3811 passed, 5 deselected, 523
+warnings in 134.83s`, `CANONICAL_RC=0`; warnings were non-failing.
+
+The implementation established only the repository-owned relative suffix
+`Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`.
+It did not establish an absolute/concrete path, a runtime home resolver,
+existence, metadata, acquisition, admission, verification, sufficiency,
+Production readiness, or authority. All caller/environment/HOME/argv/fallback/
+enumeration/iteration authority remained prohibited; filesystem I/O,
+protected-source/Production access, MariaDB/SQL/PyMySQL, Docker/Colima mutation,
+Ubuntu authority, Governance-core/SEC-02 change, and `ControlledExecutionPort`
+coupling did not occur. The legacy caller-path observer remained isolated and
+unreachable.
+
+Mac AIControlCenter remained sole Control Plane; Ubuntu remained a stateless
+infrastructure worker with zero Control Plane authority. The repository
+submilestone closed, but `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. The next repository activity is
+architecture discovery/freeze of the trusted Mac account-home resolution
+boundary before concrete path composition or a runtime resolver. Actual
+historical evidence acquisition and offline evaluation completion remains the
+next Production-relevant milestone under Macro-WU06.
+
 ## 2026-08-20 — Authoritative Mac base path policy implementation
 
 The repository-only implementation/documentation submilestone

@@ -1,5 +1,44 @@
 # AIControlCenter
 
+## Authoritative Mac protected evidence suffix policy implementation closeout
+
+The exact suffix architecture contract was established at
+`e1e66ac17b3506a4bff4bd0a9322fc7360ca6536`, then implemented and Git-closed at
+`6c7b18ab942024120b06d1eb0235c7b67b7916df`. The closed repository submilestone
+owns only the exact relative suffix
+`Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`,
+relative to a future trusted Mac account home. It establishes no absolute or
+concrete path and provides no runtime home resolver.
+
+The separation remains base-location identity != base-path policy identity !=
+suffix-policy identity != exact suffix value != runtime trusted Mac account-home
+resolution != absolute path != concrete path != source existence != metadata
+inspection != metadata safety != acquisition != admission != verification !=
+authority. Caller path/base/home/suffix, environment/`HOME`, argv, fallback,
+enumeration, and candidate-iteration authority remain prohibited. There is no
+filesystem I/O, protected-source or Production access, MariaDB/SQL/PyMySQL
+activity, Docker/Colima mutation, Ubuntu authority, Governance-core or SEC-02
+change, or `ControlledExecutionPort` coupling; the legacy caller-path observer
+remains isolated and unreachable.
+
+Focused validation was `6 passed in 0.06s`; Final Architecture Review was
+`PASS`; canonical was `3811 passed, 5 deselected, 523 warnings in 134.83s`,
+`CANONICAL_RC=0`; warnings were non-failing. All path, existence, inspection,
+safety, acquisition, admission, verification, sufficiency, Production-readiness,
+and Shopping activation facts remain false as frozen;
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Mac AIControlCenter remains sole Control Plane and Ubuntu remains stateless with
+zero Control Plane authority. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. Next is architecture discovery/freeze
+of the trusted Mac account-home resolution boundary before any concrete path
+composition or runtime resolver. The next Production-relevant milestone remains
+actual historical evidence acquisition and offline evaluation completion under
+Macro-WU06.
+
 ## Authoritative Mac base path policy implementation
 
 `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION` is closed as a

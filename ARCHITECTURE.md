@@ -1,5 +1,62 @@
 # AI Home Datacenter Architecture
 
+## Authoritative Mac Protected Evidence Suffix Policy Implementation — Documentation Closeout
+
+The exact suffix architecture contract was established first at commit
+`e1e66ac17b3506a4bff4bd0a9322fc7360ca6536`. The repository-only suffix policy
+implementation then closed at commit `6c7b18ab942024120b06d1eb0235c7b67b7916df`
+as `MACRO_WU_06_AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY_IMPLEMENTATION`.
+That repository implementation submilestone is closed; Macro-WU06 is not closed.
+
+The implementation owns the exact relative suffix
+`Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`.
+`EXACT_SUFFIX_POLICY_LAYER_REQUIRED=true`,
+`EXACT_SUFFIX_POLICY_EVIDENCE=ESTABLISHED_BY_ARCHITECTURE_DECISION`,
+`EXACT_SUFFIX_VALUE_ESTABLISHED=true`, and
+`SUFFIX_IS_RELATIVE_TO_TRUSTED_ACCOUNT_HOME=true`.
+
+Architecture separation remains exact:
+`ProtectedExternalEvidenceBaseLocationIdentity` !=
+`AuthoritativeMacProtectedEvidenceBasePathPolicyIdentity` !=
+`AuthoritativeMacProtectedEvidenceSuffixPolicyIdentity` != exact suffix value
+!= runtime trusted Mac account-home resolution != absolute path != concrete path
+!= source existence != metadata inspection != metadata safety != content
+acquisition != admission != verification != authority. There is no caller
+path/base/home/suffix authority, environment or `HOME` authority, argv authority,
+fallback, enumeration, candidate iteration, filesystem I/O, protected-source or
+Production access, MariaDB connection, SQL, PyMySQL execution, Docker/Colima
+mutation, Ubuntu authority, Governance-core coupling, SEC-02 semantic change, or
+`ControlledExecutionPort` coupling. The legacy caller-path observer remains
+isolated and unreachable.
+
+`ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`,
+`RUNTIME_HOME_RESOLVER_AVAILABLE=false`,
+`AUTHORITATIVE_BASE_LOCATION_ALREADY_EXISTS=false`,
+`SOURCE_EXISTENCE_ESTABLISHED=false`,
+`HISTORICAL_EVIDENCE_EXISTENCE_ESTABLISHED=false`,
+`METADATA_INSPECTION_PERFORMED=false`, `SOURCE_METADATA_SAFE=false`,
+`CONTENT_ACQUISITION_PERFORMED=false`, `EVIDENCE_ADMITTED=false`,
+`EVIDENCE_VERIFIED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`PRODUCTION_ACCESS_CURRENTLY_JUSTIFIED=false`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Focused validation was `6 passed in 0.06s`; Final Architecture Review was
+`PASS`; canonical validation was `3811 passed, 5 deselected, 523 warnings in
+134.83s` with `CANONICAL_RC=0`. Warnings were non-failing. Mac AIControlCenter
+remains the sole Control Plane; Ubuntu remains a stateless infrastructure worker
+with zero Control Plane authority. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
+The next repository activity is architecture discovery/freeze of the trusted
+Mac account-home resolution boundary before any concrete path composition or
+runtime resolver. The next Production-relevant milestone remains actual
+historical evidence acquisition and offline evaluation completion under
+Macro-WU06.
+
 ## Protected External Evidence Exact Suffix Architecture Contract
 
 The repository-owned exact suffix is established by architecture decision as
@@ -9,11 +66,12 @@ absolute or concrete path, and no runtime home resolver exists. The complete
 contract is
 [`docs/architecture/MACRO-WU-06-PROTECTED-EXTERNAL-EVIDENCE-SUFFIX-CONTRACT.md`](docs/architecture/MACRO-WU-06-PROTECTED-EXTERNAL-EVIDENCE-SUFFIX-CONTRACT.md).
 
-The future repository layer is
+The repository layer is
 `AuthoritativeMacProtectedEvidenceSuffixPolicy`, with identity
 `AuthoritativeMacProtectedEvidenceSuffixPolicyIdentity` and symbolic identity
-`AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY`. It is not implemented by
-this architecture work unit. Exact suffix policy remains distinct from base
+`AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY`; it was subsequently
+implemented at commit `6c7b18ab942024120b06d1eb0235c7b67b7916df`. Exact suffix
+policy remains distinct from base
 location identity, base-path policy identity, runtime account-home resolution,
 concrete path, existence, inspection, safety, acquisition, admission,
 verification, and authority. Existing governance, shopping-secret,
@@ -35,9 +93,9 @@ resolver availability, existence, inspection, safety, acquisition, admission,
 verification, and Production readiness remain false or unestablished.
 `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, `MACRO_WU_06=IN_PROGRESS`,
 `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
-`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` remain authoritative. Next is
-`MACRO_WU_06_AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY_IMPLEMENTATION`;
-it is not authorized by this contract.
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` remain authoritative. The contract did
+not itself authorize implementation; the later implementation closeout is
+recorded above.
 
 ## Authoritative Mac Base Path Policy Implementation — Documentation Closeout
 
