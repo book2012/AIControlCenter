@@ -1,5 +1,31 @@
 # Roadmap
 
+## Protected External Evidence Exact Suffix Architecture Contract
+
+- [x] Resolve
+  `NO_REPOSITORY_OWNED_PROTECTED_EXTERNAL_EVIDENCE_SPECIFIC_EXACT_SUFFIX_CONTRACT`
+  with a dedicated repository architecture contract.
+- [x] Establish the exact relative suffix
+  `Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`
+  for future composition with `TRUSTED_MAC_ACCOUNT_HOME`.
+- [x] Preserve suffix-policy identity != exact suffix value != runtime home
+  resolution != concrete path != existence != inspection != safety !=
+  acquisition != admission != verification != authority.
+- [x] Preserve all caller/environment/HOME/argv/fallback/enumeration/iteration
+  path-authority prohibitions and zero authority.
+- [x] Preserve Mac sole Control Plane, stateless zero-authority Ubuntu,
+  unchanged Governance/SEC-02 semantics, and no `ControlledExecutionPort`
+  coupling.
+- [x] Preserve all false/unknown downstream evidence, Production, and runtime
+  facts; keep `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+  `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- [ ] Next repository milestone:
+  `MACRO_WU_06_AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY_IMPLEMENTATION`.
+  Do not implement the policy or trusted account-home resolver in this work.
+
+No focused or canonical validation is run for this architecture-only work.
+
 ## Authoritative Mac Base Path Policy Implementation — documentation closeout
 
 - [x] Close `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION` as a
@@ -28,9 +54,9 @@
   `AUTHORITATIVE_BASE_PATH_POLICY_DEFINED=true`, every required false/unknown
   downstream fact, `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
   `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
-- [ ] Next repository architecture activity: discover and freeze the future
-  exact protected-evidence suffix policy. Do not implement or guess the suffix,
-  select a directory name, establish a path, or add a runtime resolver.
+- [x] Subsequently establish the exact relative protected-evidence suffix in a
+  dedicated architecture contract without adding a concrete path or runtime
+  resolver.
 
 No focused or canonical validation is rerun for this documentation-only work.
 

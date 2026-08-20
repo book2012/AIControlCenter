@@ -1,5 +1,44 @@
 # AI Home Datacenter Architecture
 
+## Protected External Evidence Exact Suffix Architecture Contract
+
+The repository-owned exact suffix is established by architecture decision as
+`Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`.
+It is relative to a future trusted Mac account-home resolver; it is not an
+absolute or concrete path, and no runtime home resolver exists. The complete
+contract is
+[`docs/architecture/MACRO-WU-06-PROTECTED-EXTERNAL-EVIDENCE-SUFFIX-CONTRACT.md`](docs/architecture/MACRO-WU-06-PROTECTED-EXTERNAL-EVIDENCE-SUFFIX-CONTRACT.md).
+
+The future repository layer is
+`AuthoritativeMacProtectedEvidenceSuffixPolicy`, with identity
+`AuthoritativeMacProtectedEvidenceSuffixPolicyIdentity` and symbolic identity
+`AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY`. It is not implemented by
+this architecture work unit. Exact suffix policy remains distinct from base
+location identity, base-path policy identity, runtime account-home resolution,
+concrete path, existence, inspection, safety, acquisition, admission,
+verification, and authority. Existing governance, shopping-secret,
+runtime/build/staging, WordPress/WooCommerce, and Ubuntu paths acquire no
+authority.
+
+All caller base-path/path/suffix injection, environment or HOME authority, argv
+authority, fallback, enumeration, and candidate iteration remain prohibited.
+The contract grants zero authority. Mac AIControlCenter remains the sole Control
+Plane; Ubuntu remains a stateless zero-authority infrastructure worker.
+Governance and SEC-02 semantics are unchanged, and `ControlledExecutionPort` is
+not coupled.
+
+`EXACT_SUFFIX_POLICY_LAYER_REQUIRED=true`,
+`EXACT_SUFFIX_POLICY_EVIDENCE=ESTABLISHED_BY_ARCHITECTURE_DECISION`,
+`EXACT_SUFFIX_VALUE_ESTABLISHED=true`, and
+`SUFFIX_IS_RELATIVE_TO_TRUSTED_ACCOUNT_HOME=true`. Absolute/concrete path,
+resolver availability, existence, inspection, safety, acquisition, admission,
+verification, and Production readiness remain false or unestablished.
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` remain authoritative. Next is
+`MACRO_WU_06_AUTHORITATIVE_MAC_PROTECTED_EVIDENCE_SUFFIX_POLICY_IMPLEMENTATION`;
+it is not authorized by this contract.
+
 ## Authoritative Mac Base Path Policy Implementation — Documentation Closeout
 
 `MACRO_WU_06_AUTHORITATIVE_MAC_BASE_PATH_POLICY_IMPLEMENTATION` is `CLOSED` as a
@@ -26,8 +65,9 @@ coupling.
 Architecture separation is exact: repository policy identity != exact suffix
 policy != runtime account-home resolution != concrete path != source existence
 != metadata inspection != metadata safety != content acquisition != admission
-!= verification != authority. The exact protected-evidence suffix remains
-unresolved and must not be guessed. No directory, concrete path, source
+!= verification != authority. The exact protected-evidence suffix was unresolved
+within that earlier implementation submilestone; the subsequent architecture
+decision above now establishes it. No directory, concrete path, source
 existence, metadata inspection, or Production access is established or implied.
 
 Implementation commit `ab9de4a08c35de3805983346cf7f1a6d9accccdb` was pushed
@@ -63,9 +103,9 @@ REMAINING_AUTHORITATIVE_MACRO_WUS=7
 AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
 ```
 
-Next is repository architecture discovery/freeze for the future exact
-protected-evidence suffix policy. It must not implement or guess the suffix,
-select a directory name, establish a path, or add a runtime resolver.
+The subsequent repository architecture contract now establishes the exact
+relative suffix, without establishing an absolute/concrete path or runtime
+resolver, as recorded above.
 
 ## Protected External Evidence Source Access and Metadata Inspection Boundary — Documentation Closeout
 
