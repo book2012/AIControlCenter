@@ -1,5 +1,66 @@
 # AI Home Datacenter Architecture
 
+## MariaDB Continuity Evidence Source Binding — Documentation Closeout
+
+This repository-preparation submilestone belongs inside authoritative Macro-WU-06
+Actual Historical Evidence Acquisition + Offline Evaluation. Its local
+`SOURCE_BINDING WU-10/WU-11/WU-12` labels are not authoritative integrated-program
+Macro-WU-10/WU-11/WU-12. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. Original authoritative Macro-WU-07
+remains the later factual `RECOVER_EVIDENCE_SUFFICIENT` decision. This contract
+completed neither actual historical evidence acquisition nor offline evidence
+evaluation, and does not close Macro-WU-06.
+
+Discovery and freeze established four closed typed protected-source bundle
+identities and a total, unique mapping of exactly twelve
+`EvidenceAcquisitionCategory` values. `CATEGORY_TO_BUNDLE_MAPPING` is an immutable
+`MappingProxyType`; `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`.
+The contract is `repository_only=true`, `value_free=true`, `fail_closed=true`,
+`zero_authority=true`, zero-I/O, and grants no Production access.
+
+The final construction boundary is closed: `_canonical_bundle` accepts identity
+only and internally derives categories exclusively from
+`CATEGORY_TO_BUNDLE_MAPPING`; no helper accepts caller-supplied category tuples.
+Direct caller construction of `ProtectedSourceBundlePolicy` is impossible,
+canonical instances remain frozen, and the exact four bundle identities and
+exact twelve total unique categories remain unchanged. No permanent Git-state
+test exists.
+
+Architecture separation is strict: descriptor classification != source bundle
+identity; source bundle identity != source location; source location != source
+existence; source existence != metadata safety; metadata safety != acquisition;
+acquisition != admission; admission != verification; verification != authority.
+
+WU-11 first completed the exact four-file implementation and passed focused
+validation. Architecture review then identified caller-selectable bundle/category
+construction; the permanent Git-state test was removed, caller bundle
+construction was closed, and the immutable mapping was preserved. Corrected
+focused validation passed. Additional hardening changed `_canonical_bundle` to
+identity-only internal derivation; final focused validation was `26 passed in
+0.11s`, followed by authoritative final architecture review `PASS`.
+
+WU-12 ran canonical exactly once after that final corrected review:
+`3742 passed, 5 deselected, 499 warnings`, `CANONICAL_RC=0`. Warnings were
+non-failing; no code/test correction followed, so canonical was not rerun.
+Implementation commit `795d93c6e9f577a0e222c9617c23468b354d7a5b` and normal
+push passed with `AHEAD=0`, `BEHIND=0`; implementation Git closeout is `PASS`.
+
+Preserved governance is `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, `ROTATE_AUTHORIZED=false`,
+`REPLACE_AUTHORIZED=false`, `STRATEGY_EXECUTED=false`,
+`PRODUCTION_VALIDATION_READY=false`, and `SHOPPING_RUNTIME_ACTIVATED=false`.
+The exact six Shopping actions remain `SHOPPING_SECRET_TOOL:SOPS_INSTALL_ENSURE`,
+`SHOPPING_SECRET_TOOL:AGE_INSTALL_ENSURE`,
+`SHOPPING_SECRET_IDENTITY:CONTROL_PLANE_CREATE`,
+`SHOPPING_SECRET_RECIPIENT:CONTROL_PLANE_REGISTER_VALIDATE`,
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_REGISTER_VALIDATE`, and
+`SHOPPING_SECRET_RECIPIENT:OFFLINE_RECOVERY_INTAKE`;
+`SHOPPING_SECRET_PROVISIONING` remains target-only. Operational truth is
+`PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
+`SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`, `PYMYSQL_ACTIVITY=NONE`,
+and `NOTION_SYNC=NOT_PERFORMED`.
+
 ## MariaDB Continuity Integrated WU-09 — Evidence Acquisition Descriptor Documentation Closeout
 
 Exact closeout chronology: `MARIADB_CONTINUITY_INTEGRATED_WU_07_DISCOVERY_RECONCILE_GATE=PASS`,

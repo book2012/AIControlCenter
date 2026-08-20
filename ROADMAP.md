@@ -1,5 +1,44 @@
 # Roadmap
 
+## MariaDB Continuity Evidence Source Binding — documentation closeout
+
+- [x] Freeze four closed typed protected-source bundle identities and exactly
+  twelve total unique `EvidenceAcquisitionCategory` mappings.
+- [x] Preserve immutable `MappingProxyType` `CATEGORY_TO_BUNDLE_MAPPING` and
+  `CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`.
+- [x] Close caller bundle/category construction: `_canonical_bundle` accepts
+  identity only, derives exclusively from the mapping, and no helper accepts
+  caller-supplied category tuples.
+- [x] Keep `ProtectedSourceBundlePolicy` direct caller construction impossible,
+  canonical instances frozen, exact identity/category cardinality unchanged,
+  and no permanent Git-state test.
+- [x] Preserve classification != bundle identity != location != existence !=
+  metadata safety != acquisition != admission != verification != authority.
+- [x] Record WU-11 final focused `26 passed in 0.11s` and authoritative final
+  architecture review `PASS` after all corrections.
+- [x] Record WU-12 canonical exactly once:
+  `3742 passed, 5 deselected, 499 warnings`, `CANONICAL_RC=0`; warnings
+  non-failing, no subsequent correction,
+  and no rerun.
+- [x] Record implementation commit
+  `795d93c6e9f577a0e222c9617c23468b354d7a5b`, normal push `PASS`, `AHEAD=0`,
+  `BEHIND=0`, and implementation Git closeout `PASS`.
+- [x] Keep local `SOURCE_BINDING WU-10/WU-11/WU-12` inside authoritative
+  Macro-WU-06; do not confuse them with integrated-program Macro-WUs.
+- [x] Preserve `MACRO_WU_06=IN_PROGRESS`,
+  `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; Macro-WU-07 remains the later
+  factual `RECOVER_EVIDENCE_SUFFICIENT` decision.
+- [x] Record that no actual historical evidence acquisition or offline evidence
+  evaluation is complete and Macro-WU-06 is not closed.
+- [x] Preserve repository-only, value-free, fail-closed, zero-I/O,
+  zero-authority, no-Production-access semantics; all required governance flags,
+  exact six Shopping actions, target-only `SHOPPING_SECRET_PROVISIONING`, and
+  operational no-activity truth.
+- [ ] Complete exact-six-document Git closeout.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
 ## MariaDB Continuity Integrated WU-09 — documentation closeout
 
 - [x] `MARIADB_CONTINUITY_INTEGRATED_WU_07_DISCOVERY_RECONCILE_GATE=PASS`.

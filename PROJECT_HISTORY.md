@@ -1,5 +1,52 @@
 # Project History
 
+## 2026-08-20 — MariaDB Continuity Evidence Source Binding implementation closeout
+
+Discovery/freeze established four closed typed protected-source bundle identities
+and exactly twelve total unique `EvidenceAcquisitionCategory` mappings under
+repository-only, zero-I/O, value-free, fail-closed, zero-authority semantics,
+with no Production access.
+
+WU-11 initially completed the exact four-file implementation and passed focused
+validation. Architecture review found caller-selectable bundle/category
+construction, after which the permanent Git-state test was removed, caller
+bundle construction was closed, the immutable `MappingProxyType` mapping was
+preserved, and corrected focused validation passed. Additional factory
+hardening made `_canonical_bundle` accept identity only and internally derive
+categories exclusively from `CATEGORY_TO_BUNDLE_MAPPING`; no helper accepts
+caller-supplied category tuples. Direct `ProtectedSourceBundlePolicy` caller
+construction is impossible, canonical instances are frozen, and the exact four
+identities and twelve total unique categories remain unchanged. Final focused
+validation was `26 passed in 0.11s`; final architecture review was `PASS`.
+
+WU-12 ran canonical exactly once after the corrected final review. It returned
+`3742 passed, 5 deselected, 499 warnings` and `CANONICAL_RC=0`; warnings were
+non-failing. No code/test correction followed and canonical was not rerun.
+Implementation commit `795d93c6e9f577a0e222c9617c23468b354d7a5b` was pushed
+normally; `AHEAD=0`, `BEHIND=0`, and implementation Git closeout was `PASS`.
+
+The source-binding labels `WU-10/WU-11/WU-12` were repository preparation inside
+authoritative Macro-WU-06 Actual Historical Evidence Acquisition + Offline
+Evaluation, not authoritative integrated-program Macro-WU-10/WU-11/WU-12.
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; original authoritative Macro-WU-07
+remains the later factual `RECOVER_EVIDENCE_SUFFICIENT` decision. This work
+acquired and evaluated no actual historical evidence and did not close Macro-WU-06.
+
+The architecture chain remained strictly separated from descriptor
+classification through bundle identity, location, existence, metadata safety,
+acquisition, admission, verification, and authority. Preserved state includes
+`CATEGORY_TO_BUNDLE_MAPPING_IS_VERIFICATION_REQUIREMENT_SCOPE=false`,
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+`ROTATE_AUTHORIZED=false`, `REPLACE_AUTHORIZED=false`,
+`STRATEGY_EXECUTED=false`, `PRODUCTION_VALIDATION_READY=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`; the six Shopping actions stayed exact and
+`SHOPPING_SECRET_PROVISIONING` stayed target-only. Operational truth remained
+`PRODUCTION_ACCESS=NOT_PERFORMED`, `MARIADB_ACTIVITY=NONE`,
+`SECRET_VALUES_READ=NO`, `SQL_EXECUTION=NOT_PERFORMED`, `PYMYSQL_ACTIVITY=NONE`,
+and `NOTION_SYNC=NOT_PERFORMED`.
+
 ## 2026-08-20 — MariaDB Continuity Integrated WU-07/WU-08 implementation and validation closeout
 
 Exact chronology: `MARIADB_CONTINUITY_INTEGRATED_WU_07_DISCOVERY_RECONCILE_GATE=PASS`,
