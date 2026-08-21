@@ -1,5 +1,40 @@
 # Roadmap
 
+## Concrete Protected-Evidence Filesystem Binding Architecture Contract
+
+- [x] Discover and reuse the repository's fixed-slot, concrete-location,
+  metadata outcome/reason, protected-parent, ownership, mode, symlink, and
+  future FD/inode requirements.
+- [x] Freeze `ConcreteProtectedEvidencePath` as lexical and zero-authority;
+  possession and object identity establish neither provenance nor authority.
+- [x] Separate filesystem binding, existence, inspection, safety, content
+  acquisition, admission, verification, and authority.
+- [x] Freeze one exact target and `0..1` total filesystem observations: one
+  `lstat` only after valid request input; no `stat`, parent walk, leaf lookup,
+  retry, fallback, recovery, enumeration, or candidate iteration.
+- [x] Require a non-symlink directory, exact `0700`, and structurally explicit
+  expected UID and GID at this layer, while prohibiting arbitrary caller or
+  ambient identity as trusted authority and recording that no operational
+  trusted ownership expectation issuer or trusted GID source exists; reserve
+  regular-file/`0600`, non-empty content, and
+  FD/inode/device binding for later leaf/acquisition boundaries.
+- [x] Freeze the distinct positive snapshot concept
+  `DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`; prohibit positive `SAFE_BOUND` and
+  `METADATA_SAFE_AND_STABLY_BOUND`; preserve point-in-time, immutable, slotted,
+  zero-authority semantics, fail-closed errors, `stable_handle_bound=false`,
+  `TOCTOU_CLOSED=false`, `FD_INODE_DEVICE_BOUND=false`, zero content
+  opens/reads, and mutation budget 0.
+- [x] Preserve no runtime resolver execution, no environment/HOME/argv/caller
+  path authority, unchanged Governance/SEC-02, uncoupled
+  `ControlledExecutionPort`, no external infrastructure or Production access,
+  and unchanged Macro-WU-06 accounting.
+- [ ] First architecture-freeze and implement a separate trusted ownership
+  expectation boundary. Until then, no positive operational ownership-safe
+  claim or binding adapter implementation is permitted. Do not invent a GID
+  source or inspect actual protected evidence or Production.
+
+No tests or canonical validation are run for this architecture-only work.
+
 ## Concrete Protected-Evidence Path Composer Repository — documentation closeout
 
 - [x] Record architecture contract `254241a` before implementation `2810c0c`.
@@ -28,7 +63,7 @@
 
 No focused or canonical validation is rerun for this documentation-only work.
 
-## Concrete Protected-Evidence Path Composition Architecture Contract
+## Concrete Protected-Evidence Path Composition Architecture Contract (historical implementation next-step)
 
 - [x] Discover the authoritative `ResolvedTrustedMacAccountHome`,
   `RuntimeHomeResolver`, suffix policy/identity/constant, and adjacent
@@ -52,10 +87,13 @@ No focused or canonical validation is rerun for this documentation-only work.
   Governance and SEC-02, uncoupled `ControlledExecutionPort`, all required
   false/unknown program facts, `MACRO_WU_06=IN_PROGRESS`, seven remaining WUs,
   and range WU06-WU12.
-- [ ] After architecture Git closeout, implement
+- [x] Historically, after architecture Git closeout, implement
   `MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSITION_IMPLEMENTATION` as
   repository-only and zero-authority, with no protected-source or Production
-  access.
+  access. Completed under architecture commit `254241a`, implementation commit
+  `2810c0c`, and documentation closeout commit `94c36fb`; the current next
+  repository boundary is
+  `MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_FILESYSTEM_BINDING`.
 
 No focused or canonical validation is run for this architecture-only work.
 
@@ -101,11 +139,13 @@ No focused or canonical validation is run for this architecture-only work.
 - [x] Keep `MACRO_WU_06=IN_PROGRESS`, seven authoritative WUs remaining, and
   WU06-WU12; actual historical evidence acquisition and offline evaluation are
   still required before Macro-WU06 closure.
-- [ ] Next: read-only architecture discovery/freeze for composing
+- [x] Historical next step: read-only architecture discovery/freeze for composing
   `ResolvedTrustedMacAccountHome` and the frozen exact protected-evidence suffix
   into distinct zero-authority `ConcreteProtectedEvidencePath`. Do not inspect
   existence or metadata, call `stat`/`lstat`, access/acquire protected evidence,
-  grant authority, or access Production.
+  grant authority, or access Production. This composer work later completed
+  under commits `254241a`, `2810c0c`, and `94c36fb`; the current next repository
+  boundary is `MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_FILESYSTEM_BINDING`.
 
 No focused or canonical validation is rerun for this documentation-only work.
 

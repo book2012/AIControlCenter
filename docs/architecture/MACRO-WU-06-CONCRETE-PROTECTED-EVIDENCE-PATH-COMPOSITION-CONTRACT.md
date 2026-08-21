@@ -139,7 +139,7 @@ Docker/Colima, process, or Ubuntu authority.
 This freeze does not compose a real path or execute any observation:
 
 ```text
-RUNTIME_HOME_RESOLVER_AVAILABLE=true
+RUNTIME_HOME_RESOLVER_REPOSITORY_IMPLEMENTED=true
 RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true
 TRUSTED_HOME_VALUE_ESTABLISHED=false
 ABSOLUTE_PATH_ESTABLISHED=false
@@ -156,10 +156,14 @@ REMAINING_AUTHORITATIVE_MACRO_WUS=7
 AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
 ```
 
-## Next boundary
+## Historical next boundary and completed repository state
 
-Only after this architecture contract is Git-closed, the next local
-submilestone is
+Historically, after this architecture contract was Git-closed, the next local
+submilestone was
 `MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSITION_IMPLEMENTATION`.
-That later implementation is repository-only and zero-authority and must still
-perform no protected-source or Production access.
+Chronology is preserved by architecture contract commit `254241a`,
+implementation commit `2810c0c`, and documentation closeout commit `94c36fb`.
+That repository-only, zero-authority implementation is complete and validated;
+it performed no protected-source or Production access. The current next
+repository boundary is
+`MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_FILESYSTEM_BINDING`.

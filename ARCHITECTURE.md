@@ -1,5 +1,33 @@
 # AI Home Datacenter Architecture
 
+## Concrete Protected-Evidence Filesystem Binding Architecture Contract
+
+The next Macro-WU-06 boundary is frozen in
+[`docs/architecture/MACRO-WU-06-CONCRETE-PROTECTED-EVIDENCE-FILESYSTEM-BINDING-CONTRACT.md`](docs/architecture/MACRO-WU-06-CONCRETE-PROTECTED-EVIDENCE-FILESYSTEM-BINDING-CONTRACT.md).
+Repository discovery reuses the closed fixed-slot and metadata-safety policy:
+the exact protected target at this layer is a non-symlink directory, exact mode
+`0700`, with structurally explicit expected UID/GID. Arbitrary caller values
+are not trusted ownership authority, and no operational trusted ownership
+expectation issuer or trusted GID source is implemented. The future adapter is
+therefore gated from any positive operational ownership-safe claim. It performs only one
+`lstat` of the exact unchanged `ConcreteProtectedEvidencePath`; it performs no
+`stat`, parent walk, leaf lookup, retry, fallback, enumeration, open, or read.
+
+`ConcreteProtectedEvidencePath` remains lexical and zero-authority. Its identity
+or possession is not provenance. `TrustedOwnershipExpectation`,
+`FilesystemTargetMetadataSnapshot`, existence,
+inspection, safety, acquisition, admission, verification, and authority remain
+strictly distinct. The snapshot-level positive concept is
+`DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`, never `SAFE_BOUND` or
+`METADATA_SAFE_AND_STABLY_BOUND`. A successful result is only a point-in-time
+zero-authority metadata snapshot: `stable_handle_bound=false`,
+`TOCTOU_CLOSED=false`, and `FD_INODE_DEVICE_BOUND=false`. Regular
+file/`0600`, FD/inode/device binding, and content acquisition remain later
+separate boundaries. Mutation budget is zero; Governance/SEC-02 are unchanged;
+`ControlledExecutionPort` remains uncoupled. This architecture work performed
+no filesystem I/O, protected-source access, Production access, or runtime path
+establishment, and Macro-WU-06 accounting remains unchanged.
+
 ## Concrete Protected-Evidence Path Composer Repository Implementation Closeout
 
 The repository-only composer is implemented and validated:
@@ -99,10 +127,13 @@ REMAINING_AUTHORITATIVE_MACRO_WUS=7
 AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
 ```
 
-After Git closeout of this contract, the next local submilestone is
+Historically, after Git closeout of this contract, the next local submilestone was
 `MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSITION_IMPLEMENTATION`, a
 repository-only, zero-authority implementation with no protected-source or
-Production access.
+Production access. That implementation is complete under architecture commit
+`254241a`, implementation commit `2810c0c`, and documentation closeout commit
+`94c36fb`. The current next repository boundary is
+`MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_FILESYSTEM_BINDING`.
 
 ## Trusted Mac Account-Home Runtime Resolver Implementation — Documentation Closeout
 
