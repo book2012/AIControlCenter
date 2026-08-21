@@ -16,9 +16,15 @@ string that is lexically absolute as a POSIX path. It is preserved unchanged:
 no stripping, expansion, normalization, resolution, canonicalization, metadata
 inspection, existence/directory check, enumeration, or filesystem probe is
 allowed. `ResolvedTrustedMacAccountHome` is an immutable zero-authority output
-concept containing only the bound UID and validated passwd-derived string; it
-proves resolution under the contract and no downstream filesystem, evidence,
-`RECOVER`, Production, or authorization fact.
+concept, slotted with exactly the `bound_uid` and `passwd_home` data fields.
+Normal or direct supported construction is prohibited; successful
+`RuntimeHomeResolver` construction is the supported path. Python object-model
+mechanisms can theoretically bypass normal construction, so the object is not
+an unforgeable provenance token, authorization or admission token, capability,
+verification evidence, `RECOVER` evidence sufficiency, Production
+authorization/readiness, or a security boundary. Possession or identity grants
+zero authority, and every later security-sensitive boundary must independently
+validate its required evidence and authority.
 
 This is architecture only: `RUNTIME_HOME_RESOLVER_AVAILABLE=false`, no trusted
 home or concrete path is established, and no filesystem, protected-source, or

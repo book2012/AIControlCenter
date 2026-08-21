@@ -69,14 +69,26 @@ rejected authority.
 ## Zero-authority output concept
 
 `ResolvedTrustedMacAccountHome` is the frozen output concept: an immutable,
-zero-authority value object containing only the bound UID and the validated,
-unchanged passwd-derived home string. It proves only successful account-home
-resolution under this contract.
+slotted, zero-authority value object containing exactly two data fields:
+`bound_uid` and `passwd_home`, the validated, unchanged passwd-derived home
+string. Normal or direct supported construction is prohibited; the supported
+construction path is successful construction by `RuntimeHomeResolver` after
+the ordered validation above.
+
+Python object-model mechanisms allow another in-process caller to bypass normal
+construction in theory. The object therefore is not an unforgeable provenance
+token, authorization token, capability, admission token, verification evidence,
+or security boundary. Its possession or identity grants zero authority and
+does not itself prove that the supported resolver path was used.
 
 It does not prove filesystem existence, directory type, symlink safety,
 UID/GID ownership, mode safety, metadata safety, protected-source existence or
 safety, content acquisition, evidence admission or verification, `RECOVER`
 sufficiency, Production authorization, or Production readiness.
+
+Every later security-sensitive boundary must independently validate all
+evidence and authority that it requires. This object is not sufficient evidence
+for `RECOVER` or for any Production decision.
 
 ## Required semantic separation
 
