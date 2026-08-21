@@ -1,5 +1,57 @@
 # Project History
 
+## 2026-08-21 — Trusted Mac account-home runtime resolver implementation
+
+Architecture contract `41963c1` and clarification `cf9c34d` preceded repository
+implementation `288eb68`. This closed only
+`MACRO_WU_06_TRUSTED_MAC_ACCOUNT_HOME_RUNTIME_RESOLVER_IMPLEMENTATION=CLOSED`, with
+`RUNTIME_HOME_RESOLVER_AVAILABLE=true` and
+`RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`. Focused validation was
+`28 passed in 0.03s`; Final Architecture Review was `PASS`; canonical was
+`3845 passed, 5 deselected, 531 warnings`, `CANONICAL_RC=0`.
+
+The implementation preserved the frozen sequence: exact-once platform
+observation and exact `Darwin` validation before UID observation; exact-once
+real and effective UID observations, both before root validation; rejection if
+either is zero; required equality and binding; exact-once bound-UID passwd
+lookup. It accepts only exact-string, non-empty, NUL-free, lexically absolute
+POSIX `pw_dir`, rejects string subclasses, and preserves the passwd value
+unchanged. It fails closed without retries, fallback, reconnect, recovery,
+`getpwnam`, external home authority, transformation, canonicalization,
+filesystem probing, metadata/ownership/mode inspection, or enumeration.
+
+`ResolvedTrustedMacAccountHome` remained immutable, slotted, and limited to
+`bound_uid` and `passwd_home`; supported direct construction and arbitrary
+UID/home convenience factories remained prohibited. Successful resolver
+creation is the supported path. The value is not unforgeable provenance,
+authorization, capability, admission/verification evidence, `RECOVER`
+sufficiency, Production authorization/readiness, or a security boundary; it has
+zero authority and downstream boundaries validate independently.
+
+The policy, observation, resolver, resolved value, suffix policy/value,
+concrete path, existence, inspection, safety, acquisition, admission,
+verification, and authority concepts remained distinct. Mac AIControlCenter
+remained sole Control Plane; Ubuntu retained zero resolver authority;
+Governance and SEC-02 were unchanged and `ControlledExecutionPort` uncoupled.
+
+This repository work did not execute the resolver or establish a trusted home,
+absolute/concrete path, filesystem I/O, protected-source access, or Production
+access. The frozen state remains `TRUSTED_HOME_VALUE_ESTABLISHED=false`,
+`ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`,
+`FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`: actual historical evidence
+acquisition and offline evaluation are still required. Next is read-only
+architecture discovery/freeze for composing the resolved home and frozen exact
+suffix into distinct zero-authority `ConcreteProtectedEvidencePath`, without
+filesystem existence/metadata inspection, `stat`/`lstat`, evidence access or
+acquisition, authority, or Production access.
+
 ## 2026-08-21 — Trusted Mac account-home repository policy implementation
 
 The architecture contract/freeze landed first at

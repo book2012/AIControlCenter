@@ -1,5 +1,79 @@
 # AI Home Datacenter Architecture
 
+## Trusted Mac Account-Home Runtime Resolver Implementation — Documentation Closeout
+
+The repository implementation is available and repository-validated:
+`RUNTIME_HOME_RESOLVER_AVAILABLE=true` and
+`RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`. Chronology is fixed by
+architecture contract commit `41963c1`, architecture clarification commit
+`cf9c34d`, and implementation commit `288eb68`. Focused validation was
+`28 passed in 0.03s`; Final Architecture Review was `PASS`; canonical validation
+was `3845 passed, 5 deselected, 531 warnings` with `CANONICAL_RC=0`.
+
+`RuntimeHomeResolver` observes `platform.system()` exactly once, requires exact
+`Darwin`, and fails before UID observation on platform failure. It then observes
+`os.getuid()` exactly once and `os.geteuid()` exactly once, completing both UID
+observations before root validation; it rejects either UID equal to zero,
+requires equality, binds that equal UID, and calls `pwd.getpwuid(bound_uid)`
+exactly once. The returned `pw_dir` must have exact `str` type (rejecting `str`
+subclasses), be non-empty and NUL-free, and be a lexically absolute POSIX
+string. The passwd-derived string is preserved unchanged.
+
+The resolver fails closed with no retry, fallback, reconnect, recovery,
+`getpwnam`, `HOME`/environment/argv/caller home authority, `Path.home`,
+`expanduser`, `strip`, normalization, resolve/realpath/canonicalization,
+`stat`/`lstat`/`exists`/`is_dir`/`is_symlink`, filesystem probing,
+ownership/mode inspection, or path enumeration.
+
+`ResolvedTrustedMacAccountHome` is immutable and slotted with exactly two data
+fields, `bound_uid` and `passwd_home`. Normal/direct supported construction is
+prohibited; successful `RuntimeHomeResolver` resolution is the supported
+creation path, and there is no public convenience factory accepting arbitrary
+UID/home values. It has zero authority and is not an unforgeable provenance
+token, authorization, capability, admission or verification evidence,
+`RECOVER` evidence sufficiency, Production authorization/readiness, or a
+security boundary. Possession or identity grants zero authority; downstream
+security-sensitive boundaries independently validate their evidence and
+authority.
+
+Semantic separation remains exact: `TrustedMacAccountHomePolicy` !=
+`RuntimeAccountIdentityObservation` != `RuntimeHomeResolver` !=
+`ResolvedTrustedMacAccountHome` !=
+`AuthoritativeMacProtectedEvidenceSuffixPolicy` != `ProtectedEvidenceSuffix` !=
+`ConcreteProtectedEvidencePath` != `SourceExistence` != `MetadataInspection` !=
+`MetadataSafety` != `ContentAcquisition` != `Admission` != `Verification` !=
+`Authority`. Mac AIControlCenter remains sole Control Plane; Ubuntu has zero
+resolver authority. Governance and SEC-02 are unchanged, and
+`ControlledExecutionPort` remains uncoupled.
+
+Repository implementation availability does not claim that this documentation
+work executed the resolver or established a trusted home or concrete path:
+
+```text
+TRUSTED_HOME_VALUE_ESTABLISHED=false
+ABSOLUTE_PATH_ESTABLISHED=false
+CONCRETE_PATH_VALUE_ESTABLISHED=false
+FILESYSTEM_IO_PERFORMED=false
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO
+MACRO_WU_06_TRUSTED_MAC_ACCOUNT_HOME_RUNTIME_RESOLVER_IMPLEMENTATION=CLOSED
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+Actual historical evidence acquisition and offline evaluation are still
+required before Macro-WU06 can close. Next is read-only architecture
+discovery/freeze for composing `ResolvedTrustedMacAccountHome` with the already
+frozen exact protected-evidence suffix into a distinct, zero-authority
+`ConcreteProtectedEvidencePath`; that work must not inspect existence or
+metadata, perform `stat`/`lstat`, access or acquire protected evidence, grant
+authority, or access Production.
+
 ## Trusted Mac Account-Home Runtime Resolver Architecture Contract
 
 The future runtime resolver boundary is frozen in

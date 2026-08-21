@@ -1,5 +1,55 @@
 # Roadmap
 
+## Trusted Mac Account-Home Runtime Resolver Implementation — documentation closeout
+
+- [x] Close only
+  `MACRO_WU_06_TRUSTED_MAC_ACCOUNT_HOME_RUNTIME_RESOLVER_IMPLEMENTATION=CLOSED`, based
+  on architecture contract `41963c1`, clarification `cf9c34d`, and
+  implementation `288eb68`.
+- [x] Freeze `RUNTIME_HOME_RESOLVER_AVAILABLE=true` and
+  `RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`; record focused
+  `28 passed in 0.03s`, Final Architecture Review `PASS`, canonical
+  `3845 passed, 5 deselected, 531 warnings`, and `CANONICAL_RC=0`.
+- [x] Preserve exact-once platform observation and exact `Darwin` validation
+  before UID observation; exact-once real/effective UID observations before
+  root validation; reject either zero; require and bind equality; exact-once
+  `pwd.getpwuid(bound_uid)`.
+- [x] Require exact `str` `pw_dir` (reject subclasses), non-empty, NUL-free,
+  lexically absolute POSIX form, preserved unchanged.
+- [x] Preserve fail-closed behavior and prohibit retry, fallback, reconnect,
+  recovery, `getpwnam`, caller/environment/HOME/argv home authority,
+  `Path.home`, `expanduser`, strip, normalization, resolution/realpath/
+  canonicalization, all filesystem probing and existence/type/symlink checks,
+  metadata and ownership/mode inspection, and path enumeration.
+- [x] Preserve immutable, slotted, exactly two-field
+  `ResolvedTrustedMacAccountHome`; prohibit supported direct construction and
+  arbitrary UID/home factories. Keep it zero-authority and neither unforgeable
+  provenance, authorization, capability, admission/verification evidence,
+  `RECOVER` sufficiency, Production authorization/readiness, nor a security
+  boundary; require independent downstream validation.
+- [x] Preserve exact semantic separation across policy, identity observation,
+  resolver, resolved value, suffix policy/value, concrete path, existence,
+  inspection, safety, acquisition, admission, verification, and authority.
+- [x] Preserve Mac sole Control Plane, Ubuntu zero resolver authority, unchanged
+  Governance/SEC-02, and uncoupled `ControlledExecutionPort`.
+- [x] Preserve no runtime execution/trusted home/path/access claim:
+  `TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`,
+  `CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`,
+  `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+  `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, insufficient `RECOVER`, and no
+  SM-01B-02D-06 semantic change.
+- [x] Keep `MACRO_WU_06=IN_PROGRESS`, seven authoritative WUs remaining, and
+  WU06-WU12; actual historical evidence acquisition and offline evaluation are
+  still required before Macro-WU06 closure.
+- [ ] Next: read-only architecture discovery/freeze for composing
+  `ResolvedTrustedMacAccountHome` and the frozen exact protected-evidence suffix
+  into distinct zero-authority `ConcreteProtectedEvidencePath`. Do not inspect
+  existence or metadata, call `stat`/`lstat`, access/acquire protected evidence,
+  grant authority, or access Production.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
 ## Trusted Mac Account-Home Runtime Resolver Architecture Contract
 
 - [x] Pass architecture discovery and require a distinct runtime resolution
