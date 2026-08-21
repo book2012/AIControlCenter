@@ -1,5 +1,48 @@
 # AI Home Datacenter Architecture
 
+## Concrete Protected-Evidence Path Composer Repository Implementation Closeout
+
+The repository-only composer is implemented and validated:
+`CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_IMPLEMENTED=true` and
+`CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_VALIDATED=true`.
+Architecture contract commit `254241a` preceded implementation commit `2810c0c`.
+Validation evidence is focused `11 passed in 0.03s`,
+`FINAL_ARCHITECTURE_REVIEW_GATE=PASS`, and
+`CANONICAL_REGRESSION_GATE=PASS`, with
+`CANONICAL_RESULT=3856 passed, 5 deselected, 535 warnings in 133.68s (0:02:13)`
+and `CANONICAL_RC=0`. Git evidence is
+`IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`, `WORKTREE_STATE=CLEAN`, `AHEAD=0`, and
+`BEHIND=0`.
+
+`ConcreteProtectedEvidencePath` is lexical only and has zero authority. It is
+not provenance, authorization, capability, verification evidence, filesystem
+existence or safety evidence, `RECOVER` evidence sufficiency, Production
+authorization/readiness, or a security boundary. Python object identity is not
+a security boundary. Downstream security-sensitive boundaries independently
+validate the facts, evidence, and authority they require.
+
+This repository capability establishes no runtime path or external fact:
+
+```text
+TRUSTED_HOME_VALUE_ESTABLISHED=false
+ABSOLUTE_PATH_ESTABLISHED=false
+CONCRETE_PATH_VALUE_ESTABLISHED=false
+FILESYSTEM_IO_PERFORMED=false
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu has zero role and
+zero authority. Governance and SEC-02 are unchanged, and
+`ControlledExecutionPort` remains uncoupled.
+
 ## Concrete Protected-Evidence Path Composition Architecture Contract
 
 The architecture contract for the next distinct Macro-WU06 boundary is frozen
@@ -63,8 +106,9 @@ Production access.
 
 ## Trusted Mac Account-Home Runtime Resolver Implementation — Documentation Closeout
 
-The repository implementation is available and repository-validated:
-`RUNTIME_HOME_RESOLVER_AVAILABLE=true` and
+The repository implementation exists and is repository-validated; this is not
+a claim of runtime resolver invocation:
+`RUNTIME_HOME_RESOLVER_REPOSITORY_IMPLEMENTED=true` and
 `RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`. Chronology is fixed by
 architecture contract commit `41963c1`, architecture clarification commit
 `cf9c34d`, and implementation commit `288eb68`. Focused validation was

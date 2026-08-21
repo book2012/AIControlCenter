@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 2026-08-21 — Concrete protected-evidence path composer repository closeout
+
+- Recorded architecture contract `254241a` before implementation `2810c0c`;
+  froze `CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_IMPLEMENTED=true`
+  and `CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_VALIDATED=true`.
+- Recorded focused `11 passed in 0.03s`, Final Architecture Review `PASS`,
+  canonical regression `PASS`, canonical
+  `3856 passed, 5 deselected, 535 warnings in 133.68s (0:02:13)`, and
+  `CANONICAL_RC=0`.
+- Recorded `IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`, `WORKTREE_STATE=CLEAN`,
+  `AHEAD=0`, and `BEHIND=0`.
+- Preserved `ConcreteProtectedEvidencePath` as lexical only and zero-authority,
+  not provenance, authorization, capability, verification evidence,
+  filesystem existence/safety evidence, `RECOVER` sufficiency, Production
+  authorization/readiness, or a security boundary. Python object identity is
+  not a security boundary; downstream sensitive boundaries independently
+  validate facts, evidence, and authority.
+- Preserved all runtime facts as unestablished: trusted home, absolute path,
+  concrete path, filesystem I/O, protected-source access, Production access,
+  and `RECOVER` sufficiency remain false; offline acquisition remains unknown;
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT` and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- Preserved Mac AIControlCenter as sole Control Plane, Ubuntu zero role and zero
+  authority, unchanged Governance and SEC-02, and uncoupled
+  `ControlledExecutionPort`.
+- Kept `MACRO_WU_06=IN_PROGRESS`,
+  `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## 2026-08-21 — Trusted Mac account-home runtime resolver implementation closeout
 
 - Closed only
@@ -10,7 +39,7 @@
   evaluation remain required.
 - Recorded architecture contract `41963c1`, architecture clarification
   `cf9c34d`, and implementation `288eb68`; froze
-  `RUNTIME_HOME_RESOLVER_AVAILABLE=true` and
+  `RUNTIME_HOME_RESOLVER_REPOSITORY_IMPLEMENTED=true` and
   `RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`.
 - Recorded focused `28 passed in 0.03s`, Final Architecture Review `PASS`, and
   canonical `3845 passed, 5 deselected, 531 warnings`, `CANONICAL_RC=0`.

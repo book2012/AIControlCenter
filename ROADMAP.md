@@ -1,5 +1,33 @@
 # Roadmap
 
+## Concrete Protected-Evidence Path Composer Repository — documentation closeout
+
+- [x] Record architecture contract `254241a` before implementation `2810c0c`.
+- [x] Record repository implementation and validation capability as true.
+- [x] Record focused `11 passed in 0.03s`, Final Architecture Review `PASS`,
+  canonical regression `PASS`, canonical
+  `3856 passed, 5 deselected, 535 warnings in 133.68s (0:02:13)`, and
+  `CANONICAL_RC=0`.
+- [x] Record implementation Git closeout `CLOSED`, clean worktree, `AHEAD=0`,
+  and `BEHIND=0`.
+- [x] Preserve lexical-only, zero-authority semantics: no provenance,
+  authorization, capability, verification evidence, filesystem existence or
+  safety evidence, `RECOVER` sufficiency, Production authorization/readiness,
+  or security-boundary meaning; Python identity grants nothing and downstream
+  sensitive boundaries validate independently.
+- [x] Preserve trusted home, absolute/concrete path, filesystem I/O,
+  protected-source access, Production access, and `RECOVER` sufficiency as
+  false; offline acquisition as unknown; insufficient `RECOVER`; and no
+  SM-01B-02D-06 semantics change.
+- [x] Preserve Mac sole Control Plane, Ubuntu zero role and authority,
+  unchanged Governance/SEC-02, and uncoupled `ControlledExecutionPort`.
+- [x] Keep `MACRO_WU_06=IN_PROGRESS`, seven authoritative WUs remaining, and
+  range WU06-WU12.
+- [ ] Next: documentation read-only review. Actual protected evidence and
+  Production remain out of scope and unaccessed.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
 ## Concrete Protected-Evidence Path Composition Architecture Contract
 
 - [x] Discover the authoritative `ResolvedTrustedMacAccountHome`,
@@ -37,7 +65,7 @@ No focused or canonical validation is run for this architecture-only work.
   `MACRO_WU_06_TRUSTED_MAC_ACCOUNT_HOME_RUNTIME_RESOLVER_IMPLEMENTATION=CLOSED`, based
   on architecture contract `41963c1`, clarification `cf9c34d`, and
   implementation `288eb68`.
-- [x] Freeze `RUNTIME_HOME_RESOLVER_AVAILABLE=true` and
+- [x] Freeze `RUNTIME_HOME_RESOLVER_REPOSITORY_IMPLEMENTED=true` and
   `RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`; record focused
   `28 passed in 0.03s`, Final Architecture Review `PASS`, canonical
   `3845 passed, 5 deselected, 531 warnings`, and `CANONICAL_RC=0`.

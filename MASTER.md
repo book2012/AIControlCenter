@@ -1,11 +1,46 @@
 # MASTER
 
+## Current status — Concrete protected-evidence path composer repository closed
+
+The repository composer is implemented and validated:
+`CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_IMPLEMENTED=true` and
+`CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_VALIDATED=true`.
+Contract `254241a` preceded implementation `2810c0c`. Evidence is focused
+`11 passed in 0.03s`, Final Architecture Review `PASS`, canonical regression
+`PASS`, and canonical
+`3856 passed, 5 deselected, 535 warnings in 133.68s (0:02:13)`,
+`CANONICAL_RC=0`. Implementation Git closeout is `CLOSED`, with clean worktree,
+`AHEAD=0`, and `BEHIND=0`.
+
+`ConcreteProtectedEvidencePath` remains lexical only and zero-authority. It is
+not provenance, authorization, capability, verification evidence, filesystem
+existence/safety evidence, `RECOVER` sufficiency, Production authorization or
+readiness, or a security boundary. Python object identity is not a security
+boundary; downstream security-sensitive boundaries independently validate
+facts, evidence, and authority.
+
+No runtime resolver was executed and no runtime fact was established:
+`TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`,
+`CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`,
+`PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Mac AIControlCenter remains sole Control Plane; Ubuntu has zero role and zero
+authority. Governance and SEC-02 are unchanged; `ControlledExecutionPort`
+remains uncoupled. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## Current status — Trusted Mac account-home runtime resolver implementation closed
 
 `MACRO_WU_06_TRUSTED_MAC_ACCOUNT_HOME_RUNTIME_RESOLVER_IMPLEMENTATION=CLOSED`.
-The repository resolver is available and repository-validated, based on
-contract `41963c1`, clarification `cf9c34d`, and implementation `288eb68`:
-`RUNTIME_HOME_RESOLVER_AVAILABLE=true` and
+The repository resolver is implemented and repository-validated, based on
+contract `41963c1`, clarification `cf9c34d`, and implementation `288eb68`; this
+does not claim runtime resolver invocation:
+`RUNTIME_HOME_RESOLVER_REPOSITORY_IMPLEMENTED=true` and
 `RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`. Evidence is focused
 `28 passed in 0.03s`, Final Architecture Review `PASS`, and canonical
 `3845 passed, 5 deselected, 531 warnings`, `CANONICAL_RC=0`.

@@ -1,9 +1,44 @@
 # AIControlCenter
 
+## Concrete protected-evidence path composer repository closeout
+
+The repository composer is implemented and validated
+(`CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_IMPLEMENTED=true`,
+`CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_VALIDATED=true`). Contract
+`254241a` preceded implementation `2810c0c`. Validation recorded focused
+`11 passed in 0.03s`, Final Architecture Review `PASS`, canonical regression
+`PASS`, and
+`3856 passed, 5 deselected, 535 warnings in 133.68s (0:02:13)`,
+`CANONICAL_RC=0`. Git closeout recorded `IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`,
+`WORKTREE_STATE=CLEAN`, `AHEAD=0`, and `BEHIND=0`.
+
+`ConcreteProtectedEvidencePath` is lexical only and grants zero authority. It
+is not provenance, authorization, capability, verification evidence,
+filesystem existence/safety evidence, `RECOVER` evidence sufficiency,
+Production authorization/readiness, or a security boundary. Python object
+identity is not a security boundary. Downstream security-sensitive boundaries
+independently validate facts, evidence, and authority.
+
+Repository capability is not runtime establishment:
+`TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`,
+`CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`,
+`PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Mac AIControlCenter remains sole Control Plane; Ubuntu has zero role and zero
+authority. Governance and SEC-02 are unchanged, and `ControlledExecutionPort`
+remains uncoupled. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## Trusted Mac account-home runtime resolver implementation closeout
 
 The trusted Mac account-home `RuntimeHomeResolver` is implemented and
-repository-validated (`RUNTIME_HOME_RESOLVER_AVAILABLE=true`,
+repository-validated; no runtime invocation is claimed
+(`RUNTIME_HOME_RESOLVER_REPOSITORY_IMPLEMENTED=true`,
 `RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true`). Contract `41963c1` and
 clarification `cf9c34d` preceded implementation `288eb68`. Validation evidence:
 focused `28 passed in 0.03s`, Final Architecture Review `PASS`, canonical
@@ -34,7 +69,7 @@ policy != suffix != concrete path != existence != metadata inspection != safety
 remains sole Control Plane; Ubuntu has zero resolver authority. Governance and
 SEC-02 are unchanged; `ControlledExecutionPort` is uncoupled.
 
-Availability does not mean the resolver ran during this work:
+Repository implementation does not mean the resolver ran during this work:
 `TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`,
 `CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`,
 `PROTECTED_SOURCE_ACCESS_PERFORMED=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
