@@ -1,5 +1,36 @@
 # Roadmap
 
+## Concrete Protected-Evidence Path Composition Architecture Contract
+
+- [x] Discover the authoritative `ResolvedTrustedMacAccountHome`,
+  `RuntimeHomeResolver`, suffix policy/identity/constant, and adjacent
+  source/profile/location contracts without executing runtime observation.
+- [x] Freeze a separate composer that consumes an already-existing resolved
+  home and never executes the resolver or observes platform, UID, effective
+  UID, or passwd state.
+- [x] Freeze the exact repository-owned suffix and reject caller, environment,
+  argv, alternate, candidate, fallback, or enumerated suffix/path authority.
+- [x] Freeze exact string composition: append the suffix directly when
+  `passwd_home` ends with `/`; otherwise insert exactly one `/` before it.
+- [x] Preserve the passwd home and suffix unchanged; prohibit path libraries,
+  joining, expansion, stripping, normalization, absolutization, resolution,
+  realpath, and canonicalization.
+- [x] Prohibit all filesystem observation, metadata inspection, protected-source
+  access, Production access, execution, and mutation.
+- [x] Freeze `ConcreteProtectedEvidencePath` as immutable and slotted with only
+  `concrete_path`; preserve zero authority, reject unforgeable-provenance or
+  security-boundary semantics, and require independent downstream validation.
+- [x] Preserve Mac sole Control Plane, Ubuntu zero role/authority, unchanged
+  Governance and SEC-02, uncoupled `ControlledExecutionPort`, all required
+  false/unknown program facts, `MACRO_WU_06=IN_PROGRESS`, seven remaining WUs,
+  and range WU06-WU12.
+- [ ] After architecture Git closeout, implement
+  `MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSITION_IMPLEMENTATION` as
+  repository-only and zero-authority, with no protected-source or Production
+  access.
+
+No focused or canonical validation is run for this architecture-only work.
+
 ## Trusted Mac Account-Home Runtime Resolver Implementation — documentation closeout
 
 - [x] Close only

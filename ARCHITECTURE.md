@@ -1,5 +1,66 @@
 # AI Home Datacenter Architecture
 
+## Concrete Protected-Evidence Path Composition Architecture Contract
+
+The architecture contract for the next distinct Macro-WU06 boundary is frozen
+in
+[`docs/architecture/MACRO-WU-06-CONCRETE-PROTECTED-EVIDENCE-PATH-COMPOSITION-CONTRACT.md`](docs/architecture/MACRO-WU-06-CONCRETE-PROTECTED-EVIDENCE-PATH-COMPOSITION-CONTRACT.md).
+Repository discovery confirmed the authoritative inputs already exist as
+`ResolvedTrustedMacAccountHome` and `RuntimeHomeResolver` in the trusted-home
+runtime resolver module, and `AuthoritativeMacProtectedEvidenceSuffixPolicy`,
+`AuthoritativeMacProtectedEvidenceSuffixPolicyIdentity`, and
+`EXACT_PROTECTED_EVIDENCE_SUFFIX` in the suffix-policy module. Existing source,
+profile, fixed-slot, and concrete-source-location contracts remain separate and
+do not define this lexical composition boundary.
+
+The future composer consumes an already-existing
+`ResolvedTrustedMacAccountHome`; it must not execute `RuntimeHomeResolver` or
+observe platform, UID, effective UID, or passwd state. It accepts no caller,
+environment, argv, alternate, candidate, fallback, or enumerated suffix or
+path. It uses only the repository-owned exact suffix
+`Library/Application Support/AIControlCenter/protected-external-evidence/mariadb-continuity`.
+
+Composition is deterministic string-only composition: if `passwd_home` ends
+with `/`, append the suffix directly; otherwise append `/` and then the suffix.
+This inserts at most one boundary separator and otherwise preserves both input
+strings unchanged. No path library, expansion, joining, stripping,
+normalization, absolutization, resolution, realpath, or canonicalization is
+permitted, and no filesystem observation of any kind occurs.
+
+`ConcreteProtectedEvidencePath` is frozen as an immutable, slotted,
+zero-authority value concept with exactly one data field, `concrete_path`. It is
+not unforgeable provenance, authorization, capability, admission or
+verification evidence, `RECOVER` sufficiency, filesystem evidence, Production
+authorization/readiness, or a security boundary. Possession and Python object
+identity grant no authority; later security-sensitive boundaries independently
+validate every fact, item of evidence, and authority they require.
+
+This architecture work composes no runtime value. Mac AIControlCenter remains
+the sole Control Plane; Ubuntu has no role and zero authority. Governance and
+SEC-02 are unchanged, `ControlledExecutionPort` remains uncoupled, and no
+execution or mutation authority is granted. Preserved state is:
+
+```text
+TRUSTED_HOME_VALUE_ESTABLISHED=false
+ABSOLUTE_PATH_ESTABLISHED=false
+CONCRETE_PATH_VALUE_ESTABLISHED=false
+FILESYSTEM_IO_PERFORMED=false
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+After Git closeout of this contract, the next local submilestone is
+`MACRO_WU_06_CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSITION_IMPLEMENTATION`, a
+repository-only, zero-authority implementation with no protected-source or
+Production access.
+
 ## Trusted Mac Account-Home Runtime Resolver Implementation — Documentation Closeout
 
 The repository implementation is available and repository-validated:
