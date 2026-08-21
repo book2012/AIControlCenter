@@ -1,5 +1,37 @@
 # Roadmap
 
+## Trusted Mac Account-Home Repository Policy Implementation — documentation closeout
+
+- [x] Preserve chronology: architecture contract/freeze
+  `d9def864c83e3660ce9e6afa646ee4f5851934b3`, followed by implementation and Git
+  closeout `d07054901b5c3eccac401e90afa4126a9bda9515`.
+- [x] Implement symbolic, zero-authority Darwin-only/non-root policy with real
+  UID from `os.getuid()`, effective UID from `os.geteuid()`, required equality,
+  and future lookup rule `pwd.getpwuid(bound_uid).pw_dir`.
+- [x] Preserve zero runtime UID/passwd lookup execution and no runtime home
+  resolver, trusted home value, absolute/concrete path, filesystem I/O,
+  protected-source/Production access, metadata inspection, evidence acquisition,
+  admission, verification, or authority.
+- [x] Preserve policy != runtime identity observation != resolver != trusted
+  home != suffix != absolute path composition != existence != inspection !=
+  safety != acquisition != admission != verification != authority.
+- [x] Record focused `6 passed in 0.06s`, Final Architecture Review `PASS`,
+  canonical `3817 passed, 5 deselected, 527 warnings in 133.93s`,
+  `CANONICAL_RC=0`, and successful clean/synchronized Git closeout.
+- [x] Preserve all required false/unknown downstream facts,
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, Mac sole Control Plane, Ubuntu
+  zero authority, `MACRO_WU_06=IN_PROGRESS`, seven remaining authoritative WUs,
+  and range WU06-WU12.
+- [ ] Next repository activity: read-only architecture discovery/freeze for the
+  runtime trusted Mac account-home resolver boundary; do not describe or treat
+  the resolver as implemented.
+- [ ] Next Production-relevant milestone: Macro-WU06 Actual Historical Evidence
+  Acquisition + Offline Evaluation. Production validation and Shopping runtime
+  activation remain unestablished.
+
+No focused or canonical validation is rerun for this documentation-only work.
+
 ## Trusted Mac Account-Home Policy Architecture Contract
 
 - [x] Freeze a Darwin-only, non-root process identity policy.
@@ -18,10 +50,11 @@
 - [x] Preserve Mac sole Control Plane, stateless zero-authority Ubuntu,
   insufficient `RECOVER`, `MACRO_WU_06=IN_PROGRESS`, seven remaining
   authoritative WUs, and range WU06-WU12.
-- [ ] Next repository activity: separately implement the repository-owned
-  trusted Mac account-home policy. Runtime account-home resolution remains a
-  distinct future boundary; this contract establishes no trusted home value or
-  concrete protected-evidence path.
+- [x] Subsequently implement and Git-close the symbolic, zero-authority
+  repository-owned trusted Mac account-home policy. Runtime account-home
+  resolution remains a distinct future boundary; neither the contract nor the
+  implementation establishes a trusted home value or concrete protected-evidence
+  path.
 
 No focused or canonical validation is run for this architecture-only work.
 

@@ -1,5 +1,37 @@
 # Project History
 
+## 2026-08-21 — Trusted Mac account-home repository policy implementation
+
+The architecture contract/freeze landed first at
+`d9def864c83e3660ce9e6afa646ee4f5851934b3`; the symbolic, zero-authority policy
+implementation followed and was Git-closed at
+`d07054901b5c3eccac401e90afa4126a9bda9515`. It froze Darwin-only/non-root
+account identity, real UID from `os.getuid()`, effective UID from `os.geteuid()`,
+required equality, and the future rule `pwd.getpwuid(bound_uid).pw_dir`.
+
+It did not execute runtime UID/passwd lookup or implement a runtime resolver.
+Policy remained separate from runtime identity observation, trusted-home
+resolution/value, suffix, absolute path composition, existence, metadata
+inspection/safety, acquisition, admission, verification, and authority. No
+trusted home, concrete path, filesystem I/O, protected-source/Production access,
+metadata fact, historical evidence, or authority was established. Accordingly,
+all required resolver/home/path/I/O/access/sufficiency facts remain false,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Validation recorded focused `6 passed in 0.06s`, Final Architecture Review
+`PASS`, canonical `3817 passed, 5 deselected, 527 warnings in 133.93s`, and
+`CANONICAL_RC=0`. Git closeout recorded `COMMIT_RC=0`, `PUSH_RC=0`, a clean
+worktree, `AHEAD=0`, and `BEHIND=0`. Mac AIControlCenter remained sole Control
+Plane; Ubuntu remained stateless with zero authority. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. Next is read-only architecture
+discovery/freeze for the not-yet-implemented runtime trusted Mac account-home
+resolver boundary. Macro-WU06 Actual Historical Evidence Acquisition + Offline
+Evaluation remains the next Production-relevant milestone; Production
+validation and Shopping runtime activation remain unestablished.
+
 ## 2026-08-21 — Authoritative Mac protected evidence suffix policy implementation
 
 Chronology is explicit: the exact suffix architecture contract was established

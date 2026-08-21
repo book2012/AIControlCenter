@@ -1,5 +1,62 @@
 # AI Home Datacenter Architecture
 
+## Trusted Mac Account-Home Repository Policy Implementation — Documentation Closeout
+
+Chronology is fixed: the architecture contract/freeze was committed first at
+`d9def864c83e3660ce9e6afa646ee4f5851934b3`; the symbolic, zero-authority
+repository policy implementation was then completed and Git-closed at
+`d07054901b5c3eccac401e90afa4126a9bda9515`.
+
+The implemented policy is Darwin-only, rejects the root account, takes the real
+UID from `os.getuid()` and the effective UID from `os.geteuid()`, requires those
+UIDs to be equal, and freezes the future account-home lookup rule as
+`pwd.getpwuid(bound_uid).pw_dir`. It does not execute runtime UID or passwd
+lookup and does not implement a runtime home resolver.
+
+It establishes no trusted home value, absolute path, concrete protected
+evidence path, filesystem I/O, protected-source or Production access, evidence
+acquisition, admission, verification, authorization, capability, execution, or
+mutation authority. No protected evidence directory is asserted to exist and
+no filesystem metadata was inspected.
+
+Architecture separation remains exact: trusted Mac account-home policy !=
+runtime account identity observation != runtime home resolver != resolved
+trusted home value != protected evidence suffix != absolute path composition !=
+source existence != metadata inspection != metadata safety != content
+acquisition != admission != verification != authority.
+
+Current facts remain:
+
+```text
+RUNTIME_HOME_RESOLVER_AVAILABLE=false
+TRUSTED_HOME_VALUE_ESTABLISHED=false
+ABSOLUTE_PATH_ESTABLISHED=false
+CONCRETE_PATH_VALUE_ESTABLISHED=false
+FILESYSTEM_IO_PERFORMED=false
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+Validation evidence was focused `6 passed in 0.06s`, Final Architecture Review
+`PASS`, and canonical `3817 passed, 5 deselected, 527 warnings in 133.93s` with
+`CANONICAL_RC=0`. Implementation Git closeout passed with `COMMIT_RC=0`,
+`PUSH_RC=0`, a clean final worktree, `AHEAD=0`, and `BEHIND=0`.
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu remains a stateless
+infrastructure worker with zero authority. Production validation is not ready
+and Shopping runtime is not activated. After this documentation closeout, the
+next repository activity is read-only architecture discovery/freeze for the
+runtime trusted Mac account-home resolver boundary; that resolver is not yet
+implemented. The next Production-relevant milestone remains Macro-WU06 Actual
+Historical Evidence Acquisition + Offline Evaluation.
+
 ## Trusted Mac Account-Home Policy Architecture Contract
 
 The trusted account-home boundary for future protected external evidence path

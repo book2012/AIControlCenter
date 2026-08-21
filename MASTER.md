@@ -1,5 +1,44 @@
 # MASTER
 
+## Current status — Trusted Mac account-home repository policy implementation closed
+
+Architecture contract/freeze commit `d9def864c83e3660ce9e6afa646ee4f5851934b3`
+preceded implementation commit `d07054901b5c3eccac401e90afa4126a9bda9515`.
+The latter completed and Git-closed only the symbolic, zero-authority repository
+policy: Darwin-only, root rejected, real UID from `os.getuid()`, effective UID
+from `os.geteuid()`, UID equality required, and the future lookup rule
+`pwd.getpwuid(bound_uid).pw_dir`. Runtime UID/passwd lookup and a runtime home
+resolver were not implemented.
+
+Trusted Mac account-home policy != runtime identity observation != runtime home
+resolver != resolved trusted home != protected evidence suffix != absolute path
+composition != existence != metadata inspection != metadata safety != content
+acquisition != admission != verification != authority. No trusted home,
+absolute/concrete path, filesystem I/O, protected-source/Production access,
+metadata inspection, historical evidence, or authority was established.
+
+All required facts remain false or unknown:
+`RUNTIME_HOME_RESOLVER_AVAILABLE=false`, `TRUSTED_HOME_VALUE_ESTABLISHED=false`,
+`ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`,
+`FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+
+Focused validation was `6 passed in 0.06s`; Final Architecture Review was
+`PASS`; canonical was `3817 passed, 5 deselected, 527 warnings in 133.93s` with
+`CANONICAL_RC=0`. Git closeout was `COMMIT_RC=0`, `PUSH_RC=0`, clean, `AHEAD=0`,
+and `BEHIND=0`. Mac AIControlCenter remains sole Control Plane; Ubuntu remains a
+stateless infrastructure worker with zero authority. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. Next is read-only architecture
+discovery/freeze for the runtime trusted Mac account-home resolver boundary;
+the resolver is not implemented. Macro-WU06 Actual Historical Evidence
+Acquisition + Offline Evaluation remains the next Production-relevant
+milestone. Production validation and Shopping runtime activation remain
+unestablished.
+
 ## Current status — Authoritative Mac protected evidence suffix policy implementation closed
 
 Architecture commit `e1e66ac17b3506a4bff4bd0a9322fc7360ca6536` first established

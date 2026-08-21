@@ -1,5 +1,41 @@
 # CHANGELOG
 
+## 2026-08-21 — Trusted Mac account-home repository policy implementation closeout
+
+- Preserved chronology: architecture contract/freeze
+  `d9def864c83e3660ce9e6afa646ee4f5851934b3`, then symbolic zero-authority
+  implementation and Git closeout
+  `d07054901b5c3eccac401e90afa4126a9bda9515`.
+- Recorded Darwin-only, non-root policy; real UID from `os.getuid()`, effective
+  UID from `os.geteuid()`, required equality, and future lookup rule
+  `pwd.getpwuid(bound_uid).pw_dir`, without runtime UID/passwd lookup or a
+  runtime resolver.
+- Preserved policy != runtime identity observation != resolver != trusted home
+  != suffix != absolute path composition != existence != inspection != safety
+  != acquisition != admission != verification != authority. No trusted home,
+  path, filesystem I/O, protected-source/Production access, metadata inspection,
+  historical evidence, or authority was established.
+- Preserved all required false/unknown facts, including
+  `RUNTIME_HOME_RESOLVER_AVAILABLE=false`, `TRUSTED_HOME_VALUE_ESTABLISHED=false`,
+  `ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`,
+  `FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+  `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- Recorded focused `6 passed in 0.06s`, Final Architecture Review `PASS`,
+  canonical `3817 passed, 5 deselected, 527 warnings in 133.93s`, and
+  `CANONICAL_RC=0`; Git closeout had `COMMIT_RC=0`, `PUSH_RC=0`, clean worktree,
+  `AHEAD=0`, and `BEHIND=0`.
+- Preserved Mac sole Control Plane, stateless zero-authority Ubuntu,
+  `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- Next: read-only architecture discovery/freeze for the runtime trusted Mac
+  account-home resolver boundary, not resolver implementation. The next
+  Production-relevant milestone remains Macro-WU06 Actual Historical Evidence
+  Acquisition + Offline Evaluation; Production validation and Shopping runtime
+  activation remain unestablished.
+
 ## 2026-08-21 — Authoritative Mac protected evidence suffix policy implementation closeout
 
 - Recorded chronology: exact suffix architecture contract established at
