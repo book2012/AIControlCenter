@@ -1,5 +1,35 @@
 # AI Home Datacenter Architecture
 
+## Trusted Mac Account-Home Runtime Resolver Architecture Contract
+
+The future runtime resolver boundary is frozen in
+[`docs/architecture/MACRO-WU-06-TRUSTED-MAC-ACCOUNT-HOME-RUNTIME-RESOLVER-CONTRACT.md`](docs/architecture/MACRO-WU-06-TRUSTED-MAC-ACCOUNT-HOME-RUNTIME-RESOLVER-CONTRACT.md).
+It requires exactly one `platform.system()` observation and the exact returned
+value `Darwin` before UID observation, one real-UID observation, one
+effective-UID observation, non-root equal UIDs, and exactly one
+`pwd.getpwuid(bound_uid)` lookup. Every failure is fail-closed; no retry,
+fallback, alternate account lookup, caller/environment/argv input, or recovery
+semantics exist.
+
+The passwd `pw_dir` must exist as a result field and be a non-empty, NUL-free
+string that is lexically absolute as a POSIX path. It is preserved unchanged:
+no stripping, expansion, normalization, resolution, canonicalization, metadata
+inspection, existence/directory check, enumeration, or filesystem probe is
+allowed. `ResolvedTrustedMacAccountHome` is an immutable zero-authority output
+concept containing only the bound UID and validated passwd-derived string; it
+proves resolution under the contract and no downstream filesystem, evidence,
+`RECOVER`, Production, or authorization fact.
+
+This is architecture only: `RUNTIME_HOME_RESOLVER_AVAILABLE=false`, no trusted
+home or concrete path is established, and no filesystem, protected-source, or
+Production access occurred. Policy, observation, resolver, resolved value,
+suffix policy/value, concrete path, existence, inspection, safety, acquisition,
+admission, verification, and authority remain distinct. Mac AIControlCenter
+remains sole Control Plane; Ubuntu has no resolver role and zero authority.
+Governance and SEC-02 are unchanged, `ControlledExecutionPort` is not coupled,
+and the preserved Macro-WU06 state remains in progress with seven authoritative
+WUs remaining across WU06-WU12.
+
 ## Trusted Mac Account-Home Repository Policy Implementation — Documentation Closeout
 
 Chronology is fixed: the architecture contract/freeze was committed first at

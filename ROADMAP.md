@@ -1,5 +1,36 @@
 # Roadmap
 
+## Trusted Mac Account-Home Runtime Resolver Architecture Contract
+
+- [x] Pass architecture discovery and require a distinct runtime resolution
+  boundary without implementing or executing it.
+- [x] Freeze exact ordering: exactly one `platform.system()` observation and
+  exact returned value `Darwin` validation; one real UID and one effective UID
+  observation; no identity binding until both succeed; non-root equality
+  validation; then exactly one bound-UID passwd lookup.
+- [x] Freeze fail-closed behavior with no retry, fallback, reconnect, recovery,
+  alternate account lookup, `getpwnam`, or caller/environment/argv identity or
+  home input.
+- [x] Require `pw_dir` to be present, a non-empty NUL-free string, and lexically
+  absolute as a POSIX path while preserving the string unchanged.
+- [x] Prohibit stripping, expansion, normalization, resolution,
+  canonicalization, metadata inspection, existence/type checks, symlink or
+  ownership/mode inspection, enumeration, and every filesystem probe.
+- [x] Freeze immutable zero-authority `ResolvedTrustedMacAccountHome` with only
+  bound UID and validated passwd-derived home string; establish no downstream
+  path, filesystem, evidence, `RECOVER`, Production, readiness, or authority
+  fact.
+- [x] Preserve strict semantic separation, Mac sole Control Plane, Ubuntu zero
+  resolver role and authority, unchanged Governance/SEC-02, and no
+  `ControlledExecutionPort` coupling.
+- [x] Preserve resolver/trusted-home/path/access facts as false, offline
+  acquisition as unknown, insufficient `RECOVER`, no SM-01B-02D-06 semantic
+  change, `MACRO_WU_06=IN_PROGRESS`, seven remaining WUs, and range WU06-WU12.
+- [ ] Next step: read-only architecture review. Resolver implementation remains
+  separately gated and unavailable.
+
+No focused or canonical validation is run for this architecture-only work.
+
 ## Trusted Mac Account-Home Repository Policy Implementation — documentation closeout
 
 - [x] Preserve chronology: architecture contract/freeze
