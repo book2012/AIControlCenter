@@ -1,5 +1,82 @@
 # AI Home Datacenter Architecture
 
+## Trusted Ownership Expectation Architecture Contract
+
+The next Macro-WU-06 prerequisite boundary is architecture-frozen in
+[`docs/architecture/MACRO-WU-06-TRUSTED-OWNERSHIP-EXPECTATION-CONTRACT.md`](docs/architecture/MACRO-WU-06-TRUSTED-OWNERSHIP-EXPECTATION-CONTRACT.md).
+The issuer consumes an already-existing `ResolvedTrustedMacAccountHome` and
+sets `expected_uid = ResolvedTrustedMacAccountHome.bound_uid`; it performs zero
+additional UID observations and zero additional passwd lookups. It neither
+constructs nor executes `RuntimeHomeResolver`, and accepts no caller,
+environment, `HOME`, argv, or JSON identity authority.
+
+The exact repository-owned Mac Control Plane application-group policy is
+`TRUSTED_APPLICATION_GROUP_NAME="staff"`. The issuer performs exactly one
+`grp.getgrnam("staff")` lookup and uses only `gr_gid`. Lookup failure, missing
+or malformed `gr_gid`, a value whose exact type is not `int`, or a negative GID
+fails closed. Ambient process groups, supplementary groups, passwd `pw_gid`,
+`wheel`, caller-selected values, enumeration, candidates, retries, fallbacks,
+and best-effort matching are prohibited.
+
+`TrustedOwnershipExpectation` is a future immutable, slotted, factual,
+zero-authority value with exactly `expected_uid: int` and `expected_gid: int`.
+It is not unforgeable provenance, authorization, capability, admission or
+verification evidence, filesystem existence/safety/metadata evidence,
+`RECOVER` sufficiency, Production authorization/readiness, or a security
+boundary. Possession and Python object identity grant zero authority;
+downstream security-sensitive boundaries independently validate required
+facts, evidence, and authority.
+
+The dependency order is fixed:
+
+```text
+ConcreteProtectedEvidencePath + TrustedOwnershipExpectation
+-> FilesystemTargetMetadataSnapshotRequest
+-> at most one exact-target lstat
+```
+
+The ownership expectation must exist before a future snapshot request can make
+any positive ownership comparison. That request and adapter are not implemented
+here. The existing single-`lstat` contract remains `0..1` observations, with
+exactly one `lstat` of the exact unchanged concrete target only after complete
+request validation and no other filesystem operation. A successful directory
+classification remains `DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`, never
+`SAFE_BOUND` or `METADATA_SAFE_AND_STABLY_BOUND`, and preserves
+`stable_handle_bound=false`, `TOCTOU_CLOSED=false`, and
+`FD_INODE_DEVICE_BOUND=false`.
+
+```text
+TRUSTED_OWNERSHIP_EXPECTATION_ARCHITECTURE_FROZEN=true
+TRUSTED_UID_SOURCE_ARCHITECTURE_FROZEN=true
+TRUSTED_GID_SOURCE_ARCHITECTURE_FROZEN=true
+RUNTIME_HOME_RESOLVER_REPOSITORY_IMPLEMENTED=true
+RUNTIME_HOME_RESOLVER_REPOSITORY_VALIDATED=true
+CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_IMPLEMENTED=true
+CONCRETE_PROTECTED_EVIDENCE_PATH_COMPOSER_REPOSITORY_VALIDATED=true
+OPERATIONAL_TRUSTED_OWNERSHIP_EXPECTATION_ISSUER_IMPLEMENTED=false
+TRUSTED_GID_SOURCE_ESTABLISHED=false
+TRUSTED_HOME_VALUE_ESTABLISHED=false
+ABSOLUTE_PATH_ESTABLISHED=false
+CONCRETE_PATH_VALUE_ESTABLISHED=false
+FILESYSTEM_IO_PERFORMED=false
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+Mac AIControlCenter remains the sole Control Plane; Ubuntu has zero role and
+zero authority. Governance and SEC-02 are unchanged, `ControlledExecutionPort`
+remains uncoupled, and mutation budget remains zero. After architecture Git
+closeout, the separately gated next milestone is
+`MACRO_WU_06_TRUSTED_OWNERSHIP_EXPECTATION_IMPLEMENTATION`; no implementation
+or operational establishment is claimed by this freeze.
+
 ## Concrete Protected-Evidence Filesystem Binding Architecture Contract
 
 The next Macro-WU-06 boundary is frozen in

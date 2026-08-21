@@ -1,5 +1,39 @@
 # Roadmap
 
+## Trusted Ownership Expectation Architecture Contract
+
+- [x] Complete architecture discovery and freeze the separate ownership
+  expectation issuer boundary without implementing or executing it.
+- [x] Freeze `expected_uid` as the already-resolved
+  `ResolvedTrustedMacAccountHome.bound_uid`; prohibit resolver construction or
+  execution, additional UID/passwd observations, caller UID, and ambient,
+  environment, `HOME`, argv, or JSON identity authority.
+- [x] Freeze the repository-owned exact Mac application-group policy
+  `TRUSTED_APPLICATION_GROUP_NAME="staff"` and exactly one
+  `grp.getgrnam("staff")` lookup using only `gr_gid`.
+- [x] Freeze fail-closed exact-type, non-negative GID validation with no
+  ambient/supplementary/passwd group authority, enumeration, candidate,
+  alternate, retry, fallback, or best-effort behavior.
+- [x] Freeze the ordered lookup budget: the existing resolver retains maximum
+  one platform, real UID, effective UID, and bound-UID passwd observation in
+  its own boundary; the issuer consumes its resolved result, makes zero
+  additional UID/passwd observations, and makes at most one exact group lookup.
+- [x] Freeze immutable, slotted, factual, zero-authority
+  `TrustedOwnershipExpectation` with exactly `expected_uid: int` and
+  `expected_gid: int`; possession and object identity grant no authority.
+- [x] Preserve strict semantic separation and dependency order from concrete
+  path plus ownership expectation, through a future snapshot request, to at
+  most one exact-target `lstat`.
+- [x] Preserve the existing single-`lstat` and TOCTOU non-claim contracts,
+  Mac sole Control Plane, Ubuntu zero authority, unchanged Governance/SEC-02,
+  uncoupled `ControlledExecutionPort`, mutation budget zero, and all required
+  false/unknown program state and Macro-WU-06 accounting.
+- [ ] After architecture Git closeout, implement the separately gated
+  `MACRO_WU_06_TRUSTED_OWNERSHIP_EXPECTATION_IMPLEMENTATION`. Do not claim the
+  issuer implemented or the trusted GID source operationally established.
+
+No focused or canonical validation is run for this documentation-only work.
+
 ## Concrete Protected-Evidence Filesystem Binding Architecture Contract
 
 - [x] Discover and reuse the repository's fixed-slot, concrete-location,
@@ -28,10 +62,10 @@
   path authority, unchanged Governance/SEC-02, uncoupled
   `ControlledExecutionPort`, no external infrastructure or Production access,
   and unchanged Macro-WU-06 accounting.
-- [ ] First architecture-freeze and implement a separate trusted ownership
-  expectation boundary. Until then, no positive operational ownership-safe
-  claim or binding adapter implementation is permitted. Do not invent a GID
-  source or inspect actual protected evidence or Production.
+- [x] Architecture-freeze the separate trusted ownership expectation boundary.
+  No positive operational ownership-safe claim or binding adapter
+  implementation is permitted until its separately gated implementation is
+  complete; protected evidence and Production remain uninspected.
 
 No tests or canonical validation are run for this architecture-only work.
 
