@@ -1,5 +1,46 @@
 # Project History
 
+## 2026-08-25 — Filesystem target metadata snapshot repository closeout
+
+Architecture `44f4ef0` preceded implementation `e9a3645`. Repository capability
+closed implemented and validated with focused `122 passed in 0.09s`, canonical
+`4004 passed, 5 deselected, 543 warnings`, `CANONICAL_RC=0`, and successful,
+clean, synchronized implementation Git closeout (`IMPLEMENTATION_COMMIT_RC=0`,
+`IMPLEMENTATION_PUSH_RC=0`, `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`).
+
+`FilesystemTargetMetadataSnapshotRequest` gained exactly `concrete_path` and
+`ownership_expectation`; callers could not supply outcome or classification.
+`MacFilesystemTargetMetadataSnapshotAdapter` became the observation owner.
+Invalid requests produced zero observations; valid requests passed the exact
+unchanged target string to at most one `os.lstat` and consumed only `st_mode`,
+`st_uid`, and `st_gid`. The repository retained canonical reason mappings, with
+`reason` as the sole snapshot-factory classifier input. Positive vocabulary was
+only `DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`, never `SAFE_BOUND` or
+`METADATA_SAFE_AND_STABLY_BOUND`.
+
+The resulting snapshot remained factual, point-in-time, and zero-authority,
+with `stable_handle_bound=false`, `toctou_closed=false`, and
+`fd_inode_device_bound=false`. No stable binding, TOCTOU closure,
+FD/inode/device binding, content acquisition, admission, verification,
+`RECOVER` sufficiency, or Production readiness/authorization was established.
+All named path, expectation, request, snapshot, existence, inspection, safety,
+acquisition, admission, verification, and authority concepts remained
+separate.
+
+All operational facts remained unchanged: `TRUSTED_GID_SOURCE_ESTABLISHED=false`,
+`TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`,
+`CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`,
+`PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. Mac AIControlCenter remained sole
+Control Plane; Ubuntu retained zero role/authority. Governance/SEC-02,
+uncoupled `ControlledExecutionPort`, and mutation budget zero remained
+unchanged. `MACRO_WU_06=IN_PROGRESS`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12` remained authoritative.
+
 ## 2026-08-24 — Trusted ownership expectation repository closeout
 
 Architecture freeze `c9bc387` preceded implementation `220c170`. `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true` and `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`. Evidence recorded focused `26 passed in 0.03s`, `FINAL_IMPLEMENTATION_ARCHITECTURE_REVIEW_GATE=PASS`, `CANONICAL_REGRESSION_GATE=PASS`, `3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and `IMPLEMENTATION_GIT_CLOSEOUT=CLOSED` with `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`.

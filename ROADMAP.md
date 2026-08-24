@@ -1,5 +1,36 @@
 # Roadmap
 
+## Filesystem Target Metadata Snapshot repository implementation closeout
+
+- [x] Record architecture `44f4ef0`, implementation `e9a3645`, focused
+  `122 passed in 0.09s`, canonical `4004 passed, 5 deselected, 543 warnings`,
+  `CANONICAL_RC=0`, and successful, clean, synchronized implementation Git
+  closeout (`IMPLEMENTATION_COMMIT_RC=0`, `IMPLEMENTATION_PUSH_RC=0`,
+  `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`).
+- [x] Mark `FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_IMPLEMENTED=true`
+  and `FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_VALIDATED=true`.
+- [x] Record the exact two-field request, no caller outcome/classification,
+  Mac adapter observation ownership, zero observations for invalid requests,
+  at most one exact-unchanged-target `os.lstat`, and consumption limited to
+  `st_mode`, `st_uid`, and `st_gid`.
+- [x] Record `reason` as the sole classifier input, repository-owned canonical
+  mappings, and the sole positive vocabulary
+  `DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`; exclude `SAFE_BOUND` and
+  `METADATA_SAFE_AND_STABLY_BOUND`.
+- [x] Preserve the factual, point-in-time, zero-authority result and exact
+  `stable_handle_bound=false`, `toctou_closed=false`, and
+  `fd_inode_device_bound=false`, without claims of stable binding, TOCTOU
+  closure, FD/inode/device binding, acquisition, admission, verification,
+  `RECOVER` sufficiency, or Production readiness/authorization.
+- [x] Preserve strict semantic separation, all mandated false/unknown
+  operational state, Mac sole Control Plane, Ubuntu zero role/authority,
+  unchanged Governance/SEC-02, uncoupled `ControlledExecutionPort`, and
+  mutation budget zero.
+- [x] Keep `MACRO_WU_06=IN_PROGRESS`,
+  `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`; do not decrement Macro-WU count.
+- [ ] Next step: documentation Git closeout.
+
 ## Trusted Ownership Expectation repository implementation/validation closeout
 
 - [x] Record architecture freeze `c9bc387`, implementation `220c170`, focused

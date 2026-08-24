@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## 2026-08-25 — Filesystem target metadata snapshot repository closeout
+
+- Recorded architecture `44f4ef0`, implementation `e9a3645`, focused
+  `122 passed in 0.09s`, canonical `4004 passed, 5 deselected, 543 warnings`,
+  `CANONICAL_RC=0`, and closed implementation Git evidence:
+  `IMPLEMENTATION_COMMIT_RC=0`, `IMPLEMENTATION_PUSH_RC=0`,
+  `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`.
+- Marked `FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_IMPLEMENTED=true` and
+  `FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_VALIDATED=true`.
+- Recorded the exact two-field request (`concrete_path`,
+  `ownership_expectation`), caller exclusion from outcome/classification,
+  Mac adapter observation ownership, zero observations for invalid requests,
+  and at most one `os.lstat` using the exact unchanged target and consuming
+  only `st_mode`, `st_uid`, and `st_gid`.
+- Recorded repository-owned reason mappings with `reason` as the sole factory
+  classifier input. The positive vocabulary is only
+  `DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`, never `SAFE_BOUND` or
+  `METADATA_SAFE_AND_STABLY_BOUND`.
+- Preserved the factual, point-in-time, zero-authority snapshot and
+  `stable_handle_bound=false`, `toctou_closed=false`,
+  `fd_inode_device_bound=false`; claimed no binding, TOCTOU closure,
+  acquisition, evidence admission/verification, `RECOVER` sufficiency, or
+  Production readiness/authorization.
+- Preserved strict path/expectation/request/snapshot/existence/inspection/
+  safety/acquisition/admission/verification/authority separation; all required
+  false/unknown operational state; Mac sole Control Plane; Ubuntu zero role and
+  authority; unchanged Governance/SEC-02; uncoupled `ControlledExecutionPort`;
+  mutation budget zero; `MACRO_WU_06=IN_PROGRESS`,
+  `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## 2026-08-24 — Trusted ownership expectation repository closeout
 
 - Recorded freeze `c9bc387`, implementation `220c170`, `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true`, `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`, focused `26 passed in 0.03s`, final implementation architecture review `PASS`, canonical regression `PASS`, canonical `3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and closed, clean, synchronized implementation Git closeout.

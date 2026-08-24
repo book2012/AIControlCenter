@@ -1,5 +1,76 @@
 # AI Home Datacenter Architecture
 
+## Filesystem Target Metadata Snapshot Repository Implementation Closeout
+
+Architecture commit `44f4ef0` preceded implementation commit `e9a3645`.
+Repository validation recorded focused `122 passed in 0.09s` and canonical
+`4004 passed, 5 deselected, 543 warnings`, `CANONICAL_RC=0`. Implementation Git
+closeout is closed: `IMPLEMENTATION_COMMIT_RC=0`, `IMPLEMENTATION_PUSH_RC=0`,
+`WORKTREE_STATE=CLEAN`, `AHEAD=0`, and `BEHIND=0`.
+
+`FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_IMPLEMENTED=true` and
+`FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_VALIDATED=true`.
+`FilesystemTargetMetadataSnapshotRequest` contains exactly `concrete_path` and
+`ownership_expectation`; callers cannot supply `outcome` or
+`target_classification`. `MacFilesystemTargetMetadataSnapshotAdapter` owns
+filesystem observation. After complete request validation, it passes the exact
+unchanged target string to at most one `os.lstat` per invocation; invalid
+requests cause zero observations. Only `st_mode`, `st_uid`, and `st_gid` are
+consumed.
+
+`reason` is the sole classifier input to the repository snapshot factory. The
+canonical reason-to-outcome and reason-to-classification mappings are
+repository owned. The only positive vocabulary is
+`DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`; `SAFE_BOUND` and
+`METADATA_SAFE_AND_STABLY_BOUND` are not positive vocabulary at this boundary.
+The snapshot is factual, point-in-time, and zero-authority, always preserving
+`stable_handle_bound=false`, `toctou_closed=false`, and
+`fd_inode_device_bound=false`. It establishes no stable binding, TOCTOU
+closure, FD/inode/device binding, content acquisition, evidence admission,
+evidence verification, `RECOVER` sufficiency, Production readiness, or
+Production authorization.
+
+The semantic separation remains strict:
+
+```text
+ConcreteProtectedEvidencePath
+!= TrustedOwnershipExpectation
+!= FilesystemTargetMetadataSnapshotRequest
+!= FilesystemTargetMetadataSnapshot
+!= SourceExistence
+!= MetadataInspection
+!= MetadataSafety
+!= ContentAcquisition
+!= EvidenceAdmission
+!= EvidenceVerification
+!= Authority
+```
+
+Operational program state remains exactly:
+
+```text
+TRUSTED_GID_SOURCE_ESTABLISHED=false
+TRUSTED_HOME_VALUE_ESTABLISHED=false
+ABSOLUTE_PATH_ESTABLISHED=false
+CONCRETE_PATH_VALUE_ESTABLISHED=false
+FILESYSTEM_IO_PERFORMED=false
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+Mac AIControlCenter remains the sole Control Plane. Ubuntu has zero role and
+zero authority. Governance and SEC-02 remain unchanged,
+`ControlledExecutionPort` remains uncoupled, and mutation budget remains zero.
+Repository implementation and validation do not establish operational
+filesystem I/O or authorize access to protected evidence or Production.
+
 ## Trusted Ownership Expectation Repository Implementation Closeout
 
 Architecture freeze `c9bc387` preceded implementation `220c170`. Evidence is

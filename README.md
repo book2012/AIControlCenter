@@ -1,5 +1,48 @@
 # AIControlCenter
 
+## Filesystem target metadata snapshot repository closeout
+
+Architecture `44f4ef0` preceded implementation `e9a3645`. The capability is
+`FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_IMPLEMENTED=true` and
+`FILESYSTEM_TARGET_METADATA_SNAPSHOT_REPOSITORY_VALIDATED=true`. Evidence is
+focused `122 passed in 0.09s`, canonical
+`4004 passed, 5 deselected, 543 warnings`, `CANONICAL_RC=0`, and closed,
+successful, clean, synchronized implementation Git closeout
+(`IMPLEMENTATION_COMMIT_RC=0`, `IMPLEMENTATION_PUSH_RC=0`,
+`WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`).
+
+`FilesystemTargetMetadataSnapshotRequest` contains exactly `concrete_path` and
+`ownership_expectation`; outcome and target classification are not caller
+inputs. `MacFilesystemTargetMetadataSnapshotAdapter` owns observation. Invalid
+requests make zero observations. Otherwise, the exact unchanged target string
+is passed to at most one `os.lstat`, and only `st_mode`, `st_uid`, and `st_gid`
+are consumed. `reason` is the sole classifier input to the repository snapshot
+factory, whose canonical outcome and classification mappings are repository
+owned. The positive vocabulary is `DIRECTORY_METADATA_SNAPSHOT_ACCEPTABLE`,
+not `SAFE_BOUND` or `METADATA_SAFE_AND_STABLY_BOUND`.
+
+The snapshot is a factual, point-in-time, zero-authority value. It always
+preserves `stable_handle_bound=false`, `toctou_closed=false`, and
+`fd_inode_device_bound=false`; it does not establish stable binding, TOCTOU
+closure, FD/inode/device binding, content acquisition, evidence admission or
+verification, `RECOVER` sufficiency, or Production readiness/authorization.
+`ConcreteProtectedEvidencePath`, `TrustedOwnershipExpectation`, request,
+snapshot, source existence, metadata inspection, metadata safety, acquisition,
+admission, verification, and authority remain semantically distinct.
+
+Operational facts remain exactly `TRUSTED_GID_SOURCE_ESTABLISHED=false`,
+`TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`,
+`CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`,
+`PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. Mac AIControlCenter remains sole
+Control Plane; Ubuntu has zero role and zero authority. Governance and SEC-02
+remain unchanged, `ControlledExecutionPort` uncoupled, mutation budget zero.
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
 ## Trusted ownership expectation repository closeout
 
 Architecture freeze `c9bc387` preceded implementation `220c170`. Repository capability is `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true` and `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`. Evidence: focused `26 passed in 0.03s`, `FINAL_IMPLEMENTATION_ARCHITECTURE_REVIEW_GATE=PASS`, `CANONICAL_REGRESSION_GATE=PASS`, canonical `3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and `IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`, `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`.
