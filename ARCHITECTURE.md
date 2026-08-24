@@ -1,8 +1,57 @@
 # AI Home Datacenter Architecture
 
-## Trusted Ownership Expectation Architecture Contract
+## Trusted Ownership Expectation Repository Implementation Closeout
 
-The next Macro-WU-06 prerequisite boundary is architecture-frozen in
+Architecture freeze `c9bc387` preceded implementation `220c170`. Evidence is
+focused `26 passed in 0.03s`,
+`FINAL_IMPLEMENTATION_ARCHITECTURE_REVIEW_GATE=PASS`,
+`CANONICAL_REGRESSION_GATE=PASS`, canonical
+`3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and
+`IMPLEMENTATION_GIT_CLOSEOUT=CLOSED` with `WORKTREE_STATE=CLEAN`, `AHEAD=0`,
+`BEHIND=0`.
+
+`TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true` and
+`TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`. The implementation
+consumes an already-existing `ResolvedTrustedMacAccountHome`, sets
+`expected_uid` from `bound_uid`, performs zero additional UID observations and
+zero additional passwd lookups, and uses exact repository policy
+`TRUSTED_APPLICATION_GROUP_NAME="staff"`. It performs at most one
+`grp.getgrnam("staff")`, uses only `gr_gid`, validates exact `int` and
+non-negative GID, and fails closed with no retry, fallback, or alternate group
+lookup. Immutable, slotted `TrustedOwnershipExpectation` has exactly
+`expected_uid` and `expected_gid`, grants zero authority, and performs no
+filesystem observation, protected-source access, or Production access.
+
+```text
+TRUSTED_GID_SOURCE_ESTABLISHED=false
+TRUSTED_HOME_VALUE_ESTABLISHED=false
+ABSOLUTE_PATH_ESTABLISHED=false
+CONCRETE_PATH_VALUE_ESTABLISHED=false
+FILESYSTEM_IO_PERFORMED=false
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+Mac AIControlCenter remains sole Control Plane; Ubuntu has zero role and zero
+authority. Governance and SEC-02 remain unchanged, `ControlledExecutionPort`
+remains uncoupled, and mutation budget remains zero. The next separately gated
+repository milestone is
+`MACRO_WU_06_FILESYSTEM_TARGET_METADATA_SNAPSHOT_BOUNDARY`, separate from
+`TrustedOwnershipExpectation`, `ConcreteProtectedEvidencePath`, evidence
+acquisition, and Production authority. It may later define
+`FilesystemTargetMetadataSnapshotRequest`, `FilesystemTargetMetadataSnapshot`,
+and the exact-target single-`lstat` adapter; none is implemented here.
+
+## Trusted Ownership Expectation Architecture Contract (historical freeze)
+
+The Macro-WU-06 prerequisite boundary was architecture-frozen in
 [`docs/architecture/MACRO-WU-06-TRUSTED-OWNERSHIP-EXPECTATION-CONTRACT.md`](docs/architecture/MACRO-WU-06-TRUSTED-OWNERSHIP-EXPECTATION-CONTRACT.md).
 The issuer consumes an already-existing `ResolvedTrustedMacAccountHome` and
 sets `expected_uid = ResolvedTrustedMacAccountHome.bound_uid`; it performs zero
@@ -18,7 +67,7 @@ fails closed. Ambient process groups, supplementary groups, passwd `pw_gid`,
 `wheel`, caller-selected values, enumeration, candidates, retries, fallbacks,
 and best-effort matching are prohibited.
 
-`TrustedOwnershipExpectation` is a future immutable, slotted, factual,
+At architecture-freeze time, `TrustedOwnershipExpectation` was specified as a future immutable, slotted, factual,
 zero-authority value with exactly `expected_uid: int` and `expected_gid: int`.
 It is not unforgeable provenance, authorization, capability, admission or
 verification evidence, filesystem existence/safety/metadata evidence,

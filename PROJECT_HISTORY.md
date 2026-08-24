@@ -1,5 +1,15 @@
 # Project History
 
+## 2026-08-24 — Trusted ownership expectation repository closeout
+
+Architecture freeze `c9bc387` preceded implementation `220c170`. `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true` and `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`. Evidence recorded focused `26 passed in 0.03s`, `FINAL_IMPLEMENTATION_ARCHITECTURE_REVIEW_GATE=PASS`, `CANONICAL_REGRESSION_GATE=PASS`, `3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and `IMPLEMENTATION_GIT_CLOSEOUT=CLOSED` with `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`.
+
+The implementation consumed an existing `ResolvedTrustedMacAccountHome`, set `expected_uid` from `bound_uid`, added zero UID observations and zero passwd lookups, and used exact repository `TRUSTED_APPLICATION_GROUP_NAME="staff"` with at most one `grp.getgrnam("staff")`, only `gr_gid`, exact non-negative `int` validation, and fail-closed behavior without retry, fallback, or alternate lookup. Its immutable/slotted exact two-field value granted zero authority. No filesystem observation, protected-source access, or Production access occurred.
+
+`TRUSTED_GID_SOURCE_ESTABLISHED=false`, `TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`, `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. Mac AIControlCenter remained sole Control Plane; Ubuntu retained zero role/authority. Governance/SEC-02 stayed unchanged, `ControlledExecutionPort` uncoupled, mutation budget zero. `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
+Next became separately gated `MACRO_WU_06_FILESYSTEM_TARGET_METADATA_SNAPSHOT_BOUNDARY`, distinct from ownership expectation, concrete path, evidence acquisition, and Production authority. Future `FilesystemTargetMetadataSnapshotRequest`, `FilesystemTargetMetadataSnapshot`, and exact-target single-`lstat` adapter were not implemented.
+
 ## 2026-08-21 — Concrete protected-evidence path composer repository closeout
 
 Architecture contract `254241a` preceded implementation `2810c0c`. The

@@ -1,5 +1,15 @@
 # MASTER
 
+## Current status — Trusted ownership expectation repository closed
+
+Freeze `c9bc387` preceded implementation `220c170`; focused `26 passed in 0.03s`, `FINAL_IMPLEMENTATION_ARCHITECTURE_REVIEW_GATE=PASS`, `CANONICAL_REGRESSION_GATE=PASS`, canonical `3882 passed, 5 deselected, 539 warnings in 136.33s` with `CANONICAL_RC=0`, and `IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`, `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`. `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true` and `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`.
+
+The implementation consumes an existing `ResolvedTrustedMacAccountHome`, sets `expected_uid` from `bound_uid`, adds zero UID observations and zero passwd lookups, and uses exact `TRUSTED_APPLICATION_GROUP_NAME="staff"`. At most one `grp.getgrnam("staff")` uses only `gr_gid`; exact non-negative `int` is required and failure closes with no retry, fallback, or alternate lookup. The immutable/slotted exact two-field `TrustedOwnershipExpectation` grants zero authority and performs no filesystem observation or protected/Production access.
+
+`TRUSTED_GID_SOURCE_ESTABLISHED=false`, `TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`, `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. Mac AIControlCenter remains sole Control Plane; Ubuntu has zero role/authority. Governance/SEC-02 are unchanged, `ControlledExecutionPort` uncoupled, mutation budget zero. `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
+Next is `MACRO_WU_06_FILESYSTEM_TARGET_METADATA_SNAPSHOT_BOUNDARY`, separately gated from ownership expectation, concrete path, evidence acquisition, and Production authority. A future request, snapshot, and exact-target single-`lstat` adapter are not implemented here.
+
 ## Current status — Concrete protected-evidence path composer repository closed
 
 The repository composer is implemented and validated:

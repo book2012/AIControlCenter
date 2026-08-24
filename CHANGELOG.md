@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 2026-08-24 — Trusted ownership expectation repository closeout
+
+- Recorded freeze `c9bc387`, implementation `220c170`, `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true`, `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`, focused `26 passed in 0.03s`, final implementation architecture review `PASS`, canonical regression `PASS`, canonical `3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and closed, clean, synchronized implementation Git closeout.
+- Recorded existing resolved-home input, `expected_uid` from `bound_uid`, zero added UID/passwd observations, exact `TRUSTED_APPLICATION_GROUP_NAME="staff"`, at most one exact group lookup using only `gr_gid`, exact non-negative `int`, fail-closed no-retry/fallback/alternate behavior, immutable/slotted exact two-field value, zero authority, and no filesystem/protected-source/Production access.
+- Preserved `TRUSTED_GID_SOURCE_ESTABLISHED=false`, `TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`, `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, Mac sole Control Plane, Ubuntu zero role/authority, unchanged Governance/SEC-02, uncoupled execution port, mutation budget zero, `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- Next is separately gated `MACRO_WU_06_FILESYSTEM_TARGET_METADATA_SNAPSHOT_BOUNDARY`, apart from ownership expectation, concrete path, acquisition, and Production authority; no future request, snapshot, or exact-target single-`lstat` adapter was implemented.
+
 ## 2026-08-21 — Concrete protected-evidence path composer repository closeout
 
 - Recorded architecture contract `254241a` before implementation `2810c0c`;

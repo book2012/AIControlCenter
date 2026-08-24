@@ -1,6 +1,38 @@
 # Roadmap
 
-## Trusted Ownership Expectation Architecture Contract
+## Trusted Ownership Expectation repository implementation/validation closeout
+
+- [x] Record architecture freeze `c9bc387`, implementation `220c170`, focused
+  `26 passed in 0.03s`, final implementation architecture review `PASS`,
+  canonical regression `PASS`, canonical
+  `3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and
+  closed/clean/synchronized implementation Git closeout.
+- [x] Mark `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true` and
+  `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`.
+- [x] Record the frozen implementation semantics: existing resolved home,
+  `expected_uid` from `bound_uid`, no added UID/passwd observations, exact
+  `staff` policy, at most one exact group lookup using only `gr_gid`, exact
+  non-negative `int`, fail closed, no retry/fallback/alternate, immutable
+  slotted exact two-field value, and zero authority or filesystem/access scope.
+- [x] Preserve `TRUSTED_GID_SOURCE_ESTABLISHED=false`, every required
+  false/unknown operational fact: `TRUSTED_HOME_VALUE_ESTABLISHED=false`,
+  `ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`,
+  `FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+  `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`; preserve Mac sole Control
+  Plane, Ubuntu zero role and authority, unchanged Governance/SEC-02, uncoupled
+  `ControlledExecutionPort`, mutation budget zero, `MACRO_WU_06=IN_PROGRESS`,
+  `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- [ ] Next separately gated repository milestone:
+  `MACRO_WU_06_FILESYSTEM_TARGET_METADATA_SNAPSHOT_BOUNDARY`, separate from
+  ownership expectation, concrete path, evidence acquisition, and Production
+  authority. It may later define the request, snapshot, and exact-target
+  single-`lstat` adapter; do not implement them in this closeout.
+
+## Trusted Ownership Expectation Architecture Contract (historical freeze)
 
 - [x] Complete architecture discovery and freeze the separate ownership
   expectation issuer boundary without implementing or executing it.
@@ -28,9 +60,10 @@
   Mac sole Control Plane, Ubuntu zero authority, unchanged Governance/SEC-02,
   uncoupled `ControlledExecutionPort`, mutation budget zero, and all required
   false/unknown program state and Macro-WU-06 accounting.
-- [ ] After architecture Git closeout, implement the separately gated
-  `MACRO_WU_06_TRUSTED_OWNERSHIP_EXPECTATION_IMPLEMENTATION`. Do not claim the
-  issuer implemented or the trusted GID source operationally established.
+- [x] After architecture Git closeout, implement the separately gated
+  `MACRO_WU_06_TRUSTED_OWNERSHIP_EXPECTATION_IMPLEMENTATION`. The repository
+  issuer is implemented; this does not establish the trusted GID source
+  operationally.
 
 No focused or canonical validation is run for this documentation-only work.
 

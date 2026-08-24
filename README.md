@@ -1,5 +1,15 @@
 # AIControlCenter
 
+## Trusted ownership expectation repository closeout
+
+Architecture freeze `c9bc387` preceded implementation `220c170`. Repository capability is `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_IMPLEMENTED=true` and `TRUSTED_OWNERSHIP_EXPECTATION_REPOSITORY_VALIDATED=true`. Evidence: focused `26 passed in 0.03s`, `FINAL_IMPLEMENTATION_ARCHITECTURE_REVIEW_GATE=PASS`, `CANONICAL_REGRESSION_GATE=PASS`, canonical `3882 passed, 5 deselected, 539 warnings in 136.33s`, `CANONICAL_RC=0`, and `IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`, `WORKTREE_STATE=CLEAN`, `AHEAD=0`, `BEHIND=0`.
+
+The implementation consumes an already-existing `ResolvedTrustedMacAccountHome`, sets `expected_uid` from `bound_uid`, and performs zero additional UID observations and zero additional passwd lookups. Exact repository policy is `TRUSTED_APPLICATION_GROUP_NAME="staff"`; at most one `grp.getgrnam("staff")` lookup uses only `gr_gid`, validates exact `int` and non-negative GID, and fails closed with no retry, fallback, or alternate group lookup. Immutable/slotted `TrustedOwnershipExpectation` has exactly `expected_uid` and `expected_gid`, grants zero authority, and performs no filesystem observation, protected-source access, or Production access.
+
+Operational facts remain exactly `TRUSTED_GID_SOURCE_ESTABLISHED=false`, `TRUSTED_HOME_VALUE_ESTABLISHED=false`, `ABSOLUTE_PATH_ESTABLISHED=false`, `CONCRETE_PATH_VALUE_ESTABLISHED=false`, `FILESYSTEM_IO_PERFORMED=false`, `PROTECTED_SOURCE_ACCESS_PERFORMED=false`, `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`, and `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. Mac AIControlCenter remains sole Control Plane; Ubuntu has zero role and zero authority. Governance and SEC-02 remain unchanged, `ControlledExecutionPort` uncoupled, and mutation budget zero. `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
+Next is separately gated `MACRO_WU_06_FILESYSTEM_TARGET_METADATA_SNAPSHOT_BOUNDARY`, separate from `TrustedOwnershipExpectation`, `ConcreteProtectedEvidencePath`, evidence acquisition, and Production authority. It may later define `FilesystemTargetMetadataSnapshotRequest`, `FilesystemTargetMetadataSnapshot`, and the exact-target single-`lstat` adapter; none is implemented here.
+
 ## Concrete protected-evidence path composer repository closeout
 
 The repository composer is implemented and validated
