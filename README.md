@@ -1,5 +1,46 @@
 # AIControlCenter
 
+## Protected evidence acquisition repository validation closeout
+
+`ARCHITECTURE_COMMIT=f05c652` preceded `IMPLEMENTATION_COMMIT=07bf1bd`.
+`PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_IMPLEMENTED=true` and
+`PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_VALIDATED=true`. Recorded validation
+is `FOCUSED_TEST_GATE=PASS`, `FINAL_CODE_REVIEW_GATE=PASS`,
+`CANONICAL_REGRESSION_GATE=PASS`,
+`CANONICAL_RESULT="4044 passed, 5 deselected, 555 warnings"`, and
+`GIT_DIFF_CHECK_GATE=PASS`.
+
+The repository contains fail-closed authorization durability mechanics,
+source/leaf contracts, policy, schema, codec, and tests. Durable `COMMITTED`
+facts provide no invocation authority; Python object identity is not
+authority. `DURABILITY_ZERO_INVOCATION_AUTHORITY=true`,
+`DURABILITY_RESULT_NO_CAPABILITY=true`, and
+`DURABILITY_RECEIPT_NO_CAPABILITY=true`. No trusted human Production issuer is
+available through this repository boundary, and Production capability issuance
+is unavailable. Both Production acquisition entry points fail closed before
+filesystem I/O:
+`PRODUCTION_HUMAN_ISSUER_AVAILABLE=false`,
+`PRODUCTION_CAPABILITY_ISSUANCE_AVAILABLE=false`,
+`PRODUCTION_ACQUISITION_AVAILABLE=false`, and
+`PRODUCTION_FILESYSTEM_IO_AVAILABLE=false`.
+
+No actual acquisition or access occurred:
+`PROTECTED_SOURCE_ACCESS_PERFORMED=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
+and `FILESYSTEM_IO_PERFORMED=false`. Architecture remains
+`MAC_CONTROL_PLANE=true`, `UBUNTU_AUTHORITY=false`,
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`,
+`GOVERNANCE_CORE_CHANGED=false`, and `SEC_02_CHANGED=false`.
+
+Recovery truth remains `RECOVER_EVIDENCE_SUFFICIENT=false`,
+`OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`. Therefore
+`MARIADB_CONTINUITY_RECOVERY_INTEGRATED_PROGRAM=IN_PROGRESS`,
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. The next operational objective is
+`ACTUAL_HISTORICAL_EVIDENCE_ACQUISITION_AND_OFFLINE_EVALUATION`; it has not
+occurred. Existing `datetime.utcnow` deprecations and pytest `rm_rf` cleanup
+warnings are technical debt/test hygiene, not blockers.
+
 ## Offline historical evidence evaluator repository closeout
 
 `IMPLEMENTATION_COMMIT=b51092f` is closed, implemented, and validated:

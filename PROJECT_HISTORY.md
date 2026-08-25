@@ -1,5 +1,47 @@
 # Project History
 
+## 2026-08-25 — Protected evidence acquisition repository validation closeout
+
+`ARCHITECTURE_COMMIT=f05c652` froze the protected evidence leaf locator and
+size bound before `IMPLEMENTATION_COMMIT=07bf1bd` established
+`PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_IMPLEMENTED=true` and
+`PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_VALIDATED=true`. Recorded gates were
+`FOCUSED_TEST_GATE=PASS`, `FINAL_CODE_REVIEW_GATE=PASS`,
+`CANONICAL_REGRESSION_GATE=PASS`,
+`CANONICAL_RESULT="4044 passed, 5 deselected, 555 warnings"`, and
+`GIT_DIFF_CHECK_GATE=PASS`. Existing `datetime.utcnow` deprecations and pytest
+`rm_rf` cleanup warnings remained non-blocking technical debt/test hygiene.
+
+The repository gained fail-closed authorization durability mechanics,
+source/leaf contracts, policy, schema, codec, and tests. Durable `COMMITTED`
+facts did not grant invocation authority, and Python object identity was not
+authority. `DURABILITY_ZERO_INVOCATION_AUTHORITY=true`,
+`DURABILITY_RESULT_NO_CAPABILITY=true`, and
+`DURABILITY_RECEIPT_NO_CAPABILITY=true`.
+
+No trusted human Production issuer was available through this repository
+boundary. Both Production acquisition entry points remained fail-closed before
+filesystem I/O:
+`PRODUCTION_HUMAN_ISSUER_AVAILABLE=false`,
+`PRODUCTION_CAPABILITY_ISSUANCE_AVAILABLE=false`,
+`PRODUCTION_ACQUISITION_AVAILABLE=false`, and
+`PRODUCTION_FILESYSTEM_IO_AVAILABLE=false`. No actual acquisition or access
+occurred: `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, and `FILESYSTEM_IO_PERFORMED=false`.
+
+Mac remained the sole Control Plane (`MAC_CONTROL_PLANE=true`); Ubuntu retained
+zero authority (`UBUNTU_AUTHORITY=false`).
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`, `GOVERNANCE_CORE_CHANGED=false`, and
+`SEC_02_CHANGED=false`. Recovery truth remained
+`RECOVER_EVIDENCE_SUFFICIENT=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`, and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
+`MARIADB_CONTINUITY_RECOVERY_INTEGRATED_PROGRAM=IN_PROGRESS`,
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`. The next operational objective
+became `ACTUAL_HISTORICAL_EVIDENCE_ACQUISITION_AND_OFFLINE_EVALUATION`; it had
+not occurred and remained subject to separate authorization.
+
 ## 2026-08-25 — Offline historical evidence evaluator repository closeout
 
 `IMPLEMENTATION_COMMIT=b51092f` closed the repository implementation and

@@ -1,5 +1,43 @@
 # Roadmap
 
+## Protected evidence acquisition repository validation closeout
+
+- [x] Record `ARCHITECTURE_COMMIT=f05c652`,
+  `IMPLEMENTATION_COMMIT=07bf1bd`,
+  `PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_IMPLEMENTED=true`, and
+  `PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_VALIDATED=true`.
+- [x] Record `FOCUSED_TEST_GATE=PASS`, `FINAL_CODE_REVIEW_GATE=PASS`,
+  `CANONICAL_REGRESSION_GATE=PASS`,
+  `CANONICAL_RESULT="4044 passed, 5 deselected, 555 warnings"`, and
+  `GIT_DIFF_CHECK_GATE=PASS`. Existing `datetime.utcnow` deprecations and
+  pytest `rm_rf` cleanup warnings are non-blocking technical debt/test hygiene.
+- [x] Preserve repository fail-closed durability, source/leaf contracts,
+  policy, schema, codec, and tests; `DURABILITY_ZERO_INVOCATION_AUTHORITY=true`,
+  `DURABILITY_RESULT_NO_CAPABILITY=true`, and
+  `DURABILITY_RECEIPT_NO_CAPABILITY=true`. Durable `COMMITTED` facts and Python
+  object identity grant no authority.
+- [x] Preserve `PRODUCTION_HUMAN_ISSUER_AVAILABLE=false`,
+  `PRODUCTION_CAPABILITY_ISSUANCE_AVAILABLE=false`,
+  `PRODUCTION_ACQUISITION_AVAILABLE=false`, and
+  `PRODUCTION_FILESYSTEM_IO_AVAILABLE=false`; both Production entry points
+  remain fail-closed before filesystem I/O.
+- [x] Preserve `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+  `PRODUCTION_ACCESS_PERFORMED=false`, `FILESYSTEM_IO_PERFORMED=false`,
+  `MAC_CONTROL_PLANE=true`, `UBUNTU_AUTHORITY=false`,
+  `CONTROLLED_EXECUTION_PORT_COUPLED=false`,
+  `GOVERNANCE_CORE_CHANGED=false`, and `SEC_02_CHANGED=false`.
+- [x] Preserve `RECOVER_EVIDENCE_SUFFICIENT=false`,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+  `MARIADB_CONTINUITY_RECOVERY_INTEGRATED_PROGRAM=IN_PROGRESS`,
+  `MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- [ ] Next operational objective:
+  `ACTUAL_HISTORICAL_EVIDENCE_ACQUISITION_AND_OFFLINE_EVALUATION`. Actual
+  protected-source acquisition remains subject to separate authorization and
+  has not occurred.
+- [ ] Next step: `DOCUMENTATION_GIT_CLOSEOUT`.
+
 ## Offline historical evidence evaluator repository closeout
 
 - [x] Record `IMPLEMENTATION_COMMIT=b51092f`,

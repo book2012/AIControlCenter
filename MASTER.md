@@ -1,5 +1,43 @@
 # MASTER
 
+## Current status — Protected evidence acquisition repository validated
+
+`ARCHITECTURE_COMMIT=f05c652` preceded `IMPLEMENTATION_COMMIT=07bf1bd`.
+`PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_IMPLEMENTED=true` and
+`PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_VALIDATED=true`. Gates are
+`FOCUSED_TEST_GATE=PASS`, `FINAL_CODE_REVIEW_GATE=PASS`,
+`CANONICAL_REGRESSION_GATE=PASS`,
+`CANONICAL_RESULT="4044 passed, 5 deselected, 555 warnings"`, and
+`GIT_DIFF_CHECK_GATE=PASS`. Existing `datetime.utcnow` deprecations and pytest
+`rm_rf` cleanup warnings remain non-blocking technical debt/test hygiene.
+
+The repository contains fail-closed authorization durability mechanics,
+source/leaf contracts, policy, schema, codec, and tests. Durable `COMMITTED`
+facts and Python object identity grant no authority.
+`DURABILITY_ZERO_INVOCATION_AUTHORITY=true`,
+`DURABILITY_RESULT_NO_CAPABILITY=true`, and
+`DURABILITY_RECEIPT_NO_CAPABILITY=true`.
+
+Production remains unavailable: `PRODUCTION_HUMAN_ISSUER_AVAILABLE=false`,
+`PRODUCTION_CAPABILITY_ISSUANCE_AVAILABLE=false`,
+`PRODUCTION_ACQUISITION_AVAILABLE=false`, and
+`PRODUCTION_FILESYSTEM_IO_AVAILABLE=false`. Both Production entry points fail
+closed before filesystem I/O. `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, and `FILESYSTEM_IO_PERFORMED=false`.
+
+Architecture remains `MAC_CONTROL_PLANE=true`, `UBUNTU_AUTHORITY=false`,
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`,
+`GOVERNANCE_CORE_CHANGED=false`, and `SEC_02_CHANGED=false`. Recovery remains
+`RECOVER_EVIDENCE_SUFFICIENT=false`, `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+and `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+`MARIADB_CONTINUITY_RECOVERY_INTEGRATED_PROGRAM=IN_PROGRESS`,
+`MACRO_WU_06=IN_PROGRESS`, `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+
+Next operational objective is
+`ACTUAL_HISTORICAL_EVIDENCE_ACQUISITION_AND_OFFLINE_EVALUATION`; it remains
+subject to separate authorization and has not occurred.
+
 ## Current status — Offline historical evidence evaluator repository closed
 
 The repository evaluator is implemented and validated at
@@ -3754,7 +3792,7 @@ Status: ARCHITECTURE FROZEN
 
 Target:
 
-`runtime/venvs/<runtime-id>` + `runtime/sources/<runtime-id>`
+`runtime/venvs/<runtime-id>` and `runtime/sources/<runtime-id>`
 
 Current Candidate Runtime:
 

@@ -1,5 +1,71 @@
 # AI Home Datacenter Architecture
 
+## Protected Evidence Acquisition Repository Validation Closeout
+
+`ARCHITECTURE_COMMIT=f05c652` froze the protected evidence leaf locator and
+size bound before `IMPLEMENTATION_COMMIT=07bf1bd`. Repository capability and
+validation state are:
+
+```text
+PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_IMPLEMENTED=true
+PROTECTED_EVIDENCE_ACQUISITION_REPOSITORY_VALIDATED=true
+FOCUSED_TEST_GATE=PASS
+FINAL_CODE_REVIEW_GATE=PASS
+CANONICAL_REGRESSION_GATE=PASS
+CANONICAL_RESULT="4044 passed, 5 deselected, 555 warnings"
+GIT_DIFF_CHECK_GATE=PASS
+```
+
+The boundary contains fail-closed authorization durability mechanics,
+source/leaf contracts, policy, schema, codec, and tests. Durable `COMMITTED`
+facts are historical facts only and provide no invocation authority. A
+durability result and receipt contain no capability; Python object identity is
+not authority.
+
+```text
+DURABILITY_ZERO_INVOCATION_AUTHORITY=true
+DURABILITY_RESULT_NO_CAPABILITY=true
+DURABILITY_RECEIPT_NO_CAPABILITY=true
+PRODUCTION_HUMAN_ISSUER_AVAILABLE=false
+PRODUCTION_CAPABILITY_ISSUANCE_AVAILABLE=false
+PRODUCTION_ACQUISITION_AVAILABLE=false
+PRODUCTION_FILESYSTEM_IO_AVAILABLE=false
+```
+
+No trusted human Production issuer is available through this repository
+boundary. Both Production acquisition entry points fail closed before
+filesystem I/O. This milestone performed no actual protected-source
+acquisition or Production access:
+
+```text
+PROTECTED_SOURCE_ACCESS_PERFORMED=false
+PRODUCTION_ACCESS_PERFORMED=false
+FILESYSTEM_IO_PERFORMED=false
+MAC_CONTROL_PLANE=true
+UBUNTU_AUTHORITY=false
+CONTROLLED_EXECUTION_PORT_COUPLED=false
+GOVERNANCE_CORE_CHANGED=false
+SEC_02_CHANGED=false
+```
+
+Repository validation does not promote recovery evidence or program state:
+
+```text
+RECOVER_EVIDENCE_SUFFICIENT=false
+OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN
+RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT
+MARIADB_CONTINUITY_RECOVERY_INTEGRATED_PROGRAM=IN_PROGRESS
+MACRO_WU_06=IN_PROGRESS
+REMAINING_AUTHORITATIVE_MACRO_WUS=7
+AUTHORITATIVE_REMAINING_RANGE=WU06-WU12
+```
+
+The next operational objective is
+`ACTUAL_HISTORICAL_EVIDENCE_ACQUISITION_AND_OFFLINE_EVALUATION`. It remains
+subject to separate authorization and has not occurred. Existing
+`datetime.utcnow` deprecations and pytest `rm_rf` cleanup warnings are
+technical debt/test hygiene, not architecture blockers.
+
 ## Offline Historical Evidence Evaluator Repository Closeout
 
 `IMPLEMENTATION_COMMIT=b51092f` completed the repository-only evaluator.
