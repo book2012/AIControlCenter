@@ -36,7 +36,7 @@
   `ACTUAL_HISTORICAL_EVIDENCE_ACQUISITION_AND_OFFLINE_EVALUATION`. Actual
   protected-source acquisition remains subject to separate authorization and
   has not occurred.
-- [ ] Next step: `DOCUMENTATION_GIT_CLOSEOUT`.
+- [x] Documentation Git closeout completed at `dd058b8`.
 
 ## Offline historical evidence evaluator repository closeout
 
