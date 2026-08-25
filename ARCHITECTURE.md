@@ -1,5 +1,37 @@
 # AI Home Datacenter Architecture
 
+## Authoritative Macro-WU06 closeout reconciliation
+
+The authoritative state is `MACRO_WU_06_CLOSE_GATE=PASS`,
+`MACRO_WU_06=CLOSED`, `REMAINING_AUTHORITATIVE_MACRO_WUS=6`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU07-WU12`.
+
+The factual evaluation boundary produced
+`ACTUAL_OFFLINE_EVIDENCE_EVALUATION_GATE=PASS` and
+`OFFLINE_HISTORICAL_EVIDENCE_EVALUATION=EVIDENCE_INCOMPLETE`.
+`AUTH_PLUGIN_EVIDENCE_STATE=MISSING`,
+`PYMYSQL_COMPATIBILITY_EVIDENCE_STATE=MISSING`,
+`DATA_IDENTITY_EVIDENCE_STATE=MISSING`, and
+`CONTINUITY_LINEAGE_EVIDENCE_STATE=MISSING`; therefore
+`RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
+Four separately human-authorized, exact-path, metadata-only `os.lstat`
+observations are filesystem I/O under existing repository terminology.
+Consequently `FILESYSTEM_IO_PERFORMED=true` and
+`PROTECTED_SOURCE_ACCESS_PERFORMED=true`. This does not imply content
+acquisition: `FILESYSTEM_CONTENT_READ_PERFORMED=false` and
+`PRODUCTION_ACCESS_PERFORMED=false`. Each repository-defined leaf was absent.
+No evidence content, alternate source, fallback, enumeration, MariaDB/SQL,
+PyMySQL, or secret value was accessed.
+
+The closeout does not alter architectural authority or governance:
+`MAC_CONTROL_PLANE=true`, `UBUNTU_AUTHORITY=false`,
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`, `GOVERNANCE_CORE_CHANGED=false`,
+`SEC_02_CHANGED=false`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The current authoritative next
+step is `NEXT_STEP=MACRO_WU_07_RECOVER_EVIDENCE_SUFFICIENCY_DECISION`.
+
 ## Protected Evidence Acquisition Repository Validation Closeout
 
 `ARCHITECTURE_COMMIT=f05c652` froze the protected evidence leaf locator and

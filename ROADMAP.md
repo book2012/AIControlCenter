@@ -1,5 +1,31 @@
 # Roadmap
 
+## Authoritative Macro-WU06 closeout
+
+- [x] `MACRO_WU_06_CLOSE_GATE=PASS`; `MACRO_WU_06=CLOSED`.
+- [x] Set `REMAINING_AUTHORITATIVE_MACRO_WUS=6` and
+  `AUTHORITATIVE_REMAINING_RANGE=WU07-WU12`.
+- [x] Record `ACTUAL_OFFLINE_EVIDENCE_EVALUATION_GATE=PASS` and
+  `OFFLINE_HISTORICAL_EVIDENCE_EVALUATION=EVIDENCE_INCOMPLETE`.
+- [x] Record `AUTH_PLUGIN_EVIDENCE_STATE=MISSING`,
+  `PYMYSQL_COMPATIBILITY_EVIDENCE_STATE=MISSING`,
+  `DATA_IDENTITY_EVIDENCE_STATE=MISSING`, and
+  `CONTINUITY_LINEAGE_EVIDENCE_STATE=MISSING`.
+- [x] Preserve `RECOVER_EVIDENCE_SUFFICIENT=false` and
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+- [x] Reconcile four separately human-authorized exact-path metadata-only
+  `os.lstat` observations as `FILESYSTEM_IO_PERFORMED=true` and
+  `PROTECTED_SOURCE_ACCESS_PERFORMED=true`, while preserving
+  `FILESYSTEM_CONTENT_READ_PERFORMED=false` and
+  `PRODUCTION_ACCESS_PERFORMED=false`. All four leaves were absent; no content,
+  alternate-source search, fallback, enumeration, MariaDB/SQL, PyMySQL, or
+  secret-value access occurred.
+- [x] Preserve `GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`,
+  `CONTROLLED_EXECUTION_PORT_COUPLED=false`, `MAC_CONTROL_PLANE=true`,
+  `UBUNTU_AUTHORITY=false`, and
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`.
+- [ ] `NEXT_STEP=MACRO_WU_07_RECOVER_EVIDENCE_SUFFICIENCY_DECISION`.
+
 ## Protected evidence acquisition repository validation closeout
 
 - [x] Record `ARCHITECTURE_COMMIT=f05c652`,

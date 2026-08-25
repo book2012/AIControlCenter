@@ -1,5 +1,35 @@
 # MASTER
 
+## Current authoritative status — Macro-WU06 closed
+
+`MACRO_WU_06_CLOSE_GATE=PASS`, `MACRO_WU_06=CLOSED`,
+`REMAINING_AUTHORITATIVE_MACRO_WUS=6`, and
+`AUTHORITATIVE_REMAINING_RANGE=WU07-WU12`.
+
+`ACTUAL_OFFLINE_EVIDENCE_EVALUATION_GATE=PASS` established
+`OFFLINE_HISTORICAL_EVIDENCE_EVALUATION=EVIDENCE_INCOMPLETE` because
+`AUTH_PLUGIN_EVIDENCE_STATE=MISSING`,
+`PYMYSQL_COMPATIBILITY_EVIDENCE_STATE=MISSING`,
+`DATA_IDENTITY_EVIDENCE_STATE=MISSING`, and
+`CONTINUITY_LINEAGE_EVIDENCE_STATE=MISSING`. Accordingly,
+`RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
+Four separately human-authorized exact-path metadata-only `os.lstat`
+observations occurred, so repository terminology requires
+`FILESYSTEM_IO_PERFORMED=true` and `PROTECTED_SOURCE_ACCESS_PERFORMED=true`.
+`FILESYSTEM_CONTENT_READ_PERFORMED=false` and
+`PRODUCTION_ACCESS_PERFORMED=false` remain authoritative. All four leaves were
+absent; no evidence content, alternate-source search, fallback, enumeration,
+MariaDB/SQL access, PyMySQL activity, or secret-value read occurred.
+
+Governance and architecture remain unchanged:
+`GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`,
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`, `MAC_CONTROL_PLANE=true`,
+`UBUNTU_AUTHORITY=false`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. Current next step is
+`NEXT_STEP=MACRO_WU_07_RECOVER_EVIDENCE_SUFFICIENCY_DECISION`.
+
 ## Current status — Protected evidence acquisition repository validated
 
 `ARCHITECTURE_COMMIT=f05c652` preceded `IMPLEMENTATION_COMMIT=07bf1bd`.

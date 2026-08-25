@@ -1,5 +1,39 @@
 # AIControlCenter
 
+## Authoritative Macro-WU06 documentation closeout
+
+Authoritative Macro-WU06 is closed: `MACRO_WU_06_CLOSE_GATE=PASS` and
+`MACRO_WU_06=CLOSED`. Current remaining state is
+`REMAINING_AUTHORITATIVE_MACRO_WUS=6` and
+`AUTHORITATIVE_REMAINING_RANGE=WU07-WU12`.
+
+The actual offline evaluation passed its execution gate while finding the
+repository-defined historical evidence incomplete:
+`ACTUAL_OFFLINE_EVIDENCE_EVALUATION_GATE=PASS`,
+`OFFLINE_HISTORICAL_EVIDENCE_EVALUATION=EVIDENCE_INCOMPLETE`,
+`AUTH_PLUGIN_EVIDENCE_STATE=MISSING`,
+`PYMYSQL_COMPATIBILITY_EVIDENCE_STATE=MISSING`,
+`DATA_IDENTITY_EVIDENCE_STATE=MISSING`, and
+`CONTINUITY_LINEAGE_EVIDENCE_STATE=MISSING`. Therefore
+`RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
+Four separately human-authorized, exact-path, metadata-only `os.lstat`
+observations occurred. Under repository terminology this records
+`FILESYSTEM_IO_PERFORMED=true` and `PROTECTED_SOURCE_ACCESS_PERFORMED=true`,
+while `FILESYSTEM_CONTENT_READ_PERFORMED=false` and
+`PRODUCTION_ACCESS_PERFORMED=false`. All four historical evidence leaves were
+factually absent; no evidence content was read, no alternate source was
+searched, and no fallback or enumeration occurred. `MARIADB_ACTIVITY=NONE`,
+`SQL_EXECUTION=NOT_PERFORMED`, `PYMYSQL_ACTIVITY=NONE`, and
+`SECRET_VALUES_READ=NO`.
+
+Architecture remains `MAC_CONTROL_PLANE=true`, `UBUNTU_AUTHORITY=false`,
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`, `GOVERNANCE_CORE_CHANGED=false`,
+`SEC_02_CHANGED=false`, and
+`SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`. The current next authoritative
+step is `NEXT_STEP=MACRO_WU_07_RECOVER_EVIDENCE_SUFFICIENCY_DECISION`.
+
 ## Protected evidence acquisition repository validation closeout
 
 `ARCHITECTURE_COMMIT=f05c652` preceded `IMPLEMENTATION_COMMIT=07bf1bd`.
