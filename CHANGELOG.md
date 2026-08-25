@@ -1,5 +1,51 @@
 # CHANGELOG
 
+## 2026-08-25 — Offline historical evidence evaluator repository closeout
+
+- Recorded `IMPLEMENTATION_COMMIT=b51092f`,
+  `OFFLINE_HISTORICAL_EVIDENCE_EVALUATOR_REPOSITORY_IMPLEMENTED=true`,
+  `OFFLINE_HISTORICAL_EVIDENCE_EVALUATOR_REPOSITORY_VALIDATED=true`,
+  `OFFLINE_HISTORICAL_EVIDENCE_EVALUATOR_IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`,
+  and `FINAL_OFFLINE_EVALUATOR_ARCHITECTURE_REVIEW_GATE=PASS`.
+- Recorded focused `14 passed in 0.03s`, `CANONICAL_REGRESSION_GATE=PASS`,
+  `CANONICAL_RESULT="4018 passed, 5 deselected"`, 547 warnings,
+  `CANONICAL_RC=0`, `WORKTREE_AFTER_IMPLEMENTATION_PUSH=CLEAN`, `AHEAD=0`, and
+  `BEHIND=0`.
+- Documented a repository-only, value-free, fail-closed evaluator with
+  immutable/slotted factual inputs and results, no caller positive-result
+  injection, provenance required for `EVIDENCE_COMPLETE`, and no promotion
+  from `EVIDENCE_COMPLETE` to operational `RECOVER` sufficiency.
+- Froze exactly five data identity categories: `WORDPRESS_IDENTITY`,
+  `SITE_IDENTITY`, `APPLICATION_IDENTITY`, `CLOSED_SCHEMA_CHARACTERISTICS`,
+  and `CLOSED_TABLE_CHARACTERISTICS`; and exactly three continuity lineage
+  categories: `LOGICAL_EXPORT`, `RECOVERY_ARTIFACT`, and
+  `PERSISTENT_VOLUME_SNAPSHOT`. Reused existing
+  `EvidenceAcquisitionCategory`.
+- Preserved `Source != Acquisition != Fact != OfflineEvaluation !=
+  RECOVERDecision != ProductionAccess != CredentialValidation != Authorization
+  != Authority`, zero mutation budget, no filesystem I/O, protected-source
+  acquisition, network, MariaDB/SQL connection, or Production access, Mac-only
+  Control Plane authority, Ubuntu zero authority, unchanged Governance/SEC-02,
+  and uncoupled `ControlledExecutionPort`.
+- Preserved exactly `FILESYSTEM_IO_PERFORMED=false`,
+  `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+  `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, `MACRO_WU_06=IN_PROGRESS`,
+  `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- Kept actual protected evidence content unopened and unread. Before actual
+  acquisition, require a separate architecture boundary for exact protected
+  leaf metadata; regular non-symlink leaf; permissions no broader than `0600`;
+  trusted UID/GID; stable FD/inode/device binding; TOCTOU-resistant
+  acquisition; exact fixed source slot; one-shot human authorization; maximum
+  one acquisition per authorization; and no enumeration, candidates, fallback,
+  retry, recovery, or authorization reuse. The existing directory metadata
+  snapshot is point-in-time only, not stable binding or content-acquisition
+  authority. No trusted contents, protected-evidence verification, Production
+  readiness, or MariaDB credential continuity is claimed.
+
 ## 2026-08-25 — Filesystem target metadata snapshot repository closeout
 
 - Recorded architecture `44f4ef0`, implementation `e9a3645`, focused

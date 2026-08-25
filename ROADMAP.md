@@ -1,5 +1,55 @@
 # Roadmap
 
+## Offline historical evidence evaluator repository closeout
+
+- [x] Record `IMPLEMENTATION_COMMIT=b51092f`,
+  `OFFLINE_HISTORICAL_EVIDENCE_EVALUATOR_REPOSITORY_IMPLEMENTED=true`,
+  `OFFLINE_HISTORICAL_EVIDENCE_EVALUATOR_REPOSITORY_VALIDATED=true`,
+  `OFFLINE_HISTORICAL_EVIDENCE_EVALUATOR_IMPLEMENTATION_GIT_CLOSEOUT=CLOSED`,
+  and `FINAL_OFFLINE_EVALUATOR_ARCHITECTURE_REVIEW_GATE=PASS`.
+- [x] Record focused `14 passed in 0.03s`,
+  `CANONICAL_REGRESSION_GATE=PASS`,
+  `CANONICAL_RESULT="4018 passed, 5 deselected"`, 547 warnings,
+  `CANONICAL_RC=0`, `WORKTREE_AFTER_IMPLEMENTATION_PUSH=CLEAN`, `AHEAD=0`, and
+  `BEHIND=0`.
+- [x] Record repository-only, value-free, fail-closed semantics;
+  immutable/slotted factual inputs and results; no caller positive-result
+  injection; existing `EvidenceAcquisitionCategory` reuse; provenance required
+  for `EVIDENCE_COMPLETE`; and no promotion of `EVIDENCE_COMPLETE` to
+  operational `RECOVER` sufficiency.
+- [x] Freeze exactly five data identity categories: `WORDPRESS_IDENTITY`,
+  `SITE_IDENTITY`, `APPLICATION_IDENTITY`, `CLOSED_SCHEMA_CHARACTERISTICS`,
+  and `CLOSED_TABLE_CHARACTERISTICS`.
+- [x] Freeze exactly three continuity lineage categories: `LOGICAL_EXPORT`,
+  `RECOVERY_ARTIFACT`, and `PERSISTENT_VOLUME_SNAPSHOT`.
+- [x] Preserve `Source != Acquisition != Fact != OfflineEvaluation !=
+  RECOVERDecision != ProductionAccess != CredentialValidation != Authorization
+  != Authority`; zero mutation budget; no filesystem I/O, protected-source
+  acquisition, network, MariaDB/SQL connection, or Production access; Mac-only
+  Control Plane authority; Ubuntu zero authority; unchanged Governance/SEC-02;
+  and uncoupled `ControlledExecutionPort`.
+- [x] Preserve exactly `FILESYSTEM_IO_PERFORMED=false`,
+  `PROTECTED_SOURCE_ACCESS_PERFORMED=false`,
+  `PRODUCTION_ACCESS_PERFORMED=false`, `RECOVER_EVIDENCE_SUFFICIENT=false`,
+  `OFFLINE_ACQUISITION_POSSIBLE=UNKNOWN`,
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`,
+  `SM_01B_02D_06_SEMANTICS_CHANGE_REQUIRED=NO`, `MACRO_WU_06=IN_PROGRESS`,
+  `REMAINING_AUTHORITATIVE_MACRO_WUS=7`, and
+  `AUTHORITATIVE_REMAINING_RANGE=WU06-WU12`.
+- [ ] Next architecture gate, before actual acquisition: do not open or read
+  actual protected evidence content. Freeze exact protected leaf metadata,
+  regular non-symlink leaf, permissions no broader than `0600`, trusted
+  UID/GID, stable FD/inode/device binding, TOCTOU-resistant acquisition, exact
+  fixed source slot, one-shot human-authorized acquisition, maximum one
+  acquisition per authorization, and no enumeration, candidates, fallback,
+  retry, recovery, or authorization reuse. The current directory metadata
+  snapshot is point-in-time only and supplies neither stable binding nor
+  content-acquisition authority.
+- [ ] No claim is made of trusted source contents acquired, protected evidence
+  verified, Production readiness, MariaDB credential continuity validated, or
+  Shopping runtime activation.
+- [ ] Next step: final six-root-documentation review.
+
 ## Filesystem Target Metadata Snapshot repository implementation closeout
 
 - [x] Record architecture `44f4ef0`, implementation `e9a3645`, focused
