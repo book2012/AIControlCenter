@@ -1,5 +1,37 @@
 # AI Home Datacenter Architecture
 
+## Current authoritative boundary — Macro-WU09 governed pinned-image preload
+
+`WU09_PINNED_IMAGE_PRELOAD_IMPLEMENTATION=COMPLETE`, following
+`FREEZE_COMMIT=c15c976` at `IMPLEMENTATION_COMMIT=e179fb0`. Validation recorded
+`FOCUSED_TEST_GATE=PASS`, `FOCUSED_TEST_RESULT=30_PASSED`,
+`CANONICAL_GATE=PASS`, `CANONICAL_RESULT=4129_PASSED_5_DESELECTED`, and
+`CANONICAL_WARNINGS=579`.
+
+The bounded capability is
+`EXACT_ACTION_TYPE=SHOPPING_MARIADB_LOOPBACK_IMAGE:PRELOAD_EXACT`, fixed to
+`EXACT_DOCKER_CONTEXT=colima-aicontrolcenter-commerce` and
+`EXACT_IMAGE=alpine/socat@sha256:cc2ab2488d6b39cbac670d18fdca5f87ea44fe630697a09d8558afb17f3269a1`.
+There is no generic Docker executor, caller-supplied argv, context, image, tag,
+or digest, shell, retry, or fallback. Preload authorization permits exactly one
+bounded preload invocation and is a separate Production mutation from WU09
+deployment; it grants no deployment authority. WU09 deployment requires a
+fresh later human authorization.
+
+Repository state is `IMPLEMENTED=true`, `PRELOAD_EXECUTED=false`, and
+`WU09_DEPLOYED=false`. `PRODUCTION_ACCESS_PERFORMED=false`,
+`PRODUCTION_MUTATION_PERFORMED=false`, and
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`. The pinned image is not asserted to
+be present in Production. `WU09_DEPLOYMENT_AUTHORIZED=false`,
+`WU10_AUTHORIZED=false`, and `WU11_AUTHORIZED=false`.
+
+The capability performs no database mutation, network mutation, credential
+access, MariaDB connection, or SQL. `GOVERNANCE_CORE_CHANGED=false`,
+`SEC_02_CHANGED=false`, and
+`CONTROLLED_EXECUTION_PORT_SEMANTICS_CHANGED=false`. The Mac remains the sole
+Control Plane (`MAC_CONTROL_PLANE=true`); Ubuntu remains zero-authority
+(`UBUNTU_AUTHORITY=false`).
+
 ## Current authoritative boundary — Macro-WU09 Production-targeting correction
 
 `WU09_PRODUCTION_TARGETING_CORRECTION=COMPLETE` at

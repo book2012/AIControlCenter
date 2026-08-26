@@ -1,5 +1,32 @@
 # CHANGELOG
 
+## 2026-08-27 — Macro-WU09 governed pinned-image preload implementation closeout
+
+- Recorded `WU09_PINNED_IMAGE_PRELOAD_IMPLEMENTATION=COMPLETE`,
+  `FREEZE_COMMIT=c15c976`, and `IMPLEMENTATION_COMMIT=e179fb0`.
+- Recorded `FOCUSED_TEST_GATE=PASS`, `FOCUSED_TEST_RESULT=30_PASSED`,
+  `CANONICAL_GATE=PASS`, `CANONICAL_RESULT=4129_PASSED_5_DESELECTED`, and
+  `CANONICAL_WARNINGS=579`.
+- Recorded the bounded contract
+  `EXACT_ACTION_TYPE=SHOPPING_MARIADB_LOOPBACK_IMAGE:PRELOAD_EXACT`,
+  `EXACT_DOCKER_CONTEXT=colima-aicontrolcenter-commerce`, and
+  `EXACT_IMAGE=alpine/socat@sha256:cc2ab2488d6b39cbac670d18fdca5f87ea44fe630697a09d8558afb17f3269a1`.
+- Preserved exactly one bounded preload invocation per preload authorization,
+  with no deployment authority. Preload is a separate Production mutation from
+  WU09 deployment, which requires fresh later human authorization.
+- Preserved no generic Docker executor, caller-supplied argv/context/image/tag/
+  digest, shell, retry, fallback, database mutation, network mutation,
+  credential access, MariaDB connection, or SQL.
+- Recorded `IMPLEMENTED=true`, `PRELOAD_EXECUTED=false`, `WU09_DEPLOYED=false`,
+  `PRODUCTION_ACCESS_PERFORMED=false`, `PRODUCTION_MUTATION_PERFORMED=false`,
+  and `PRODUCTION_AUTHORIZATION_CONSUMED=false`; no Production image-presence
+  claim is made.
+- Recorded `WU09_DEPLOYMENT_AUTHORIZED=false`, `WU10_AUTHORIZED=false`, and
+  `WU11_AUTHORIZED=false`.
+- Preserved `GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`,
+  `CONTROLLED_EXECUTION_PORT_SEMANTICS_CHANGED=false`,
+  `MAC_CONTROL_PLANE=true`, and `UBUNTU_AUTHORITY=false`.
+
 ## 2026-08-26 — Macro-WU09 Production-targeting correction
 
 - Recorded `WU09_PRODUCTION_TARGETING_CORRECTION=COMPLETE` and

@@ -1,5 +1,36 @@
 # Project History
 
+## 2026-08-27 — Macro-WU09 governed pinned-image preload implementation closeout
+
+The governed pinned-image preload implementation completed at
+`IMPLEMENTATION_COMMIT=e179fb0` after `FREEZE_COMMIT=c15c976`, establishing
+`WU09_PINNED_IMAGE_PRELOAD_IMPLEMENTATION=COMPLETE`. The focused gate passed
+with 30 tests passed. The canonical gate passed with 4129 tests passed, 5
+deselected, and 579 warnings.
+
+The implemented boundary fixes
+`EXACT_ACTION_TYPE=SHOPPING_MARIADB_LOOPBACK_IMAGE:PRELOAD_EXACT`,
+`EXACT_DOCKER_CONTEXT=colima-aicontrolcenter-commerce`, and
+`EXACT_IMAGE=alpine/socat@sha256:cc2ab2488d6b39cbac670d18fdca5f87ea44fe630697a09d8558afb17f3269a1`.
+It provides no generic Docker executor, caller-supplied argv/context/image/tag/
+digest, shell, retry, or fallback. Each preload authorization permits exactly
+one bounded preload invocation. Preload remains a separate Production mutation
+from WU09 deployment, grants no deployment authority, and leaves deployment
+dependent on a fresh later human authorization.
+
+This was implementation only: `IMPLEMENTED=true`, `PRELOAD_EXECUTED=false`,
+`WU09_DEPLOYED=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
+`PRODUCTION_MUTATION_PERFORMED=false`, and
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`. No claim was established that the
+pinned image is present in Production. `WU09_DEPLOYMENT_AUTHORIZED=false`,
+`WU10_AUTHORIZED=false`, and `WU11_AUTHORIZED=false`.
+
+No database mutation, network mutation, credential access, MariaDB connection,
+or SQL occurred. `GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`, and
+`CONTROLLED_EXECUTION_PORT_SEMANTICS_CHANGED=false`. The Mac remained the sole
+Control Plane (`MAC_CONTROL_PLANE=true`), and Ubuntu retained zero authority
+(`UBUNTU_AUTHORITY=false`).
+
 ## 2026-08-26 — Macro-WU09 Production-targeting correction
 
 The correction at `CORRECTION_COMMIT=efdcc5e2da5aee821f28be43011fa08f63e5373d`

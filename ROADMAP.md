@@ -1,5 +1,35 @@
 # Roadmap
 
+## Current authoritative — Macro-WU09 governed pinned-image preload closeout
+
+- [x] Record `WU09_PINNED_IMAGE_PRELOAD_IMPLEMENTATION=COMPLETE`,
+  `FREEZE_COMMIT=c15c976`, and `IMPLEMENTATION_COMMIT=e179fb0`.
+- [x] Record `FOCUSED_TEST_GATE=PASS`, `FOCUSED_TEST_RESULT=30_PASSED`,
+  `CANONICAL_GATE=PASS`, `CANONICAL_RESULT=4129_PASSED_5_DESELECTED`, and
+  `CANONICAL_WARNINGS=579`.
+- [x] Preserve
+  `EXACT_ACTION_TYPE=SHOPPING_MARIADB_LOOPBACK_IMAGE:PRELOAD_EXACT`,
+  `EXACT_DOCKER_CONTEXT=colima-aicontrolcenter-commerce`, and
+  `EXACT_IMAGE=alpine/socat@sha256:cc2ab2488d6b39cbac670d18fdca5f87ea44fe630697a09d8558afb17f3269a1`.
+- [x] Preserve exactly one bounded preload invocation per preload
+  authorization, with no generic Docker executor, caller-supplied argv/context/
+  image/tag/digest, shell, retry, or fallback.
+- [x] Record `IMPLEMENTED=true`, `PRELOAD_EXECUTED=false`,
+  `WU09_DEPLOYED=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
+  `PRODUCTION_MUTATION_PERFORMED=false`, and
+  `PRODUCTION_AUTHORIZATION_CONSUMED=false`; make no Production image-presence
+  claim.
+- [ ] Authorize and execute pinned-image preload as its own Production mutation.
+- [ ] Authorize WU09 deployment separately through fresh later human
+  authorization; preload grants no deployment authority.
+- [ ] Authorize WU10 separately; `WU10_AUTHORIZED=false`.
+- [ ] Authorize WU11 separately; `WU11_AUTHORIZED=false`.
+- [x] Preserve no database mutation, network mutation, credential access,
+  MariaDB connection, or SQL.
+- [x] Preserve `GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`,
+  `CONTROLLED_EXECUTION_PORT_SEMANTICS_CHANGED=false`,
+  `MAC_CONTROL_PLANE=true`, and `UBUNTU_AUTHORITY=false`.
+
 ## Current authoritative — Macro-WU09 Production-targeting correction
 
 - [x] `WU09_PRODUCTION_TARGETING_CORRECTION=COMPLETE` at

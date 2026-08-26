@@ -1,5 +1,36 @@
 # MASTER
 
+## Current authoritative status — Macro-WU09 governed pinned-image preload implemented, not executed
+
+`WU09_PINNED_IMAGE_PRELOAD_IMPLEMENTATION=COMPLETE`,
+`FREEZE_COMMIT=c15c976`, and `IMPLEMENTATION_COMMIT=e179fb0`. Recorded
+validation is `FOCUSED_TEST_GATE=PASS`, `FOCUSED_TEST_RESULT=30_PASSED`,
+`CANONICAL_GATE=PASS`, `CANONICAL_RESULT=4129_PASSED_5_DESELECTED`, and
+`CANONICAL_WARNINGS=579`.
+
+The exact capability is
+`EXACT_ACTION_TYPE=SHOPPING_MARIADB_LOOPBACK_IMAGE:PRELOAD_EXACT`, bound to
+`EXACT_DOCKER_CONTEXT=colima-aicontrolcenter-commerce` and
+`EXACT_IMAGE=alpine/socat@sha256:cc2ab2488d6b39cbac670d18fdca5f87ea44fe630697a09d8558afb17f3269a1`.
+It has no generic Docker executor, caller-supplied argv/context/image/tag/
+digest, shell, retry, or fallback. One preload authorization permits exactly
+one bounded preload invocation. It does not authorize deployment: preload and
+WU09 deployment are separate Production mutations, and deployment requires a
+fresh later human authorization.
+
+`IMPLEMENTED=true`, `PRELOAD_EXECUTED=false`, `WU09_DEPLOYED=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `PRODUCTION_MUTATION_PERFORMED=false`, and
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`. No Production image-presence fact is
+asserted. `WU09_DEPLOYMENT_AUTHORIZED=false`, `WU10_AUTHORIZED=false`, and
+`WU11_AUTHORIZED=false`.
+
+No database mutation, network mutation, credential access, MariaDB connection,
+or SQL occurs through this capability. `GOVERNANCE_CORE_CHANGED=false`,
+`SEC_02_CHANGED=false`, and
+`CONTROLLED_EXECUTION_PORT_SEMANTICS_CHANGED=false`. Mac remains the sole
+Control Plane (`MAC_CONTROL_PLANE=true`), and Ubuntu remains zero-authority
+(`UBUNTU_AUTHORITY=false`).
+
 ## Current authoritative status — Macro-WU09 Production-targeting correction
 
 `WU09_PRODUCTION_TARGETING_CORRECTION=COMPLETE` at
