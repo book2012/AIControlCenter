@@ -1,5 +1,31 @@
 # AIControlCenter
 
+## Current authoritative — Macro-WU09 repository implementation closeout
+
+Macro-WU09 repository implementation is complete at
+`IMPLEMENTATION_COMMIT=815d3d5`, following
+`ARCHITECTURE_FREEZE_COMMIT=6d31afe`. The canonical gate passed with
+`CANONICAL_RESULT=4093_PASSED_5_DESELECTED` and `CANONICAL_WARNINGS=567`.
+
+The loopback adapter contract is `PROJECT=ai-shopping-mariadb-loopback`,
+`SERVICE=mariadb-loopback-adapter`, `BIND_HOST=127.0.0.1`,
+`TARGET_HOST=database`, `TARGET_PORT=3306`, and
+`EXTERNAL_NETWORK=ai-shopping-internal`. `HOST_PORT_ASSIGNED=58083` is desired
+non-secret JSON configuration. `IMPLEMENTED=true` does not mean deployed:
+`DEPLOYED=false`, `HOST_PORT_ACTIVE_IN_PRODUCTION=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `PRODUCTION_MUTATION_PERFORMED=false`, and
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`. A WU09 Production deployment remains
+a separate future human-authorized mutation. WU10 and WU11 remain separate and
+unauthorized.
+
+No main-compose, secret-contract, secret-preflight, Governance core, SEC-02, or
+`ControlledExecutionPort` coupling occurred. No database-container or network
+mutation, credential access, MariaDB connection, or SQL execution occurred.
+Mac remains the sole Control Plane (`MAC_CONTROL_PLANE=true`); Ubuntu remains
+zero-authority (`UBUNTU_AUTHORITY=false`). Recovery state is unchanged:
+`RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
 ## Authoritative Macro-WU06 documentation closeout
 
 Authoritative Macro-WU06 is closed: `MACRO_WU_06_CLOSE_GATE=PASS` and
@@ -3895,7 +3921,7 @@ performed, and no Notion synchronization is claimed.
 - `CANONICAL=NOT_RUN`
 - `BLOCKER=NONE`
 
-## CURRENT AUTHORITATIVE — Macro-WU08 Closeout
+## Prior authoritative record — Macro-WU08 Closeout
 
 - `MACRO_WU_06=CLOSED`; WU06 was not reopened.
 - `MACRO_WU_07=CLOSED`; WU07 was not reopened.

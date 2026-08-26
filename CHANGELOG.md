@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2026-08-26 — Macro-WU09 repository implementation documentation closeout
+
+- Recorded `MACRO_WU_09_IMPLEMENTATION=COMPLETE`,
+  `ARCHITECTURE_FREEZE_COMMIT=6d31afe`, and
+  `IMPLEMENTATION_COMMIT=815d3d5`.
+- Recorded `CANONICAL_GATE=PASS`,
+  `CANONICAL_RESULT=4093_PASSED_5_DESELECTED`, and
+  `CANONICAL_WARNINGS=567`.
+- Recorded desired non-secret JSON configuration for
+  `PROJECT=ai-shopping-mariadb-loopback`,
+  `SERVICE=mariadb-loopback-adapter`, `BIND_HOST=127.0.0.1`,
+  `HOST_PORT_ASSIGNED=58083`, `TARGET_HOST=database`, `TARGET_PORT=3306`, and
+  `EXTERNAL_NETWORK=ai-shopping-internal`.
+- Preserved the deployment boundary: `IMPLEMENTED=true`, `DEPLOYED=false`,
+  `HOST_PORT_ACTIVE_IN_PRODUCTION=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
+  `PRODUCTION_MUTATION_PERFORMED=false`, and
+  `PRODUCTION_AUTHORIZATION_CONSUMED=false`. WU09 Production deployment remains
+  a separate future human-authorized mutation; WU10 and WU11 remain separate
+  and unauthorized.
+- Preserved uncoupled main compose, secret contract, secret preflight,
+  Governance core, SEC-02, and `ControlledExecutionPort`; no database-container
+  or network mutation, credential access, MariaDB connection, or SQL execution
+  occurred. Mac remains the sole Control Plane and Ubuntu zero-authority.
+- Preserved `RECOVER_EVIDENCE_SUFFICIENT=false` and
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
 ## 2026-08-25 — Authoritative Macro-WU06 documentation closeout
 
 - Closed authoritative Macro-WU06 with `MACRO_WU_06_CLOSE_GATE=PASS` and
@@ -4372,7 +4398,7 @@ heartbeat is stale. The canonical API is `RUNNING`, Telegram is optional
 - `CANONICAL=NOT_RUN`
 - `BLOCKER=NONE`
 
-## CURRENT AUTHORITATIVE — Macro-WU08 Closeout
+## Prior authoritative record — Macro-WU08 Closeout
 
 - `MACRO_WU_06=CLOSED`; WU06 was not reopened.
 - `MACRO_WU_07=CLOSED`; WU07 was not reopened.

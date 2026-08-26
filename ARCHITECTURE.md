@@ -1,5 +1,27 @@
 # AI Home Datacenter Architecture
 
+## Current authoritative boundary — Macro-WU09 implemented, not deployed
+
+Macro-WU09 repository implementation is complete at
+`IMPLEMENTATION_COMMIT=815d3d5`, after architecture freeze commit `6d31afe`.
+The canonical gate passed: `4093_PASSED_5_DESELECTED`, with 567 warnings.
+
+The desired adapter topology is project `ai-shopping-mariadb-loopback`, service
+`mariadb-loopback-adapter`, loopback bind `127.0.0.1:58083`, target
+`database:3306`, and external network `ai-shopping-internal`. Port `58083` is
+non-secret desired JSON configuration. It is not an active Production port:
+`IMPLEMENTED=true`, `DEPLOYED=false`, and
+`HOST_PORT_ACTIVE_IN_PRODUCTION=false`.
+
+No Production access or mutation occurred, and no Production authorization was
+consumed. Activation remains a separate future human-authorized WU09 mutation.
+WU10 and WU11 are separate and unauthorized. The main compose, secret contract,
+secret preflight, database container, external network, Governance core,
+SEC-02, and `ControlledExecutionPort` were not coupled or mutated. No credential
+access, MariaDB connection, or SQL execution occurred. The Mac remains the sole
+Control Plane; Ubuntu has zero authority. Recovery evidence remains insufficient
+and unchanged.
+
 ## Authoritative Macro-WU06 closeout reconciliation
 
 The authoritative state is `MACRO_WU_06_CLOSE_GATE=PASS`,
@@ -4586,7 +4608,7 @@ Control Plane; Host Caddy the sole public edge; Ubuntu remains stateless.
 - `CANONICAL=NOT_RUN`
 - `BLOCKER=NONE`
 
-## CURRENT AUTHORITATIVE — Macro-WU08 Closeout
+## Prior authoritative record — Macro-WU08 Closeout
 
 - `MACRO_WU_06=CLOSED`; WU06 was not reopened.
 - `MACRO_WU_07=CLOSED`; WU07 was not reopened.

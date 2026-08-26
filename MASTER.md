@@ -1,5 +1,29 @@
 # MASTER
 
+## Current authoritative status — Macro-WU09 implementation complete, not deployed
+
+`MACRO_WU_09_IMPLEMENTATION=COMPLETE`,
+`ARCHITECTURE_FREEZE_COMMIT=6d31afe`, and
+`IMPLEMENTATION_COMMIT=815d3d5`. Validation is `CANONICAL_GATE=PASS`,
+`CANONICAL_RESULT=4093_PASSED_5_DESELECTED`, and `CANONICAL_WARNINGS=567`.
+
+The repository defines the `ai-shopping-mariadb-loopback` project and its
+`mariadb-loopback-adapter` service with loopback bind `127.0.0.1`, target
+`database:3306`, and external network `ai-shopping-internal`.
+`HOST_PORT_ASSIGNED=58083` is desired non-secret JSON configuration only.
+Authoritative runtime state is `IMPLEMENTED=true`, `DEPLOYED=false`, and
+`HOST_PORT_ACTIVE_IN_PRODUCTION=false`.
+
+No Production access or mutation occurred and no Production authorization was
+consumed. WU09 Production deployment remains a separate future human-authorized
+mutation. WU10 and WU11 remain separate and unauthorized. Main compose, secret
+contract, secret preflight, Governance core, SEC-02, and
+`ControlledExecutionPort` remain uncoupled/unchanged; no database-container or
+network mutation, credential access, MariaDB connection, or SQL execution
+occurred. Mac remains the sole Control Plane; Ubuntu remains zero-authority.
+Recovery remains `RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
 ## Current authoritative status — Macro-WU06 closed
 
 `MACRO_WU_06_CLOSE_GATE=PASS`, `MACRO_WU_06=CLOSED`,
@@ -4406,7 +4430,7 @@ and Ubuntu a stateless worker.
 - `CANONICAL=NOT_RUN`
 - `BLOCKER=NONE`
 
-## CURRENT AUTHORITATIVE — Macro-WU08 Closeout
+## Prior authoritative record — Macro-WU08 Closeout
 
 - `MACRO_WU_06=CLOSED`; WU06 was not reopened.
 - `MACRO_WU_07=CLOSED`; WU07 was not reopened.

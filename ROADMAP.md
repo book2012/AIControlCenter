@@ -1,5 +1,28 @@
 # Roadmap
 
+## Current authoritative — Macro-WU09 documentation closeout
+
+- [x] Record `MACRO_WU_09_IMPLEMENTATION=COMPLETE`,
+  `ARCHITECTURE_FREEZE_COMMIT=6d31afe`, and
+  `IMPLEMENTATION_COMMIT=815d3d5`.
+- [x] Record `CANONICAL_GATE=PASS`,
+  `CANONICAL_RESULT=4093_PASSED_5_DESELECTED`, and
+  `CANONICAL_WARNINGS=567`.
+- [x] Record port `58083` as desired non-secret JSON configuration for the
+  loopback adapter contract, not an active Production port.
+- [x] Preserve `IMPLEMENTED=true`, `DEPLOYED=false`,
+  `HOST_PORT_ACTIVE_IN_PRODUCTION=false`, and
+  `PRODUCTION_AUTHORIZATION_CONSUMED=false`.
+- [ ] Deploy WU09 to Production only as a separate future human-authorized
+  mutation.
+- [ ] Authorize WU10 separately; WU09 confers no WU10 authority.
+- [ ] Authorize WU11 separately; WU09 confers no WU11 authority.
+- [x] Preserve the Mac as sole Control Plane and Ubuntu as zero-authority;
+  preserve uncoupled/unchanged main compose, secret surfaces, Governance core,
+  SEC-02, and `ControlledExecutionPort`.
+- [x] Preserve `RECOVER_EVIDENCE_SUFFICIENT=false` and
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
 ## Authoritative Macro-WU06 closeout
 
 - [x] `MACRO_WU_06_CLOSE_GATE=PASS`; `MACRO_WU_06=CLOSED`.
@@ -3988,7 +4011,7 @@ Notion synchronization occurred during the correction closeout.
 - `CANONICAL=NOT_RUN`
 - `BLOCKER=NONE`
 
-## CURRENT AUTHORITATIVE — Macro-WU08 Closeout
+## Prior authoritative record — Macro-WU08 Closeout
 
 - `MACRO_WU_06=CLOSED`; WU06 was not reopened.
 - `MACRO_WU_07=CLOSED`; WU07 was not reopened.

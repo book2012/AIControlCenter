@@ -1,5 +1,28 @@
 # Project History
 
+## 2026-08-26 — Macro-WU09 repository implementation documentation closeout
+
+Macro-WU09 repository implementation completed at commit `815d3d5`, following
+architecture freeze commit `6d31afe`. The canonical gate passed with 4093 tests
+passed, 5 deselected, and 567 warnings.
+
+The repository now records port `58083` as desired non-secret JSON configuration
+for project `ai-shopping-mariadb-loopback`, service
+`mariadb-loopback-adapter`, loopback host `127.0.0.1`, target `database:3306`,
+and external network `ai-shopping-internal`. This was an implementation event,
+not a deployment event: `IMPLEMENTED=true`, `DEPLOYED=false`, and
+`HOST_PORT_ACTIVE_IN_PRODUCTION=false`.
+
+No Production access or mutation occurred and no Production authorization was
+consumed. WU09 Production deployment remains a separate future human-authorized
+mutation. WU10 and WU11 remain separate and unauthorized. No main-compose,
+secret-contract, secret-preflight, Governance core, SEC-02, or
+`ControlledExecutionPort` coupling occurred; no database-container or network
+mutation, credential access, MariaDB connection, or SQL execution occurred.
+Mac remained the sole Control Plane and Ubuntu retained zero authority.
+`RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT` remained unchanged.
+
 ## 2026-08-25 — Authoritative Macro-WU06 documentation closeout
 
 Authoritative Macro-WU06 closed with `MACRO_WU_06_CLOSE_GATE=PASS` and
@@ -3886,7 +3909,7 @@ and establish a fresh heartbeat.
 - `CANONICAL=NOT_RUN`
 - `BLOCKER=NONE`
 
-## CURRENT AUTHORITATIVE — Macro-WU08 Closeout
+## Prior authoritative record — Macro-WU08 Closeout
 
 - `MACRO_WU_06=CLOSED`; WU06 was not reopened.
 - `MACRO_WU_07=CLOSED`; WU07 was not reopened.
