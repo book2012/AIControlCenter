@@ -107,7 +107,9 @@ def build_precondition_snapshot(
 ) -> GovernancePreconditionSnapshot:
     payload = _validated_precondition_payload(facts)
     digest = _digest(payload)
-    mac = GovernanceIdentity("CONTROL_PLANE", "MAC_MINI_M4")
+    mac = GovernanceIdentity(
+        identity_id="MAC_MINI_M4", identity_type="CONTROL_PLANE"
+    )
     return GovernancePreconditionSnapshot(
         "1.0", "wu09-preload-" + digest.removeprefix("sha256:")[:16],
         request.lifecycle_id, request.request_id, collected_at, (mac,), mac,

@@ -68,7 +68,8 @@ def good_preconditions(**changes: object) -> WU09PreloadPreconditions:
 
 def authorization_request(action: str = WU09_PRELOAD_ACTION_TYPE):
     return GovernanceAuthorizationRequest(
-        "1.0", "request-1", "lifecycle-1", GovernanceIdentity("HUMAN", "requester"),
+        "1.0", "request-1", "lifecycle-1",
+        GovernanceIdentity(identity_id="requester", identity_type="HUMAN"),
         "WU09_PINNED_IMAGE_PRELOAD", WU09_PRELOAD_TARGET, "PRODUCTION",
         "explicit exact image preload approval", (action,), "budget-1", NOW,
     )
@@ -81,7 +82,8 @@ def lifecycle(
     expected = build_precondition_snapshot(auth_request, good_preconditions(), collected_at=NOW)
     decision = GovernanceAuthorizationDecision(
         "1.0", "decision-1", auth_request.request_id,
-        GovernanceIdentity("HUMAN", "approver"), AuthorizationDecision.APPROVED,
+        GovernanceIdentity(identity_id="approver", identity_type="HUMAN"),
+        AuthorizationDecision.APPROVED,
         ("EXPLICIT_APPROVAL",), NOW, NOW + timedelta(hours=1), (action,),
         "budget-1", expected.snapshot_digest,
     )
@@ -97,6 +99,26 @@ def lifecycle(
         "budget-1", action, target, wu09_preload_plan_digest(), NOW,
     )
     return WU09PreloadLifecycle(authority, budget, request, expected)
+
+
+def test_governance_identities_serialize_with_explicit_wu09_bindings():
+    request = authorization_request()
+    snapshot = build_precondition_snapshot(request, good_preconditions(), collected_at=NOW)
+    decision = lifecycle().authorization.decision
+
+    request_payload = request.to_dict()
+    assert request_payload["requester"]["identity_id"] == "requester"
+    assert request_payload["requester"]["identity_type"] == "HUMAN"
+
+    decision_payload = decision.to_dict()
+    assert decision_payload["approver"]["identity_id"] == "approver"
+    assert decision_payload["approver"]["identity_type"] == "HUMAN"
+
+    snapshot_payload = snapshot.to_dict()
+    assert snapshot_payload["collector_identities"][0]["identity_id"] == "MAC_MINI_M4"
+    assert snapshot_payload["collector_identities"][0]["identity_type"] == "CONTROL_PLANE"
+    assert snapshot_payload["target_identity"]["identity_id"] == "MAC_MINI_M4"
+    assert snapshot_payload["target_identity"]["identity_type"] == "CONTROL_PLANE"
 
 
 class Observer:
