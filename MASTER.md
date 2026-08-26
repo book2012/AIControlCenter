@@ -1,5 +1,30 @@
 # MASTER
 
+## Current authoritative status — Macro-WU09 Production-targeting correction
+
+`WU09_PRODUCTION_TARGETING_CORRECTION=COMPLETE` at
+`CORRECTION_COMMIT=efdcc5e2da5aee821f28be43011fa08f63e5373d`.
+Execution is explicitly bound to
+`DOCKER_CONTEXT=colima-aicontrolcenter-commerce`:
+`DOCKER_CONTEXT_EXPLICIT_BINDING=true`, `ACTIVE_CONTEXT_INDEPENDENCE=true`, and
+`IMPLICIT_IMAGE_PULL_DISABLED=true` via `--pull never`.
+
+The exact Production target remains project `ai-shopping-mariadb-loopback`,
+service `mariadb-loopback-adapter`, bind `127.0.0.1:58083`, target
+`database:3306`, and network `ai-shopping-internal`. Corrected validation is
+`FOCUSED_RESULT=19_PASSED`, `CANONICAL_RESULT=4095_PASSED_5_DESELECTED`, and
+`CANONICAL_WARNINGS=575`.
+
+`IMPLEMENTED=true`, `DEPLOYED=false`,
+`HOST_PORT_ACTIVE_IN_PRODUCTION=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
+`PRODUCTION_MUTATION_PERFORMED=false`, and
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`. WU10 and WU11 remain separate and
+unauthorized. `GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`,
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`, `MAC_CONTROL_PLANE=true`, and
+`UBUNTU_AUTHORITY=false`. Recovery remains
+`RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
 ## Current authoritative status — Macro-WU09 implementation complete, not deployed
 
 `MACRO_WU_09_IMPLEMENTATION=COMPLETE`,

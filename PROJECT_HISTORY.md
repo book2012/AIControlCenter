@@ -1,5 +1,29 @@
 # Project History
 
+## 2026-08-26 — Macro-WU09 Production-targeting correction
+
+The correction at `CORRECTION_COMMIT=efdcc5e2da5aee821f28be43011fa08f63e5373d`
+completed with `WU09_PRODUCTION_TARGETING_CORRECTION=COMPLETE`. Execution now
+explicitly fixes `DOCKER_CONTEXT=colima-aicontrolcenter-commerce`, establishing
+`DOCKER_CONTEXT_EXPLICIT_BINDING=true` and `ACTIVE_CONTEXT_INDEPENDENCE=true`.
+The command uses `--pull never`, so `IMPLICIT_IMAGE_PULL_DISABLED=true`.
+
+The exact Production target remained project `ai-shopping-mariadb-loopback`,
+service `mariadb-loopback-adapter`, bind `127.0.0.1:58083`, target
+`database:3306`, and network `ai-shopping-internal`. Corrected validation
+recorded `FOCUSED_RESULT=19_PASSED`,
+`CANONICAL_RESULT=4095_PASSED_5_DESELECTED`, and `CANONICAL_WARNINGS=575`.
+
+The correction was implemented but not deployed: `IMPLEMENTED=true`,
+`DEPLOYED=false`, `HOST_PORT_ACTIVE_IN_PRODUCTION=false`,
+`PRODUCTION_ACCESS_PERFORMED=false`, `PRODUCTION_MUTATION_PERFORMED=false`, and
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`. WU10 and WU11 remained separate and
+unauthorized. `GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`, and
+`CONTROLLED_EXECUTION_PORT_COUPLED=false`. Mac remained the sole Control Plane
+with `MAC_CONTROL_PLANE=true`; Ubuntu retained zero authority with
+`UBUNTU_AUTHORITY=false`. `RECOVER_EVIDENCE_SUFFICIENT=false` and
+`RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT` remained unchanged.
+
 ## 2026-08-26 — Macro-WU09 repository implementation documentation closeout
 
 Macro-WU09 repository implementation completed at commit `815d3d5`, following

@@ -1,5 +1,31 @@
 # Roadmap
 
+## Current authoritative — Macro-WU09 Production-targeting correction
+
+- [x] `WU09_PRODUCTION_TARGETING_CORRECTION=COMPLETE` at
+  `CORRECTION_COMMIT=efdcc5e2da5aee821f28be43011fa08f63e5373d`.
+- [x] Record `DOCKER_CONTEXT=colima-aicontrolcenter-commerce`,
+  `DOCKER_CONTEXT_EXPLICIT_BINDING=true`, `ACTIVE_CONTEXT_INDEPENDENCE=true`,
+  and `IMPLICIT_IMAGE_PULL_DISABLED=true` through `--pull never`.
+- [x] Preserve the exact Production target: project
+  `ai-shopping-mariadb-loopback`, service `mariadb-loopback-adapter`, bind
+  `127.0.0.1:58083`, target `database:3306`, and network
+  `ai-shopping-internal`.
+- [x] Record `FOCUSED_RESULT=19_PASSED`,
+  `CANONICAL_RESULT=4095_PASSED_5_DESELECTED`, and `CANONICAL_WARNINGS=575`.
+- [x] Preserve `IMPLEMENTED=true`, `DEPLOYED=false`,
+  `HOST_PORT_ACTIVE_IN_PRODUCTION=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
+  `PRODUCTION_MUTATION_PERFORMED=false`, and
+  `PRODUCTION_AUTHORIZATION_CONSUMED=false`.
+- [ ] Deploy WU09 only through a separate future Production authorization.
+- [ ] Authorize WU10 separately; this correction confers no WU10 authority.
+- [ ] Authorize WU11 separately; this correction confers no WU11 authority.
+- [x] Preserve `GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`,
+  `CONTROLLED_EXECUTION_PORT_COUPLED=false`, `MAC_CONTROL_PLANE=true`, and
+  `UBUNTU_AUTHORITY=false`.
+- [x] Preserve `RECOVER_EVIDENCE_SUFFICIENT=false` and
+  `RECOVER_EVIDENCE_GATE=RECOVER_EVIDENCE_INSUFFICIENT`.
+
 ## Current authoritative — Macro-WU09 documentation closeout
 
 - [x] Record `MACRO_WU_09_IMPLEMENTATION=COMPLETE`,
