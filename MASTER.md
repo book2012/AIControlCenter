@@ -1,5 +1,39 @@
 # MASTER
 
+## Current authoritative status — Macro-WU09 governance identity binding corrected
+
+`WU09_IDENTITY_BINDING_CORRECTION=COMPLETE` at
+`IDENTITY_BINDING_CORRECTION_COMMIT=9e7a4a2`, following initial preload
+`IMPLEMENTATION_COMMIT=e179fb0`. Exactly
+`ops/macos/shopping/wu09_image_preload.py` and
+`tests/test_macro_wu09_pinned_image_preload.py` changed.
+
+`GovernanceIdentity` is explicitly keyword-bound: requester uses
+`identity_id=<requester identity>` and `identity_type=HUMAN`; approver uses
+`identity_id=<approver identity>` and `identity_type=HUMAN`; Mac Control Plane
+collector/target uses `identity_id=MAC_MINI_M4` and
+`identity_type=CONTROL_PLANE`.
+
+Authoritative evidence records `CANONICAL_GATE=PASS`,
+`CANONICAL_RESULT=4130_PASSED_5_DESELECTED`, `CANONICAL_WARNINGS=587`, and
+`CANONICAL_RC=0`; canonical was not run during this documentation-only
+closeout. `GOVERNANCE_IDENTITY_DOMAIN_CHANGED=false`,
+`GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`, and
+`CONTROLLED_EXECUTION_PORT_SEMANTICS_CHANGED=false` remain authoritative.
+
+The implemented-versus-executed boundary remains
+`WU09_PRELOAD_EXECUTED=false`, `WU09_DEPLOYED=false`,
+`WU09_DEPLOYMENT_AUTHORIZED=false`, `WU10_AUTHORIZED=false`, and
+`WU11_AUTHORIZED=false`.
+`WU09_PRELOAD_PRODUCTION_AUTHORIZATION_CONSUMED=false`,
+`TRUSTED_SEC02_PRODUCTION_HUMAN_ISSUER_EXISTS=false`,
+`TRUSTED_AUTHORIZATION_ARTIFACT_BOUNDARY_REQUIRED=true`, and
+`PRODUCTION_COMPOSITION_READY=false`. The pinned image is not asserted present
+in Production. Next milestones are
+`WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE` for architecture and
+`WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY` for Production
+readiness.
+
 ## Current authoritative status — Macro-WU09 governed pinned-image preload implemented, not executed
 
 `WU09_PINNED_IMAGE_PRELOAD_IMPLEMENTATION=COMPLETE`,
@@ -20,7 +54,7 @@ fresh later human authorization.
 
 `IMPLEMENTED=true`, `PRELOAD_EXECUTED=false`, `WU09_DEPLOYED=false`,
 `PRODUCTION_ACCESS_PERFORMED=false`, `PRODUCTION_MUTATION_PERFORMED=false`, and
-`PRODUCTION_AUTHORIZATION_CONSUMED=false`. No Production image-presence fact is
+`WU09_PRELOAD_PRODUCTION_AUTHORIZATION_CONSUMED=false`. No Production image-presence fact is
 asserted. `WU09_DEPLOYMENT_AUTHORIZED=false`, `WU10_AUTHORIZED=false`, and
 `WU11_AUTHORIZED=false`.
 

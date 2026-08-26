@@ -1,5 +1,38 @@
 # Project History
 
+## 2026-08-27 — Macro-WU09 governance identity binding correction closeout
+
+The initial governed preload implementation at `IMPLEMENTATION_COMMIT=e179fb0`
+was followed by `WU09_IDENTITY_BINDING_CORRECTION=COMPLETE` at
+`IDENTITY_BINDING_CORRECTION_COMMIT=9e7a4a2`. The correction changed exactly
+`ops/macos/shopping/wu09_image_preload.py` and
+`tests/test_macro_wu09_pinned_image_preload.py`.
+
+`GovernanceIdentity` semantics became explicitly keyword-bound. Requester uses
+`identity_id=<requester identity>` and `identity_type=HUMAN`; approver uses
+`identity_id=<approver identity>` and `identity_type=HUMAN`; the Mac Control
+Plane collector/target uses `identity_id=MAC_MINI_M4` and
+`identity_type=CONTROL_PLANE`.
+
+Authoritative correction validation recorded `CANONICAL_GATE=PASS`,
+`CANONICAL_RESULT=4130_PASSED_5_DESELECTED`, `CANONICAL_WARNINGS=587`, and
+`CANONICAL_RC=0`. Canonical was not run for this documentation-only closeout.
+The correction preserved `GOVERNANCE_IDENTITY_DOMAIN_CHANGED=false`,
+`GOVERNANCE_CORE_CHANGED=false`, `SEC_02_CHANGED=false`, and
+`CONTROLLED_EXECUTION_PORT_SEMANTICS_CHANGED=false`.
+
+This remained implementation only: `WU09_PRELOAD_EXECUTED=false`,
+`WU09_DEPLOYED=false`, `WU09_DEPLOYMENT_AUTHORIZED=false`,
+`WU10_AUTHORIZED=false`, `WU11_AUTHORIZED=false`, and
+`WU09_PRELOAD_PRODUCTION_AUTHORIZATION_CONSUMED=false`.
+`TRUSTED_SEC02_PRODUCTION_HUMAN_ISSUER_EXISTS=false`,
+`TRUSTED_AUTHORIZATION_ARTIFACT_BOUNDARY_REQUIRED=true`, and
+`PRODUCTION_COMPOSITION_READY=false`. No claim was established that the pinned
+image is present in Production. The next architecture milestone became
+`WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE`; the next Production
+readiness milestone became
+`WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY`.
+
 ## 2026-08-27 — Macro-WU09 governed pinned-image preload implementation closeout
 
 The governed pinned-image preload implementation completed at
@@ -21,7 +54,7 @@ dependent on a fresh later human authorization.
 This was implementation only: `IMPLEMENTED=true`, `PRELOAD_EXECUTED=false`,
 `WU09_DEPLOYED=false`, `PRODUCTION_ACCESS_PERFORMED=false`,
 `PRODUCTION_MUTATION_PERFORMED=false`, and
-`PRODUCTION_AUTHORIZATION_CONSUMED=false`. No claim was established that the
+`WU09_PRELOAD_PRODUCTION_AUTHORIZATION_CONSUMED=false`. No claim was established that the
 pinned image is present in Production. `WU09_DEPLOYMENT_AUTHORIZED=false`,
 `WU10_AUTHORIZED=false`, and `WU11_AUTHORIZED=false`.
 
