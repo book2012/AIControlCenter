@@ -1,0 +1,23 @@
+name: ai-shopping-mariadb-loopback
+
+services:
+  mariadb-loopback-adapter:
+    image: alpine/socat@sha256:cc2ab2488d6b39cbac670d18fdca5f87ea44fe630697a09d8558afb17f3269a1
+    command:
+      - TCP-LISTEN:3306,fork,reuseaddr
+      - TCP:${MARIADB_LOOPBACK_TARGET_HOST:?WU09 target host required}:${MARIADB_LOOPBACK_TARGET_PORT:?WU09 target port required}
+    ports:
+      - "${MARIADB_LOOPBACK_BIND_HOST:?WU09 bind host required}:${MARIADB_LOOPBACK_HOST_PORT:?WU09 host port required}:3306"
+    networks:
+      - ai-shopping-internal
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+networks:
+  ai-shopping-internal:
+    external: true
+    name: ai-shopping-internal
