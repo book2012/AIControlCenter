@@ -16,6 +16,7 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 CONFIG_PATH = REPOSITORY_ROOT / "config/shopping-mariadb-loopback.json"
 COMPOSE_PATH = REPOSITORY_ROOT / "deploy/shopping/mariadb-loopback/compose.yaml"
 SCHEMA_VERSION = "1.0"
+DOCKER_CONTEXT = "colima-aicontrolcenter-commerce"
 PROJECT = "ai-shopping-mariadb-loopback"
 SERVICE = "mariadb-loopback-adapter"
 BIND_HOST = "127.0.0.1"
@@ -95,6 +96,8 @@ def _compose_invocation(configuration: TransportConfiguration) -> ComposeInvocat
     return ComposeInvocation(
         argv=(
             "docker",
+            "--context",
+            DOCKER_CONTEXT,
             "compose",
             "--project-name",
             PROJECT,
@@ -104,6 +107,8 @@ def _compose_invocation(configuration: TransportConfiguration) -> ComposeInvocat
             "--detach",
             "--no-deps",
             "--force-recreate",
+            "--pull",
+            "never",
             SERVICE,
         ),
         environment=(

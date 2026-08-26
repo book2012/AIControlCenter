@@ -117,10 +117,21 @@ def test_wrapper_produces_one_exact_non_secret_invocation(monkeypatch: pytest.Mo
     assert len(calls) == 1
     invocation = calls[0]
     assert invocation.argv == (
-        "docker", "compose", "--project-name", "ai-shopping-mariadb-loopback",
-        "--file", str(COMPOSE), "up", "--detach", "--no-deps",
-        "--force-recreate", "mariadb-loopback-adapter",
+        "docker", "--context", "colima-aicontrolcenter-commerce", "compose",
+        "--project-name", "ai-shopping-mariadb-loopback", "--file", str(COMPOSE),
+        "up", "--detach", "--no-deps", "--force-recreate", "--pull", "never",
+        "mariadb-loopback-adapter",
     )
+    assert deployment.DOCKER_CONTEXT == "colima-aicontrolcenter-commerce"
+    assert invocation.argv.count("--context") == 1
+    assert invocation.argv.index("--context") + 1 == invocation.argv.index(
+        deployment.DOCKER_CONTEXT
+    )
+    assert invocation.argv.index(deployment.DOCKER_CONTEXT) < invocation.argv.index(
+        "compose"
+    )
+    assert invocation.argv.count("--pull") == 1
+    assert invocation.argv[invocation.argv.index("--pull") + 1] == "never"
     assert dict(invocation.environment) == {
         "MARIADB_LOOPBACK_BIND_HOST": "127.0.0.1",
         "MARIADB_LOOPBACK_HOST_PORT": "58083",
@@ -164,5 +175,47 @@ def test_wrapper_has_no_runtime_adapter_or_forbidden_coupling() -> None:
     assert FORBIDDEN_CREDENTIAL_IDENTIFIERS.isdisjoint(combined.split())
     assert "secret_preflight" not in combined
     assert "deploy/shopping/compose.yaml" not in combined
-    for token in ("rollback", "compensation", "claim recovery"):
+    for token in (
+        "rollback",
+        "compensation",
+        "claim recovery",
+        "retry",
+        "reconnect",
+        "fallback",
+        "recovery",
+        "controlledexecutionport",
+        "governance",
+        "sec-02",
+    ):
         assert token not in source.lower()
+
+
+def test_wrapper_has_exactly_one_injected_execution_capability_call_site() -> None:
+    tree = ast.parse(WRAPPER.read_text(encoding="utf-8"))
+    calls = [
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Call)
+        and isinstance(node.func, ast.Name)
+        and node.func.id == "execution_capability"
+    ]
+    assert len(calls) == 1
+
+
+def test_tests_have_no_runtime_or_git_state_adapter() -> None:
+    source = Path(__file__).read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    imports = {
+        alias.name.split(".")[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    imports.update(
+        node.module.split(".")[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+    )
+    assert imports.isdisjoint({"subprocess", "socket", "docker", "pymysql", "mysql"})
+    assert " ".join(("git", "status")) not in source
+    assert " ".join(("git", "diff")) not in source
