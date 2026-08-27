@@ -46,34 +46,38 @@ verification facts on the Mac Control Plane. It is not a generic executor, is
 not part of Trusted Authorization Intake, and grants no authority to execute a
 feature action.
 
-The authority is established by a bounded, human-controlled bootstrap ceremony,
-an immutable signed bootstrap approval, and a dedicated **PRECONFIGURED
-BOOTSTRAP APPROVER VERIFICATION TRUST** boundary. Repository review found no
-existing generic verification authority that can be reused for this purpose.
-The new boundary is therefore a prerequisite of the future implementation.
+The protocol requires a bounded, human-controlled bootstrap ceremony, an
+immutable signed bootstrap approval, and public verification material for a
+Human Bootstrap Approver that is independent of the prospective issuer, local
+operator, caller, WU09, and Ubuntu. This defines the approval protocol, but not
+an operational trust source for that public verification material. Repository
+review found no currently implemented generic independent trust source that
+authenticates it. A separate SEC-02 bootstrap-approver trust-source architecture
+freeze is therefore required before implementation authority can exist.
 
 The bootstrap approval public verification key, its key identifier, algorithm,
-and approved Human Bootstrap Approver identity are immutable release inputs
-installed from a separately governed Control-Plane release trust source. They
-are not fields in the local authorization record, registry proposal, API/CLI
-request, environment, argv, or library call. The release trust source must be
-authenticated and integrity-bound under the separately reviewed release process
-before bootstrap begins; a locally created or replaced file is not such a
-source. Production holds only this public verification material. The
-corresponding private key remains offline in the sole custody of the Human
-Bootstrap Approver and must never enter Production.
+and approved Human Bootstrap Approver identity must ultimately be authenticated
+by that independently frozen trust source. They are not fields that the local
+authorization record, registry proposal, API/CLI request, environment, argv,
+prospective issuer, local operator, or caller may choose. This document does not
+invent or select the missing trust-source mechanism. Production may store only
+public verification material after its independent trust source is defined and
+operationally validated. The corresponding private key remains offline in the
+sole custody of the Human Bootstrap Approver and must never enter Production.
 
 The locally provisioned, single-use record contains the immutable signed
-approval and exact registry bindings. The bootstrap verifier selects the
-preconfigured approver public key by the preconfigured key identifier, verifies
-an Ed25519 signature over the complete RFC 8785 canonical approval prefixed by
+approval and exact registry bindings. Once the independent trust source is
+operationally established, the bootstrap verifier selects its authenticated
+approver public key by its authenticated key identifier, verifies an Ed25519
+signature over the complete RFC 8785 canonical approval prefixed by
 the dedicated domain separator
 `AICONTROLCENTER-SEC02-TRUST-BOOTSTRAP-APPROVAL-V1` and one NUL byte, and
-verifies that the
-signed approver identity and all proposed registry facts and digest exactly
-match the preconfigured identity and create request. Unknown keys, alternate
-keys, caller-provided keys, missing or altered bindings, signature failure, or
-release-trust ambiguity fail closed before consumption or mutation. The
+verifies that the signed approver identity and all proposed registry facts and
+digest exactly match the independently trusted identity and create request.
+Unknown keys, alternate keys, caller-provided keys, missing or altered bindings,
+signature failure, or trust-source ambiguity fail closed before consumption or
+mutation. Until the missing independent trust source is frozen, implementation
+authority is not ready and Production bootstrap is unavailable. The
 record's provenance is independent of:
 
 - the issuer or key being registered;
@@ -138,24 +142,25 @@ The sole logical Production registry path remains:
 
 Two distinct facts must not be conflated:
 
-1. **Runtime OS identity and home observation.** On Darwin, the process requires
-   `ruid == euid`, requires the observed identity to be non-root, and uses
-   `pwd.getpwuid(ruid)` solely to observe the runtime account and derive its
-   passwd home.
-2. **Expected protected-asset ownership.** Expected UID and GID for the trust
-   directory, temporary file, and registry are trusted policy inputs from a
-   generic **PRECONFIGURED CONTROL PLANE OWNERSHIP AUTHORITY**, independently
-   governed and immutable for the operation. Runtime UID/GID observations are
-   compared with those expected values; they do not create them.
+1. **Runtime OS identity binding.** On Darwin, the process requires
+   `ruid == euid`, requires the bound identity to be non-root, and binds it with
+   `pwd.getpwuid(ruid)`.
+2. **Authoritative home and ownership.** That bound Darwin passwd record is the
+   sole authority for the trusted passwd home and the expected UID and GID. The
+   trust directory, temporary file, and registry must have exactly that UID/GID.
+   Caller-supplied UID/GID are never authoritative.
 
-Repository review found no suitable generic preconfigured ownership authority.
-The current SEC-02 freeze and `trust/path_policy.py` instead derive expected UID
-and GID from the bound Darwin passwd record; the existing ownership-expectation
-module is Shopping/MariaDB-specific and is not reusable here. Therefore the
-generic preconfigured ownership authority and its reconciliation with the
-committed SEC-02 trust-path invariant are an explicit prerequisite to bootstrap
-implementation. This document neither silently redefines that committed
-invariant nor authorizes a SEC-02 or current path-policy change.
+There is no separate preconfigured Control Plane ownership authority and none is
+required. The generic SEC-02 trust-path invariant remains exactly:
+
+```text
+real UID == effective UID
+-> non-root
+-> pwd.getpwuid(bound_uid)
+```
+
+This reconciliation requires no change to `trust/path_policy.py` and makes no
+SEC-02 semantic change.
 
 The path and identity must never derive from `HOME`, `Path.home()`, environment
 variables, argv, caller-supplied username, caller-supplied UID/GID,
@@ -187,10 +192,11 @@ The high-level ceremony is:
    single-use local bootstrap authorization record and its exact bindings. The
    record is not authenticated by the absent registry and cannot authorize any
    other mutation.
-3. AIControlCenter verifies the preconfigured bootstrap-approver trust anchor,
-   signed approval, identity separation, and exact approval bindings, then
-   performs read-only Darwin identity, path, absence, ownership, mode, payload,
-   digest, and authorization preconditions.
+3. After the required independent trust source is separately frozen and
+   operationally established, AIControlCenter verifies its authenticated
+   bootstrap-approver public material, the signed approval, identity separation,
+   and exact approval bindings, then performs read-only Darwin identity, path,
+   absence, ownership, mode, payload, digest, and authorization preconditions.
 4. Before attempting the mutation, it durably consumes the one-time bootstrap
    authorization. Consumption authorizes at most one create attempt, not a
    successful outcome and not a retry.
@@ -207,6 +213,15 @@ existing registry. There is no automatic retry, claim stealing, lease recovery,
 stranded-claim recovery, automatic rollback authority, or consumed-bootstrap-
 authorization reuse. A failed or uncertain attempt requires human investigation;
 it does not restore bootstrap authority.
+
+The trust directory is not part of the bootstrap mutation budget. Before
+bootstrap authorization consumption it must already exist and satisfy the
+existing descriptor-bound path policy, exact mode `0700`, and exact bound-passwd
+UID/GID ownership. If it is absent, symlinked, malformed, incorrectly owned, or
+incorrectly permissioned, bootstrap fails closed before consumption or registry
+publication. Bootstrap may not create, repair, chmod, chown, replace, or
+otherwise provision the trust directory. Directory provisioning or repair is a
+separate Control Plane installation boundary.
 
 ## 6. Bootstrap lifecycle
 
@@ -270,9 +285,11 @@ The future dedicated creator must preserve the existing descriptor-relative,
 no-follow trust-path policy and enforce all of the following:
 
 - Darwin only, with `ruid == euid` and a non-root bound identity;
-- passwd-record-derived runtime identity and home, separately compared with the
-  preconfigured expected ownership authority required by Section 4;
+- bound-passwd-record-derived trusted home and expected UID/GID as required by
+  Section 4;
 - protected trust directory exact mode `0700` and exact trusted ownership;
+- trust directory preexistence, with no bootstrap creation, repair, chmod,
+  chown, replacement, or other provisioning;
 - final registry exact mode `0600` and exact trusted ownership;
 - no symlink traversal for any governed component;
 - descriptor-relative traversal and open operations with no-follow semantics;
@@ -397,12 +414,21 @@ Architecture review records:
 
 ```text
 BOOTSTRAP_PARADOX_RESOLVED=YES
-BOOTSTRAP_APPROVER_TRUST_ANCHOR_DEFINED=YES
+BOOTSTRAP_APPROVAL_PROTOCOL_DEFINED=YES
+BOOTSTRAP_APPROVER_TRUST_SOURCE_OPERATIONALLY_DEFINED=NO
+SEC02_BOOTSTRAP_APPROVER_TRUST_SOURCE_FREEZE_REQUIRED=YES
+BOOTSTRAP_IMPLEMENTATION_AUTHORITY_READY=NO
+PRODUCTION_BOOTSTRAP_AVAILABLE=NO
 BOOTSTRAP_APPROVER_PRIVATE_KEY_ON_PRODUCTION=NO
 OPERATOR_CAN_MANUFACTURE_BOOTSTRAP_AUTHORITY=NO
 ISSUER_CAN_SELF_REGISTER=NO
 CALLER_CAN_INJECT_BOOTSTRAP_AUTHORITY=NO
-RUNTIME_IDENTITY_AND_EXPECTED_OWNERSHIP_SEPARATED=YES
+TRUST_OWNERSHIP_AUTHORITY=BOUND_DARWIN_PASSWD_RECORD
+SEPARATE_UID_GID_AUTHORITY_REQUIRED=NO
+CALLER_UID_GID_AUTHORITY_ALLOWED=NO
+TRUST_DIRECTORY_MUST_PREEXIST=YES
+BOOTSTRAP_MAY_CREATE_TRUST_DIRECTORY=NO
+BOOTSTRAP_MAY_REPAIR_TRUST_DIRECTORY=NO
 FAILED_BOOTSTRAP_RETRY_ALLOWED=NO
 UNCERTAIN_BOOTSTRAP_RETRY_ALLOWED=NO
 INITIAL_BOOTSTRAP_AUTHORITY_RESTORED_AFTER_CONSUMPTION=NO
@@ -425,11 +451,13 @@ INITIAL_MUTATION_BUDGET=ONE_CREATE_ATTEMPT
 INITIAL_BOOTSTRAP_PERMANENTLY_SEALED_AFTER_SUCCESS=YES
 ```
 
-The next implementation milestone is
-`SEC02_PRODUCTION_TRUST_BOOTSTRAP_IMPLEMENTATION`. It must implement and test the
-separate one-time local bootstrap authority, independent approval record and
-identity separation, durable lifecycle/consumption/seal, dedicated atomic
-create-if-absent filesystem capability, read-only verification, and durable
-evidence. That milestone must not modify SEC-02 semantics, Governance core, or
+The next step is a separate SEC-02 bootstrap-approver trust-source architecture
+freeze. Until that independent trust source is defined and reviewed,
+`SEC02_PRODUCTION_TRUST_BOOTSTRAP_IMPLEMENTATION` has no implementation authority
+and Production bootstrap remains unavailable. A later authorized implementation
+milestone must preserve the independent approval record and identity separation,
+durable lifecycle/consumption/seal, preexisting trust-directory requirement,
+dedicated atomic create-if-absent registry publication, read-only verification,
+and durable evidence. It must not modify SEC-02 semantics, Governance core, or
 `ControlledExecutionPort`, and must remain non-Production until separately
 reviewed and operationally validated.
