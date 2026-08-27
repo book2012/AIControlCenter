@@ -122,9 +122,16 @@ No username may be hard-coded. Path resolution is Darwin-only and MUST bind the 
 
 1. Require real UID to equal effective UID.
 2. Require the bound UID to be non-root.
-3. Resolve the account with `pwd.getpwuid(bound_uid)`.
+3. Resolve the account with `pwd.getpwuid(bound_uid)` and treat that trusted Darwin passwd record as the sole authority for the passwd home, expected UID, and expected GID.
 4. Use only the passwd-record home directory.
 5. Reject `HOME`, environment variables, command-line arguments, and caller-provided paths as sources of path authority.
+
+There is no second caller-supplied, environment-supplied, command-line-supplied, JSON-supplied, or independently configurable UID/GID authority. Such a source would create another bootstrap trust root and drift boundary without improving the single-Mac Control Plane security model.
+
+```text
+TRUST_OWNERSHIP_AUTHORITY=BOUND_DARWIN_PASSWD_RECORD
+SEPARATE_UID_GID_AUTHORITY_REQUIRED=NO
+```
 
 The trust registry is immutable and versioned, read-only to feature runtime code, and contains public verification material only. It MUST contain no private material.
 
@@ -154,7 +161,7 @@ The verifier and intake path MUST enforce all of these protections:
 - no path component may be a symbolic link;
 - the trust directory MUST be a real directory with exact mode `0700`;
 - the registry MUST be a regular, non-symlink file with exact mode `0600`;
-- directory and registry ownership MUST match the exact preconfigured Control Plane UID and GID;
+- the final trust directory and registry ownership MUST exactly match the UID and GID from the bound Darwin passwd record;
 - registry size MUST be bounded;
 - the registry MUST be opened without following symbolic links;
 - the opened file MUST pass `fstat` validation;
