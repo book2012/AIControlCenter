@@ -1,6 +1,6 @@
 # SEC-02 Trusted Human Authorization Trust Architecture Freeze
 
-Status: **FROZEN**  
+Status: **FROZEN**
 Precision gate: `SEC02_TRUST_FREEZE_PRECISION_GATE=PASS`
 
 ## 1. Purpose and authority boundary
