@@ -1,0 +1,1 @@
+{"$schema":"https://json-schema.org/draft/2020-12/schema","$id":"urn:aicontrolcenter:governance:v1:signed-authorization-envelope","title":"GovernanceSignedAuthorizationEnvelope","type":"object","additionalProperties":false,"required":["protected","signature"],"properties":{"protected":{"type":"object"},"signature":{"type":"string","pattern":"^[A-Za-z0-9_-]+$"}}}
