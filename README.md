@@ -1,5 +1,40 @@
 # AIControlCenter
 
+## Current authoritative — SEC-02 continuity identity lifecycle architecture frozen
+
+`MILESTONE=SEC02_CONTINUITY_IDENTITY_LIFECYCLE_ARCHITECTURE_FROZEN`
+
+At commit `41e9f4f`, the Continuity Witness architecture and Continuity
+Identity Lifecycle architecture were frozen. The witness assigns the
+non-operator-selectable `continuity_host_id`; Apple Managed Device Attestation
+provides device-identity authentication evidence only, hardware-bound to the
+attested UDID and serial number. Apple services are not the Continuity Witness.
+GENESIS enrollment, recovery, decommission, physical Mac migration,
+transport-specific exact freshness binding, and separate Human Continuity
+Lifecycle Approver authority are architecturally defined.
+
+Architecture:
+
+`FIRST_INSTALL_RESET_ATTACK_ARCHITECTURE_RESOLVED=YES`
+
+Operational:
+
+`FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+No implementation or Production bootstrap is claimed. The next architecture
+sprint is `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_AND_CRYPTO_FREEZE`. The Mac
+mini M4 remains the sole Control Plane; Ubuntu remains a stateless
+infrastructure worker with zero governance, continuity, SEC-02, release,
+install, bootstrap, or execution authority.
+
 ## Current authoritative — generic SEC-02 trusted human authorization intake validated
 
 `SEC02_TRUSTED_AUTHORIZATION_INTAKE_VALIDATED` is complete at

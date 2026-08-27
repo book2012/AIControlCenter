@@ -1,5 +1,42 @@
 # Roadmap
 
+## COMPLETE / CLOSED — SEC-02 continuity identity lifecycle architecture
+
+- [x] Close
+  `MILESTONE=SEC02_CONTINUITY_IDENTITY_LIFECYCLE_ARCHITECTURE_FROZEN` at commit
+  `41e9f4f`.
+- [x] Freeze witness-assigned, non-operator-selectable continuity host identity,
+  Apple Managed Device Attestation identity evidence, GENESIS enrollment,
+  recovery, decommission, physical Mac migration, transport-specific freshness
+  semantics, and Human Continuity Lifecycle Approver separation.
+- [x] Record `FIRST_INSTALL_RESET_ATTACK_ARCHITECTURE_RESOLVED=YES`.
+- [x] Preserve `FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO` and all implementation,
+  vendor, hosting, readiness, and Production bootstrap gates as unresolved.
+
+## NEXT — SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_AND_CRYPTO_FREEZE
+
+- [ ] Freeze the Continuity Witness persistent record model.
+- [ ] Freeze the durability model.
+- [ ] Freeze the Witness API/protocol.
+- [ ] Select the MDA transport and decide DeviceInformation versus ACME.
+- [ ] Freeze the attestation validation pipeline and witness
+  challenge/freshness lifecycle.
+- [ ] Freeze the witness signing primitive and witness key custody.
+- [ ] Freeze Human Continuity Lifecycle Approver key/custody.
+- [ ] Freeze atomic GENESIS, RECOVERY, DECOMMISSION, and MIGRATION semantics.
+- [ ] Freeze fail-closed availability behavior and audit evidence.
+- [ ] Freeze the negative-path validation contract.
+- [ ] Keep Production bootstrap unscheduled until this architecture freeze and
+  later implementation/readiness gates are complete.
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
 ## Current authoritative — generic SEC-02 trusted authorization intake
 
 - [x] Complete generic, reusable trusted human authorization intake at

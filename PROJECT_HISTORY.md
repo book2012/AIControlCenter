@@ -1,5 +1,37 @@
 # Project History
 
+## 2026-08-28 — SEC-02 continuity identity lifecycle architecture frozen
+
+Commit `41e9f4f` established
+`MILESTONE=SEC02_CONTINUITY_IDENTITY_LIFECYCLE_ARCHITECTURE_FROZEN`. It froze
+the witness-assigned continuity host identity; Apple Managed Device Attestation
+as device-identity authentication evidence; GENESIS enrollment; recovery;
+decommission; physical Mac migration; transport-specific exact MDA freshness
+semantics; and separate Human Continuity Lifecycle Approver authority.
+
+Architecture-level first-install reset resistance is now defined:
+
+`FIRST_INSTALL_RESET_ATTACK_ARCHITECTURE_RESOLVED=YES`
+
+Operational resolution remains false:
+
+`FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+No implementation, Production access, Docker access, canonical regression, or
+Production authorization consumption occurred. SEC-02 semantics, Governance
+core, `ControlledExecutionPort`, and WU09 remained unchanged. The Mac mini M4
+remained the sole Control Plane; Ubuntu remained a stateless infrastructure
+worker with zero governance, continuity, SEC-02, release, install, bootstrap,
+or execution authority.
+
 ## 2026-08-27 — Generic SEC-02 trusted authorization intake validated
 
 The generic trusted human authorization trust layer was validated at

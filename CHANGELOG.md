@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## 2026-08-28 — SEC-02 continuity identity lifecycle architecture frozen
+
+- Recorded commit `41e9f4f` and
+  `MILESTONE=SEC02_CONTINUITY_IDENTITY_LIFECYCLE_ARCHITECTURE_FROZEN`.
+- Froze the witness-assigned, non-operator-selectable `continuity_host_id` and
+  Apple Managed Device Attestation as device-identity authentication evidence,
+  hardware-bound to the attested UDID and serial number. Apple services are not
+  the Continuity Witness, and user enrollment is not allowed.
+- Froze GENESIS enrollment, recovery, decommission, physical Mac migration,
+  transport-specific exact MDA freshness semantics, and separate Human
+  Continuity Lifecycle Approver authority.
+- Recorded architecture-level first-install reset resistance as resolved while
+  preserving operational resolution as false.
+- Implementation has not started, Production bootstrap is unavailable, and no
+  Production or Docker access occurred.
+- Canonical regression was not required or run because this reconciliation is
+  documentation-only.
+
+`FIRST_INSTALL_RESET_ATTACK_ARCHITECTURE_RESOLVED=YES`
+
+`FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## 2026-08-27 — Generic SEC-02 trusted authorization intake validation
 
 - Validated reusable, non-WU09-specific trusted human authorization intake at
