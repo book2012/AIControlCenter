@@ -1,5 +1,21 @@
 # CHANGELOG
 
+## 2026-08-27 — Generic SEC-02 trusted authorization intake validation
+
+- Validated reusable, non-WU09-specific trusted human authorization intake at
+  `IMPLEMENTATION_COMMIT=349a9c5`; canonical deployment regression passed with
+  `4212 passed, 5 deselected, 599 warnings` and `CANONICAL_RC=0`.
+- Preserved Issuer/Intake/Operator/Executor separation, existing durable
+  consumption semantics, fresh post-consumption preconditions, and the
+  independent SEC-02 `ALLOW_SINGLE_INVOCATION` requirement. Authenticity and
+  consumption evidence do not independently authorize execution.
+- Added no generic Production executor or Production private signing-key API.
+  Production runtime stores only public verification material and trusted
+  issuer metadata; synthetic private keys are tests/fixtures only.
+- This is implementation validation, not trusted issuer/trust-root operational
+  bootstrap. Production and Docker were not accessed, no Production mutation
+  or authorization consumption occurred, and Shopping remains not activated.
+
 ## 2026-08-27 — Macro-WU09 governance identity binding correction closeout
 
 - Recorded `WU09_IDENTITY_BINDING_CORRECTION=COMPLETE` at

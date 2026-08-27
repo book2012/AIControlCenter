@@ -1,5 +1,31 @@
 # MASTER
 
+## Current authoritative status — generic SEC-02 trusted authorization intake validated
+
+`SEC02_TRUSTED_AUTHORIZATION_INTAKE_VALIDATED` is authoritative at
+`IMPLEMENTATION_COMMIT=349a9c5`. Validation evidence is
+`CANONICAL_GATE=PASS`, `CANONICAL_RESULT=4212_PASSED_5_DESELECTED`,
+`CANONICAL_WARNINGS=599`, and `CANONICAL_RC=0`.
+
+The generic, reusable boundary preserves
+`Issuer != Intake != Operator != Executor`. An authentic immutable signed
+artifact and its durable consumption record do not grant execution authority.
+Existing consumption semantics remain unchanged; after consumption, fresh
+preconditions and an independent SEC-02 `ALLOW_SINGLE_INVOCATION` decision are
+mandatory. No retry, reuse, claim stealing, or stranded-claim recovery exists.
+Governance core, SEC-02, `ControlledExecutionPort`, and WU09 semantics remain
+unchanged.
+
+The Mac mini M4 remains the sole Control Plane. Ubuntu remains a stateless
+infrastructure worker with zero trust/intake/governance authority. Production
+runtime retains public verification material and trusted issuer metadata only;
+no generic Production executor or Production private signing-key API exists.
+Trusted issuer/trust-root operational bootstrap is the next separate controlled
+boundary. WU09 Production composition must use separately issued immutable
+authorization artifacts, followed by separately authorized preload and
+deployment. `WU09_PINNED_IMAGE_PRELOADED=false`, `WU09_DEPLOYED=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false` remain authoritative.
+
 ## Current authoritative status — Macro-WU09 governance identity binding corrected
 
 `WU09_IDENTITY_BINDING_CORRECTION=COMPLETE` at

@@ -1,5 +1,29 @@
 # Roadmap
 
+## Current authoritative — generic SEC-02 trusted authorization intake
+
+- [x] Complete generic, reusable trusted human authorization intake at
+  `IMPLEMENTATION_COMMIT=349a9c5`.
+- [x] Record `SEC02_TRUSTED_AUTHORIZATION_INTAKE_VALIDATED`, canonical
+  `4212 passed, 5 deselected, 599 warnings`, and `CANONICAL_RC=0`.
+- [x] Preserve Issuer/Intake/Operator/Executor separation, unchanged durable
+  consumption semantics, fresh post-consumption preconditions, and independent
+  SEC-02 `ALLOW_SINGLE_INVOCATION` authorization.
+- [x] Preserve Mac-only Control Plane authority and Ubuntu zero authority; add
+  no generic Production executor or Production private signing-key API.
+- [ ] Bootstrap trusted issuers and trust roots as a separate controlled
+  operational boundary.
+- [ ] Compose WU09 Production operations using separately issued immutable
+  authorization artifacts.
+- [ ] `WU09_PINNED_IMAGE_PRELOADED` — authorize and perform pinned-image preload
+  as its own Production mutation. This is not complete.
+- [ ] Deploy the WU09 loopback adapter under a separate authorization.
+- [ ] Provision WU10 credential slots.
+- [ ] Perform WU11 read-only MariaDB continuity validation.
+
+Production and Docker remain unaccessed by this closeout;
+`SHOPPING_RUNTIME_ACTIVATED=false`.
+
 ## Current authoritative — Macro-WU09 governance identity binding correction
 
 - [x] Record `WU09_IDENTITY_BINDING_CORRECTION=COMPLETE` at

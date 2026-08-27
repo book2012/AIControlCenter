@@ -1,5 +1,35 @@
 # AIControlCenter
 
+## Current authoritative — generic SEC-02 trusted human authorization intake validated
+
+`SEC02_TRUSTED_AUTHORIZATION_INTAKE_VALIDATED` is complete at
+`IMPLEMENTATION_COMMIT=349a9c5`. The canonical deployment regression gate
+passed with `4212 passed, 5 deselected, 599 warnings` and `CANONICAL_RC=0`.
+
+This is reusable SEC-02 infrastructure, not WU09-specific. A human issuer
+creates an immutable signed authorization artifact; generic trusted intake
+verifies it before the existing SEC-02 boundary and a feature-specific
+`ControlledExecutionPort`. Issuer, Intake, Operator, and Executor remain
+distinct. Authenticity and durable authorization consumption are evidence, not
+execution authority: fresh post-consumption preconditions and an independent
+SEC-02 `ALLOW_SINGLE_INVOCATION` decision remain mandatory. There is no retry,
+consumed-authorization reuse, claim stealing, or stranded-claim recovery.
+
+Production runtime stores only public verification material and trusted issuer
+metadata. No Production private signing-key API or generic Production executor
+was introduced; synthetic private keys remain tests/fixtures only. Mac operator
+identity is derived from Darwin/passwd-record-backed local identity rather than
+caller-supplied text, environment, argv, or JSON authority, and trust-root path
+handling fails closed. The Mac mini M4 remains the sole Control Plane; Ubuntu
+remains a stateless infrastructure worker with zero trust, intake, governance,
+or execution authority.
+
+This validation did not activate operational trust roots, Production runtime,
+or Shopping. `WU09_PINNED_IMAGE_PRELOADED=false`, `WU09_DEPLOYED=false`, and
+`SHOPPING_RUNTIME_ACTIVATED=false`; no Production access, mutation,
+authorization consumption, Docker operation, or WU09 implementation change
+occurred.
+
 ## Current authoritative — Macro-WU09 governance identity binding correction
 
 `WU09_IDENTITY_BINDING_CORRECTION=COMPLETE` at

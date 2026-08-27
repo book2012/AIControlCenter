@@ -1,5 +1,24 @@
 # Project History
 
+## 2026-08-27 — Generic SEC-02 trusted authorization intake validated
+
+The generic trusted human authorization trust layer was validated at
+implementation commit `349a9c5`. The canonical deployment regression gate
+passed with `4212 passed, 5 deselected, 599 warnings` and `RC=0`, establishing
+`SEC02_TRUSTED_AUTHORIZATION_INTAKE_VALIDATED`.
+
+The event validated reusable SEC-02 intake infrastructure while preserving
+Issuer/Intake/Operator/Executor separation, existing durable consumption
+semantics, fresh post-consumption preconditions, and the independent SEC-02
+`ALLOW_SINGLE_INVOCATION` requirement. It did not change Governance core,
+SEC-02, `ControlledExecutionPort`, or WU09 semantics.
+
+No Production access or mutation occurred. No Production authorization was
+created or consumed, no Docker runtime operation occurred, no pinned image was
+preloaded, and no WU09 deployment occurred. Shopping runtime remained not
+activated. Trusted issuer/trust-root operational bootstrap remains a separate
+future controlled boundary.
+
 ## 2026-08-27 — Macro-WU09 governance identity binding correction closeout
 
 The initial governed preload implementation at `IMPLEMENTATION_COMMIT=e179fb0`

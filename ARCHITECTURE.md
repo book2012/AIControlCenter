@@ -1,5 +1,33 @@
 # AI Home Datacenter Architecture
 
+## Reusable SEC-02 trusted human authorization boundary
+
+The validated reusable flow is:
+
+`Human Issuer -> immutable signed artifact -> Generic Trusted Authorization Intake -> existing SEC-02 -> feature-specific ControlledExecutionPort`
+
+`Issuer != Intake != Operator != Executor`. Signature authenticity proves only
+that a trusted issuer signed the immutable artifact. Durable consumption proves
+only the existing single-use state transition. Neither is execution authority
+by itself. Existing durable consumption semantics are unchanged; fresh
+post-consumption preconditions and an independent SEC-02
+`ALLOW_SINGLE_INVOCATION` decision remain mandatory. There is no automatic
+retry, consumed-authorization reuse, claim stealing, or stranded-claim
+recovery.
+
+The generic intake is not WU09-specific and introduces neither a generic
+Production executor nor a Production private signing-key API. Production
+runtime stores only public verification material and trusted issuer metadata;
+synthetic private keys are confined to tests and fixtures. Operator identity on
+the Mac is derived from Darwin/passwd-record-backed local identity, never from
+caller-supplied text, environment, argv, or JSON authority. Trust-root path
+handling fails closed.
+
+AIControlCenter on the Mac mini M4 remains the sole Control Plane. Ubuntu is an
+optional stateless infrastructure worker with zero trust, intake, governance,
+business-logic, application-state, or Control Plane authority. Governance core,
+SEC-02, `ControlledExecutionPort`, and WU09 semantics are unchanged.
+
 ## Current authoritative boundary — Macro-WU09 governance identity binding correction
 
 The preload implementation at `IMPLEMENTATION_COMMIT=e179fb0` was followed by
