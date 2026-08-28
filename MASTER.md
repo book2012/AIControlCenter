@@ -1,12 +1,21 @@
 # MASTER
 
-## Current authoritative status — SEC-02 continuity identity lifecycle architecture frozen
+## Current authoritative status — SEC-02 Witness implementation/crypto architecture frozen
 
-`MILESTONE=SEC02_CONTINUITY_IDENTITY_LIFECYCLE_ARCHITECTURE_FROZEN`
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_ARCHITECTURE_FROZEN=YES`
 
-`ARCHITECTURE_COMMIT=41e9f4f`
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_FREEZE=COMPLETE`
 
-Frozen architecture facts:
+`ARCHITECTURE_COMMIT=96db578`
+
+This milestone freezes architecture only. It does not establish implementation,
+deployment, operational validation, Production readiness, or Production use
+authority.
+
+The implementation/crypto freeze extends the earlier continuity identity and
+lifecycle architecture freeze; it does not supersede or remove that baseline.
+
+Continuity identity and lifecycle baseline:
 
 `CONTINUITY_WITNESS_ARCHITECTURE=FROZEN`
 
@@ -46,6 +55,118 @@ Frozen architecture facts:
 
 `HUMAN_CONTINUITY_LIFECYCLE_APPROVER_DEFINED=YES`
 
+The reset-attack architecture problem is resolved and frozen. The operational
+problem remains unresolved because the Witness, deployment, key custody, MDM
+transport, and Production bootstrap remain unimplemented or unavailable.
+
+MDA architecture:
+
+`MDA_TRANSPORT_ARCHITECTURE_DEFINED=YES`
+
+`CONTINUITY_WITNESS_MDA_TRANSPORT=DEVICE_INFORMATION`
+
+`MDA_DEVICE_INFORMATION_SELECTED=YES`
+
+`MDA_ACME_SELECTED_FOR_CONTINUITY_WITNESS=NO`
+
+DeviceInformation is architecture-selected only. No MDM configuration or
+DeviceInformation attestation execution is claimed.
+
+Durable lifecycle approval architecture:
+
+`LIFECYCLE_APPROVAL_STATES=AVAILABLE,DURABLY_CLAIMED,COMMITTED,FAILED_CONSUMED,UNCERTAIN_CONSUMED`
+
+`LIFECYCLE_APPROVAL_DURABLE_CLAIM_REQUIRED=YES`
+
+`ROLLBACK_MAY_RESTORE_APPROVAL_AUTHORITY=NO`
+
+`FAILED_CONSUMED_REUSABLE=NO`
+
+`UNCERTAIN_CONSUMED_REUSABLE=NO`
+
+`STRANDED_DURABLY_CLAIMED_REUSABLE=NO`
+
+`DURABLY_CLAIMED_REUSABLE=NO`
+
+`DURABLE_CLAIM_ITSELF_PERMANENTLY_CONSUMES_AUTHORITY=YES`
+
+`TERMINALIZATION_WRITE_REQUIRED_TO_PREVENT_REUSE=NO`
+
+`CLAIM_STEALING_ALLOWED=NO`
+
+`AUTOMATIC_CLAIM_RECOVERY_ALLOWED=NO`
+
+`AUTOMATIC_RETRY_AUTHORITY=NO`
+
+`AVAILABLE -> DURABLY_CLAIMED` permanently consumes the exact approval. Once
+the durable claim exists, rollback, crash, timeout, disconnect, ambiguous
+acknowledgement, reconciliation failure, or failure to persist a later terminal
+classification can never restore reuse. `FAILED_CONSUMED` and
+`UNCERTAIN_CONSUMED` are durable classifications; authority was already
+permanently consumed by `DURABLY_CLAIMED`.
+
+Ambiguous COMMIT reconciliation architecture:
+
+`DATABASE_MUTATION_RESULT_ATOMIC=YES`
+
+`HTTP_RESPONSE_DELIVERY_ATOMIC_WITH_DATABASE=NO`
+
+`AMBIGUOUS_COMMIT_ACK_MUTATION_RETRY_ALLOWED=NO`
+
+`AMBIGUOUS_COMMIT_ACK_READ_ONLY_RECONCILIATION_ONLY=YES`
+
+`EXACT_COMMITTED_OPERATION_REQUIRED_FOR_RECONCILED_SUCCESS=YES`
+
+`GET /v1/lifecycle-operations/{operation_id}` is the read-only reconciliation
+concept. Ambiguous database COMMIT acknowledgement, connection state, or HTTP
+response delivery never repeats the mutation POST, creates retry authority,
+restores or recreates approval authority, or steals or recovers the durable
+claim. Reconciled success requires the exact expected `COMMITTED` operation and
+an exact match of all bound facts. Absent, conflicting, malformed, or uncertain
+evidence fails closed. A later mutation requires a new evaluation and a new
+exact approval.
+
+Crypto architecture:
+
+`WITNESS_SIGNING_PRIMITIVE=ED25519`
+
+`LIFECYCLE_APPROVAL_SIGNING_PRIMITIVE=ED25519`
+
+`WITNESS_AND_LIFECYCLE_KEYS_SEPARATE=YES`
+
+Control and authority assignments:
+
+`MAC_MINI_M4_CONTROL_PLANE=SOLE`
+
+`AICONTROLCENTER_AUTHORITY=GOVERNANCE_ORCHESTRATION_POLICY_AUTHORIZATION_AUDIT_INTEGRATION_PRODUCTION_DEPLOYMENT_CONTROL`
+
+`CONTINUITY_WITNESS_AUTHORITY=EXTERNAL_DURABLE_EVIDENCE_ONLY`
+
+`CONTINUITY_WITNESS_SECOND_CONTROL_PLANE=NO`
+
+The Continuity Witness grants zero Production mutation authority, zero SEC-02
+bootstrap authority, and zero release, install, or execution authority. It is
+an external durable evidence authority only, never a second Control Plane.
+
+`UBUNTU_ROLE=STATELESS_INFRASTRUCTURE_WORKER`
+
+`UBUNTU_AUTHORITY=ZERO`
+
+Continuity Witness durable state, lifecycle approval authority, signing
+authority, Production business logic, and Control Plane authority must never be
+placed on Ubuntu. Ubuntu has zero governance authority, zero continuity
+authority, zero signing-key authority, and zero application or business state
+authority.
+
+`AICONTROLCENTER_PUBLIC_EDGE=HOST_CADDY`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+Host Caddy is only the Mac AIControlCenter public edge; it is not an implied
+external Witness ingress.
+
 Unresolved operational facts:
 
 `FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO`
@@ -54,7 +175,11 @@ Unresolved operational facts:
 
 `MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
 
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
 `MDM_VENDOR_SELECTED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
 
 `CLOUD_HOST_SELECTED=NO`
 
@@ -72,6 +197,11 @@ Authority remains bound to the Darwin passwd record:
 
 `SEPARATE_UID_GID_AUTHORITY_REQUIRED=NO`
 
+The bound Darwin passwd record remains the sole trusted UID, GID, and home
+ownership authority. Caller UID/GID is not an authority source, no separate
+UID/GID authority configuration is required, and the Continuity Witness
+architecture does not change SEC-02 trust ownership.
+
 `SEC02_SEMANTICS_CHANGED=false`
 
 `GOVERNANCE_CORE_CHANGED=false`
@@ -82,11 +212,10 @@ Authority remains bound to the Darwin passwd record:
 
 `CANONICAL_RERUN_REQUIRED=NO`
 
-The next active architecture milestone is
-`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_AND_CRYPTO_FREEZE`; it is not a
-Production-readiness claim. The Mac mini M4 remains the sole Control Plane,
-and Ubuntu remains a stateless infrastructure worker with zero governance,
-continuity, SEC-02, release, install, bootstrap, or execution authority.
+The next planned architecture-only sprint is
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_AND_KEY_CUSTODY_FREEZE`: PLANNED / NOT
+STARTED. It makes no deployment, provider, ingress, MDM, or key-custody
+selection.
 
 ## Current authoritative status — generic SEC-02 trusted authorization intake validated
 

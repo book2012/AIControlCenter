@@ -1,5 +1,37 @@
 # Project History
 
+## 2026-08-28 — SEC-02 Witness implementation/crypto architecture frozen
+
+Commit `96db578` completed the docs/architecture-only milestone:
+
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_ARCHITECTURE_FROZEN=YES`
+
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_FREEZE=COMPLETE`
+
+The architecture selected DeviceInformation as the MDA transport, permanently
+consumed each exact approval at `AVAILABLE -> DURABLY_CLAIMED`, limited
+ambiguous COMMIT outcomes to read-only exact-result reconciliation, and selected
+separate Ed25519 keys for Witness and lifecycle-approval signing. It preserved
+the Mac mini M4 as sole Control Plane, the external Witness as durable evidence
+authority only, and Ubuntu as a stateless worker with zero authority.
+
+This event did not implement, deploy, operationally activate, validate, or
+authorize the Continuity Witness for Production. Key custody, MDM transport
+implementation, cloud hosting, Witness ingress, implementation readiness, and
+Production bootstrap remained unresolved. No Production access, Docker access,
+implementation change, operational activation, or canonical regression
+occurred.
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## 2026-08-28 — SEC-02 continuity identity lifecycle architecture frozen
 
 Commit `41e9f4f` established

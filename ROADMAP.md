@@ -13,29 +13,56 @@
 - [x] Preserve `FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO` and all implementation,
   vendor, hosting, readiness, and Production bootstrap gates as unresolved.
 
-## NEXT — SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_AND_CRYPTO_FREEZE
+## COMPLETE — SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_FREEZE
 
-- [ ] Freeze the Continuity Witness persistent record model.
-- [ ] Freeze the durability model.
-- [ ] Freeze the Witness API/protocol.
-- [ ] Select the MDA transport and decide DeviceInformation versus ACME.
-- [ ] Freeze the attestation validation pipeline and witness
-  challenge/freshness lifecycle.
-- [ ] Freeze the witness signing primitive and witness key custody.
-- [ ] Freeze Human Continuity Lifecycle Approver key/custody.
-- [ ] Freeze atomic GENESIS, RECOVERY, DECOMMISSION, and MIGRATION semantics.
-- [ ] Freeze fail-closed availability behavior and audit evidence.
-- [ ] Freeze the negative-path validation contract.
-- [ ] Keep Production bootstrap unscheduled until this architecture freeze and
-  later implementation/readiness gates are complete.
+- [x] Record
+  `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_ARCHITECTURE_FROZEN=YES` and
+  `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_FREEZE=COMPLETE` at
+  `ARCHITECTURE_COMMIT=96db578`.
+- [x] Select DeviceInformation as MDA transport architecture only.
+- [x] Freeze permanent approval consumption at
+  `AVAILABLE -> DURABLY_CLAIMED`, durable terminal classifications, no claim
+  recovery/stealing/reuse, and no automatic retry authority.
+- [x] Freeze ambiguous COMMIT handling as read-only exact-result reconciliation
+  only, with no mutation retry and fail-closed non-exact evidence.
+- [x] Select Ed25519 for both signing purposes with separate Witness and
+  lifecycle-approval keys; leave key custody undefined.
+- [x] Preserve sole Mac Control Plane authority, external evidence-only Witness,
+  Ubuntu zero authority, and all operational and Production blockers.
 
 `CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
 
 `MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
 
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
 `IMPLEMENTATION_READY=NO`
 
 `PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+## PLANNED / NOT STARTED — SEC02_CONTINUITY_WITNESS_DEPLOYMENT_AND_KEY_CUSTODY_FREEZE
+
+This next sprint is architecture-only. It will freeze, without implementing:
+
+- [ ] External Witness deployment topology and cloud-host selection criteria.
+- [ ] PostgreSQL durability boundary; backup, restore, disaster recovery, and
+  rollback-resistant Witness history requirements.
+- [ ] Witness ingress and TLS topology, service authentication, availability,
+  and fail-closed behavior.
+- [ ] MDM implementation boundary, DeviceInformation acquisition path, and
+  Apple attestation validation implementation contract.
+- [ ] Witness signing-key custody and Human Continuity Lifecycle Approver key
+  custody.
+- [ ] Key provisioning, rotation, revocation, compromise recovery, historical
+  signature verification, and Witness public-key trust distribution.
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+No cloud host, MDM implementation, ingress topology, or key custody is selected.
 
 ## Current authoritative — generic SEC-02 trusted authorization intake
 

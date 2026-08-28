@@ -1,5 +1,61 @@
 # CHANGELOG
 
+## 2026-08-28 — SEC-02 Witness implementation/crypto architecture frozen
+
+- Completed the architecture-only milestone at commit `96db578`:
+  `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_ARCHITECTURE_FROZEN=YES` and
+  `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_FREEZE=COMPLETE`.
+- Selected DeviceInformation as the MDA transport architecture; no MDM
+  configuration, DeviceInformation attestation run, or transport implementation
+  is claimed.
+- Froze lifecycle states `AVAILABLE`, `DURABLY_CLAIMED`, `COMMITTED`,
+  `FAILED_CONSUMED`, and `UNCERTAIN_CONSUMED`. The transition
+  `AVAILABLE -> DURABLY_CLAIMED` permanently consumes the exact approval;
+  rollback, crash, timeout, disconnect, ambiguity, reconciliation failure, or
+  failure to record a later terminal classification can never make it reusable.
+  Terminal classifications are durable but are not what destroys authority.
+- Froze ambiguous database COMMIT/connection/HTTP-delivery handling: never
+  repeat the mutation POST or create retry authority; use only read-only exact-
+  result reconciliation through `GET /v1/lifecycle-operations/{operation_id}`.
+  Success requires an exact matching `COMMITTED` operation; otherwise fail
+  closed, and any later mutation requires a new evaluation and exact approval.
+- Selected Ed25519 independently for Witness signing and lifecycle-approval
+  signing, with separate keys. Key custody remains undefined.
+- Preserved the Mac mini M4 as sole Control Plane, the external Witness as
+  durable evidence authority only, Ubuntu as a stateless zero-authority worker,
+  Host Caddy as only the Mac AIControlCenter public edge, and Witness ingress as
+  undefined.
+- Preserved unresolved implementation, MDM transport, key-custody, cloud-host,
+  readiness, and Production-bootstrap blockers. No implementation, operational
+  activation, Production access, Docker access, or canonical regression
+  occurred.
+
+`ARCHITECTURE_COMMIT=96db578`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`CLOUD_HOST_SELECTED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## 2026-08-28 — SEC-02 continuity identity lifecycle architecture frozen
 
 - Recorded commit `41e9f4f` and

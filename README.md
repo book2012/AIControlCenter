@@ -1,23 +1,20 @@
 # AIControlCenter
 
-## Current authoritative — SEC-02 continuity identity lifecycle architecture frozen
+## Current authoritative — SEC-02 Witness implementation/crypto architecture frozen
 
-`MILESTONE=SEC02_CONTINUITY_IDENTITY_LIFECYCLE_ARCHITECTURE_FROZEN`
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_ARCHITECTURE_FROZEN=YES`
 
-At commit `41e9f4f`, the Continuity Witness architecture and Continuity
-Identity Lifecycle architecture were frozen. The witness assigns the
-non-operator-selectable `continuity_host_id`; Apple Managed Device Attestation
-provides device-identity authentication evidence only, hardware-bound to the
-attested UDID and serial number. Apple services are not the Continuity Witness.
-GENESIS enrollment, recovery, decommission, physical Mac migration,
-transport-specific exact freshness binding, and separate Human Continuity
-Lifecycle Approver authority are architecturally defined.
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_FREEZE=COMPLETE`
 
-Architecture:
+`ARCHITECTURE_COMMIT=96db578`
 
-`FIRST_INSTALL_RESET_ATTACK_ARCHITECTURE_RESOLVED=YES`
-
-Operational:
+This is an architecture-only milestone. DeviceInformation is the selected MDA
+transport architecture, lifecycle approvals are permanently consumed upon
+`AVAILABLE -> DURABLY_CLAIMED`, ambiguous COMMIT outcomes permit read-only
+exact-result reconciliation only, and separate Ed25519 keys are required for
+Witness and lifecycle-approval signing. Implementation, key custody, cloud
+hosting, Witness ingress, MDM configuration, operational validation, and
+Production bootstrap remain undefined or unavailable.
 
 `FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO`
 
@@ -25,15 +22,17 @@ Operational:
 
 `MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
 
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
 `IMPLEMENTATION_READY=NO`
 
 `PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
 
-No implementation or Production bootstrap is claimed. The next architecture
-sprint is `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_AND_CRYPTO_FREEZE`. The Mac
-mini M4 remains the sole Control Plane; Ubuntu remains a stateless
-infrastructure worker with zero governance, continuity, SEC-02, release,
-install, bootstrap, or execution authority.
+The Mac mini M4 remains the sole Control Plane. The external Continuity Witness
+is durable evidence authority only, not a second Control Plane; Ubuntu remains
+a stateless infrastructure worker with zero authority. The next architecture-
+only sprint is
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_AND_KEY_CUSTODY_FREEZE`.
 
 ## Current authoritative — generic SEC-02 trusted human authorization intake validated
 
