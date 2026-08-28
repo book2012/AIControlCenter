@@ -1,5 +1,90 @@
 # Project History
 
+## 2026-08-28 — SEC-02 Witness deployment/key-custody architecture frozen
+
+The exact architecture chronology is `41e9f4f` -> `96db578` -> `7057c96`.
+Commit `41e9f4f` froze lifecycle semantics. Commit `96db578` later froze
+implementation/crypto architecture but contained a conflicting requirement for
+fresh valid identity evidence on DECOMMISSION. Commit `7057c96` completed the
+deployment/key-custody architecture freeze and explicitly classified that
+wording as a non-authoritative documentation overconstraint erratum.
+
+The authoritative DECOMMISSION rule remains the `41e9f4f` baseline: one exact
+Human Continuity Lifecycle Approval bound to the current evaluation and record;
+no fresh MDA; terminal lifecycle result. The correction restores the frozen
+baseline and introduces no new SEC-02 semantic change. GENESIS, RECOVERY, and
+MIGRATION fresh-evidence requirements remain unchanged; history is not erased.
+
+`DECOMMISSION_LIFECYCLE_SEMANTICS_AUTHORITY_COMMIT=41e9f4f`
+
+`DECOMMISSION_FRESH_MDA_REQUIRED=NO`
+
+`DECOMMISSION_EXACT_HUMAN_APPROVAL_BOUND_TO_CURRENT_EVALUATION_AND_RECORD_REQUIRED=YES`
+
+`DECOMMISSION_TERMINAL=YES`
+
+`COMMIT_96db578_DECOMMISSION_FRESH_IDENTITY_REQUIREMENT=DOCUMENTATION_OVERCONSTRAINT_ERRATUM`
+
+`COMMIT_96db578_DECOMMISSION_FRESH_IDENTITY_REQUIREMENT_AUTHORITATIVE=NO`
+
+`DECOMMISSION_CORRECTION_RESTORES_ALREADY_FROZEN_BASELINE=YES`
+
+`DECOMMISSION_CORRECTION_INTRODUCES_NEW_SEC02_SEMANTIC_CHANGE=NO`
+
+`GENESIS_FRESH_EVIDENCE_REQUIREMENT_CHANGED=NO`
+
+`RECOVERY_FRESH_EVIDENCE_REQUIREMENT_CHANGED=NO`
+
+`MIGRATION_FRESH_EVIDENCE_REQUIREMENT_CHANGED=NO`
+
+Commit `7057c96` architecture-selected AWS, a stateless external Witness,
+PostgreSQL-compatible primary transactions, S3 Object Lock Compliance immutable
+history, AWS KMS Ed25519 custody for separate Witness and human lifecycle keys,
+AWS KMS HMAC-SHA-256 hardware indexing, and RFC 8785 JCS signed envelopes. It
+did not implement, deploy, operationally validate, or authorize any of them.
+
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_ARCHITECTURE_FROZEN=YES`
+
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_FREEZE=COMPLETE`
+
+`ARCHITECTURE_COMMIT=7057c96`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+No Production, Docker, AWS API, AWS credential, or cloud-resource access
+occurred. No Production mutation or authorization consumption occurred, and
+canonical regression was not run.
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
+`PRODUCTION_ACCESS_PERFORMED=false`
+
+`PRODUCTION_MUTATION_PERFORMED=false`
+
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`
+
+`DOCKER_RUNTIME_ACCESSED=false`
+
+`AWS_API_ACCESSED=false`
+
+`CLOUD_RESOURCE_CREATED=false`
+
+`AWS_CREDENTIALS_ACCESSED=false`
+
 ## 2026-08-28 — SEC-02 Witness implementation/crypto architecture frozen
 
 Commit `96db578` completed the docs/architecture-only milestone:

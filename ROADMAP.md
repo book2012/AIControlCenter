@@ -42,27 +42,57 @@
 
 `PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
 
-## PLANNED / NOT STARTED — SEC02_CONTINUITY_WITNESS_DEPLOYMENT_AND_KEY_CUSTODY_FREEZE
+## COMPLETE / CLOSED — SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_FREEZE
 
-This next sprint is architecture-only. It will freeze, without implementing:
+Closed as architecture-only at `ARCHITECTURE_COMMIT=7057c96`.
 
-- [ ] External Witness deployment topology and cloud-host selection criteria.
-- [ ] PostgreSQL durability boundary; backup, restore, disaster recovery, and
-  rollback-resistant Witness history requirements.
-- [ ] Witness ingress and TLS topology, service authentication, availability,
-  and fail-closed behavior.
-- [ ] MDM implementation boundary, DeviceInformation acquisition path, and
-  Apple attestation validation implementation contract.
-- [ ] Witness signing-key custody and Human Continuity Lifecycle Approver key
-  custody.
-- [ ] Key provisioning, rotation, revocation, compromise recovery, historical
-  signature verification, and Witness public-key trust distribution.
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_ARCHITECTURE_FROZEN=YES`
+
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_FREEZE=COMPLETE`
+
+- [x] Architecture-select AWS, stateless external Witness service, PostgreSQL-
+  compatible primary transactions, S3 Object Lock Compliance immutable
+  history, and AWS KMS Ed25519/HMAC custody.
+- [x] Freeze privacy indexing, signed-envelope canonicalization, immutable-
+  history and fail-closed rules.
+- [x] Restore `41e9f4f` DECOMMISSION precedence and record `96db578`'s fresh-
+  identity wording as a non-authoritative documentation erratum.
+- [x] Preserve all implementation, deployment, ingress, and Production gates.
 
 `CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
 
 `CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
 
-No cloud host, MDM implementation, ingress topology, or key custody is selected.
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+No concrete cloud host, AWS resource, MDM implementation, ingress topology,
+deployment, or Production activation is selected or claimed.
+
+## PLANNED / NOT STARTED — SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION
+
+`NEXT_SPRINT=SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION`
+
+`NEXT_SPRINT_STATUS=PLANNED_NOT_STARTED`
+
+This sprint will define, not deploy:
+
+- [ ] Witness JSON API schemas and contracts.
+- [ ] PostgreSQL schema and transaction protocol.
+- [ ] Immutable checkpoint publication and reconciliation protocol.
+- [ ] AWS KMS signing and HMAC index adapter contracts.
+- [ ] Key ID, version, and rotation representation.
+- [ ] Concrete signed-envelope schemas.
+- [ ] DeviceInformation MDA adapter boundary.
+- [ ] Fail-closed read-only validation path.
+- [ ] Test strategy and fake adapters.
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
 
 ## Current authoritative — generic SEC-02 trusted authorization intake
 

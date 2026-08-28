@@ -1,5 +1,80 @@
 # CHANGELOG
 
+## 2026-08-28 — SEC-02 Witness deployment/key-custody architecture frozen
+
+- Completed the docs/architecture-only milestone at commit `7057c96`:
+  `SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_ARCHITECTURE_FROZEN=YES`
+  and `SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_FREEZE=COMPLETE`.
+- Architecture-selected AWS for a stateless external Witness, PostgreSQL-
+  compatible transactions, S3 Object Lock Compliance immutable history,
+  separate AWS KMS Ed25519 Witness and human lifecycle keys, AWS KMS HMAC-SHA-
+  256 hardware indexing, and RFC 8785 JCS signed envelopes.
+- Froze rollback-resistant history and fail-closed missing/conflicting-history
+  behavior; no PostgreSQL rollback, retention expiry, or incomplete history may
+  prove GENESIS, and no operational retention schedule is implemented.
+- Recorded the chronology without rewriting it: `41e9f4f` requires no fresh MDA
+  for terminal DECOMMISSION and requires one exact human approval bound to the
+  current evaluation and record. `96db578`'s conflicting wording is a non-
+  authoritative documentation overconstraint erratum corrected by `7057c96`;
+  GENESIS, RECOVERY, and MIGRATION freshness rules did not change.
+- Preserved permanent durable-claim consumption, read-only reconciliation
+  after ambiguous commit acknowledgement, Mac-only Control Plane authority,
+  evidence-only Witness authority, Ubuntu zero authority, and every
+  implementation and Production blocker.
+- No implementation, deployment, operational validation, Production mutation,
+  Docker access, AWS API or credential access, cloud resource creation, or
+  canonical regression occurred.
+
+`ARCHITECTURE_COMMIT=7057c96`
+
+`CONTINUITY_WITNESS_DEPLOYMENT_ARCHITECTURE_DEFINED=YES`
+
+`KEY_CUSTODY_ARCHITECTURE_DEFINED=YES`
+
+`CONTINUITY_WITNESS_CLOUD_PROVIDER=AWS`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`DECOMMISSION_FRESH_MDA_REQUIRED=NO`
+
+`COMMIT_96db578_DECOMMISSION_FRESH_IDENTITY_REQUIREMENT=DOCUMENTATION_OVERCONSTRAINT_ERRATUM`
+
+`COMMIT_96db578_DECOMMISSION_FRESH_IDENTITY_REQUIREMENT_AUTHORITATIVE=NO`
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
+`PRODUCTION_ACCESS_PERFORMED=false`
+
+`PRODUCTION_MUTATION_PERFORMED=false`
+
+`PRODUCTION_AUTHORIZATION_CONSUMED=false`
+
+`DOCKER_RUNTIME_ACCESSED=false`
+
+`AWS_API_ACCESSED=false`
+
+`CLOUD_RESOURCE_CREATED=false`
+
+`AWS_CREDENTIALS_ACCESSED=false`
+
 ## 2026-08-28 — SEC-02 Witness implementation/crypto architecture frozen
 
 - Completed the architecture-only milestone at commit `96db578`:

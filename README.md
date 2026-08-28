@@ -1,6 +1,84 @@
 # AIControlCenter
 
-## Current authoritative — SEC-02 Witness implementation/crypto architecture frozen
+## Current authoritative — SEC-02 Witness deployment/key-custody architecture frozen
+
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_ARCHITECTURE_FROZEN=YES`
+
+`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_FREEZE=COMPLETE`
+
+`ARCHITECTURE_COMMIT=7057c96`
+
+This architecture-only milestone selects AWS for a stateless external Witness,
+a PostgreSQL-compatible primary datastore, S3 Object Lock Compliance immutable
+history, AWS KMS signing custody, and AWS KMS HMAC privacy-index custody. It
+does not select an operational AWS account, region, concrete host, ingress, or
+resource, and claims no implementation, deployment, or operational validation.
+
+`CONTINUITY_WITNESS_DEPLOYMENT_ARCHITECTURE_DEFINED=YES`
+
+`KEY_CUSTODY_ARCHITECTURE_DEFINED=YES`
+
+`CONTINUITY_WITNESS_CLOUD_PROVIDER=AWS`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
+`MDM_VENDOR_SELECTED=NO`
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO`
+
+`SEC02_PRODUCTION_TRUST_BOOTSTRAP_IMPLEMENTATION=NOT_READY`
+
+`BOOTSTRAP_IMPLEMENTATION_AUTHORITY_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+PostgreSQL rollback, retention expiry, and missing or incomplete immutable
+history cannot establish historical absence or unseen hardware; unavailable or
+conflicting immutable history fails closed. No operational S3 bucket or
+retention schedule is implemented. Hardware lookup uses versioned RFC 8785 JCS
+with separate UDID and serial fields and AWS KMS HMAC-SHA-256; raw identifiers
+are not durable external identifiers, unkeyed hashing is prohibited, and key
+ambiguity must never make hardware appear unseen.
+
+Witness and human lifecycle signing use separate non-exportable AWS KMS
+Ed25519 keys and distinct purpose domains. Only a human principal may sign
+lifecycle approvals. Signed envelopes use RFC 8785 JCS, strict unpadded
+base64url, schema and domain binding, no floats, a 4096-byte canonical maximum,
+and payload-digest binding; Ed25519ph is not selected.
+
+DECOMMISSION follows lifecycle authority commit `41e9f4f`: one exact Human
+Continuity Lifecycle Approval bound to the current evaluation and record, no
+fresh MDA, and a terminal result. Commit `96db578`'s conflicting fresh-identity
+wording is a non-authoritative documentation overconstraint erratum corrected
+by `7057c96`. GENESIS, RECOVERY, and MIGRATION rules are unchanged and
+`SEC02_SEMANTICS_CHANGED=false`.
+
+Durably claimed approvals remain permanently consumed; claim stealing,
+automatic recovery, and retries are prohibited. Ambiguous commit acknowledgement
+allows read-only exact-result reconciliation only. The Mac mini M4 remains the
+sole Control Plane, the Witness owns external durable evidence only, and Ubuntu
+remains a stateless worker with zero authority.
+
+`NEXT_SPRINT=SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION`
+
+`NEXT_SPRINT_STATUS=PLANNED_NOT_STARTED`
+
+The next sprint defines contracts, schemas, protocols, adapters, fail-closed
+validation, and tests only; it does not deploy or activate Production.
+
+## Prior authoritative milestone — SEC-02 Witness implementation/crypto architecture frozen
 
 `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_CRYPTO_ARCHITECTURE_FROZEN=YES`
 
@@ -30,9 +108,8 @@ Production bootstrap remain undefined or unavailable.
 
 The Mac mini M4 remains the sole Control Plane. The external Continuity Witness
 is durable evidence authority only, not a second Control Plane; Ubuntu remains
-a stateless infrastructure worker with zero authority. The next architecture-
-only sprint is
-`SEC02_CONTINUITY_WITNESS_DEPLOYMENT_AND_KEY_CUSTODY_FREEZE`.
+a stateless infrastructure worker with zero authority. That milestone was
+followed by the deployment/key-custody architecture freeze at `7057c96`.
 
 ## Current authoritative — generic SEC-02 trusted human authorization intake validated
 
