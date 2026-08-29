@@ -1,6 +1,132 @@
 # MASTER
 
-## Current authoritative status — SEC-02 Witness deployment/key-custody architecture frozen
+## Current authoritative status — SEC-02 Continuity Witness implementation definition frozen
+
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FROZEN=YES`
+
+`ARCHITECTURE_COMMIT=54268cf`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=YES`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+Commit `54268cf` is the authoritative repository implementation definition. It
+freezes exact API schemas, persistence transactions, approval claim behavior,
+immutable-history behavior, cryptographic and MDA adapter contracts, closed
+classifications, and repository-local fake/test strategy. Desired state is not
+activation authorization, and this architecture freeze creates no runtime,
+network client, datastore, key, cloud resource, MDM integration, Production
+authority, or deployment readiness.
+
+### Frozen approval model
+
+`expected_transition_intent_digest = SHA-256(RFC8785_JCS(TransitionIntent))`
+
+Human Lifecycle Approval binds pre-mutation intent only. Stage-B
+`resulting_transition_digests` are output evidence only and are never approval
+inputs. Stage A durably claims the exact approval; Stage B re-derives and
+revalidates the exact `TransitionIntent` before mutation.
+
+### Frozen checkpoint and immutable-history model
+
+```text
+CheckpointPayload
+-> application_payload_digest
+-> WitnessCheckpointSigningEnvelope
+-> StoredCheckpoint
+-> object_digest
+```
+
+There is no circular digest. `object_digest` is publication metadata and is not
+embedded in the `StoredCheckpoint` it hashes.
+
+`IMMUTABLE_HISTORY_LOOKUP_VERSION_AWARE=YES`
+
+`DELETE_MARKER_MAY_PROVE_HISTORY_ABSENCE=NO`
+
+`DELETE_MARKER_MAY_PROVE_GENESIS=NO`
+
+`LATEST_KEY_404_MAY_PROVE_HISTORY_ABSENCE=NO`
+
+`LATEST_KEY_404_MAY_PROVE_GENESIS=NO`
+
+### Frozen gate state
+
+`CHECKPOINT_CANONICALIZATION_GATE=PASS`
+
+`APPROVAL_TRANSITION_INTENT_BINDING_GATE=PASS`
+
+`IMMUTABLE_HISTORY_VERSION_LOOKUP_GATE=PASS`
+
+`CHALLENGE_ID_OWNERSHIP_GATE=PASS`
+
+`APPROVAL_CLAIM_STATE_GATE=PASS`
+
+`STAGE_A_CONSUMPTION_SEMANTICS_GATE=PASS`
+
+`EXTERNAL_SUCCESS_ATOMICITY_GATE=PASS`
+
+`MIGRATION_TRANSITION_MODEL_GATE=PASS`
+
+`HARDWARE_BINDING_ROTATION_MODEL_GATE=PASS`
+
+`SIGNED_ERROR_CONTRACT_GATE=PASS`
+
+`DECOMMISSION_PRECEDENCE_GATE=PASS`
+
+`CONTROL_PLANE_BOUNDARY_GATE=PASS_MAC_MINI_M4_SOLE_CONTROL_PLANE`
+
+### Control Plane boundary
+
+`MAC_MINI_M4_CONTROL_PLANE=SOLE`
+
+`CONTINUITY_WITNESS_AUTHORITY=EXTERNAL_DURABLE_EVIDENCE_ONLY`
+
+`CONTINUITY_WITNESS_SECOND_CONTROL_PLANE=NO`
+
+`UBUNTU_ROLE=STATELESS_INFRASTRUCTURE_WORKER`
+
+`UBUNTU_AUTHORITY=ZERO`
+
+### Preserved DECOMMISSION precedence
+
+`DECOMMISSION_LIFECYCLE_SEMANTICS_AUTHORITY_COMMIT=41e9f4f`
+
+`DECOMMISSION_FRESH_MDA_REQUIRED=NO`
+
+`DECOMMISSION_EXACT_HUMAN_APPROVAL_BOUND_TO_CURRENT_EVALUATION_AND_RECORD_REQUIRED=YES`
+
+`DECOMMISSION_TERMINAL=YES`
+
+### Unresolved implementation and operational state
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
+## Prior authoritative status — SEC-02 Witness deployment/key-custody architecture frozen
 
 `SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_ARCHITECTURE_FROZEN=YES`
 

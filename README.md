@@ -1,6 +1,65 @@
 # AIControlCenter
 
-## Current authoritative — SEC-02 Witness deployment/key-custody architecture frozen
+## Current authoritative — SEC-02 Continuity Witness implementation definition frozen
+
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FROZEN=YES`
+
+`ARCHITECTURE_COMMIT=54268cf`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=YES`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+Commit `54268cf` freezes the repository implementation definition: exact JSON
+contracts, transaction and approval-claim semantics, immutable-history lookup,
+checkpoint canonicalization, cryptographic and MDA adapter boundaries, closed
+classifications, and deterministic fake/test strategy. It implements and
+deploys nothing.
+
+Human Lifecycle Approval binds pre-mutation intent only:
+
+`expected_transition_intent_digest = SHA-256(RFC8785_JCS(TransitionIntent))`
+
+Stage-B `resulting_transition_digests` are output evidence only. The checkpoint
+digest chain is exact and non-circular:
+
+`CheckpointPayload -> application_payload_digest -> WitnessCheckpointSigningEnvelope -> StoredCheckpoint -> object_digest`
+
+`object_digest` is not embedded in the `StoredCheckpoint` it hashes. Immutable
+history lookup is version-aware; a delete marker or latest-key 404 proves
+neither history absence nor GENESIS.
+
+The Mac mini M4 remains the sole Control Plane. The Continuity Witness owns
+external durable evidence only and is not a second Control Plane. Ubuntu is a
+stateless infrastructure worker with zero authority. DECOMMISSION retains the
+`41e9f4f` precedence: no fresh MDA, one exact Human Lifecycle Approval bound to
+the current evaluation and record, and a terminal result.
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
+## Prior authoritative — SEC-02 Witness deployment/key-custody architecture frozen
 
 `SEC02_CONTINUITY_WITNESS_DEPLOYMENT_KEY_CUSTODY_ARCHITECTURE_FROZEN=YES`
 

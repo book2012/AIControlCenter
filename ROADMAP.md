@@ -74,25 +74,53 @@ Closed as architecture-only at `ARCHITECTURE_COMMIT=7057c96`.
 No concrete cloud host, AWS resource, MDM implementation, ingress topology,
 deployment, or Production activation is selected or claimed.
 
-## PLANNED / NOT STARTED — SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION
+## COMPLETE — SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FREEZE
 
-`NEXT_SPRINT=SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION`
+Completed at `ARCHITECTURE_COMMIT=54268cf`.
+
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FROZEN=YES`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=YES`
+
+- [x] Freeze exact Witness JSON API schemas and contracts.
+- [x] Freeze PostgreSQL transaction and durable approval-claim semantics.
+- [x] Freeze non-circular checkpoint publication and version-aware immutable-
+  history reconciliation.
+- [x] Bind Human Lifecycle Approval only to the pre-mutation
+  `TransitionIntent`; treat Stage-B transition digests as output evidence.
+- [x] Freeze crypto, hardware-binding, signed-error, MDA port, and fake/test
+  contracts while preserving DECOMMISSION and Control Plane precedence.
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+## PLANNED / NOT STARTED — SEC02_CONTINUITY_WITNESS_REPOSITORY_IMPLEMENTATION
+
+`NEXT_SPRINT=SEC02_CONTINUITY_WITNESS_REPOSITORY_IMPLEMENTATION`
 
 `NEXT_SPRINT_STATUS=PLANNED_NOT_STARTED`
 
-This sprint will define, not deploy:
+- [ ] Implement the frozen domain types, schema validators, purpose-specific
+  ports, transaction repositories, adapters without live calls, and fakes/tests.
+- [ ] Preserve read/plan/apply separation and all fail-closed contracts.
+- [ ] Keep cloud host, ingress, key-custody implementation, MDA transport
+  implementation, deployment, Production bootstrap, and activation unresolved.
 
-- [ ] Witness JSON API schemas and contracts.
-- [ ] PostgreSQL schema and transaction protocol.
-- [ ] Immutable checkpoint publication and reconciliation protocol.
-- [ ] AWS KMS signing and HMAC index adapter contracts.
-- [ ] Key ID, version, and rotation representation.
-- [ ] Concrete signed-envelope schemas.
-- [ ] DeviceInformation MDA adapter boundary.
-- [ ] Fail-closed read-only validation path.
-- [ ] Test strategy and fake adapters.
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
 
-`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=NO`
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+This planned repository milestone does not claim deployment or Production
+readiness.
 
 ## Current authoritative — generic SEC-02 trusted authorization intake
 

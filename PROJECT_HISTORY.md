@@ -1,5 +1,95 @@
 # Project History
 
+## 2026-08-29 — SEC-02 Continuity Witness implementation definition frozen
+
+After lifecycle architecture commit `41e9f4f`, implementation/crypto commit
+`96db578`, deployment/key-custody architecture commit `7057c96`, and its
+documentation reconciliation, commit `54268cf` froze the exact repository
+implementation definition. This event defined implementation contracts but did
+not implement, deploy, validate operational infrastructure, access Production,
+Docker/Colima, AWS, or MDM systems, or run canonical regression.
+
+The approval model corrected the binding boundary to pre-mutation intent:
+
+`expected_transition_intent_digest = SHA-256(RFC8785_JCS(TransitionIntent))`
+
+Human Lifecycle Approval binds that exact `TransitionIntent` only. Stage-B
+`resulting_transition_digests` are output evidence only and cannot be inputs to
+the approval that precedes their creation.
+
+The checkpoint schemas and digest order were frozen exactly:
+
+```text
+CheckpointPayload
+-> application_payload_digest
+-> WitnessCheckpointSigningEnvelope
+-> StoredCheckpoint
+-> object_digest
+```
+
+There is no circular digest, and `object_digest` is not embedded in the
+`StoredCheckpoint` it hashes. Immutable-history lookup is version-aware. A
+delete marker, absent current version, or latest-key 404 proves neither history
+absence nor GENESIS.
+
+DECOMMISSION precedence remains unchanged from `41e9f4f`: no fresh MDA, one
+exact Human Lifecycle Approval bound to the current evaluation and record, and
+a terminal result. The Mac mini M4 remains the sole Control Plane; the Witness
+is external durable-evidence authority only and not a second Control Plane;
+Ubuntu remains a stateless infrastructure worker with zero authority.
+
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FROZEN=YES`
+
+`ARCHITECTURE_COMMIT=54268cf`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=YES`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+`IMMUTABLE_HISTORY_LOOKUP_VERSION_AWARE=YES`
+
+`DECOMMISSION_LIFECYCLE_SEMANTICS_AUTHORITY_COMMIT=41e9f4f`
+
+`DECOMMISSION_FRESH_MDA_REQUIRED=NO`
+
+`DECOMMISSION_EXACT_HUMAN_APPROVAL_BOUND_TO_CURRENT_EVALUATION_AND_RECORD_REQUIRED=YES`
+
+`DECOMMISSION_TERMINAL=YES`
+
+`MAC_MINI_M4_CONTROL_PLANE=SOLE`
+
+`CONTINUITY_WITNESS_AUTHORITY=EXTERNAL_DURABLE_EVIDENCE_ONLY`
+
+`CONTINUITY_WITNESS_SECOND_CONTROL_PLANE=NO`
+
+`UBUNTU_ROLE=STATELESS_INFRASTRUCTURE_WORKER`
+
+`UBUNTU_AUTHORITY=ZERO`
+
+`KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTATION_DEFINED=NO`
+
+`MDA_TRANSPORT_IMPLEMENTED=NO`
+
+`CONTINUITY_WITNESS_CLOUD_HOST_SELECTED=NO`
+
+`CONTINUITY_WITNESS_INGRESS_TOPOLOGY_DEFINED=NO`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## 2026-08-28 — SEC-02 Witness deployment/key-custody architecture frozen
 
 The exact architecture chronology is `41e9f4f` -> `96db578` -> `7057c96`.

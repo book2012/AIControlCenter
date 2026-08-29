@@ -1,5 +1,56 @@
 # CHANGELOG
 
+## 2026-08-29 — SEC-02 Continuity Witness implementation definition frozen
+
+- Recorded architecture commit `54268cf` and completed the implementation-
+  definition architecture freeze without implementation, deployment,
+  Production access, Docker/Colima access, AWS access, MDM access, or canonical
+  regression.
+- Corrected Human Lifecycle Approval binding to the pre-mutation
+  `TransitionIntent` digest only; Stage-B `resulting_transition_digests` are
+  output evidence only.
+- Froze the exact non-circular checkpoint chain from `CheckpointPayload` through
+  `StoredCheckpoint` to publication `object_digest`, which is not embedded in
+  the stored object it hashes.
+- Froze version-aware immutable-history lookup: delete markers and latest-key
+  404 results prove neither history absence nor GENESIS.
+- Preserved durable approval consumption, migration transition atomicity,
+  hardware-binding rotation, signed errors, DECOMMISSION precedence, Mac-only
+  Control Plane authority, evidence-only Witness authority, and Ubuntu zero
+  authority.
+
+`SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FROZEN=YES`
+
+`ARCHITECTURE_COMMIT=54268cf`
+
+`CONTINUITY_WITNESS_IMPLEMENTATION_DEFINED=YES`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+`CHECKPOINT_CANONICALIZATION_GATE=PASS`
+
+`APPROVAL_TRANSITION_INTENT_BINDING_GATE=PASS`
+
+`IMMUTABLE_HISTORY_VERSION_LOOKUP_GATE=PASS`
+
+`DECOMMISSION_PRECEDENCE_GATE=PASS`
+
+`CONTROL_PLANE_BOUNDARY_GATE=PASS_MAC_MINI_M4_SOLE_CONTROL_PLANE`
+
+`IMPLEMENTATION_READY=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`SEC02_SEMANTICS_CHANGED=false`
+
+`GOVERNANCE_CORE_CHANGED=false`
+
+`CONTROLLED_EXECUTION_PORT_CHANGED=false`
+
+`WU09_FILES_CHANGED=false`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## 2026-08-28 — SEC-02 Witness deployment/key-custody architecture frozen
 
 - Completed the docs/architecture-only milestone at commit `7057c96`:
