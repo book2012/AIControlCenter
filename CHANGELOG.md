@@ -4821,3 +4821,19 @@ heartbeat is stale. The canonical API is `RUNNING`, Telegram is optional
 - `NEXT_STEP=MACRO_WU_09_MARIADB_LOOPBACK_PORT_DEPLOYMENT`
 
 WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production authority.
+
+## SEC02-FS-01 — Architecture freeze
+
+- Defined the implementation-free, create-only pre-bootstrap Mac filesystem
+  authority for the fixed `governance` and `trust` directories.
+- Closed the issuer-registry dependency cycle with a dedicated, fresh,
+  single-attempt macOS Authorization Services approval boundary.
+- Preserved bootstrap, release installation, SEC-02, Governance,
+  `ControlledExecutionPort`, and WU09 semantics; canonical regression was not
+  required for this documentation-only change.
+- Recorded the operational observation that the current governance directory
+  has mode `0755`. The frozen exact-`0700`, create-only contract classifies it
+  as `UNSAFE_EXISTING`, cannot remediate it, and therefore leaves the current
+  operational gate blocked pending a separate later remediation authority.
+- Preserved SEC02-FS-02 as a pure plan and read-only validator Work Unit; it
+  may confirm the classification but cannot operationally unblock this host.

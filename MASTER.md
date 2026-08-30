@@ -5268,3 +5268,21 @@ and Ubuntu a stateless worker.
 - `NEXT_STEP=MACRO_WU_09_MARIADB_LOOPBACK_PORT_DEPLOYMENT`
 
 WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production authority.
+
+## SEC02-FS-01 — Authoritative filesystem provisioning decision
+
+`PRE_BOOTSTRAP_FS_AUTHORITY_DEFINED=YES` and
+`PRE_BOOTSTRAP_FS_AUTHORITY_IMPLEMENTED=NO`. The purpose-bound authority is
+create-only for the exact `governance` and `trust` directories at mode `0700`,
+owned from the bound Darwin passwd record. It depends on one fresh dedicated
+macOS Authorization Services approval, not the absent SEC-02 registry.
+Bootstrap and Release Installation retain zero generic trust-directory creation
+or repair authority. Next repository Work Unit:
+`SEC02_FS_02_IMPLEMENT_PURE_PRE_BOOTSTRAP_FILESYSTEM_PLAN_AND_VALIDATOR`.
+
+The current governance directory was operationally observed at mode `0755`.
+This non-constant observation is `UNSAFE_EXISTING` under the required exact
+`0700` contract. The create-only authority cannot remediate it, leaving the
+current operational gate blocked. SEC02-FS-02 is read-only classification; if
+it confirms `UNSAFE_EXISTING`, a separate later remediation authority review
+and implementation is required and is not defined here.

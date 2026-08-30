@@ -4373,3 +4373,21 @@ and establish a fresh heartbeat.
 - `NEXT_STEP=MACRO_WU_09_MARIADB_LOOPBACK_PORT_DEPLOYMENT`
 
 WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production authority.
+
+## SEC02-FS-01 — Pre-bootstrap filesystem authority defined
+
+The repository closed `TRUST_DIRECTORY_CREATION_AUTHORITY_DEFINED=NO` at the
+architecture level. A distinct Pre-Bootstrap Filesystem Approver must grant one
+fresh dedicated macOS Authorization Services right for one fixed create-only
+attempt. The future boundary can create only absent `governance` and `trust`
+directories with exact `0700` mode and bound-passwd ownership; safe existing
+directories are read-only verified, while unsafe or ambiguous state fails
+closed. No Production/filesystem mutation, authorization consumption, runtime
+access, implementation, or canonical regression occurred.
+
+The already observed governance directory mode was `0755`. This operational
+observation is not a permanent architecture constant; the frozen exact-`0700`
+contract classifies the current object as `UNSAFE_EXISTING`. Create-only v1
+cannot remediate it, and the current operational gate remains blocked pending
+a separate later remediation authority review and implementation. SEC02-FS-02
+remains a read-only planner and validator and does not unblock the host.

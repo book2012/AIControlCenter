@@ -4369,3 +4369,16 @@ Notion synchronization occurred during the correction closeout.
 - `NEXT_STEP=MACRO_WU_09_MARIADB_LOOPBACK_PORT_DEPLOYMENT`
 
 WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production authority.
+
+## SEC02-FS-01 — Closed at architecture level
+
+- [x] Define the non-circular, purpose-bound pre-bootstrap filesystem authority.
+- [x] Freeze exact create-only scope, identity binding, state handling, safety,
+  durability, prohibited mutations, and later-phase separation.
+- [ ] Implement `SEC02_FS_02_IMPLEMENT_PURE_PRE_BOOTSTRAP_FILESYSTEM_PLAN_AND_VALIDATOR`
+  as a pure plan and read-only classification boundary; it does not
+  operationally unblock the current host.
+- [ ] If that validator confirms the observed mode-`0755` governance directory
+  as `UNSAFE_EXISTING`, separately review and implement a later remediation
+  authority. No such authority is defined by SEC02-FS-01, and no Production
+  bootstrap is available before all subsequent gates pass.

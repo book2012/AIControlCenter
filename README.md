@@ -4327,3 +4327,20 @@ performed, and no Notion synchronization is claimed.
 - `NEXT_STEP=MACRO_WU_09_MARIADB_LOOPBACK_PORT_DEPLOYMENT`
 
 WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production authority.
+
+## SEC02-FS-01 — Pre-bootstrap filesystem authority freeze
+
+The create-only Mac Control Plane authority for the fixed SEC-02 `governance`
+and `trust` directories is now defined, not implemented or operationally
+validated. It requires one fresh, dedicated macOS Authorization Services
+approval for one bounded attempt, derives home/UID/GID only from the bound
+Darwin passwd record, and exposes no arbitrary path, chmod, chown, command,
+registry, database, retry, repair, or later-stage authority. See
+`docs/architecture/SEC-02-PRE-BOOTSTRAP-FILESYSTEM-AUTHORITY-FREEZE.md`.
+
+The current governance directory was operationally observed at mode `0755`.
+Under the exact-`0700` contract it is `UNSAFE_EXISTING`; create-only v1 cannot
+remediate it, so the current operational gate is blocked. SEC02-FS-02 will only
+plan and classify read-only. If it confirms that state, a separate later
+remediation authority review and implementation is required; this freeze does
+not define one.

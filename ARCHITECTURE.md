@@ -4781,3 +4781,23 @@ Control Plane; Host Caddy the sole public edge; Ubuntu remains stateless.
 - `NEXT_STEP=MACRO_WU_09_MARIADB_LOOPBACK_PORT_DEPLOYMENT`
 
 WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production authority.
+
+## SEC-02 pre-bootstrap filesystem provisioning authority
+
+Before the first SEC-02 trust bootstrap, a distinct, create-only Mac Control
+Plane authority may provision only the exact `governance` and `trust`
+directories. One fresh purpose-specific macOS Authorization Services approval
+authorizes at most one attempt; it is independent of the absent issuer registry
+and is not bootstrap, release, feature, or execution authority. Paths and
+ownership derive solely from `ruid == euid`, non-root, and
+`pwd.getpwuid(bound_uid)`. Safe existing objects are verified without mutation;
+unsafe or ambiguous objects fail closed. The complete frozen contract is in
+`docs/architecture/SEC-02-PRE-BOOTSTRAP-FILESYSTEM-AUTHORITY-FREEZE.md`.
+
+The current governance directory was operationally observed at mode `0755`.
+That observation is not an architecture constant: under this exact-`0700`,
+create-only contract it is `UNSAFE_EXISTING` and fails closed. This authority
+cannot chmod, chown, repair, or otherwise remediate it, so the current
+pre-bootstrap filesystem operational gate is blocked pending a separate later
+remediation authority review and implementation. SEC02-FS-02 remains strictly
+read-only classification and does not operationally unblock the current host.
