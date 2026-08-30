@@ -4867,3 +4867,13 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   one-attempt port contract, and pure postcondition validator with focused tests.
 - Defined the separate future approval boundary without a live adapter, installed
   Authorization Services right, Production access, or filesystem mutation.
+## 2026-08-30 — SEC02-FS-MACRO-03B1
+
+- Added fixed, zero-argument Authorization Services and privileged governance
+  remediation ports with intercepted adapters.
+- Replaced the overstated fresh-interaction label with explicit `VERIFIED`,
+  `NOT_VERIFIABLE`, `DENIED`, `CANCELED`, and `ERROR` evidence semantics.
+- Added one-attempt orchestration that consumes success, failure, uncertainty,
+  adapter exceptions, and invalid postconditions without retry.
+- Recorded `SMAppService` as the future macOS 13+ helper-management boundary;
+  no live binding, right, helper, or filesystem mutation was added.

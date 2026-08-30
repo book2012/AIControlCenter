@@ -4362,3 +4362,10 @@ artifacts contain no caller-selected execution, path, mode, UID, or GID data.
 No Authorization Services call, chmod adapter, Production access, filesystem
 mutation, bootstrap authority, or feature authority was added. Operational/API
 validation and any bounded live adapter remain separate SEC02-FS-MACRO-03B work.
+## SEC-02 bounded remediation adapter foundation
+
+SEC02-FS-MACRO-03B1 adds repository-only fixed Authorization Services and
+privileged-helper ports, intercepted adapters, and fail-closed one-attempt
+orchestration. It performs no prompt, helper installation, or filesystem
+mutation. Fresh interaction is not inferred from `InteractionAllowed`, and
+Production remediation remains unavailable.

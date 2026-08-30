@@ -4390,3 +4390,9 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   one-approval/one-attempt remediation authorization contract.
 - [ ] SEC02-FS-MACRO-03B bounded live remediation adapter and operational/API
   validation; it requires separate authorization and is not begun by 03A.
+## SEC-02 filesystem remediation progression
+
+- `SEC02-FS-MACRO-03B1`: closed — repository ports, bounded orchestration, and
+  intercepted adapters only.
+- `SEC02-FS-MACRO-03B2`: next — concrete privileged helper and operational
+  precondition validation, subject to separate authorization and review.

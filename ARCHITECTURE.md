@@ -4809,3 +4809,17 @@ closed pure classification, and an uninvoked Darwin read-only adapter. Exact
 `UNSAFE_EXISTING`. A separate governance-only repository planner permits only
 the exact `0755` to `0700` shape. See
 `docs/architecture/SEC-02-NARROW-GOVERNANCE-DIRECTORY-REMEDIATION.md`.
+## SEC02-FS-MACRO-03B1 bounded remediation adapters (2026-08-30)
+
+SEC-02 now has platform-neutral, immutable Authorization Services and privileged
+remediation port contracts plus intercepted adapters for the exact governance
+directory `0755` to `0700` operation. Both ports are fixed and zero-argument;
+they expose no path, mode, identity, command, environment, or retry selection.
+Only independently `VERIFIED` fresh-approval evidence may reach one helper
+attempt. `InteractionAllowed` alone is `NOT_VERIFIABLE` and fails closed.
+
+The future macOS 13+ isolation boundary is an `SMAppService`-managed bundled
+LaunchDaemon, not `SMJobBless` or `AuthorizationExecuteWithPrivileges`. No live
+binding, helper, right installation, chmod, or durable crash-safe consumption
+is operational. See
+`docs/architecture/SEC-02-NARROW-GOVERNANCE-DIRECTORY-REMEDIATION.md`.

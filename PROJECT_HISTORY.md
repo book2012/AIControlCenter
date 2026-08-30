@@ -4399,3 +4399,13 @@ documented mode `0755` remains an observation classified `UNSAFE_EXISTING`; exac
 `0700` remains the only safe governed-directory state. No host observation,
 Production access, Authorization Services invocation, or filesystem mutation
 occurred. Concrete remediation remains the next separately gated Macro-WU.
+## 2026-08-30 — SEC02-FS-MACRO-03B1 closed
+
+Established the non-operational macOS privilege-boundary foundation for the
+single SEC-02 governance-directory mode restriction. Local SDK contract review
+confirmed that allowing interaction does not prove fresh interaction. The
+repository consequently remains fail-closed unless fresh approval evidence is
+independently `VERIFIED`. Focused tests passed (56), related trust tests passed
+(174), and the single canonical run passed (4369 passed, 5 deselected, 619
+warnings). No Production, Authorization Services, helper, chmod, Ubuntu,
+Docker, or AWS operation occurred.

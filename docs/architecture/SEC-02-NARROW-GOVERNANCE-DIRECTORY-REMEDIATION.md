@@ -68,6 +68,39 @@ and durable one-attempt consumption. This Work Unit makes no claim that those
 operational properties are already supplied by an API, and it neither installs
 nor invokes the right.
 
+### SEC02-FS-MACRO-03B1 platform boundary
+
+The local macOS SDK Authorization Services contract was reviewed for
+`AuthorizationCreate`, `AuthorizationCopyRights`, `InteractionAllowed`,
+`ExtendRights`, `PreAuthorize`, `DestroyRights`, and external forms.
+`InteractionAllowed` permits interaction when required; it does not prove that
+fresh interaction occurred. The repository therefore records fresh approval as
+the closed vocabulary `VERIFIED`, `NOT_VERIFIABLE`, `DENIED`, `CANCELED`, or
+`ERROR`, and only `VERIFIED` may reach the execution port. No current live
+adapter can independently produce that evidence, so Production remains closed.
+
+The repository now defines a zero-argument Authorization Services port and a
+zero-argument privileged remediation port for the single fixed operation.
+Intercepted adapters validate orchestration without an OS prompt, XPC request,
+helper, or filesystem mutation. Authorization decision, execution capability,
+execution attempt, and verified postcondition remain distinct. An adapter
+exception, helper/process loss, invalid result, or missing postcondition is
+`UNCERTAIN` and consuming; there is no automatic retry.
+
+A future macOS 13+ helper boundary may use a bundled root LaunchDaemon managed
+through `SMAppService`. It must independently derive the Darwin passwd target
+and revalidate the exact descriptor-bound precondition and postcondition. It is
+an execution adapter only, not a Control Plane. `SMJobBless` and
+`AuthorizationExecuteWithPrivileges` are not selected. No native binding,
+right installation, helper registration, helper start, or chmod exists in
+03B1.
+
+The current in-memory immutable state machine proves repository transition
+semantics only. Production still requires a separately reviewed crash-safe
+claim/consumption mechanism that cannot resurrect or reuse authority after
+process or helper loss. It is not coupled to the unavailable ordinary SEC-02
+authorization-consumption database.
+
 ## Repository implementation and operational status
 
 The repository contains only immutable eligibility/plan/postcondition contracts,
@@ -85,6 +118,18 @@ NARROW_GOVERNANCE_REMEDIATION_PRODUCTION_ADAPTER_IMPLEMENTED=NO
 NARROW_GOVERNANCE_REMEDIATION_OPERATIONALLY_VALIDATED=NO
 CONCRETE_REMEDIATION_AUTHORIZATION_CONTRACT_DEFINED=YES
 CONCRETE_REMEDIATION_AUTHORIZATION_CONTRACT_IMPLEMENTED=YES
+AUTHORIZATION_SERVICES_API_CONTRACT_REVIEWED=YES
+INTERACTION_ALLOWED_PROVES_FRESH_INTERACTION=NO
+PREAUTHORIZATION_ALLOWED=NO
+SHARED_AUTHORITY_ALLOWED=NO
+AUTHORIZATION_EXECUTE_WITH_PRIVILEGES_ALLOWED=NO
+SMJOBBLESS_SELECTED=NO
+SMAPPSERVICE_FUTURE_BOUNDARY_SELECTED=YES
+AUTHORIZATION_SERVICES_PORT_IMPLEMENTED=YES
+PRIVILEGED_REMEDIATION_PORT_IMPLEMENTED=YES
+FAKE_AUTHORIZATION_ADAPTER_IMPLEMENTED=YES
+FAKE_PRIVILEGED_ADAPTER_IMPLEMENTED=YES
+DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO
 AUTHORIZATION_SERVICES_INVOKED=NO
 LIVE_CHMOD_ADAPTER_IMPLEMENTED=NO
 PRODUCTION_REMEDIATION_AVAILABLE=NO

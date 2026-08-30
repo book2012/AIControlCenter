@@ -5304,3 +5304,12 @@ reuse, retry, arbitrary path/mode/identity payloads, chown, trust/registry/
 authorization-database mutation, bootstrap authority, and feature authority
 are denied. No live adapter or Authorization Services call exists. Next:
 `SEC02-FS-MACRO-03B-BOUNDED-LIVE-REMEDIATION-ADAPTER`.
+## SEC02-FS-MACRO-03B1 — CLOSED
+
+The exact governance-directory remediation now has immutable domain results,
+fixed zero-argument Authorization Services and privileged execution ports,
+intercepted adapters, and one-claim/one-attempt/terminal-consumption
+orchestration. Only `VERIFIED` fresh-approval evidence can execute;
+`NOT_VERIFIABLE`, denial, cancellation, error, adapter loss, and uncertain
+postconditions fail closed. Live services, durable crash-safe consumption, and
+Production remediation remain blocked.
