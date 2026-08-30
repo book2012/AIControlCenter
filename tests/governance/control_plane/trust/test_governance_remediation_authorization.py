@@ -7,11 +7,13 @@ from core.governance.control_plane.trust.governance_remediation import (
 )
 from core.governance.control_plane.trust.governance_remediation_authorization import (
     AttemptOutcome, AttemptState, AuthorizationDisposition,
+    BoundedRemediationPresentationValidation,
     AuthorizationPresentation, RemediationAttemptAuthorization,
     FreshApprovalEvidence,
     RemediationAuthorizationPurpose, RemediationAuthorizationRight,
     authorize_remediation_attempt, claim_remediation_attempt,
     consume_remediation_attempt,
+    validate_bounded_remediation_authorization_presentation,
 )
 from core.governance.control_plane.trust.pre_bootstrap_filesystem import (
     PreBootstrapFilesystemPlan, TrustedFilesystemIdentity,
@@ -49,6 +51,20 @@ def test_exact_purpose_specific_fresh_approval_is_accepted():
     assert [field.name for field in fields(RemediationAttemptAuthorization)] == [
         "purpose", "right", "state", "outcome"
     ]
+
+
+def test_legacy_authorization_still_rejects_not_verifiable_freshness():
+    not_verifiable = presentation(
+        fresh_approval_evidence=FreshApprovalEvidence.NOT_VERIFIABLE)
+    assert authorize_remediation_attempt(
+        FS_PLAN, ELIGIBLE, not_verifiable
+    ).disposition is AuthorizationDisposition.DENIED
+    validation = validate_bounded_remediation_authorization_presentation(
+        FS_PLAN, ELIGIBLE, not_verifiable)
+    assert validation == BoundedRemediationPresentationValidation(
+        AuthorizationDisposition.AUTHORIZED)
+    assert not hasattr(validation, "authorization")
+    assert claim_remediation_attempt(validation) is None
 
 
 @pytest.mark.parametrize("override", [

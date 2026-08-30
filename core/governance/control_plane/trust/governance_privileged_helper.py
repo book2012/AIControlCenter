@@ -31,7 +31,12 @@ class NativeReadiness(Enum):
 
 @dataclass(frozen=True, slots=True)
 class ResolvedSigningRequirement:
-    """Opaque output of a trusted native requirement resolver."""
+    """Repository model for future native requirement-resolver output.
+
+    Python privacy and the marker below are not cryptographic provenance or a
+    Production trust boundary. Native code-signing resolution and validation
+    must eventually establish actual peer identity.
+    """
 
     expression: str
     role: str
@@ -42,7 +47,7 @@ class ResolvedSigningRequirement:
         return cls(expression, role, marker)
 
 
-_TRUSTED_RESOLUTION_MARKER = object()  # reserved for a future trusted native resolver
+_TRUSTED_RESOLUTION_MARKER = object()  # domain-model readiness marker only
 
 
 @dataclass(frozen=True, slots=True)

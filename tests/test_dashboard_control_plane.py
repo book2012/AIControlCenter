@@ -20,10 +20,16 @@ def test_dashboard_control_plane_listener_is_local() -> None:
 
 from fastapi.testclient import TestClient
 from core.api.app import app
+from core.api.dependencies.audit import DATA_ROOT_ENV, reset_audit_dependencies
 
-def test_dashboard_route_exposes_control_plane_status() -> None:
+def test_dashboard_route_exposes_control_plane_status(tmp_path, monkeypatch) -> None:
+    monkeypatch.setenv(DATA_ROOT_ENV, str(tmp_path / "audit-state"))
+    reset_audit_dependencies()
     client = TestClient(app)
-    response = client.get("/dashboard")
+    try:
+        response = client.get("/dashboard")
+    finally:
+        reset_audit_dependencies()
 
     assert response.status_code == 200
     data = response.json()

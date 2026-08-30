@@ -27,6 +27,8 @@ from .governance_remediation_authorization import (
     authorize_remediation_attempt,
     claim_remediation_attempt,
     consume_remediation_attempt,
+    _create_claimed_bounded_remediation_attempt,
+    validate_bounded_remediation_authorization_presentation,
 )
 from .pre_bootstrap_filesystem import PreBootstrapFilesystemPlan
 from .pre_bootstrap_remediation_journal import (
@@ -278,17 +280,22 @@ def orchestrate_fresh_human_governance_remediation(
              and validate_governance_remediation_plan(filesystem_plan, remediation.plan))
     if not exact:
         return _no_human_attempt(AuthorizationAcquisitionStatus.ERROR,
-                                 FreshHumanVerificationResult.DENIED)
+                                 FreshHumanVerificationResult.DENIED,
+                                 FreshApprovalEvidence.ERROR)
     acquisition = authorization_port.acquire_exact_remediation_authorization()
     if (type(acquisition) is not AuthorizationAcquisitionResult
             or acquisition.status is not AuthorizationAcquisitionStatus.ACQUIRED
             or type(acquisition.presentation) is not AuthorizationPresentation
             or type(acquisition.replay_key) is not AuthorizationReplayKey):
         status = acquisition.status if type(acquisition) is AuthorizationAcquisitionResult else AuthorizationAcquisitionStatus.ERROR
-        return _no_human_attempt(status, FreshHumanVerificationResult.DENIED)
-    decision = authorize_remediation_attempt(filesystem_plan, remediation, acquisition.presentation)
+        return _no_human_attempt(status, FreshHumanVerificationResult.DENIED,
+                                 _evidence_for_status(status))
+    presentation_evidence = acquisition.presentation.fresh_approval_evidence
+    decision = validate_bounded_remediation_authorization_presentation(
+        filesystem_plan, remediation, acquisition.presentation)
     if decision.disposition is not AuthorizationDisposition.AUTHORIZED:
-        return _no_human_attempt(acquisition.status, FreshHumanVerificationResult.DENIED)
+        return _no_human_attempt(acquisition.status, FreshHumanVerificationResult.DENIED,
+                                 presentation_evidence)
     try:
         challenge = challenge_issuer.issue(request_identity=request_identity,
                                            replay_key=acquisition.replay_key)
@@ -300,16 +307,20 @@ def orchestrate_fresh_human_governance_remediation(
             verifier=signature_verifier, now=clock(),
         )
     except Exception:
-        return _no_human_attempt(acquisition.status, FreshHumanVerificationResult.ERROR)
+        return _no_human_attempt(acquisition.status, FreshHumanVerificationResult.ERROR,
+                                 presentation_evidence)
     if verification is not FreshHumanVerificationResult.VERIFIED:
-        return _no_human_attempt(acquisition.status, verification)
+        return _no_human_attempt(acquisition.status, verification, presentation_evidence)
     try:
         journal.claim_once(acquisition.replay_key)
     except (DurableJournalError, ReplayDenied, ValueError):
-        return _no_human_attempt(acquisition.status, verification)
-    claimed = claim_remediation_attempt(decision.authorization)
+        return _no_human_attempt(acquisition.status, verification, presentation_evidence)
+    claimed = _create_claimed_bounded_remediation_attempt(
+        decision, verification is FreshHumanVerificationResult.VERIFIED, True
+    )
     if claimed is None:
-        return _no_human_attempt(AuthorizationAcquisitionStatus.ERROR, verification)
+        return _no_human_attempt(AuthorizationAcquisitionStatus.ERROR, verification,
+                                 presentation_evidence)
     try:
         attempted = privileged_port.restrict_governance_directory_mode_0755_to_0700()
     except Exception:
@@ -334,8 +345,8 @@ def orchestrate_fresh_human_governance_remediation(
         postcondition_ok, verification)
 
 
-def _no_human_attempt(status, verification):
-    return RemediationOrchestrationResult(status, FreshApprovalEvidence.NOT_VERIFIABLE,
+def _no_human_attempt(status, verification, evidence):
+    return RemediationOrchestrationResult(status, evidence,
                                           None, None, False, verification)
 
 

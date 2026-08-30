@@ -58,6 +58,11 @@ def test_signing_policy_rejects_wildcards_permissive_and_swapped_roles():
     assert PeerSigningPolicy("concrete-client", "concrete-helper").readiness is NativeReadiness.NOT_READY
 
 
+def test_raw_strings_cannot_create_production_xpc_signing_readiness():
+    for client, helper in (("client", "helper"), ("anchor apple", "identifier helper")):
+        assert PeerSigningPolicy(client, helper).readiness is NativeReadiness.NOT_READY
+
+
 def test_native_replay_separator_and_digest_match_python_contract():
     python_source = (ROOT / "core/governance/control_plane/trust/pre_bootstrap_remediation_journal.py").read_text()
     swift_source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()

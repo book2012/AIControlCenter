@@ -1,6 +1,7 @@
 from fastapi.testclient import TestClient
 
 from core.api.app import app
+from core.api.dependencies.audit import DATA_ROOT_ENV, reset_audit_dependencies
 
 
 client = TestClient(app)
@@ -20,8 +21,13 @@ def test_brain_api():
     assert response.json()["role"] == "brain"
 
 
-def test_dashboard_api():
-    response = client.get("/dashboard")
+def test_dashboard_api(tmp_path, monkeypatch):
+    monkeypatch.setenv(DATA_ROOT_ENV, str(tmp_path / "audit-state"))
+    reset_audit_dependencies()
+    try:
+        response = client.get("/dashboard")
+    finally:
+        reset_audit_dependencies()
 
     assert response.status_code == 200
     assert "brain" in response.json()

@@ -69,7 +69,11 @@ def test_expired_and_future_issued_are_denied():
 def test_malformed_timestamp_signature_algorithm_and_key_fail_closed():
     expected = challenge()
     malformed_time = replace(expected, issued_at="not-a-time")
-    assert verify(evidence(malformed_time), expected) is FreshHumanVerificationResult.DENIED
+    assert verify_fresh_human_evidence(
+        evidence(malformed_time), expected_challenge=malformed_time,
+        expected_replay_key=KEY, expected_public_key_fingerprint=FINGERPRINT,
+        verifier=ExactVerifier(b"unused"), now=NOW,
+    ) is FreshHumanVerificationResult.ERROR
     assert verify(replace(evidence(expected), signature=b""), expected) is FreshHumanVerificationResult.DENIED
     assert verify(replace(evidence(expected), algorithm="OTHER"), expected) is FreshHumanVerificationResult.NOT_READY
     wrong_key = replace(evidence(expected), public_key_fingerprint="wrong")
