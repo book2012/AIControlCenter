@@ -16,6 +16,7 @@ from core.governance.control_plane.trust.pre_bootstrap_journal_provisioning impo
     JournalProvisioningAuthorization, JournalProvisioningEligibility,
     JournalProvisioningPlan, JournalProvisioningPurpose,
     JournalProvisioningAction, JournalProvisioningReceipt, JournalTargetState,
+    JournalProvisioningTerminalState,
     authorize_journal_provisioning, decide_journal_provisioning,
     validate_journal_provisioning_plan,
 )
@@ -111,6 +112,51 @@ def test_native_freshness_contract_has_no_reusable_authentication_context():
     assert "[.userPresence, .privateKeyUsage]" in swift_source
 
 
+def test_native_signing_metadata_is_used_only_after_static_validity_check():
+    source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()
+    create = source.index("SecStaticCodeCreateWithPath")
+    validity = source.index("SecStaticCodeCheckValidity", create)
+    signing_info = source.index("SecCodeCopySigningInformation", create)
+    assert create < validity < signing_info
+    assert "kSecCSCheckAllArchitectures" in source
+    assert "invalidSignature" in source
+    for token in ("kSecCodeInfoIdentifier", "kSecCodeInfoTeamIdentifier",
+                  "kSecCodeSignatureAdhoc", "SecCodeCopyDesignatedRequirement"):
+        assert source.index(token, create) > validity
+
+
+def test_native_and_python_fresh_human_algorithm_identifiers_match_exactly():
+    python_source = (ROOT / "core/governance/control_plane/trust/fresh_human_evidence.py").read_text()
+    swift_source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()
+    algorithm = re.search(r'^ALGORITHM = "([^"]+)"$', python_source, re.MULTILINE)
+    assert algorithm
+    assert f'algorithm: "{algorithm.group(1)}"' in swift_source
+    assert "ECDSA_P256_SHA256_X962" not in swift_source
+
+
+def test_secure_enclave_lookup_is_all_results_exact_and_create_preflighted():
+    source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()
+    assert "kSecMatchLimitAll" in source and "kSecReturnAttributes" in source
+    assert "row[kSecAttrTokenID as String]" in source
+    assert "kSecAttrTokenIDSecureEnclave" in source
+    assert "case absent, exactOne(SecKey), ambiguous, unsafe" in source
+    assert "if unsafe { return .unsafe }" in source
+    assert "if rows.count > 1 { return .ambiguous }" in source
+    provision = source[source.index("func provision_exact_fresh_human_key"):
+                       source.index("func load_exact_public_key_identity")]
+    assert provision.index("case .absent") < provision.index("SecKeyCreateRandomKey")
+    assert all(token not in provision for token in ("SecItemDelete", "while ", "for "))
+
+
+def test_public_fingerprint_is_only_x963_public_key_sha256_lowercase_hex():
+    source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()
+    assert "SecKeyCopyPublicKey" in source
+    assert "bytes.count == 65, bytes.first == 0x04" in source
+    assert "SHA256.hash(data: bytes)" in source
+    assert 'String(format: "%02x", $0)' in source
+    assert "SecKeyCopyExternalRepresentation(key" not in source
+
+
 def test_native_service_and_xpc_surface_is_fixed_and_non_operational():
     source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()
     assert "SMAppService.daemon(plistName: SEC02Identity.launchDaemonPlist)" in source
@@ -136,8 +182,32 @@ def test_provisioning_is_exact_create_only_and_separate_from_remediation():
 
 def test_journal_provisioning_receipt_recognizes_only_exact_completed_state():
     receipt = JournalProvisioningReceipt(1, JournalProvisioningPurpose.CREATE_PRE_BOOTSTRAP_REMEDIATION_JOURNAL,
-                                         "a" * 64, "COMPLETED")
+                                         "a" * 64, JournalProvisioningTerminalState.COMPLETED)
     assert decide_journal_provisioning(JournalTargetState.ABSENT) is JournalProvisioningAction.CREATE_ONCE
     assert decide_journal_provisioning(JournalTargetState.SAFE_EXISTING, receipt) is JournalProvisioningAction.RECOGNIZE_READ_ONLY
     assert decide_journal_provisioning(JournalTargetState.UNSAFE_EXISTING, receipt) is JournalProvisioningAction.FAIL_CLOSED
     assert decide_journal_provisioning(JournalTargetState.AMBIGUOUS) is JournalProvisioningAction.FAIL_CLOSED
+
+
+def test_journal_receipt_rejects_malformed_fingerprint_and_wrong_terminal_state():
+    purpose = JournalProvisioningPurpose.CREATE_PRE_BOOTSTRAP_REMEDIATION_JOURNAL
+    for value in ("", "a" * 63, "A" * 64, "g" * 64):
+        receipt = JournalProvisioningReceipt(
+            1, purpose, value, JournalProvisioningTerminalState.COMPLETED
+        )
+        assert decide_journal_provisioning(
+            JournalTargetState.SAFE_EXISTING, receipt
+        ) is JournalProvisioningAction.FAIL_CLOSED
+    wrong_state = JournalProvisioningReceipt(1, purpose, "a" * 64, "COMPLETED")
+    assert decide_journal_provisioning(
+        JournalTargetState.SAFE_EXISTING, wrong_state
+    ) is JournalProvisioningAction.FAIL_CLOSED
+
+
+def test_temporary_package_layout_does_not_claim_native_or_signed_readiness():
+    from macos.sec02_privileged_helper import validate_package
+
+    source = Path(validate_package.__file__).read_text()
+    assert 'print("TEMPORARY_PACKAGE_LAYOUT_VALIDATED=YES")' in source
+    assert "SIGNED_PACKAGE_READY" not in source
+    assert "NATIVE_EXECUTABLE_BUILD_VALIDATED" not in source

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from enum import Enum
+import re
 from typing import Protocol
 
 from .pre_bootstrap_remediation_journal import FUTURE_PRODUCTION_JOURNAL_PATH
@@ -33,12 +34,16 @@ class JournalProvisioningAction(Enum):
     FAIL_CLOSED = "FAIL_CLOSED"
 
 
+class JournalProvisioningTerminalState(Enum):
+    COMPLETED = "COMPLETED"
+
+
 @dataclass(frozen=True, slots=True)
 class JournalProvisioningReceipt:
     schema_version: int
     purpose: JournalProvisioningPurpose
     provisioning_replay_fingerprint: str
-    terminal_provisioning_state: str
+    terminal_provisioning_state: JournalProvisioningTerminalState
 
 
 def decide_journal_provisioning(
@@ -51,8 +56,11 @@ def decide_journal_provisioning(
         and type(receipt) is JournalProvisioningReceipt
         and receipt.schema_version == 1
         and receipt.purpose is JournalProvisioningPurpose.CREATE_PRE_BOOTSTRAP_REMEDIATION_JOURNAL
-        and bool(receipt.provisioning_replay_fingerprint)
-        and receipt.terminal_provisioning_state == "COMPLETED"
+        and type(receipt.provisioning_replay_fingerprint) is str
+        and re.fullmatch(r"[0-9a-f]{64}", receipt.provisioning_replay_fingerprint)
+        is not None
+        and receipt.terminal_provisioning_state
+        is JournalProvisioningTerminalState.COMPLETED
     )
     return JournalProvisioningAction.RECOGNIZE_READ_ONLY if matching else JournalProvisioningAction.FAIL_CLOSED
 
@@ -107,7 +115,8 @@ def authorize_journal_provisioning(
 __all__ = (
     "JournalProvisioningAdapter", "JournalProvisioningAuthorization",
     "JournalProvisioningEligibility", "JournalProvisioningPlan",
-    "JournalProvisioningAction", "JournalProvisioningReceipt", "JournalTargetState",
+    "JournalProvisioningAction", "JournalProvisioningReceipt",
+    "JournalProvisioningTerminalState", "JournalTargetState",
     "JournalProvisioningPurpose", "authorize_journal_provisioning",
     "decide_journal_provisioning",
     "validate_journal_provisioning_plan",

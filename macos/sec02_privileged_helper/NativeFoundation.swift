@@ -30,7 +30,7 @@ public struct SEC02ResolvedSigningRequirement {
     fileprivate let teamID: String
 }
 
-public enum SEC02SigningResolverError: Error { case unsigned, adhoc, identityMismatch, malformedRequirement }
+public enum SEC02SigningResolverError: Error { case unsigned, invalidSignature, adhoc, identityMismatch, malformedRequirement }
 
 public struct SEC02NativeSigningResolver {
     private static func resolve(_ artifact: URL, expectedBundleID: String,
@@ -40,6 +40,10 @@ public struct SEC02NativeSigningResolver {
         var code: SecStaticCode?
         guard SecStaticCodeCreateWithPath(artifact as CFURL, [], &code) == errSecSuccess,
               let code else { throw SEC02SigningResolverError.unsigned }
+        // Signing metadata is untrusted until Security.framework validates the
+        // complete static artifact, including every architecture in a universal binary.
+        guard SecStaticCodeCheckValidity(code, SecCSFlags(rawValue: kSecCSCheckAllArchitectures), nil)
+                == errSecSuccess else { throw SEC02SigningResolverError.invalidSignature }
         var info: CFDictionary?
         guard SecCodeCopySigningInformation(code, SecCSFlags(rawValue: kSecCSSigningInformation), &info) == errSecSuccess,
               let values = info as? [String: Any],
@@ -104,20 +108,65 @@ public struct SEC02FreshHumanEvidenceOutputV1 {
     public let algorithm: String
 }
 
-public enum SEC02SecureEnclaveError: Error { case accessControl, keyCreation, keyNotFound, publicKey, representation, signing }
+public enum SEC02SecureEnclaveKeyState { case absent, exactOne(SecKey), ambiguous, unsafe }
+public enum SEC02SecureEnclaveError: Error {
+    case accessControl, keyCreation, keyNotFound, ambiguous, unsafeExisting,
+         publicKey, representation, signing
+}
 
 public struct SEC02SecureEnclaveProvisioner {
     private static let accessFlags: SecAccessControlCreateFlags = [.userPresence, .privateKeyUsage]
-    private static func privateKeyQuery() -> [String: Any] {[
+    private static func exactAccessControl() throws -> SecAccessControl {
+        var error: Unmanaged<CFError>?
+        guard let access = SecAccessControlCreateWithFlags(
+            nil, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, accessFlags, &error
+        ) else { throw SEC02SecureEnclaveError.accessControl }
+        return access
+    }
+
+    private static func allTaggedPrivateKeysQuery() -> [String: Any] {[
         kSecClass as String: kSecClassKey,
         kSecAttrApplicationTag as String: SEC02Identity.keyTag,
-        kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
-        kSecReturnRef as String: true
+        kSecReturnRef as String: true,
+        kSecReturnAttributes as String: true,
+        kSecMatchLimit as String: kSecMatchLimitAll
     ]}
 
+    public static func inspect_exact_fresh_human_key_state() throws -> SEC02SecureEnclaveKeyState {
+        var result: CFTypeRef?
+        let status = SecItemCopyMatching(allTaggedPrivateKeysQuery() as CFDictionary, &result)
+        if status == errSecItemNotFound { return .absent }
+        guard status == errSecSuccess, let rows = result as? [[String: Any]], !rows.isEmpty
+        else { return .unsafe }
+        // More than one object with the fixed tag is ambiguous regardless of quality.
+        if rows.count > 1 { return .ambiguous }
+
+        let requiredAccess = try exactAccessControl()
+        var exact: [SecKey] = []
+        var unsafe = false
+        for row in rows {
+            guard let key = row[kSecValueRef as String] as! SecKey?,
+                  row[kSecAttrKeyClass as String] as? String == kSecAttrKeyClassPrivate as String,
+                  row[kSecAttrKeyType as String] as? String == kSecAttrKeyTypeECSECPrimeRandom as String,
+                  (row[kSecAttrKeySizeInBits as String] as? NSNumber)?.intValue == 256,
+                  row[kSecAttrTokenID as String] as? String == kSecAttrTokenIDSecureEnclave as String,
+                  (row[kSecAttrIsPermanent as String] as? NSNumber)?.boolValue == true,
+                  let access = row[kSecAttrAccessControl as String] as! SecAccessControl?,
+                  CFEqual(access, requiredAccess)
+            else { unsafe = true; continue }
+            exact.append(key)
+        }
+        if unsafe { return .unsafe }
+        guard let key = exact.first else { return .unsafe }
+        return .exactOne(key)
+    }
+
     public static func provision_exact_fresh_human_key() throws -> String {
+        // This authority is create-only: no replacement, deletion, rotation, or retry.
+        guard case .absent = try inspect_exact_fresh_human_key_state()
+        else { throw SEC02SecureEnclaveError.unsafeExisting }
         var error: Unmanaged<CFError>?
-        guard let access = SecAccessControlCreateWithFlags(nil, kSecAttrAccessibleWhenUnlockedThisDeviceOnly, accessFlags, &error) else { throw SEC02SecureEnclaveError.accessControl }
+        let access = try exactAccessControl()
         let attributes: [String: Any] = [
             kSecAttrKeyType as String: kSecAttrKeyTypeECSECPrimeRandom,
             kSecAttrKeySizeInBits as String: 256,
@@ -131,20 +180,20 @@ public struct SEC02SecureEnclaveProvisioner {
     }
 
     public static func load_exact_public_key_identity() throws -> String {
-        var result: CFTypeRef?
-        guard SecItemCopyMatching(privateKeyQuery() as CFDictionary, &result) == errSecSuccess,
-              let key = result as! SecKey? else { throw SEC02SecureEnclaveError.keyNotFound }
+        guard case let .exactOne(key) = try inspect_exact_fresh_human_key_state()
+        else { throw SEC02SecureEnclaveError.keyNotFound }
         return try fingerprint(publicKey(for: key))
     }
 
     public static func sign_exact_fresh_human_challenge(_ challenge: Data) throws -> SEC02FreshHumanEvidenceOutputV1 {
-        var result: CFTypeRef?
-        guard !challenge.isEmpty, SecItemCopyMatching(privateKeyQuery() as CFDictionary, &result) == errSecSuccess,
-              let key = result as! SecKey? else { throw SEC02SecureEnclaveError.keyNotFound }
+        guard !challenge.isEmpty,
+              case let .exactOne(key) = try inspect_exact_fresh_human_key_state()
+        else { throw SEC02SecureEnclaveError.keyNotFound }
         var error: Unmanaged<CFError>?
         guard let signature = SecKeyCreateSignature(key, .ecdsaSignatureMessageX962SHA256, challenge as CFData, &error) as Data? else { throw SEC02SecureEnclaveError.signing }
         return SEC02FreshHumanEvidenceOutputV1(challengeBytes: challenge, signature: signature,
-            publicKeyFingerprint: try fingerprint(publicKey(for: key)), algorithm: "ECDSA_P256_SHA256_X962")
+            publicKeyFingerprint: try fingerprint(publicKey(for: key)),
+            algorithm: "SECURE_ENCLAVE_P256_SHA256_USER_PRESENCE_V1")
     }
 
     private static func publicKey(for key: SecKey) throws -> SecKey {
@@ -153,6 +202,8 @@ public struct SEC02SecureEnclaveProvisioner {
     private static func fingerprint(_ publicKey: SecKey) throws -> String {
         var error: Unmanaged<CFError>?
         guard let bytes = SecKeyCopyExternalRepresentation(publicKey, &error) as Data? else { throw SEC02SecureEnclaveError.representation }
+        // P-256 public external form is ANSI X9.63 uncompressed: 0x04 || X || Y.
+        guard bytes.count == 65, bytes.first == 0x04 else { throw SEC02SecureEnclaveError.representation }
         return SHA256.hash(data: bytes).map { String(format: "%02x", $0) }.joined()
     }
 }
@@ -166,9 +217,10 @@ public enum SEC02ReplayFingerprint {
 }
 
 public enum SEC02JournalProvisioningState: String { case absent, safeExisting, unsafeExisting, ambiguous }
+public enum SEC02JournalProvisioningTerminalState: String, Codable { case completed = "COMPLETED" }
 public struct SEC02JournalProvisioningReceipt: Codable {
     public let schemaVersion: Int
     public let purpose: String
     public let provisioningReplayFingerprint: String
-    public let terminalProvisioningState: String
+    public let terminalProvisioningState: SEC02JournalProvisioningTerminalState
 }

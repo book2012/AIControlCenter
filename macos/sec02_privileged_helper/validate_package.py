@@ -101,7 +101,7 @@ def main() -> int:
     validate_templates()
     if args.build:
         build(args.build)
-    print("SEC02_NATIVE_PACKAGE_STATIC_VALIDATION=PASS")
+    print("TEMPORARY_PACKAGE_LAYOUT_VALIDATED=YES")
     print("LIVE_SIGNING_READINESS=NOT_READY")
     return 0
 
