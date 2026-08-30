@@ -4837,3 +4837,11 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   operational gate blocked pending a separate later remediation authority.
 - Preserved SEC02-FS-02 as a pure plan and read-only validator Work Unit; it
   may confirm the classification but cannot operationally unblock this host.
+## 2026-08-30 — SEC-02 filesystem validator and remediation contracts
+
+- Added pure fixed passwd-derived FS-02 plans, immutable observation contracts,
+  closed classification, and a Darwin read-only/no-follow adapter.
+- Added an immutable governance-only `0755` to `0700` remediation planner,
+  one-attempt port contract, and pure postcondition validator with focused tests.
+- Defined the separate future approval boundary without a live adapter, installed
+  Authorization Services right, Production access, or filesystem mutation.

@@ -5286,3 +5286,10 @@ This non-constant observation is `UNSAFE_EXISTING` under the required exact
 current operational gate blocked. SEC02-FS-02 is read-only classification; if
 it confirms `UNSAFE_EXISTING`, a separate later remediation authority review
 and implementation is required and is not defined here.
+## SEC02-FS-MACRO-02
+
+FS-02 is repository implemented and validated, but not operationally validated.
+The observed governance mode remains `0755` / `UNSAFE_EXISTING`. The narrow
+governance remediation authority is defined and repository-only; its Production
+adapter, Authorization Services right, operational validation, and Production
+availability remain absent.

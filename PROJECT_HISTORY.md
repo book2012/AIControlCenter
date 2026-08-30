@@ -4391,3 +4391,11 @@ contract classifies the current object as `UNSAFE_EXISTING`. Create-only v1
 cannot remediate it, and the current operational gate remains blocked pending
 a separate later remediation authority review and implementation. SEC02-FS-02
 remains a read-only planner and validator and does not unblock the host.
+## 2026-08-30 — SEC02-FS-MACRO-02 repository closure
+
+Implemented the FS-02 fixed-path, passwd-authoritative read-only validation
+contracts and the repository-only narrow governance remediation semantics. The
+documented mode `0755` remains an observation classified `UNSAFE_EXISTING`; exact
+`0700` remains the only safe governed-directory state. No host observation,
+Production access, Authorization Services invocation, or filesystem mutation
+occurred. Concrete remediation remains the next separately gated Macro-WU.

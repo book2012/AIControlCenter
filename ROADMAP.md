@@ -4382,3 +4382,8 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   as `UNSAFE_EXISTING`, separately review and implement a later remediation
   authority. No such authority is defined by SEC02-FS-01, and no Production
   bootstrap is available before all subsequent gates pass.
+## SEC-02 filesystem continuation
+
+- [x] Implement pure fixed-path FS-02 planning, observation, and classification.
+- [x] Define and repository-implement exact governance `0755` to `0700` eligibility.
+- [ ] SEC02-FS-MACRO-03 concrete remediation authorization and operational validation.

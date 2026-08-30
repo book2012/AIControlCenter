@@ -4801,3 +4801,11 @@ cannot chmod, chown, repair, or otherwise remediate it, so the current
 pre-bootstrap filesystem operational gate is blocked pending a separate later
 remediation authority review and implementation. SEC02-FS-02 remains strictly
 read-only classification and does not operationally unblock the current host.
+## 2026-08-30 — SEC-02 FS-02 validator and narrow remediation boundary
+
+FS-02 now provides fixed passwd-derived planning, immutable observation facts,
+closed pure classification, and an uninvoked Darwin read-only adapter. Exact
+`0700` is the only safe governed-directory state; documented mode `0755` remains
+`UNSAFE_EXISTING`. A separate governance-only repository planner permits only
+the exact `0755` to `0700` shape. See
+`docs/architecture/SEC-02-NARROW-GOVERNANCE-DIRECTORY-REMEDIATION.md`.

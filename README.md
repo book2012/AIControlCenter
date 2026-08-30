@@ -4344,3 +4344,10 @@ remediate it, so the current operational gate is blocked. SEC02-FS-02 will only
 plan and classify read-only. If it confirms that state, a separate later
 remediation authority review and implementation is required; this freeze does
 not define one.
+## SEC-02 FS-02 repository closure
+
+The repository implements the pure pre-bootstrap filesystem plan, closed
+read-only classifier, and an uninvoked Darwin observation adapter. It also
+defines repository-only narrow remediation planning for the exact governance
+directory `0755` to `0700` case. No live remediation adapter or operational
+authority exists; Production bootstrap and the trusted issuer remain unavailable.

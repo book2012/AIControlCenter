@@ -1,6 +1,6 @@
 # SEC-02 Pre-Bootstrap Filesystem Provisioning Authority Freeze
 
-Status: **FROZEN — DEFINED, NOT IMPLEMENTED**
+Status: **FROZEN — FS-01 DEFINED; FS-02 READ-ONLY VALIDATOR AND ANCESTOR POLICY DEFINED**
 
 ```text
 SEC02_FS_01_PRE_BOOTSTRAP_TRUST_FILESYSTEM_PROVISIONING_AUTHORITY_FREEZE=COMPLETE
@@ -104,6 +104,52 @@ prerequisite ancestor fails closed. There is no recursive normalization.
 The registry leaf `sec02-human-issuers.v1.json`, the authorization-consumption
 database, and every other file or directory are outside the mutation set.
 
+### 3.1 Closed prerequisite-ancestor classes
+
+The complete path from the filesystem root through each governed directory is
+partitioned into these four closed classes. No component may be omitted,
+reclassified by a caller, or validated under a caller-selected policy.
+
+| Class | Exact objects | Directory and symlink policy | Ownership policy | Mode policy |
+| --- | --- | --- | --- | --- |
+| `SYSTEM_ANCESTOR` | `/` and every component after `/` but before `<trusted_passwd_home>`; for the normal `/Users/<account>` shape this is `/` and `/Users` | Existing real directory; never a symlink; opened and traversed descriptor-relative with no-follow/directory semantics | No passwd UID/GID requirement | Safe-mode predicate only: neither group-writable nor world-writable (`st_mode & 0022 == 0`); no exact mode |
+| `PASSWD_HOME_ANCESTOR` | `<trusted_passwd_home>`, `<trusted_passwd_home>/Library`, and `<trusted_passwd_home>/Library/Application Support` | Existing real directory; never a symlink; opened and traversed descriptor-relative with no-follow/directory semantics | Exact UID and GID from the bound non-root Darwin passwd record | Safe-mode predicate only: neither group-writable nor world-writable (`st_mode & 0022 == 0`); no exact mode |
+| `CONTROL_PLANE_SHARED_PARENT` | `<trusted_passwd_home>/Library/Application Support/AIControlCenter` | Existing real directory; never a symlink; opened descriptor-relative with no-follow/directory semantics | Exact UID and GID from the bound non-root Darwin passwd record | Exact `0755` |
+| `GOVERNED_DIRECTORY` | the fixed `governance` directory and its fixed `trust` child | Real directory; never a symlink; descriptor-relative no-follow observation for an existing object and descriptor-relative exclusive creation only under the separately defined create authority | Exact UID and GID from the bound non-root Darwin passwd record | Exact `0700` for `SAFE_EXISTING` and for an authorized creation postcondition |
+
+The class assignment follows the canonical absolute path derived only from the
+bound passwd home. A passwd home outside the usual `/Users/<account>` layout
+does not weaken or bypass the policy: every existing component before that
+exact passwd-home inode is a `SYSTEM_ANCESTOR`, and the passwd-home inode and
+the two fixed descendants named above are `PASSWD_HOME_ANCESTOR` objects.
+Neither a caller-supplied path nor a textual-prefix guess may establish the
+boundary.
+
+For every existing non-root component in every class, the validator must bind
+the child opened relative to the already validated parent descriptor and
+compare the opened descriptor metadata with the no-follow entry metadata.
+Device and inode identity must agree; a changed entry, substitution race,
+inability to obtain either observation, unsupported safety primitive, or any
+other ambiguity fails closed. The root descriptor is validated as a real,
+non-symlink directory and its device/inode identity is retained as the start of
+the descriptor chain; no passwd ownership rule applies to it.
+
+Missing behavior is closed and class-specific: a missing `SYSTEM_ANCESTOR`,
+`PASSWD_HOME_ANCESTOR`, or `CONTROL_PLANE_SHARED_PARENT` is a failed
+prerequisite and is never creatable by this authority. A missing
+`GOVERNED_DIRECTORY` is only `ABSENT` for the separately authorized create-only
+state machine; the read-only FS-02 validator performs no creation. For all
+classes, a symlink, non-directory, ownership mismatch where ownership is
+required, mode mismatch, device/inode discontinuity, race, permission error,
+I/O error, or incomplete/ambiguous metadata denies validation. There is no
+fallback, retry, path re-resolution, recursive normalization, or remediation.
+
+This policy intentionally does not freeze incidental exact modes for `/`,
+system ancestors, the passwd home, `Library`, or `Application Support`.
+Current-host mode observations are not architecture authority. The bounded
+non-writability predicate is the complete mode policy for the first two
+classes; exact modes apply only to the shared parent and governed directories.
+
 The current governance directory was operationally observed as mode `0755`.
 That value is an observation of the current host, not a permanent architecture
 constant or an allowed alternative mode. Because governed directories require
@@ -189,14 +235,17 @@ CALLER_UID_GID_AUTHORITY_ALLOWED=NO
 
 ## 7. Filesystem safety and durability
 
-The future implementation must operate on Darwin with descriptor-relative,
-no-follow traversal. It opens and validates each prerequisite component without
-following symlinks, retains the validated parent descriptor, and creates each
-fixed child relative to that descriptor with create-if-absent semantics. It
-must not re-resolve an absolute or parent pathname after descriptor validation.
-Every existing or newly created governed object is verified through the bound
-descriptor for directory type, inode/device continuity, exact ownership, and
-exact mode.
+The future mutation implementation and the FS-02 read-only validator must
+operate on Darwin with descriptor-relative, no-follow traversal and the closed
+class policy in section 3.1. Each opens and validates every prerequisite
+component without following symlinks and retains each validated parent
+descriptor. The future mutation implementation creates each fixed governed
+child relative to that descriptor with create-if-absent semantics. Neither may
+re-resolve an absolute or parent pathname after descriptor validation. Every
+existing component is verified for directory type, the class-specific
+ownership and mode policy, and descriptor/entry inode-device continuity. Every
+newly created governed object is verified through its bound descriptor for
+directory type, inode/device continuity, exact ownership, and exact mode.
 
 Creation must use exclusive semantics and an explicit `0700` mode independent
 of process umask. A preexisting leaf is never adopted as the result of a create
@@ -237,8 +286,8 @@ a generic trust directory.
 ## 9. Implementation boundary and smallest next Work Unit
 
 No provisioning component, dedicated Authorization Services right, entitlement,
-helper, schema, or test is added by this freeze. Production bootstrap remains
-unavailable and no trusted issuer is operational.
+or helper is added by this freeze. Production bootstrap remains unavailable and
+no trusted issuer is operational.
 
 The one smallest repository implementation Work Unit is:
 
@@ -246,16 +295,21 @@ The one smallest repository implementation Work Unit is:
 SEC02_FS_02_IMPLEMENT_PURE_PRE_BOOTSTRAP_FILESYSTEM_PLAN_AND_VALIDATOR
 ```
 
-It should add only a side-effect-free Darwin identity/path planner and read-only
+It has added only a side-effect-free Darwin identity/path planner and read-only
 descriptor-policy validator for the fixed directory contract, with unit tests
 for `ABSENT`, `SAFE_EXISTING`, `UNSAFE_EXISTING`, and `AMBIGUOUS`. It must not
 request Authorization Services approval or create, chmod, chown, delete, or
-otherwise mutate any filesystem object. This Work Unit is identified, not begun.
-It can confirm the current governance directory as `UNSAFE_EXISTING`, but it
-cannot operationally unblock the current host. If it confirms that
-classification, a separate later remediation authority review and
-implementation is required. This freeze neither defines nor authorizes that
-remediation authority.
+otherwise mutate any filesystem object. Repository tests confirm that the
+documented current governance shape is `UNSAFE_EXISTING`; no host observation
+was performed. A separate narrow remediation authority is defined in
+`SEC-02-NARROW-GOVERNANCE-DIRECTORY-REMEDIATION.md`; this FS-01 freeze neither
+grants nor operationalizes it.
+
+`SEC02-FS-ANCESTOR-01` closes only the read-only prerequisite-ancestor policy
+ambiguity in section 3.1. It adds no code, test, mutation, Production access,
+or authorization. The immediate next Work Unit is the already-started
+`SEC02-FS-MACRO-02` ancestor hardening and closeout; `SEC02-FS-MACRO-03` must
+not begin from this architecture-only decision.
 
 ## 10. Review gates
 
@@ -307,5 +361,18 @@ PRODUCTION_AUTHORIZATION_CONSUMED=false
 FILESYSTEM_MUTATION_PERFORMED=false
 CANONICAL_RERUN_REQUIRED=NO
 
-NEXT_WU=SEC02_FS_02_IMPLEMENT_PURE_PRE_BOOTSTRAP_FILESYSTEM_PLAN_AND_VALIDATOR
+SEC02_FS_ANCESTOR_01_GATE=PASS
+ANCESTOR_POLICY_ARCHITECTURE_FROZEN=YES
+SYSTEM_ANCESTOR_POLICY_DEFINED=YES
+PASSWD_HOME_ANCESTOR_POLICY_DEFINED=YES
+CONTROL_PLANE_SHARED_PARENT_POLICY_DEFINED=YES
+GOVERNED_DIRECTORY_POLICY_PRESERVED=YES
+CALLER_SELECTED_PATH_ALLOWED=NO
+ARBITRARY_EXACT_ANCESTOR_MODE_INVENTED=NO
+READ_ONLY_IMPLEMENTABLE=YES
+FILESYSTEM_MUTATION_AUTHORITY_ADDED=NO
+CODE_OR_TEST_FILES_CHANGED=false
+GIT_CLOSEOUT_PERFORMED=false
+
+NEXT_WU=SEC02-FS-MACRO-02-ANCESTOR-HARDENING-AND-CLOSEOUT
 ```
