@@ -5,7 +5,7 @@ import pytest
 
 from core.governance.control_plane.trust.governance_remediation import (
     GovernanceRemediationPlan, RemediationDecision, RemediationEligibility,
-    RemediationPostcondition,
+    RemediationOperation, RemediationPostcondition,
 )
 from core.governance.control_plane.trust.governance_remediation_adapters import (
     AuthorizationAcquisitionResult, AuthorizationAcquisitionStatus,
@@ -146,7 +146,8 @@ def test_success_without_exact_postcondition_is_uncertain_consumed():
                                   operation="forged")),
 ])
 def test_ineligible_trust_registry_database_or_forged_operations_cannot_execute(remediation):
-    result, _, helper = run(remediation=remediation)
+    result, auth, helper = run(remediation=remediation)
+    assert auth.calls == 0
     assert helper.calls == 0
     assert result.consumed_authorization is None
 
@@ -157,5 +158,39 @@ def test_models_are_immutable_and_bool_is_not_an_integer_authority():
         model.status = AuthorizationAcquisitionStatus.ERROR
     forged = RemediationDecision(RemediationEligibility.ELIGIBLE,
         GovernanceRemediationPlan(FS_PLAN.governance_path, True, 0o700, 501, 20))
-    assert run(remediation=forged)[2].calls == 0
+    _, auth, helper = run(remediation=forged)
+    assert (auth.calls, helper.calls) == (0, 0)
     assert getattr(RemediationOrchestrationResult, "__dataclass_params__").frozen
+
+
+@pytest.mark.parametrize("changes", [
+    {"target": "/forged"},
+    {"target": FS_PLAN.trust_path},
+    {"observed_mode": 0o700},
+    {"required_mode": 0o755},
+    {"owner_uid": 0},
+    {"owner_gid": 0},
+    {"operation": "forged"},
+    {"owner_uid": True},
+    {"owner_gid": False},
+])
+def test_every_inexact_plan_is_rejected_before_authorization(changes):
+    values = dict(
+        target=FS_PLAN.governance_path, observed_mode=0o755,
+        required_mode=0o700, owner_uid=501, owner_gid=20,
+        operation=RemediationOperation.RESTRICT_GOVERNANCE_MODE_0755_TO_0700,
+    )
+    values.update(changes)
+    forged = RemediationDecision(
+        RemediationEligibility.ELIGIBLE, GovernanceRemediationPlan(**values)
+    )
+    _, auth, helper = run(remediation=forged)
+    assert (auth.calls, helper.calls) == (0, 0)
+
+
+def test_malformed_decision_and_missing_plan_are_rejected_before_authorization():
+    for remediation in (
+        object(), RemediationDecision(RemediationEligibility.ELIGIBLE),
+    ):
+        _, auth, helper = run(remediation=remediation)
+        assert (auth.calls, helper.calls) == (0, 0)

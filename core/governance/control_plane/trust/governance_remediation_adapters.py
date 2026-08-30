@@ -12,7 +12,9 @@ from typing import Protocol
 
 from .governance_remediation import (
     RemediationDecision,
+    RemediationEligibility,
     RemediationPostcondition,
+    validate_governance_remediation_plan,
     validate_remediation_postcondition,
 )
 from .governance_remediation_authorization import (
@@ -118,7 +120,18 @@ def orchestrate_bounded_governance_remediation(
     authorization_port: AuthorizationServicesPort,
     privileged_port: PrivilegedGovernanceRemediationPort,
 ) -> RemediationOrchestrationResult:
-    """Acquire, claim, attempt once, consume, and validate fail-closed."""
+    """Validate, authorize, claim, attempt once, consume, and fail closed."""
+
+    exact_eligible_plan = (
+        type(remediation) is RemediationDecision
+        and remediation.eligibility is RemediationEligibility.ELIGIBLE
+        and remediation.plan is not None
+        and validate_governance_remediation_plan(filesystem_plan, remediation.plan)
+    )
+    if not exact_eligible_plan:
+        return _no_attempt(
+            AuthorizationAcquisitionStatus.ERROR, FreshApprovalEvidence.ERROR
+        )
 
     acquisition = authorization_port.acquire_exact_remediation_authorization()
     if type(acquisition) is not AuthorizationAcquisitionResult:
