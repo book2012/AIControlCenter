@@ -2,6 +2,37 @@
 
 Status: **ARCHITECTURE REVIEWED; NOT READY FOR PRODUCTION CEREMONY**
 
+## SEC02-FS-MACRO-03B4R2-A repository closure
+
+Repository evidence establishes `com.aicontrolcenter` as the authoritative
+namespace, but establishes no app/helper bundle identifier, Team ID, Mach
+service identifier, or release signing identity. The repository now supplies
+non-deployable plist templates and layout metadata with unresolved identity
+slots. Both XPC peers require separate concrete requirements; missing,
+wildcard/permissive, or role-collapsed requirements fail closed.
+
+The frozen replay separator is implemented with CryptoKit SHA-256 before the
+future Python/domain crossing. Synthetic primitive tests match Python exactly;
+raw external-form bytes are absent from durable models. Isolated module-cache
+Swift type-check passed. Full native toolchain readiness remains `NO`: the
+selected directory is `/Library/Developer/CommandLineTools`, and `xcodebuild`
+reports that full Xcode is unavailable.
+
+Journal provisioning is repository implemented as exact-target, create-only,
+purpose-specific policy with a fakeable adapter boundary. It has no caller path,
+remediation, chmod/chown repair, delete/reset/retry, or generic root authority.
+Operational provisioning remains `NO`.
+
+R2-B must define an evidence input and verifier result bound together to exact
+purpose, exact bounded mutation, exact request identity, a verifier-issued
+nonce/challenge, and a freshness window or one-use state. Verification must deny
+replay, cross-purpose use, mutation substitution, request substitution, and
+authority reuse. The mechanism remains subordinate to the Mac mini Control
+Plane and must not become another Control Plane. No cryptographic or platform
+mechanism is selected here.
+
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## SEC02-FS-MACRO-03B4R read-only evidence
 
 The exact baseline was `e707d72e89b9288f541af3a071de915ce38c3ee6` on

@@ -1,5 +1,15 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B4R2-A foundation closed
+
+The repository now contains non-deployable app/helper/LaunchDaemon templates,
+fail-closed mutual signing configuration, a type-checked native replay digest,
+and an exact create-only journal provisioning contract. No concrete bundle IDs,
+Team ID, Mach service, or signing identity were invented. Full Xcode, live
+signing, fresh-human evidence, Production journal/helper operation, and
+Production remediation remain unavailable.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## Current authoritative — SEC02-FS-MACRO-03B4R readiness closed
 
 Architecture contracts exist, but toolchain compatibility, signing identities,

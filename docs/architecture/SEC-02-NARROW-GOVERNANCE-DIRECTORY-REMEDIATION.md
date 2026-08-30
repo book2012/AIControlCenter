@@ -1,5 +1,16 @@
 # SEC-02 Narrow Governance Directory Remediation Authority
 
+## SEC02-FS-MACRO-03B4R2-A repository foundation
+
+The future native package layout, fail-closed two-role XPC signing configuration,
+and single zero-argument remediation RPC are repository implemented without
+concrete identities or operational activation. Native replay SHA-256 derivation
+is source implemented and type-checked, but not live validated. The distinct
+journal-provisioning authority is repository implemented as exact-path and
+create-only policy; remediation and provisioning approvals remain mutually
+unusable. Fresh-human evidence remains a separate R2-B requirement.
+Production remediation remains unavailable.
+
 ## SEC02-FS-MACRO-03B4R readiness result
 
 Repository eligibility and journal semantics do not make live remediation

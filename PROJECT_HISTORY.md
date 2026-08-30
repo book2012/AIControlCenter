@@ -1,5 +1,16 @@
 # Project History
 
+## 2026-08-30 — SEC02-FS-MACRO-03B4R2-A foundation closed
+
+03B4R2-A added non-deployable native package templates with unresolved identity
+slots, strengthened mutual XPC signing readiness, implemented the frozen replay
+fingerprint in Swift, and implemented exact create-only journal provisioning as
+pure repository policy. Isolated-cache Swift type-check passed; full Xcode and
+all live signing, authorization, installation, helper, journal, and remediation
+operations remained untouched. Validation recorded focused `25 passed, 180
+warnings`, related SEC-02 `218 passed, 180 warnings`, and canonical `4413 passed,
+5 deselected, 635 warnings` in exactly one run.
+
 ## 2026-08-30 — SEC02-FS-MACRO-03B4R readiness review closed
 
 The clean synchronized 03B3 baseline received a read-only inspection. It found

@@ -1,5 +1,20 @@
 # SEC-02 Pre-Bootstrap Remediation Durable Attempt Journal
 
+## SEC02-FS-MACRO-03B4R2-A provisioning contract
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_PROVISIONING_AUTHORITY` is now repository
+implemented as immutable plan/authorization models, exact-target validation,
+and a fakeable adapter protocol. The target is fixed by the module, never by a
+caller. The contract represents create-only provisioning and cannot represent
+remediation, chmod/chown repair, arbitrary paths, recursion, deletion, reset, or
+retry. Its purpose type is distinct from remediation authorization, so one
+approval cannot satisfy both. No Production directory or journal was created;
+operational readiness remains `NO`.
+
+Native replay fingerprint derivation now matches the Python domain separator
+and type-checks with an isolated module cache. It has not consumed a live
+AuthorizationRef and is not operationally validated.
+
 ## SEC02-FS-MACRO-03B4R provisioning result
 
 The root-owned evidence-store architecture and separate

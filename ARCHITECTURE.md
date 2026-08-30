@@ -1,5 +1,18 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R2-A native repository foundation
+
+The authoritative repository namespace is `com.aicontrolcenter`; no app/helper
+bundle identifier, Team ID, Mach service identity, or release signing identity
+is authoritative. Non-deployable plist templates, fixed bundle layout metadata,
+fail-closed mutual XPC requirement slots, a type-checked native replay digest,
+and exact create-only journal-provisioning policy are repository implemented.
+They perform no registration, authorization, installation, launch, Production
+journal creation, or remediation. `NATIVE_TOOLCHAIN_READY=NO` because full Xcode
+is not selected/available even though the isolated Swift source type-check passed.
+Fresh-human evidence remains the next separate authority boundary.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## SEC02-FS-MACRO-03B4R live-readiness review
 
 Read-only inspection closed Production ceremony readiness as `NO`: the selected

@@ -1,5 +1,17 @@
 # Roadmap
 
+## NEXT — SEC02-FS-MACRO-03B4R2-B fresh-human evidence
+
+- [x] Add repository-native package and LaunchDaemon template foundations.
+- [x] Implement fail-closed mutual signing configuration without identities.
+- [x] Implement and type-check native replay fingerprint derivation.
+- [x] Implement exact create-only journal-provisioning repository policy.
+- [ ] Define and implement authoritative fresh-human evidence bound to exact
+  purpose, mutation, request identity, nonce/challenge, and freshness or one use,
+  with replay and authority reuse denied and no second Control Plane.
+
+`NEXT_MACRO_WU=SEC02-FS-MACRO-03B4R2-B-FRESH-HUMAN-EVIDENCE`
+
 ## BLOCKED — SEC02-FS-MACRO-03B5 Production remediation ceremony
 
 - [x] Complete 03B4R read-only live-readiness inspection.

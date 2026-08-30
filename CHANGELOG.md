@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-08-30 — SEC02-FS-MACRO-03B4R2-A repository foundation
+
+- Added unresolved-identity app/helper/LaunchDaemon templates and fixed bundle
+  layout metadata under the established `com.aicontrolcenter` namespace.
+- Hardened bidirectional signing readiness against missing, wildcard,
+  permissive, and role-collapsed requirements.
+- Added and type-checked native domain-separated SHA-256 replay derivation.
+- Implemented the exact-path, create-only, remediation-separated journal
+  provisioning repository contract without privileged execution.
+- Validation: focused `25 passed, 180 warnings`; related SEC-02 `218 passed,
+  180 warnings`; canonical `4413 passed, 5 deselected, 635 warnings` once.
+
 ## 2026-08-30 — SEC02-FS-MACRO-03B4R readiness review closed
 
 - Recorded exact read-only toolchain, SDK, signing, package, XPC, replay,
