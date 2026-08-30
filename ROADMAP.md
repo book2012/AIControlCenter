@@ -1,5 +1,15 @@
 # Roadmap
 
+## BLOCKED — SEC02-FS-MACRO-03B5 Production remediation ceremony
+
+- [x] Complete 03B4R read-only live-readiness inspection.
+- [x] Freeze the separate create-only journal-provisioning authority.
+- [ ] Resolve Swift/SDK compatibility, authoritative signing and bundle IDs,
+  native packaging, mutual XPC, native replay, fresh-human evidence, journal
+  provisioning, and operational helper readiness in separately authorized work.
+
+`NEXT_MACRO_WU=SEC02-FS-MACRO-03B4R2-RESOLVE-VERIFIED-LIVE-BLOCKERS`
+
 ## COMPLETE — SEC02-FS-MACRO-03B3 durable one-attempt consumption
 
 - [x] Define and repository-implement the separate purpose-bound journal.

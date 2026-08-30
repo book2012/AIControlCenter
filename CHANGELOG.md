@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-08-30 — SEC02-FS-MACRO-03B4R readiness review closed
+
+- Recorded exact read-only toolchain, SDK, signing, package, XPC, replay,
+  fresh-approval, and journal-provisioning evidence.
+- Defined the separate create-only Production journal provisioning authority
+  without implementing or invoking it.
+- Kept Production remediation and every missing live prerequisite unavailable.
+
 ## 2026-08-30 — SEC02-FS-MACRO-03B3 durable journal foundation
 
 - Added a distinct temp-path-only SQLite attempt journal with schema version 1,

@@ -1,5 +1,13 @@
 # SEC-02 Pre-Bootstrap Remediation Durable Attempt Journal
 
+## SEC02-FS-MACRO-03B4R provisioning result
+
+The root-owned evidence-store architecture and separate
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_PROVISIONING_AUTHORITY` are defined. It is
+exact-path and create-only, cannot authorize remediation, and cannot share one
+approval with remediation. It remains unimplemented and not ready. The live
+path was not inspected or created, so the journal remains non-operational.
+
 Status: **REPOSITORY IMPLEMENTED; TEMP-PATH VALIDATED; NOT OPERATIONAL**
 
 ## Authority boundary

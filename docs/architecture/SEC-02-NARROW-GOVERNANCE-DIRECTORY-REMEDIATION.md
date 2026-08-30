@@ -1,5 +1,13 @@
 # SEC-02 Narrow Governance Directory Remediation Authority
 
+## SEC02-FS-MACRO-03B4R readiness result
+
+Repository eligibility and journal semantics do not make live remediation
+ready. Toolchain, signing, packaging, mutual XPC, native replay, fresh-human
+evidence, provisioning, and helper operation remain blocked. The separate
+create-only journal-provisioning authority is architecture only.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 Status: **DEFINED; REPOSITORY CONTRACT ONLY; NOT OPERATIONAL**
 
 ## SEC02-FS-MACRO-03B3 durable attempt journal

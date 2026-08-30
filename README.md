@@ -1,5 +1,13 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B4R readiness closed
+
+Architecture contracts exist, but toolchain compatibility, signing identities,
+app/helper packaging, mutual requirements, native replay derivation,
+fresh-human proof, journal provisioning, and helper operation remain blocked.
+The journal-provisioning authority is defined only.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## Current authoritative — SEC02-FS-MACRO-03B3 durable journal closed
 
 The distinct pre-bootstrap remediation attempt journal is repository implemented

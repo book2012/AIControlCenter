@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R live-readiness review
+
+Read-only inspection closed Production ceremony readiness as `NO`: the selected
+Swift 6.3.3 compiler mismatches SDK Swift 6.3.2 modules, zero valid signing
+identities exist, and native packaging, mutual signing requirements, native
+replay derivation, fresh-human evidence, journal provisioning, and operational
+helper remain absent. The separate create-only journal-provisioning authority is
+defined but not implemented. Architecture defined != implemented !=
+operationally validated. See
+`docs/architecture/SEC-02-LIVE-REMEDIATION-READINESS.md`.
+
 ## SEC02-FS-MACRO-03B3 durable one-attempt boundary
 
 The pre-bootstrap remediation now has a separate, minimized SQLite evidence
