@@ -29,8 +29,14 @@ class RemediationAuthorizationRight(Enum):
     )
 
 
-class ApprovalInteraction(Enum):
-    FRESH_INTERACTIVE = "FRESH_INTERACTIVE"
+class FreshApprovalEvidence(Enum):
+    """What can be proved about fresh human approval for this invocation."""
+
+    VERIFIED = "VERIFIED"
+    NOT_VERIFIABLE = "NOT_VERIFIABLE"
+    DENIED = "DENIED"
+    CANCELED = "CANCELED"
+    ERROR = "ERROR"
 
 
 class AuthorizationDisposition(Enum):
@@ -56,7 +62,7 @@ class AuthorizationPresentation:
 
     purpose: RemediationAuthorizationPurpose
     right: RemediationAuthorizationRight
-    interaction: ApprovalInteraction
+    fresh_approval_evidence: FreshApprovalEvidence
     preauthorized: bool = False
     shared: bool = False
     reusable: bool = False
@@ -92,7 +98,7 @@ def authorize_remediation_attempt(
         is RemediationAuthorizationPurpose.GOVERNANCE_DIRECTORY_MODE_0755_TO_0700
         and presentation.right
         is RemediationAuthorizationRight.PURPOSE_SPECIFIC_MACOS_RIGHT
-        and presentation.interaction is ApprovalInteraction.FRESH_INTERACTIVE
+        and presentation.fresh_approval_evidence is FreshApprovalEvidence.VERIFIED
         and presentation.preauthorized is False
         and presentation.shared is False
         and presentation.reusable is False
@@ -159,7 +165,7 @@ def consume_remediation_attempt(
 
 
 __all__ = (
-    "ApprovalInteraction", "AttemptOutcome", "AttemptState",
+    "AttemptOutcome", "AttemptState", "FreshApprovalEvidence",
     "AuthorizationDisposition", "AuthorizationPresentation",
     "RemediationAttemptAuthorization", "RemediationAuthorizationDecision",
     "RemediationAuthorizationPurpose", "RemediationAuthorizationRight",

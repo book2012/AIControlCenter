@@ -6,8 +6,9 @@ from core.governance.control_plane.trust.governance_remediation import (
     GovernanceRemediationPlan, RemediationDecision, RemediationEligibility,
 )
 from core.governance.control_plane.trust.governance_remediation_authorization import (
-    ApprovalInteraction, AttemptOutcome, AttemptState, AuthorizationDisposition,
+    AttemptOutcome, AttemptState, AuthorizationDisposition,
     AuthorizationPresentation, RemediationAttemptAuthorization,
+    FreshApprovalEvidence,
     RemediationAuthorizationPurpose, RemediationAuthorizationRight,
     authorize_remediation_attempt, claim_remediation_attempt,
     consume_remediation_attempt,
@@ -31,7 +32,7 @@ ELIGIBLE = RemediationDecision(
 
 def presentation(**overrides):
     values = dict(purpose=PURPOSE, right=RIGHT,
-                  interaction=ApprovalInteraction.FRESH_INTERACTIVE)
+                  fresh_approval_evidence=FreshApprovalEvidence.VERIFIED)
     values.update(overrides)
     return AuthorizationPresentation(**values)
 
@@ -72,7 +73,7 @@ def test_authorization_artifacts_carry_no_execution_or_identity_payload():
     for model in (AuthorizationPresentation, RemediationAttemptAuthorization):
         assert forbidden.isdisjoint(field.name for field in fields(model))
     with pytest.raises(TypeError):
-        AuthorizationPresentation(PURPOSE, RIGHT, ApprovalInteraction.FRESH_INTERACTIVE,
+        AuthorizationPresentation(PURPOSE, RIGHT, FreshApprovalEvidence.VERIFIED,
                                   path="/tmp", mode=0o777, uid=0, gid=0)
 
 
