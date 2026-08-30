@@ -1,5 +1,10 @@
 # SEC-02 Privileged Helper Package Contract
 
+03B4R2-C freezes the app/helper/Mach identifiers, exact bundle layout, two
+explicit zero-argument helper methods, native signing resolver, and Secure
+Enclave source. Registration remains prohibited and signing remains not ready
+until an authoritative Team ID and matching signed artifacts exist.
+
 The repository has no authoritative native bundle/signing identity. This
 directory provides non-deployable metadata and plist templates for the smallest
 future macOS 13+ package boundary:

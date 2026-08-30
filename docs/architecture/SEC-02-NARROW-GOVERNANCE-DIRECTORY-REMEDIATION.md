@@ -255,3 +255,6 @@ PRODUCTION_REMEDIATION_AVAILABLE=NO
 PRODUCTION_BOOTSTRAP_AVAILABLE=NO
 SEC02_TRUSTED_ISSUER_OPERATIONAL=NO
 ```
+# 03B4R2-C helper architecture update
+
+The selected helper now has two explicit zero-argument methods: journal provisioning and exact governance-mode remediation. This replaces the earlier one-operation description without adding a selector or shared authorization.

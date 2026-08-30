@@ -4471,3 +4471,11 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   intercepted adapters only.
 - `SEC02-FS-MACRO-03B2`: next — concrete privileged helper and operational
   precondition validation, subject to separate authorization and review.
+# SEC-02 next operator prerequisites
+
+- [x] Repository package, identity, resolver, helper, Secure Enclave, and journal receipt source contracts.
+- [ ] C2-1 authoritative release identity and Team ID.
+- [ ] C2-2 separately authorized key provisioning/enrollment.
+- [ ] C2-3 signed package and separately authorized registration.
+- [ ] C2-4 separately authorized create-only journal provisioning.
+- [ ] 03B5 fresh separately authorized governance remediation.

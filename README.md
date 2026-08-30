@@ -4439,3 +4439,6 @@ privileged-helper ports, intercepted adapters, and fail-closed one-attempt
 orchestration. It performs no prompt, helper installation, or filesystem
 mutation. Fresh interaction is not inferred from `InteractionAllowed`, and
 Production remediation remains unavailable.
+# SEC-02 packaging readiness update
+
+A deterministic, non-Production SEC-02 native package contract and remaining ceremony DAG are documented in `docs/architecture/SEC-02-LIVE-SECURITY-PACKAGING.md`. Nothing is signed, registered, provisioned, installed, or operational.

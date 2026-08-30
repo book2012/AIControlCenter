@@ -169,3 +169,6 @@ LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO
 PRODUCTION_REMEDIATION_AVAILABLE=NO
 READY_FOR_03B5_PRODUCTION_CEREMONY=NO
 ```
+# 03B4R2-C update
+
+The native packaging foundation is defined in `SEC-02-LIVE-SECURITY-PACKAGING.md`. It remains unsigned, unregistered, and non-operational; no identity, Team ID, full Xcode, key, journal, or Production authorization was created.

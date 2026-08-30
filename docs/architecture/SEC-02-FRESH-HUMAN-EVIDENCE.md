@@ -67,3 +67,6 @@ Enclave key provisioning and custody, one-use user-presence validation, trusted
 public-key enrollment, concrete resolved mutual XPC signing requirements,
 authorized helper packaging/registration, journal provisioning ceremony, and
 separately authorized end-to-end Production validation.
+# 03B4R2-C provisioning boundary
+
+The fixed-tag Secure Enclave source and distinct `PRE_BOOTSTRAP_FRESH_HUMAN_KEY_PROVISIONING_AUTHORITY` ceremony are defined in `SEC-02-LIVE-SECURITY-PACKAGING.md`. They have not been invoked.

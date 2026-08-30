@@ -4965,3 +4965,8 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   adapter exceptions, and invalid postconditions without retry.
 - Recorded `SMAppService` as the future macOS 13+ helper-management boundary;
   no live binding, right, helper, or filesystem mutation was added.
+# Unreleased
+
+- Froze SEC-02 app/helper/Mach identities and deterministic bundle validation.
+- Added source-only native signing resolution, SMAppService, mutual XPC, Secure Enclave, two-operation helper, and journal receipt contracts.
+- Replaced the misleading cross-module private claimed-attempt API and documented separate Production ceremonies.

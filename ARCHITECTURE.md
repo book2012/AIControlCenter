@@ -4910,3 +4910,6 @@ LaunchDaemon, not `SMJobBless` or `AuthorizationExecuteWithPrivileges`. No live
 binding, helper, right installation, chmod, or durable crash-safe consumption
 is operational. See
 `docs/architecture/SEC-02-NARROW-GOVERNANCE-DIRECTORY-REMEDIATION.md`.
+# SEC-02 03B4R2-C live packaging foundation
+
+SEC-02 now freezes native identities and deterministic package, signing resolver, two-operation helper, Secure Enclave, and journal receipt contracts. See `docs/architecture/SEC-02-LIVE-SECURITY-PACKAGING.md`. They remain unsigned, unregistered, unprovisioned, and non-operational.

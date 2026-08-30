@@ -5392,3 +5392,6 @@ orchestration. Only `VERIFIED` fresh-approval evidence can execute;
 `NOT_VERIFIABLE`, denial, cancellation, error, adapter loss, and uncertain
 postconditions fail closed. Live services, durable crash-safe consumption, and
 Production remediation remain blocked.
+# SEC-02 03B4R2-C status
+
+Repository/package foundations are implemented but unsigned, unregistered, unprovisioned, and non-operational. See `docs/architecture/SEC-02-LIVE-SECURITY-PACKAGING.md`.

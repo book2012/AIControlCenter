@@ -121,3 +121,6 @@ PRODUCTION_REMEDIATION_AVAILABLE=NO
 
 Validation recorded focused `52 passed`, related SEC-02 `302 passed`, and one
 canonical run of `4408 passed, 5 deselected, 627 warnings`.
+# 03B4R2-C provisioning durability update
+
+Journal creation initializes a minimal completed receipt. Exact safe-existing state is read-only recognition; unsafe, ambiguous, or mismatching state fails closed. No authorization capability persists and no repair/retry/delete/recreate path exists.
