@@ -1,5 +1,17 @@
 # SEC-02 Live Remediation Readiness
 
+## R2-C1 hardened source, still not live
+
+Static signing metadata is never validity evidence: Security.framework must
+successfully validate the complete static artifact and all architectures before
+identifier, Team ID, flags, or designated requirement are trusted. Key discovery
+is exact-one/fail-closed and future creation requires verified absence; no
+duplicate, replacement, repair, deletion, rotation, or retry authority exists.
+The protocol algorithm ID, public fingerprint format, and strict journal receipt
+are frozen. These changes do not supply Xcode, identities, Team ID, enrollment,
+authentication, signed binaries, registration, journal provisioning, or an
+operational helper. Live remediation remains `NOT_READY`.
+
 ## Composite boundary correction
 
 Repository orchestration now treats bounded Authorization Services acquisition

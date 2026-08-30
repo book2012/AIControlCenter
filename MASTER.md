@@ -1,5 +1,18 @@
 # MASTER
 
+## Current authoritative status — SEC02-FS-MACRO-03B4R2-C1 closed
+
+Static signatures must validate before any signing metadata is trusted. Native
+fresh-human output uses the Python protocol identifier exactly; its DER encoding
+label is not the protocol ID. Secure Enclave discovery is fixed-tag, all-results,
+exact-one, provenance/access-policy checked, and fail-closed; provisioning is
+absence-only with no replacement or retry authority. Public fingerprints and
+journal replay fingerprints are exactly SHA-256 as 64 lowercase hex. Temporary
+layout validation is not a native build, signed package, registration, or live
+readiness. Full Xcode, identities, enrollment, live authentication, key/journal
+provisioning, registration, helper operation, and Production remediation remain
+unavailable. `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## Current authoritative status — SEC-02 fresh-human evidence foundation
 
 The corrected composite model requires three independent conditions: exact

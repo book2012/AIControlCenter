@@ -1,5 +1,20 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R2-C1 source hardening
+
+Native signing metadata is not signing validity. The resolver now validates the
+entire static artifact, including all architectures, before reading identifier,
+Team ID, flags, or designated requirement. Fresh-human protocol output uses the
+single identifier `SECURE_ENCLAVE_P256_SHA256_USER_PRESENCE_V1`; its concrete
+signature is ECDSA P-256/SHA-256 with X9.62 DER encoding. Fixed-tag key discovery
+inspects all results and recognizes only one permanent private P-256 Secure
+Enclave key with the reviewed access control; absent, exact-one, ambiguous, and
+unsafe states are fail-closed, and creation requires preflight absence. The
+public identity is SHA-256 over the 65-byte ANSI X9.63 uncompressed public key,
+rendered as 64 lowercase hex. Journal recognition likewise requires an exact
+version, purpose, lowercase-hex replay fingerprint, and typed `COMPLETED` state.
+These are source contracts only; no live security or Production operation ran.
+
 ## SEC-02 fresh-human evidence foundation
 
 SEC02-FS-MACRO-03B4R2-B1 corrects the composite boundary: a truthful bounded

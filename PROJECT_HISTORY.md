@@ -1,5 +1,14 @@
 # Project History
 
+## 2026-08-31 — Live security source hardening closed
+
+SEC02-FS-MACRO-03B4R2-C1 added static-code validity-before-metadata resolution,
+one exact native/Python fresh-human algorithm ID, fail-closed exact-one Secure
+Enclave key inspection, absence-only creation, public-only P-256 fingerprinting,
+strict journal receipt recognition, and truthful temporary-layout terminology.
+The canonical gate passed once with 4449 passed and 5 deselected. No security,
+Keychain, helper, journal, filesystem-permission, or Production mutation ran.
+
 ## 2026-08-31 — Composite fresh-human authorization corrected
 
 SEC02-FS-MACRO-03B4R2-B1 removed an unintended dependency on legacy

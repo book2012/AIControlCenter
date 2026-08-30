@@ -1,5 +1,16 @@
 # AIControlCenter
 
+Current SEC-02 source hardening requires static code validity before signing
+metadata, exact native/Python algorithm-ID agreement, and exact-one Secure
+Enclave key recognition with absence-only future creation. Public-key identity
+is SHA-256 over the ANSI X9.63 uncompressed P-256 public representation and is
+64 lowercase hex; journal receipt replay identity has the same strict shape.
+The package script validates only a temporary placeholder layout—not executable
+build, signing, registration, or operational readiness. The two helper methods
+remain explicit and mutually authority-separated. No live key, identity,
+authentication, helper, journal, registration, or Production operation exists.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 Current SEC-02 status: the fresh-human-evidence foundation is implemented in the
 repository but is not operational. It selects Secure Enclave P-256 user-presence
 signing, binds approval to the exact request and `AuthorizationReplayKey`, and

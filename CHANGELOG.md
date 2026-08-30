@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 2026-08-31 — SEC-02 live security source hardening
+
+- Required all-architecture static signature validation before trusting signing
+  metadata or deriving a role-bound requirement.
+- Aligned native fresh-human protocol output, hardened exact-one Secure Enclave
+  key discovery and absence-only creation, and froze the public-key digest as
+  SHA-256 of ANSI X9.63 uncompressed P-256 public bytes in lowercase hex.
+- Made journal receipt completion typed and its replay fingerprint exactly 64
+  lowercase hexadecimal characters.
+- Renamed placeholder bundle checking to temporary package-layout validation;
+  it is not an executable build, signed package, registration, or operation.
+- Validation: focused `16 passed`; related SEC-02 `96 passed`; canonical exactly
+  once `4449 passed, 5 deselected, 651 warnings`.
+
 ## 2026-08-31 — SEC-02 composite authorization correction
 
 - Separated exact bounded Authorization Services presentation validation from

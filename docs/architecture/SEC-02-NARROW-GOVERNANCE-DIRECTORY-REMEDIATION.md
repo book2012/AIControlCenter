@@ -1,5 +1,17 @@
 # SEC-02 Narrow Governance Directory Remediation Authority
 
+## R2-C1 helper-operation separation
+
+The native protocol still exposes only
+`provisionPreBootstrapRemediationJournal()` and
+`restrictGovernanceDirectoryMode0755To0700()`, each zero-argument with a typed
+reply. No selector or generic privileged payload exists. Journal provisioning,
+directory remediation, and fresh-human key provisioning remain three mutually
+non-substitutable authorities. The composite claimed-attempt API still requires
+the bounded-right gate, independently verified fresh-human evidence, and durable
+claim before the one remediation attempt. None of these source contracts makes
+the helper operational.
+
 ## Fresh-human prerequisite
 
 The composite path first validates the exact bounded Authorization Services

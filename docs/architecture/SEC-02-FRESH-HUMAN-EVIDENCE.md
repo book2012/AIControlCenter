@@ -1,5 +1,17 @@
 # SEC-02 Fresh Human Evidence Foundation
 
+## R2-C1 native algorithm and key identity freeze
+
+The sole protocol algorithm identifier is
+`SECURE_ENCLAVE_P256_SHA256_USER_PRESENCE_V1` in Python and Swift. It is distinct
+from the low-level encoding: ECDSA P-256, SHA-256, X9.62/DER signature encoding.
+The enrolled public identity is only SHA-256 over the 65-byte ANSI X9.63
+uncompressed P-256 public representation (`04 || X || Y`), formatted as exactly
+64 lowercase hexadecimal characters. Private-key export is absent. Fixed-tag
+lookup inspects all results and accepts only exactly one permanent private P-256
+Secure Enclave key with the exact reviewed user-presence/private-key-use access
+control. Software, ambiguous, or otherwise unsafe matches fail closed.
+
 ## Composite authorization correction
 
 The Production eligibility model is a strict conjunction:

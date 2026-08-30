@@ -1,5 +1,16 @@
 # SEC-02 Pre-Bootstrap Remediation Durable Attempt Journal
 
+## R2-C1 strict provisioning receipt
+
+Read-only `SAFE_EXISTING` recognition requires the exact supported schema
+version, exact `CREATE_PRE_BOOTSTRAP_REMEDIATION_JOURNAL` purpose, an exact
+64-character lowercase hexadecimal provisioning replay fingerprint, and the
+typed terminal state `COMPLETED`. Empty, short, uppercase, non-hex, malformed,
+unsupported, wrong-purpose, wrong-fingerprint, wrong-state, `UNSAFE_EXISTING`,
+and `AMBIGUOUS` inputs fail closed. Recognition grants no execution or mutation
+authority. `ABSENT` permits only one separately authorized exact create attempt;
+there is no repair, replacement, delete/recreate, or retry authority.
+
 ## SEC02-FS-MACRO-03B4R2-A provisioning contract
 
 `PRE_BOOTSTRAP_REMEDIATION_JOURNAL_PROVISIONING_AUTHORITY` is now repository

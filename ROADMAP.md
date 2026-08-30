@@ -1,5 +1,18 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B4R2-C1 source hardening
+
+- [x] Validate all static-code architectures before trusting signing metadata.
+- [x] Align the native/Python fresh-human protocol algorithm identifier.
+- [x] Define exact-one Secure Enclave lookup and absence-only key creation.
+- [x] Freeze public P-256 fingerprint and strict journal receipt formats.
+- [x] Preserve two explicit helper methods and truthful layout-only validation.
+- [ ] Complete operator prerequisites: full Xcode, signing identities and Team
+  ID, trusted public-key enrollment, live provisioning, registration, and
+  separately authorized Production ceremonies.
+
+Next: `SEC02-FS-MACRO-03B4R2-C2-OPERATOR-PREREQUISITE-CEREMONIES`.
+
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-B fresh-human evidence foundation
 
 - [x] B1 composite correction: bounded Authorization Services validation and

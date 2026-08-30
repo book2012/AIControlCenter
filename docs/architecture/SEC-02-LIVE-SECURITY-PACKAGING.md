@@ -3,6 +3,18 @@
 Status: repository implemented; native source not type-checked on this host;
 temporary package layout validated; unsigned; unregistered; non-operational.
 
+## R2-C1 validity and readiness terminology
+
+`SecCodeCopySigningInformation` is metadata retrieval, not signature validation.
+The resolver first runs all-architecture static validity checking and fails closed
+on any non-success, then checks exact bundle ID, authoritative Team ID, ad-hoc
+flags, and designated requirement. The validator creates empty executable
+placeholders, so its result is only `TEMPORARY_PACKAGE_LAYOUT_VALIDATED`; it is
+not a native executable build, signed package, SMAppService registration, or
+operational helper. The two RPC methods below remain the complete surface, with
+no selector, operation argument, generic payload, path, mode, identity, command,
+or argv.
+
 ## Frozen identity and layout
 
 The app bundle ID is `com.aicontrolcenter.app`. The helper bundle ID and Mach
