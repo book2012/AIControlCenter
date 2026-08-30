@@ -1,11 +1,31 @@
 # SEC-02 Fresh Human Evidence Foundation
 
+## Composite authorization correction
+
+The Production eligibility model is a strict conjunction:
+
+`valid exact bounded Authorization Services right + independently VERIFIED exact FreshHumanEvidenceV1 + successful durable one-attempt claim = eligibility for one bounded helper attempt`
+
+Authorization Services success does not establish fresh-human verification and
+may truthfully remain `FreshApprovalEvidence.NOT_VERIFIABLE`. Fresh-human evidence
+does not grant execution, provisioning, retry, rollback, root, or Production
+authority. The legacy `authorize_remediation_attempt()` still requires
+`FreshApprovalEvidence.VERIFIED`; only the purpose-specific composite boundary
+separates bounded-right validation from fresh-human verification. No presentation
+field is mutated or synthesized.
+
+Bounded Authorization Services presentation validation is not attempt authority,
+and successful `FreshHumanEvidenceV1` verification is not attempt authority. The
+bounded validator returns only `VALID`/`DENIED` disposition. Only after exact FHE
+verification and `claim_once(AuthorizationReplayKey)` both succeed may the sole
+exact remediation attempt be created directly in its claimed state.
+
 Status: `REPOSITORY_IMPLEMENTED`, `SOURCE_IMPLEMENTED`, `TYPECHECKED`, and
 `OPERATIONALLY_VALIDATED=false`.
 
 SEC02-FS-MACRO-03B4R2-B freezes this exact order:
 
-`exact eligibility -> bounded Authorization Services acquisition -> derive AuthorizationReplayKey -> issue exact FreshHumanChallengeV1 -> obtain fresh user-presence-backed signature -> verify exact FreshHumanEvidenceV1 -> durable journal claim_once(AuthorizationReplayKey) -> exactly one bounded helper attempt -> terminal durable evidence`
+`exact eligibility -> bounded Authorization Services presentation validation -> derive AuthorizationReplayKey -> issue exact FreshHumanChallengeV1 -> obtain fresh user-presence-backed signature -> verify exact FreshHumanEvidenceV1 -> durable journal claim_once(AuthorizationReplayKey) -> create claimed exact attempt -> exactly one bounded helper attempt -> terminal durable evidence`
 
 The immutable challenge uses the existing RFC 8785/JCS implementation and
 binds schema, exact `GOVERNANCE_DIRECTORY_MODE_0755_TO_0700` purpose, the sole

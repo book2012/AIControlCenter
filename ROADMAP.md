@@ -2,6 +2,12 @@
 
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-B fresh-human evidence foundation
 
+- [x] B1 composite correction: bounded Authorization Services validation and
+  exact fresh-human verification are independent mandatory gates before claim.
+- [x] Preserve legacy `authorize_remediation_attempt()` and truthful
+  `FreshApprovalEvidence.NOT_VERIFIABLE` presentation metadata.
+- [x] Return non-authoritative bounded validation and create claimed attempt
+  authority only after verified fresh-human evidence plus durable claim success.
 - [x] Exact immutable challenge/evidence and typed verification contracts.
 - [x] Verification-before-durable-claim fake orchestration and replay tests.
 - [x] Secure Enclave P-256 user-presence native source boundary, type-checked.

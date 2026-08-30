@@ -2,6 +2,17 @@
 
 ## Fresh-human prerequisite
 
+The composite path first validates the exact bounded Authorization Services
+purpose/right/acquisition without claiming that service proved fresh human
+presence. It then independently verifies exact `FreshHumanEvidenceV1`. Only both
+valid gates followed by a successful durable one-attempt claim permit the fixed
+helper attempt. Authorization Services success may remain truthfully
+`FreshApprovalEvidence.NOT_VERIFIABLE`; the evidence is never converted to
+`FreshApprovalEvidence.VERIFIED` and never becomes execution authority.
+Bounded presentation validation is not attempt authority, and FHE verification
+is not attempt authority. After both succeed, the durable claim must succeed;
+only then may the sole exact attempt be created directly as claimed.
+
 Before any durable helper attempt, an exact `FreshHumanEvidenceV1` must verify
 against the control-plane-issued challenge binding purpose, sole `0755 -> 0700`
 mutation, immutable request identity, `AuthorizationReplayKey`, nonce, and bounded
@@ -76,8 +87,9 @@ unsupported primitive, or inability to prove descriptor identity denies.
 
 ## Closed authorization and mutation boundary
 
-A future implementation requires a distinct purpose-specific macOS Authorization
-Services right. One fresh interactive human approval permits one exact attempt.
+Production requires a distinct purpose-specific macOS Authorization Services
+right plus independently verified exact fresh-human evidence. Together with the
+durable claim, those gates permit one exact attempt.
 Success, failure, or uncertainty consumes it. There is no automatic retry,
 rollback, reuse, transfer, claim stealing, generic executor, or implied recovery.
 This definition neither installs a right nor implements a Production adapter.
@@ -97,9 +109,8 @@ approval grants no bootstrap, issuer, retry, release, or feature authority.
 The repository freezes a single dedicated right,
 `com.aicontrolcenter.governance-remediation.mode-0755-to-0700`, for the single
 purpose `GOVERNANCE_DIRECTORY_MODE_0755_TO_0700`. The right is not selected by
-the caller and is not generic or shared. A qualifying representation must be a
-fresh interactive approval: preauthorization, reuse, sharing, retry, and
-recovery reuse are denied.
+the caller and is not generic or shared. Preauthorization, reuse, sharing, retry,
+and recovery reuse are denied. Fresh-human verification is a separate gate.
 
 One accepted approval creates one payload-free available attempt. Its sole
 valid transition is to claimed, and a claimed attempt must transition exactly
@@ -131,8 +142,10 @@ The local macOS SDK Authorization Services contract was reviewed for
 `InteractionAllowed` permits interaction when required; it does not prove that
 fresh interaction occurred. The repository therefore records fresh approval as
 the closed vocabulary `VERIFIED`, `NOT_VERIFIABLE`, `DENIED`, `CANCELED`, or
-`ERROR`, and only `VERIFIED` may reach the execution port. No current live
-adapter can independently produce that evidence, so Production remains closed.
+`ERROR`. The legacy authorization path still requires `VERIFIED`; the composite
+path preserves truthful `NOT_VERIFIABLE` while separately requiring exact
+fresh-human verification. No current live adapter can independently produce
+that fresh-human evidence, so Production remains closed.
 
 The repository now defines a zero-argument Authorization Services port and a
 zero-argument privileged remediation port for the single fixed operation.
@@ -162,8 +175,9 @@ Orchestration now performs exact remediation validation and the `ELIGIBLE` gate
 before calling the authorization port. `DENIED`, `NOT_REQUIRED`, malformed or
 missing plans, the trust target, forged target/modes/UID/GID/operation, and
 bool-as-integer authority confusion all terminate with zero authorization calls
-and zero helper calls. A valid exact plan may acquire once; only independently
-`VERIFIED` fresh approval may then reach the fixed helper operation once.
+and zero helper calls. A valid exact plan may acquire once; only its exact bounded
+right combined with independently `VERIFIED` fresh-human evidence and the durable
+claim may then reach the fixed helper operation once.
 
 The XPC contract has one semantic operation only:
 `RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700`. It exposes no path, target,

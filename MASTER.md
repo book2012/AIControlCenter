@@ -2,6 +2,16 @@
 
 ## Current authoritative status — SEC-02 fresh-human evidence foundation
 
+The corrected composite model requires three independent conditions: exact
+bounded Authorization Services acquisition, exact fresh-human evidence verified,
+and a successful durable one-attempt claim. Authorization Services freshness is
+not inferred, `FreshHumanEvidenceV1` carries no execution authority, and the
+presentation freshness field is not rewritten. Legacy authorization semantics
+remain closed to `NOT_VERIFIABLE` outside this purpose-specific composite path.
+Neither bounded-presentation validation nor fresh-human verification creates an
+attempt. The exact attempt authority is created directly as `CLAIMED` only after
+both verification and `claim_once(AuthorizationReplayKey)` succeed.
+
 SEC02-FS-MACRO-03B4R2-B is repository-implemented and non-operational. Exact
 fresh-human evidence is verified before `claim_once(AuthorizationReplayKey)` and
 the sole helper attempt; evidence itself grants zero authority. The selected

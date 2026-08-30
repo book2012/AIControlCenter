@@ -3,7 +3,11 @@
 Current SEC-02 status: the fresh-human-evidence foundation is implemented in the
 repository but is not operational. It selects Secure Enclave P-256 user-presence
 signing, binds approval to the exact request and `AuthorizationReplayKey`, and
-requires verification before the durable one-attempt claim. No live key,
+requires verification before the durable one-attempt claim. The composite path
+separately requires a valid bounded Authorization Services right; its success is
+not fresh-human proof, while fresh-human evidence grants no execution authority.
+Neither gate creates attempt authority. Only after both gates and the durable
+claim succeed is the exact attempt created as claimed for one helper call. No live key,
 authentication, privileged helper, or Production remediation is available. See
 [`SEC-02-FRESH-HUMAN-EVIDENCE.md`](docs/architecture/SEC-02-FRESH-HUMAN-EVIDENCE.md).
 

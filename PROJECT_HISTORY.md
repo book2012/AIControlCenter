@@ -1,5 +1,14 @@
 # Project History
 
+## 2026-08-31 — Composite fresh-human authorization corrected
+
+SEC02-FS-MACRO-03B4R2-B1 removed an unintended dependency on legacy
+`FreshApprovalEvidence.VERIFIED` from the new composite path without weakening
+legacy callers. The repository now validates the exact bounded Authorization
+Services presentation, independently verifies exact fresh-human evidence, and
+only then claims the existing durable one-attempt journal. Neither gate alone
+authorizes execution, and no live or Production operation occurred.
+
 ## 2026-08-31 — Fresh human evidence foundation
 
 Implemented SEC02-FS-MACRO-03B4R2-B as pure models, verification, native source
@@ -4462,6 +4471,21 @@ contract classifies the current object as `UNSAFE_EXISTING`. Create-only v1
 cannot remediate it, and the current operational gate remains blocked pending
 a separate later remediation authority review and implementation. SEC02-FS-02
 remains a read-only planner and validator and does not unblock the host.
+
+## 2026-08-31 — SEC-02 composite authority lifecycle hardening
+
+The purpose-specific bounded Authorization Services validator was narrowed to a
+non-execution-authority `VALID`/`DENIED` result. It no longer creates an
+available remediation attempt. Exact fresh-human verification also grants no
+attempt authority. Only after both gates and the durable replay claim succeed
+may the sole exact attempt be created directly as claimed, followed by at most
+one helper call and terminal durable evidence. Legacy authorization continues to
+require `FreshApprovalEvidence.VERIFIED`.
+
+The prior canonical Dashboard failures were traced to two baseline tests using
+the production-default host audit path rather than the supported test data-root
+override. Those tests now isolate SQLite under `tmp_path`; Production defaults
+and audit semantics are unchanged, and no host audit database was modified.
 ## 2026-08-30 — SEC02-FS-MACRO-02 repository closure
 
 Implemented the FS-02 fixed-path, passwd-authoritative read-only validation

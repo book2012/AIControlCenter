@@ -2,6 +2,15 @@
 
 ## SEC-02 fresh-human evidence foundation
 
+SEC02-FS-MACRO-03B4R2-B1 corrects the composite boundary: a truthful bounded
+Authorization Services acquisition may carry `FreshApprovalEvidence.NOT_VERIFIABLE`.
+That bounded right and an independently `VERIFIED` exact `FreshHumanEvidenceV1`
+must both succeed before the existing durable journal claim. Bounded presentation
+validation and fresh-human verification are non-authoritative; only after the
+durable claim succeeds may the exact attempt be created directly as claimed.
+Authorization Services success is not fresh-human proof; fresh-human evidence grants no execution authority. The Python signing marker is
+repository modeling only, not cryptographic provenance or a security boundary.
+
 SEC02-FS-MACRO-03B4R2-B adds the repository-only, RFC 8785-canonical fresh-human
 challenge/evidence and intercepted orchestration boundary described in
 [`SEC-02-FRESH-HUMAN-EVIDENCE.md`](docs/architecture/SEC-02-FRESH-HUMAN-EVIDENCE.md).

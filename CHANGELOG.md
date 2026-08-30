@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 2026-08-31 — SEC-02 composite authorization correction
+
+- Separated exact bounded Authorization Services presentation validation from
+  independent `FreshHumanEvidenceV1` verification in the new composite path.
+- Preserved legacy `authorize_remediation_attempt()` semantics and truthful
+  `NOT_VERIFIABLE` freshness metadata; neither gate alone grants execution.
+- Replaced the bounded validator's premature available-attempt result with a
+  non-authoritative typed validation result; claimed authority is created only
+  after verified fresh-human evidence and durable replay claim success.
+- Isolated the two baseline Dashboard tests onto their supported temporary audit
+  data root instead of the host Application Support database.
+- Added regression coverage for both gates, durable one-attempt consumption,
+  helper uncertainty/no-retry, malformed timestamps, and raw-string signing.
+
 ## 2026-08-31 — SEC-02 fresh-human evidence foundation
 
 - Added immutable RFC 8785-canonical challenge/evidence models, typed exact

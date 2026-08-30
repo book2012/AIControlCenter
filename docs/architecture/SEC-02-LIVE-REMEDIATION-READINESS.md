@@ -1,5 +1,19 @@
 # SEC-02 Live Remediation Readiness
 
+## Composite boundary correction
+
+Repository orchestration now treats bounded Authorization Services acquisition
+and exact `FreshHumanEvidenceV1` verification as independent mandatory gates.
+Authorization Services `ACQUIRED` with truthful freshness `NOT_VERIFIABLE` may
+satisfy only the bounded-right gate. Fresh-human evidence may satisfy only the
+verification gate. Neither permits execution unless the existing durable journal
+claim also succeeds. This is repository implemented, not live or operational.
+The bounded validation result contains no attempt authority or claim capability;
+FHE verification likewise creates none. The exact attempt is created as claimed
+only after the durable replay claim succeeds.
+Python `_TRUSTED_RESOLUTION_MARKER` privacy is not cryptographic identity; actual
+Production trust still requires native code-signing resolution and validation.
+
 ## Fresh-human evidence update — 2026-08-31
 
 The repository now verifies an exact, bounded, RFC 8785-canonical human-evidence
