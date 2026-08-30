@@ -1,5 +1,23 @@
 # CHANGELOG
 
+## 2026-08-30 — SEC02-FS-MACRO-03B3 durable journal foundation
+
+- Added a distinct temp-path-only SQLite attempt journal with schema version 1,
+  fixed purpose/version, unique replay fingerprint, strict closed states, and
+  full-synchronous rollback-journal commits.
+- Integrated durable claim-before-helper orchestration with consuming success,
+  failure, uncertainty, stranded-claim replay denial, and no retry/steal/reset.
+- Kept raw authorization capability and ordinary SEC-02 consumption out of the
+  journal; froze but did not create the future Production path.
+- Validation: focused `52 passed`; related SEC-02 `302 passed`; canonical
+  `4408 passed, 5 deselected, 627 warnings` in exactly one run.
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_REPOSITORY_IMPLEMENTED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_OPERATIONAL=NO`
+`REPLAY_FINGERPRINT_OPERATIONALLY_VALIDATED=NO`
+`JOURNAL_PROVISIONING_AUTHORITY_READY=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## 2026-08-30 — SEC02-FS-MACRO-03B2 privileged-helper foundation
 
 - Moved exact remediation validation and eligibility ahead of authorization;

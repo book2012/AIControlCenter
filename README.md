@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B3 durable journal closed
+
+The distinct pre-bootstrap remediation attempt journal is repository implemented
+and temporary-path validated. A purpose/version-bound SQLite claim commits before
+the fake helper call; claimed and every terminal state permanently deny replay.
+The journal stores no authorization capability and does not reuse ordinary
+SEC-02 consumption. The future Production path is frozen but not provisioned.
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_DEFINED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_REPOSITORY_IMPLEMENTED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_OPERATIONAL=NO`
+`DURABLE_CLAIM_PRECEDES_HELPER_ATTEMPT=YES`
+`AUTHORIZATION_EXTERNAL_FORM_PERSISTED=NO`
+`REPLAY_FINGERPRINT_CRYPTO_CONTRACT_DEFINED=YES`
+`REPLAY_FINGERPRINT_OPERATIONALLY_VALIDATED=NO`
+`JOURNAL_PROVISIONING_AUTHORITY_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO`
+`LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## Current authoritative — SEC02-FS-MACRO-03B2 foundation closed
 
 The narrow governance remediation now has a pre-authorization exact-eligibility

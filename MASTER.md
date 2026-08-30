@@ -1,5 +1,24 @@
 # MASTER
 
+## Current authoritative status — SEC02-FS-MACRO-03B3 closed
+
+The dedicated pre-bootstrap remediation journal is repository implemented and
+temp-path validated. Durable claim precedes the fake helper; claimed and all
+terminal outcomes deny replay with no retry, lease, steal, reset, or recovery
+execution. Production provisioning, fresh approval proof, identity/package,
+live helper/XPC, and Production remediation remain unavailable.
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_DEFINED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_REPOSITORY_IMPLEMENTED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_OPERATIONAL=NO`
+`DURABLE_CLAIM_PRECEDES_HELPER_ATTEMPT=YES`
+`AUTHORIZATION_EXTERNAL_FORM_PERSISTED=NO`
+`JOURNAL_PROVISIONING_AUTHORITY_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO`
+`LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## Current authoritative status — SEC02-FS-MACRO-03B2 closed
 
 Repository orchestration proves exact remediation eligibility before requesting

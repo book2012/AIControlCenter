@@ -2,6 +2,32 @@
 
 Status: **DEFINED; REPOSITORY CONTRACT ONLY; NOT OPERATIONAL**
 
+## SEC02-FS-MACRO-03B3 durable attempt journal
+
+The distinct pre-bootstrap remediation attempt journal is repository implemented
+and temp-path validated. Its create-only durable claim precedes the intercepted
+helper attempt; claimed, success, failure, and uncertain records all deny replay
+without lease, expiry, stealing, reset, or retry. It does not reuse the ordinary
+SEC-02 authorization-consumption database. The future Production path is frozen
+but not created, and provisioning authority remains unresolved. See
+`SEC-02-PRE-BOOTSTRAP-REMEDIATION-DURABLE-JOURNAL.md`.
+
+The domain-separated SHA-256 replay fingerprint contract is defined, but native
+entropy/uniqueness and live derivation are not operationally validated. Raw
+authorization external-form bytes remain ephemeral and unpersisted. Live fresh
+approval, signing/package identity, helper, XPC, and Production remediation all
+remain unavailable.
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_DEFINED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_REPOSITORY_IMPLEMENTED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_OPERATIONAL=NO`
+`DURABLE_CLAIM_PRECEDES_HELPER_ATTEMPT=YES`
+`REPLAY_FINGERPRINT_CRYPTO_CONTRACT_DEFINED=YES`
+`REPLAY_FINGERPRINT_OPERATIONALLY_VALIDATED=NO`
+`JOURNAL_PROVISIONING_AUTHORITY_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## Exact purpose and target
 
 This authority is separate from the FS-01 create-only authority and is bound to

@@ -1,5 +1,19 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B3 durable one-attempt consumption
+
+- [x] Define and repository-implement the separate purpose-bound journal.
+- [x] Commit a durable claim before the intercepted helper and deny every replay.
+- [x] Validate crash/reopen, failure, uncertainty, corruption, and no-retry cases.
+- [ ] Resolve live signing/package/fresh-approval and Production provisioning in
+  `SEC02-FS-MACRO-03B4-LIVE-IDENTITY-PACKAGING-AND-FRESH-APPROVAL-READINESS`.
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_REPOSITORY_IMPLEMENTED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_OPERATIONAL=NO`
+`JOURNAL_PROVISIONING_AUTHORITY_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## COMPLETE — SEC02-FS-MACRO-03B2 privileged-helper foundation
 
 - [x] Gate exact eligibility before any Authorization Services adapter call.

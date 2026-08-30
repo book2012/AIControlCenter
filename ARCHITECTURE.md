@@ -1,5 +1,27 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B3 durable one-attempt boundary
+
+The pre-bootstrap remediation now has a separate, minimized SQLite evidence
+journal whose durable claim must commit before one intercepted helper attempt.
+Its closed states deny all reuse, including stranded claims and failure or
+uncertainty. The adapter is temp-path-only; the frozen future Production path
+is not provisioned and the ordinary SEC-02 database remains unchanged.
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_DEFINED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_REPOSITORY_IMPLEMENTED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_OPERATIONAL=NO`
+`DURABLE_CLAIM_PRECEDES_HELPER_ATTEMPT=YES`
+`DURABLY_CLAIMED_RECOVERY_EXECUTION_ALLOWED=NO`
+`FAILURE_RETRY_ALLOWED=NO`
+`UNCERTAINTY_RETRY_ALLOWED=NO`
+`CLAIM_STEALING_ALLOWED=NO`
+`LEASE_EXPIRY_RETRY_ALLOWED=NO`
+`REPLAY_FINGERPRINT_CRYPTO_CONTRACT_DEFINED=YES`
+`REPLAY_FINGERPRINT_OPERATIONALLY_VALIDATED=NO`
+`JOURNAL_PROVISIONING_AUTHORITY_READY=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## SEC02-FS-MACRO-03B2 privileged-helper foundation
 
 The exact remediation is now rejected before Authorization Services unless the

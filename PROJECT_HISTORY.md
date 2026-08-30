@@ -1,5 +1,23 @@
 # Project History
 
+## 2026-08-30 — SEC02-FS-MACRO-03B3 repository foundation closed
+
+03B3 separated pre-bootstrap replay evidence from the unsafe ordinary SEC-02
+database path and implemented a minimal SQLite journal restricted to temporary
+validation paths. A durable claim precedes the intercepted helper, and claimed,
+success, failure, and uncertainty all deny reuse permanently. The replay digest
+contract is defined but not live-validated; Production provisioning and all live
+authorization/helper capabilities remain closed.
+
+Focused validation recorded `52 passed`; related SEC-02 recorded `302 passed`;
+the one canonical run recorded `4408 passed, 5 deselected, 627 warnings`.
+
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_DEFINED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_REPOSITORY_IMPLEMENTED=YES`
+`PRE_BOOTSTRAP_REMEDIATION_JOURNAL_OPERATIONAL=NO`
+`JOURNAL_PROVISIONING_AUTHORITY_READY=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## 2026-08-30 — SEC02-FS-MACRO-03B2 foundation closed
 
 03B2 corrected authorization ordering so only an independently validated exact
