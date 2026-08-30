@@ -1,5 +1,26 @@
 # MASTER
 
+## Current authoritative status — SEC02-AR-01 architecture closed
+
+The anti-rollback receipt implementation definition is frozen: canonical JCS
+schema and identity, Secure Enclave P-256/SHA-256 authentication, pinned Mac
+installation-authority-only non-exportable key custody, fixed root-owned
+storage, Witness-first durable ordering, full-sync phase journal, monotonic
+release/trust-source maxima, and closed read-only reconciliation. The existing
+Continuity Witness is the non-circular persistent anchor and remains external
+durable evidence only. Nothing is implemented, provisioned, or operationally
+validated.
+
+`SEC02_AR_01_GATE=PASS`
+
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES`
+
+`ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO`
+
+`ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO`
+
+`SEC02_PRODUCTION_TRUST_BOOTSTRAP_IMPLEMENTATION=NOT_READY`
+
 ## Current authoritative status — SEC-02 repository foundation complete; service delivery restored
 
 WU-01 Domain/Contract foundation and WU-02 Port/authority boundary foundation

@@ -1,5 +1,23 @@
 # Project History
 
+## 2026-08-30 — SEC02-AR-01 architecture-definition closeout
+
+SEC02-AR-01 closed the remaining anti-rollback receipt architecture gap. The
+authoritative release-install freeze now defines the canonical receipt,
+identity/version chain, Secure Enclave P-256/SHA-256 authentication,
+installation-authority-only key access, fixed root-owned storage, durable
+Witness-first update and journal ordering, closed reconciliation, and reset
+handling. The already selected Continuity Witness remains the non-circular
+external durable evidence anchor, never a Control Plane or authorization
+source. This was documentation only; implementation and operational validation
+remain absent.
+
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES`
+
+`ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO`
+
+`ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO`
+
 ## 2026-08-30 — SEC-02 Continuity Witness repository foundation closed
 
 WU-01 Domain/Contract foundation and WU-02 Port/authority boundary foundation

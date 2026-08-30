@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 2026-08-30 — SEC02-AR-01 anti-rollback receipt architecture closed
+
+- Froze the canonical receipt schema and identity, exact Secure Enclave
+  ECDSA-P256/SHA-256 primitive, non-exportable key custody, fixed root-owned
+  local storage, atomic/full-sync journal, and read-only reconciliation model.
+- Required existing Continuity Witness immutable history to be durable before
+  local receipt commit; preserved the Witness as evidence-only and the Mac mini
+  M4 as sole Control Plane.
+- Preserved fail-closed first-install/reset, monotonic versions, no same-version
+  artifact substitution, no automatic retry/rollback, and no receipt-granted
+  authority. No implementation, keys, AWS, Production, Docker/Colima, or
+  runtime access occurred.
+
+`SEC02_AR_01_GATE=PASS`
+
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES`
+
+`ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO`
+
+`ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## 2026-08-30 — SEC-02 Continuity Witness repository foundation reconciled
 
 - Closed WU-01 Domain/Contract foundation and WU-02 Port/authority boundary

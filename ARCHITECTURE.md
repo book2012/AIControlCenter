@@ -1,5 +1,22 @@
 # AI Home Datacenter Architecture
 
+## SEC02-AR-01 anti-rollback receipt boundary
+
+The canonical Mac-local anti-rollback receipt is RFC 8785 JCS authenticated by
+ECDSA P-256/SHA-256 with a non-exportable Secure Enclave key accessible only to
+the pinned Mac Release Installation Authority. It uses fixed root-owned local
+storage, descriptor-relative no-follow access, atomic replacement, full-sync
+journaling, and read-only reconciliation. The existing external Continuity
+Witness durably anchors the same host/version/digest transition before local
+receipt commit. It records evidence only and is not an install authority or a
+second Control Plane. No software cryptographic fallback is authorized.
+
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES`
+
+`ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO`
+
+`ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO`
+
 ## Reusable SEC-02 trusted human authorization boundary
 
 The validated reusable flow is:

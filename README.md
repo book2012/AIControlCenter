@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-AR-01 anti-rollback receipt architecture closed
+
+The exact receipt schema, P-256/SHA-256 Secure Enclave signing architecture,
+non-exportable installation-authority key custody, fixed Mac-local storage,
+atomic full-sync journal, monotonic version rules, and fail-closed read-only
+reconciliation are frozen in
+`docs/architecture/SEC-02-RELEASE-INSTALL-ANTI-ROLLBACK-AUTHORITY-FREEZE.md`.
+The receipt is evidence, never authority. The existing external Continuity
+Witness supplies non-circular durable history and remains evidence-only; Mac
+mini M4 remains the sole Control Plane and Ubuntu remains zero-authority.
+
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES`
+
+`ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO`
+
+`ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## Current authoritative — SEC-02 Continuity Witness repository foundation closed
 
 The repository-only foundation is complete: WU-01 Domain/Contract foundation

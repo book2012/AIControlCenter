@@ -68,8 +68,14 @@ receipt defined here.
 SEC02_BOOTSTRAP_APPROVER_TRUST_SOURCE_ARCHITECTURE_FROZEN=YES
 BOOTSTRAP_APPROVER_TRUST_SOURCE_OPERATIONALLY_DEFINED=NO
 BOOTSTRAP_IMPLEMENTATION_AUTHORITY_READY=NO
-PRODUCTION_BOOTSTRAP_AVAILABLE=NO
 SEC02_PRODUCTION_TRUST_BOOTSTRAP_IMPLEMENTATION=NOT_READY
+PRODUCTION_BOOTSTRAP_AVAILABLE=NO
+
+MAC_MINI_M4_CONTROL_PLANE=SOLE
+CONTINUITY_WITNESS_AUTHORITY=EXTERNAL_DURABLE_EVIDENCE_ONLY
+CONTINUITY_WITNESS_SECOND_CONTROL_PLANE=NO
+UBUNTU_ROLE=STATELESS_INFRASTRUCTURE_WORKER_ONLY
+UBUNTU_AUTHORITY=ZERO
 
 SEC02_RELEASE_INSTALL_ANTI_ROLLBACK_AUTHORITY_ARCHITECTURE_FROZEN=YES
 SEC02_RELEASE_INSTALL_ANTI_ROLLBACK_AUTHORITY_IMPLEMENTED=NO
@@ -82,7 +88,8 @@ ROOT_WHEEL_INSTALL_STATE_CURRENTLY_PRESENT=NOT_ASSERTED
 ROOT_WHEEL_INSTALL_POLICY=FUTURE_RELEASE_INSTALL_CONTRACT
 
 ANTI_ROLLBACK_RECEIPT_REQUIRED=YES
-ANTI_ROLLBACK_RECEIPT_AUTHORITY_DEFINED=NO
+ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES
+ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO
 ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO
 ANTI_ROLLBACK_RECEIPT_MAY_GRANT_BOOTSTRAP_AUTHORITY=NO
 
@@ -97,9 +104,10 @@ alternate source for the bound Darwin passwd ownership authority. Ownership,
 UID, GID, and mode are defense-in-depth constraints, never cryptographic or
 governance authenticity.
 
-`ANTI_ROLLBACK_RECEIPT_AUTHORITY_DEFINED=NO` remains authoritative because this
-freeze selects and bounds the architecture but does not establish concrete
-signing identities, key custody, implementation, or operational proof.
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES` means the repository contract
+is complete enough for a later implementation work unit. It does not establish
+an installed writer, create a key, validate Secure Enclave behavior, or make
+Production bootstrap available.
 
 ## 4. Authority separation
 
@@ -194,29 +202,58 @@ least:
   receipt commitment, activation proof, and final verification; and
 - a cryptographic authentication value over every receipt field.
 
-The receipt requires cryptographic authentication, but this architecture does
-not select its Production primitive. A future implementation freeze must
-define and validate the exact primitive, algorithm, key custody, availability
-behavior, creation ceremony, identity binding, export and backup policy, and
-loss/recovery policy. No MAC, signature, P-256, Keychain, Secure Enclave,
-software fallback, or other Production mechanism is authorized by this
-correction. Failure to prove the selected design and its operational behavior
-fails closed.
+The selected receipt authentication primitive is ECDSA over NIST P-256 with
+SHA-256, using a non-exportable Secure Enclave private key. The signed message
+is the RFC 8785 JCS encoding of the receipt payload. The stored signature is
+strict unpadded base64url of the fixed-width 64-byte `r || s` representation;
+`r` and `s` are unsigned, big-endian, 32-byte values and `s` must be in the
+lower half of the P-256 group order. Verification rejects non-canonical JCS,
+DER signatures, padded base64, non-low-S signatures, alternate encodings, or a
+signature made over any other bytes. The receipt key ID is strict unpadded
+base64url SHA-256 of the 65-byte ANSI X9.63 uncompressed public key.
+
+The private key is created and used only by the future purpose-built Mac
+Release Installation Authority under a dedicated Keychain access group and a
+pinned production code-signing designated requirement. Its private material is
+non-exportable, has `privateKeyUsage` access only, is not synchronizable, is
+not backed up, and is unavailable to the application, bootstrap, operator,
+Ubuntu, Witness, Governance, SEC-02, and feature executors. Root identity,
+Keychain ACLs, entitlements, and code identity are jointly required access
+controls; none alone is receipt authenticity or release authorization.
+Key creation is permitted only during a separately authorized GENESIS or
+RECOVERY ceremony after exact Witness evidence. Normal install/update may
+never create, replace, import, select, or fall back from the key.
 
 ```text
 RECEIPT_CRYPTOGRAPHIC_AUTHENTICATION_REQUIRED=YES
-RECEIPT_CRYPTOGRAPHIC_PRIMITIVE_DEFINED=NO
+RECEIPT_CRYPTOGRAPHIC_PRIMITIVE_DEFINED=YES
+RECEIPT_SIGNING_PRIMITIVE=ECDSA_P256_SHA256
+RECEIPT_SIGNING_KEY_CUSTODY=MAC_SECURE_ENCLAVE_NON_EXPORTABLE
+RECEIPT_SIGNING_KEY_ACCESS_IDENTITY=PINNED_MAC_RELEASE_INSTALLATION_AUTHORITY
 SOFTWARE_CRYPTO_FALLBACK_AUTHORIZED=NO
 SECURE_ENCLAVE_RECEIPT_PRIMITIVE_OPERATIONALLY_VALIDATED=NO
 ```
 
-The authenticated receipt record itself must reside in a fixed Mac-local
-system location outside the application bundle, use descriptor-relative
-no-follow access, and be atomically replaced and durably synchronized by the
-installation authority. Exact path and limits remain an implementation-freeze
-decision. `root:wheel`, restrictive mode, ACL checks, link checks, filesystem
-identity, and immutable-file handling are required defense in depth but do not
-authenticate the receipt.
+The fixed storage root is
+`/Library/Application Support/AIControlCenter/Security/AntiRollback`. It is on
+the same local APFS volume as all of its children and contains only
+`receipt.v1.json`, `journal/`, and installation-authority-owned temporary files
+during one invocation. The root and `journal/` are real directories owned by
+`root:wheel`, mode `0700`, not symlinks, with no ACL, flags, or extended
+attributes that grant another writer. Receipt, journal, and temporary objects
+are regular files owned by `root:wheel`, mode `0600`, link count one, never
+symlinks, hard links, sockets, devices, FIFOs, aliases, clones accepted from a
+caller, or sparse files. The receipt is at most 16,384 bytes; each journal
+record is at most 32,768 bytes; the journal has at most one record per receipt
+generation plus one unresolved attempt and is otherwise a closed failure.
+
+Every path component is opened from a pinned root descriptor with no-follow
+semantics. Validation and I/O remain bound to the same descriptor, device, and
+inode; path re-resolution after validation is forbidden. The installation
+authority rejects unexpected entries, mounts, owners, modes, ACLs, flags,
+links, sizes, file types, descriptor changes, or filesystem ambiguity.
+Filesystem metadata is defense in depth and never replaces signature or
+Witness verification.
 
 The receipt never:
 
@@ -224,7 +261,158 @@ The receipt never:
 - authenticates itself or derives authenticity solely from UID/GID/mode;
 - grants bootstrap approval authority;
 - grants SEC-02 authority; or
-- grants execution authority.
+- grants Production mutation, `ControlledExecutionPort`, execution, retry, or
+  rollback authority.
+
+### 6.1 Canonical schema, identity, and version model
+
+`receipt.v1.json` is one UTF-8 JSON object with no BOM, duplicate keys,
+floats, exponent notation, implicit nulls, unknown fields, or trailing bytes.
+It must equal its RFC 8785 JCS serialization byte for byte. All digests and the
+signature use strict unpadded base64url. SHA-256 digests are exactly 32 bytes;
+UUIDs are lowercase canonical UUIDv7 strings; integers are positive JSON safe
+integers no greater than 9,007,199,254,740,991; timestamps are UTC RFC 3339
+with exactly microsecond precision and `Z` and never decide monotonicity.
+
+The closed schema is:
+
+```json
+{
+  "schema_version": "1",
+  "domain": "AICONTROLCENTER_ANTI_ROLLBACK_RECEIPT",
+  "receipt_id": "<UUIDv7 assigned once by the installation authority>",
+  "continuity_host_id": "<Witness-assigned UUIDv7>",
+  "receipt_generation": 1,
+  "previous_receipt_digest": null,
+  "release_version": 1,
+  "bootstrap_trust_source_version": 1,
+  "release_id": "<nonempty immutable release identifier>",
+  "release_manifest_digest": "<base64url SHA-256>",
+  "app_bundle_digest": "<base64url SHA-256>",
+  "trust_resource_digest": "<base64url SHA-256>",
+  "transition_nonce": "<base64url 32 bytes from the sealed manifest>",
+  "witness_record_generation": 1,
+  "witness_transition_digest": "<base64url SHA-256>",
+  "witness_checkpoint_id": "<Witness-assigned UUIDv7>",
+  "witness_checkpoint_object_digest": "<base64url SHA-256>",
+  "receipt_key_id": "<base64url SHA-256 of X9.63 public key>",
+  "committed_at": "<UTC RFC3339 microseconds>",
+  "state": "COMMITTED",
+  "signature": "<base64url 64-byte canonical P-256 signature>"
+}
+```
+
+The signature covers the complete object excluding only `signature`. For
+generation 1, `previous_receipt_digest` is JSON null; for every later
+generation it is the SHA-256 of the complete prior canonical receipt including
+its signature. Receipt identity is the tuple
+`(continuity_host_id, receipt_generation, receipt_id)`. Generation is exactly
+one greater than the authenticated prior generation and never resets for the
+same continuity host. A repeated receipt ID or generation with different
+canonical bytes is conflict, not an alternate replica. No field is optional.
+
+### 6.2 Witness binding and authoritative durability
+
+The local receipt is the authoritative Mac-local installed-version state. The
+already frozen external Continuity Witness is the non-circular persistent
+continuity anchor. No new persistent-authority subsystem is created. For every
+release transition, its existing PostgreSQL record and S3 Object Lock
+Compliance checkpoint history must durably record the same host, new record
+generation, release/trust-source maxima, release ID, manifest/app/trust
+digests, prior and resulting transition digests, and local receipt public-key
+ID before the local receipt can be committed. The checkpoint's opaque S3
+VersionId and object digest are bound into the local receipt. Retention covers
+the full Continuity Authority lifetime.
+
+The Witness operation is a purpose-bound evidence append authenticated as
+coming from the pinned Mac Release Installation Authority and bound to one
+Release Authority-authorized manifest and the exact prior Witness state. It
+records evidence only: it does not approve the release, choose values, grant
+install authority, advance the Mac-local receipt, or become a Control Plane.
+The later Witness repository implementation must add this closed release-
+observation operation; it must not expose generic mutation or command input.
+
+Before install, the Mac authority performs fresh challenge-bound read-only
+continuity verification. `CONTINUITY_VALID` must bind the exact host, current
+Witness generation/digest, maxima, and receipt key ID. Missing local state is
+handled only as `RECOVERY_REQUIRED` or an independently approved
+`GENESIS_ELIGIBLE`; the caller cannot select either. After Witness evidence is
+durably checkpointed and exactly re-read, the Mac authority may commit the
+matching local receipt. Thus a crash after Witness advancement but before the
+local commit leaves a safe, closed stale-local condition. Local-first commit is
+forbidden because deletion before Witness durability could erase the higher
+floor.
+
+```text
+WITNESS_DURABILITY_PRECEDES_LOCAL_RECEIPT_COMMIT=YES
+POSTGRESQL_ALONE_PROVES_WITNESS_DURABILITY=NO
+S3_CURRENT_KEY_VIEW_PROVES_HISTORY=NO
+WITNESS_RECORDS_EVIDENCE_NOT_AUTHORITY=YES
+MAC_RELEASE_INSTALLATION_AUTHORITY_SOLE_LOCAL_RECEIPT_WRITER=YES
+```
+
+### 6.3 Durable atomic update and journal
+
+There is no claimed cross-system transaction. One invocation uses the exact
+ordering below and a signed, durably retained phase journal record keyed by
+`<receipt_generation>-<receipt_id>.v1.json`:
+
+1. descriptor-bind and authenticate the local receipt/key/journal; obtain and
+   verify fresh Witness evidence; validate the exact release authorization;
+2. create the journal record in `PREPARED`, binding the complete old state,
+   proposed receipt digest, package facts, Witness request/operation IDs, and
+   phase; write with exclusive create, fully synchronize the file and journal
+   directory, then re-read and verify it;
+3. publish and verify the inactive release; atomically replace the same journal
+   record with `RELEASE_PUBLISHED_WITNESS_UNPROVEN` using a same-directory
+   exclusive temporary regular file, file full-sync, atomic `renameat`, parent
+   directory full-sync, and descriptor-bound re-read;
+4. submit the single evidence append to the Witness without automatic retry;
+   reconcile ambiguity only through read-only exact-ID queries; after exact
+   PostgreSQL/checkpoint proof, record `WITNESS_COMMITTED_LOCAL_UNPROVEN` with
+   the same atomic/full-sync protocol;
+5. sign the canonical receipt, atomically replace `receipt.v1.json` with a
+   same-directory exclusive temporary file, full-sync file, atomic `renameat`,
+   full-sync storage-root directory, then reopen, reauthenticate, and compare
+   exact bytes, generation, digest, and Witness bindings;
+6. perform the separately bounded activation, verify the active release, and
+   atomically/full-sync the journal terminal state `FULLY_VERIFIED_INSTALLED`.
+
+“Full-sync” means the strongest implementation-proven macOS durable-file and
+directory synchronization sequence, including `F_FULLFSYNC` where supported;
+unsupported or uncertain durability is failure. Temporary names contain only
+the authority-generated receipt ID, are never caller-selected, and stale
+temporaries are ambiguous evidence. Journal records are signed with the same
+receipt key and domain `AICONTROLCENTER_ANTI_ROLLBACK_JOURNAL`; each binds the
+prior journal digest. They are retained, not truncated or rewritten as history.
+Only the current attempt's phase file is atomically replaced.
+
+No journal phase, nonce, old authorization, or exact stored response grants
+completion, retry, rollback, or reconciliation mutation authority. Crash,
+timeout, lost acknowledgement, partial publication, extra/missing record,
+chain break, or uncertain synchronization stops. A new invocation is read-only
+reconciliation unless a new Release Authority authorization explicitly binds
+the exact observed local, Witness, journal, installed, and active state.
+
+### 6.4 Read-only reconciliation and closed failures
+
+Reconciliation opens one descriptor-bound snapshot and verifies, without
+mutation: receipt canonical form and signature; public-key identity and access
+status; journal chain and terminal phase; installed and active artifact facts;
+fresh signed Witness evidence; PostgreSQL/checkpoint agreement; and equality of
+host, generations, maxima, IDs, digests, and key binding. It returns only the
+five classifications in section 11. It never repairs, adopts, completes,
+retries, rolls back, selects a replica, recreates a key, or restores authority.
+
+Missing, malformed, noncanonical, oversized, hard-linked, symlinked,
+conflicting, duplicated, stale, downgraded, unverifiable, key-mismatched, or
+ambiguous local/Witness evidence denies installation and bootstrap. A missing,
+lost, disabled, inaccessible, duplicated, or ambiguity-status receipt key also
+denies. Key recovery requires a separately frozen Human Continuity Lifecycle
+RECOVERY ceremony, fresh hardware evidence, complete immutable-history proof,
+and a new exact Release Authority authorization; this architecture defines no
+automatic key recovery or software fallback. Key compromise/revocation remains
+a later operational ceremony and cannot reduce maxima.
 
 ## 7. First-install trust bootstrap
 
@@ -232,12 +420,14 @@ Receipt absence does not authenticate itself, and the candidate application
 release does not authenticate the absence or create its own acceptance
 authority. Local state absence does not prove first install. A non-circular,
 persistent anchor that survives deletion of locally governed application state
-is required to distinguish first install from reset, but that anchor is not
-defined by this architecture.
+is required to distinguish first install from reset. The already frozen
+external Continuity Witness supplies that anchor; this receipt creates no
+second anchor.
 
 ```text
 LOCAL_STATE_ABSENCE_PROVES_FIRST_INSTALL=NO
 FIRST_INSTALL_RESET_ATTACK_RESOLVED=NO
+FIRST_INSTALL_RESET_ATTACK_ARCHITECTURE_RESOLVED=YES
 FIRST_INSTALL_REQUIRES_NON_CIRCULAR_PERSISTENT_ANCHOR=YES
 APPLICATION_ACCESSIBLE_MONOTONIC_HARDWARE_COUNTER_CURRENTLY_PROVEN=NO
 PERSISTENT_ANCHOR_ROLE=CONTINUITY_AND_ELIGIBILITY_EVIDENCE_ONLY
@@ -245,20 +435,21 @@ PERSISTENT_ANCHOR_MAY_GRANT_INSTALL_AUTHORITY=NO
 PERSISTENT_ANCHOR_MAY_GRANT_BOOTSTRAP_AUTHORITY=NO
 PERSISTENT_ANCHOR_MAY_GRANT_SEC02_AUTHORITY=NO
 PERSISTENT_ANCHOR_MAY_GRANT_EXECUTION_AUTHORITY=NO
-FIRST_INSTALL_TRUST_BOOTSTRAP_GATE=BLOCKED_RESET_ANCHOR_UNDEFINED
+FIRST_INSTALL_TRUST_BOOTSTRAP_GATE=PASS_ARCHITECTURE_DEFINED_NOT_IMPLEMENTED
 ```
 
 Deleting the receipt, key, journal, evidence, and application must never make
 an old valid release qualify automatically as generation 1. Absence of all
 those objects is compatible with a reset attack and therefore cannot authorize
-generation-1 creation. Any asserted first install remains blocked until the
-installation authority can authenticate a non-circular persistent anchor and
-prove that the anchor's state permits generation 1.
+generation-1 creation. Any asserted first install remains blocked unless the
+installation authority authenticates the already selected external Continuity
+Witness and receives fresh `GENESIS_ELIGIBLE` evidence backed by complete
+PostgreSQL and S3 Object Lock Compliance history coverage.
 
 The package's signed manifest provides candidate values but cannot attest that
 local prior state is absent or that absence means first install. The separately
 installed, pinned installation authority may create generation 1 only after
-the unresolved persistent anchor independently proves that the generation-1
+the Continuity Witness independently proves that the generation-1
 eligibility and continuity precondition is satisfied. The actual release
 transition remains authorized only by the separately frozen Release Authority
 authorization and is performed only by the bounded Mac Release Installation
@@ -266,10 +457,9 @@ Authority.
 Candidate application code and bootstrap code never establish the anchor or
 create their own acceptance authority.
 
-First-install acceptance remains blocked until the non-circular persistent
-reset anchor, pinned installer identity, service establishment mechanism, and
-receipt cryptographic primitive are concretely frozen and operationally
-validated.
+The first-install/reset architecture is defined, but acceptance remains
+operationally blocked until the Witness, pinned installer identity, service,
+receipt primitive, and GENESIS ceremony are implemented and validated.
 
 ## 8. Update and stale-state semantics
 
@@ -338,7 +528,8 @@ SAME_RELEASE_VERSION_DIFFERENT_ARTIFACT_ALLOWED=NO
 macOS cannot be assumed to provide one atomic transaction spanning application
 bundle publication, Keychain/Secure Enclave key use, receipt-file replacement,
 activation, and durable evidence. This architecture does not claim such
-atomicity.
+atomicity. Section 6.3 is the authoritative detailed ordering and journal
+contract; the following is its higher-level phase summary.
 
 Each individual filesystem publication and receipt replacement must be atomic
 and durably synchronized, but the overall transition uses ordered, durably
@@ -346,12 +537,15 @@ journaled phases:
 
 1. authenticate old state and package; write `PREPARED` evidence;
 2. publish the fully verified candidate to a fixed inactive/versioned install
-   location; verify it; write `RELEASE_PUBLISHED_RECEIPT_UNPROVEN`;
-3. compare old state again; cryptographically commit the nondecreasing receipt;
-   read it back and verify it; write `RECEIPT_ADVANCED_ACTIVATION_UNPROVEN`;
-4. perform only the fixed application publication/activation operation; verify
+   location; verify it; write `RELEASE_PUBLISHED_WITNESS_UNPROVEN`;
+3. compare old state again; append and exactly prove the matching Witness
+   PostgreSQL and immutable checkpoint evidence; write
+   `WITNESS_COMMITTED_LOCAL_UNPROVEN`;
+4. cryptographically commit, read back, and verify the nondecreasing local
+   receipt; write `RECEIPT_ADVANCED_ACTIVATION_UNPROVEN`;
+5. perform only the fixed application publication/activation operation; verify
    its exact code identity, version, digests, and receipt equality; and
-5. write and re-read `FULLY_VERIFIED_INSTALLED` terminal evidence.
+6. write and re-read `FULLY_VERIFIED_INSTALLED` terminal evidence.
 
 The former active release remains active through phase 2, but once a higher
 receipt is committed, any lower active release is not SEC-02-bootstrap-eligible
@@ -382,8 +576,8 @@ reconciliation path.
 Uninstall may remove activation only under a separately frozen uninstall
 contract; it must not delete or reduce the receipt or its key. Receipt/key loss,
 corruption, inaccessible hardware-backed key state, conflicting replicas, or
-unprovable durability is fail-closed and has no recovery authority in this
-freeze.
+unprovable durability is fail-closed. Recovery is not automatic and remains an
+unimplemented separately governed ceremony under section 6.4.
 
 ## 11. Durable terminal evidence
 
@@ -451,11 +645,12 @@ changed by this freeze.
 
 ## 14. Readiness and unresolved blockers
 
-This architecture resolves the conceptual authority separation, monotonic
-update rule, stale-state behavior, non-atomic ordering, ambiguity handling,
-and terminal evidence model. First-install/reset trust remains unresolved. It
-does not provide the concrete and operationally proven dependencies required
-for implementation.
+This architecture resolves the receipt schema, identity, cryptographic
+primitive, key custody, storage, journal durability, authority separation,
+monotonic update rule, stale-state behavior, non-atomic ordering, ambiguity
+handling, Witness binding, and terminal evidence model. The existing
+Continuity Witness resolves first-install/reset at architecture level. None is
+implemented or operationally validated.
 
 The following remain blockers:
 
@@ -463,10 +658,13 @@ The following remain blockers:
 - pinned Installer and Application Developer ID designated requirements;
 - authenticated release-manifest schema and signing/notarization pipeline;
 - exact macOS installation-service establishment and update mechanism;
-- non-circular persistent first-install/reset anchor that cannot be reset by
-  deleting application-accessible receipt, key, journal, evidence, and bundle;
-- exact receipt cryptographic primitive, access-control identity,
-  receipt path/schema/limits, key-loss policy, and journal durability design;
+- repository implementation of the purpose-bound Witness release-observation
+  operation and its exact API/schema/transaction tests;
+- Secure Enclave/Keychain entitlement, code-requirement, signature encoding,
+  filesystem full-sync, atomic replacement, and crash-point validation on the
+  target macOS and hardware;
+- GENESIS key creation and RECOVERY/key-loss ceremonies consistent with the
+  frozen Witness lifecycle and complete immutable-history proof;
 - exact inactive publication and active application paths and activation API;
 - signed/notarized installer and application artifacts plus negative-path,
   crash-point, stale-state, downgrade, and durability validation.
@@ -480,11 +678,16 @@ implementation authority is not ready, and Production bootstrap is unavailable.
 
 ```text
 SEC02_RELEASE_INSTALL_ANTI_ROLLBACK_AUTHORITY_PRECISION_GATE=PASS
-FIRST_INSTALL_TRUST_BOOTSTRAP_GATE=BLOCKED_RESET_ANCHOR_UNDEFINED
-FIRST_INSTALL_RESET_ATTACK_GATE=BLOCKED
+SEC02_AR_01_GATE=PASS
+ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_GATE=PASS_DEFINED_NOT_IMPLEMENTED
+FIRST_INSTALL_TRUST_BOOTSTRAP_GATE=PASS_ARCHITECTURE_DEFINED_NOT_IMPLEMENTED
+FIRST_INSTALL_RESET_ATTACK_GATE=PASS_ARCHITECTURE_ONLY
 LOCAL_ABSENCE_AUTHORITY_GATE=PASS_NONE_GRANTED
-NON_CIRCULAR_PERSISTENT_ANCHOR_GATE=BLOCKED_UNDEFINED
-RECEIPT_CRYPTO_PRIMITIVE_GATE=BLOCKED_UNDEFINED
+NON_CIRCULAR_PERSISTENT_ANCHOR_GATE=PASS_EXISTING_CONTINUITY_WITNESS
+RECEIPT_CRYPTO_PRIMITIVE_GATE=PASS_P256_SECURE_ENCLAVE_DEFINED_NOT_VALIDATED
+RECEIPT_KEY_CUSTODY_GATE=PASS_DEFINED_NOT_IMPLEMENTED
+RECEIPT_DURABLE_STORAGE_GATE=PASS_DEFINED_NOT_IMPLEMENTED
+RECEIPT_JOURNAL_DURABILITY_GATE=PASS_DEFINED_NOT_IMPLEMENTED
 SOFTWARE_CRYPTO_FALLBACK_GATE=PASS_NONE_AUTHORIZED
 RELEASE_VERSION_MONOTONICITY_GATE=PASS_STRICT
 TRUST_SOURCE_VERSION_MONOTONICITY_GATE=PASS_NONDECREASING_CONTENT_CHANGE_STRICT
@@ -509,6 +712,7 @@ INSTALL_POLICY_CURRENT_STATE_ASSUMPTION_GATE=PASS_NOT_ASSERTED
 SEC02_BOOTSTRAP_APPROVER_TRUST_SOURCE_ARCHITECTURE_FROZEN=YES
 BOOTSTRAP_APPROVER_TRUST_SOURCE_OPERATIONALLY_DEFINED=NO
 BOOTSTRAP_IMPLEMENTATION_AUTHORITY_READY=NO
+SEC02_PRODUCTION_TRUST_BOOTSTRAP_IMPLEMENTATION=NOT_READY
 PRODUCTION_BOOTSTRAP_AVAILABLE=NO
 
 SIGNED_APP_BUNDLE_CURRENTLY_DEPLOYED=NOT_ASSERTED
@@ -518,12 +722,22 @@ ROOT_WHEEL_INSTALL_STATE_CURRENTLY_PRESENT=NOT_ASSERTED
 ROOT_WHEEL_INSTALL_POLICY=FUTURE_RELEASE_INSTALL_CONTRACT
 
 ANTI_ROLLBACK_RECEIPT_REQUIRED=YES
-ANTI_ROLLBACK_RECEIPT_AUTHORITY_DEFINED=NO
+ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES
+ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO
 ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO
 ANTI_ROLLBACK_RECEIPT_MAY_GRANT_BOOTSTRAP_AUTHORITY=NO
+ANTI_ROLLBACK_RECEIPT_MAY_GRANT_SEC02_AUTHORITY=NO
+ANTI_ROLLBACK_RECEIPT_MAY_GRANT_EXECUTION_AUTHORITY=NO
+ANTI_ROLLBACK_RECEIPT_MAY_GRANT_RETRY_AUTHORITY=NO
+ANTI_ROLLBACK_RECEIPT_MAY_GRANT_ROLLBACK_AUTHORITY=NO
+ANTI_ROLLBACK_RECEIPT_MAY_GRANT_PRODUCTION_MUTATION_AUTHORITY=NO
+ANTI_ROLLBACK_RECEIPT_MAY_GRANT_CONTROLLED_EXECUTION_PORT_AUTHORITY=NO
 
 RECEIPT_CRYPTOGRAPHIC_AUTHENTICATION_REQUIRED=YES
-RECEIPT_CRYPTOGRAPHIC_PRIMITIVE_DEFINED=NO
+RECEIPT_CRYPTOGRAPHIC_PRIMITIVE_DEFINED=YES
+RECEIPT_KEY_CUSTODY_ARCHITECTURE_DEFINED=YES
+RECEIPT_DURABLE_STORAGE_ARCHITECTURE_DEFINED=YES
+RECEIPT_JOURNAL_DURABILITY_ARCHITECTURE_DEFINED=YES
 SOFTWARE_CRYPTO_FALLBACK_AUTHORIZED=NO
 SECURE_ENCLAVE_RECEIPT_PRIMITIVE_OPERATIONALLY_VALIDATED=NO
 
@@ -552,9 +766,10 @@ DOCKER_RUNTIME_ACCESSED=false
 GIT_MUTATION=false
 ```
 
-`SEC02_RELEASE_INSTALL_ANTI_ROLLBACK_AUTHORITY_PRECISION_GATE=PASS` means the
-permissible future authority and its limits are precisely frozen. It does not contradict
-`ANTI_ROLLBACK_RECEIPT_AUTHORITY_DEFINED=NO`: no concrete operational identity,
-cryptographic mechanism, installed writer, or validated receipt currently
-exists. Architecture frozen, implementation complete, and operationally
-validated are separate states and must never be inferred from one another.
+`SEC02_RELEASE_INSTALL_ANTI_ROLLBACK_AUTHORITY_PRECISION_GATE=PASS` and
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES` mean the permissible future
+authority, data, primitive, custody, and durability contracts are precisely
+frozen. No installed writer, created key, receipt, cloud resource, or validated
+mechanism currently exists. Architecture frozen, implementation complete, and
+operationally validated are separate states and must never be inferred from
+one another.

@@ -1,5 +1,23 @@
 # Roadmap
 
+## COMPLETE — SEC02-AR-01 anti-rollback receipt architecture
+
+- [x] Freeze canonical receipt schema, identity, P-256/SHA-256 Secure Enclave
+  authentication, non-exportable key custody, fixed storage, atomic journal,
+  monotonicity, conflict handling, and read-only reconciliation.
+- [x] Bind reset resistance to the existing external Continuity Witness without
+  granting it install, bootstrap, SEC-02, execution, retry, or rollback
+  authority.
+- [ ] Implement repository domain types, validators, ports, filesystem adapter,
+  Witness release-observation contract, fakes, and crash/failure tests in a
+  separately authorized work unit.
+
+`ANTI_ROLLBACK_RECEIPT_ARCHITECTURE_DEFINED=YES`
+
+`ANTI_ROLLBACK_RECEIPT_IMPLEMENTED=NO`
+
+`ANTI_ROLLBACK_RECEIPT_OPERATIONALLY_VALIDATED=NO`
+
 ## PRIMARY NEXT PRODUCTION MILESTONE — SHOPPING_RUNTIME_ACTIVATED_AND_HOMEPAGE_SERVICE_VALIDATED
 
 SEC-02 WU-01/WU-02/WU-03 repository-foundation work is closed. The primary
