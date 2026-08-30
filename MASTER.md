@@ -5293,3 +5293,14 @@ The observed governance mode remains `0755` / `UNSAFE_EXISTING`. The narrow
 governance remediation authority is defined and repository-only; its Production
 adapter, Authorization Services right, operational validation, and Production
 availability remain absent.
+
+## SEC02-FS-MACRO-03A
+
+The concrete repository authorization contract is frozen and implemented for
+only the passwd-home-derived governance directory and only `0755` to `0700`.
+One fresh, purpose-specific macOS approval permits one claim and one attempt;
+success, failure, and uncertainty all consume it. Preauthorization, sharing,
+reuse, retry, arbitrary path/mode/identity payloads, chown, trust/registry/
+authorization-database mutation, bootstrap authority, and feature authority
+are denied. No live adapter or Authorization Services call exists. Next:
+`SEC02-FS-MACRO-03B-BOUNDED-LIVE-REMEDIATION-ADAPTER`.

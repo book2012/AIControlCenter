@@ -37,6 +37,37 @@ The Mac mini remains the sole Control Plane and Ubuntu has zero authority. The
 absent SEC-02 registry cannot authorize this pre-registry operation. Remediation
 approval grants no bootstrap, issuer, retry, release, or feature authority.
 
+### SEC02-FS-MACRO-03A concrete authorization contract
+
+The repository freezes a single dedicated right,
+`com.aicontrolcenter.governance-remediation.mode-0755-to-0700`, for the single
+purpose `GOVERNANCE_DIRECTORY_MODE_0755_TO_0700`. The right is not selected by
+the caller and is not generic or shared. A qualifying representation must be a
+fresh interactive approval: preauthorization, reuse, sharing, retry, and
+recovery reuse are denied.
+
+One accepted approval creates one payload-free available attempt. Its sole
+valid transition is to claimed, and a claimed attempt must transition exactly
+once to consumed with `SUCCESS`, `FAILURE`, or `UNCERTAIN`. Every result consumes
+the approval. A claimed or consumed attempt cannot be claimed again; there is
+no claim stealing, rollback authority, or automatic retry.
+
+The authorization presentation, decision, and attempt convey no executable,
+command, argv, environment, shell, subprocess, API payload, path, UID, GID, or
+mode. Before authorization, the pure policy independently validates the exact
+passwd-home-derived governance target, exact `0755` observed mode, exact `0700`
+result mode, unchanged passwd UID/GID, and fixed remediation operation. The
+`trust` child, registry/database targets, authorization database, chown, and all
+bootstrap, issuer, release, feature, and execution authorities remain denied.
+
+These are architecture-required semantics and are repository implemented as
+immutable models and pure validation. Future SEC02-FS-MACRO-03B work must
+separately validate actual macOS Authorization Services API behavior, right
+installation/configuration, interactive acquisition, process/crash behavior,
+and durable one-attempt consumption. This Work Unit makes no claim that those
+operational properties are already supplied by an API, and it neither installs
+nor invokes the right.
+
 ## Repository implementation and operational status
 
 The repository contains only immutable eligibility/plan/postcondition contracts,
@@ -52,6 +83,10 @@ NARROW_GOVERNANCE_REMEDIATION_AUTHORITY_DEFINED=YES
 NARROW_GOVERNANCE_REMEDIATION_IMPLEMENTED=REPOSITORY_ONLY
 NARROW_GOVERNANCE_REMEDIATION_PRODUCTION_ADAPTER_IMPLEMENTED=NO
 NARROW_GOVERNANCE_REMEDIATION_OPERATIONALLY_VALIDATED=NO
+CONCRETE_REMEDIATION_AUTHORIZATION_CONTRACT_DEFINED=YES
+CONCRETE_REMEDIATION_AUTHORIZATION_CONTRACT_IMPLEMENTED=YES
+AUTHORIZATION_SERVICES_INVOKED=NO
+LIVE_CHMOD_ADAPTER_IMPLEMENTED=NO
 PRODUCTION_REMEDIATION_AVAILABLE=NO
 PRODUCTION_BOOTSTRAP_AVAILABLE=NO
 SEC02_TRUSTED_ISSUER_OPERATIONAL=NO

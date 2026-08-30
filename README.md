@@ -4351,3 +4351,14 @@ read-only classifier, and an uninvoked Darwin observation adapter. It also
 defines repository-only narrow remediation planning for the exact governance
 directory `0755` to `0700` case. No live remediation adapter or operational
 authority exists; Production bootstrap and the trusted issuer remain unavailable.
+
+## SEC02-FS-MACRO-03A authorization contract
+
+The repository now implements the immutable, pure authorization contract for
+one future exact governance-directory `0755` to `0700` attempt. It accepts only
+one fresh interactive approval for one purpose-specific macOS right and makes
+success, failure, and uncertainty consuming terminal outcomes. Authorization
+artifacts contain no caller-selected execution, path, mode, UID, or GID data.
+No Authorization Services call, chmod adapter, Production access, filesystem
+mutation, bootstrap authority, or feature authority was added. Operational/API
+validation and any bounded live adapter remain separate SEC02-FS-MACRO-03B work.

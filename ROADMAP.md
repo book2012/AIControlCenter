@@ -4386,4 +4386,7 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
 
 - [x] Implement pure fixed-path FS-02 planning, observation, and classification.
 - [x] Define and repository-implement exact governance `0755` to `0700` eligibility.
-- [ ] SEC02-FS-MACRO-03 concrete remediation authorization and operational validation.
+- [x] SEC02-FS-MACRO-03A freeze and repository-implement the concrete,
+  one-approval/one-attempt remediation authorization contract.
+- [ ] SEC02-FS-MACRO-03B bounded live remediation adapter and operational/API
+  validation; it requires separate authorization and is not begun by 03A.

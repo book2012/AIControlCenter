@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 2026-08-30 — SEC02-FS-MACRO-03A authorization contract implemented
+
+- Froze and repository-implemented the dedicated, purpose-specific macOS
+  authorization contract for only the passwd-home governance directory and
+  only mode `0755` to `0700`.
+- Enforced one fresh interactive approval, one claim, one attempt, no retry or
+  reuse, and consuming `SUCCESS`, `FAILURE`, and `UNCERTAIN` outcomes.
+- Kept authorization artifacts free of executable, command, environment, path,
+  mode, UID, GID, bootstrap, release, issuer, feature, and generic execution
+  authority; independently reject forged target/mode/identity plans.
+- Added immutable models and pure policy tests only. No Authorization Services
+  invocation, live chmod adapter, Production access, or filesystem mutation
+  occurred. Operational/API validation remains SEC02-FS-MACRO-03B work.
+
+`CONCRETE_REMEDIATION_AUTHORIZATION_CONTRACT_DEFINED=YES`
+
+`CONCRETE_REMEDIATION_AUTHORIZATION_CONTRACT_IMPLEMENTED=YES`
+
+`AUTHORIZATION_SERVICES_INVOKED=NO`
+
+`LIVE_CHMOD_ADAPTER_IMPLEMENTED=NO`
+
 ## 2026-08-30 — SEC02-AR-01 anti-rollback receipt architecture closed
 
 - Froze the canonical receipt schema and identity, exact Secure Enclave
