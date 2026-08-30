@@ -1,5 +1,12 @@
 # AIControlCenter
 
+Current SEC-02 status: the fresh-human-evidence foundation is implemented in the
+repository but is not operational. It selects Secure Enclave P-256 user-presence
+signing, binds approval to the exact request and `AuthorizationReplayKey`, and
+requires verification before the durable one-attempt claim. No live key,
+authentication, privileged helper, or Production remediation is available. See
+[`SEC-02-FRESH-HUMAN-EVIDENCE.md`](docs/architecture/SEC-02-FRESH-HUMAN-EVIDENCE.md).
+
 ## Current authoritative — SEC02-FS-MACRO-03B4R2-A foundation closed
 
 The repository now contains non-deployable app/helper/LaunchDaemon templates,

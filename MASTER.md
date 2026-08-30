@@ -1,5 +1,14 @@
 # MASTER
 
+## Current authoritative status — SEC-02 fresh-human evidence foundation
+
+SEC02-FS-MACRO-03B4R2-B is repository-implemented and non-operational. Exact
+fresh-human evidence is verified before `claim_once(AuthorizationReplayKey)` and
+the sole helper attempt; evidence itself grants zero authority. The selected
+future mechanism is Secure Enclave P-256 with user presence and private-key use.
+No key, live authentication, concrete XPC signing identities, helper activation,
+journal provisioning, or Production remediation is available.
+
 ## Current authoritative status — SEC02-FS-MACRO-03B4R2-A closed
 
 Native package templates, mutual-XPC signing configuration, native replay

@@ -1,5 +1,15 @@
 # CHANGELOG
 
+## 2026-08-31 — SEC-02 fresh-human evidence foundation
+
+- Added immutable RFC 8785-canonical challenge/evidence models, typed exact
+  verification, and intercepted orchestration before the existing durable claim.
+- Selected future Secure Enclave P-256 `userPresence` signing without creating a
+  key or reusable `LAContext`; native contracts type-check but are not operational.
+- Hardened peer signing so arbitrary strings cannot create READY identities.
+- Validation: focused `29 passed, 192 warnings`; related SEC-02 `234 passed, 184
+  warnings`; canonical exactly once `4432 passed, 5 deselected, 635 warnings`.
+
 ## 2026-08-30 — SEC02-FS-MACRO-03B4R2-A repository foundation
 
 - Added unresolved-identity app/helper/LaunchDaemon templates and fixed bundle

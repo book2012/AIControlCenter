@@ -1,5 +1,15 @@
 # SEC-02 Narrow Governance Directory Remediation Authority
 
+## Fresh-human prerequisite
+
+Before any durable helper attempt, an exact `FreshHumanEvidenceV1` must verify
+against the control-plane-issued challenge binding purpose, sole `0755 -> 0700`
+mutation, immutable request identity, `AuthorizationReplayKey`, nonce, and bounded
+time interval. Evidence is verification-only and grants no mutation, provisioning,
+execution, retry, rollback, or privilege authority. The existing remediation
+journal remains the sole durable one-attempt authority. No live authentication or
+Production remediation was introduced.
+
 ## SEC02-FS-MACRO-03B4R2-A repository foundation
 
 The future native package layout, fail-closed two-role XPC signing configuration,

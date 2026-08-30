@@ -1,5 +1,13 @@
 # Project History
 
+## 2026-08-31 — Fresh human evidence foundation
+
+Implemented SEC02-FS-MACRO-03B4R2-B as pure models, verification, native source
+contracts, and fake orchestration. Fresh evidence now precedes the durable helper
+attempt, while the existing journal remains the only replay/one-attempt authority.
+No live security API, key, authentication, helper, journal, or Production state
+was created. Canonical validation passed once with 4432 passed, 5 deselected.
+
 ## 2026-08-30 — SEC02-FS-MACRO-03B4R2-A foundation closed
 
 03B4R2-A added non-deployable native package templates with unresolved identity

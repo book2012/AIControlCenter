@@ -1,0 +1,49 @@
+# SEC-02 Fresh Human Evidence Foundation
+
+Status: `REPOSITORY_IMPLEMENTED`, `SOURCE_IMPLEMENTED`, `TYPECHECKED`, and
+`OPERATIONALLY_VALIDATED=false`.
+
+SEC02-FS-MACRO-03B4R2-B freezes this exact order:
+
+`exact eligibility -> bounded Authorization Services acquisition -> derive AuthorizationReplayKey -> issue exact FreshHumanChallengeV1 -> obtain fresh user-presence-backed signature -> verify exact FreshHumanEvidenceV1 -> durable journal claim_once(AuthorizationReplayKey) -> exactly one bounded helper attempt -> terminal durable evidence`
+
+The immutable challenge uses the existing RFC 8785/JCS implementation and
+binds schema, exact `GOVERNANCE_DIRECTORY_MODE_0755_TO_0700` purpose, the sole
+governance-directory `0755 -> 0700` mutation, immutable request identity,
+`AuthorizationReplayKey`, a verifier-issued 32-byte nonce, and a timezone-aware
+bounded validity interval. Verification is typed as `VERIFIED`, `DENIED`,
+`EXPIRED`, `NOT_READY`, or `ERROR`; only the exact enum value `VERIFIED` may
+precede the durable claim.
+
+Evidence contains only the challenge, signature, public-key fingerprint, and
+algorithm/version. It contains no password, biometric data, raw Local
+Authentication credential, `AuthorizationRef`, external form, reusable
+`LAContext`, or generic token. Evidence grants no remediation, journal
+provisioning, execution, retry, rollback, generic privilege, or Production
+infrastructure authority. `PreBootstrapRemediationAttemptJournal.claim_once`
+remains the sole durable one-attempt authority; there is no second journal or
+TTL/lease retry model.
+
+The selected future native mechanism is a Secure Enclave P-256 signing key with
+`SecAccessControl` `userPresence` and `privateKeyUsage`, signing the canonical
+challenge bytes. Native signing and verification ports are source-implemented
+and type-checked. No key exists, no Keychain mutation or signature operation was
+performed, and no authentication dialog ran.
+
+An authenticated `LAContext` must never be cached, persisted, transferred, or
+reused. The preferred protected-key operation supplies no reusable
+authentication context. If UI integration later makes a context unavoidable,
+it must be new per exact request, keep reuse duration at zero, be invalidated
+after the terminal result, and never satisfy another request. Operational
+freshness is not claimed until live validation exists.
+
+Peer signing now requires opaque, purpose-specific, role-bound resolved values.
+Raw strings, missing/malformed/permissive requirements, swapped roles, and
+inappropriate identical requirements cannot make Production ready. Concrete
+client and helper requirements remain absent and `NOT_READY`.
+
+Production remediation remains unavailable. Remaining blockers are live Secure
+Enclave key provisioning and custody, one-use user-presence validation, trusted
+public-key enrollment, concrete resolved mutual XPC signing requirements,
+authorized helper packaging/registration, journal provisioning ceremony, and
+separately authorized end-to-end Production validation.

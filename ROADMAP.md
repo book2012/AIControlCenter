@@ -1,5 +1,16 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B4R2-B fresh-human evidence foundation
+
+- [x] Exact immutable challenge/evidence and typed verification contracts.
+- [x] Verification-before-durable-claim fake orchestration and replay tests.
+- [x] Secure Enclave P-256 user-presence native source boundary, type-checked.
+- [x] Raw-string mutual XPC signing readiness removed.
+- [ ] Live key provisioning, user-presence ceremony, resolved signing identities,
+  helper packaging, journal provisioning, and Production validation remain gated.
+
+Next: `SEC02-FS-MACRO-03B4R2-C-LIVE-PACKAGING-AND-PROVISIONING-READINESS`.
+
 ## NEXT — SEC02-FS-MACRO-03B4R2-B fresh-human evidence
 
 - [x] Add repository-native package and LaunchDaemon template foundations.

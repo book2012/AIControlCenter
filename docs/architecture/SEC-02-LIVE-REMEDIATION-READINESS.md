@@ -1,5 +1,15 @@
 # SEC-02 Live Remediation Readiness
 
+## Fresh-human evidence update — 2026-08-31
+
+The repository now verifies an exact, bounded, RFC 8785-canonical human-evidence
+challenge before the durable replay claim. The future signer is Secure Enclave
+P-256 protected by `userPresence` and `privateKeyUsage`, with no reusable
+authenticated `LAContext`. This is source-implemented and type-checked only.
+The live key, authentication, trusted key enrollment, concrete mutual XPC signing
+requirements, helper activation, journal provisioning, and Production ceremony
+remain absent; live remediation is therefore `NOT_READY`.
+
 Status: **ARCHITECTURE REVIEWED; NOT READY FOR PRODUCTION CEREMONY**
 
 ## SEC02-FS-MACRO-03B4R2-A repository closure

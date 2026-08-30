@@ -1,5 +1,15 @@
 # AI Home Datacenter Architecture
 
+## SEC-02 fresh-human evidence foundation
+
+SEC02-FS-MACRO-03B4R2-B adds the repository-only, RFC 8785-canonical fresh-human
+challenge/evidence and intercepted orchestration boundary described in
+[`SEC-02-FRESH-HUMAN-EVIDENCE.md`](docs/architecture/SEC-02-FRESH-HUMAN-EVIDENCE.md).
+Fresh evidence binds the exact purpose, mutation, request, replay key, nonce,
+and bounded time window before the existing durable journal claim. It grants no
+authority. Secure Enclave P-256 plus `userPresence`/`privateKeyUsage` is selected
+but no key, live authentication, helper operation, or Production mutation exists.
+
 ## SEC02-FS-MACRO-03B4R2-A native repository foundation
 
 The authoritative repository namespace is `com.aicontrolcenter`; no app/helper
