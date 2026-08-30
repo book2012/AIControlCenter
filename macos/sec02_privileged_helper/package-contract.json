@@ -1,13 +1,14 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "authoritative_namespace": "com.aicontrolcenter",
-  "app_bundle_identifier": null,
-  "helper_bundle_identifier": null,
+  "app_bundle_identifier": "com.aicontrolcenter.app",
+  "helper_bundle_identifier": "com.aicontrolcenter.sec02-remediation-helper",
   "team_identifier": null,
   "release_signing_identity": null,
   "client_code_signing_requirement": null,
   "helper_code_signing_requirement": null,
-  "mach_service_identifier": null,
+  "mach_service_identifier": "com.aicontrolcenter.sec02-remediation-helper",
+  "launchdaemon_plist_name": "com.aicontrolcenter.sec02-remediation-helper.plist",
   "bundle_layout": {
     "app": "AIControlCenter.app",
     "executables": "Contents/MacOS",
@@ -15,5 +16,12 @@
   },
   "smappservice_api": "daemon(plistName:)",
   "registration_permitted": false,
-  "operation": "RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700"
+  "executables": {
+    "app": "AIControlCenter",
+    "helper": "SEC02GovernanceRemediationHelper"
+  },
+  "operations": [
+    "PROVISION_PRE_BOOTSTRAP_REMEDIATION_JOURNAL",
+    "RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700"
+  ]
 }

@@ -170,12 +170,12 @@ def validate_bounded_remediation_authorization_presentation(
     )
 
 
-def _create_claimed_bounded_remediation_attempt(
+def create_claimed_bounded_remediation_attempt_after_composite_gates(
     validation: BoundedRemediationPresentationValidation,
     fresh_human_evidence_verified: bool,
     durable_claim_succeeded: bool,
 ) -> RemediationAttemptAuthorization | None:
-    """Create the exact claimed attempt only after both independent gates."""
+    """Create the exact claimed attempt only after all three composite gates."""
 
     if (
         type(validation) is not BoundedRemediationPresentationValidation
@@ -241,5 +241,6 @@ __all__ = (
     "RemediationAuthorizationPurpose", "RemediationAuthorizationRight",
     "authorize_remediation_attempt", "claim_remediation_attempt",
     "consume_remediation_attempt",
+    "create_claimed_bounded_remediation_attempt_after_composite_gates",
     "validate_bounded_remediation_authorization_presentation",
 )

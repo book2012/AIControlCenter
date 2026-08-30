@@ -18,6 +18,9 @@ HELPER_CODE_SIGNING_REQUIREMENT = None
 
 
 class PrivilegedHelperOperation(Enum):
+    PROVISION_PRE_BOOTSTRAP_REMEDIATION_JOURNAL = (
+        "PROVISION_PRE_BOOTSTRAP_REMEDIATION_JOURNAL"
+    )
     RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700 = (
         "RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700"
     )
@@ -95,8 +98,9 @@ class SMAppServicePackageContract:
 
 
 class FixedPrivilegedHelperProtocol(Protocol):
-    """Exactly one semantic RPC; it has no caller-selectable mutation fields."""
+    """Two explicit zero-argument RPCs; no generic operation or payload."""
 
+    def provision_pre_bootstrap_remediation_journal(self) -> None: ...
     def restrict_governance_directory_mode_0755_to_0700(self) -> None: ...
 
 

@@ -20,6 +20,43 @@ class JournalProvisioningEligibility(Enum):
     DENIED = "DENIED"
 
 
+class JournalTargetState(Enum):
+    ABSENT = "ABSENT"
+    SAFE_EXISTING = "SAFE_EXISTING"
+    UNSAFE_EXISTING = "UNSAFE_EXISTING"
+    AMBIGUOUS = "AMBIGUOUS"
+
+
+class JournalProvisioningAction(Enum):
+    CREATE_ONCE = "CREATE_ONCE"
+    RECOGNIZE_READ_ONLY = "RECOGNIZE_READ_ONLY"
+    FAIL_CLOSED = "FAIL_CLOSED"
+
+
+@dataclass(frozen=True, slots=True)
+class JournalProvisioningReceipt:
+    schema_version: int
+    purpose: JournalProvisioningPurpose
+    provisioning_replay_fingerprint: str
+    terminal_provisioning_state: str
+
+
+def decide_journal_provisioning(
+    state: JournalTargetState, receipt: JournalProvisioningReceipt | None = None
+) -> JournalProvisioningAction:
+    if state is JournalTargetState.ABSENT and receipt is None:
+        return JournalProvisioningAction.CREATE_ONCE
+    matching = (
+        state is JournalTargetState.SAFE_EXISTING
+        and type(receipt) is JournalProvisioningReceipt
+        and receipt.schema_version == 1
+        and receipt.purpose is JournalProvisioningPurpose.CREATE_PRE_BOOTSTRAP_REMEDIATION_JOURNAL
+        and bool(receipt.provisioning_replay_fingerprint)
+        and receipt.terminal_provisioning_state == "COMPLETED"
+    )
+    return JournalProvisioningAction.RECOGNIZE_READ_ONLY if matching else JournalProvisioningAction.FAIL_CLOSED
+
+
 @dataclass(frozen=True, slots=True)
 class JournalProvisioningPlan:
     purpose: JournalProvisioningPurpose = (
@@ -70,6 +107,8 @@ def authorize_journal_provisioning(
 __all__ = (
     "JournalProvisioningAdapter", "JournalProvisioningAuthorization",
     "JournalProvisioningEligibility", "JournalProvisioningPlan",
+    "JournalProvisioningAction", "JournalProvisioningReceipt", "JournalTargetState",
     "JournalProvisioningPurpose", "authorize_journal_provisioning",
+    "decide_journal_provisioning",
     "validate_journal_provisioning_plan",
 )

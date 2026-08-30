@@ -27,7 +27,7 @@ from .governance_remediation_authorization import (
     authorize_remediation_attempt,
     claim_remediation_attempt,
     consume_remediation_attempt,
-    _create_claimed_bounded_remediation_attempt,
+    create_claimed_bounded_remediation_attempt_after_composite_gates,
     validate_bounded_remediation_authorization_presentation,
 )
 from .pre_bootstrap_filesystem import PreBootstrapFilesystemPlan
@@ -315,7 +315,7 @@ def orchestrate_fresh_human_governance_remediation(
         journal.claim_once(acquisition.replay_key)
     except (DurableJournalError, ReplayDenied, ValueError):
         return _no_human_attempt(acquisition.status, verification, presentation_evidence)
-    claimed = _create_claimed_bounded_remediation_attempt(
+    claimed = create_claimed_bounded_remediation_attempt_after_composite_gates(
         decision, verification is FreshHumanVerificationResult.VERIFIED, True
     )
     if claimed is None:

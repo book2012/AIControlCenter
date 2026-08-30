@@ -9,12 +9,16 @@ from core.governance.control_plane.trust.governance_privileged_helper import (
 )
 
 
-def test_xpc_protocol_has_exactly_one_zero_argument_semantic_operation():
+def test_xpc_protocol_has_exactly_two_zero_argument_semantic_operations():
     public = [name for name in FixedPrivilegedHelperProtocol.__dict__ if not name.startswith("_")]
-    assert public == ["restrict_governance_directory_mode_0755_to_0700"]
-    method = FixedPrivilegedHelperProtocol.restrict_governance_directory_mode_0755_to_0700
-    assert list(inspect.signature(method).parameters) == ["self"]
-    assert len(PrivilegedHelperOperation) == 1
+    assert public == [
+        "provision_pre_bootstrap_remediation_journal",
+        "restrict_governance_directory_mode_0755_to_0700",
+    ]
+    for name in public:
+        method = getattr(FixedPrivilegedHelperProtocol, name)
+        assert list(inspect.signature(method).parameters) == ["self"]
+    assert len(PrivilegedHelperOperation) == 2
 
 
 def test_helper_contract_has_no_generic_mutation_or_caller_selected_fields():
