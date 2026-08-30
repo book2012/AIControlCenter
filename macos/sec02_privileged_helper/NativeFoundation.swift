@@ -1,4 +1,5 @@
 import Foundation
+import CryptoKit
 
 // Repository/native foundation only. Packaging, registration, launch, XPC
 // activation, Authorization Services acquisition, and mutation are absent.
@@ -48,4 +49,25 @@ public struct SEC02SMAppServicePackageContract {
     public static let bundledLaunchDaemonDirectory = "Contents/Library/LaunchDaemons"
     public static let bundledExecutableDirectory = "Contents/MacOS"
     public static let registrationPermitted = false
+}
+
+public enum SEC02ReplayFingerprint {
+    // Must match pre_bootstrap_remediation_journal.py::_REPLAY_DOMAIN byte-for-byte.
+    public static let domain = Data("AIControlCenter/SEC02/pre-bootstrap-remediation/replay/v1\0".utf8)
+
+    public static func derive(ephemeralExternalForm: Data) -> String? {
+        guard !ephemeralExternalForm.isEmpty else { return nil }
+        var input = Data()
+        input.reserveCapacity(domain.count + ephemeralExternalForm.count)
+        input.append(domain)
+        input.append(ephemeralExternalForm)
+        let digest = SHA256.hash(data: input)
+        return digest.map { String(format: "%02x", $0) }.joined()
+    }
+}
+
+// Future acquisition boundary only. No implementation exists in this WU and
+// AuthorizationMakeExternalForm is never invoked by repository code or tests.
+public protocol SEC02AuthorizationExternalFormAcquiring {
+    func fingerprintForAuthorizationReference() throws -> String
 }

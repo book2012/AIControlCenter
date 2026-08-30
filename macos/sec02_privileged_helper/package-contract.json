@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "authoritative_namespace": "com.aicontrolcenter",
+  "app_bundle_identifier": null,
+  "helper_bundle_identifier": null,
+  "team_identifier": null,
+  "release_signing_identity": null,
+  "client_code_signing_requirement": null,
+  "helper_code_signing_requirement": null,
+  "mach_service_identifier": null,
+  "bundle_layout": {
+    "app": "AIControlCenter.app",
+    "executables": "Contents/MacOS",
+    "launch_daemons": "Contents/Library/LaunchDaemons"
+  },
+  "smappservice_api": "daemon(plistName:)",
+  "registration_permitted": false,
+  "operation": "RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700"
+}

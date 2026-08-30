@@ -12,6 +12,11 @@ from enum import Enum
 from typing import Protocol
 
 
+AUTHORITATIVE_BUNDLE_NAMESPACE = "com.aicontrolcenter"
+CLIENT_CODE_SIGNING_REQUIREMENT = None
+HELPER_CODE_SIGNING_REQUIREMENT = None
+
+
 class PrivilegedHelperOperation(Enum):
     RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700 = (
         "RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700"
@@ -33,9 +38,20 @@ class PeerSigningPolicy:
 
     @property
     def readiness(self) -> NativeReadiness:
-        if not self.client_requirement or not self.helper_requirement:
+        if not self._is_concrete(self.client_requirement) or not self._is_concrete(
+            self.helper_requirement
+        ):
             return NativeReadiness.NOT_READY
+        if self.client_requirement == self.helper_requirement:
+            return NativeReadiness.MISMATCH
         return NativeReadiness.READY
+
+    @staticmethod
+    def _is_concrete(requirement: object) -> bool:
+        if type(requirement) is not str or not requirement.strip():
+            return False
+        lowered = requirement.lower()
+        return not any(token in lowered for token in ("*", "always", "true", "adhoc"))
 
     def evaluate(self, *, client_matches: bool, helper_matches: bool) -> NativeReadiness:
         if self.readiness is not NativeReadiness.READY:
@@ -57,7 +73,7 @@ class SMAppServicePackageContract:
 
     @property
     def readiness(self) -> NativeReadiness:
-        # No repository-native app bundle or authoritative signing identity exists.
+        # Repository packaging exists, but authoritative bundle/signing identity does not.
         return NativeReadiness.NOT_READY
 
 
@@ -68,6 +84,8 @@ class FixedPrivilegedHelperProtocol(Protocol):
 
 
 __all__ = (
-    "FixedPrivilegedHelperProtocol", "NativeReadiness", "PeerSigningPolicy",
+    "AUTHORITATIVE_BUNDLE_NAMESPACE", "CLIENT_CODE_SIGNING_REQUIREMENT",
+    "FixedPrivilegedHelperProtocol", "HELPER_CODE_SIGNING_REQUIREMENT",
+    "NativeReadiness", "PeerSigningPolicy",
     "PrivilegedHelperOperation", "SMAppServicePackageContract",
 )
