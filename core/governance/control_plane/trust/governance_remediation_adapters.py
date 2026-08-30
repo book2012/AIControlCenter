@@ -29,6 +29,13 @@ from .governance_remediation_authorization import (
     consume_remediation_attempt,
 )
 from .pre_bootstrap_filesystem import PreBootstrapFilesystemPlan
+from .pre_bootstrap_remediation_journal import (
+    AuthorizationReplayKey,
+    DurableAttemptState,
+    DurableJournalError,
+    PreBootstrapRemediationAttemptJournal,
+    ReplayDenied,
+)
 
 
 class AuthorizationAcquisitionStatus(Enum):
@@ -48,6 +55,7 @@ class PrivilegedAttemptStatus(Enum):
 class AuthorizationAcquisitionResult:
     status: AuthorizationAcquisitionStatus
     presentation: AuthorizationPresentation | None = None
+    replay_key: AuthorizationReplayKey | None = None
 
 
 @dataclass(frozen=True, slots=True)
@@ -175,6 +183,76 @@ def orchestrate_bounded_governance_remediation(
     )
 
 
+def orchestrate_durable_governance_remediation(
+    filesystem_plan: PreBootstrapFilesystemPlan,
+    remediation: RemediationDecision,
+    authorization_port: AuthorizationServicesPort,
+    journal: PreBootstrapRemediationAttemptJournal,
+    privileged_port: PrivilegedGovernanceRemediationPort,
+) -> RemediationOrchestrationResult:
+    """Execute only after a purpose-fixed durable claim; never retry mutation."""
+
+    exact_eligible_plan = (
+        type(remediation) is RemediationDecision
+        and remediation.eligibility is RemediationEligibility.ELIGIBLE
+        and remediation.plan is not None
+        and validate_governance_remediation_plan(filesystem_plan, remediation.plan)
+    )
+    if not exact_eligible_plan:
+        return _no_attempt(AuthorizationAcquisitionStatus.ERROR, FreshApprovalEvidence.ERROR)
+    acquisition = authorization_port.acquire_exact_remediation_authorization()
+    if type(acquisition) is not AuthorizationAcquisitionResult:
+        return _no_attempt(AuthorizationAcquisitionStatus.ERROR, FreshApprovalEvidence.ERROR)
+    presentation = acquisition.presentation
+    evidence = (
+        presentation.fresh_approval_evidence
+        if type(presentation) is AuthorizationPresentation
+        else _evidence_for_status(acquisition.status)
+    )
+    if (
+        acquisition.status is not AuthorizationAcquisitionStatus.ACQUIRED
+        or type(presentation) is not AuthorizationPresentation
+        or type(acquisition.replay_key) is not AuthorizationReplayKey
+    ):
+        return _no_attempt(acquisition.status, evidence)
+    decision = authorize_remediation_attempt(filesystem_plan, remediation, presentation)
+    if decision.disposition is not AuthorizationDisposition.AUTHORIZED:
+        return _no_attempt(acquisition.status, evidence)
+    try:
+        journal.claim_once(acquisition.replay_key)
+    except (DurableJournalError, ReplayDenied, ValueError):
+        return _no_attempt(AuthorizationAcquisitionStatus.ERROR, evidence)
+    claimed = claim_remediation_attempt(decision.authorization)
+    if claimed is None:
+        return _no_attempt(AuthorizationAcquisitionStatus.ERROR, FreshApprovalEvidence.ERROR)
+    try:
+        attempted = privileged_port.restrict_governance_directory_mode_0755_to_0700()
+    except Exception:
+        attempted = PrivilegedAttemptResult(PrivilegedAttemptStatus.UNCERTAIN)
+    if type(attempted) is not PrivilegedAttemptResult:
+        attempted = PrivilegedAttemptResult(PrivilegedAttemptStatus.UNCERTAIN)
+    postcondition_ok = (
+        attempted.status is PrivilegedAttemptStatus.SUCCESS
+        and attempted.postcondition is not None
+        and validate_remediation_postcondition(filesystem_plan, attempted.postcondition)
+    )
+    status = attempted.status
+    if status is PrivilegedAttemptStatus.SUCCESS and not postcondition_ok:
+        status = PrivilegedAttemptStatus.UNCERTAIN
+    outcome = AttemptOutcome[status.name]
+    durable_state = DurableAttemptState[f"TERMINAL_{status.name}"]
+    try:
+        journal.record_terminal(acquisition.replay_key, durable_state)
+    except (DurableJournalError, ValueError):
+        status = PrivilegedAttemptStatus.UNCERTAIN
+        outcome = AttemptOutcome.UNCERTAIN
+        postcondition_ok = False
+    consumed = consume_remediation_attempt(claimed, outcome)
+    return RemediationOrchestrationResult(
+        acquisition.status, evidence, status, consumed, postcondition_ok
+    )
+
+
 def _evidence_for_status(status: AuthorizationAcquisitionStatus) -> FreshApprovalEvidence:
     return {
         AuthorizationAcquisitionStatus.DENIED: FreshApprovalEvidence.DENIED,
@@ -196,5 +274,5 @@ __all__ = (
     "FakePrivilegedGovernanceRemediationAdapter",
     "PrivilegedAttemptResult", "PrivilegedAttemptStatus",
     "PrivilegedGovernanceRemediationPort", "RemediationOrchestrationResult",
-    "orchestrate_bounded_governance_remediation",
+    "orchestrate_bounded_governance_remediation", "orchestrate_durable_governance_remediation",
 )
