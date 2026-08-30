@@ -4,7 +4,8 @@ import pytest
 
 from core.governance.control_plane.trust.governance_remediation import (
     GovernanceRemediationPlan, RemediationEligibility as E, RemediationPostcondition,
-    plan_governance_remediation, validate_remediation_postcondition,
+    plan_governance_remediation, validate_governance_remediation_plan,
+    validate_remediation_postcondition,
 )
 from core.governance.control_plane.trust.pre_bootstrap_filesystem import (
     ExistingObjectKind as K, FilesystemObservation as O, GovernedPath as P,
@@ -54,6 +55,23 @@ def test_planner_has_no_arbitrary_path_mode_or_identity_inputs():
         plan_governance_remediation(FS_PLAN, observed(), path="/tmp", mode=0o777, uid=0, gid=0)
     forged = F(IDENTITY, "/tmp/governance", "/tmp/governance/trust")
     assert plan_governance_remediation(forged, observed()).eligibility is E.DENIED
+
+
+@pytest.mark.parametrize("changes", [
+    {"target": "/tmp/governance"}, {"observed_mode": 0o750},
+    {"required_mode": 0o777}, {"owner_uid": 0}, {"owner_gid": 0},
+])
+def test_plan_validator_denies_arbitrary_target_mode_and_identity(changes):
+    values = dict(target=FS_PLAN.governance_path, observed_mode=0o755,
+                  required_mode=0o700, owner_uid=501, owner_gid=20)
+    values.update(changes)
+    assert not validate_governance_remediation_plan(FS_PLAN, GovernanceRemediationPlan(**values))
+
+
+def test_plan_validator_accepts_only_the_exact_fixed_plan():
+    assert validate_governance_remediation_plan(
+        FS_PLAN, GovernanceRemediationPlan(FS_PLAN.governance_path, 0o755, 0o700, 501, 20)
+    )
 
 
 def test_postcondition_requires_exact_safe_governance_state():

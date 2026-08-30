@@ -106,6 +106,31 @@ def plan_governance_remediation(
     )
 
 
+def validate_governance_remediation_plan(
+    filesystem_plan: PreBootstrapFilesystemPlan,
+    plan: GovernanceRemediationPlan,
+) -> bool:
+    """Validate the complete fixed mutation shape without executing it."""
+
+    expected_target = _fixed_governance_target(filesystem_plan)
+    identity = filesystem_plan.identity
+    return (
+        expected_target is not None
+        and type(plan) is GovernanceRemediationPlan
+        and plan.target == expected_target
+        and type(plan.observed_mode) is int
+        and plan.observed_mode == OBSERVED_REMEDIABLE_MODE
+        and type(plan.required_mode) is int
+        and plan.required_mode == REQUIRED_DIRECTORY_MODE
+        and type(plan.owner_uid) is int
+        and plan.owner_uid == identity.bound_uid
+        and type(plan.owner_gid) is int
+        and plan.owner_gid == identity.bound_gid
+        and plan.operation
+        is RemediationOperation.RESTRICT_GOVERNANCE_MODE_0755_TO_0700
+    )
+
+
 def validate_remediation_postcondition(
     filesystem_plan: PreBootstrapFilesystemPlan,
     postcondition: RemediationPostcondition,
@@ -122,5 +147,5 @@ __all__ = (
     "GovernanceRemediationExecutionPort", "GovernanceRemediationPlan",
     "OBSERVED_REMEDIABLE_MODE", "RemediationDecision", "RemediationEligibility",
     "RemediationOperation", "RemediationPostcondition", "plan_governance_remediation",
-    "validate_remediation_postcondition",
+    "validate_governance_remediation_plan", "validate_remediation_postcondition",
 )
