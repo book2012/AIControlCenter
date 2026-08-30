@@ -30,28 +30,40 @@ class NativeReadiness(Enum):
 
 
 @dataclass(frozen=True, slots=True)
-class PeerSigningPolicy:
-    """Requirements are deployment inputs, never caller assertions."""
+class ResolvedSigningRequirement:
+    """Opaque output of a trusted native requirement resolver."""
 
-    client_requirement: str | None
-    helper_requirement: str | None
+    expression: str
+    role: str
+    _resolution_marker: object
+
+    @classmethod
+    def _from_trusted_resolver(cls, expression: str, role: str, marker: object):
+        return cls(expression, role, marker)
+
+
+_TRUSTED_RESOLUTION_MARKER = object()  # reserved for a future trusted native resolver
+
+
+@dataclass(frozen=True, slots=True)
+class PeerSigningPolicy:
+    """Only trusted, resolved, role-bound requirements can become ready."""
+
+    client_requirement: ResolvedSigningRequirement | None
+    helper_requirement: ResolvedSigningRequirement | None
 
     @property
     def readiness(self) -> NativeReadiness:
-        if not self._is_concrete(self.client_requirement) or not self._is_concrete(
-            self.helper_requirement
-        ):
+        if not self._is_resolved(self.client_requirement, "client") or not self._is_resolved(self.helper_requirement, "helper"):
             return NativeReadiness.NOT_READY
-        if self.client_requirement == self.helper_requirement:
+        if self.client_requirement.expression == self.helper_requirement.expression:
             return NativeReadiness.MISMATCH
         return NativeReadiness.READY
 
     @staticmethod
-    def _is_concrete(requirement: object) -> bool:
-        if type(requirement) is not str or not requirement.strip():
-            return False
-        lowered = requirement.lower()
-        return not any(token in lowered for token in ("*", "always", "true", "adhoc"))
+    def _is_resolved(requirement: object, role: str) -> bool:
+        return (type(requirement) is ResolvedSigningRequirement and requirement.role == role
+                and requirement._resolution_marker is _TRUSTED_RESOLUTION_MARKER)
 
     def evaluate(self, *, client_matches: bool, helper_matches: bool) -> NativeReadiness:
         if self.readiness is not NativeReadiness.READY:
@@ -86,6 +98,6 @@ class FixedPrivilegedHelperProtocol(Protocol):
 __all__ = (
     "AUTHORITATIVE_BUNDLE_NAMESPACE", "CLIENT_CODE_SIGNING_REQUIREMENT",
     "FixedPrivilegedHelperProtocol", "HELPER_CODE_SIGNING_REQUIREMENT",
-    "NativeReadiness", "PeerSigningPolicy",
+    "NativeReadiness", "PeerSigningPolicy", "ResolvedSigningRequirement",
     "PrivilegedHelperOperation", "SMAppServicePackageContract",
 )

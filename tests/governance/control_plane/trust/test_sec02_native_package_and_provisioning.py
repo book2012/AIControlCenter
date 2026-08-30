@@ -54,8 +54,8 @@ def test_plist_templates_are_bundled_daemon_contracts_not_deployable_values():
 def test_signing_policy_rejects_wildcards_permissive_and_swapped_roles():
     for value in ("*", "always true", "adhoc"):
         assert PeerSigningPolicy(value, "helper").readiness is NativeReadiness.NOT_READY
-    assert PeerSigningPolicy("client", "client").readiness is NativeReadiness.MISMATCH
-    assert PeerSigningPolicy("client", "helper").readiness is NativeReadiness.READY
+    assert PeerSigningPolicy("client", "helper").readiness is NativeReadiness.NOT_READY
+    assert PeerSigningPolicy("concrete-client", "concrete-helper").readiness is NativeReadiness.NOT_READY
 
 
 def test_native_replay_separator_and_digest_match_python_contract():
@@ -70,6 +70,13 @@ def test_native_replay_separator_and_digest_match_python_contract():
     value = AuthorizationReplayKey.derive_from_ephemeral_capability(raw).value
     assert value == hashlib.sha256(domain + raw).hexdigest()
     assert re.fullmatch(r"[0-9a-f]{64}", value)
+
+
+def test_native_freshness_contract_has_no_reusable_authentication_context():
+    swift_source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()
+    forbidden = ("kSecUseAuthenticationContext", "touchIDAuthenticationAllowableReuseDuration",
+                 "evaluatePolicy(", "SecKeyCreateRandomKey(", "SecKeyCreateSignature(")
+    assert all(token not in swift_source for token in forbidden)
 
 
 def test_provisioning_is_exact_create_only_and_separate_from_remediation():

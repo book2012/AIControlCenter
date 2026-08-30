@@ -36,6 +36,10 @@ from .pre_bootstrap_remediation_journal import (
     PreBootstrapRemediationAttemptJournal,
     ReplayDenied,
 )
+from .fresh_human_evidence import (
+    FreshHumanChallengeIssuer, FreshHumanEvidenceV1, FreshHumanSignatureVerifier,
+    FreshHumanVerificationResult, verify_fresh_human_evidence,
+)
 
 
 class AuthorizationAcquisitionStatus(Enum):
@@ -71,6 +75,7 @@ class RemediationOrchestrationResult:
     attempt_status: PrivilegedAttemptStatus | None
     consumed_authorization: RemediationAttemptAuthorization | None
     postcondition_satisfied: bool
+    human_verification: FreshHumanVerificationResult | None = None
 
 
 class AuthorizationServicesPort(Protocol):
@@ -253,6 +258,87 @@ def orchestrate_durable_governance_remediation(
     )
 
 
+def orchestrate_fresh_human_governance_remediation(
+    filesystem_plan: PreBootstrapFilesystemPlan,
+    remediation: RemediationDecision,
+    request_identity: str,
+    authorization_port: AuthorizationServicesPort,
+    challenge_issuer: FreshHumanChallengeIssuer,
+    evidence_provider,
+    signature_verifier: FreshHumanSignatureVerifier,
+    expected_public_key_fingerprint: str,
+    clock,
+    journal: PreBootstrapRemediationAttemptJournal,
+    privileged_port: PrivilegedGovernanceRemediationPort,
+) -> RemediationOrchestrationResult:
+    """Freeze eligibility -> authorization -> challenge -> evidence -> claim -> helper."""
+    exact = (type(remediation) is RemediationDecision
+             and remediation.eligibility is RemediationEligibility.ELIGIBLE
+             and remediation.plan is not None
+             and validate_governance_remediation_plan(filesystem_plan, remediation.plan))
+    if not exact:
+        return _no_human_attempt(AuthorizationAcquisitionStatus.ERROR,
+                                 FreshHumanVerificationResult.DENIED)
+    acquisition = authorization_port.acquire_exact_remediation_authorization()
+    if (type(acquisition) is not AuthorizationAcquisitionResult
+            or acquisition.status is not AuthorizationAcquisitionStatus.ACQUIRED
+            or type(acquisition.presentation) is not AuthorizationPresentation
+            or type(acquisition.replay_key) is not AuthorizationReplayKey):
+        status = acquisition.status if type(acquisition) is AuthorizationAcquisitionResult else AuthorizationAcquisitionStatus.ERROR
+        return _no_human_attempt(status, FreshHumanVerificationResult.DENIED)
+    decision = authorize_remediation_attempt(filesystem_plan, remediation, acquisition.presentation)
+    if decision.disposition is not AuthorizationDisposition.AUTHORIZED:
+        return _no_human_attempt(acquisition.status, FreshHumanVerificationResult.DENIED)
+    try:
+        challenge = challenge_issuer.issue(request_identity=request_identity,
+                                           replay_key=acquisition.replay_key)
+        evidence = evidence_provider(challenge)
+        verification = verify_fresh_human_evidence(
+            evidence, expected_challenge=challenge,
+            expected_replay_key=acquisition.replay_key,
+            expected_public_key_fingerprint=expected_public_key_fingerprint,
+            verifier=signature_verifier, now=clock(),
+        )
+    except Exception:
+        return _no_human_attempt(acquisition.status, FreshHumanVerificationResult.ERROR)
+    if verification is not FreshHumanVerificationResult.VERIFIED:
+        return _no_human_attempt(acquisition.status, verification)
+    try:
+        journal.claim_once(acquisition.replay_key)
+    except (DurableJournalError, ReplayDenied, ValueError):
+        return _no_human_attempt(acquisition.status, verification)
+    claimed = claim_remediation_attempt(decision.authorization)
+    if claimed is None:
+        return _no_human_attempt(AuthorizationAcquisitionStatus.ERROR, verification)
+    try:
+        attempted = privileged_port.restrict_governance_directory_mode_0755_to_0700()
+    except Exception:
+        attempted = PrivilegedAttemptResult(PrivilegedAttemptStatus.UNCERTAIN)
+    if type(attempted) is not PrivilegedAttemptResult:
+        attempted = PrivilegedAttemptResult(PrivilegedAttemptStatus.UNCERTAIN)
+    postcondition_ok = (attempted.status is PrivilegedAttemptStatus.SUCCESS
+                        and attempted.postcondition is not None
+                        and validate_remediation_postcondition(filesystem_plan, attempted.postcondition))
+    status = attempted.status
+    if status is PrivilegedAttemptStatus.SUCCESS and not postcondition_ok:
+        status = PrivilegedAttemptStatus.UNCERTAIN
+    try:
+        journal.record_terminal(acquisition.replay_key,
+                                DurableAttemptState[f"TERMINAL_{status.name}"])
+    except (DurableJournalError, ValueError):
+        status = PrivilegedAttemptStatus.UNCERTAIN
+        postcondition_ok = False
+    consumed = consume_remediation_attempt(claimed, AttemptOutcome[status.name])
+    return RemediationOrchestrationResult(acquisition.status,
+        acquisition.presentation.fresh_approval_evidence, status, consumed,
+        postcondition_ok, verification)
+
+
+def _no_human_attempt(status, verification):
+    return RemediationOrchestrationResult(status, FreshApprovalEvidence.NOT_VERIFIABLE,
+                                          None, None, False, verification)
+
+
 def _evidence_for_status(status: AuthorizationAcquisitionStatus) -> FreshApprovalEvidence:
     return {
         AuthorizationAcquisitionStatus.DENIED: FreshApprovalEvidence.DENIED,
@@ -275,4 +361,5 @@ __all__ = (
     "PrivilegedAttemptResult", "PrivilegedAttemptStatus",
     "PrivilegedGovernanceRemediationPort", "RemediationOrchestrationResult",
     "orchestrate_bounded_governance_remediation", "orchestrate_durable_governance_remediation",
+    "orchestrate_fresh_human_governance_remediation",
 )

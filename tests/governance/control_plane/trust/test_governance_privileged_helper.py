@@ -30,10 +30,10 @@ def test_helper_contract_has_no_generic_mutation_or_caller_selected_fields():
 def test_peer_signing_requirements_are_mandatory_and_fail_closed():
     assert PeerSigningPolicy(None, None).readiness is NativeReadiness.NOT_READY
     assert PeerSigningPolicy("client", None).readiness is NativeReadiness.NOT_READY
-    policy = PeerSigningPolicy("client", "helper")
-    assert policy.evaluate(client_matches=False, helper_matches=True) is NativeReadiness.MISMATCH
-    assert policy.evaluate(client_matches=True, helper_matches=False) is NativeReadiness.MISMATCH
-    assert policy.evaluate(client_matches=True, helper_matches=True) is NativeReadiness.READY
+    policy = PeerSigningPolicy("client requirement", "helper requirement")
+    assert policy.evaluate(client_matches=False, helper_matches=True) is NativeReadiness.NOT_READY
+    assert policy.evaluate(client_matches=True, helper_matches=False) is NativeReadiness.NOT_READY
+    assert policy.evaluate(client_matches=True, helper_matches=True) is NativeReadiness.NOT_READY
 
 
 def test_package_contract_is_macos_13_bundled_daemon_but_not_operational():
