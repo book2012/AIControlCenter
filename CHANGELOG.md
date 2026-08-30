@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2026-08-30 — SEC02-FS-MACRO-03B2 privileged-helper foundation
+
+- Moved exact remediation validation and eligibility ahead of authorization;
+  all malformed, ineligible, forged, trust-target, and bool/int-confused plans
+  now produce zero authorization and helper calls.
+- Added immutable fail-closed helper/peer/package contracts and a syntax-checked
+  Swift macOS 13+ foundation for the single fixed XPC operation and SDK-native
+  bidirectional code-signing requirements.
+- Recorded signing identity as absent and package readiness as `NOT_READY`.
+  External-form persistence, live authorization, registration, XPC execution,
+  helper launch, and filesystem mutation remain absent.
+- Validation: focused `71 passed`; related SEC-02 `189 passed, 176 warnings`;
+  canonical `4384 passed, 5 deselected, 619 warnings` in one run.
+
+`PRE_AUTHORIZATION_ELIGIBILITY_GATE=YES`
+`INELIGIBLE_PLAN_MAY_TRIGGER_AUTHORIZATION=NO`
+`AUTHORIZATION_EXTERNAL_FORM_EPHEMERAL_ONLY=YES`
+`AUTHORIZATION_EXTERNAL_FORM_PERSISTENCE_ALLOWED=NO`
+`XPC_PEER_CODE_SIGNING_POLICY_DEFINED=YES`
+`SMAPPSERVICE_PACKAGE_FOUNDATION=YES`
+`LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`LIVE_AUTHORIZATION_SERVICES_OPERATIONAL=NO`
+`LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## 2026-08-30 — SEC02-FS-MACRO-03A authorization contract implemented
 
 - Froze and repository-implemented the dedicated, purpose-specific macOS

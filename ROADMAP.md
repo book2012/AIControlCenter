@@ -1,5 +1,27 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B2 privileged-helper foundation
+
+- [x] Gate exact eligibility before any Authorization Services adapter call.
+- [x] Define one parameter-free remediation RPC and mandatory bidirectional
+  code-signing requirements using macOS 13+ SDK contracts.
+- [x] Freeze the bundled LaunchDaemon package contract without registration,
+  installation, launch, authorization acquisition, or filesystem mutation.
+- [ ] Implement durable crash-safe one-attempt consumption and resolve live
+  signing/package/fresh-approval readiness in `SEC02-FS-MACRO-03B3`.
+
+`PRE_AUTHORIZATION_ELIGIBILITY_GATE=YES`
+`INELIGIBLE_PLAN_MAY_TRIGGER_AUTHORIZATION=NO`
+`AUTHORIZATION_EXTERNAL_FORM_EPHEMERAL_ONLY=YES`
+`AUTHORIZATION_EXTERNAL_FORM_PERSISTENCE_ALLOWED=NO`
+`XPC_PEER_CODE_SIGNING_POLICY_DEFINED=YES`
+`SMAPPSERVICE_PACKAGE_FOUNDATION=YES`
+`LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`LIVE_AUTHORIZATION_SERVICES_OPERATIONAL=NO`
+`LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## COMPLETE — SEC02-AR-01 anti-rollback receipt architecture
 
 - [x] Freeze canonical receipt schema, identity, P-256/SHA-256 Secure Enclave

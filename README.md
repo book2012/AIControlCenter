@@ -1,5 +1,25 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B2 foundation closed
+
+The narrow governance remediation now has a pre-authorization exact-eligibility
+gate, a one-operation XPC contract, mandatory fail-closed peer code-signing
+policy, and a macOS 13+ bundled LaunchDaemon package contract. No signing identity
+or native app bundle is asserted, no external authorization form is persisted or
+represented as application state, and no live authorization/helper path exists.
+
+`PRE_AUTHORIZATION_ELIGIBILITY_GATE=YES`
+`INELIGIBLE_PLAN_MAY_TRIGGER_AUTHORIZATION=NO`
+`AUTHORIZATION_EXTERNAL_FORM_EPHEMERAL_ONLY=YES`
+`AUTHORIZATION_EXTERNAL_FORM_PERSISTENCE_ALLOWED=NO`
+`XPC_PEER_CODE_SIGNING_POLICY_DEFINED=YES`
+`SMAPPSERVICE_PACKAGE_FOUNDATION=YES`
+`LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`LIVE_AUTHORIZATION_SERVICES_OPERATIONAL=NO`
+`LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## Current authoritative — SEC02-AR-01 anti-rollback receipt architecture closed
 
 The exact receipt schema, P-256/SHA-256 Secure Enclave signing architecture,

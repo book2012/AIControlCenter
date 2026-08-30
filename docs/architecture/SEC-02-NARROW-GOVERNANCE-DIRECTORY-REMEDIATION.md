@@ -101,6 +101,56 @@ claim/consumption mechanism that cannot resurrect or reuse authority after
 process or helper loss. It is not coupled to the unavailable ordinary SEC-02
 authorization-consumption database.
 
+### SEC02-FS-MACRO-03B2 concrete helper and precondition foundation
+
+Orchestration now performs exact remediation validation and the `ELIGIBLE` gate
+before calling the authorization port. `DENIED`, `NOT_REQUIRED`, malformed or
+missing plans, the trust target, forged target/modes/UID/GID/operation, and
+bool-as-integer authority confusion all terminate with zero authorization calls
+and zero helper calls. A valid exact plan may acquire once; only independently
+`VERIFIED` fresh approval may then reach the fixed helper operation once.
+
+The XPC contract has one semantic operation only:
+`RESTRICT_GOVERNANCE_DIRECTORY_MODE_0755_TO_0700`. It exposes no path, target,
+mode, UID, GID, ownership, command, argv, environment, executable, recursion,
+retry, rollback, or operation selector. The native Swift foundation uses the
+macOS 13+ SDK's listener incoming-connection and client connection code-signing
+requirement APIs. Missing requirements are `NOT_READY`; mismatch is `MISMATCH`;
+neither permits execution. No Team ID or requirement string is invented.
+
+No suitable native application package exists in the repository, so 03B2
+freezes the `Contents/Library/LaunchDaemons` bundled-daemon contract for future
+`SMAppService.daemon(plistName:)` integration. It does not create a plist or
+parallel build system and never registers, unregisters, installs, or starts a
+helper. Read-only inspection found no valid code-signing identity. The Swift
+source parses, but full type-check was unavailable because the installed Swift
+6.3.3 compiler and Swift 6.3.2 SDK modules do not match; readiness therefore
+remains closed.
+
+Authorization external-form bytes are not represented in Python domain models
+or durable native state. Any future transport must keep them opaque, ephemeral,
+single-use, and out of disk, SQLite, JSON, audit, logs, caches, and general
+application state. Authorization Services success or interaction allowance
+still cannot establish fresh human approval, so no live adapter can produce
+`VERIFIED` in 03B2. In-memory attempt consumption is not crash-safe and is not
+connected to the unavailable ordinary SEC-02 issuer registry/database.
+
+```text
+PRE_AUTHORIZATION_ELIGIBILITY_GATE=YES
+INELIGIBLE_PLAN_MAY_TRIGGER_AUTHORIZATION=NO
+AUTHORIZATION_EXTERNAL_FORM_EPHEMERAL_ONLY=YES
+AUTHORIZATION_EXTERNAL_FORM_PERSISTENCE_ALLOWED=NO
+XPC_HELPER_PROTOCOL_DEFINED=YES
+XPC_PEER_CODE_SIGNING_POLICY_DEFINED=YES
+SMAPPSERVICE_PACKAGE_FOUNDATION=YES
+LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO
+DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO
+LIVE_AUTHORIZATION_SERVICES_OPERATIONAL=NO
+LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO
+PRODUCTION_REMEDIATION_AVAILABLE=NO
+NEXT_MACRO_WU=SEC02-FS-MACRO-03B3-DURABLE-ONE-ATTEMPT-CONSUMPTION-AND-LIVE-READINESS
+```
+
 ## Repository implementation and operational status
 
 The repository contains only immutable eligibility/plan/postcondition contracts,

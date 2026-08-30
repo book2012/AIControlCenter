@@ -1,5 +1,31 @@
 # Project History
 
+## 2026-08-30 — SEC02-FS-MACRO-03B2 foundation closed
+
+03B2 corrected authorization ordering so only an independently validated exact
+eligible governance remediation may call the authorization port. It added the
+single fixed XPC semantic operation, fail-closed client/helper signing policy,
+and a macOS 13+ bundled LaunchDaemon package contract. Local SDK symbols were
+confirmed; no valid signing identity or existing native app package was found,
+so live readiness remains closed. No external authorization form, registration,
+launch, privileged request, or filesystem mutation was performed.
+
+Focused validation recorded `71 passed`; related SEC-02 validation recorded
+`189 passed, 176 warnings`; the single canonical run recorded `4384 passed, 5
+deselected, 619 warnings`.
+
+`PRE_AUTHORIZATION_ELIGIBILITY_GATE=YES`
+`INELIGIBLE_PLAN_MAY_TRIGGER_AUTHORIZATION=NO`
+`AUTHORIZATION_EXTERNAL_FORM_EPHEMERAL_ONLY=YES`
+`AUTHORIZATION_EXTERNAL_FORM_PERSISTENCE_ALLOWED=NO`
+`XPC_PEER_CODE_SIGNING_POLICY_DEFINED=YES`
+`SMAPPSERVICE_PACKAGE_FOUNDATION=YES`
+`LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`LIVE_AUTHORIZATION_SERVICES_OPERATIONAL=NO`
+`LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## 2026-08-30 — SEC02-AR-01 architecture-definition closeout
 
 SEC02-AR-01 closed the remaining anti-rollback receipt architecture gap. The

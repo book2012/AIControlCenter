@@ -1,5 +1,27 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B2 privileged-helper foundation
+
+The exact remediation is now rejected before Authorization Services unless the
+decision is `ELIGIBLE` and every target, mode, UID, GID, and operation fact
+matches the independently derived fixed plan. The macOS 13+ native foundation
+defines one parameter-free XPC operation and mandatory bidirectional code-signing
+requirements. No authoritative signing identity or native app package exists,
+so readiness fails closed and the bundled LaunchDaemon package remains a frozen
+contract, not an installed service.
+
+`PRE_AUTHORIZATION_ELIGIBILITY_GATE=YES`
+`INELIGIBLE_PLAN_MAY_TRIGGER_AUTHORIZATION=NO`
+`AUTHORIZATION_EXTERNAL_FORM_EPHEMERAL_ONLY=YES`
+`AUTHORIZATION_EXTERNAL_FORM_PERSISTENCE_ALLOWED=NO`
+`XPC_PEER_CODE_SIGNING_POLICY_DEFINED=YES`
+`SMAPPSERVICE_PACKAGE_FOUNDATION=YES`
+`LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO`
+`DURABLE_CRASH_SAFE_CONSUMPTION_OPERATIONAL=NO`
+`LIVE_AUTHORIZATION_SERVICES_OPERATIONAL=NO`
+`LIVE_PRIVILEGED_HELPER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+
 ## SEC02-AR-01 anti-rollback receipt boundary
 
 The canonical Mac-local anti-rollback receipt is RFC 8785 JCS authenticated by
