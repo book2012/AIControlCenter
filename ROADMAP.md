@@ -1,5 +1,73 @@
 # Roadmap
 
+## PRIMARY NEXT PRODUCTION MILESTONE — SHOPPING_RUNTIME_ACTIVATED_AND_HOMEPAGE_SERVICE_VALIDATED
+
+SEC-02 WU-01/WU-02/WU-03 repository-foundation work is closed. The primary
+roadmap returns to service delivery in this dependency order:
+
+```text
+SM-01B
+-> Shopping runtime activation
+-> MariaDB + WordPress runtime validation
+-> WooCommerce runtime validation
+-> AIControlCenter Shopping integration
+-> Homepage live service validation
+```
+
+- [ ] Complete `SM-01B` prerequisites.
+- [ ] Activate the Shopping runtime under separate explicit Production
+  authorization.
+- [ ] Validate MariaDB and WordPress runtime service.
+- [ ] Validate WooCommerce runtime service.
+- [ ] Validate AIControlCenter Shopping integration.
+- [ ] Validate Homepage live service.
+
+`NEXT_PRODUCTION_MILESTONE=SHOPPING_RUNTIME_ACTIVATED_AND_HOMEPAGE_SERVICE_VALIDATED`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`AWS_DEPLOYMENT_PERFORMED=NO`
+
+`MDM_IMPLEMENTED=NO`
+
+`PRODUCTION_MUTATION_PERFORMED=false`
+
+## COMPLETE / CLOSED — SEC-02 WU-01/WU-02/WU-03 repository foundation
+
+- [x] WU-01 Domain/Contract foundation at
+  `5bcaecd05eef403ce2fbc34e97605cccabe37316`.
+- [x] WU-02 Port/authority boundary foundation at
+  `5bcaecd05eef403ce2fbc34e97605cccabe37316`.
+- [x] WU-03 Lifecycle state machine/fake adapter foundation at
+  `a9a511fdf116a4c8f37712b170a0400ea0d7d658`.
+- [x] Focused suite: 65 tests passed.
+- [x] Preserve exact intent-digest claim binding, substitution rejection before
+  planning/mutation, permanent consumed claims, immutable validated
+  `version_maxima`, complete-history GENESIS proof, evidence-only history,
+  identity-preserving RECOVERY, terminal no-fresh-MDA DECOMMISSION, atomic
+  ordered two-transition MIGRATION, and fail-closed ambiguous outcomes.
+- [x] Preserve the Mac mini M4 as sole Control Plane, Continuity Witness as not
+  a second Control Plane, and Ubuntu with zero Continuity Witness implementation
+  authority.
+
+`SEC02_REPOSITORY_FOUNDATION=COMPLETE`
+
+`WU_01_DOMAIN_CONTRACT_FOUNDATION=COMPLETE`
+
+`WU_02_PORT_AUTHORITY_BOUNDARY_FOUNDATION=COMPLETE`
+
+`WU_03_LIFECYCLE_STATE_MACHINE_FAKE_ADAPTER_FOUNDATION=COMPLETE`
+
+`WU_03_IMPLEMENTATION_COMMIT=a9a511fdf116a4c8f37712b170a0400ea0d7d658`
+
+Canonical regression was not rerun for docs reconciliation and no new PASS is
+claimed. SEC-02 operational/cloud implementation remains a separate planned
+security track, not the primary service-delivery sprint.
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## COMPLETE / CLOSED — SEC-02 continuity identity lifecycle architecture
 
 - [x] Close
@@ -93,16 +161,17 @@ Completed at `ARCHITECTURE_COMMIT=54268cf`.
 
 `CONTINUITY_WITNESS_IMPLEMENTED=NO`
 
-## PLANNED / NOT STARTED — SEC02_CONTINUITY_WITNESS_REPOSITORY_IMPLEMENTATION
+## COMPLETE / CLOSED — SEC02_CONTINUITY_WITNESS_REPOSITORY_FOUNDATION
 
-`NEXT_SPRINT=SEC02_CONTINUITY_WITNESS_REPOSITORY_IMPLEMENTATION`
+`REPOSITORY_FOUNDATION_COMMIT_WU01_WU02=5bcaecd05eef403ce2fbc34e97605cccabe37316`
 
-`NEXT_SPRINT_STATUS=PLANNED_NOT_STARTED`
+`REPOSITORY_FOUNDATION_COMMIT_WU03=a9a511fdf116a4c8f37712b170a0400ea0d7d658`
 
-- [ ] Implement the frozen domain types, schema validators, purpose-specific
-  ports, transaction repositories, adapters without live calls, and fakes/tests.
-- [ ] Preserve read/plan/apply separation and all fail-closed contracts.
-- [ ] Keep cloud host, ingress, key-custody implementation, MDA transport
+- [x] Implement the WU-01 domain/contract foundation.
+- [x] Implement the WU-02 purpose-specific port/authority boundary foundation.
+- [x] Implement the WU-03 lifecycle state machine/fake adapter foundation.
+- [x] Preserve read/plan/apply separation and all fail-closed contracts.
+- [x] Keep cloud host, ingress, key-custody implementation, MDA transport
   implementation, deployment, Production bootstrap, and activation unresolved.
 
 `KEY_CUSTODY_IMPLEMENTATION_DEFINED=NO`
@@ -119,8 +188,8 @@ Completed at `ARCHITECTURE_COMMIT=54268cf`.
 
 `PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
 
-This planned repository milestone does not claim deployment or Production
-readiness.
+This closed repository-foundation milestone does not claim Continuity Witness
+implementation, deployment, or Production readiness.
 
 ## Current authoritative — generic SEC-02 trusted authorization intake
 

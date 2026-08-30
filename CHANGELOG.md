@@ -1,5 +1,55 @@
 # CHANGELOG
 
+## 2026-08-30 — SEC-02 Continuity Witness repository foundation reconciled
+
+- Closed WU-01 Domain/Contract foundation and WU-02 Port/authority boundary
+  foundation at `5bcaecd05eef403ce2fbc34e97605cccabe37316`.
+- Closed WU-03 Lifecycle state machine/fake adapter foundation at
+  `a9a511fdf116a4c8f37712b170a0400ea0d7d658`; focused validation passed 65
+  tests. No canonical regression was run or newly claimed.
+- Recorded exact durable intent binding, pre-planning/pre-mutation Stage-B
+  substitution rejection, permanent claim consumption, immutable defensive
+  `version_maxima` validation, complete-history GENESIS proof, evidence-only
+  immutable history, identity-preserving RECOVERY, terminal no-fresh-MDA
+  DECOMMISSION, ordered two-transition MIGRATION, and fail-closed ambiguous
+  result/checkpoint handling.
+- Preserved Mac mini M4 as sole Control Plane, Continuity Witness as not a
+  second Control Plane, and Ubuntu with zero Continuity Witness implementation
+  authority.
+- Closed SEC-02 repository-foundation work and restored service delivery as the
+  primary track. Operational/cloud Continuity Witness implementation remains a
+  separate planned security track.
+
+`SEC02_REPOSITORY_FOUNDATION=COMPLETE`
+
+`WU_01_DOMAIN_CONTRACT_FOUNDATION=COMPLETE`
+
+`WU_02_PORT_AUTHORITY_BOUNDARY_FOUNDATION=COMPLETE`
+
+`WU_03_LIFECYCLE_STATE_MACHINE_FAKE_ADAPTER_FOUNDATION=COMPLETE`
+
+`WU_03_IMPLEMENTATION_COMMIT=a9a511fdf116a4c8f37712b170a0400ea0d7d658`
+
+`FOCUSED_VALIDATION=65_TESTS_PASSED`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`AWS_DEPLOYMENT_PERFORMED=NO`
+
+`MDM_IMPLEMENTED=NO`
+
+`PRODUCTION_MUTATION_PERFORMED=false`
+
+`NEXT_PRODUCTION_MILESTONE=SHOPPING_RUNTIME_ACTIVATED_AND_HOMEPAGE_SERVICE_VALIDATED`
+
+Service dependency chain: `SM-01B` -> Shopping runtime activation -> MariaDB +
+WordPress runtime validation -> WooCommerce runtime validation ->
+AIControlCenter Shopping integration -> Homepage live service validation.
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## 2026-08-29 — SEC-02 Continuity Witness implementation definition frozen
 
 - Recorded architecture commit `54268cf` and completed the implementation-

@@ -1,5 +1,62 @@
 # AIControlCenter
 
+## Current authoritative — SEC-02 Continuity Witness repository foundation closed
+
+The repository-only foundation is complete: WU-01 Domain/Contract foundation
+and WU-02 Port/authority boundary foundation closed at
+`5bcaecd05eef403ce2fbc34e97605cccabe37316`; WU-03 Lifecycle state machine/fake
+adapter foundation closed at
+`a9a511fdf116a4c8f37712b170a0400ea0d7d658`. The validated focused suite passed
+`65 tests`. Canonical regression was not rerun for this docs-only reconciliation
+and no new canonical PASS is claimed.
+
+The foundation enforces these validated semantics: a durable claim binds the
+exact `expected_transition_intent_digest`; Stage B rejects intent substitution
+before lifecycle planning or mutation; and a rejected durable claim remains
+consumed and non-reusable. `version_maxima` is defensively copied and immutable,
+with non-empty string keys and exact non-negative integer values. GENESIS
+requires complete verified historical absence, while immutable history remains
+evidence only. RECOVERY preserves host identity and enrollment generation with
+nondecreasing maxima. DECOMMISSION requires no fresh MDA and is terminal.
+MIGRATION is one operation containing exactly two ordered transitions.
+Ambiguous external result creates no mutation-retry authority, and DB
+`COMMITTED` without exact checkpoint proof is `UNCERTAIN_CONSUMED`.
+
+The Mac mini M4 remains the sole Control Plane. Continuity Witness is not a
+second Control Plane, and Ubuntu has zero Continuity Witness implementation
+authority. This closes repository-foundation work only; operational/cloud
+implementation remains a separate planned security track.
+
+`SEC02_REPOSITORY_FOUNDATION=COMPLETE`
+
+`WU_01_DOMAIN_CONTRACT_FOUNDATION=COMPLETE`
+
+`WU_02_PORT_AUTHORITY_BOUNDARY_FOUNDATION=COMPLETE`
+
+`WU_03_LIFECYCLE_STATE_MACHINE_FAKE_ADAPTER_FOUNDATION=COMPLETE`
+
+`WU_03_IMPLEMENTATION_COMMIT=a9a511fdf116a4c8f37712b170a0400ea0d7d658`
+
+`FOCUSED_VALIDATION=65_TESTS_PASSED`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`AWS_DEPLOYMENT_PERFORMED=NO`
+
+`MDM_IMPLEMENTED=NO`
+
+`PRODUCTION_MUTATION_PERFORMED=false`
+
+`NEXT_PRODUCTION_MILESTONE=SHOPPING_RUNTIME_ACTIVATED_AND_HOMEPAGE_SERVICE_VALIDATED`
+
+Service dependency chain: `SM-01B` -> Shopping runtime activation -> MariaDB +
+WordPress runtime validation -> WooCommerce runtime validation ->
+AIControlCenter Shopping integration -> Homepage live service validation.
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## Current authoritative — SEC-02 Continuity Witness implementation definition frozen
 
 `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FROZEN=YES`

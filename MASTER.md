@@ -1,5 +1,74 @@
 # MASTER
 
+## Current authoritative status — SEC-02 repository foundation complete; service delivery restored
+
+WU-01 Domain/Contract foundation and WU-02 Port/authority boundary foundation
+are complete at `5bcaecd05eef403ce2fbc34e97605cccabe37316`. WU-03 Lifecycle
+state machine/fake adapter foundation is complete at
+`a9a511fdf116a4c8f37712b170a0400ea0d7d658`. The focused suite validated 65
+tests. This docs-only reconciliation does not assert a new canonical regression
+PASS.
+
+Validated foundation semantics are authoritative: the durable claim binds the
+exact `expected_transition_intent_digest`; Stage B rejects intent substitution
+before lifecycle planning/mutation; and rejection never restores consumed
+authority. `version_maxima` is defensively copied and immutable, its keys are
+non-empty strings, and its values are exact non-negative integers. GENESIS
+requires complete verified historical absence; immutable history is evidence
+only. RECOVERY preserves host identity and enrollment generation and permits
+only nondecreasing maxima. DECOMMISSION requires no fresh MDA and is terminal.
+MIGRATION is one operation with exactly two ordered transitions. An ambiguous
+external result never authorizes mutation retry. DB `COMMITTED` without exact
+checkpoint proof classifies as `UNCERTAIN_CONSUMED`.
+
+### Authority and operational truth
+
+`MAC_MINI_M4_CONTROL_PLANE=SOLE`
+
+`CONTINUITY_WITNESS_SECOND_CONTROL_PLANE=NO`
+
+`UBUNTU_CONTINUITY_WITNESS_IMPLEMENTATION_AUTHORITY=ZERO`
+
+`SEC02_REPOSITORY_FOUNDATION=COMPLETE`
+
+`WU_01_DOMAIN_CONTRACT_FOUNDATION=COMPLETE`
+
+`WU_02_PORT_AUTHORITY_BOUNDARY_FOUNDATION=COMPLETE`
+
+`WU_03_LIFECYCLE_STATE_MACHINE_FAKE_ADAPTER_FOUNDATION=COMPLETE`
+
+`WU_03_IMPLEMENTATION_COMMIT=a9a511fdf116a4c8f37712b170a0400ea0d7d658`
+
+`FOCUSED_VALIDATION=65_TESTS_PASSED`
+
+`CONTINUITY_WITNESS_IMPLEMENTED=NO`
+
+`PRODUCTION_BOOTSTRAP_AVAILABLE=NO`
+
+`AWS_DEPLOYMENT_PERFORMED=NO`
+
+`MDM_IMPLEMENTED=NO`
+
+`PRODUCTION_MUTATION_PERFORMED=false`
+
+### Primary next production milestone
+
+`NEXT_PRODUCTION_MILESTONE=SHOPPING_RUNTIME_ACTIVATED_AND_HOMEPAGE_SERVICE_VALIDATED`
+
+```text
+SM-01B
+-> Shopping runtime activation
+-> MariaDB + WordPress runtime validation
+-> WooCommerce runtime validation
+-> AIControlCenter Shopping integration
+-> Homepage live service validation
+```
+
+SEC-02 operational/cloud implementation remains a separate planned security
+track and is not the primary service-delivery sprint.
+
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## Current authoritative status — SEC-02 Continuity Witness implementation definition frozen
 
 `SEC02_CONTINUITY_WITNESS_IMPLEMENTATION_DEFINITION_ARCHITECTURE_FROZEN=YES`
