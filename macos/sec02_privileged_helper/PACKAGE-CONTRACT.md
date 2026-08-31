@@ -5,6 +5,17 @@ explicit zero-argument helper methods, native signing resolver, and Secure
 Enclave source. Registration remains prohibited and signing remains not ready
 until an authoritative Team ID and matching signed artifacts exist.
 
+Current R2-C2 evidence establishes only native source type-check compatibility:
+`NativeFoundation.swift` succeeds under `/Library/Developer/CommandLineTools`
+with Apple Swift `6.3.3` and macOS SDK `26.5`
+(`NATIVE_TYPECHECK_RC=0`, `NATIVE_TOOLCHAIN_COMPATIBLE=YES`,
+`SECURE_ENCLAVE_PROVISIONER_TYPECHECKED=YES`). Full Xcode is not established.
+Signing discovery found `0 valid identities`, Developer ID Application is absent
+(count `0`), the user keychain search list contains only `login.keychain-db`,
+and the authoritative Team ID is unresolved. The signed package is not ready;
+no registration, live fresh-human approval, trusted-issuer operation, or
+governance remediation was performed.
+
 The repository has no authoritative native bundle/signing identity. This
 directory provides non-deployable metadata and plist templates for the smallest
 future macOS 13+ package boundary:
