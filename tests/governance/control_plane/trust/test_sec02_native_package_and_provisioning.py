@@ -24,6 +24,15 @@ from macos.sec02_privileged_helper.validate_package import (
     EXPECTED, PackageContractError, build, load_contract, signing_readiness,
     validate_templates,
 )
+from macos.sec02_privileged_helper.build_native_package import (
+    APP_EXECUTABLE as NATIVE_APP_EXECUTABLE,
+    EXPECTED_FILES as NATIVE_EXPECTED_FILES,
+    HELPER_EXECUTABLE as NATIVE_HELPER_EXECUTABLE,
+    HELPER_INFO_PLIST,
+    _inspect_thin_macho,
+    _validate_exact_layout,
+    build_native,
+)
 from core.governance.control_plane.trust.pre_bootstrap_remediation_journal import (
     AuthorizationReplayKey, FUTURE_PRODUCTION_JOURNAL_PATH,
 )
@@ -211,3 +220,116 @@ def test_temporary_package_layout_does_not_claim_native_or_signed_readiness():
     assert 'print("TEMPORARY_PACKAGE_LAYOUT_VALIDATED=YES")' in source
     assert "SIGNED_PACKAGE_READY" not in source
     assert "NATIVE_EXECUTABLE_BUILD_VALIDATED" not in source
+
+
+def test_native_process_entrypoints_and_foundation_are_separate_and_inert():
+    native = ROOT / "macos/sec02_privileged_helper"
+    foundation = (native / "NativeFoundation.swift").read_text()
+    app = (native / "AppMain.swift").read_text()
+    helper_main = (native / "HelperMain.swift").read_text()
+    all_process_source = app + helper_main
+    assert "@main" not in foundation
+    assert "@main" in app and "struct AIControlCenterMain" in app
+    assert "@main" in helper_main and "struct SEC02GovernanceRemediationHelperMain" in helper_main
+    assert "NSXPCListener(machServiceName: SEC02Identity.machService)" in helper_main
+    assert "NSXPCInterface(with: SEC02PrivilegedHelperXPC.self)" in helper_main
+    assert "guard signingPolicy.secureIncomingConnection(connection)" in helper_main
+    policy_guard = helper_main.index("guard signingPolicy.secureIncomingConnection(connection)")
+    resume = helper_main.index("connection.resume()")
+    assert policy_guard < resume
+    assert "clientRequirement: nil" in helper_main
+    assert "helperRequirement: nil" in helper_main
+    for token in (".register()", ".unregister()", "SecKeyCreateRandomKey",
+                  "AuthorizationCreate", "provisionPreBootstrapRemediationJournal()",
+                  "restrictGovernanceDirectoryMode0755To0700()"):
+        assert token not in all_process_source
+
+
+def test_helper_listener_delegate_has_explicit_strong_runtime_owner():
+    source = (ROOT / "macos/sec02_privileged_helper/HelperMain.swift").read_text()
+    runtime = source[source.index("private final class SEC02HelperRuntime"):
+                     source.index("@main")]
+    assert "private let listener: NSXPCListener" in runtime
+    assert "private let delegate: SEC02HelperListenerDelegate" in runtime
+    assert "listener.delegate = delegate" in runtime
+    main = source[source.index("@main"):]
+    assert "let runtime = SEC02HelperRuntime(signingPolicy: policy)" in main
+    assert "runtime.run()" in main
+    assert "let delegate = SEC02HelperListenerDelegate" not in main
+
+
+def test_incoming_signing_policy_binds_exact_requirement_to_connection():
+    source = (ROOT / "macos/sec02_privileged_helper/NativeFoundation.swift").read_text()
+    start = source.index("public func secureIncomingConnection(")
+    end = source.index("public func secureHelperConnection(", start)
+    method = source[start:end]
+    assert "_ connection: NSXPCConnection" in method
+    assert "guard readiness == .ready, let value = clientRequirement else { return false }" in method
+    assert "connection.setCodeSigningRequirement(value.expression)" in method
+    assert "NSXPCListener" not in method
+    assert "secureIncomingConnections(on:" not in source
+
+
+def test_native_helper_implements_only_fixed_fail_closed_xpc_operations():
+    source = (ROOT / "macos/sec02_privileged_helper/SEC02HelperService.swift").read_text()
+    assert "NSObject, SEC02PrivilegedHelperXPC" in source
+    assert source.count("func provisionPreBootstrapRemediationJournal(") == 1
+    assert source.count("func restrictGovernanceDirectoryMode0755To0700(") == 1
+    assert source.count("reply(.denied)") == 2
+    forbidden = ("operation:", "command:", "path:", "mode:", "uid:", "gid:",
+                 "chmod", "chown", "mkdir", "removeItem", "write(", "/Library/")
+    assert all(token not in source for token in forbidden)
+
+
+def test_real_native_builder_produces_exact_unsigned_macho_bundle(tmp_path):
+    bundle = (tmp_path / "AIControlCenter.app").resolve()
+    evidence = build_native(bundle)
+    assert evidence == {
+        "app_executable": {"mach_o": True, "name": NATIVE_APP_EXECUTABLE, "non_empty": True},
+        "bundle_layout_valid": True,
+        "helper_executable": {"mach_o": True, "name": NATIVE_HELPER_EXECUTABLE, "non_empty": True},
+        "native_executables_built": True,
+        "production_mutation_performed": False,
+        "registration_performed": False,
+        "schema_version": 1,
+        "signed": False,
+    }
+    actual = {str(path.relative_to(bundle)) for path in bundle.rglob("*") if path.is_file()}
+    assert actual == NATIVE_EXPECTED_FILES
+    for name in (NATIVE_APP_EXECUTABLE, NATIVE_HELPER_EXECUTABLE):
+        executable = bundle / "Contents/MacOS" / name
+        assert executable.stat().st_size > 0
+        assert executable.read_bytes()[:4] in {
+            b"\xfe\xed\xfa\xce", b"\xce\xfa\xed\xfe", b"\xfe\xed\xfa\xcf",
+            b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe", b"\xbe\xba\xfe\xca",
+            b"\xca\xfe\xba\xbf", b"\xbf\xba\xfe\xca",
+        }
+        _, has_code_signature = _inspect_thin_macho(executable)
+        assert has_code_signature is False
+    helper = bundle / "Contents/MacOS" / NATIVE_HELPER_EXECUTABLE
+    embedded_plist, _ = _inspect_thin_macho(helper)
+    assert embedded_plist is not None
+    assert plistlib.loads(embedded_plist) == {
+        "CFBundleExecutable": "SEC02GovernanceRemediationHelper",
+        "CFBundleIdentifier": "com.aicontrolcenter.sec02-remediation-helper",
+        "CFBundlePackageType": "BNDL",
+    }
+    unexpected = bundle / "Contents" / "unexpected"
+    unexpected.write_text("not allowed")
+    try:
+        _validate_exact_layout(bundle)
+    except PackageContractError:
+        pass
+    else:
+        raise AssertionError("unexpected native bundle file accepted")
+
+
+def test_native_builder_explicitly_disables_adhoc_signing_and_has_no_signing_tool():
+    source = (ROOT / "macos/sec02_privileged_helper/build_native_package.py").read_text()
+    assert '"-Xlinker", "-no_adhoc_codesign"' in source
+    assert '["codesign"' not in source
+    assert "subprocess.run(['codesign'" not in source
+    assert ".touch(" not in source
+    assert '"-Xlinker", "-sectcreate"' in source
+    assert '"-Xlinker", os.fspath(HELPER_INFO_PLIST)' in source
+    assert HELPER_INFO_PLIST == ROOT / "macos/sec02_privileged_helper/templates/Helper-Info.plist"

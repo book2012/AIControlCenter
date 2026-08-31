@@ -83,9 +83,9 @@ public struct SEC02PeerSigningPolicy {
               clientRequirement.teamID == helperRequirement.teamID else { return .notReady }
         return clientRequirement.expression == helperRequirement.expression ? .mismatch : .ready
     }
-    public func secureIncomingConnections(on listener: NSXPCListener) -> Bool {
+    public func secureIncomingConnection(_ connection: NSXPCConnection) -> Bool {
         guard readiness == .ready, let value = clientRequirement else { return false }
-        listener.setConnectionCodeSigningRequirement(value.expression); return true
+        connection.setCodeSigningRequirement(value.expression); return true
     }
     public func secureHelperConnection(_ connection: NSXPCConnection) -> Bool {
         guard readiness == .ready, let value = helperRequirement else { return false }
