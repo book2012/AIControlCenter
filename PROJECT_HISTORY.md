@@ -1,5 +1,24 @@
 # Project History
 
+## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C3 completed
+
+Implementation commit `85b9e32` (`feat: build unsigned SEC-02 native package`)
+completed real unsigned native executable/package validation. The app and helper
+are non-empty arm64 thin Mach-O artifacts; the exact package allowlist and
+embedded helper metadata were validated; neither artifact contains
+`LC_CODE_SIGNATURE`; linker ad-hoc signing was disabled; and no signing occurred.
+The helper explicitly owns its listener delegate and applies the unresolved
+incoming signing requirement before connection resume, preserving fail-closed
+behavior. Milestone: `SEC02_UNSIGNED_NATIVE_PACKAGE_VALIDATED`. Evidence:
+focused `22 passed`; canonical `4455 passed, 5 deselected, 659 warnings`.
+
+C2 remains the earlier source/toolchain compatibility milestone and synthetic
+temporary-layout evidence. C3 does not establish universal/fat validation,
+bit-for-bit reproducibility, an authoritative signing identity or Team ID, a
+signed package, registration, trusted issuer operation, or Production readiness.
+No journal provisioning, governance remediation, Secure Enclave Production key
+creation, or Production mutation occurred.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C2 current state recorded
 
 After implementation correction `51e9a96 fix: compile SEC-02 native signing
@@ -4534,4 +4553,8 @@ warnings). No Production, Authorization Services, helper, chmod, Ubuntu,
 Docker, or AWS operation occurred.
 # SEC-02 live packaging foundation
 
-03B4R2-C froze native identities and bounded source/package contracts without Production, Keychain, Secure Enclave, registration, or filesystem mutation. Full native type-check remains blocked by missing full Xcode.
+03B4R2-C froze native identities and bounded source/package contracts without
+Production, Keychain, Secure Enclave, registration, or filesystem mutation. At
+that historical point, full native type-check was blocked by missing Full Xcode;
+C2 later established source/toolchain compatibility using Command Line Tools,
+and C3 later validated the real unsigned arm64 thin package.

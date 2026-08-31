@@ -1,8 +1,41 @@
 # SEC-02 live security packaging foundation
 
-Status: repository implemented; native source type-checked with Command Line
-Tools; temporary package layout validated; unsigned; unregistered;
-non-operational. `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+Status: C3 repository implementation complete; native source type-checked;
+temporary layout validated; real unsigned arm64 thin Mach-O package validated;
+unsigned; unregistered; non-operational.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
+## R2-C3 verified current state
+
+Implementation commit `85b9e32` (`feat: build unsigned SEC-02 native package`)
+establishes `SEC02_UNSIGNED_NATIVE_PACKAGE_VALIDATED`. Both executable slots
+contain real, non-empty arm64 thin Mach-O artifacts and the exact outer package
+allowlist is preserved. The helper embeds `Helper-Info.plist` in
+`__TEXT,__info_plist`, validated as executable
+`SEC02GovernanceRemediationHelper`, identifier
+`com.aicontrolcenter.sec02-remediation-helper`, and package type `BNDL`.
+Neither executable has `LC_CODE_SIGNATURE`; linker ad-hoc signing is explicitly
+disabled and no `codesign` operation occurred. JSON `signed=false` is supported
+by built-artifact inspection.
+
+The helper runtime strongly owns its listener delegate. The incoming XPC signing
+requirement is applied to the actual `NSXPCConnection` before `resume()`. Since
+authoritative requirements remain unresolved/null, every connection remains
+fail-closed. Exactly two fixed operations remain non-operational. Evidence:
+focused `22 passed`; canonical `4455 passed, 5 deselected, 659 warnings`.
+
+C2 remains historical evidence for source/toolchain type-check compatibility;
+its synthetic temporary layout validation is not rewritten as a native build.
+C3 establishes the real unsigned native package only. Signed package and
+operational/live Production readiness remain unavailable. Validation covers the
+current arm64 thin artifacts; universal/fat validation and bit-for-bit
+reproducibility are not claimed.
+
+No `SMAppService` registration/unregistration, Production journal provisioning,
+governance remediation, Secure Enclave Production key creation, or Production
+mutation occurred. Developer ID Application, authoritative Team ID, signed
+package, live signing, trusted issuer operation, Production remediation, 03B5
+ceremony readiness, and Full Xcode remain unavailable.
 
 ## R2-C2 verified current state
 

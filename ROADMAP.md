@@ -1,6 +1,31 @@
 # Roadmap
 
-## CURRENT — SEC02-FS-MACRO-03B4R2-C2 operator prerequisites
+## COMPLETE — SEC02-FS-MACRO-03B4R2-C3 unsigned native package
+
+Repository implementation and validation are complete at commit `85b9e32`
+(`feat: build unsigned SEC-02 native package`). Real non-empty arm64 thin Mach-O
+app/helper artifacts and the exact package structure are validated, establishing
+`SEC02_UNSIGNED_NATIVE_PACKAGE_VALIDATED`. Focused evidence is `22 passed`;
+canonical evidence is `4455 passed, 5 deselected, 659 warnings`.
+
+This does not establish universal/fat Mach-O validation, bit-for-bit
+reproducibility, signing, registration, trusted-issuer operation, or Production
+readiness.
+
+## BLOCKED/FUTURE — C3 post-repository prerequisites
+
+- [ ] Authoritative Developer ID Application identity.
+- [ ] Authoritative Team ID.
+- [ ] Signed native package and live signing readiness.
+- [ ] Separately authorized `SMAppService` registration.
+- [ ] SEC-02 trusted issuer operationalization.
+- [ ] Separately authorized Production journal provisioning.
+- [ ] Freshly authorized bounded Production remediation.
+- [ ] Full Xcode establishment.
+
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
+## HISTORICAL — SEC02-FS-MACRO-03B4R2-C2 operator prerequisites
 
 - [x] Correct native signing flags in implementation commit `51e9a96`.
 - [x] Type-check `NativeFoundation.swift` with

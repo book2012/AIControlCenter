@@ -1,6 +1,27 @@
 # MASTER
 
-## Current authoritative status — SEC02-FS-MACRO-03B4R2-C2
+## Current authoritative status — SEC02-FS-MACRO-03B4R2-C3 complete
+
+Implementation commit `85b9e32` (`feat: build unsigned SEC-02 native package`)
+establishes `SEC02_UNSIGNED_NATIVE_PACKAGE_VALIDATED`: the exact package is
+backed by real, non-empty arm64 thin Mach-O app/helper executables, with embedded
+helper metadata and no `LC_CODE_SIGNATURE`. Linker ad-hoc signing is explicitly
+disabled. The helper delegate lifetime is explicit, and the unresolved incoming
+signing requirement is bound to the actual XPC connection before resume, so all
+connections remain fail-closed. Evidence: focused `22 passed`; canonical `4455
+passed, 5 deselected, 659 warnings`.
+
+C2 remains the source/toolchain compatibility milestone; synthetic layout,
+real unsigned package, signed package, and live Production readiness are not
+interchangeable. Current validation covers arm64 thin artifacts, not
+universal/fat Mach-O or bit-for-bit reproducibility. Developer ID Application,
+authoritative Team ID, signed package, live signing, registration, trusted
+issuer operation, Production remediation, 03B5 ceremony readiness, and Full
+Xcode remain unavailable. Mac remains the sole Control Plane; signing grants no
+Production authority, every bounded mutation requires fresh human authorization,
+and Ubuntu receives none.
+
+## Historical authoritative status — SEC02-FS-MACRO-03B4R2-C2
 
 `NativeFoundation.swift` type-check succeeds under
 `/Library/Developer/CommandLineTools` with Apple Swift `6.3.3` and macOS SDK

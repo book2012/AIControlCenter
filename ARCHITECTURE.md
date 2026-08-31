@@ -1,5 +1,35 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R2-C3 unsigned native package validated
+
+Implementation commit `85b9e32` (`feat: build unsigned SEC-02 native package`)
+completed C3 repository implementation and validation. The exact package layout
+is now backed by real, non-empty arm64 thin Mach-O app and helper executables.
+The helper embeds its validated `Helper-Info.plist` in `__TEXT,__info_plist`;
+the helper runtime strongly owns its `NSXPCListener` delegate; and the incoming
+XPC signing requirement is applied to the actual connection before `resume()`.
+Both executables lack `LC_CODE_SIGNATURE`, linker ad-hoc signing is disabled,
+and no signing operation occurred. This establishes
+`SEC02_UNSIGNED_NATIVE_PACKAGE_VALIDATED`, not signed or live readiness.
+
+C2 remains the historical source/toolchain type-check milestone. Synthetic
+temporary layout validation, real unsigned native package validation, signed
+package readiness, and operational Production readiness are separate states.
+The current native inspection covers arm64 thin artifacts; universal/fat Mach-O
+validation and bit-for-bit reproducibility are not claimed. Canonical evidence
+from the implementation commit is `4455 passed, 5 deselected, 659 warnings`
+(focused: `22 passed`).
+
+`DEVELOPER_ID_APPLICATION_AVAILABLE=NO`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`SEC02_TRUSTED_ISSUER_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+`FULL_XCODE_ESTABLISHED=NO`
+
 ## SEC02-FS-MACRO-03B4R2-C1 source hardening
 
 Native signing metadata is not signing validity. The resolver now validates the

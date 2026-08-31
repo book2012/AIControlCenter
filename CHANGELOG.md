@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C3 unsigned native package
+
+- Recorded implementation commit `85b9e32` (`feat: build unsigned SEC-02 native
+  package`) and milestone `SEC02_UNSIGNED_NATIVE_PACKAGE_VALIDATED`.
+- Validated real, non-empty arm64 thin Mach-O app/helper executables, the exact
+  outer package allowlist, embedded helper `__TEXT,__info_plist` metadata, and
+  absence of `LC_CODE_SIGNATURE`; linker ad-hoc signing was disabled and no
+  signing operation occurred.
+- Validated explicit helper delegate ownership and application of the unresolved
+  incoming XPC requirement to the actual connection before resume. Both fixed
+  helper operations remain non-operational and fail closed.
+- Preserved C2 as source/toolchain compatibility evidence and kept synthetic
+  layout, real unsigned package, signed package, and operational readiness as
+  distinct states. Universal/fat validation and bit-for-bit reproducibility are
+  not claimed.
+- Evidence: focused `22 passed`; canonical `4455 passed, 5 deselected, 659
+  warnings`.
+- No registration, Production journal provisioning, governance remediation,
+  Secure Enclave Production key creation, or Production mutation occurred.
+  Signing identity, Team ID, signed package, trusted issuer, registration, and
+  Production readiness remain blocked.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C2 current-state correction
 
 - Recorded successful `NativeFoundation.swift` type-check with
