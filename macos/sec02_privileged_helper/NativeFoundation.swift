@@ -51,7 +51,7 @@ public struct SEC02NativeSigningResolver {
               values[kSecCodeInfoTeamIdentifier as String] as? String == expectedTeamID else {
             throw SEC02SigningResolverError.identityMismatch
         }
-        if (values[kSecCodeInfoFlags as String] as? UInt32).map({ $0 & UInt32(kSecCodeSignatureAdhoc) != 0 }) == true {
+        if (values[kSecCodeInfoFlags as String] as? UInt32).map({ $0 & SecCodeSignatureFlags.adhoc.rawValue != 0 }) == true {
             throw SEC02SigningResolverError.adhoc
         }
         var requirement: SecRequirement?

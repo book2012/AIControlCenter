@@ -121,7 +121,7 @@ def test_native_signing_metadata_is_used_only_after_static_validity_check():
     assert "kSecCSCheckAllArchitectures" in source
     assert "invalidSignature" in source
     for token in ("kSecCodeInfoIdentifier", "kSecCodeInfoTeamIdentifier",
-                  "kSecCodeSignatureAdhoc", "SecCodeCopyDesignatedRequirement"):
+                  "SecCodeSignatureFlags.adhoc.rawValue", "SecCodeCopyDesignatedRequirement"):
         assert source.index(token, create) > validity
 
 
