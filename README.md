@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B4R2-C2 current state
+
+`NativeFoundation.swift` now type-checks with the selected Command Line Tools
+developer directory `/Library/Developer/CommandLineTools`, Apple Swift `6.3.3`,
+and macOS SDK `26.5`: `NATIVE_TYPECHECK_RC=0`,
+`NATIVE_TOOLCHAIN_COMPATIBLE=YES`, and
+`SECURE_ENCLAVE_PROVISIONER_TYPECHECKED=YES`. The implementation correction is
+commit `51e9a96` (`fix: compile SEC-02 native signing flags`); the canonical
+deployment regression is `4449 passed, 5 deselected, 651 warnings`.
+
+This is source/toolchain compatibility only. Full Xcode is not established.
+Code-signing discovery found `0 valid identities`; Developer ID Application is
+absent (count `0`), the user keychain search list contains only
+`login.keychain-db`, and the authoritative Team ID remains unresolved. The
+signed native package is not ready. No `SMAppService` registration, live
+fresh-human approval, or governance remediation was performed, and the SEC-02
+trusted issuer is not operational. Mac remains the sole Control Plane; signing
+readiness grants no Production mutation authority, every bounded Production
+mutation still requires one fresh human authorization, and Ubuntu receives no
+authority. `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 Current SEC-02 source hardening requires static code validity before signing
 metadata, exact native/Python algorithm-ID agreement, and exact-one Secure
 Enclave key recognition with absence-only future creation. Public-key identity
@@ -34,10 +55,11 @@ Production remediation remain unavailable.
 
 ## Current authoritative — SEC02-FS-MACRO-03B4R readiness closed
 
-Architecture contracts exist, but toolchain compatibility, signing identities,
-app/helper packaging, mutual requirements, native replay derivation,
-fresh-human proof, journal provisioning, and helper operation remain blocked.
-The journal-provisioning authority is defined only.
+Architecture contracts exist. The earlier toolchain-compatibility blocker is
+resolved for native source type-check only; signing identities, signed
+app/helper packaging, concrete mutual requirements, live fresh-human proof,
+journal provisioning, and helper operation remain blocked. The
+journal-provisioning authority is defined only.
 `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
 
 ## Current authoritative — SEC02-FS-MACRO-03B3 durable journal closed

@@ -1,7 +1,29 @@
 # SEC-02 live security packaging foundation
 
-Status: repository implemented; native source not type-checked on this host;
-temporary package layout validated; unsigned; unregistered; non-operational.
+Status: repository implemented; native source type-checked with Command Line
+Tools; temporary package layout validated; unsigned; unregistered;
+non-operational. `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
+## R2-C2 verified current state
+
+`NativeFoundation.swift` now type-checks using
+`/Library/Developer/CommandLineTools`, Apple Swift `6.3.3`, and macOS SDK
+`26.5`. Exact evidence: `NATIVE_TYPECHECK_RC=0`,
+`NATIVE_TOOLCHAIN_COMPATIBLE=YES`, and
+`SECURE_ENCLAVE_PROVISIONER_TYPECHECKED=YES`. The implementation correction is
+commit `51e9a96` (`fix: compile SEC-02 native signing flags`). The canonical
+deployment regression is `4449 passed, 5 deselected, 651 warnings`.
+
+Full Xcode is not established. Code-signing identity discovery returned `0
+valid identities`; Developer ID Application is absent, with count `0`. The user
+keychain search list contains `login.keychain-db` only, and the authoritative
+Team ID remains unresolved. Consequently, the signed native package is not
+ready. `SMAppService` registration, live fresh-human approval, and governance
+remediation were not performed; the SEC-02 trusted issuer is not operational.
+
+Mac remains the sole Control Plane. Signing readiness does not grant Production
+mutation authority. Each bounded Production mutation still requires one fresh
+human authorization. Ubuntu receives no authority.
 
 ## R2-C1 validity and readiness terminology
 

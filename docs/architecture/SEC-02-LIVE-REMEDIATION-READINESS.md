@@ -1,5 +1,26 @@
 # SEC-02 Live Remediation Readiness
 
+## SEC02-FS-MACRO-03B4R2-C2 current state
+
+`NativeFoundation.swift` type-check now succeeds using
+`/Library/Developer/CommandLineTools`, Apple Swift `6.3.3`, and macOS SDK
+`26.5`: `NATIVE_TYPECHECK_RC=0`, `NATIVE_TOOLCHAIN_COMPATIBLE=YES`, and
+`SECURE_ENCLAVE_PROVISIONER_TYPECHECKED=YES`. This follows implementation
+correction commit `51e9a96` (`fix: compile SEC-02 native signing flags`). The
+canonical deployment regression is `4449 passed, 5 deselected, 651 warnings`.
+
+This is not a Full Xcode claim and does not make signing ready. Code-signing
+identity discovery found `0 valid identities`; Developer ID Application is
+absent (count `0`), the user keychain search list is `login.keychain-db` only,
+and the authoritative Team ID is unresolved. The signed native package is not
+ready. `SMAppService` registration, live fresh-human approval, and governance
+remediation were not performed. The SEC-02 trusted issuer is not operational.
+
+Mac remains the sole Control Plane. Signing readiness grants no Production
+mutation authority, one fresh human authorization remains required per bounded
+Production mutation, and Ubuntu receives no authority.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## R2-C1 hardened source, still not live
 
 Static signing metadata is never validity evidence: Security.framework must
@@ -85,9 +106,9 @@ Observed host/toolchain facts:
   `/Library/Developer/CommandLineTools/usr/bin/swiftc`, both Apple Swift `6.3.3`
   (`swiftlang-6.3.3.1.3 clang-2100.1.1.101`).
 - SDK `/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk`, version `26.5`.
-- type-check failed because SDK modules were built with Apple Swift `6.3.2`
-  (`swiftlang-6.3.2.1.2 clang-2100.0.123.2`) while the compiler is `6.3.3`;
-  the sandbox also denied the default module-cache path.
+- the earlier type-check mismatch was corrected by implementation commit
+  `51e9a96`; current native type-check return code is `0` and the toolchain is
+  compatible for this source check.
 - codesigning inspection reported `0 valid identities found`.
 
 The repository has no SEC-02 native `.app` target, `Info.plist`, bundled
@@ -108,8 +129,8 @@ The replay direction remains `AuthorizationRef` to
 `AuthorizationMakeExternalForm`, ephemeral native bytes, domain-separated
 SHA-256, then `AuthorizationReplayKey` across the Python/domain boundary. Raw
 external-form bytes must never enter disk, SQLite, JSON, logs, audit payloads,
-application state, or caches. The cryptographic contract is defined, but native
-derivation is absent, not type-checked, and not operationally validated.
+application state, or caches. The cryptographic contract and native derivation
+source are implemented and type-checked, but are not operationally validated.
 
 The SDK says `InteractionAllowed` permits interaction when required; it does
 not attest that fresh human authentication happened for the exact invocation.
@@ -144,12 +165,12 @@ ready.
 |---|---|---|
 | Exact eligibility gate | Ready | Repository implemented and previously validated |
 | Durable journal semantics | Ready | Repository implemented and temp-path validated |
-| Native toolchain | Blocked | Swift 6.3.3 / SDK Swift 6.3.2 mismatch |
+| Native source/toolchain compatibility | Ready for type-check only | Command Line Tools, Swift 6.3.3, SDK 26.5; RC 0 |
 | App/helper signing identities | Blocked | Zero valid identities |
 | Mutual XPC requirements | Blocked | No authoritative identities or bundle IDs |
 | Native app bundle | Blocked | No native app target/package assets |
 | LaunchDaemon package | Blocked | No bundled plist/helper/Mach service/entitlements |
-| Native replay fingerprint | Blocked | Contract only; no native implementation/type-check/live validation |
+| Native replay fingerprint | Partially ready | Native source implemented and type-checked; no live validation |
 | Fresh-human evidence | Blocked | Authorization Services alone does not prove it |
 | Journal provisioning | Blocked | Authority defined only |
 | Live journal metadata | Blocked | Not inspected; journal remains non-operational |
@@ -160,7 +181,10 @@ Architecture defined != implemented != operationally validated.
 `SEC02-FS-MACRO-03B4R2-RESOLVE-VERIFIED-LIVE-BLOCKERS`.
 
 ```text
-NATIVE_TOOLCHAIN_READY=NO
+NATIVE_TYPECHECK_RC=0
+NATIVE_TOOLCHAIN_COMPATIBLE=YES
+SECURE_ENCLAVE_PROVISIONER_TYPECHECKED=YES
+FULL_XCODE_ESTABLISHED=NO
 LIVE_SIGNING_READINESS=NOT_READY
 NATIVE_APP_BUNDLE_FOUNDATION_READY=NO
 LAUNCHDAEMON_PACKAGE_READY=NO
@@ -168,7 +192,7 @@ SMAPPSERVICE_REGISTRATION_READY=NO
 CONCRETE_CLIENT_SIGNING_REQUIREMENT_READY=NO
 CONCRETE_HELPER_SIGNING_REQUIREMENT_READY=NO
 NATIVE_REPLAY_FINGERPRINT_CONTRACT_READY=YES
-NATIVE_REPLAY_FINGERPRINT_TYPECHECKED=NO
+NATIVE_REPLAY_FINGERPRINT_TYPECHECKED=YES
 REPLAY_FINGERPRINT_OPERATIONALLY_VALIDATED=NO
 LIVE_FRESH_APPROVAL_VERIFICATION_READY=NO
 SEPARATE_FRESH_HUMAN_EVIDENCE_MECHANISM_REQUIRED=YES

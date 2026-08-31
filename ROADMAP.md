@@ -1,5 +1,28 @@
 # Roadmap
 
+## CURRENT — SEC02-FS-MACRO-03B4R2-C2 operator prerequisites
+
+- [x] Correct native signing flags in implementation commit `51e9a96`.
+- [x] Type-check `NativeFoundation.swift` with
+  `/Library/Developer/CommandLineTools`, Apple Swift `6.3.3`, and macOS SDK
+  `26.5` (`NATIVE_TYPECHECK_RC=0`, `NATIVE_TOOLCHAIN_COMPATIBLE=YES`,
+  `SECURE_ENCLAVE_PROVISIONER_TYPECHECKED=YES`).
+- [x] Preserve canonical deployment regression: `4449 passed, 5 deselected,
+  651 warnings`.
+- [ ] Resolve an authoritative Team ID and signing identity. Discovery found
+  `0 valid identities`; Developer ID Application is absent (count `0`), and
+  only `login.keychain-db` is in the user keychain search list.
+- [ ] Build and sign the native package, then separately authorize any
+  `SMAppService` registration. Neither has occurred; Full Xcode is not
+  established.
+- [ ] Perform a separately authorized live fresh-human approval, trusted issuer
+  provisioning, and governance remediation. None is operational or performed.
+
+Mac remains the sole Control Plane. Signing readiness grants no Production
+mutation authority; one fresh human authorization remains required per bounded
+Production mutation. Ubuntu receives no authority.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-C1 source hardening
 
 - [x] Validate all static-code architectures before trusting signing metadata.

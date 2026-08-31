@@ -49,13 +49,13 @@ Fresh-human evidence remains the next separate authority boundary.
 
 ## SEC02-FS-MACRO-03B4R live-readiness review
 
-Read-only inspection closed Production ceremony readiness as `NO`: the selected
-Swift 6.3.3 compiler mismatches SDK Swift 6.3.2 modules, zero valid signing
-identities exist, and native packaging, mutual signing requirements, native
-replay derivation, fresh-human evidence, journal provisioning, and operational
-helper remain absent. The separate create-only journal-provisioning authority is
-defined but not implemented. Architecture defined != implemented !=
-operationally validated. See
+The original read-only inspection closed Production ceremony readiness as `NO`.
+C2 later resolved the Swift source type-check compatibility blocker only. Zero
+valid signing identities still exist, and signed native packaging, concrete
+mutual signing requirements, live fresh-human approval, journal provisioning,
+and an operational helper remain absent. The separate create-only
+journal-provisioning authority is defined but is not operational. Architecture
+defined != implemented != operationally validated. See
 `docs/architecture/SEC-02-LIVE-REMEDIATION-READINESS.md`.
 
 ## SEC02-FS-MACRO-03B3 durable one-attempt boundary
@@ -4928,3 +4928,18 @@ is operational. See
 # SEC-02 03B4R2-C live packaging foundation
 
 SEC-02 now freezes native identities and deterministic package, signing resolver, two-operation helper, Secure Enclave, and journal receipt contracts. See `docs/architecture/SEC-02-LIVE-SECURITY-PACKAGING.md`. They remain unsigned, unregistered, unprovisioned, and non-operational.
+
+## SEC-02 03B4R2-C2 current boundary
+
+`NativeFoundation.swift` type-checks with Command Line Tools at
+`/Library/Developer/CommandLineTools`, Apple Swift `6.3.3`, and macOS SDK
+`26.5` (`NATIVE_TYPECHECK_RC=0`, `NATIVE_TOOLCHAIN_COMPATIBLE=YES`,
+`SECURE_ENCLAVE_PROVISIONER_TYPECHECKED=YES`). This establishes source/toolchain
+compatibility only. Full Xcode is not established, signing discovery found zero
+valid identities, Developer ID Application is absent, and the authoritative
+Team ID is unresolved. The package is not signed or ready, registration and
+live ceremonies were not performed, and the SEC-02 trusted issuer is not
+operational. Mac remains the sole Control Plane; one fresh human authorization
+is required for each bounded Production mutation, signing grants no mutation
+authority, and Ubuntu receives none.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
