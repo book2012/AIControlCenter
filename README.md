@@ -1,5 +1,43 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B4R2-C4 verifier validated
+
+Commit `1cf8648` (`feat: validate SEC-02 production signing identity`) completed
+and validated the read-only Production signing identity verifier. Milestone:
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED`. Security.framework is primary;
+the narrow `/usr/bin/security` fallback can prove only exact zero-identity
+absence and can never produce readiness, a candidate, or a Team ID. Exactly one
+fully qualified verified Developer ID Application credential is required for an
+authoritative Team ID. Multiple qualified valid candidates are ambiguous;
+rejected observations do not create ambiguity. Private-key usability is only
+capability evidence.
+
+The verifier performs no signing or credential persistence and causes zero
+Keychain and Production mutation. `LAContext.interactionNotAllowed=true`; no
+pre-authenticated context or `evaluatePolicy()` is used. Evidence: focused C4
+`8 passed`; native Swift type-check `PASS`, zero warnings; ambiguity semantics
+validated; deprecated authentication-UI keys absent; canonical `4463 passed, 5
+deselected, 675 warnings`. Canonical was not rerun for this documentation-only
+closeout.
+
+Readiness remains seven separate stages: C2 source/toolchain compatibility; C3
+real unsigned package validation; C4 verifier validation; actual Production
+identity verification; signed-package readiness; `SMAppService` registration;
+and Production remediation / 03B5 readiness. Only the first three are complete.
+
+`SEC02_FS_MACRO_03B4R2_C4_IMPLEMENTATION=COMPLETE`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_IMPLEMENTED=YES`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED=YES`
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## Current authoritative — SEC02-FS-MACRO-03B4R2-C3 complete
 
 Commit `85b9e32` (`feat: build unsigned SEC-02 native package`) completed and

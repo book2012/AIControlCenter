@@ -1,7 +1,33 @@
 # SEC-02 live security packaging foundation
 
-Status: C3 repository implementation complete; native source type-checked;
-temporary layout validated; real unsigned arm64 thin Mach-O package validated;
+## R2-C4 Production signing identity verifier
+
+Implementation commit `1cf8648` establishes the read-only milestone
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED`. Security.framework is the
+primary inspection path. Exactly one fully qualified verified Developer ID
+Application credential is required to derive an authoritative Team ID. Multiple
+qualified valid candidates are `AMBIGUOUS / NOT_READY`; rejected observations
+do not create ambiguity. Private-key usability is capability evidence only.
+
+The narrow `/usr/bin/security` fallback can prove only exact zero-identity
+absence and can never produce readiness, identity, or Team ID.
+`LAContext.interactionNotAllowed=true`; there is no pre-authenticated context or
+`evaluatePolicy()` call. The verifier performs no signing, credential creation,
+import, update, deletion, export, persistence, Keychain mutation, or Production
+mutation. Evidence: focused C4 `8 passed`; native Swift type-check `PASS` with
+zero warnings; canonical `4463 passed, 5 deselected, 675 warnings`. Canonical was
+not rerun for this documentation-only closeout.
+
+C2 source/toolchain compatibility, C3 real unsigned package validation, C4
+verifier validation, actual Production signing identity verification,
+signed-package readiness, `SMAppService` registration, and Production remediation
+/ 03B5 readiness remain separate states. Only the first three are established.
+Live Developer ID Application is absent; Team ID, verified Production identity,
+signed package, live signing, registration, remediation, and 03B5 readiness are
+not available. Mac remains the sole Control Plane; Ubuntu receives no authority.
+
+Status: C4 read-only verifier implementation validated; C2 native source
+type-check and C3 real unsigned arm64 thin Mach-O package validation preserved;
 unsigned; unregistered; non-operational.
 `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
 

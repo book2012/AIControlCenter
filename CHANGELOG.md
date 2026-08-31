@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C4 verifier validation
+
+- Recorded authoritative implementation commit `1cf8648` and milestone
+  `PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED`.
+- Validated the read-only Security.framework inspection path, exact-one fully
+  qualified Developer ID Application candidate rule, qualified-candidate
+  ambiguity, and rejection of invalid or otherwise unqualified observations.
+- Confirmed the `/usr/bin/security` fallback is absence-only and cannot produce
+  readiness, identity, or Team ID; private-key usability remains capability
+  evidence only.
+- Confirmed `LAContext.interactionNotAllowed=true`, no `evaluatePolicy()`, and
+  absence of deprecated authentication-UI keys.
+- Evidence: focused C4 `8 passed`; native Swift type-check `PASS` with zero
+  warnings; canonical `4463 passed, 5 deselected, 675 warnings`. Canonical was
+  not rerun for this documentation-only closeout.
+- No signing, credential import/persistence, Keychain mutation, registration,
+  journal provisioning, governance remediation, or Production mutation occurred.
+  Live Developer ID Application remains absent; Team ID, verified Production
+  identity, signed package, live signing, registration, and 03B5 readiness remain
+  unavailable.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C3 unsigned native package
 
 - Recorded implementation commit `85b9e32` (`feat: build unsigned SEC-02 native

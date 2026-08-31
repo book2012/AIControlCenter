@@ -1,5 +1,27 @@
 # SEC-02 Privileged Helper Package Contract
 
+## R2-C4 signing identity inspection boundary
+
+Commit `1cf8648` implements and validates the read-only
+`ProductionSigningIdentityVerifier`. Security.framework is primary. Exactly one
+fully qualified verified Developer ID Application credential may establish the
+authoritative Team ID; multiple qualified valid candidates are ambiguous, while
+rejected observations do not create ambiguity. The narrow `/usr/bin/security`
+fallback can prove only exact absence and cannot produce `READY`, identity, or
+Team ID. Private-key usability is capability evidence, not signing-success proof.
+
+The verifier uses `LAContext.interactionNotAllowed=true`, no pre-authenticated
+context, and no `evaluatePolicy()`. It creates, imports, updates, deletes,
+exports, or persists no credential; it performs no signing and causes no
+Keychain or Production mutation. Focused C4 validation was `8 passed`; native
+Swift type-check passed with zero warnings; canonical was `4463 passed, 5
+deselected, 675 warnings` and was not rerun for documentation closeout.
+
+This C4 verifier validation is distinct from actual Production identity
+verification, signed-package readiness, registration, and remediation / 03B5
+readiness. Live Developer ID Application is absent, no authoritative Team ID is
+available, and the package remains unsigned and unregistered.
+
 03B4R2-C freezes the app/helper/Mach identifiers, exact bundle layout, two
 explicit zero-argument helper methods, native signing resolver, and Secure
 Enclave source. Registration remains prohibited and signing remains not ready

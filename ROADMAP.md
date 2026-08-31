@@ -1,5 +1,31 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B4R2-C4 verifier validation
+
+- [x] Implement and validate the read-only Production signing identity verifier
+  at commit `1cf8648`.
+- [x] Require exactly one fully qualified verified Developer ID Application
+  credential; classify multiple qualified valid candidates as ambiguous without
+  counting rejected observations as ambiguity.
+- [x] Keep `/usr/bin/security` fallback absence-only and non-authoritative.
+- [x] Use non-interactive `LAContext`; perform no signing, Keychain mutation, or
+  Production mutation.
+- [x] Record focused C4 `8 passed`, native Swift type-check `PASS` with zero
+  warnings, and canonical `4463 passed, 5 deselected, 675 warnings`.
+
+## BLOCKED/FUTURE — post-C4 readiness stages
+
+- [ ] Stage 4: verify an actual Production signing identity. Live Developer ID
+  Application is absent and no authoritative Team ID is available.
+- [ ] Stage 5: establish signed-package readiness.
+- [ ] Stage 6: perform separately authorized `SMAppService` registration.
+- [ ] Stage 7: perform separately authorized Production remediation and reach
+  03B5 readiness.
+
+C2 source/toolchain compatibility, C3 real unsigned package validation, and C4
+verifier validation are complete but do not satisfy stages 4–7.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-C3 unsigned native package
 
 Repository implementation and validation are complete at commit `85b9e32`

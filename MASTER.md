@@ -1,5 +1,31 @@
 # MASTER
 
+## Current authoritative status — SEC02-FS-MACRO-03B4R2-C4 complete
+
+Implementation commit `1cf8648` establishes the read-only
+`ProductionSigningIdentityVerifier` and milestone
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED`. It uses Security.framework as
+the primary path and requires exactly one fully qualified verified Developer ID
+Application credential before a Team ID can be authoritative. Multiple qualified
+valid candidates are ambiguous; rejected candidates do not create ambiguity.
+The absence-only `/usr/bin/security` fallback cannot produce `READY`, identity,
+or Team ID. Private-key usability does not predict later signing success.
+
+Validation recorded focused C4 `8 passed`, native Swift type-check `PASS` with
+zero warnings, and canonical `4463 passed, 5 deselected, 675 warnings`. The
+documentation closeout did not rerun canonical. The verifier uses
+`LAContext.interactionNotAllowed=true`, does not call `evaluatePolicy()`, and
+performs no signing, credential mutation, Keychain mutation, or Production
+mutation.
+
+C2 source/toolchain compatibility, C3 real unsigned package validation, C4
+verifier validation, actual Production identity verification, signed-package
+readiness, `SMAppService` registration, and Production remediation / 03B5
+readiness are distinct states. Only C2, C3, and C4 are established. Live
+Developer ID Application is absent; authoritative Team ID, verified Production
+identity, signed package, registration, remediation, and 03B5 readiness remain
+unavailable. Mac remains the sole Control Plane and Ubuntu receives no authority.
+
 ## Current authoritative status — SEC02-FS-MACRO-03B4R2-C3 complete
 
 Implementation commit `85b9e32` (`feat: build unsigned SEC-02 native package`)

@@ -1,5 +1,54 @@
 # SEC-02 Live Remediation Readiness
 
+## SEC02-FS-MACRO-03B4R2-C4 authoritative state
+
+Commit `1cf8648` establishes
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED`. The verifier is read-only and
+uses Security.framework as the primary inspection path. A Team ID can become
+authoritative only from exactly one fully qualified verified Developer ID
+Application credential. Multiple fully qualified valid candidates produce
+`AMBIGUOUS / NOT_READY`; invalid, expired, untrusted, invalid-Team-ID, or
+otherwise rejected observations do not make one valid qualified candidate
+ambiguous. Private-key usability is capability evidence only and does not prove
+that a later package-signing operation will succeed.
+
+The narrow `/usr/bin/security` fallback can prove only exact zero-identity
+absence and can never produce `READY`, a candidate identity, or a Team ID.
+`LAContext.interactionNotAllowed=true`; no pre-authenticated `LAContext` is used
+and no `evaluatePolicy()` call exists. The verifier does not create, import,
+update, delete, export, or persist credentials; it performs no signing and zero
+Keychain or Production mutation.
+
+Evidence: focused C4 `8 passed`; native Swift type-check `PASS`, zero warnings;
+qualified-candidate ambiguity semantics validated; deprecated
+`kSecUseAuthenticationUIFail` / `kSecUseAuthenticationUI` absent; canonical
+`4463 passed, 5 deselected, 675 warnings`. No canonical rerun was required or
+performed for this documentation-only closeout.
+
+The independent readiness stages are: (1) C2 source/toolchain compatibility,
+(2) C3 real unsigned native package validation, (3) C4 verifier validation,
+(4) actual Production signing identity verification, (5) signed package
+readiness, (6) `SMAppService` registration, and (7) Production remediation / 03B5
+readiness. Stages 1–3 are complete; stages 4–7 are not.
+
+```text
+SEC02_FS_MACRO_03B4R2_C4_IMPLEMENTATION=COMPLETE
+PRODUCTION_SIGNING_IDENTITY_VERIFIER_IMPLEMENTED=YES
+PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED=YES
+LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT
+AUTHORITATIVE_TEAM_ID_AVAILABLE=NO
+PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO
+SIGNED_PACKAGE_READY=NO
+LIVE_SIGNING_READINESS=NOT_READY
+SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO
+PRODUCTION_REMEDIATION_AVAILABLE=NO
+READY_FOR_03B5_PRODUCTION_CEREMONY=NO
+CANONICAL_RERUN_REQUIRED=NO
+```
+
+Mac remains the sole Control Plane. The verifier grants no Production mutation
+authority, and Ubuntu receives zero signing, governance, or Production authority.
+
 ## SEC02-FS-MACRO-03B4R2-C3 current state
 
 Commit `85b9e32` (`feat: build unsigned SEC-02 native package`) establishes

@@ -1,5 +1,24 @@
 # Project History
 
+## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C4 completed
+
+Implementation commit `1cf8648` completed and validated the read-only Production
+signing identity verifier, establishing
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED`. Security.framework is primary;
+the narrow command fallback proves only exact absence. Exactly one fully
+qualified verified Developer ID Application credential may establish an
+authoritative Team ID. Multiple qualified valid candidates are ambiguous, while
+invalid, expired, untrusted, invalid-Team-ID, and otherwise rejected observations
+do not create ambiguity. Private-key usability is capability evidence only.
+
+Evidence was focused C4 `8 passed`, native Swift type-check `PASS` with zero
+warnings, and canonical `4463 passed, 5 deselected, 675 warnings`. The verifier
+uses non-interactive `LAContext`, performs no signing or credential persistence,
+and causes no Keychain or Production mutation. The live host still has no
+Developer ID Application or authoritative Team ID. Actual identity verification,
+signed-package readiness, registration, Production remediation, and 03B5
+readiness remain incomplete. Canonical was not rerun for documentation closeout.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C3 completed
 
 Implementation commit `85b9e32` (`feat: build unsigned SEC-02 native package`)

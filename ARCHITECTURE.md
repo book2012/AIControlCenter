@@ -1,5 +1,44 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R2-C4 Production signing identity verifier validated
+
+Authoritative implementation commit `1cf8648` (`feat: validate SEC-02
+production signing identity`) establishes
+`PRODUCTION_SIGNING_IDENTITY_VERIFIER_VALIDATED`. The read-only verifier uses
+Security.framework as its primary inspection path and accepts an authoritative
+Team ID only from exactly one fully qualified, verified Developer ID Application
+credential. Multiple fully qualified valid candidates are `AMBIGUOUS` and
+`NOT_READY`; rejected observations do not make one valid qualified candidate
+ambiguous. Private-key usability is capability evidence only, not proof that a
+later package-signing operation will succeed.
+
+The narrow `/usr/bin/security` fallback can establish only exact zero-identity
+absence. It can never return `READY`, a candidate identity, or a Team ID.
+`LAContext.interactionNotAllowed` is `true`; no pre-authenticated context or
+`evaluatePolicy()` call exists. The verifier creates, imports, updates, deletes,
+exports, or persists no credential, performs no signing, and causes zero
+Keychain or Production mutation. Evidence: focused C4 `8 passed`; native Swift
+type-check `PASS` with zero warnings; qualified-candidate ambiguity semantics
+validated; deprecated authentication-UI keys absent; canonical deployment
+regression `4463 passed, 5 deselected, 675 warnings`. The canonical gate was not
+rerun for this documentation-only closeout.
+
+The readiness stages remain separate: (1) C2 source/toolchain compatibility,
+(2) C3 real unsigned native package validation, (3) C4 verifier validation,
+(4) actual Production signing identity verification, (5) signed package
+readiness, (6) `SMAppService` registration, and (7) Production remediation / 03B5
+readiness. Only stages 1 through 3 are established. Mac remains the sole Control
+Plane; Ubuntu receives zero signing, governance, or Production authority.
+
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+
 ## SEC02-FS-MACRO-03B4R2-C3 unsigned native package validated
 
 Implementation commit `85b9e32` (`feat: build unsigned SEC-02 native package`)
