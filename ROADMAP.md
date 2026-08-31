@@ -1,5 +1,37 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B4R2-C5A ceremony foundation
+
+- [x] Establish
+  `PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`.
+- [x] Implement and validate the read-only credential ceremony foundation at
+  commit `ef0df21`.
+- [x] Validate absolute-path, lowercase suffix, no-dot/no-symlink,
+  descriptor-relative no-follow, regular-file, owner, mode, and device/inode
+  binding rules without reading credential contents.
+- [x] Keep absent, locally metadata-ready, and invalid input states distinct.
+- [x] Freeze future import as Mac-only, separately human-authorized, one-attempt,
+  no-auto-retry, and non-reusable after `FAILED`/`UNCERTAIN`.
+- [x] Record focused `3 passed, 228 warnings`, canonical `4466 passed, 5
+  deselected, 675 warnings`, and architecture/security review `PASS`.
+
+## BLOCKED/FUTURE — post-C5A readiness stages
+
+- [ ] Stage 5: acquire an external credential and conduct the separate import
+  ceremony. Neither acquisition nor import has occurred.
+- [ ] Stage 6: run mandatory C4 Production signing identity verification after
+  import; only it may establish the authoritative Team ID.
+- [ ] Stage 7: produce a deterministic signed package.
+- [ ] Stage 8: derive concrete mutual XPC signing requirements.
+- [ ] Stage 9: perform separately authorized `SMAppService` registration.
+- [ ] Stage 10: perform separately authorized Production remediation and reach
+  03B5 readiness.
+
+C2 compatibility, C3 unsigned package validation, C4 verifier validation, and
+C5A ceremony-foundation validation are complete, separate milestones. They do
+not establish a credential, identity, signed package, registration, or
+Production authority. `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-C4 verifier validation
 
 - [x] Implement and validate the read-only Production signing identity verifier

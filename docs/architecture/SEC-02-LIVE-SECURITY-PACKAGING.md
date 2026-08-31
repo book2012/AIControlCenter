@@ -1,5 +1,33 @@
 # SEC-02 live security packaging foundation
 
+## R2-C5A Production signing credential ceremony foundation
+
+Implementation commit `ef0df21` establishes the read-only milestone
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`. It validates only
+filesystem metadata for one explicit absolute, exact-lowercase `.p12`/`.pfx`
+path. Lexical dot components and symlink traversal fail closed;
+descriptor-relative `openat`, `O_NOFOLLOW`, regular-file, invoking-user
+ownership, safe-mode, and device/inode binding checks apply. Credential contents
+are not read.
+
+Missing input requires an external credential; valid local metadata is ready
+only for a separate import ceremony; invalid input is not ready. No credential
+was acquired/imported, no passphrase was accepted through argv/environment or
+persisted/logged, and no Keychain mutation, signing, notarization, package
+mutation, `SMAppService` operation, or Production mutation occurred.
+
+Future import is Mac-only and requires one explicit human security ceremony and
+one bounded attempt. There is no automatic retry; `FAILED`/`UNCERTAIN` requires
+a new ceremony and prohibits credential reuse. Import success is not identity
+verification: the C4 verifier remains mandatory and is the only authoritative
+Team ID source. Deterministic signing, concrete mutual XPC requirements,
+registration, and remediation remain later independent milestones.
+
+Evidence: focused `3 passed, 228 warnings`; canonical `4466 passed, 5
+deselected, 675 warnings`; architecture/security review `PASS`. Canonical is not
+rerun for documentation closeout. Live signing remains `NOT_READY` and
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## R2-C4 Production signing identity verifier
 
 Implementation commit `1cf8648` establishes the read-only milestone

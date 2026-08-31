@@ -1,5 +1,53 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R2-C5A credential ceremony foundation validated
+
+Authoritative implementation commit `ef0df21` (`feat: validate SEC-02 signing
+credential ceremony`) establishes
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`. C5A is a
+read-only, metadata-only foundation: it requires an explicit absolute path with
+an exact lowercase `.p12` or `.pfx` suffix, rejects lexical `.` and `..`
+components, checks every component against symlink traversal, and uses
+descriptor-relative `openat` traversal with `O_NOFOLLOW`. The final leaf must be
+a regular file owned by the invoking Darwin user with no unsafe group/world
+writable mode. Device/inode checks bind the inspected descriptor against
+replacement races. Credential contents are never read.
+
+Missing input produces `LOCAL_CREDENTIAL_INPUT_ABSENT /
+EXTERNAL_CREDENTIAL_REQUIRED`; locally valid metadata produces
+`LOCAL_CREDENTIAL_INPUT_READY / READY_FOR_SEPARATE_IMPORT_CEREMONY`; invalid
+input produces `NOT_READY / NOT_READY`. No credential was acquired or imported,
+no passphrase was accepted through argv or environment or persisted/logged, and
+no Keychain, signing, notarization, `SMAppService`, or Production mutation
+occurred.
+
+Any future import is `MAC_ONLY`, requires a separate explicit human security
+ceremony, permits one bounded import attempt with no automatic retry, and makes
+`FAILED` or `UNCERTAIN` terminal for that credential and ceremony. Import
+success alone cannot establish `PRODUCTION_SIGNING_IDENTITY_VERIFIED`; the C4
+`ProductionSigningIdentityVerifier` remains mandatory and is the sole
+authoritative Team ID source. C2 compatibility, C3 unsigned package, C4
+verifier, C5A foundation, external acquisition/import, identity verification,
+deterministic signed package, concrete mutual XPC requirements,
+`SMAppService` registration, and Production remediation / 03B5 are ten separate
+milestones. Mac remains the sole Control Plane; Ubuntu receives no signing,
+governance, or Production authority.
+
+Evidence: focused `3 passed, 228 warnings`; canonical deployment regression
+`4466 passed, 5 deselected, 675 warnings`; final architecture/security review
+`PASS`; implementation `git diff --check` `PASS`. The implementation commit was
+pushed from a clean synchronized worktree. Canonical is not rerun for this
+documentation-only closeout.
+
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+
 ## SEC02-FS-MACRO-03B4R2-C4 Production signing identity verifier validated
 
 Authoritative implementation commit `1cf8648` (`feat: validate SEC-02

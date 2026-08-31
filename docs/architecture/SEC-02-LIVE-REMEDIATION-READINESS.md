@@ -1,5 +1,70 @@
 # SEC-02 Live Remediation Readiness
 
+## SEC02-FS-MACRO-03B4R2-C5A authoritative state
+
+Commit `ef0df21` establishes
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`. This is a
+read-only, metadata-only ceremony foundation. Input must be an explicit absolute
+path ending in exact lowercase `.p12` or `.pfx`. Lexical `.`/`..` components and
+symlink traversal are rejected; traversal is descriptor-relative through
+`openat` with `O_NOFOLLOW`. The final leaf must be a regular file owned by the
+invoking Darwin user and must not have unsafe group/world writable mode.
+Device/inode comparison protects descriptor binding from replacement races.
+Credential file contents are never read.
+
+```text
+missing: ceremony_state=LOCAL_CREDENTIAL_INPUT_ABSENT
+missing: readiness=EXTERNAL_CREDENTIAL_REQUIRED
+valid: ceremony_state=LOCAL_CREDENTIAL_INPUT_READY
+valid: readiness=READY_FOR_SEPARATE_IMPORT_CEREMONY
+invalid: ceremony_state=NOT_READY
+invalid: readiness=NOT_READY
+```
+
+The future import contract is `MAC_ONLY` and requires a separate explicit human
+security ceremony. Credential import attempts are bounded to one; automatic
+retry is prohibited, and `FAILED` or `UNCERTAIN` requires a new ceremony and
+prohibits reuse of that credential. Import has no Production runtime mutation
+authority. Import success alone does not establish
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED`: C4 remains mandatory afterward and is
+the sole authoritative Team ID source.
+
+No credential was acquired or imported; no credential contents were read; no
+passphrase was accepted through argv or environment, persisted, or logged; and
+no Keychain mutation, signing, notarization, `SMAppService` registration or
+unregistration, governance remediation, or Production mutation occurred.
+
+Evidence: focused `3 passed, 228 warnings`; canonical `4466 passed, 5
+deselected, 675 warnings`; final architecture/security review `PASS`;
+implementation `git diff --check` `PASS`; pushed clean with `AHEAD=0` and
+`BEHIND=0`. Canonical is not rerun for this documentation-only closeout.
+
+The independent milestones are: (1) C2 source/toolchain compatibility, (2) C3
+unsigned native package validation, (3) C4 verifier validation, (4) C5A
+credential ceremony foundation validation, (5) external acquisition/import,
+(6) Production signing identity verification, (7) deterministic signed package,
+(8) concrete mutual XPC signing requirements, (9) `SMAppService` registration,
+and (10) Production remediation / 03B5 readiness. Only stages 1–4 are complete.
+
+```text
+SEC02_FS_MACRO_03B4R2_C5A_IMPLEMENTATION=COMPLETE
+SEC02_FS_MACRO_03B4R2_C5A_TEST=PASS
+PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED=YES
+C5A_DOCUMENTATION_PREPARED=YES
+LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT
+AUTHORITATIVE_TEAM_ID_AVAILABLE=NO
+PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO
+SIGNED_PACKAGE_READY=NO
+LIVE_SIGNING_READINESS=NOT_READY
+SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO
+PRODUCTION_REMEDIATION_AVAILABLE=NO
+READY_FOR_03B5_PRODUCTION_CEREMONY=NO
+CANONICAL_RERUN_REQUIRED=NO
+```
+
+Mac remains the sole Control Plane. Ubuntu receives no signing, governance, or
+Production authority.
+
 ## SEC02-FS-MACRO-03B4R2-C4 authoritative state
 
 Commit `1cf8648` establishes

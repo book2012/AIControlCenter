@@ -1,5 +1,45 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B4R2-C5A validated
+
+Commit `ef0df21` (`feat: validate SEC-02 signing credential ceremony`) completed
+and validated the read-only, metadata-only Production signing credential
+ceremony foundation. Milestone:
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`. The foundation
+requires an explicit absolute `.p12` or `.pfx` path, rejects lexical dot
+components and symlink traversal, uses descriptor-relative `openat` plus
+`O_NOFOLLOW`, and requires a regular, invoking-user-owned leaf with safe mode
+bits and stable device/inode binding. It never reads credential contents.
+
+Absent input requires an external credential; valid local metadata is ready
+only for a separate import ceremony; invalid input is not ready. No credential
+was acquired or imported, no passphrase was accepted through argv/environment
+or persisted/logged, and no Keychain mutation, signing, notarization,
+registration, or Production mutation occurred. A future Mac-only import requires
+one explicit human ceremony and one bounded attempt, with no retry or credential
+reuse after `FAILED`/`UNCERTAIN`. Successful import still requires the C4
+verifier; only that verifier may establish the authoritative Team ID and
+Production signing identity.
+
+Evidence: focused `3 passed, 228 warnings`; canonical `4466 passed, 5
+deselected, 675 warnings`; final architecture/security review `PASS`; `git diff
+--check` `PASS`. The implementation commit was pushed clean and synchronized.
+Canonical is not rerun for this documentation-only closeout.
+
+`SEC02_FS_MACRO_03B4R2_C5A_IMPLEMENTATION=COMPLETE`
+`SEC02_FS_MACRO_03B4R2_C5A_TEST=PASS`
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED=YES`
+`C5A_DOCUMENTATION_PREPARED=YES`
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## Current authoritative — SEC02-FS-MACRO-03B4R2-C4 verifier validated
 
 Commit `1cf8648` (`feat: validate SEC-02 production signing identity`) completed

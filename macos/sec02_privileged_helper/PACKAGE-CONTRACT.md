@@ -1,5 +1,24 @@
 # SEC-02 Privileged Helper Package Contract
 
+## R2-C5A credential input boundary
+
+Commit `ef0df21` validates
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`. The C5A boundary
+is read-only and metadata-only: it requires an explicit absolute path with exact
+lowercase `.p12` or `.pfx`, rejects lexical dot components and symlink traversal,
+uses descriptor-relative `openat` plus `O_NOFOLLOW`, and requires the final leaf
+to be a regular file owned by the invoking Darwin user with safe permissions and
+stable device/inode binding. It never reads credential contents.
+
+This package contract does not import credentials, accept a passphrase through
+argv/environment, mutate Keychain, sign or notarize the package, derive concrete
+mutual XPC requirements, register/unregister `SMAppService`, or grant remediation
+authority. A future Mac-only import is a separate explicit human ceremony with
+one attempt and no retry or credential reuse after `FAILED`/`UNCERTAIN`. Even a
+successful import requires the C4 verifier before any Production identity or
+authoritative Team ID can be established. The package remains unsigned,
+unregistered, fail-closed, and not ready for Production or 03B5.
+
 ## R2-C4 signing identity inspection boundary
 
 Commit `1cf8648` implements and validates the read-only

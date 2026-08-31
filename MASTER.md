@@ -1,5 +1,30 @@
 # MASTER
 
+## Current authoritative status — SEC02-FS-MACRO-03B4R2-C5A complete
+
+Implementation commit `ef0df21` establishes
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`. C5A validates a
+read-only, metadata-only local credential input boundary: explicit absolute
+path, exact lowercase `.p12`/`.pfx`, no lexical dot components or symlink
+traversal, descriptor-relative `openat` with `O_NOFOLLOW`, and a regular,
+invoking-user-owned, safely permissioned leaf whose device/inode remains bound.
+It never reads credential contents.
+
+The state model distinguishes absent input (`EXTERNAL_CREDENTIAL_REQUIRED`),
+valid local metadata (`READY_FOR_SEPARATE_IMPORT_CEREMONY`), and invalid input
+(`NOT_READY`). No credential has been acquired or imported. No passphrase,
+Keychain mutation, signing, notarization, registration, or Production mutation
+is part of C5A. A future Mac-only import is a separate explicit human ceremony
+with one attempt, no automatic retry, and no reuse after failure/uncertainty.
+C4 verification remains mandatory after import and is the only authoritative
+Team ID source.
+
+Evidence is focused `3 passed, 228 warnings`, canonical `4466 passed, 5
+deselected, 675 warnings`, final architecture/security review `PASS`, and
+implementation `git diff --check` `PASS`. Canonical is not rerun for the
+documentation-only closeout. Mac remains the sole Control Plane; all live
+signing, registration, remediation, and 03B5 states remain unavailable.
+
 ## Current authoritative status — SEC02-FS-MACRO-03B4R2-C4 complete
 
 Implementation commit `1cf8648` establishes the read-only

@@ -1,5 +1,28 @@
 # Project History
 
+## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C5A completed
+
+Implementation commit `ef0df21` completed and validated the read-only,
+metadata-only Production signing credential ceremony foundation, establishing
+`PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`. It validates an
+explicit absolute lowercase `.p12`/`.pfx` path through descriptor-relative,
+no-follow traversal and strict lexical, type, ownership, mode, and device/inode
+checks without reading credential contents.
+
+Focused evidence was `3 passed, 228 warnings`; canonical evidence was `4466
+passed, 5 deselected, 675 warnings`; the final architecture/security review and
+implementation `git diff --check` passed. The implementation commit was pushed
+from a clean synchronized worktree. The documentation closeout does not rerun
+canonical.
+
+C5A acquired or imported no credential, accepted/persisted/logged no passphrase,
+and performed no Keychain mutation, signing, notarization, registration,
+remediation, or Production mutation. Future import remains a separate Mac-only
+human ceremony with one attempt and no failure/uncertainty reuse. C4 remains
+mandatory after import and remains the only authoritative Team ID source. Live
+Developer ID Application, verified identity, signed package, registration,
+remediation, and 03B5 readiness remain absent.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C4 completed
 
 Implementation commit `1cf8648` completed and validated the read-only Production

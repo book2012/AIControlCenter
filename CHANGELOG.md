@@ -1,5 +1,26 @@
 # CHANGELOG
 
+## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C5A ceremony foundation
+
+- Recorded authoritative implementation commit `ef0df21` and milestone
+  `PRODUCTION_SIGNING_CREDENTIAL_CEREMONY_FOUNDATION_VALIDATED`.
+- Validated metadata-only, read-only inspection of an explicit absolute,
+  lowercase `.p12`/`.pfx` path with lexical-dot rejection,
+  descriptor-relative no-follow traversal, regular-file/owner/mode checks, and
+  device/inode race binding. Credential contents are not read.
+- Preserved absent, locally ready, and invalid states as respectively external
+  credential required, ready for a separate import ceremony, and not ready.
+- Froze the future import contract as Mac-only, explicit-human, one-attempt,
+  no-auto-retry, and no credential reuse after failure or uncertainty. Import
+  alone cannot verify the identity or Team ID; C4 remains mandatory.
+- Evidence: focused `3 passed, 228 warnings`; canonical `4466 passed, 5
+  deselected, 675 warnings`; final architecture/security review `PASS`; `git
+  diff --check` `PASS`. The pushed implementation worktree was clean and at
+  `AHEAD=0`, `BEHIND=0`; canonical is not rerun for this documentation closeout.
+- No credential acquisition/import, passphrase handling, Keychain mutation,
+  signing, notarization, registration, governance remediation, or Production
+  mutation occurred. Live readiness remains `NOT_READY`.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C4 verifier validation
 
 - Recorded authoritative implementation commit `1cf8648` and milestone
