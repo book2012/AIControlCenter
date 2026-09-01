@@ -4600,3 +4600,20 @@ Production, Keychain, Secure Enclave, registration, or filesystem mutation. At
 that historical point, full native type-check was blocked by missing Full Xcode;
 C2 later established source/toolchain compatibility using Command Line Tools,
 and C3 later validated the real unsigned arm64 thin package.
+
+
+## 2026-09-01 — OPS-VAL-01B Canonical Evidence Reliability Validated
+
+OPS-VAL-01B was opened after canonical regression output could be lost through terminal or tool transport and after repository inventory observation failed inside a linked Git worktree because `.git` was assumed to be a directory.
+
+The remediation introduced a dedicated read-only Git metadata layout for normal repositories and linked worktrees, including `commondir`, shared-ref routing, worktree-local-ref exceptions, and fail-closed backlink validation.
+
+Canonical evidence was upgraded to invocation-bound schema `ops-val-01b/canonical-evidence/v2`, preserving the exact canonical command while durably recording capture status, pytest status, exact final summary, completion state, and validated-pass state.
+
+The validated implementation was committed as `0b15dbc`.
+
+The authoritative final canonical invocation was `5bbec183020441a39c275f18d248f946` with:
+
+`4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`
+
+No Production mutation, signing operation, credential import, Production authorization, or C5B implementation change was performed by OPS-VAL-01B.

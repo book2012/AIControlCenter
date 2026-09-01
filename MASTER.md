@@ -5500,3 +5500,31 @@ Production remediation remain blocked.
 # SEC-02 03B4R2-C status
 
 Repository/package foundations are implemented but unsigned, unregistered, unprovisioned, and non-operational. See `docs/architecture/SEC-02-LIVE-SECURITY-PACKAGING.md`.
+
+
+# OPS-VAL-01B Canonical Evidence Capture Reliability
+
+Status: **IMPLEMENTATION VALIDATED — DOCUMENTATION CLOSEOUT**
+
+OPS-VAL-01B repaired canonical validation evidence reliability and linked-worktree repository observation without changing Production authority.
+
+Implementation commit: `0b15dbc`
+
+Authoritative canonical validation:
+
+- command: `ops/macos/validation/run-deployment-regression-gate.sh -q`
+- invocation: `5bbec183020441a39c275f18d248f946`
+- state: `COMPLETED_PASS`
+- result: `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`
+
+Current state:
+
+- `OPS_VAL_01B_IMPLEMENTATION=VALIDATED`
+- `OPS_VAL_01B_CANONICAL=PASS`
+- `OPS_VAL_01B_DURABLE_EVIDENCE=PASS`
+- `OPS_VAL_01B_IMPLEMENTATION_COMMIT=0b15dbc`
+- `OPS_VAL_01B_DOCUMENTATION=IN_REVIEW`
+- `OPS_VAL_01B_GIT_CLOSEOUT=PENDING`
+- `OPS_VAL_01B_REPOSITORY_CLOSEOUT=PENDING`
+
+After documentation and repository integration closeout, work returns to `SEC02-FS-MACRO-03B4R2-C5B`.

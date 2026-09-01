@@ -5067,3 +5067,19 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
 - Froze SEC-02 app/helper/Mach identities and deterministic bundle validation.
 - Added source-only native signing resolution, SMAppService, mutual XPC, Secure Enclave, two-operation helper, and journal receipt contracts.
 - Replaced the misleading cross-module private claimed-attempt API and documented separate Production ceremonies.
+
+
+## 2026-09-01 — OPS-VAL-01B Canonical Evidence Capture Reliability
+
+- Added invocation-bound canonical deployment regression evidence using schema `ops-val-01b/canonical-evidence/v2`.
+- Bound validated PASS to successful capture, pytest exit status, and the exact final pytest summary.
+- Added fail-closed handling for incomplete summaries and uncertain evidence capture.
+- Added read-only linked Git worktree observation with `.git` gitfile, `commondir`, shared-ref, worktree-local-ref, and backlink validation semantics.
+- Prevented private worktree metadata from shadowing normal shared refs.
+- Prevented worktree-local ref exceptions from falling back to common packed refs.
+- Preserved the canonical entrypoint `ops/macos/validation/run-deployment-regression-gate.sh -q`.
+- No Production mutation or Production authorization behavior was added.
+- Implementation commit: `0b15dbc`.
+- Canonical invocation: `5bbec183020441a39c275f18d248f946`.
+- Canonical result: `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`.
+- `TEST-INFRA-PYTEST-PERMISSION-CLEANUP` and `datetime.utcnow()` deprecation warnings remain separate non-blocking technical debt.

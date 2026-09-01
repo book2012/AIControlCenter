@@ -1888,3 +1888,22 @@ and Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
 
 - [ ] Synchronize the final project state to Notion only when explicitly
   performed and verified.
+
+
+## OPS-VAL-01B Closeout
+
+- [x] Canonical evidence capture reliability implementation.
+- [x] Linked Git worktree observation compatibility.
+- [x] Focused validation.
+- [x] Architecture and security review.
+- [x] Final canonical regression: `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`.
+- [x] Implementation commit `0b15dbc`.
+- [ ] Documentation commit.
+- [ ] Main-worktree integration.
+- [ ] Registered Git worktree removal.
+- [ ] Resume `SEC02-FS-MACRO-03B4R2-C5B`.
+
+Separate non-blocking technical debt:
+
+- [ ] `TEST-INFRA-PYTEST-PERMISSION-CLEANUP` — eliminate pytest temporary-directory cleanup warnings without weakening exact permission tests.
+- [ ] Replace deprecated naive `datetime.utcnow()` usage with timezone-aware UTC handling in a dedicated compatibility work unit.

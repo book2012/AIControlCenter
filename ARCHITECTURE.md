@@ -5060,3 +5060,33 @@ operational. Mac remains the sole Control Plane; one fresh human authorization
 is required for each bounded Production mutation, signing grants no mutation
 authority, and Ubuntu receives none.
 `READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
+
+## OPS-VAL-01B — Canonical Evidence and Linked Worktree Observation
+
+OPS-VAL-01B establishes the read-only Git metadata and canonical validation evidence contracts required for reliable deployment regression validation.
+
+Git repository observation supports both a normal `.git` directory and linked-worktree `.git` gitfiles. A linked worktree resolves its private Git directory from the worktree marker, resolves `commondir` for shared metadata, and validates the private Git directory `gitdir` backlink against the worktree marker. Missing, malformed, unsafe, or mismatched topology fails closed.
+
+`HEAD` and worktree-local references remain private-worktree metadata. Normal shared references resolve from the common Git directory and must not be shadowed by private-worktree metadata. `refs/bisect/*`, `refs/worktree/*`, and `refs/rewritten/*` remain worktree-local exceptions and do not fall back to common packed references.
+
+Git observation remains read-only. No Git mutation subprocess or Production authority is introduced.
+
+The canonical deployment regression entrypoint remains:
+
+`ops/macos/validation/run-deployment-regression-gate.sh -q`
+
+Canonical evidence schema `ops-val-01b/canonical-evidence/v2` binds the invocation ID, canonical command, capture status, pytest exit status, exact final pytest summary, completion state, and validated-pass decision. Missing or partial summaries and capture failures fail closed and cannot produce a validated PASS.
+
+OPS-VAL-01B authoritative validation:
+
+- implementation commit: `0b15dbc`
+- invocation ID: `5bbec183020441a39c275f18d248f946`
+- evidence directory: `/private/tmp/aicontrolcenter-canonical-evidence.qaTBEW`
+- state: `COMPLETED_PASS`
+- capture exit status: `0`
+- pytest exit status: `0`
+- validated pass: `true`
+- final summary: `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`
+
+The `/private/tmp` evidence directory provides durable evidence across terminal or tool transport loss for the invocation, but it is not a reboot-crossing long-term Production evidence store.

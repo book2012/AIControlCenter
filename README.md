@@ -4581,3 +4581,22 @@ Production remediation remains unavailable.
 # SEC-02 packaging readiness update
 
 A deterministic, non-Production SEC-02 native package contract and remaining ceremony DAG are documented in `docs/architecture/SEC-02-LIVE-SECURITY-PACKAGING.md`. Nothing is signed, registered, provisioned, installed, or operational.
+
+
+## OPS-VAL-01B Canonical Regression Evidence
+
+The canonical macOS deployment regression command remains:
+
+`ops/macos/validation/run-deployment-regression-gate.sh -q`
+
+The runner now writes invocation-bound evidence using schema `ops-val-01b/canonical-evidence/v2`. Evidence includes the canonical command, invocation ID, capture status, pytest exit status, exact final pytest summary, completion state, and validated-pass result.
+
+A missing or incomplete pytest summary or failed evidence capture cannot be reported as a validated PASS.
+
+Linked Git worktrees are supported by the repository observation adapter without using Git mutation subprocesses. Shared Git refs are read from common metadata, while worktree-local refs remain isolated to private worktree metadata.
+
+OPS-VAL-01B validation completed at implementation commit `0b15dbc` with invocation `5bbec183020441a39c275f18d248f946`:
+
+`4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`
+
+Warnings remain non-blocking and are tracked separately from OPS-VAL-01B.

@@ -4598,3 +4598,29 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
 - [ ] C2-3 signed package and separately authorized registration.
 - [ ] C2-4 separately authorized create-only journal provisioning.
 - [ ] 03B5 fresh separately authorized governance remediation.
+
+
+## OPS-VAL-01B — Canonical Evidence Capture Reliability
+
+- [x] Confirm canonical evidence transport-loss root cause.
+- [x] Add invocation-bound durable canonical evidence.
+- [x] Fail closed on capture uncertainty and incomplete pytest summaries.
+- [x] Support linked Git worktree metadata observation.
+- [x] Validate shared and worktree-local Git ref routing.
+- [x] Validate linked-worktree backlink topology.
+- [x] Pass focused tests and architecture/security review.
+- [x] Pass final canonical deployment regression.
+- [x] Commit validated implementation as `0b15dbc`.
+- [ ] Complete documentation commit.
+- [ ] Integrate OPS-VAL-01B into the main worktree without disturbing C5B.
+- [ ] Remove the OPS linked worktree through Git worktree management.
+
+Authoritative canonical invocation: `5bbec183020441a39c275f18d248f946`.
+
+Final summary: `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`.
+
+Next Production milestone after repository closeout:
+
+`PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED`
+
+Work unit: `SEC02-FS-MACRO-03B4R2-C5B`.
