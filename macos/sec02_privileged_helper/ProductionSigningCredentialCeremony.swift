@@ -36,11 +36,20 @@ struct SEC02CredentialFileMetadata: Equatable {
     let regularFile: Bool
     let ownerUID: uid_t
     let mode: mode_t
+    let device: UInt64
+    let inode: UInt64
+    let birthSeconds: Int64
+    let birthNanoseconds: Int64
 
-    init(regularFile: Bool, ownerUID: uid_t, mode: mode_t) {
+    init(regularFile: Bool, ownerUID: uid_t, mode: mode_t, device: UInt64 = 0, inode: UInt64 = 0,
+         birthSeconds: Int64 = 0, birthNanoseconds: Int64 = 0) {
         self.regularFile = regularFile
         self.ownerUID = ownerUID
         self.mode = mode
+        self.device = device
+        self.inode = inode
+        self.birthSeconds = birthSeconds
+        self.birthNanoseconds = birthNanoseconds
     }
 }
 
@@ -80,6 +89,68 @@ public struct SEC02CredentialInputObservation: Encodable, Equatable {
              ownedByInvokingDarwinUser: owned, groupWritable: groupWritable,
              worldWritable: worldWritable, symlinkTraversalDetected: symlink)
     }
+}
+
+// This opaque, immutable value is issued only by the C5A validation boundary.
+// Its caller-visible surface contains neither a path nor credential bytes. Its
+// sole purpose is to bind a later C5B ceremony to C5A's already validated,
+// metadata-only explicit-input decision.
+public struct SEC02ValidatedCredentialInputEvidence {
+    // Descriptor-bound facts from the successful C5A validation operation.
+    // They are not a locator, are never encoded, and are inaccessible to C5B
+    // callers. They distinguish a credential input for durable consumption.
+    let c5AValidationBinding: SEC02ValidatedCredentialInputBinding
+    // This is deliberately file-private: a future native importer must live
+    // beside this issuer, reopen only this validated explicit input with
+    // O_NOFOLLOW semantics, and revalidate its complete identity before use.
+    // It is neither encoded nor logged and is not general path authority.
+    fileprivate let futureImportLocator: SEC02FutureCredentialImportLocator
+
+    fileprivate init(c5AValidationBinding: SEC02ValidatedCredentialInputBinding,
+                     futureImportLocator: SEC02FutureCredentialImportLocator) {
+        self.c5AValidationBinding = c5AValidationBinding
+        self.futureImportLocator = futureImportLocator
+    }
+}
+
+struct SEC02ValidatedCredentialInputBinding: Hashable {
+    let device: UInt64
+    let inode: UInt64
+    let birthSeconds: Int64
+    let birthNanoseconds: Int64
+    let containerSuffix: String
+}
+
+// Purpose-bound, non-Encodable future-import reference. It has no public
+// initializer or accessor. C5B does not use it; a future Mac-native importer
+// must re-open this exact path without following links and fail closed unless
+// device, inode, and Darwin birth identity still match. It never carries
+// credential contents and cannot authorize a new caller-provided path.
+fileprivate struct SEC02FutureCredentialImportLocator {
+    let validatedExplicitPath: String
+    let expectedBinding: SEC02ValidatedCredentialInputBinding
+}
+
+// C5A returns this only from actual explicit-path filesystem validation. Its
+// reference has no public constructor, raw path, encoding, or logging surface.
+public struct SEC02ValidatedCredentialInputValidation {
+    public let observation: SEC02CredentialInputObservation
+    public let validatedCredentialInput: SEC02ValidatedCredentialInputEvidence?
+
+    fileprivate init(observation: SEC02CredentialInputObservation,
+                     validatedCredentialInput: SEC02ValidatedCredentialInputEvidence?) {
+        self.observation = observation
+        self.validatedCredentialInput = validatedCredentialInput
+    }
+}
+
+// Internal validation facts intentionally stop short of authority-bearing
+// evidence. Test-only injected metadata inspectors can reach observations
+// through this path, but only the public Darwin-bound issuer below converts
+// successful facts into SEC02ValidatedCredentialInputEvidence.
+private struct SEC02MetadataOnlyCredentialValidation {
+    let observation: SEC02CredentialInputObservation
+    let binding: SEC02ValidatedCredentialInputBinding?
 }
 
 public struct SEC02ProductionSigningCredentialCeremonyResultV1: Encodable, Equatable {
@@ -181,7 +252,8 @@ struct SEC02DarwinCredentialMetadataInspector: SEC02CredentialMetadataInspecting
             if (componentMetadata.st_mode & S_IFMT) == S_IFLNK { return .symlinkTraversalRejected }
             if index == components.count - 1 && (componentMetadata.st_mode & S_IFMT) != S_IFREG {
                 return .metadata(SEC02CredentialFileMetadata(
-                    regularFile: false, ownerUID: componentMetadata.st_uid, mode: componentMetadata.st_mode))
+                    regularFile: false, ownerUID: componentMetadata.st_uid, mode: componentMetadata.st_mode,
+                    device: UInt64(componentMetadata.st_dev), inode: UInt64(componentMetadata.st_ino)))
             }
         }
 
@@ -206,7 +278,8 @@ struct SEC02DarwinCredentialMetadataInspector: SEC02CredentialMetadataInspecting
         guard (preopenLeafMetadata.st_mode & S_IFMT) != S_IFLNK else { return .symlinkTraversalRejected }
         guard (preopenLeafMetadata.st_mode & S_IFMT) == S_IFREG else {
             return .metadata(SEC02CredentialFileMetadata(
-                regularFile: false, ownerUID: preopenLeafMetadata.st_uid, mode: preopenLeafMetadata.st_mode))
+                regularFile: false, ownerUID: preopenLeafMetadata.st_uid, mode: preopenLeafMetadata.st_mode,
+                device: UInt64(preopenLeafMetadata.st_dev), inode: UInt64(preopenLeafMetadata.st_ino)))
         }
 
         let descriptor = openat(parentDescriptor, String(leafName), O_RDONLY | O_NOFOLLOW | O_CLOEXEC)
@@ -229,7 +302,10 @@ struct SEC02DarwinCredentialMetadataInspector: SEC02CredentialMetadataInspecting
         else { return .failedClosed }
         return .metadata(SEC02CredentialFileMetadata(
             regularFile: (descriptorMetadata.st_mode & S_IFMT) == S_IFREG,
-            ownerUID: descriptorMetadata.st_uid, mode: descriptorMetadata.st_mode))
+            ownerUID: descriptorMetadata.st_uid, mode: descriptorMetadata.st_mode,
+            device: UInt64(descriptorMetadata.st_dev), inode: UInt64(descriptorMetadata.st_ino),
+            birthSeconds: Int64(descriptorMetadata.st_birthtimespec.tv_sec),
+            birthNanoseconds: Int64(descriptorMetadata.st_birthtimespec.tv_nsec)))
     }
 }
 
@@ -242,40 +318,74 @@ public enum SEC02ProductionSigningCredentialCeremony {
     static func inspectExplicitPathReadOnly(_ explicitPath: String?,
                                             inspector: any SEC02CredentialMetadataInspecting)
         -> SEC02CredentialInputObservation {
-        guard let explicitPath, !explicitPath.isEmpty else { return .absent(.explicitPathRequired) }
-        guard explicitPath.hasPrefix("/") else { return .invalid(.pathMustBeAbsolute) }
+        observedMetadataValidation(explicitPath, inspector: inspector).observation
+    }
+
+    private static func observedMetadataValidation(_ explicitPath: String?,
+                                                    inspector: any SEC02CredentialMetadataInspecting)
+        -> SEC02MetadataOnlyCredentialValidation {
+        guard let explicitPath, !explicitPath.isEmpty else { return invalidValidation(.absent(.explicitPathRequired)) }
+        guard explicitPath.hasPrefix("/") else { return invalidValidation(.invalid(.pathMustBeAbsolute)) }
         let pathComponents = explicitPath.split(separator: "/", omittingEmptySubsequences: false)
         guard !pathComponents.contains(where: { $0 == "." || $0 == ".." }) else {
-            return .invalid(.pathComponentRejected)
+            return invalidValidation(.invalid(.pathComponentRejected))
         }
         let extensionValue = URL(fileURLWithPath: explicitPath).pathExtension
         guard extensionValue == "p12" || extensionValue == "pfx" else {
-            return .invalid(.unsupportedContainerSuffix,
-                            suffix: extensionValue.isEmpty ? nil : ".\(extensionValue)")
+            return invalidValidation(.invalid(.unsupportedContainerSuffix,
+                suffix: extensionValue.isEmpty ? nil : ".\(extensionValue)"))
         }
         let suffix = ".\(extensionValue)"
         switch inspector.inspectMetadataOnly(absolutePath: explicitPath) {
-        case .pathDoesNotExist: return .invalid(.pathDoesNotExist, suffix: suffix)
+        case .pathDoesNotExist: return invalidValidation(.invalid(.pathDoesNotExist, suffix: suffix))
         case .symlinkTraversalRejected:
-            return .invalid(.symlinkTraversalRejected, suffix: suffix, symlink: true)
-        case .failedClosed: return .invalid(.observationFailedClosed, suffix: suffix)
+            return invalidValidation(.invalid(.symlinkTraversalRejected, suffix: suffix, symlink: true))
+        case .failedClosed: return invalidValidation(.invalid(.observationFailedClosed, suffix: suffix))
         case let .metadata(metadata):
-            guard metadata.regularFile else { return .invalid(.regularFileRequired, suffix: suffix) }
+            guard metadata.regularFile else { return invalidValidation(.invalid(.regularFileRequired, suffix: suffix)) }
             guard metadata.ownerUID == getuid() else {
-                return .invalid(.invokingDarwinUserMustOwnFile, suffix: suffix, regular: true)
+                return invalidValidation(.invalid(.invokingDarwinUserMustOwnFile, suffix: suffix, regular: true))
             }
             let groupWritable = (metadata.mode & S_IWGRP) != 0
             guard !groupWritable else {
-                return .invalid(.groupWritable, suffix: suffix, regular: true, owned: true, groupWritable: true)
+                return invalidValidation(.invalid(.groupWritable, suffix: suffix, regular: true, owned: true, groupWritable: true))
             }
             let worldWritable = (metadata.mode & S_IWOTH) != 0
             guard !worldWritable else {
-                return .invalid(.worldWritable, suffix: suffix, regular: true, owned: true, worldWritable: true)
+                return invalidValidation(.invalid(.worldWritable, suffix: suffix, regular: true, owned: true, worldWritable: true))
             }
-            return SEC02CredentialInputObservation(status: .valid, failure: nil, containerSuffix: suffix,
+            let observation = SEC02CredentialInputObservation(status: .valid, failure: nil, containerSuffix: suffix,
                 regularFile: true, ownedByInvokingDarwinUser: true, groupWritable: false,
                 worldWritable: false, symlinkTraversalDetected: false)
+            return SEC02MetadataOnlyCredentialValidation(observation: observation, binding:
+                SEC02ValidatedCredentialInputBinding(device: metadata.device, inode: metadata.inode,
+                    birthSeconds: metadata.birthSeconds, birthNanoseconds: metadata.birthNanoseconds,
+                    containerSuffix: suffix))
         }
+    }
+
+    private static func invalidValidation(_ observation: SEC02CredentialInputObservation)
+        -> SEC02MetadataOnlyCredentialValidation {
+        SEC02MetadataOnlyCredentialValidation(observation: observation, binding: nil)
+    }
+
+    // This is the only C5A issuance path for C5B evidence. It performs the
+    // same actual explicit-path validation above; metadata DTOs cannot mint a
+    // reference. No credential contents are read.
+    public static func validateExplicitPathForFutureImport(_ explicitPath: String?)
+        -> SEC02ValidatedCredentialInputValidation {
+        // This is the sole evidence issuer. There is intentionally no
+        // inspector-injected overload: injected inspectors may observe only.
+        let validation = observedMetadataValidation(explicitPath,
+            inspector: SEC02DarwinCredentialMetadataInspector())
+        guard let explicitPath, let binding = validation.binding else {
+            return SEC02ValidatedCredentialInputValidation(observation: validation.observation,
+                                                            validatedCredentialInput: nil)
+        }
+        return SEC02ValidatedCredentialInputValidation(observation: validation.observation,
+            validatedCredentialInput: SEC02ValidatedCredentialInputEvidence(c5AValidationBinding: binding,
+                futureImportLocator: SEC02FutureCredentialImportLocator(
+                    validatedExplicitPath: explicitPath, expectedBinding: binding)))
     }
 
     // Local metadata is never live credential authority. This intentionally has
