@@ -1901,9 +1901,12 @@ and Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
 - [ ] Documentation commit.
 - [ ] Main-worktree integration.
 - [ ] Registered Git worktree removal.
-- [ ] Resume `SEC02-FS-MACRO-03B4R2-C5B`.
+- [x] Complete validated `SEC02-FS-MACRO-03B4R2-C5B` implementation at
+  `343ecd6` and documentation-only closeout.
 
 Separate non-blocking technical debt:
 
 - [ ] `TEST-INFRA-PYTEST-PERMISSION-CLEANUP` — eliminate pytest temporary-directory cleanup warnings without weakening exact permission tests.
-- [ ] Replace deprecated naive `datetime.utcnow()` usage with timezone-aware UTC handling in a dedicated compatibility work unit.
+- [ ] `PY314-DATETIME-UTC-DEPRECATION` — replace deprecated naive
+  `datetime.utcnow()` usage with timezone-aware UTC handling in a dedicated
+  compatibility work unit.

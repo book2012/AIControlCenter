@@ -1,5 +1,38 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B4R2-C5B validated
+
+Commit `343ecd6` validated the repository-only future Mac-only Production
+signing credential import ceremony foundation, establishing
+`PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED`. No real
+credential import, Keychain mutation, signing, notarization, registration, or
+Production mutation exists.
+
+C5A validated evidence is required before `READY`; a raw path or fingerprint
+alone is insufficient. Consumption is durably claimed before at most one
+bounded importer attempt. The lifecycle is `NOT_STARTED`, `READY`, `ATTEMPTING`,
+`SUCCEEDED_PENDING_C4_VERIFICATION`, `FAILED_CONSUMED`, and
+`UNCERTAIN_CONSUMED`; the consumed failure/uncertainty states are terminal.
+Invalid or ambiguous consumed nonterminal state fails closed to uncertainty
+without importer or secret-mediation calls. Reconstruction cannot replay an
+import. Success grants no Production authority and opens only read-only C4
+verification.
+
+Only real Darwin validation issues authoritative evidence; injected inspectors
+cannot. Secrets remain opaque and are never persisted, logged, passed through
+argv/environment/configuration/Git, or exposed as `String`/`Data`. Canonical
+evidence is `4495 passed, 5 deselected, 703 warnings, 2 subtests passed in
+429.53s (0:07:09)`, invocation `08f9b94830e741058c6147274d76e0ff`; it is not
+rerun for documentation closeout.
+
+`SEC02_FS_MACRO_03B4R2_C5B_IMPLEMENTATION=COMPLETE`
+`PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED=YES`
+`RECONSTRUCTED_SUCCESS_REQUIRES_C4=YES`
+`UNCERTAIN_STATE_OPENS_C4_PROGRESSION=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`PRODUCTION_AUTHORITY_GRANTED=NO`
+`CANONICAL_RERUN_REQUIRED=NO`
+
 ## Current authoritative — SEC02-FS-MACRO-03B4R2-C5A validated
 
 Commit `ef0df21` (`feat: validate SEC-02 signing credential ceremony`) completed

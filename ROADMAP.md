@@ -1,5 +1,35 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B4R2-C5B import ceremony foundation
+
+- [x] Establish
+  `PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED` at
+  implementation commit `343ecd6`.
+- [x] Require validated C5A evidence before readiness; reject raw path or
+  fingerprint as standalone readiness authority.
+- [x] Durably consume before one bounded attempt and make consumed failure or
+  uncertainty terminal and non-replayable.
+- [x] Restrict success to read-only C4 progression with no Production authority.
+- [x] Preserve real-Darwin-only authoritative evidence and opaque-secret
+  boundaries.
+- [x] Record architecture/security/focused/diff/canonical `PASS`; canonical
+  `4495 passed, 5 deselected, 703 warnings, 2 subtests passed in 429.53s
+  (0:07:09)`.
+
+## BLOCKED/FUTURE — post-C5B readiness stages
+
+- [ ] Acquire a real external credential under a separately authorized human
+  ceremony; C5B itself imports nothing.
+- [ ] Conduct a real Mac-only import ceremony under separate authorization.
+- [ ] Run mandatory read-only C4 verification after any successful import.
+- [ ] Establish signed-package readiness, concrete mutual XPC requirements,
+  separately authorized registration, and Production remediation as distinct
+  later milestones.
+
+`RECONSTRUCTED_SUCCESS_REQUIRES_C4=YES`.
+`UNCERTAIN_STATE_OPENS_C4_PROGRESSION=NO`.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-C5A ceremony foundation
 
 - [x] Establish

@@ -1,5 +1,27 @@
 # Project History
 
+## 2026-09-01 — SEC02-FS-MACRO-03B4R2-C5B completed
+
+Implementation commit `343ecd6` completed and validated the repository-only
+future Mac-only Production signing credential import ceremony foundation,
+establishing
+`PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED`.
+
+The foundation requires validated C5A evidence before readiness, durably claims
+consumption before at most one bounded importer attempt, makes consumed failure
+and uncertainty terminal, and fails malformed/ambiguous consumed state closed
+without importer or secret mediation. Reconstruction cannot replay execution.
+Success grants no Production authority and permits only read-only C4
+verification. No real import, Keychain mutation, signing, notarization,
+registration, or Production mutation occurred; secrets remain opaque.
+
+Architecture review, security review, focused tests, implementation diff check,
+and canonical validation passed. Invocation
+`08f9b94830e741058c6147274d76e0ff` recorded `4495 passed, 5 deselected, 703
+warnings, 2 subtests passed in 429.53s (0:07:09)`. Documentation-only closeout
+did not rerun or invalidate canonical evidence. The two warning families remain
+non-blocking backlog.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C5A completed
 
 Implementation commit `ef0df21` completed and validated the read-only,

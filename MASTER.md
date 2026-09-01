@@ -1,5 +1,33 @@
 # MASTER
 
+## Current authoritative status — SEC02-FS-MACRO-03B4R2-C5B complete
+
+Implementation commit `343ecd6` establishes
+`PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED`: a
+repository-only foundation for a future Mac-only Production signing credential
+import ceremony. It performs no real import, Keychain mutation, signing,
+notarization, `SMAppService` registration, or Production mutation.
+
+C5A evidence is required before `READY`, and raw path/fingerprint input is not
+sufficient. Durable consumption occurs before importer invocation, limiting a
+consumed input to one bounded attempt. `FAILED_CONSUMED` and
+`UNCERTAIN_CONSUMED` are terminal; malformed or ambiguous consumed nonterminal
+records become uncertainty without importer or secret mediation. A ceremony ID
+is audit identity, not uniqueness authority. Reconstruction never replays the
+importer.
+
+Success opens only mandatory read-only C4 verification and grants no Production
+authority. Terminal persistence failure after an attempted import becomes
+uncertainty. Real Darwin validation remains the sole authoritative evidence
+issuer, and injected inspectors cannot mint Production evidence. Secrets stay
+opaque and out of persistence, logs, argv, environment, configuration, Git, and
+`String`/`Data`.
+
+Architecture, security, focused tests, diff check, and canonical validation
+passed. Canonical invocation `08f9b94830e741058c6147274d76e0ff` recorded `4495
+passed, 5 deselected, 703 warnings, 2 subtests passed in 429.53s (0:07:09)`.
+Documentation closeout does not rerun canonical.
+
 ## Current authoritative status — SEC02-FS-MACRO-03B4R2-C5A complete
 
 Implementation commit `ef0df21` establishes

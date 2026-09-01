@@ -1,5 +1,42 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R2-C5B import ceremony foundation validated
+
+Authoritative implementation commit `343ecd6` (`feat: add production signing
+credential import ceremony foundation`) establishes
+`PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED`. C5B is a
+repository-only foundation for a future Mac-only Production signing credential
+import ceremony. It performs no real credential import, Keychain mutation,
+signing, notarization, `SMAppService` registration, or Production mutation.
+
+C5A validated evidence is mandatory before `READY`; neither a raw credential
+path nor a fingerprint alone can create readiness. The lifecycle is
+`NOT_STARTED`, `READY`, `ATTEMPTING`,
+`SUCCEEDED_PENDING_C4_VERIFICATION`, `FAILED_CONSUMED`, and
+`UNCERTAIN_CONSUMED`. A durable consumption claim precedes importer invocation,
+and one consumed input permits at most one bounded attempt. Failure and
+uncertainty are terminal. Invalid or ambiguous already-consumed nonterminal
+state fails closed to `UNCERTAIN_CONSUMED` with zero importer calls and zero
+secret mediations. `ceremonyID` is audit identity only, never durable uniqueness
+authority.
+
+Successful import grants no Production authority and opens only read-only C4
+verification. Failure to durably record a terminal result after an attempted
+import becomes `UNCERTAIN_CONSUMED`; reconstruction cannot replay importer
+execution. `RECONSTRUCTED_SUCCESS_REQUIRES_C4=YES` and
+`UNCERTAIN_STATE_OPENS_C4_PROGRESSION=NO`. Only real Darwin validation may issue
+authoritative evidence; injected inspectors cannot mint Production evidence.
+Secrets remain opaque and may not be persisted, logged, placed in argv,
+environment, configuration, or Git, or exposed as `String`/`Data`.
+
+Evidence: architecture review `PASS`; security review `PASS`; focused tests
+`PASS`; implementation diff check `PASS`; canonical `4495 passed, 5 deselected,
+703 warnings, 2 subtests passed in 429.53s (0:07:09)`, invocation
+`08f9b94830e741058c6147274d76e0ff`. Canonical is not rerun for this
+documentation-only closeout. Warning families
+`TEST-INFRA-PYTEST-PERMISSION-CLEANUP` and
+`PY314-DATETIME-UTC-DEPRECATION` remain non-blocking backlog.
+
 ## SEC02-FS-MACRO-03B4R2-C5A credential ceremony foundation validated
 
 Authoritative implementation commit `ef0df21` (`feat: validate SEC-02 signing

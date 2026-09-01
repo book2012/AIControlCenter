@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## 2026-09-01 — SEC02-FS-MACRO-03B4R2-C5B import ceremony foundation
+
+- Recorded validated implementation commit `343ecd6` and milestone
+  `PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED`.
+- Added a repository-only future Mac-only import ceremony state machine with
+  mandatory C5A evidence, durable pre-invocation consumption, and at most one
+  bounded attempt per consumed input.
+- Made `FAILED_CONSUMED` and `UNCERTAIN_CONSUMED` terminal; invalid or ambiguous
+  consumed nonterminal state fails closed to uncertainty with zero importer and
+  secret-mediation calls. Reconstruction cannot replay importer execution.
+- Kept `ceremonyID` audit-only. Success grants no Production authority and
+  opens only read-only C4 verification; terminal-record failure after an attempt
+  becomes uncertainty.
+- Preserved opaque-secret handling and real-Darwin-only authoritative evidence.
+  No real import, Keychain mutation, signing, notarization, registration, or
+  Production mutation exists.
+- Validation: architecture/security/focused tests/diff check/canonical `PASS`;
+  canonical summary `4495 passed, 5 deselected, 703 warnings, 2 subtests passed
+  in 429.53s (0:07:09)`, invocation `08f9b94830e741058c6147274d76e0ff`.
+  Documentation-only closeout does not invalidate or rerun that evidence.
+- Retained `TEST-INFRA-PYTEST-PERMISSION-CLEANUP` and
+  `PY314-DATETIME-UTC-DEPRECATION` as non-blocking backlog.
+
 ## 2026-08-31 — SEC02-FS-MACRO-03B4R2-C5A ceremony foundation
 
 - Recorded authoritative implementation commit `ef0df21` and milestone
