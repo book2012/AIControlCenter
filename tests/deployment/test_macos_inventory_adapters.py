@@ -147,6 +147,132 @@ def test_duplicate_exact_packed_ref_is_rejected(tmp_path: Path) -> None:
         adapter.observe_git_identity()
 
 
+def _write_linked_worktree(
+    tmp_path: Path,
+    head: str,
+) -> tuple[GitRepositoryAdapter, Path, Path]:
+    common = tmp_path / "common.git"
+    git_dir = common / "worktrees" / "fixture"
+    worktree = tmp_path / "worktree"
+
+    worktree.mkdir()
+    git_dir.mkdir(parents=True)
+
+    (worktree / ".git").write_text(
+        f"gitdir: {git_dir}\n",
+        encoding="utf-8",
+    )
+    (git_dir / "HEAD").write_text(head, encoding="utf-8")
+    (git_dir / "commondir").write_text("../..\n", encoding="utf-8")
+    (git_dir / "gitdir").write_text(
+        str(worktree / ".git") + "\n",
+        encoding="utf-8",
+    )
+
+    return (
+        GitRepositoryAdapter(RepositoryFileReader(worktree)),
+        common,
+        git_dir,
+    )
+
+
+def test_git_identity_resolves_linked_worktree_shared_ref(
+    tmp_path: Path,
+) -> None:
+    adapter, common, _ = _write_linked_worktree(
+        tmp_path,
+        "ref: refs/heads/feature/linked\n",
+    )
+
+    ref = common / "refs/heads/feature/linked"
+    ref.parent.mkdir(parents=True)
+    ref.write_text("1" * 40 + "\n", encoding="utf-8")
+
+    result = adapter.observe_git_identity()
+
+    assert result["branch"] == "feature/linked"
+    assert result["commit"] == "1" * 40
+
+
+def test_git_identity_resolves_linked_worktree_shared_packed_ref(
+    tmp_path: Path,
+) -> None:
+    adapter, common, _ = _write_linked_worktree(
+        tmp_path,
+        "ref: refs/heads/feature/packed-linked\n",
+    )
+
+    (common / "packed-refs").write_text(
+        "2" * 40 + " refs/heads/feature/packed-linked\n",
+        encoding="utf-8",
+    )
+
+    result = adapter.observe_git_identity()
+
+    assert result["branch"] == "feature/packed-linked"
+    assert result["commit"] == "2" * 40
+
+
+def test_git_identity_rejects_malformed_gitfile(
+    tmp_path: Path,
+) -> None:
+    worktree = tmp_path / "worktree"
+    worktree.mkdir()
+    (worktree / ".git").write_text(
+        "not-a-gitdir\n",
+        encoding="utf-8",
+    )
+
+    adapter = GitRepositoryAdapter(RepositoryFileReader(worktree))
+
+    with pytest.raises(ValueError):
+        adapter.observe_git_identity()
+
+
+def test_git_identity_rejects_missing_gitdir_target(
+    tmp_path: Path,
+) -> None:
+    worktree = tmp_path / "worktree"
+    worktree.mkdir()
+    (worktree / ".git").write_text(
+        f"gitdir: {tmp_path / 'missing.git'}\n",
+        encoding="utf-8",
+    )
+
+    adapter = GitRepositoryAdapter(RepositoryFileReader(worktree))
+
+    with pytest.raises(ValueError):
+        adapter.observe_git_identity()
+
+
+def test_git_identity_rejects_missing_commondir_target(
+    tmp_path: Path,
+) -> None:
+    worktree = tmp_path / "worktree"
+    git_dir = tmp_path / "metadata" / "worktrees" / "fixture"
+
+    worktree.mkdir()
+    git_dir.mkdir(parents=True)
+
+    (worktree / ".git").write_text(
+        f"gitdir: {git_dir}\n",
+        encoding="utf-8",
+    )
+    (git_dir / "HEAD").write_text(
+        "ref: refs/heads/feature/missing-common\n",
+        encoding="utf-8",
+    )
+    (git_dir / "commondir").write_text(
+        "../../missing-common\n",
+        encoding="utf-8",
+    )
+
+    adapter = GitRepositoryAdapter(RepositoryFileReader(worktree))
+
+    with pytest.raises(ValueError):
+        adapter.observe_git_identity()
+
+
 def test_runtime_metadata_mapping() -> None:
     result = RuntimeMetadataFileAdapter(
         RepositoryFileReader(ROOT),

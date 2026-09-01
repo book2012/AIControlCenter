@@ -33,11 +33,133 @@ def _safe_ref_name(ref: str) -> bool:
     return all(component not in {"", ".", ".."} for component in components)
 
 
-class _GitObjectResolver:
-    """Resolve Git object IDs using repository files only."""
+def _worktree_local_ref(ref: str) -> bool:
+    return any(
+        ref == namespace or ref.startswith(f"{namespace}/")
+        for namespace in ("refs/bisect", "refs/rewritten", "refs/worktree")
+    )
 
-    def __init__(self, files: "RepositoryFileReader") -> None:
-        self._files = files
+
+class RepositoryFileReader:
+    def __init__(self, root: Path) -> None:
+        self._root = root.resolve()
+
+    @property
+    def root(self) -> Path:
+        return self._root
+
+    def read_text(self, relative_path: str) -> str:
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("repository path traversal rejected")
+        path = (self._root / relative).resolve()
+        try:
+            path.relative_to(self._root)
+        except ValueError as error:
+            raise ValueError("repository path traversal rejected") from error
+        return path.read_text(encoding="utf-8")
+
+
+class _GitRepositoryLayout:
+    """Read Git metadata from standard repositories and linked worktrees."""
+
+    def __init__(self, repository_root: Path) -> None:
+        self._repository_root = repository_root.resolve()
+        marker = self._repository_root / ".git"
+
+        if marker.is_symlink():
+            raise ValueError("Git metadata marker symlink rejected")
+
+        if marker.is_dir():
+            self._git_dir = marker.resolve()
+            self._common_dir = self._git_dir
+            return
+
+        if not marker.is_file():
+            raise ValueError("Git metadata marker unavailable")
+
+        record = _single_git_line(marker.read_text(encoding="utf-8"))
+        if not record.startswith("gitdir: "):
+            raise ValueError("malformed Git gitdir record")
+
+        raw_git_dir = record.removeprefix("gitdir: ")
+        if not raw_git_dir:
+            raise ValueError("malformed Git gitdir record")
+
+        git_dir_candidate = Path(raw_git_dir)
+        if not git_dir_candidate.is_absolute():
+            git_dir_candidate = marker.parent / git_dir_candidate
+
+        if git_dir_candidate.is_symlink() or not git_dir_candidate.is_dir():
+            raise ValueError("Git worktree metadata directory unavailable")
+
+        self._git_dir = git_dir_candidate.resolve()
+
+        commondir_record = self._git_dir / "commondir"
+        if commondir_record.is_symlink() or not commondir_record.is_file():
+            raise ValueError("Git common metadata record unavailable")
+
+        raw_common_dir = _single_git_line(
+            commondir_record.read_text(encoding="utf-8")
+        )
+        common_dir_candidate = Path(raw_common_dir)
+        if not common_dir_candidate.is_absolute():
+            common_dir_candidate = self._git_dir / common_dir_candidate
+
+        if common_dir_candidate.is_symlink() or not common_dir_candidate.is_dir():
+            raise ValueError("Git common metadata directory unavailable")
+
+        self._common_dir = common_dir_candidate.resolve()
+
+        backlink_record = self._git_dir / "gitdir"
+        if backlink_record.is_symlink() or not backlink_record.is_file():
+            raise ValueError("Git worktree backlink unavailable")
+        raw_backlink = _single_git_line(
+            backlink_record.read_text(encoding="utf-8")
+        )
+        backlink_candidate = Path(raw_backlink)
+        if not backlink_candidate.is_absolute():
+            backlink_candidate = self._git_dir / backlink_candidate
+        if backlink_candidate.is_symlink() or not backlink_candidate.is_file():
+            raise ValueError("Git worktree backlink unavailable")
+        if backlink_candidate.resolve() != marker.resolve():
+            raise ValueError("Git worktree backlink mismatch")
+
+    @staticmethod
+    def _read_bounded(base: Path, relative_path: str) -> str:
+        relative = Path(relative_path)
+        if relative.is_absolute() or ".." in relative.parts:
+            raise ValueError("Git metadata path traversal rejected")
+        path = (base / relative).resolve()
+        try:
+            path.relative_to(base)
+        except ValueError as error:
+            raise ValueError("Git metadata path traversal rejected") from error
+        return path.read_text(encoding="utf-8")
+
+    def read_head(self) -> str:
+        return self._read_bounded(self._git_dir, "HEAD")
+
+    def is_worktree_local_ref(self, ref: str) -> bool:
+        if not _safe_ref_name(ref):
+            raise ValueError("unsafe Git symbolic reference")
+        return _worktree_local_ref(ref)
+
+    def read_loose_ref(self, ref: str) -> str:
+        if not _safe_ref_name(ref):
+            raise ValueError("unsafe Git symbolic reference")
+        base = self._git_dir if _worktree_local_ref(ref) else self._common_dir
+        return self._read_bounded(base, ref)
+
+    def read_packed_refs(self) -> str:
+        return self._read_bounded(self._common_dir, "packed-refs")
+
+
+class _GitObjectResolver:
+    """Resolve Git object IDs using bounded Git metadata only."""
+
+    def __init__(self, layout: _GitRepositoryLayout) -> None:
+        self._layout = layout
 
     def resolve(self, ref: str) -> str:
         return self._resolve(ref, seen=set(), depth=0)
@@ -52,8 +174,12 @@ class _GitObjectResolver:
         seen.add(ref)
 
         try:
-            loose = _single_git_line(self._files.read_text(f".git/{ref}"))
-        except FileNotFoundError:
+            loose = _single_git_line(self._layout.read_loose_ref(ref))
+        except FileNotFoundError as error:
+            if self._layout.is_worktree_local_ref(ref):
+                raise ValueError(
+                    "unresolved worktree-local Git reference"
+                ) from error
             return self._resolve_packed(ref)
 
         if _COMMIT.fullmatch(loose):
@@ -65,7 +191,7 @@ class _GitObjectResolver:
 
     def _resolve_packed(self, ref: str) -> str:
         try:
-            packed = self._files.read_text(".git/packed-refs")
+            packed = self._layout.read_packed_refs()
         except FileNotFoundError as error:
             raise ValueError("unresolved Git reference") from error
 
@@ -80,46 +206,42 @@ class _GitObjectResolver:
                 if not _COMMIT.fullmatch(fields[0]):
                     raise ValueError("malformed matching packed Git object ID")
                 matches.append(fields[0])
+
         if len(matches) != 1:
             raise ValueError("ambiguous or unresolved packed Git reference")
         return matches[0]
 
 
-class RepositoryFileReader:
-    def __init__(self, root: Path) -> None:
-        self._root = root.resolve()
-
-    def read_text(self, relative_path: str) -> str:
-        relative = Path(relative_path)
-        if relative.is_absolute() or ".." in relative.parts:
-            raise ValueError("repository path traversal rejected")
-        path = (self._root / relative).resolve()
-        try:
-            path.relative_to(self._root)
-        except ValueError as error:
-            raise ValueError("repository path traversal rejected") from error
-        return path.read_text(encoding="utf-8")
-
-
 class GitRepositoryAdapter:
-    def __init__(self, files: RepositoryFileReader, repository_id: str = "AIControlCenter") -> None:
+    def __init__(
+        self,
+        files: RepositoryFileReader,
+        repository_id: str = "AIControlCenter",
+    ) -> None:
         self._files = files
         self._repository_id = repository_id
 
     def observe_git_identity(self) -> dict[str, Any]:
-        head = _single_git_line(self._files.read_text(".git/HEAD"))
+        layout = _GitRepositoryLayout(self._files.root)
+        head = _single_git_line(layout.read_head())
+
         if _COMMIT.fullmatch(head):
             branch, commit = "HEAD", head
         elif head.startswith("ref: "):
             ref = head.removeprefix("ref: ")
             if not _safe_ref_name(ref):
                 raise ValueError("unsafe Git HEAD reference")
-            branch = ref.removeprefix("refs/heads/") if ref.startswith("refs/heads/") else ref
+            branch = (
+                ref.removeprefix("refs/heads/")
+                if ref.startswith("refs/heads/")
+                else ref
+            )
             if not _BRANCH.fullmatch(branch):
                 raise ValueError("malformed Git branch")
-            commit = _GitObjectResolver(self._files).resolve(ref)
+            commit = _GitObjectResolver(layout).resolve(ref)
         else:
             raise ValueError("malformed Git HEAD")
+
         return {
             "repository_id": self._repository_id,
             "branch": branch,
