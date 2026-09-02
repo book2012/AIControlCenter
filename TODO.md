@@ -1905,6 +1905,18 @@ and Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
   `343ecd6` and documentation-only closeout.
 - [x] Complete validated `SEC02-FS-MACRO-03B4R2-C6A` implementation at
   `e9cb294` and documentation-only closeout.
+- [x] Close `SEC02-FS-MACRO-03B4R2-C6B` implementation, validation, and
+  documentation with architecture, security, focused, compatibility, diff,
+  and canonical gates passed.
+- [x] Record canonical C6B evidence: invocation
+  `54e99780e5ac4dc9a3b5f1056690380f`; `4503 passed, 5 deselected, 719
+  warnings, 2 subtests passed in 468.55s (0:07:48)`.
+- [x] Preserve C6B as repository-only, Mac-only, read-only, deterministic,
+  and non-authorizing readiness metadata. C5A remains mandatory before C5B;
+  C4 remains the sole live identity and authoritative Team ID verifier.
+- [ ] Live Production signing readiness remains `NOT_READY`; credential
+  acquisition/import, signing, notarization, registration, and Production
+  mutation require separate future authorization and validation.
 
 Separate non-blocking technical debt:
 

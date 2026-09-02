@@ -5175,3 +5175,17 @@ OPS-VAL-01B authoritative validation:
 - final summary: `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`
 
 The `/private/tmp` evidence directory provides durable evidence across terminal or tool transport loss for the invocation, but it is not a reboot-crossing long-term Production evidence store.
+## SEC02-FS-MACRO-03B4R2-C6B external acquisition readiness foundation
+
+C6B is a Mac Control Plane, read-only, repository-only classification boundary
+before any C5A/C5B ceremony. It accepts only an Apple Developer ID Application
+candidate representation with a matching-private-key representation. This is
+readiness metadata, not credential proof, import authorization, or Production
+authority. Unsupported classes and invented or Xcode-derived Team ID authority
+claims are rejected. Ubuntu receives no credential or signing authority.
+
+The authority sequence remains `C6B -> future external acquisition -> C5A ->
+C5B -> C6A -> C4`. C4 alone inspects the live Keychain identity and derives the
+authoritative Team ID. C6B always emits `authoritative_team_id: null` and has no
+credential-byte, passphrase, Keychain, signing, notarization, SMAppService, or
+Production mutation surface.

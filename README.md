@@ -4679,3 +4679,19 @@ OPS-VAL-01B validation completed at implementation commit `0b15dbc` with invocat
 `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`
 
 Warnings remain non-blocking and are tracked separately from OPS-VAL-01B.
+## Current authoritative — SEC02-FS-MACRO-03B4R2-C6B readiness foundation
+
+C6B defines a deterministic JSON, Mac-only, repository-only readiness contract
+for future external Production signing credential acquisition. Only a represented
+Apple Developer ID Application candidate with a represented matching private key
+may be marked acceptable for eventual C5A/C5B ceremony progression. Apple
+Development, ad-hoc, self-signed, Developer ID Installer, unsupported, invented
+Team ID, and Xcode-derived authority claims fail closed.
+
+C6B acquires, downloads, reads, imports, signs, notarizes, registers, or mutates
+nothing and handles no passphrase. It grants neither Production nor Ubuntu
+authority. `authoritative_team_id` remains `null`; only C4 may establish it from
+a live verified identity after a separate future import.
+
+Validation: focused C6B `4 passed`; C4/C5A/C5B/C6A compatibility `20 passed`;
+canonical `4503 passed, 5 deselected, 719 warnings, 2 subtests passed`.

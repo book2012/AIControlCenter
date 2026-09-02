@@ -5132,3 +5132,15 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
 - Canonical invocation: `5bbec183020441a39c275f18d248f946`.
 - Canonical result: `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`.
 - `TEST-INFRA-PYTEST-PERMISSION-CLEANUP` and `datetime.utcnow()` deprecation warnings remain separate non-blocking technical debt.
+## 2026-09-02 — SEC02-FS-MACRO-03B4R2-C6B acquisition readiness foundation
+
+- Added a deterministic JSON, Mac-only, repository-only external credential
+  acquisition readiness contract.
+- Required a represented Apple Developer ID Application credential and matching
+  private key before eventual C5A/C5B progression; rejected unsupported classes,
+  invented Team ID, and Xcode-derived authority.
+- Preserved C4 as the sole live identity and authoritative Team ID boundary;
+  C6B performs no acquisition, import, secret handling, signing, registration,
+  notarization, Production mutation, or Ubuntu delegation.
+- Validation: focused C6B `4 passed`; C4/C5A/C5B/C6A compatibility `20 passed`;
+  canonical `4503 passed, 5 deselected, 719 warnings, 2 subtests passed`.

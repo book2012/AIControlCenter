@@ -4670,3 +4670,12 @@ The authoritative final canonical invocation was `5bbec183020441a39c275f18d248f9
 `4490 passed, 5 deselected, 699 warnings, 2 subtests passed in 412.64s (0:06:52)`
 
 No Production mutation, signing operation, credential import, Production authorization, or C5B implementation change was performed by OPS-VAL-01B.
+## 2026-09-02 — SEC02-FS-MACRO-03B4R2-C6B implemented
+
+C6B established a deterministic, non-authorizing readiness contract for future
+external Developer ID Application credential acquisition. Readiness requires a
+matching-private-key representation and rejects unsupported credential classes
+and non-C4 Team ID authority claims. No credential was acquired or read, no
+passphrase was handled, and no Keychain, signing, registration, notarization,
+Production, or Ubuntu mutation/authority was introduced. C4 remains the sole
+live identity and authoritative Team ID verifier.

@@ -91,3 +91,12 @@ is guessed here. Frozen repository identifiers do not establish signing
 authority; its absence makes runtime readiness `NOT_READY`. The foundation does
 not register, unregister, activate, install, start, persist authority, acquire
 authorization, or mutate a filesystem.
+## R2-C6B external credential acquisition readiness boundary
+
+C6B classifies non-secret future-acquisition metadata only. Eventual C5A/C5B
+progression requires a represented Apple Developer ID Application credential
+with a represented matching private key. All other credential classes and
+invented or Xcode-derived Team ID authority claims fail closed. This readiness
+result is not credential proof or ceremony authorization. It is Mac-only,
+repository-only, read-only, grants Ubuntu no authority, performs no mutation,
+and always emits a null authoritative Team ID until C4 verifies a live identity.

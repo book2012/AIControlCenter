@@ -4690,3 +4690,12 @@ Next Production milestone after repository closeout:
 `PRODUCTION_SIGNING_CREDENTIAL_IMPORT_CEREMONY_FOUNDATION_VALIDATED`
 
 Work unit: `SEC02-FS-MACRO-03B4R2-C5B`.
+## COMPLETE — SEC02-FS-MACRO-03B4R2-C6B acquisition readiness foundation
+
+- [x] Define deterministic Mac-only repository readiness for an external Apple
+  Developer ID Application credential with a represented matching private key.
+- [x] Reject development, ad-hoc, self-signed, installer, unsupported, invented
+  Team ID, and Xcode-derived authority candidates.
+- [x] Preserve C4 as sole live identity and Team ID authority and keep
+  `authoritative_team_id` null before C4 verification.
+- [x] Grant no credential, signing, Production, or Ubuntu authority.

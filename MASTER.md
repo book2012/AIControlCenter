@@ -5605,3 +5605,16 @@ Current state:
 - `OPS_VAL_01B_REPOSITORY_CLOSEOUT=PENDING`
 
 After documentation and repository integration closeout, work returns to `SEC02-FS-MACRO-03B4R2-C5B`.
+## Current authoritative status — SEC02-FS-MACRO-03B4R2-C6B implemented
+
+C6B provides deterministic JSON readiness for acceptable future external
+Developer ID Application credential acquisition. A represented matching private
+key is mandatory; development, ad-hoc, self-signed, installer, unsupported,
+invented-Team-ID, and Xcode-derived candidates fail closed. C6B is Mac-only,
+repository-only, read-only, non-authorizing, grants Ubuntu no authority, and
+keeps `authoritative_team_id` null pending sole-authoritative C4 verification.
+
+Focused C6B tests: `4 passed`. C4/C5A/C5B/C6A compatibility: `20 passed`.
+Canonical: `4503 passed, 5 deselected, 719 warnings, 2 subtests passed in
+468.55s (0:07:48)`, invocation `54e99780e5ac4dc9a3b5f1056690380f`, evidence
+directory `/private/tmp/aicontrolcenter-canonical-evidence.qFOvYA`.
