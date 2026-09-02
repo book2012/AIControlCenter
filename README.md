@@ -1,5 +1,18 @@
 # AIControlCenter
 
+## Current authoritative — WU09 Production composition ready
+
+`WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. The Mac-only
+composition root validates the existing trusted WU09 authorization facts,
+complete immutable precondition snapshot, and signed Mac operator identity
+before assembling the existing SEC-02 coordinator, deferred
+`AuthorizationConsumptionPort`, exact pinned-image `ControlledExecutionPort`,
+and bounded read-only observers. Composition performs no durable store
+initialization, authorization consumption, Docker/Colima probe, image preload,
+adapter deployment, credential provisioning, or Production mutation. The Mac
+mini M4 remains the sole Control Plane; Ubuntu remains stateless. The next
+existing boundary is separately authorized `WU09_PINNED_IMAGE_PRELOADED`.
+
 ## Current authoritative — C5A operator metadata entrypoint validated
 
 Commit `8a0836f` connects the operator to the real C5A issuer,

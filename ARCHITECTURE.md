@@ -1,5 +1,17 @@
 # AI Home Datacenter Architecture
 
+## Current authoritative boundary — WU09 Production composition ready
+
+`WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. The inert
+composition root remains on the Mac mini M4 Control Plane and accepts only an
+opaque signed envelope, complete immutable WU09 precondition snapshot, and the
+fixed repository root. It reuses SEC-02, both existing ports, the WU09
+coordinator, and the exact pinned-image adapter. Runtime commands are fixed and
+read-only; observation and durable consumption initialization are deferred, so
+composition performs no Production or Docker access and no filesystem mutation.
+Ubuntu receives no workload, business logic, state, or authority. The existing
+`WU09_PINNED_IMAGE_PRELOADED` boundary remains separately human-authorized.
+
 ## C5A operator metadata validation entrypoint validated
 
 Commit `8a0836f` connects the corrected operator to the real issuer,

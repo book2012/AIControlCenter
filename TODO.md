@@ -1,5 +1,16 @@
 # TODO
 
+## WU09 Production composition ready
+
+- [x] Complete `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY` with an
+  inert Mac-only composition root and bounded read-only observers.
+- [x] Reuse WU09 trusted intake, SEC-02, `AuthorizationConsumptionPort`,
+  `ControlledExecutionPort`, the coordinator, and exact pinned-image semantics.
+- [x] Defer durable store initialization; consume no authorization and perform
+  no Production, Docker, Colima, preload, deployment, credential, or Ubuntu
+  operation.
+- [ ] Next existing boundary: separately authorize `WU09_PINNED_IMAGE_PRELOADED`.
+
 ## WU09 trusted Production authorization intake freeze
 
 - [x] Freeze validation-only exact WU09 Production preload intake over generic

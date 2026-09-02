@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-09-02 — WU09 Production composition ready
+
+- Completed `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY` with an
+  inert Mac-only composition root, exact snapshot validation, signed Mac
+  operator binding, and fixed read-only runtime observers.
+- Reused SEC-02, WU09 trusted intake, both existing ports, the coordinator, and
+  exact pinned-image semantics. Durable consumption-store initialization is
+  deferred until a separate authorized ceremony.
+- Focused validation passed with `55 passed`. No Production/Docker/Colima
+  access, authorization consumption, preload, deployment, credential handling,
+  or Ubuntu operation occurred. Next: `WU09_PINNED_IMAGE_PRELOADED`.
+
 ## 2026-09-02 — WU09 trusted Production authorization intake freeze
 
 - Completed `WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE` with an

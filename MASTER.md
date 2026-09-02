@@ -1,5 +1,15 @@
 # MASTER
 
+## Current authoritative status — WU09 Production composition ready
+
+`WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. Repository
+composition is Mac-only, exact-image-bound, SEC-02-bound, and inert. Trusted
+authorization and Mac operator identity are validated while durable
+authorization consumption is deferred to a separate authorized ceremony. No
+Production access, authorization consumption, Docker/Colima operation, preload,
+deployment, credential provisioning, Ubuntu authority, or runtime mutation
+occurred. Next: separately authorized `WU09_PINNED_IMAGE_PRELOADED`.
+
 ## Current authoritative status — C5A operator entrypoint bridge validated
 
 Commit `8a0836f` establishes

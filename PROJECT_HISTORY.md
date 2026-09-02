@@ -1,5 +1,16 @@
 # Project History
 
+## 2026-09-02 — WU09 Production composition prepared
+
+`WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. The
+repository gained an inert Mac-only composition root and fixed read-only WU09
+observers. Assembly validates trusted authorization, the complete expected
+snapshot, and signed Mac operator identity while deferring durable store
+initialization and all coordinator activity. Focused validation passed with
+`55 passed`; no Production, Docker, Colima, credential, preload, deployment,
+authorization-consumption, or Ubuntu access occurred. The next existing
+boundary is separately authorized `WU09_PINNED_IMAGE_PRELOADED`.
+
 ## 2026-09-02 — WU09 trusted Production authorization intake frozen
 
 `WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE=COMPLETE`. The WU09

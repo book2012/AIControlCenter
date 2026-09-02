@@ -1,5 +1,17 @@
 # Roadmap
 
+## Current authoritative — WU09 Production composition ready
+
+- [x] `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY` — assemble the
+  exact Mac-only composition without consuming authorization, probing
+  Docker/Colima, or mutating Production.
+- [x] Defer durable authorization-store initialization and preserve existing
+  SEC-02, WU09 coordinator, and exact pinned-image execution semantics.
+- [x] Preserve the Mac mini M4 as sole Control Plane and Ubuntu as stateless.
+- [ ] `WU09_PINNED_IMAGE_PRELOADED` — separately authorize and execute the exact
+  pinned-image preload as its own future Production mutation.
+- [ ] Deploy the loopback adapter only under a separate later authorization.
+
 ## COMPLETE — C5A operator metadata validation entrypoint bridge
 
 - [x] Connect the operator to the real C5A issuer and record
