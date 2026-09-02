@@ -1,5 +1,41 @@
 # Roadmap
 
+## COMPLETE — SEC02-FS-MACRO-03B4R2-C6A availability observation foundation
+
+- [x] Establish
+  `PRODUCTION_SIGNING_CREDENTIAL_AVAILABILITY_OBSERVATION_FOUNDATION_VALIDATED`
+  at implementation commit `e9cb294`.
+- [x] Coordinate established C5A evidence and C5B state read-only, progressing
+  to sole-authoritative C4 only from `SUCCEEDED_PENDING_C4_VERIFICATION`.
+- [x] Keep `ATTEMPTING`, `FAILED_CONSUMED`, and `UNCERTAIN_CONSUMED` from C4
+  progression; preserve consumed failure/uncertainty as terminal without retry.
+- [x] Serialize `authoritative_team_id` as `null` before authoritative C4 Team ID
+  derivation and keep the observation JSON non-authorizing.
+- [x] Record focused C6A `4 passed`, compatibility `16 passed`, architecture and
+  security review `PASS`, diff check `PASS`, and canonical `4499 passed, 5
+  deselected, 703 warnings, 2 subtests passed in 446.30s (0:07:26)`.
+
+## NEXT/BLOCKED — post-C6A signing readiness
+
+- [ ] Obtain a real external Developer ID Application credential under a
+  separately authorized human ceremony; none currently exists.
+- [ ] Conduct a separate Mac-only import ceremony, then permit C6A to request
+  mandatory read-only C4 verification only after successful import state.
+- [ ] Establish an authoritative Team ID and verified Production signing
+  identity through C4 before planning a deterministic signed package.
+- [ ] Keep concrete mutual XPC requirements, separately authorized
+  `SMAppService` registration, Production remediation, and 03B5 readiness as
+  later distinct milestones.
+
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`.
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`.
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`.
+`SIGNED_PACKAGE_READY=NO`.
+`LIVE_SIGNING_READINESS=NOT_READY`.
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`.
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`.
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`.
+
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-C5B import ceremony foundation
 
 - [x] Establish

@@ -1903,6 +1903,8 @@ and Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
 - [ ] Registered Git worktree removal.
 - [x] Complete validated `SEC02-FS-MACRO-03B4R2-C5B` implementation at
   `343ecd6` and documentation-only closeout.
+- [x] Complete validated `SEC02-FS-MACRO-03B4R2-C6A` implementation at
+  `e9cb294` and documentation-only closeout.
 
 Separate non-blocking technical debt:
 

@@ -1,5 +1,51 @@
 # AIControlCenter
 
+## Current authoritative — SEC02-FS-MACRO-03B4R2-C6A validated
+
+Commit `e9cb294` (`feat: add production signing credential availability
+observer`) completed the Mac-only, read-only Production signing credential
+availability observation coordinator. Milestone:
+`PRODUCTION_SIGNING_CREDENTIAL_AVAILABILITY_OBSERVATION_FOUNDATION_VALIDATED`.
+C6A observes established C5A credential-input evidence and C5B import result
+state; it creates neither and may progress to the sole-authoritative C4 local
+Keychain verifier only from `SUCCEEDED_PENDING_C4_VERIFICATION`.
+
+The observation states are `EXTERNAL_CREDENTIAL_REQUIRED`,
+`LOCAL_INPUT_METADATA_READY`, `IMPORT_REQUIRED`,
+`IDENTITY_VERIFICATION_REQUIRED`, and
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED`. Before C4 produces an authoritative Team
+ID, JSON explicitly serializes `authoritative_team_id` as `null`. The contract
+is not Production authority. `ATTEMPTING`, `FAILED_CONSUMED`, and
+`UNCERTAIN_CONSUMED` never open C4 progression; consumed failure and uncertainty
+are terminal and never automatically retried. C4 alone verifies the live
+Developer ID Application identity and derives the authoritative Team ID.
+
+C6A reads no credential contents, handles no passphrases, imports nothing,
+mutates no Keychain, signs or notarizes nothing, registers no `SMAppService`,
+performs no Production mutation, and grants no Production authority. Focused
+C6A tests `4 passed`; C4/C5A/C5B compatibility tests `16 passed`; architecture,
+security, diff, and canonical validation `PASS`. Canonical invocation
+`7f0b4913e9c6493e972a6a8bdf1b5af8` recorded `4499 passed, 5 deselected, 703
+warnings, 2 subtests passed in 446.30s (0:07:26)` at
+`/private/tmp/aicontrolcenter-canonical-evidence.WwxhL9`; it is not rerun for
+documentation closeout.
+
+`WU=SEC02-FS-MACRO-03B4R2-C6A`
+`C6A_IMPLEMENTATION=COMPLETE`
+`C6A_FOCUSED_TESTS=PASS`
+`C6A_ARCHITECTURE_REVIEW=PASS`
+`C6A_SECURITY_REVIEW=PASS`
+`C6A_CANONICAL=PASS`
+`C6A_DOCUMENTATION=COMPLETE`
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+
 ## Current authoritative — SEC02-FS-MACRO-03B4R2-C5B validated
 
 Commit `343ecd6` validated the repository-only future Mac-only Production

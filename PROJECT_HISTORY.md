@@ -1,5 +1,36 @@
 # Project History
 
+## 2026-09-02 — SEC02-FS-MACRO-03B4R2-C6A completed
+
+Implementation commit `e9cb294` (`feat: add production signing credential
+availability observer`) completed the Mac-only, read-only, non-authorizing
+availability observation foundation, establishing
+`PRODUCTION_SIGNING_CREDENTIAL_AVAILABILITY_OBSERVATION_FOUNDATION_VALIDATED`.
+C6A consumes existing C5A evidence and C5B state and may invoke the sole
+authoritative C4 verifier only for `SUCCEEDED_PENDING_C4_VERIFICATION`.
+`ATTEMPTING`, `FAILED_CONSUMED`, and `UNCERTAIN_CONSUMED` do not progress;
+consumed failure and uncertainty are terminal without automatic retry.
+
+The observation states are `EXTERNAL_CREDENTIAL_REQUIRED`,
+`LOCAL_INPUT_METADATA_READY`, `IMPORT_REQUIRED`,
+`IDENTITY_VERIFICATION_REQUIRED`, and
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED`. `authoritative_team_id` is explicitly
+serialized as `null` until C4 produces it. C4 remains the sole live identity and
+Team ID authority, and the observation JSON grants no Production authority.
+No credential content or passphrase was handled; no import, Keychain mutation,
+signing, notarization, registration, Production mutation, or authorization
+occurred.
+
+Focused C6A tests passed with `4 passed`; C4/C5A/C5B compatibility passed with
+`16 passed`; architecture review, security review, and implementation diff check
+passed. Canonical state was `COMPLETED_PASS`, capture and test exit statuses were
+zero, and `VALIDATED_PASS=true`. Evidence directory
+`/private/tmp/aicontrolcenter-canonical-evidence.WwxhL9`, invocation
+`7f0b4913e9c6493e972a6a8bdf1b5af8`, summary `4499 passed, 5 deselected, 703
+warnings, 2 subtests passed in 446.30s (0:07:26)`. Documentation-only closeout
+did not rerun canonical. Live Production readiness remains unchanged and
+`TEST-INFRA-PYTEST-PERMISSION-CLEANUP` remains separate non-blocking debt.
+
 ## 2026-09-01 — SEC02-FS-MACRO-03B4R2-C5B completed
 
 Implementation commit `343ecd6` completed and validated the repository-only

@@ -1,5 +1,54 @@
 # MASTER
 
+## Current authoritative status — SEC02-FS-MACRO-03B4R2-C6A complete
+
+Implementation commit `e9cb294` establishes
+`PRODUCTION_SIGNING_CREDENTIAL_AVAILABILITY_OBSERVATION_FOUNDATION_VALIDATED`.
+C6A is a Mac-only, read-only, non-authorizing coordinator of existing C5A input
+evidence, C5B import state, and C4 verification. It does not create C5A evidence
+or C5B success. Only `SUCCEEDED_PENDING_C4_VERIFICATION` may invoke C4;
+`ATTEMPTING`, `FAILED_CONSUMED`, and `UNCERTAIN_CONSUMED` do not progress, and
+consumed failure/uncertainty never automatically retry. C4 remains the sole live
+Developer ID Application verification and authoritative Team ID authority.
+
+C6A reports `EXTERNAL_CREDENTIAL_REQUIRED`, `LOCAL_INPUT_METADATA_READY`,
+`IMPORT_REQUIRED`, `IDENTITY_VERIFICATION_REQUIRED`, or
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED`. Its JSON explicitly serializes
+`authoritative_team_id: null` until C4 has produced an authoritative Team ID;
+this observation contract grants no Production authority. C6A performs no
+credential-content or passphrase handling, credential import, Keychain mutation,
+signing, notarization, `SMAppService` registration, Production mutation, or
+authorization. Mac remains the sole Control Plane, and Ubuntu remains stateless
+with no signing, credential, business-logic, or Production authority.
+
+Focused C6A `4 passed`, C4/C5A/C5B compatibility `16 passed`, architecture and
+security review `PASS`, implementation diff check `PASS`, and canonical `PASS`.
+Canonical evidence is
+`/private/tmp/aicontrolcenter-canonical-evidence.WwxhL9`, invocation
+`7f0b4913e9c6493e972a6a8bdf1b5af8`, summary `4499 passed, 5 deselected, 703
+warnings, 2 subtests passed in 446.30s (0:07:26)`. Documentation closeout does
+not rerun canonical.
+
+`WU=SEC02-FS-MACRO-03B4R2-C6A`
+`MILESTONE=PRODUCTION_SIGNING_CREDENTIAL_AVAILABILITY_OBSERVATION_FOUNDATION_VALIDATED`
+`C6A_IMPLEMENTATION=COMPLETE`
+`C6A_FOCUSED_TESTS=PASS`
+`C6A_ARCHITECTURE_REVIEW=PASS`
+`C6A_SECURITY_REVIEW=PASS`
+`C6A_CANONICAL=PASS`
+`C6A_DOCUMENTATION=COMPLETE`
+`C6A_CANONICAL_EVIDENCE_DIR=/private/tmp/aicontrolcenter-canonical-evidence.WwxhL9`
+`C6A_CANONICAL_INVOCATION_ID=7f0b4913e9c6493e972a6a8bdf1b5af8`
+`C6A_CANONICAL_PYTEST_SUMMARY=4499 passed, 5 deselected, 703 warnings, 2 subtests passed in 446.30s (0:07:26)`
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+
 ## Current authoritative status — SEC02-FS-MACRO-03B4R2-C5B complete
 
 Implementation commit `343ecd6` establishes

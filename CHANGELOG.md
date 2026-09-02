@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2026-09-02 — SEC02-FS-MACRO-03B4R2-C6A availability observation foundation
+
+- Recorded authoritative implementation commit `e9cb294` and milestone
+  `PRODUCTION_SIGNING_CREDENTIAL_AVAILABILITY_OBSERVATION_FOUNDATION_VALIDATED`.
+- Added the Mac-only, read-only, non-authorizing C6A coordinator across the
+  `C5A -> C5B -> C6A -> C4` boundary. C4 remains the sole live identity and
+  authoritative Team ID authority.
+- Recorded observation states `EXTERNAL_CREDENTIAL_REQUIRED`,
+  `LOCAL_INPUT_METADATA_READY`, `IMPORT_REQUIRED`,
+  `IDENTITY_VERIFICATION_REQUIRED`, and
+  `PRODUCTION_SIGNING_IDENTITY_VERIFIED`; pre-verification JSON explicitly
+  serializes `authoritative_team_id` as `null` and grants no Production authority.
+- Restricted C4 progression to C5B `SUCCEEDED_PENDING_C4_VERIFICATION` and kept
+  `ATTEMPTING`, `FAILED_CONSUMED`, and `UNCERTAIN_CONSUMED` non-progressing.
+  Consumed failure and uncertainty remain terminal with no automatic retry.
+- Confirmed no credential-content or passphrase handling, import, Keychain
+  mutation, signing, notarization, registration, Production mutation, or
+  Production authorization.
+- Validation: focused C6A `4 passed`; C4/C5A/C5B compatibility `16 passed`;
+  architecture/security/diff/canonical `PASS`. Canonical evidence directory
+  `/private/tmp/aicontrolcenter-canonical-evidence.WwxhL9`, invocation
+  `7f0b4913e9c6493e972a6a8bdf1b5af8`, summary `4499 passed, 5 deselected, 703
+  warnings, 2 subtests passed in 446.30s (0:07:26)`. Canonical was not rerun.
+- Preserved `TEST-INFRA-PYTEST-PERMISSION-CLEANUP` as separate non-blocking debt
+  and did not upgrade live Production readiness.
+
 ## 2026-09-01 — SEC02-FS-MACRO-03B4R2-C5B import ceremony foundation
 
 - Recorded validated implementation commit `343ecd6` and milestone

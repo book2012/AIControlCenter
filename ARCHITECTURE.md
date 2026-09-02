@@ -1,5 +1,53 @@
 # AI Home Datacenter Architecture
 
+## SEC02-FS-MACRO-03B4R2-C6A availability observation foundation validated
+
+Authoritative implementation commit `e9cb294` (`feat: add production signing
+credential availability observer`) establishes
+`PRODUCTION_SIGNING_CREDENTIAL_AVAILABILITY_OBSERVATION_FOUNDATION_VALIDATED`.
+C6A is a Mac-only, read-only, non-authorizing coordinator. The Mac mini M4
+remains the sole Control Plane; AIControlCenter retains governance,
+orchestration, authorization, audit, and deployment control. Ubuntu remains a
+stateless infrastructure worker with no signing, credential, business-logic, or
+Production authorization authority.
+
+The authority flow is `C5A -> C5B -> C6A -> C4`: C6A consumes already-created
+C5A validated credential-input evidence and C5B import-ceremony result state; it
+creates neither C5A evidence nor C5B success. C6A may invoke the authoritative
+C4 local Keychain read-only verifier only for
+`SUCCEEDED_PENDING_C4_VERIFICATION`. It never permits C4 progression for
+`ATTEMPTING`, `FAILED_CONSUMED`, or `UNCERTAIN_CONSUMED`; the two consumed
+failure/uncertainty states are terminal and never automatically retried. C4
+remains the sole authority for live Developer ID Application verification and
+authoritative Team ID derivation. C6A is not an alternative Team ID authority.
+
+The observation states are `EXTERNAL_CREDENTIAL_REQUIRED`,
+`LOCAL_INPUT_METADATA_READY`, `IMPORT_REQUIRED`,
+`IDENTITY_VERIFICATION_REQUIRED`, and
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED`. The JSON contract explicitly serializes
+`authoritative_team_id` as `null` until C4 identity verification has produced
+an authoritative Team ID. This JSON is observation evidence, not Production
+authority. C6A does not read credential contents, handle passphrases, import or
+retry credentials, mutate Keychain, sign, notarize, register `SMAppService`,
+perform Production mutation, grant Production authority, or infer success from
+C5A metadata or C5B failure/uncertainty.
+
+Focused C6A tests `4 passed`; C4/C5A/C5B compatibility tests `16 passed`;
+architecture review, security review, and implementation diff check `PASS`.
+Canonical invocation `7f0b4913e9c6493e972a6a8bdf1b5af8` at
+`/private/tmp/aicontrolcenter-canonical-evidence.WwxhL9` recorded `4499 passed,
+5 deselected, 703 warnings, 2 subtests passed in 446.30s (0:07:26)`. Canonical
+is not rerun for this documentation-only closeout.
+
+`LIVE_DEVELOPER_ID_APPLICATION_STATE=ABSENT`
+`AUTHORITATIVE_TEAM_ID_AVAILABLE=NO`
+`PRODUCTION_SIGNING_IDENTITY_VERIFIED=NO`
+`SIGNED_PACKAGE_READY=NO`
+`LIVE_SIGNING_READINESS=NOT_READY`
+`SMAPPSERVICE_REGISTRATION_OPERATIONAL=NO`
+`PRODUCTION_REMEDIATION_AVAILABLE=NO`
+`READY_FOR_03B5_PRODUCTION_CEREMONY=NO`
+
 ## SEC02-FS-MACRO-03B4R2-C5B import ceremony foundation validated
 
 Authoritative implementation commit `343ecd6` (`feat: add production signing
