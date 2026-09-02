@@ -51,6 +51,14 @@ from ops.macos.shopping.wu09_image_preload import (
     WU09PreloadPreconditionObserver,
     WU09PreloadPreconditions,
     build_precondition_snapshot,
+    ReadOnlyCommandResult,
+    WU09ProductionReadOnlyObservation,
+)
+import ops.macos.shopping.wu09_image_preload_composition as composition_module
+from ops.macos.shopping.wu09_image_preload_composition import (
+    WU09ProductionComposition,
+    WU09ProductionCompositionInput,
+    compose_wu09_production_image_preload,
 )
 
 
@@ -446,3 +454,137 @@ def test_no_generic_docker_or_ubuntu_execution_surface_is_introduced():
         and not node.name.startswith("_")
     }
     assert "execute" not in methods and "run" not in methods
+
+
+def _composition_dependencies(monkeypatch, value):
+    counts = {"consume": 0, "coordinate": 0, "invoke": 0, "process": 0}
+    trusted = SimpleNamespace(facts=SimpleNamespace(
+        authorization=value.authorization,
+        mutation_budget=value.mutation_budget,
+        execution_request=value.execution_request,
+        expected_operator=GovernanceIdentity("operator", "MAC_LOCAL_OPERATOR_V1"),
+    ))
+    observed = SimpleNamespace(
+        uid=501, gid=20, passwd_home="/Users/operator",
+        governance_identity=trusted.facts.expected_operator,
+    )
+    captured = {}
+
+    class InertConsumer:
+        def __init__(self, **kwargs):
+            captured.update(kwargs)
+
+        def consume_once(self, command):
+            counts["consume"] += 1
+            raise AssertionError("assembly consumed authorization")
+
+    class InertObservation:
+        def __init__(self, repository_root):
+            captured["observation_root"] = repository_root
+
+        def observe_preload_preconditions(self):
+            counts["process"] += 1
+            raise AssertionError("assembly observed runtime")
+
+        def observe_preload_postconditions(self):
+            counts["process"] += 1
+            raise AssertionError("assembly observed runtime")
+
+    class InertExecution:
+        def invoke_once(self, request):
+            counts["invoke"] += 1
+            raise AssertionError("assembly invoked execution")
+
+    monkeypatch.setattr(composition_module, "intake_wu09_trusted_production_authorization", lambda raw: trusted)
+    monkeypatch.setattr(composition_module, "ProductionMacOperatorObserver", lambda: object())
+    monkeypatch.setattr(composition_module, "observe_operator", lambda observer: observed)
+    monkeypatch.setattr(composition_module, "SQLiteAuthorizationConsumptionAdapter", InertConsumer)
+    monkeypatch.setattr(composition_module, "WU09ProductionReadOnlyObservation", InertObservation)
+    monkeypatch.setattr(composition_module, "WU09ExactImagePreloadExecution", InertExecution)
+    return counts, captured
+
+
+def test_exact_trusted_facts_compose_without_consuming_deciding_or_invoking(monkeypatch):
+    value = lifecycle()
+    counts, captured = _composition_dependencies(monkeypatch, value)
+    request = WU09ProductionCompositionInput(b"signed", value.expected_preconditions, ROOT)
+    composed = compose_wu09_production_image_preload(request)
+    assert type(composed) is WU09ProductionComposition
+    assert counts == {"consume": 0, "coordinate": 0, "invoke": 0, "process": 0}
+    assert captured == {"observation_root": ROOT}
+    assert not hasattr(composed, "coordinate") and not hasattr(composed, "invoke_once")
+
+
+def test_composition_snapshot_digest_mismatch_fails_before_adapter_assembly(monkeypatch):
+    value = lifecycle()
+    counts, captured = _composition_dependencies(monkeypatch, value)
+    mismatch = replace(value.expected_preconditions, snapshot_digest="sha256:mismatch")
+    with pytest.raises(ValueError, match="not exact and complete"):
+        compose_wu09_production_image_preload(
+            WU09ProductionCompositionInput(b"signed", mismatch, ROOT)
+        )
+    assert counts == {"consume": 0, "coordinate": 0, "invoke": 0, "process": 0}
+    assert captured == {}
+
+
+def test_matching_digest_cannot_override_tampered_expected_snapshot(monkeypatch):
+    value = lifecycle()
+    counts, captured = _composition_dependencies(monkeypatch, value)
+    tampered = replace(
+        value.expected_preconditions,
+        runtime_identity_binding=value.expected_preconditions.git_state_binding,
+    )
+    with pytest.raises(ValueError, match="not exact and complete"):
+        compose_wu09_production_image_preload(
+            WU09ProductionCompositionInput(b"signed", tampered, ROOT)
+        )
+    assert counts == {"consume": 0, "coordinate": 0, "invoke": 0, "process": 0}
+    assert captured == {}
+
+
+def test_composition_has_no_caller_controlled_execution_parameters():
+    assert tuple(inspect.signature(compose_wu09_production_image_preload).parameters) == ("request",)
+    assert tuple(WU09ProductionCompositionInput.__dataclass_fields__) == (
+        "raw_authorization_envelope", "expected_preconditions", "repository_root"
+    )
+    forbidden = {"argv", "image", "digest", "context", "target"}
+    assert forbidden.isdisjoint(WU09ProductionCompositionInput.__dataclass_fields__)
+    with pytest.raises(TypeError):
+        WU09ProductionComposition()
+
+
+def test_read_only_observation_uses_only_fixed_commands_and_exact_parsing():
+    calls = []
+    outputs = iter((
+        "", "0\t0\n", '[{"Name":"colima-aicontrolcenter-commerce"}]', "",
+        "", '[{"Name":"ai-shopping-internal","Internal":true}]',
+        '[{"State":{"Running":true},"NetworkSettings":{"Networks":{"ai-shopping-internal":{}}}}]',
+    ))
+
+    def runner(argv, *, cwd=None):
+        calls.append((tuple(argv), cwd))
+        return ReadOnlyCommandResult(0, next(outputs))
+
+    observation = WU09ProductionReadOnlyObservation(
+        ROOT, _runner=runner, _platform_system=lambda: "Darwin", _port_available=lambda: True
+    ).observe_preload_preconditions()
+    assert observation == good_preconditions()
+    assert len(calls) == 7
+    assert all("pull" not in argv and "run" not in argv and "create" not in argv for argv, _ in calls)
+
+
+@pytest.mark.parametrize(
+    "bad_result",
+    (ReadOnlyCommandResult(1, ""), ReadOnlyCommandResult(0, "{"), ReadOnlyCommandResult(0, "[]")),
+)
+def test_read_only_observation_fails_closed_on_nonzero_malformed_or_missing(bad_result):
+    def runner(argv, *, cwd=None):
+        if argv[:3] == ("docker", "context", "inspect"):
+            return bad_result
+        return ReadOnlyCommandResult(0, "")
+
+    observer = WU09ProductionReadOnlyObservation(
+        ROOT, _runner=runner, _platform_system=lambda: "Darwin", _port_available=lambda: True
+    )
+    with pytest.raises(RuntimeError):
+        observer.observe_preload_preconditions()

@@ -7,8 +7,10 @@ from datetime import datetime, timezone
 import hashlib
 import json
 import platform
+from pathlib import Path
+import socket
 import subprocess
-from typing import Callable, Protocol
+from typing import Callable, Protocol, Sequence
 import uuid
 
 from core.governance.control_plane.application.wu09_image_preload_coordinator import (
@@ -45,6 +47,16 @@ class ProcessRunner(Protocol):
 
 
 @dataclass(frozen=True, slots=True)
+class ReadOnlyCommandResult:
+    returncode: int
+    stdout: str
+
+
+class ReadOnlyProcessRunner(Protocol):
+    def __call__(self, argv: Sequence[str], *, cwd: Path | None = None) -> ReadOnlyCommandResult: ...
+
+
+@dataclass(frozen=True, slots=True)
 class WU09PreloadPreconditions:
     platform_system: str
     git_clean: bool
@@ -68,6 +80,135 @@ class WU09PreloadPostconditions:
     exact_image_present: bool
     adapter_deployed: bool
     unrelated_runtime_mutation_claimed: bool
+
+
+def _run_read_only(argv: Sequence[str], *, cwd: Path | None = None) -> ReadOnlyCommandResult:
+    completed = subprocess.run(
+        list(argv), cwd=cwd, shell=False, check=False, capture_output=True,
+        text=True, timeout=10,
+    )
+    return ReadOnlyCommandResult(completed.returncode, completed.stdout)
+
+
+def _host_port_available() -> bool:
+    probe = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        probe.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 0)
+        probe.bind(("127.0.0.1", HOST_PORT))
+        return True
+    except OSError:
+        return False
+    finally:
+        probe.close()
+
+
+class WU09ProductionReadOnlyObservation:
+    """Collect only the fixed WU09 facts using bounded, read-only probes."""
+
+    __slots__ = ("_repository_root", "_runner", "_platform_system", "_port_available")
+
+    def __init__(
+        self,
+        repository_root: Path,
+        *,
+        _runner: ReadOnlyProcessRunner = _run_read_only,
+        _platform_system: Callable[[], str] = platform.system,
+        _port_available: Callable[[], bool] = _host_port_available,
+    ) -> None:
+        root = Path(repository_root)
+        if not root.is_absolute() or ".." in root.parts:
+            raise ValueError("repository_root must be absolute without traversal")
+        self._repository_root = root.resolve()
+        self._runner = _runner
+        self._platform_system = _platform_system
+        self._port_available = _port_available
+
+    def _output(self, argv: tuple[str, ...], *, cwd: Path | None = None) -> str:
+        result = self._runner(argv, cwd=cwd)
+        if type(result) is not ReadOnlyCommandResult or result.returncode != 0:
+            raise RuntimeError("WU09 read-only observation failed")
+        if not isinstance(result.stdout, str) or len(result.stdout) > 1_000_000:
+            raise RuntimeError("WU09 read-only observation output is invalid")
+        return result.stdout
+
+    @staticmethod
+    def _json_rows(value: str) -> list[dict[str, object]]:
+        stripped = value.strip()
+        if not stripped:
+            return []
+        try:
+            parsed = json.loads(stripped)
+        except json.JSONDecodeError as exc:
+            raise RuntimeError("WU09 observation JSON is malformed") from exc
+        rows = parsed if isinstance(parsed, list) else [parsed]
+        if len(rows) > 128 or any(type(row) is not dict for row in rows):
+            raise RuntimeError("WU09 observation JSON is ambiguous")
+        return rows
+
+    def _runtime(self) -> tuple[bool, bool, bool, bool, bool, bool]:
+        context = self._json_rows(self._output(("docker", "context", "inspect", DOCKER_CONTEXT)))
+        if len(context) != 1 or context[0].get("Name") != DOCKER_CONTEXT:
+            raise RuntimeError("fixed Docker context is not exact")
+        images = tuple(filter(None, self._output((
+            "docker", "--context", DOCKER_CONTEXT, "image", "ls", "--quiet",
+            "--no-trunc", EXACT_IMAGE,
+        )).splitlines()))
+        if len(images) > 1 or any(not item.startswith("sha256:") for item in images):
+            raise RuntimeError("exact image observation is ambiguous")
+        containers = self._json_rows(self._output((
+            "docker", "--context", DOCKER_CONTEXT, "container", "ls", "--all",
+            "--filter", f"name=^/{SERVICE}$", "--format", "json",
+        )))
+        if len(containers) > 1:
+            raise RuntimeError("adapter container observation is ambiguous")
+        networks = self._json_rows(self._output((
+            "docker", "--context", DOCKER_CONTEXT, "network", "inspect", NETWORK,
+        )))
+        if len(networks) != 1 or networks[0].get("Name") != NETWORK:
+            raise RuntimeError("required network observation is ambiguous")
+        internal = networks[0].get("Internal")
+        if type(internal) is not bool:
+            raise RuntimeError("required network internal state is malformed")
+        databases = self._json_rows(self._output((
+            "docker", "--context", DOCKER_CONTEXT, "container", "inspect", DATABASE_CONTAINER,
+        )))
+        if len(databases) != 1:
+            raise RuntimeError("database container observation is ambiguous")
+        database = databases[0]
+        state, settings = database.get("State"), database.get("NetworkSettings")
+        if type(state) is not dict or type(settings) is not dict:
+            raise RuntimeError("database container observation is malformed")
+        running = state.get("Running")
+        attached = settings.get("Networks")
+        if type(running) is not bool or type(attached) is not dict:
+            raise RuntimeError("database runtime state is malformed")
+        return True, bool(images), bool(containers), internal, running, NETWORK in attached
+
+    def observe_preload_preconditions(self) -> WU09PreloadPreconditions:
+        clean = self._output(("git", "status", "--porcelain=v1"), cwd=self._repository_root)
+        alignment = self._output(
+            ("git", "rev-list", "--left-right", "--count", "HEAD...@{upstream}"),
+            cwd=self._repository_root,
+        )
+        reachable, image, adapter, internal, database, attached = self._runtime()
+        port_free = self._port_available()
+        if type(port_free) is not bool:
+            raise RuntimeError("host-port observation is malformed")
+        return WU09PreloadPreconditions(
+            self._platform_system(), clean == "", alignment.strip() == "0\t0",
+            DOCKER_CONTEXT, reachable, image, adapter, port_free, True, internal,
+            database, attached, adapter,
+        )
+
+    def observe_preload_postconditions(self) -> WU09PreloadPostconditions:
+        _, image, adapter, internal, database, attached = self._runtime()
+        port_free = self._port_available()
+        if type(port_free) is not bool:
+            raise RuntimeError("host-port observation is malformed")
+        unrelated = adapter or not internal or not database or not attached or not port_free
+        return WU09PreloadPostconditions(
+            DOCKER_CONTEXT, EXACT_IMAGE, image, adapter, unrelated
+        )
 
 
 def _digest(value: object) -> str:
@@ -120,6 +261,52 @@ def build_precondition_snapshot(
         tuple(PreconditionBinding(name, str(value).upper()) for name, value in payload.items()),
         "SEC-02", digest,
     )
+
+
+def validate_expected_precondition_snapshot(
+    request: GovernanceAuthorizationRequest,
+    snapshot: GovernancePreconditionSnapshot,
+) -> None:
+    """Admit the complete frozen WU09 snapshot; its digest field is not trusted alone."""
+    if type(snapshot) is not GovernancePreconditionSnapshot:
+        raise TypeError("expected snapshot must be exactly GovernancePreconditionSnapshot")
+    payload = {
+        "platform_system": "Darwin",
+        "git_clean": True,
+        "upstream_aligned": True,
+        "docker_context": DOCKER_CONTEXT,
+        "docker_context_reachable": True,
+        "exact_image_present": False,
+        "adapter_container_present": False,
+        "host_port_free": True,
+        "network_exists": True,
+        "network_internal": True,
+        "database_container_running": True,
+        "database_attached_to_network": True,
+        "wu09_deployment_active": False,
+    }
+    digest = _digest(payload)
+    mac = GovernanceIdentity("MAC_MINI_M4", "CONTROL_PLANE")
+    expected = (
+        snapshot.schema_version == "1.0",
+        snapshot.snapshot_id == "wu09-preload-" + digest.removeprefix("sha256:")[:16],
+        snapshot.lifecycle_id == request.lifecycle_id,
+        snapshot.request_id == request.request_id,
+        snapshot.collector_identities == (mac,),
+        snapshot.target_identity == mac,
+        snapshot.git_state_binding == PreconditionBinding("git_clean_upstream_aligned", "TRUE"),
+        snapshot.runtime_identity_binding == PreconditionBinding("docker_context", DOCKER_CONTEXT),
+        snapshot.security_state_bindings == (PreconditionBinding("control_plane", "DARWIN_MAC_ONLY"),),
+        snapshot.manifest_bindings == (PreconditionBinding("exact_preload_plan", wu09_preload_plan_digest()),),
+        snapshot.operational_state_bindings == tuple(sorted(
+            (PreconditionBinding(name, str(value).upper()) for name, value in payload.items()),
+            key=lambda item: item.name,
+        )),
+        snapshot.policy_version == "SEC-02",
+        snapshot.snapshot_digest == digest,
+    )
+    if not all(expected):
+        raise ValueError("expected WU09 precondition snapshot is not exact and complete")
 
 
 class WU09PreloadPreconditionObserver:
@@ -260,5 +447,6 @@ __all__ = (
     "PROJECT", "SERVICE", "TARGET_DATABASE_ENDPOINT", "WU09ExactImagePreloadExecution",
     "WU09PreloadPostconditionValidator", "WU09PreloadPostconditions",
     "WU09PreloadPreconditionObserver", "WU09PreloadPreconditions",
-    "build_precondition_snapshot",
+    "WU09ProductionReadOnlyObservation", "ReadOnlyCommandResult",
+    "build_precondition_snapshot", "validate_expected_precondition_snapshot",
 )
