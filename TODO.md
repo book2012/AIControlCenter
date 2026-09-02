@@ -1,5 +1,33 @@
 # TODO
 
+## WU09 trusted Production authorization intake freeze
+
+- [x] Freeze validation-only exact WU09 Production preload intake over generic
+  SEC-02 trusted envelope verification.
+- [x] Preserve separate consumption and future `ALLOW_SINGLE_INVOCATION`; grant
+  no execution, retry, rollback, or Ubuntu authority.
+- [x] Record implementation `b56b960b5dc0b329df2a28a1ccd747eb2b56b704`,
+  focused `98 passed in 0.15s`, and durable canonical evidence
+  `/private/tmp/aicontrolcenter-canonical-evidence.xQ73HP`, invocation
+  `5c676295647b4164bd4462ea74c589d8`: `STATE=COMPLETED_PASS`, capture and pytest
+  exit status `0`, `validated_pass=true`, and
+  `CANONICAL_PYTEST_SUMMARY="4516 passed, 5 deselected, 719 warnings, 2 subtests passed in 468.03s (0:07:48)"`.
+- [x] Record final architecture/security/source-integrity, authority-boundary,
+  trusted-facts replay-risk, and diff review `PASS`; generic SEC-02
+  `HUMAN_AUTHORITY` enforcement remains repository-authoritative.
+- [x] Confirm validation-only scope: no authorization consumption,
+  `ControlledExecutionPort` invocation, retry/rollback authority, Ubuntu
+  authority, Docker/Colima access, Production mutation, secret handling, trust
+  bootstrap, or Shopping runtime activation. The Mac mini M4 remains the sole
+  Control Plane; AIControlCenter retains governance and deployment-control
+  ownership; Ubuntu remains a stateless worker with zero Production
+  authorization or Shopping business-logic authority.
+- [x] Do not rerun canonical for documentation-only changes; track the existing
+  pytest permission-cleanup warning family as separate non-blocking technical
+  debt.
+- [ ] Next existing work:
+  `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY`.
+
 ## SHOP-AI-01A closeout and next bound
 
 - [x] Close `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` at verified

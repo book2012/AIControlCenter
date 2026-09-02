@@ -619,10 +619,31 @@ only: `WU09_PRELOAD_EXECUTED=false`, `WU09_DEPLOYED=false`,
 `TRUSTED_SEC02_PRODUCTION_HUMAN_ISSUER_EXISTS=false`,
 `TRUSTED_AUTHORIZATION_ARTIFACT_BOUNDARY_REQUIRED=true`, and
 `PRODUCTION_COMPOSITION_READY=false`. The pinned image is not claimed to be
-present in Production. The next architecture milestone is
-`WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE`; the next Production
-readiness milestone is
+present in Production. `WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE`
+is complete as a validation-only exact-binding layer over generic SEC-02
+trusted intake. It does not consume authorization or grant execution, retry,
+rollback, or Ubuntu authority. The next existing work is
 `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY`.
+
+Implementation commit `b56b960b5dc0b329df2a28a1ccd747eb2b56b704`
+passed focused validation with `98 passed in 0.15s`. Durable canonical evidence
+is `/private/tmp/aicontrolcenter-canonical-evidence.xQ73HP`, invocation
+`5c676295647b4164bd4462ea74c589d8`: `STATE=COMPLETED_PASS`, capture and pytest
+exit status `0`, `validated_pass=true`, and
+`CANONICAL_PYTEST_SUMMARY="4516 passed, 5 deselected, 719 warnings, 2 subtests passed in 468.03s (0:07:48)"`.
+Final architecture,
+security, source-integrity, authority-boundary, trusted-facts replay-risk, and
+diff review passed. Generic SEC-02 `HUMAN_AUTHORITY` enforcement is
+repository-authoritative. No authorization consumption,
+`ControlledExecutionPort` invocation, retry or rollback authority, Docker or
+Colima access, Production mutation, secret handling, trust bootstrap, or
+Shopping runtime activation occurred. The Mac mini M4 remains the sole Control
+Plane; AIControlCenter owns governance, policy, authorization, orchestration,
+audit, and deployment control; Ubuntu remains a stateless infrastructure worker
+with zero Production authorization or Shopping business-logic authority.
+Canonical was not rerun after these documentation-only changes. The existing
+pytest permission-cleanup warning family remains separate non-blocking
+technical debt.
 
 ## Current authoritative — Macro-WU09 governed pinned-image preload implementation
 

@@ -1,5 +1,29 @@
 # CHANGELOG
 
+## 2026-09-02 — WU09 trusted Production authorization intake freeze
+
+- Completed `WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE` with an
+  immutable validation-only wrapper over generic SEC-02 trusted intake.
+- Closed acceptance to the exact Production preload action, target, plan/image
+  identity, scope, pristine single mutation, human requester/approver, and
+  Mac-local operator; focused validation passed with `98 passed`.
+- Added no trust bootstrap, consumption, invocation, retry, rollback, Ubuntu
+  authority, Production access, Docker access, or secret handling. Next:
+  `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY`.
+- Recorded implementation `b56b960b5dc0b329df2a28a1ccd747eb2b56b704`
+  and focused `98 passed in 0.15s`. Durable canonical evidence at
+  `/private/tmp/aicontrolcenter-canonical-evidence.xQ73HP`, invocation
+  `5c676295647b4164bd4462ea74c589d8`, records `STATE=COMPLETED_PASS`, capture
+  and pytest exit status `0`, `validated_pass=true`, and
+  `CANONICAL_PYTEST_SUMMARY="4516 passed, 5 deselected, 719 warnings, 2 subtests passed in 468.03s (0:07:48)"`.
+- Final architecture/security/source-integrity, authority-boundary,
+  trusted-facts replay-risk, and diff review passed. Generic SEC-02
+  `HUMAN_AUTHORITY` enforcement remains repository-authoritative. No
+  `ControlledExecutionPort` invocation, Colima access, Production mutation, or
+  Shopping runtime activation occurred. Canonical was not rerun after the
+  documentation-only changes; the existing pytest permission-cleanup warning
+  family remains separate non-blocking technical debt.
+
 ## 2026-09-02 — C5A operator metadata validation entrypoint validated
 
 - Recorded commit `8a0836f`, connecting the operator to the real C5A issuer and

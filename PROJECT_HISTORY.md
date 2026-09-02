@@ -1,5 +1,32 @@
 # Project History
 
+## 2026-09-02 — WU09 trusted Production authorization intake frozen
+
+`WU09_TRUSTED_PRODUCTION_AUTHORIZATION_INTAKE_FREEZE=COMPLETE`. The WU09
+validation-only intake delegates trust to generic SEC-02, then enforces the
+exact Production preload action, target, plan/image identity, scope, pristine
+single mutation, human roles, and Mac-local operator. Its immutable result has
+no consumption or execution methods and grants no retry, rollback, or Ubuntu
+authority. Focused validation passed with `98 passed`; no Production, Docker,
+secret, bootstrap, or authorization-consumption action occurred. Next existing
+work is `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY`.
+
+Implementation commit `b56b960b5dc0b329df2a28a1ccd747eb2b56b704`
+passed focused validation with `98 passed in 0.15s`. Durable canonical evidence
+at `/private/tmp/aicontrolcenter-canonical-evidence.xQ73HP`, invocation
+`5c676295647b4164bd4462ea74c589d8`, recorded `STATE=COMPLETED_PASS`, capture
+and pytest exit status `0`, `validated_pass=true`, and
+`CANONICAL_PYTEST_SUMMARY="4516 passed, 5 deselected, 719 warnings, 2 subtests passed in 468.03s (0:07:48)"`. Final
+architecture/security/source-integrity, authority-boundary, trusted-facts
+replay-risk, and diff review passed. Generic SEC-02 `HUMAN_AUTHORITY`
+enforcement is repository-authoritative. There was no `ControlledExecutionPort`
+invocation, Colima access, Production mutation, or Shopping runtime activation;
+the Mac mini M4 remained the sole Control Plane and Ubuntu remained a stateless
+worker with zero Production authorization or Shopping business-logic authority.
+Canonical was not rerun after these documentation-only changes. The existing
+pytest permission-cleanup warning family remains separate non-blocking
+technical debt.
+
 ## 2026-09-02 — C5A operator metadata validation entrypoint validated
 
 Commit `8a0836f` connected the operator to the real C5A issuer and established
