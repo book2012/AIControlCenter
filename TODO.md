@@ -1,5 +1,26 @@
 # TODO
 
+## Active — SHOP-SERVICE-START-01A
+
+- [ ] Architecture: inventory the Mac-owned Shopping service-start topology and
+  dependencies under the existing `CONTROLLED_NON_PRODUCTION` classification.
+- [ ] Observation: specify credential-blind, read-only, fail-closed local state
+  observations without running Docker, Colima, MariaDB, WordPress, or
+  WooCommerce.
+- [ ] Validation: prove the boundary cannot mutate runtime state, access
+  Production, consume authorization, or delegate authority to Ubuntu.
+- [ ] Keep service-start mutation outside this work item and subject it to a
+  later, separate governance decision.
+
+`WU09_PRODUCTION_PATH=BLOCKED`
+`PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
+`APPLE_SIGNING_STREAM=DEFERRED`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`MARIADB_CONTINUITY_STATE=UNRESOLVED`
+`SERVICE_START_PLANNING=ACTIVE`
+`EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+
 ## WU09 Production composition ready
 
 - [x] Complete `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY` with an

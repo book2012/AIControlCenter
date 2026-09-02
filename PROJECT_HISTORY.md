@@ -1,5 +1,28 @@
 # Project History
 
+## 2026-09-03 — Post-WU09 Shopping service-start re-baseline
+
+The documentation established `SHOP-SERVICE-START-01A` as the authoritative
+next work item. It reuses `CONTROLLED_NON_PRODUCTION` for Mac-local, read-only
+discovery and orders work as architecture -> observation -> validation. No
+service or runtime was started, and no mutation authority was created.
+
+The Production WU09 and `SHOP-CMS-01B` paths remain blocked/deferred. Trusted
+issuer and trust-root operation, fresh human authorization, and observed
+Production preconditions remain unavailable; SEC-02 was not weakened or
+bypassed. Apple external signing/distribution remains deferred. Shopping
+runtime activation is not achieved, MariaDB continuity is unresolved, and no
+Notion synchronization is claimed.
+
+`WU09_PRODUCTION_PATH=BLOCKED`
+`PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
+`APPLE_SIGNING_STREAM=DEFERRED`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`MARIADB_CONTINUITY_STATE=UNRESOLVED`
+`SERVICE_START_PLANNING=ACTIVE`
+`EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+
 ## 2026-09-02 — WU09 Production composition prepared
 
 `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. The

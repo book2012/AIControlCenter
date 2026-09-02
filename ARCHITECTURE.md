@@ -1,5 +1,36 @@
 # AI Home Datacenter Architecture
 
+## Current authoritative boundary — Shopping service-start read-only discovery
+
+`SHOP-SERVICE-START-01A` is the authoritative next work item. It reuses the
+existing `CONTROLLED_NON_PRODUCTION` environment classification as a Mac-only,
+local service-start planning boundary; it does not reuse or reinterpret the
+Production-targeting `SHOP-CMS-01B` or WU09 boundaries. The work sequence is
+strictly architecture -> observation -> validation. It authorizes no Docker,
+Colima, MariaDB, WordPress, WooCommerce, service, network, filesystem,
+credential, or Production mutation.
+
+The Mac mini M4 and AIControlCenter remain the sole Control Plane. Ubuntu
+remains a stateless infrastructure worker with no AI workload, Shopping
+business logic, application state, or authority. SEC-02 remains unchanged;
+local or controlled-non-Production classification is never Production
+authorization. Any later service start is a distinct mutation boundary and
+requires separate governance for its exact target and environment.
+
+The Production WU09 path is blocked because the trusted issuer and trust root
+are not operational, fresh human authorization is unavailable, and Production
+preconditions have not been observed. Apple Developer ID Application signing,
+notarization, and external-distribution `SMAppService` work are deferred.
+
+`WU09_PRODUCTION_PATH=BLOCKED`
+`PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
+`APPLE_SIGNING_STREAM=DEFERRED`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`MARIADB_CONTINUITY_STATE=UNRESOLVED`
+`SERVICE_START_PLANNING=ACTIVE`
+`EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+
 ## Current authoritative boundary — WU09 Production composition ready
 
 `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. The inert

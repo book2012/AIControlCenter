@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-09-03 — Shopping service-start architecture re-baseline
+
+- Established `SHOP-SERVICE-START-01A` as the authoritative next work item: a
+  read-only architecture -> observation -> validation discovery boundary.
+- Reused `CONTROLLED_NON_PRODUCTION` for Mac-local planning while granting no
+  service-start or Production authority.
+- Kept WU09 and `SHOP-CMS-01B` blocked/deferred as Production paths, preserved
+  SEC-02 without bypass, and deferred Apple signing and distribution.
+- Performed no runtime operation, Production access, authorization consumption,
+  secret read, or Ubuntu action. No Notion synchronization is claimed.
+
+`WU09_PRODUCTION_PATH=BLOCKED`
+`PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
+`APPLE_SIGNING_STREAM=DEFERRED`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`MARIADB_CONTINUITY_STATE=UNRESOLVED`
+`SERVICE_START_PLANNING=ACTIVE`
+`EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+
 ## 2026-09-02 — WU09 Production composition ready
 
 - Completed `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY` with an

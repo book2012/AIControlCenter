@@ -1,5 +1,28 @@
 # MASTER
 
+## Current authoritative status — post-WU09 service-start re-baseline
+
+The next repository work is `SHOP-SERVICE-START-01A`, a documentation-led,
+read-only discovery boundary that reuses the existing
+`CONTROLLED_NON_PRODUCTION` classification on the Mac Control Plane. Its order
+is architecture -> observation -> validation. No runtime start or other
+mutation is authorized; any later mutation requires a separate governed work
+item for the exact non-Production target.
+
+`SHOP-CMS-01B` and `WU09_PINNED_IMAGE_PRELOADED` remain Production-targeting
+work and are blocked/deferred, not repurposed. SEC-02 remains mandatory for
+Production. Apple signing, notarization, and external-distribution
+`SMAppService` work are deferred. Ubuntu remains stateless.
+
+`WU09_PRODUCTION_PATH=BLOCKED`
+`PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
+`APPLE_SIGNING_STREAM=DEFERRED`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`MARIADB_CONTINUITY_STATE=UNRESOLVED`
+`SERVICE_START_PLANNING=ACTIVE`
+`EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+
 ## Current authoritative status — WU09 Production composition ready
 
 `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. Repository

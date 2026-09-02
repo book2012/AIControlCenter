@@ -1,5 +1,32 @@
 # Roadmap
 
+## ACTIVE — SHOP-SERVICE-START-01A read-only discovery
+
+`SHOP-SERVICE-START-01A` is the authoritative next work boundary. Reuse the
+existing `CONTROLLED_NON_PRODUCTION` classification for Mac-local planning,
+without treating that classification as runtime or Production authority.
+
+- [ ] Reconcile the Shopping service topology, desired state, persistence, and
+  dependency contracts through repository-only architecture review.
+- [ ] Define bounded, read-only observations for absent, stopped, unhealthy,
+  conflicting, and already-running local components.
+- [ ] Validate that observations are credential-blind, mutation-free,
+  Mac-owned, Ubuntu-independent, and fail closed.
+- [ ] Establish any later mutation boundary only as a separate governed work
+  item after read-only evidence is reviewed.
+
+`SHOP-CMS-01B` and `WU09_PINNED_IMAGE_PRELOADED` remain blocked/deferred
+Production paths. Apple external signing/distribution is deferred.
+
+`WU09_PRODUCTION_PATH=BLOCKED`
+`PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
+`APPLE_SIGNING_STREAM=DEFERRED`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`MARIADB_CONTINUITY_STATE=UNRESOLVED`
+`SERVICE_START_PLANNING=ACTIVE`
+`EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+
 ## Current authoritative — WU09 Production composition ready
 
 - [x] `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY` — assemble the

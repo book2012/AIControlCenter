@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## Current work boundary
+
+`SHOP-SERVICE-START-01A` is active as read-only Shopping service-start
+discovery. It reuses the repository's `CONTROLLED_NON_PRODUCTION`
+classification on the Mac mini M4 Control Plane and proceeds architecture ->
+observation -> validation. It does not start services or authorize mutation.
+
+The Production WU09 and `SHOP-CMS-01B` paths remain blocked/deferred and are not
+redefined as local work. SEC-02 is unchanged and Production authority cannot be
+bypassed. Apple signing, notarization, and external-distribution
+`SMAppService` work are deferred. Ubuntu remains stateless.
+
+`WU09_PRODUCTION_PATH=BLOCKED`
+`PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
+`APPLE_SIGNING_STREAM=DEFERRED`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`MARIADB_CONTINUITY_STATE=UNRESOLVED`
+`SERVICE_START_PLANNING=ACTIVE`
+`EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+
 ## Current authoritative — WU09 Production composition ready
 
 `WU09_PINNED_IMAGE_PRELOAD_PRODUCTION_COMPOSITION_READY=COMPLETE`. The Mac-only
