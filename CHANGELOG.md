@@ -1,15 +1,21 @@
 # CHANGELOG
 
-## 2026-09-03 — Shopping service-start architecture re-baseline
+## 2026-09-03 — Shopping service-start observer contracts
 
-- Established `SHOP-SERVICE-START-01A` as the authoritative next work item: a
-  read-only architecture -> observation -> validation discovery boundary.
-- Reused `CONTROLLED_NON_PRODUCTION` for Mac-local planning while granting no
-  service-start or Production authority.
-- Kept WU09 and `SHOP-CMS-01B` blocked/deferred as Production paths, preserved
-  SEC-02 without bypass, and deferred Apple signing and distribution.
-- Performed no runtime operation, Production access, authorization consumption,
-  secret read, or Ubuntu action. No Notion synchronization is claimed.
+- Completed the observer-contract implementation at
+  `24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
+  observation contracts`): six states (`ABSENT`, `STOPPED`, `RUNNING`,
+  `UNHEALTHY`, `CONFLICTING`, `UNKNOWN`), repository-only desired-state facts,
+  aggregation policy, and deterministic JSON projection.
+- Recorded focused `19 passed, 8 cleanup warnings in 0.46s` and durable
+  canonical evidence at `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`,
+  invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`: `STATE=COMPLETED_PASS`,
+  `validated_pass=true`, and `4552 passed, 5 deselected, 451 warnings, 2
+  subtests passed in 466.06s (0:07:46)`. Canonical was not rerun.
+- Added no live adapter and performed no live observation, Production access,
+  runtime mutation, authorization consumption, activation, or Ubuntu action.
+  Mac remains the sole Control Plane; Ubuntu remains stateless. Next is
+  read-only local observation preparation within the existing work item.
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

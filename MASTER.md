@@ -1,18 +1,21 @@
 # MASTER
 
-## Current authoritative status — post-WU09 service-start re-baseline
+## Current authoritative status — service-start observer contracts complete
 
-The next repository work is `SHOP-SERVICE-START-01A`, a documentation-led,
-read-only discovery boundary that reuses the existing
-`CONTROLLED_NON_PRODUCTION` classification on the Mac Control Plane. Its order
-is architecture -> observation -> validation. No runtime start or other
-mutation is authorized; any later mutation requires a separate governed work
-item for the exact non-Production target.
+`SHOP-SERVICE-START-01A` observer contracts are complete at
+`24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
+observation contracts`). The six-state model is `ABSENT`, `STOPPED`, `RUNNING`,
+`UNHEALTHY`, `CONFLICTING`, and `UNKNOWN`. Repository-only desired-state facts,
+aggregation, and deterministic JSON projection are implemented. A live adapter
+and live Mac observation are not.
 
-`SHOP-CMS-01B` and `WU09_PINNED_IMAGE_PRELOADED` remain Production-targeting
-work and are blocked/deferred, not repurposed. SEC-02 remains mandatory for
-Production. Apple signing, notarization, and external-distribution
-`SMAppService` work are deferred. Ubuntu remains stateless.
+Focused validation is `19 passed, 8 cleanup warnings in 0.46s`. Canonical
+evidence `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`, invocation
+`eee44feb2d1d49b09e8fac2e2ae6c0be`, records `STATE=COMPLETED_PASS`,
+`validated_pass=true`, and `4552 passed, 5 deselected, 451 warnings, 2 subtests
+passed in 466.06s (0:07:46)`. No Production/runtime mutation or activation
+occurred. Mac remains the sole Control Plane and Ubuntu remains stateless. The
+next safe step is read-only local observation preparation, not service start.
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

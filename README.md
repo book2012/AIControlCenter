@@ -2,15 +2,20 @@
 
 ## Current work boundary
 
-`SHOP-SERVICE-START-01A` is active as read-only Shopping service-start
-discovery. It reuses the repository's `CONTROLLED_NON_PRODUCTION`
-classification on the Mac mini M4 Control Plane and proceeds architecture ->
-observation -> validation. It does not start services or authorize mutation.
+`SHOP-SERVICE-START-01A` observer contracts are complete at commit
+`24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
+observation contracts`). They define `ABSENT`, `STOPPED`, `RUNNING`,
+`UNHEALTHY`, `CONFLICTING`, and `UNKNOWN`, repository-only desired-state facts,
+aggregation policy, and deterministic JSON projection.
 
-The Production WU09 and `SHOP-CMS-01B` paths remain blocked/deferred and are not
-redefined as local work. SEC-02 is unchanged and Production authority cannot be
-bypassed. Apple signing, notarization, and external-distribution
-`SMAppService` work are deferred. Ubuntu remains stateless.
+Focused validation is `19 passed, 8 cleanup warnings in 0.46s`. Durable
+canonical evidence at `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`,
+invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`, records
+`STATE=COMPLETED_PASS`, `validated_pass=true`, and `4552 passed, 5 deselected,
+451 warnings, 2 subtests passed in 466.06s (0:07:46)`. There is no live adapter
+and no live observation or Production/runtime mutation; Shopping was not
+activated. Mac remains the sole Control Plane and Ubuntu remains stateless.
+Next is read-only local observation preparation within this discovery boundary.
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

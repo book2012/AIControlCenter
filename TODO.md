@@ -1,16 +1,26 @@
 # TODO
 
-## Active — SHOP-SERVICE-START-01A
+## Active — SHOP-SERVICE-START-01A read-only observation preparation
 
-- [ ] Architecture: inventory the Mac-owned Shopping service-start topology and
-  dependencies under the existing `CONTROLLED_NON_PRODUCTION` classification.
-- [ ] Observation: specify credential-blind, read-only, fail-closed local state
-  observations without running Docker, Colima, MariaDB, WordPress, or
-  WooCommerce.
-- [ ] Validation: prove the boundary cannot mutate runtime state, access
-  Production, consume authorization, or delegate authority to Ubuntu.
+- [x] Complete observer contracts at
+  `24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
+  observation contracts`).
+- [x] Define `ABSENT`, `STOPPED`, `RUNNING`, `UNHEALTHY`, `CONFLICTING`, and
+  `UNKNOWN`, repository-only desired-state facts, aggregation policy, and
+  deterministic JSON projection.
+- [x] Record focused `19 passed, 8 cleanup warnings in 0.46s` and durable
+  canonical evidence `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`,
+  invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`, `STATE=COMPLETED_PASS`,
+  `validated_pass=true`, `4552 passed, 5 deselected, 451 warnings, 2 subtests
+  passed in 466.06s (0:07:46)`.
+- [ ] Prepare a read-only local observation adapter and later perform bounded
+  actual Mac observation; no live adapter or live observation exists yet.
 - [ ] Keep service-start mutation outside this work item and subject it to a
   later, separate governance decision.
+
+No Production/runtime mutation or activation occurred. The Mac mini M4 remains
+the sole Control Plane; Ubuntu remains stateless and owns no Shopping logic or
+application state.
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

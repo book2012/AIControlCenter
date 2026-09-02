@@ -1,19 +1,26 @@
 # Roadmap
 
-## ACTIVE — SHOP-SERVICE-START-01A read-only discovery
+## ACTIVE — SHOP-SERVICE-START-01A read-only observation preparation
 
-`SHOP-SERVICE-START-01A` is the authoritative next work boundary. Reuse the
-existing `CONTROLLED_NON_PRODUCTION` classification for Mac-local planning,
-without treating that classification as runtime or Production authority.
+Observer-contract implementation is complete at
+`24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
+observation contracts`).
 
-- [ ] Reconcile the Shopping service topology, desired state, persistence, and
-  dependency contracts through repository-only architecture review.
-- [ ] Define bounded, read-only observations for absent, stopped, unhealthy,
-  conflicting, and already-running local components.
-- [ ] Validate that observations are credential-blind, mutation-free,
-  Mac-owned, Ubuntu-independent, and fail closed.
+- [x] Define `ABSENT`, `STOPPED`, `RUNNING`, `UNHEALTHY`, `CONFLICTING`, and
+  `UNKNOWN`, with repository-only desired-state facts, aggregation policy, and
+  deterministic JSON projection.
+- [x] Record focused `19 passed, 8 cleanup warnings in 0.46s` and canonical
+  `4552 passed, 5 deselected, 451 warnings, 2 subtests passed in 466.06s
+  (0:07:46)` at `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`,
+  invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`, `STATE=COMPLETED_PASS`,
+  `validated_pass=true`.
+- [ ] Prepare the read-only local observation adapter, then perform separately
+  bounded actual Mac observation. Neither has occurred.
 - [ ] Establish any later mutation boundary only as a separate governed work
   item after read-only evidence is reviewed.
+
+No Production/runtime mutation or activation occurred. Mac remains the sole
+Control Plane and Ubuntu remains a stateless infrastructure worker.
 
 `SHOP-CMS-01B` and `WU09_PINNED_IMAGE_PRELOADED` remain blocked/deferred
 Production paths. Apple external signing/distribution is deferred.

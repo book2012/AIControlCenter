@@ -1,14 +1,14 @@
 # AI Home Datacenter Architecture
 
-## Current authoritative boundary — Shopping service-start read-only discovery
+## Current authoritative boundary — Shopping service-start observer contracts
 
-`SHOP-SERVICE-START-01A` is the authoritative next work item. It reuses the
-existing `CONTROLLED_NON_PRODUCTION` environment classification as a Mac-only,
-local service-start planning boundary; it does not reuse or reinterpret the
-Production-targeting `SHOP-CMS-01B` or WU09 boundaries. The work sequence is
-strictly architecture -> observation -> validation. It authorizes no Docker,
-Colima, MariaDB, WordPress, WooCommerce, service, network, filesystem,
-credential, or Production mutation.
+`SHOP-SERVICE-START-01A` observer-contract implementation is complete at commit
+`24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
+observation contracts`). It defines `ABSENT`, `STOPPED`, `RUNNING`, `UNHEALTHY`,
+`CONFLICTING`, and `UNKNOWN`; a repository-only desired-state fact adapter;
+aggregation policy; and deterministic JSON projection. No live adapter exists
+and no live Mac observation was performed, so current runtime state is not
+established.
 
 The Mac mini M4 and AIControlCenter remain the sole Control Plane. Ubuntu
 remains a stateless infrastructure worker with no AI workload, Shopping
@@ -17,10 +17,16 @@ local or controlled-non-Production classification is never Production
 authorization. Any later service start is a distinct mutation boundary and
 requires separate governance for its exact target and environment.
 
-The Production WU09 path is blocked because the trusted issuer and trust root
-are not operational, fresh human authorization is unavailable, and Production
-preconditions have not been observed. Apple Developer ID Application signing,
-notarization, and external-distribution `SMAppService` work are deferred.
+Focused validation recorded `19 passed, 8 cleanup warnings in 0.46s`. Durable
+canonical evidence at
+`/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`, invocation
+`eee44feb2d1d49b09e8fac2e2ae6c0be`, records `STATE=COMPLETED_PASS`,
+`validated_pass=true`, and `4552 passed, 5 deselected, 451 warnings, 2 subtests
+passed in 466.06s (0:07:46)`. Canonical is not rerun for this closeout. No
+Production/runtime mutation or activation occurred. The next safe step within
+the existing read-only discovery boundary is preparation of a read-only local
+observation adapter and later actual Mac observation; neither is implemented
+or performed here.
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

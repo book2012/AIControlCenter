@@ -1,18 +1,22 @@
 # Project History
 
-## 2026-09-03 — Post-WU09 Shopping service-start re-baseline
+## 2026-09-03 — Shopping service-start observer contracts completed
 
-The documentation established `SHOP-SERVICE-START-01A` as the authoritative
-next work item. It reuses `CONTROLLED_NON_PRODUCTION` for Mac-local, read-only
-discovery and orders work as architecture -> observation -> validation. No
-service or runtime was started, and no mutation authority was created.
+Implementation commit `24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add
+shopping service-start observation contracts`) completed the
+`SHOP-SERVICE-START-01A` observer contracts. The implementation supplies the
+six-state model `ABSENT`, `STOPPED`, `RUNNING`, `UNHEALTHY`, `CONFLICTING`, and
+`UNKNOWN`, repository-only desired-state facts, aggregation policy, and a
+deterministic JSON projection.
 
-The Production WU09 and `SHOP-CMS-01B` paths remain blocked/deferred. Trusted
-issuer and trust-root operation, fresh human authorization, and observed
-Production preconditions remain unavailable; SEC-02 was not weakened or
-bypassed. Apple external signing/distribution remains deferred. Shopping
-runtime activation is not achieved, MariaDB continuity is unresolved, and no
-Notion synchronization is claimed.
+Focused validation recorded `19 passed, 8 cleanup warnings in 0.46s`. Durable
+canonical evidence at `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`,
+invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`, recorded
+`STATE=COMPLETED_PASS`, `validated_pass=true`, and `4552 passed, 5 deselected,
+451 warnings, 2 subtests passed in 466.06s (0:07:46)`. No live adapter was
+implemented and no live observation, Production access, runtime mutation, or
+activation occurred. Mac remains the sole Control Plane; Ubuntu remains a
+stateless worker. The next safe step is read-only local observation preparation.
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`
