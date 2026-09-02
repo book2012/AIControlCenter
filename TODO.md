@@ -1914,6 +1914,10 @@ and Notion remains `DEFERRED_UNTIL_FINAL_PHASE`.
 - [x] Preserve C6B as repository-only, Mac-only, read-only, deterministic,
   and non-authorizing readiness metadata. C5A remains mandatory before C5B;
   C4 remains the sole live identity and authoritative Team ID verifier.
+- [x] Record `C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED` for commit
+  `8a0836f`: real C5A issuer, observation-only JSON, and opaque process-local
+  evidence that future C5B must freshly obtain and immediately consume in the
+  same native process.
 - [ ] Live Production signing readiness remains `NOT_READY`; credential
   acquisition/import, signing, notarization, registration, and Production
   mutation require separate future authorization and validation.

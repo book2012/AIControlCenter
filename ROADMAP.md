@@ -1,5 +1,21 @@
 # Roadmap
 
+## COMPLETE — C5A operator metadata validation entrypoint bridge
+
+- [x] Connect the operator to the real C5A issuer and record
+  `C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED` at `8a0836f`.
+- [x] Export only observation JSON; keep opaque C5A evidence non-Codable,
+  non-serialized, non-persisted, process-local, and non-reusable.
+- [x] Require fresh same-process C5A validation for future authorized C5B.
+- [x] Preserve durable C5B success -> read-only C6A -> mandatory read-only C4;
+  C4 remains the sole authoritative Team ID source.
+- [x] Record focused `4 passed`, compatibility `9 passed`, architecture,
+  security, diff, and canonical `PASS` without rerunning canonical.
+
+Operator success grants no C5B authorization, import success, Production
+identity, authoritative Team ID, signing authority, or Production authority.
+Live signing readiness remains `NOT_READY`.
+
 ## COMPLETE — SEC02-FS-MACRO-03B4R2-C6A availability observation foundation
 
 - [x] Establish

@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-09-02 — C5A operator metadata validation entrypoint validated
+
+- Recorded commit `8a0836f`, connecting the operator to the real C5A issuer and
+  establishing `C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED`.
+- Confirmed observation-only JSON and opaque, non-Codable, non-serialized,
+  non-persisted, process-local evidence that cannot be reused as authority.
+- Preserved fresh same-process C5A validation for future authorized C5B. Operator
+  success grants no C5B authorization, import success, Production identity,
+  authoritative Team ID, signing authority, or Production authority.
+- Recorded focused `4 passed`, compatibility `9 passed`, architecture, security,
+  and diff `PASS`, and canonical
+  `4504 passed, 5 deselected, 723 warnings, 2 subtests passed in 464.81s (0:07:44)`
+  without rerunning canonical.
+- Performed no credential-content read, passphrase handling, import, Keychain or
+  Production mutation. Readiness remains `NOT_READY`; the pytest permission
+  cleanup item remains separate non-blocking debt.
+
 ## 2026-09-02 — SEC02-FS-MACRO-03B4R2-C6A availability observation foundation
 
 - Recorded authoritative implementation commit `e9cb294` and milestone

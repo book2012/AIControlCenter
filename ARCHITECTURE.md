@@ -1,5 +1,38 @@
 # AI Home Datacenter Architecture
 
+## C5A operator metadata validation entrypoint validated
+
+Commit `8a0836f` connects the corrected operator to the real issuer,
+`SEC02ProductionSigningCredentialCeremony.validateExplicitPathForFutureImport(...)`,
+and establishes `C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED`. Only
+`validation.observation` is exported as JSON. The resulting
+`SEC02ValidatedCredentialInputEvidence` is opaque, non-Encodable, non-Codable,
+non-serialized, non-persisted, process-local, and non-reusable as Production
+authority. Credential contents are not read; no passphrase handling, import,
+Keychain mutation, or Production mutation occurs.
+
+Operator metadata validation success is not reusable C5A evidence, C5B
+authorization, credential import success, a Production signing identity, an
+authoritative Team ID, signing authority, or Production authority. A future live
+C5B ceremony must perform fresh C5A validation in the same native process and
+immediately pass the opaque evidence into C5B. The sequence is: external
+Developer ID Application credential -> optional standalone C5A metadata
+readiness observation -> separately authorized C5B native ceremony -> fresh
+same-process C5A validation -> opaque evidence directly into C5B -> durable
+successful C5B terminal state -> C6A -> mandatory read-only C4 verification.
+C5B continues to require validated C5A evidence, C6A remains read-only, and C4
+remains the sole live verifier and authoritative Team ID source.
+
+Focused tests: `4 passed, 268 warnings in 50.19s`; compatibility:
+`9 passed, 268 warnings in 34.69s`; architecture, security, and diff reviews:
+`PASS`.
+Canonical invocation `a0aa6bdb2e3e48f785cfa9113fd7e332` completed with exit
+status zero and
+`4504 passed, 5 deselected, 723 warnings, 2 subtests passed in 464.81s (0:07:44)`
+at `/private/tmp/aicontrolcenter-canonical-evidence.7CLpHq`;
+it is not rerun for this closeout. Live signing readiness remains `NOT_READY`.
+`TEST-INFRA-PYTEST-PERMISSION-CLEANUP` remains separate non-blocking debt.
+
 ## SEC02-FS-MACRO-03B4R2-C6A availability observation foundation validated
 
 Authoritative implementation commit `e9cb294` (`feat: add production signing

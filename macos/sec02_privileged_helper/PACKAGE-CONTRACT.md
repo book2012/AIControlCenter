@@ -1,5 +1,30 @@
 # SEC-02 Privileged Helper Package Contract
 
+## R2-C5A operator metadata validation entrypoint bridge
+
+Commit `8a0836f` establishes
+`C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED`. The operator calls
+`SEC02ProductionSigningCredentialCeremony.validateExplicitPathForFutureImport(...)`
+as the real issuer and exports only `validation.observation` as JSON.
+`SEC02ValidatedCredentialInputEvidence` is opaque, non-Encodable, non-Codable,
+non-serialized, non-persisted, process-local, and non-reusable as Production
+authority. No credential content, passphrase, import, Keychain mutation, or
+Production mutation is involved.
+
+Operator metadata success is not reusable C5A evidence, C5B authorization,
+import success, a Production identity, authoritative Team ID, signing authority,
+or Production authority. A separately authorized future live C5B ceremony must
+run fresh C5A validation in the same native process and immediately consume the
+opaque evidence. Durable C5B success precedes read-only C6A and mandatory
+read-only C4; C4 alone verifies the live Developer ID Application and supplies
+authoritative Team ID.
+
+The Mac mini M4 remains the sole Control Plane. AIControlCenter retains
+governance, orchestration, authorization, audit, deployment control, and
+business logic. Ubuntu remains stateless with no signing, credential, Team ID,
+business-logic, or Production authorization authority. Live signing readiness
+remains `NOT_READY`.
+
 ## R2-C5A credential input boundary
 
 Commit `ef0df21` validates

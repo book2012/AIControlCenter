@@ -1,5 +1,28 @@
 # Project History
 
+## 2026-09-02 — C5A operator metadata validation entrypoint validated
+
+Commit `8a0836f` connected the operator to the real C5A issuer and established
+`C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED`. Only
+`validation.observation` is JSON-exported. Opaque
+`SEC02ValidatedCredentialInputEvidence` remains non-Encodable, non-Codable,
+non-serialized, non-persisted, process-local, and non-reusable as authority.
+
+Operator metadata success established no reusable C5A evidence, C5B
+authorization, import success, Production identity, authoritative Team ID,
+signing authority, or Production authority. Future authorized C5B must freshly
+run C5A and immediately consume the evidence in the same native process, then
+reach durable success before read-only C6A and mandatory read-only C4. C4 alone
+is the live Developer ID Application verifier and Team ID authority.
+
+Focused `4 passed, 268 warnings in 50.19s`, compatibility
+`9 passed, 268 warnings in 34.69s`, and architecture/security/diff/canonical
+gates passed. Canonical invocation `a0aa6bdb2e3e48f785cfa9113fd7e332` recorded
+`4504 passed, 5 deselected, 723 warnings, 2 subtests passed in 464.81s (0:07:44)`
+and was not rerun. No credential content or passphrase was handled; no import,
+Keychain, or Production mutation occurred. Readiness remains `NOT_READY`, and
+`TEST-INFRA-PYTEST-PERMISSION-CLEANUP` remains separate non-blocking debt.
+
 ## 2026-09-02 — SEC02-FS-MACRO-03B4R2-C6A completed
 
 Implementation commit `e9cb294` (`feat: add production signing credential

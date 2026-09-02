@@ -1,5 +1,29 @@
 # AIControlCenter
 
+## Current authoritative — C5A operator metadata entrypoint validated
+
+Commit `8a0836f` connects the operator to the real C5A issuer,
+`SEC02ProductionSigningCredentialCeremony.validateExplicitPathForFutureImport(...)`,
+establishing `C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED`. Only
+`validation.observation` is JSON. Opaque `SEC02ValidatedCredentialInputEvidence`
+is non-Codable, non-serialized, non-persisted, process-local, and non-reusable
+as Production authority. No credential content, passphrase, import, Keychain
+mutation, or Production mutation is involved.
+
+Operator metadata success is not reusable C5A evidence, C5B authorization,
+import success, a Production signing identity, authoritative Team ID, signing
+authority, or Production authority. A separately authorized live C5B ceremony
+must run fresh C5A validation and immediately consume its opaque evidence in the
+same native process, followed by durable C5B success, read-only C6A, and
+mandatory read-only C4. C4 alone verifies the live Developer ID Application and
+supplies authoritative Team ID.
+
+Validation passed: focused `4 passed, 268 warnings in 50.19s`; compatibility
+`9 passed, 268 warnings in 34.69s`; architecture, security, diff, and canonical
+gates `PASS`. Canonical invocation `a0aa6bdb2e3e48f785cfa9113fd7e332` recorded
+`4504 passed, 5 deselected, 723 warnings, 2 subtests passed in 464.81s (0:07:44)`
+and is not rerun. Live signing readiness remains `NOT_READY`.
+
 ## Current authoritative — SEC02-FS-MACRO-03B4R2-C6A validated
 
 Commit `e9cb294` (`feat: add production signing credential availability

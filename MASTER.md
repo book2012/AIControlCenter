@@ -1,5 +1,28 @@
 # MASTER
 
+## Current authoritative status — C5A operator entrypoint bridge validated
+
+Commit `8a0836f` establishes
+`C5A_OPERATOR_METADATA_VALIDATION_ENTRYPOINT_VALIDATED`. The operator calls the
+real C5A issuer and exports only `validation.observation`. Opaque evidence is
+non-Encodable, non-Codable, non-serialized, non-persisted, process-local, and
+non-reusable. No credential content, passphrase, import, Keychain mutation, or
+Production mutation is involved.
+
+Operator success grants no reusable C5A evidence, C5B authorization, import
+success, Production identity, authoritative Team ID, signing authority, or
+Production authority. Future C5B must freshly validate C5A and immediately
+consume the evidence in the same native process; durable C5B success precedes
+read-only C6A and mandatory read-only C4. C4 remains the only authoritative Team
+ID source. The Mac remains the sole Control Plane; Ubuntu has no credential,
+signing, Team ID, business-logic, or Production authority.
+
+Focused `4 passed`, compatibility `9 passed`, architecture/security/diff and
+canonical gates passed. Canonical invocation
+`a0aa6bdb2e3e48f785cfa9113fd7e332` recorded
+`4504 passed, 5 deselected, 723 warnings, 2 subtests passed in 464.81s (0:07:44)`
+and was not rerun. Live signing readiness remains `NOT_READY`.
+
 ## Current authoritative status — SEC02-FS-MACRO-03B4R2-C6A complete
 
 Implementation commit `e9cb294` establishes
