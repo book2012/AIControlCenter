@@ -8,9 +8,9 @@ struct SEC02ProductionSigningCredentialCeremonyMain {
                 "usage: production-signing-credential-ceremony-inspect <absolute-.p12-or-.pfx-path>\n".utf8))
             throw Exit.invalidArguments
         }
-        let observation = SEC02ProductionSigningCredentialCeremony.inspectExplicitPathReadOnly(
+        let validation = SEC02ProductionSigningCredentialCeremony.validateExplicitPathForFutureImport(
             CommandLine.arguments[1])
-        let result = SEC02ProductionSigningCredentialCeremony.evaluateLocalInputOnly(observation)
+        let result = SEC02ProductionSigningCredentialCeremony.evaluateLocalInputOnly(validation.observation)
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         encoder.outputFormatting = [.sortedKeys]

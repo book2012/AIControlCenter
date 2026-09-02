@@ -80,7 +80,8 @@ def _no_authority(value):
     for key in (
         "credential_imported", "production_signing_identity_verified", "package_signed",
         "sm_app_service_registered", "production_remediation_authorized", "signing_performed",
-        "notarization_performed", "production_mutation_performed",
+        "notarization_performed", "production_mutation_performed", "credential_contents_read",
+        "passphrase_accepted", "keychain_mutation_performed",
     ):
         assert value[key] is False
     assert value["authoritative_team_id"] is None
@@ -126,8 +127,14 @@ def test_real_explicit_path_validation_uses_only_empty_synthetic_files(tmp_path)
     assert first_output == second_output
     assert list(value) == sorted(value)
     assert value["credential_input"]["container_suffix"] == ".p12"
+    assert value["readiness"] == "READY_FOR_SEPARATE_IMPORT_CEREMONY"
     assert value["credential_contents_read"] is False
     _no_authority(value)
+
+    invalid_suffix = tmp_path / "empty.pem"
+    invalid_suffix.touch()
+    invalid_suffix.chmod(0o600)
+    assert _run(binary, invalid_suffix)[1]["credential_input"]["failure"] == "UNSUPPORTED_CONTAINER_SUFFIX"
 
     missing = tmp_path / "missing.p12"
     assert _run(binary, missing)[1]["credential_input"]["failure"] == "PATH_DOES_NOT_EXIST"
@@ -185,3 +192,13 @@ def test_future_import_contract_and_security_surface(tmp_path):
     assert "public protocol SEC02CredentialMetadataInspecting" not in source
     assert "public enum SEC02CredentialMetadataLookup" not in source
     assert "public struct SEC02CredentialFileMetadata" not in source
+
+
+def test_operator_main_uses_sole_real_darwin_evidence_issuer_without_serializing_evidence():
+    main_source = MAIN.read_text()
+    assert "validateExplicitPathForFutureImport(" in main_source
+    assert "CommandLine.arguments[1])" in main_source
+    assert "inspectExplicitPathReadOnly" not in main_source
+    assert "validation.observation" in main_source
+    assert "validatedCredentialInput" not in main_source
+    assert "SEC02ValidatedCredentialInputEvidence" not in main_source
