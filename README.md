@@ -4753,3 +4753,26 @@ a live verified identity after a separate future import.
 
 Validation: focused C6B `4 passed`; C4/C5A/C5B/C6A compatibility `20 passed`;
 canonical `4503 passed, 5 deselected, 719 warnings, 2 subtests passed`.
+## Current authoritative — Shopping Runtime preproduction Bundle B
+
+Repository preparation for the existing WU09 preload, WU09 loopback deployment,
+WU10 credential-slot provisioning, and WU11 one-shot read-only continuity
+boundaries is complete. The preload composition is an opaque process-local
+identity whose module-private immutable coordinator/lifecycle state is consumed
+before execution; its destructive one-use ceremony entry remains uncalled. The other boundaries have exact,
+value-free readiness contracts reusing existing implementation and governance.
+Continuity remains `UNRESOLVED`. Production access/mutation, authorization
+consumption, Docker/Colima access, secret reads, MariaDB connection/SQL, Ubuntu
+mutation, Notion sync, and Shopping Runtime activation were all `false`/`none`.
+This is not operational Production ceremony readiness: trusted SEC-02
+issuer/trust roots are unavailable; there is no fresh Production authorization
+or observation, durable consumption, `ALLOW_SINGLE_INVOCATION`, or Production
+invocation.
+Each future Production boundary requires separate human authorization. Next:
+the existing `WU09_PINNED_IMAGE_PRELOADED` Production mutation.
+
+Implementation commit: `cfde5874392b75206cd66b7e7ee3202517de5e54`.
+Validation: focused `52 passed in 0.13s`; final durable canonical invocation
+`9b77e3f128b64c3a88f229a9a8898f93` completed and validated PASS with `4533
+passed, 5 deselected, 447 warnings, 2 subtests passed in 468.64s (0:07:48)` from
+`/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`.

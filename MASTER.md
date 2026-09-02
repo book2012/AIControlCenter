@@ -5674,3 +5674,26 @@ Focused C6B tests: `4 passed`. C4/C5A/C5B/C6A compatibility: `20 passed`.
 Canonical: `4503 passed, 5 deselected, 719 warnings, 2 subtests passed in
 468.55s (0:07:48)`, invocation `54e99780e5ac4dc9a3b5f1056690380f`, evidence
 directory `/private/tmp/aicontrolcenter-canonical-evidence.qFOvYA`.
+## Current authoritative status — Shopping Runtime preproduction Bundle B
+
+Repository-side preparation is complete for the four existing future boundaries:
+WU09 pinned-image preload, WU09 loopback adapter deployment, WU10 credential-slot
+provisioning, and WU11 one-shot read-only MariaDB continuity validation. No
+Production authority was consumed and no operational access occurred. Continuity
+is `UNRESOLVED`; Shopping Runtime is not activated. Each future Production
+mutation remains separately human-authorized. The next boundary remains
+`WU09_PINNED_IMAGE_PRELOADED`.
+Repository completion does not establish operational ceremony readiness:
+trusted SEC-02 issuer/trust roots are unavailable, there is no fresh Production
+authorization or observation, durable authorization was not consumed,
+`ALLOW_SINGLE_INVOCATION` was not granted, and no Production invocation occurred.
+The WU09 composition is an opaque process-local identity. Its immutable
+coordinator/lifecycle state remains module-private and is atomically consumed
+before coordinator execution, so callers cannot replace or reuse it.
+
+Implementation commit: `cfde5874392b75206cd66b7e7ee3202517de5e54`.
+Focused validation: `52 passed in 0.13s`. Final durable canonical evidence:
+invocation `9b77e3f128b64c3a88f229a9a8898f93`, directory
+`/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`, completed and validated
+PASS with `4533 passed, 5 deselected, 447 warnings, 2 subtests passed in 468.64s
+(0:07:48)`.

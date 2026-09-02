@@ -4740,3 +4740,29 @@ and non-C4 Team ID authority claims. No credential was acquired or read, no
 passphrase was handled, and no Keychain, signing, registration, notarization,
 Production, or Ubuntu mutation/authority was introduced. C4 remains the sole
 live identity and authoritative Team ID verifier.
+## 2026-09-03 — Shopping Runtime preproduction Bundle B prepared
+
+Completed the largest safe repository-side bundle before Production activation:
+the existing WU09 preload ceremony entry, exact credential-blind loopback
+deployment contract, WU10 fixed-slot value-free preparation, and WU11 concrete
+one-shot read-only validator preparation. Continuity remains `UNRESOLVED`.
+The final semantic correction distinguished repository preparation from
+operational readiness, reused the authoritative core continuity/account types,
+and made WU09 conduct require private one-use factory provenance. The issued
+composition is only an opaque identity; immutable coordinator/lifecycle state
+remains module-private and is consumed before execution. Trusted
+issuer/trust roots, fresh Production authorization/observations, durable
+consumption, SEC-02 single-invocation permission, and Production invocation
+were not available or performed.
+Production access and mutation were false; authorization was not consumed;
+Docker/Colima and secrets were not accessed; MariaDB/SQL activity was none;
+Ubuntu and Notion were untouched; Shopping Runtime remains inactive. Each future
+Production boundary remains separately human-authorized, beginning with the
+existing `WU09_PINNED_IMAGE_PRELOADED` boundary.
+
+Implementation commit: `cfde5874392b75206cd66b7e7ee3202517de5e54`
+(`feat: harden shopping runtime preproduction bundle`). Focused validation was
+`52 passed in 0.13s`. Final durable canonical invocation
+`9b77e3f128b64c3a88f229a9a8898f93` completed and validated PASS with `4533
+passed, 5 deselected, 447 warnings, 2 subtests passed in 468.64s (0:07:48)`;
+evidence directory: `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`.

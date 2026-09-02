@@ -5197,3 +5197,28 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   notarization, Production mutation, or Ubuntu delegation.
 - Validation: focused C6B `4 passed`; C4/C5A/C5B/C6A compatibility `20 passed`;
   canonical `4503 passed, 5 deselected, 719 warnings, 2 subtests passed`.
+## 2026-09-03 — Shopping Runtime preproduction Bundle B
+
+- Prepared the existing WU09 preload ceremony entry, WU09 loopback deployment
+  ceremony contract, WU10 value-free credential-slot contract, and WU11
+  one-shot read-only continuity contract in one repository bundle.
+- Corrected the bundle projection to report repository preparation rather than
+  operational Production readiness, use the authoritative core continuity and
+  account-profile enums, and require private one-use factory provenance for the
+  WU09 composition. The composition is only an opaque process-local identity;
+  immutable coordinator/lifecycle state remains module-private and is atomically
+  consumed before execution. Trusted issuer/trust roots, fresh Production authorization
+  and observations, durable consumption, SEC-02 single-invocation permission,
+  and Production invocation remain unavailable/not performed.
+- Preserved `MARIADB_CONTINUITY_STATE=UNRESOLVED` and all separate human
+  authorization boundaries. Production access/mutation, authorization
+  consumption, Docker/Colima, secrets, MariaDB/SQL, Ubuntu, Notion, and Runtime
+  activation activity were none.
+- Implementation commit: `cfde5874392b75206cd66b7e7ee3202517de5e54`
+  (`feat: harden shopping runtime preproduction bundle`). Focused validation:
+  `52 passed in 0.13s`.
+- Final durable canonical evidence: invocation
+  `9b77e3f128b64c3a88f229a9a8898f93`, directory
+  `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`, completed and
+  validated PASS; `4533 passed, 5 deselected, 447 warnings, 2 subtests passed in
+  468.64s (0:07:48)`.

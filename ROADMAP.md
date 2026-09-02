@@ -4747,3 +4747,26 @@ Work unit: `SEC02-FS-MACRO-03B4R2-C5B`.
 - [x] Preserve C4 as sole live identity and Team ID authority and keep
   `authoritative_team_id` null before C4 verification.
 - [x] Grant no credential, signing, Production, or Ubuntu authority.
+## Shopping Runtime preproduction Bundle B
+
+- [x] Prepare the sealed WU09 preload ceremony entry without invoking it.
+- [x] Freeze the exact credential-blind WU09 loopback deployment ceremony contract.
+- [x] Bind WU10 preparation to the existing fixed authoritative credential slot.
+- [x] Bind WU11 preparation to the existing concrete one-shot read-only validator.
+- [x] Distinguish repository preparation from operational readiness and enforce
+  private one-use factory provenance at WU09 conduct, with opaque identity-only
+  compositions and module-private state consumed before coordinator execution.
+- [ ] Separately authorize and perform `WU09_PINNED_IMAGE_PRELOADED` in Production.
+
+No Production, Docker/Colima, secret, MariaDB/SQL, Ubuntu, Notion, or Shopping
+Runtime activity occurred during repository preparation.
+Trusted issuer/trust roots are not operationally available; fresh Production
+authorization/observations, durable consumption, SEC-02 single-invocation
+permission, and Production invocation remain outstanding.
+
+Implementation commit: `cfde5874392b75206cd66b7e7ee3202517de5e54`.
+Validation recorded without rerun: focused `52 passed in 0.13s`; final durable
+canonical invocation `9b77e3f128b64c3a88f229a9a8898f93` completed and
+validated PASS with `4533 passed, 5 deselected, 447 warnings, 2 subtests passed
+in 468.64s (0:07:48)` from
+`/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`.

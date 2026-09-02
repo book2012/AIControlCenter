@@ -5257,3 +5257,32 @@ C5B -> C6A -> C4`. C4 alone inspects the live Keychain identity and derives the
 authoritative Team ID. C6B always emits `authoritative_team_id: null` and has no
 credential-byte, passphrase, Keychain, signing, notarization, SMAppService, or
 Production mutation surface.
+## Shopping Runtime preproduction Bundle B boundary
+
+The Mac mini M4 remains the sole Control Plane. Bundle B adds no worker-owned
+authority: Ubuntu owns no Shopping logic, secrets, authorization, state, or
+MariaDB continuity decision. WU09 preload uses trusted intake, two fresh
+read-only observations around durable `consume_once`, SEC-02 single invocation,
+the exact pinned-image adapter, and a read-only postcondition. Its sealed
+composition is only an opaque process-local identity: coordinator and lifecycle
+state remain in a module-private immutable issued-state registry and cannot be
+replaced through the issued object. The ceremony atomically consumes that
+one-use state before coordinator execution and never restores it.
+This establishes repository preparation only, not operational Production
+ceremony readiness. Trusted SEC-02 issuer/trust roots are not operationally
+available; no fresh Production authorization or observation exists, no durable
+authorization was consumed, no `ALLOW_SINGLE_INVOCATION` was granted, and no
+Production invocation occurred.
+WU09 loopback deployment remains credential-blind and isolated from the database,
+network, and main Shopping Compose. WU10 binds the existing fixed authoritative
+slot to
+`core.secrets.mariadb_continuity_validation.AccountProfile.SHOPPING_MARIADB_HISTORICAL_ACCOUNT`
+without values. WU11 reuses the concrete one-attempt read-only validator and
+reports `core.secrets.mariadb_continuity.ContinuityState.UNRESOLVED` with zero
+mutation budget. Every Production boundary is separately human-authorized.
+
+Implementation commit: `cfde5874392b75206cd66b7e7ee3202517de5e54`.
+Validation: focused `52 passed in 0.13s`; final durable canonical invocation
+`9b77e3f128b64c3a88f229a9a8898f93` completed and validated PASS with `4533
+passed, 5 deselected, 447 warnings, 2 subtests passed in 468.64s (0:07:48)` from
+`/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`.

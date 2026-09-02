@@ -1967,3 +1967,28 @@ Separate non-blocking technical debt:
 - [ ] `PY314-DATETIME-UTC-DEPRECATION` — replace deprecated naive
   `datetime.utcnow()` usage with timezone-aware UTC handling in a dedicated
   compatibility work unit.
+## Shopping Runtime preproduction Bundle B
+
+- [x] Complete bounded repository preparation for WU09 preload and loopback
+  deployment ceremonies, WU10 credential-slot provisioning, and WU11 one-shot
+  read-only MariaDB continuity validation.
+- [x] Preserve value-free contracts, Mac Control Plane ownership, durable
+  governance requirements, zero WU11 mutation budget, and `UNRESOLVED` continuity.
+- [x] Correct readiness semantics, reuse authoritative core continuity/account
+  types, and require private one-use factory provenance for WU09 conduct, with
+  opaque identity-only compositions and module-private state consumed first.
+- [x] Confirm no Production access/mutation, authorization consumption,
+  Docker/Colima access, secret read, MariaDB/SQL, Ubuntu mutation, Notion sync,
+  or Shopping Runtime activation.
+- [ ] Next existing boundary: separately authorize `WU09_PINNED_IMAGE_PRELOADED`.
+
+Repository preparation is complete, but operational Production readiness is not:
+trusted issuer/trust roots, fresh authorization/observations, durable
+consumption, SEC-02 single-invocation permission, and invocation are absent.
+
+- [x] Record implementation commit
+  `cfde5874392b75206cd66b7e7ee3202517de5e54`, focused validation `52 passed in
+  0.13s`, and final durable canonical evidence from
+  `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`: invocation
+  `9b77e3f128b64c3a88f229a9a8898f93`, completed and validated PASS, `4533 passed,
+  5 deselected, 447 warnings, 2 subtests passed in 468.64s (0:07:48)`.
