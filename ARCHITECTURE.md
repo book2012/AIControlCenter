@@ -30,6 +30,7 @@ notarization, and external-distribution `SMAppService` work are deferred.
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
 `AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
+`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
 
 ## Current authoritative boundary — WU09 Production composition ready
 
