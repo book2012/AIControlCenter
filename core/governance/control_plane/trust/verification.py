@@ -16,6 +16,7 @@ from .models import ParsedAuthorizationEnvelope, VerificationError, VerifiedAuth
 
 DOMAIN_SEPARATOR = b"AICONTROLCENTER-SEC02-AUTHORIZATION-V1"
 ALGORITHM = "Ed25519"
+TRUSTED_ISSUER_TYPE = "HUMAN_AUTHORITY"
 _ASCII_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,127}$", re.ASCII)
 _ENVELOPE_FIELDS = frozenset({"protected", "signature"})
 _REGISTRY_FIELDS = frozenset({"schema_version", "registry_version", "registry_digest", "issuers"})
@@ -90,12 +91,14 @@ def parse_registry(raw: bytes) -> dict[str, Any]:
         _exact(issuer, _ISSUER_FIELDS, "issuer")
         key_id = _ascii_id(issuer["key_id"], "key_id")
         _ascii_id(issuer["issuer_id"], "issuer_id")
-        _ascii_id(issuer["issuer_type"], "issuer_type")
+        issuer_type = _ascii_id(issuer["issuer_type"], "issuer_type")
         if key_id in seen:
             raise VerificationError("duplicate registry key_id")
         seen.add(key_id)
         if issuer["schema_version"] != registry["schema_version"] or issuer["registry_version"] != registry_version:
             raise VerificationError("issuer registry binding mismatch")
+        if issuer_type != TRUSTED_ISSUER_TYPE:
+            raise VerificationError("issuer type is not trusted human authority")
         if issuer["algorithm"] != ALGORITHM or issuer["status"] not in {"ACTIVE", "REVOKED"}:
             raise VerificationError("issuer algorithm or status is invalid")
         decode_base64url(issuer["public_key"], 32, "public_key")
