@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import ast
+import copy
 from dataclasses import replace
 from datetime import datetime, timedelta, timezone
 import inspect
 import json
+import pickle
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -59,6 +61,7 @@ from ops.macos.shopping.wu09_image_preload_composition import (
     WU09ProductionComposition,
     WU09ProductionCompositionInput,
     compose_wu09_production_image_preload,
+    conduct_wu09_production_image_preload,
 )
 
 
@@ -513,6 +516,83 @@ def test_exact_trusted_facts_compose_without_consuming_deciding_or_invoking(monk
     assert counts == {"consume": 0, "coordinate": 0, "invoke": 0, "process": 0}
     assert captured == {"observation_root": ROOT}
     assert not hasattr(composed, "coordinate") and not hasattr(composed, "invoke_once")
+
+
+def _factory_issued_composition(monkeypatch, coordinate):
+    value = lifecycle()
+    _composition_dependencies(monkeypatch, value)
+    monkeypatch.setattr(
+        composition_module,
+        "WU09ImagePreloadCoordinator",
+        lambda **kwargs: SimpleNamespace(coordinate=coordinate),
+    )
+    composed = compose_wu09_production_image_preload(
+        WU09ProductionCompositionInput(b"signed", value.expected_preconditions, ROOT)
+    )
+    return composed
+
+
+def test_factory_issued_composition_crosses_conduct_exactly_once(monkeypatch):
+    calls = []
+    composed = _factory_issued_composition(
+        monkeypatch, lambda value: calls.append(value) or "done"
+    )
+    assert conduct_wu09_production_image_preload(composed) == "done"
+    assert len(calls) == 1
+    with pytest.raises(TypeError, match="not actively issued"):
+        conduct_wu09_production_image_preload(composed)
+    assert len(calls) == 1
+
+
+def test_factory_issued_composition_exposes_no_replaceable_execution_state(monkeypatch):
+    composed = _factory_issued_composition(monkeypatch, lambda value: value)
+    assert not hasattr(composed, "_coordinator")
+    assert not hasattr(composed, "_lifecycle")
+    with pytest.raises(AttributeError):
+        composed._coordinator = object()
+    with pytest.raises(AttributeError):
+        composed._lifecycle = object()
+
+
+def test_coordinate_exception_permanently_consumes_factory_provenance(monkeypatch):
+    calls = 0
+
+    def raise_from_coordinate(value):
+        nonlocal calls
+        del value
+        calls += 1
+        raise RuntimeError("coordinate failed")
+
+    composed = _factory_issued_composition(monkeypatch, raise_from_coordinate)
+    with pytest.raises(RuntimeError, match="coordinate failed"):
+        conduct_wu09_production_image_preload(composed)
+    with pytest.raises(TypeError, match="not actively issued"):
+        conduct_wu09_production_image_preload(composed)
+    assert calls == 1
+
+
+def test_composition_has_no_public_retry_rearm_or_restore_surface():
+    forbidden = {"retry", "rearm", "restore", "register", "issue"}
+    public_callables = {
+        name.lower()
+        for name, member in inspect.getmembers(composition_module, callable)
+        if not name.startswith("_")
+    }
+    assert not any(
+        term in name for term in forbidden for name in public_callables
+    )
+    assert "_FACTORY_ISSUED_STATES" not in composition_module.__all__
+    assert "_WU09IssuedState" not in composition_module.__all__
+
+
+def test_composition_remains_noncopyable_and_nonserializable(monkeypatch):
+    composed = _factory_issued_composition(monkeypatch, lambda value: value)
+    with pytest.raises(TypeError, match="cannot be copied"):
+        copy.copy(composed)
+    with pytest.raises(TypeError, match="cannot be copied"):
+        copy.deepcopy(composed)
+    with pytest.raises(TypeError, match="cannot be serialized"):
+        pickle.dumps(composed)
 
 
 def test_composition_snapshot_digest_mismatch_fails_before_adapter_assembly(monkeypatch):

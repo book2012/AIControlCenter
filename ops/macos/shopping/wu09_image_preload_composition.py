@@ -4,6 +4,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+from threading import Lock
+from weakref import WeakKeyDictionary
 
 from core.governance.control_plane.adapters.sqlite import (
     SQLiteAuthorizationConsumptionAdapter,
@@ -38,6 +40,7 @@ from ops.macos.shopping.wu09_image_preload import (
 
 
 _REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
+_FACTORY_PROVENANCE_LOCK = Lock()
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,9 +61,9 @@ class WU09ProductionCompositionInput:
 
 
 class WU09ProductionComposition:
-    """Opaque inert assembly; only the later ceremony may unwrap it internally."""
+    """Opaque process-local identity for a factory-issued WU09 assembly."""
 
-    __slots__ = ("_coordinator", "_lifecycle")
+    __slots__ = ("__weakref__",)
 
     def __init__(self, *_: object, **__: object) -> None:
         raise TypeError("direct WU09 Production composition construction is prohibited")
@@ -78,6 +81,34 @@ class WU09ProductionComposition:
     def __deepcopy__(self, memo: object) -> object:
         del memo
         raise TypeError("WU09 Production composition cannot be copied")
+
+
+@dataclass(frozen=True, slots=True)
+class _WU09IssuedState:
+    coordinator: WU09ImagePreloadCoordinator
+    lifecycle: WU09PreloadLifecycle
+
+
+_FACTORY_ISSUED_STATES: WeakKeyDictionary[
+    WU09ProductionComposition, _WU09IssuedState
+] = WeakKeyDictionary()
+
+
+def conduct_wu09_production_image_preload(
+    composition: WU09ProductionComposition,
+) -> object:
+    """Cross the prepared ceremony boundary once using only the sealed assembly.
+
+    Calling this function is the future Production mutation.  Repository
+    preparation and composition never call it.
+    """
+    if type(composition) is not WU09ProductionComposition:
+        raise TypeError("composition must be the exact sealed WU09 composition")
+    with _FACTORY_PROVENANCE_LOCK:
+        issued_state = _FACTORY_ISSUED_STATES.pop(composition, None)
+        if issued_state is None:
+            raise TypeError("composition was not actively issued by the WU09 factory")
+    return issued_state.coordinator.coordinate(issued_state.lifecycle)
 
 
 class _DeferredProductionAuthorizationConsumption:
@@ -151,12 +182,13 @@ def compose_wu09_production_image_preload(
         request.expected_preconditions,
     )
     composed = object.__new__(WU09ProductionComposition)
-    composed._coordinator = coordinator
-    composed._lifecycle = lifecycle
+    issued_state = _WU09IssuedState(coordinator, lifecycle)
+    with _FACTORY_PROVENANCE_LOCK:
+        _FACTORY_ISSUED_STATES[composed] = issued_state
     return composed
 
 
 __all__ = (
     "WU09ProductionComposition", "WU09ProductionCompositionInput",
-    "compose_wu09_production_image_preload",
+    "compose_wu09_production_image_preload", "conduct_wu09_production_image_preload",
 )
