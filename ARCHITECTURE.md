@@ -1,14 +1,16 @@
 # AI Home Datacenter Architecture
 
-## Current authoritative boundary — Shopping service-start observer contracts
+## Current authoritative boundary — Shopping service-start read-only observation
 
-`SHOP-SERVICE-START-01A` observer-contract implementation is complete at commit
-`24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
-observation contracts`). It defines `ABSENT`, `STOPPED`, `RUNNING`, `UNHEALTHY`,
-`CONFLICTING`, and `UNKNOWN`; a repository-only desired-state fact adapter;
-aggregation policy; and deterministic JSON projection. No live adapter exists
-and no live Mac observation was performed, so current runtime state is not
-established.
+`SHOP-SERVICE-START-01A` now has a Mac-only, credential-blind live adapter that
+composes the existing runtime inspector, canonical repository facts, fixed
+GET-only loopback probes, the existing six-state aggregation policy, and one
+deterministic JSON projection. It adds no second runtime-health framework.
+
+Exactly one `CONTROLLED_NON_PRODUCTION` Mac observation classified MariaDB,
+WordPress, WooCommerce, AIControlCenter Shopping, Dashboard, Homepage, and the
+overall snapshot as `UNKNOWN`. Repository configuration was not promoted to
+live state, and WordPress evidence was not promoted to WooCommerce readiness.
 
 The Mac mini M4 and AIControlCenter remain the sole Control Plane. Ubuntu
 remains a stateless infrastructure worker with no AI workload, Shopping
@@ -17,16 +19,30 @@ local or controlled-non-Production classification is never Production
 authorization. Any later service start is a distinct mutation boundary and
 requires separate governance for its exact target and environment.
 
-Focused validation recorded `19 passed, 8 cleanup warnings in 0.46s`. Durable
-canonical evidence at
-`/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`, invocation
-`eee44feb2d1d49b09e8fac2e2ae6c0be`, records `STATE=COMPLETED_PASS`,
-`validated_pass=true`, and `4552 passed, 5 deselected, 451 warnings, 2 subtests
-passed in 466.06s (0:07:46)`. Canonical is not rerun for this closeout. No
-Production/runtime mutation or activation occurred. The next safe step within
-the existing read-only discovery boundary is preparation of a read-only local
-observation adapter and later actual Mac observation; neither is implemented
-or performed here.
+The final diagnostic semantics preserve repository-defined `DISABLED` and
+`DEGRADED` HTTP responses as complete unhealthy evidence, reject malformed
+schemas, retain `loopback_http` on conclusive WooCommerce absence, and expose
+only bounded value-free reason codes. The fresh snapshot reported
+`runtime_unavailable` for MariaDB and WordPress and
+`loopback_http_unavailable` for the other four components.
+
+Focused validation recorded `55 passed`; architecture, security, diff, and
+final code reviews passed. The canonical command
+`ops/macos/validation/run-deployment-regression-gate.sh -q` ran exactly once,
+invocation `1135d3cd1b8546c7a064a462fd420726`, with durable evidence at
+`/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`, and passed with
+`4573 passed, 5 deselected, 463 warnings, 2 subtests passed in 466.83s
+(0:07:46)`. No
+Production mutation, authorization consumption, secret read, SQL, MariaDB
+authenticated access, Ubuntu access, or runtime activation occurred.
+`SHOPPING_RUNTIME_ACTIVATED=NO`. The observation does not justify selecting a
+mutation target; any later service-start mutation remains a separately
+governed boundary after fresh evidence resolves the `UNKNOWN` runtime state.
+
+`READ_ONLY_OBSERVER_IMPLEMENTED=YES`
+`LIVE_OBSERVATION_PERFORMED=YES`
+`LIVE_EVIDENCE_RESOLVED=NO`
+`SERVICE_START_DECISION_READY=NO`
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

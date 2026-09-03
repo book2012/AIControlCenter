@@ -2,20 +2,33 @@
 
 ## Current work boundary
 
-`SHOP-SERVICE-START-01A` observer contracts are complete at commit
-`24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
-observation contracts`). They define `ABSENT`, `STOPPED`, `RUNNING`,
-`UNHEALTHY`, `CONFLICTING`, and `UNKNOWN`, repository-only desired-state facts,
-aggregation policy, and deterministic JSON projection.
+`SHOP-SERVICE-START-01A` includes a Mac-only, credential-blind live adapter
+that reuses the existing runtime inspector and six-state aggregation model.
+Valid repository-defined HTTP non-healthy responses produce complete unhealthy
+evidence; malformed schemas remain unknown. Safe typed diagnostics distinguish
+runtime inspection failures without exposing raw output or HTTP bodies.
+Focused validation passed with `55 passed`; architecture, security, diff, and
+final code reviews passed. Canonical
+`ops/macos/validation/run-deployment-regression-gate.sh -q` ran exactly once,
+invocation `1135d3cd1b8546c7a064a462fd420726`, and passed with `4573 passed,
+5 deselected, 463 warnings, 2 subtests passed in 466.83s (0:07:46)` at
+`/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`.
 
-Focused validation is `19 passed, 8 cleanup warnings in 0.46s`. Durable
-canonical evidence at `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`,
-invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`, records
-`STATE=COMPLETED_PASS`, `validated_pass=true`, and `4552 passed, 5 deselected,
-451 warnings, 2 subtests passed in 466.06s (0:07:46)`. There is no live adapter
-and no live observation or Production/runtime mutation; Shopping was not
-activated. Mac remains the sole Control Plane and Ubuntu remains stateless.
-Next is read-only local observation preparation within this discovery boundary.
+The one bounded `CONTROLLED_NON_PRODUCTION` Mac observation classified all six
+Shopping components and overall as `UNKNOWN`. No repository desired state was
+claimed as live state, and WooCommerce was observed independently. No
+Production access or mutation, authorization consumption, secret read,
+MariaDB authentication, SQL, automatic retry, Ubuntu access, or activation
+occurred. `SHOPPING_RUNTIME_ACTIVATED=NO`; no mutation target is supported
+until fresh evidence resolves the unknown runtime state.
+MariaDB and WordPress reported `runtime_unavailable`; WooCommerce,
+AIControlCenter Shopping, Dashboard, and Homepage reported
+`loopback_http_unavailable`.
+
+`READ_ONLY_OBSERVER_IMPLEMENTED=YES`
+`LIVE_OBSERVATION_PERFORMED=YES`
+`LIVE_EVIDENCE_RESOLVED=NO`
+`SERVICE_START_DECISION_READY=NO`
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

@@ -1,6 +1,6 @@
 # TODO
 
-## Active — SHOP-SERVICE-START-01A read-only observation preparation
+## Active — SHOP-SERVICE-START-01A read-only observation completed
 
 - [x] Complete observer contracts at
   `24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
@@ -13,14 +13,27 @@
   invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`, `STATE=COMPLETED_PASS`,
   `validated_pass=true`, `4552 passed, 5 deselected, 451 warnings, 2 subtests
   passed in 466.06s (0:07:46)`.
-- [ ] Prepare a read-only local observation adapter and later perform bounded
-  actual Mac observation; no live adapter or live observation exists yet.
+- [x] Implement the Mac-only live adapter and perform one bounded controlled
+  non-Production Mac observation: every component and overall was `UNKNOWN`.
+- [x] Close valid-unhealthy versus malformed HTTP semantics, safe typed
+  diagnostic reasons, WooCommerce absence source attribution, and bounded
+  explicit control flow.
+- [x] Record focused `55 passed`, review gates `PASS`, and canonical invocation
+  `1135d3cd1b8546c7a064a462fd420726`: `4573 passed, 5 deselected, 463
+  warnings, 2 subtests passed in 466.83s (0:07:46)` at
+  `/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`.
 - [ ] Keep service-start mutation outside this work item and subject it to a
   later, separate governance decision.
 
-No Production/runtime mutation or activation occurred. The Mac mini M4 remains
-the sole Control Plane; Ubuntu remains stateless and owns no Shopping logic or
-application state.
+No Production/runtime mutation, authorization consumption, secret read,
+MariaDB authentication, SQL, automatic retry, Ubuntu access, or activation
+occurred. The Mac mini M4 remains the sole Control Plane; Ubuntu remains
+stateless. No mutation target is justified until fresh evidence resolves the
+unknown runtime state under separate governance.
+MariaDB and WordPress reported `runtime_unavailable`; WooCommerce,
+AIControlCenter Shopping, Dashboard, and Homepage reported
+`loopback_http_unavailable`.
+`LIVE_EVIDENCE_RESOLVED=NO`; `SERVICE_START_DECISION_READY=NO`.
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

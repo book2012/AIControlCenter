@@ -1,21 +1,30 @@
 # MASTER
 
-## Current authoritative status — service-start observer contracts complete
+## Current authoritative status — service-start read-only observation complete
 
-`SHOP-SERVICE-START-01A` observer contracts are complete at
-`24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
-observation contracts`). The six-state model is `ABSENT`, `STOPPED`, `RUNNING`,
-`UNHEALTHY`, `CONFLICTING`, and `UNKNOWN`. Repository-only desired-state facts,
-aggregation, and deterministic JSON projection are implemented. A live adapter
-and live Mac observation are not.
+`SHOP-SERVICE-START-01A` now includes the minimum Mac-only live adapter over
+the existing runtime inspector and six-state model. Valid repository-defined
+HTTP non-healthy states now produce complete unhealthy evidence, while bounded
+typed reasons distinguish runtime inspection failure classes without raw data.
+Focused validation passed with `55 passed`; architecture, security, diff, and final code reviews passed.
+Canonical `ops/macos/validation/run-deployment-regression-gate.sh -q` ran once,
+invocation `1135d3cd1b8546c7a064a462fd420726`, and passed with `4573 passed,
+5 deselected, 463 warnings, 2 subtests passed in 466.83s (0:07:46)`; evidence
+is `/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`.
 
-Focused validation is `19 passed, 8 cleanup warnings in 0.46s`. Canonical
-evidence `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`, invocation
-`eee44feb2d1d49b09e8fac2e2ae6c0be`, records `STATE=COMPLETED_PASS`,
-`validated_pass=true`, and `4552 passed, 5 deselected, 451 warnings, 2 subtests
-passed in 466.06s (0:07:46)`. No Production/runtime mutation or activation
-occurred. Mac remains the sole Control Plane and Ubuntu remains stateless. The
-next safe step is read-only local observation preparation, not service start.
+The one bounded `CONTROLLED_NON_PRODUCTION` Mac observation classified
+MariaDB, WordPress, WooCommerce, AIControlCenter Shopping, Dashboard, Homepage,
+and overall as `UNKNOWN`. No Production access or mutation, authorization
+consumption, secret read, authenticated MariaDB access, SQL, retry, Ubuntu
+access, or activation occurred. No mutation target is justified until a fresh
+separately governed boundary resolves the unknown runtime evidence.
+MariaDB and WordPress reported `runtime_unavailable`; the four loopback probes
+reported `loopback_http_unavailable`.
+
+`READ_ONLY_OBSERVER_IMPLEMENTED=YES`
+`LIVE_OBSERVATION_PERFORMED=YES`
+`LIVE_EVIDENCE_RESOLVED=NO`
+`SERVICE_START_DECISION_READY=NO`
 
 `WU09_PRODUCTION_PATH=BLOCKED`
 `PRODUCTION_AUTHORITY_BYPASS=FORBIDDEN`

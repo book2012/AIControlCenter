@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 2026-09-03 — Shopping service-start live read-only observation bundle
+
+- Added the minimum Mac-only live adapter by composing canonical repository
+  facts, the existing runtime inspector, credential-free GET-only loopback
+  probes, and the existing six-state aggregation policy.
+- Final semantics preserve valid `DISABLED` and `DEGRADED` HTTP states as
+  unhealthy, distinguish malformed evidence, retain the WooCommerce
+  `loopback_http` absence source, remove `StopIteration` control flow, and
+  project only bounded value-free reason codes.
+- Focused validation passed with `55 passed`. Architecture, security, diff,
+  and final code reviews passed. Canonical
+  `ops/macos/validation/run-deployment-regression-gate.sh -q` ran exactly once;
+  invocation `1135d3cd1b8546c7a064a462fd420726` passed with `4573 passed, 5
+  deselected, 463 warnings, 2 subtests passed in 466.83s (0:07:46)`; durable
+  evidence is `/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`.
+- The one bounded `CONTROLLED_NON_PRODUCTION` Mac observation classified all
+  six components and overall as `UNKNOWN`. No Production mutation,
+  authorization consumption, secret read, MariaDB authentication, SQL,
+  automatic retry, Ubuntu access, or activation occurred.
+- `SHOPPING_RUNTIME_ACTIVATED=NO`. No mutation target is justified by the
+  incomplete live evidence; later service-start mutation requires separate
+  governance after fresh observation resolves `UNKNOWN`. No Notion
+  synchronization is claimed.
+- The diagnostic projection identifies container-runtime source unavailability
+  with reason `runtime_unavailable` for MariaDB and WordPress and reason
+  `loopback_http_unavailable` for the other four components.
+  `LIVE_EVIDENCE_RESOLVED=NO` and
+  `SERVICE_START_DECISION_READY=NO`.
+
 ## 2026-09-03 — Shopping service-start observer contracts
 
 - Completed the observer-contract implementation at

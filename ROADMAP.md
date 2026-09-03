@@ -1,6 +1,6 @@
 # Roadmap
 
-## ACTIVE — SHOP-SERVICE-START-01A read-only observation preparation
+## ACTIVE — SHOP-SERVICE-START-01A read-only observation completed
 
 Observer-contract implementation is complete at
 `24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
@@ -14,13 +14,26 @@ observation contracts`).
   (0:07:46)` at `/private/tmp/aicontrolcenter-canonical-evidence.Vp81lg`,
   invocation `eee44feb2d1d49b09e8fac2e2ae6c0be`, `STATE=COMPLETED_PASS`,
   `validated_pass=true`.
-- [ ] Prepare the read-only local observation adapter, then perform separately
-  bounded actual Mac observation. Neither has occurred.
+- [x] Implement the Mac-only live adapter and perform exactly one bounded
+  controlled non-Production Mac observation. MariaDB, WordPress, WooCommerce,
+  AIControlCenter Shopping, Dashboard, Homepage, and overall were `UNKNOWN`.
+- [x] Close HTTP unhealthy/malformed semantics, safe typed runtime reasons,
+  WooCommerce source attribution, and explicit bounded observer control flow.
+- [x] Record focused `55 passed` and canonical invocation
+  `1135d3cd1b8546c7a064a462fd420726`: `4573 passed, 5 deselected, 463
+  warnings, 2 subtests passed in 466.83s (0:07:46)` at
+  `/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`.
 - [ ] Establish any later mutation boundary only as a separate governed work
   item after read-only evidence is reviewed.
 
-No Production/runtime mutation or activation occurred. Mac remains the sole
-Control Plane and Ubuntu remains a stateless infrastructure worker.
+No Production/runtime mutation, authorization consumption, secret read,
+MariaDB authentication, SQL, retry, Ubuntu access, or activation occurred.
+Mac remains the sole Control Plane and Ubuntu remains stateless. The live
+snapshot does not justify selecting a mutation target; fresh evidence and
+separate governance are required.
+MariaDB and WordPress reported `runtime_unavailable`; all four loopback
+components reported `loopback_http_unavailable`.
+`LIVE_EVIDENCE_RESOLVED=NO`; `SERVICE_START_DECISION_READY=NO`.
 
 `SHOP-CMS-01B` and `WU09_PINNED_IMAGE_PRELOADED` remain blocked/deferred
 Production paths. Apple external signing/distribution is deferred.
