@@ -1,5 +1,28 @@
 # AI Home Datacenter Architecture
 
+## SHOP-SERVICE-START-01B runtime-cutover source authority
+
+The authoritative work item remains `SHOP-SERVICE-START-01B`; no new Work Unit
+was created. The repository now derives the sole `runtime_cutover` variable
+source from the trusted Darwin UID/passwd home authority plus the fixed relative
+path `Library/Application Support/AIControlCenter/secrets/shopping-commerce.env`.
+The historical live metadata observation informed that portable contract but
+did not confer authority and no literal user home is encoded.
+
+The read-only boundary uses descriptor-relative no-follow traversal, trusted
+UID/GID binding, closed safe-mode checks on every ancestor, exact `0755` on the
+shared `AIControlCenter` parent, exact `0700` on `secrets`, regular-file and
+maximum-`0600` checks, bounded stable reads, and exact key-name metadata from
+`secret-contract.json`. Its projection
+is deterministic and value-free. It provides no caller path override, secret
+materialization, authorization, or mutation surface. The live secret file was
+not accessed and no secret value was exposed during this bundle.
+
+SOPS/age remains `NOT_DEPLOYED` and `materialization_implemented=false`.
+WordPress remains conflicting pending separately authorized cutover;
+`SHOPPING_RUNTIME_ACTIVATED=NO`. No runtime, Docker, Compose, MariaDB,
+Production, Ubuntu, or Notion operation occurred.
+
 ## Current authoritative boundary — Shopping runtime mutation governance
 
 `SHOP-SERVICE-START-01A=CLOSED`. Architecture discovery, observer contracts,

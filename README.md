@@ -1,5 +1,23 @@
 # AIControlCenter
 
+## Runtime-cutover secret source authority
+
+Within the existing authoritative `SHOP-SERVICE-START-01B` work item, the
+repository now owns a fixed, read-only source contract at trusted Darwin passwd
+home + `Library/Application Support/AIControlCenter/secrets/shopping-commerce.env`.
+The prior live metadata observation informed the portable suffix but supplied
+no authority. Descriptor-relative no-follow checks enforce the canonical safe
+parent chain and a regular, non-empty, trusted UID/GID file with mode no broader
+than `0600`; the bounded observer emits only canonical `runtime_cutover`
+key-name presence from
+`deploy/shopping/config/secret-contract.json`.
+
+No new Work Unit, caller path override, executor, cutover, authorization,
+materialization, or runtime mutation was added. No live secret file or secret
+value was accessed. SOPS/age remains `NOT_DEPLOYED`,
+`materialization_implemented=false`, WordPress remains conflicting, and
+`SHOPPING_RUNTIME_ACTIVATED=NO`. No Notion synchronization is claimed.
+
 ## Current work boundary
 
 `SHOP-SERVICE-START-01A=CLOSED`. Its read-only scope—architecture discovery,

@@ -2,6 +2,13 @@
 
 ## Active — SHOP-SERVICE-START-01B controlled runtime governance
 
+- [x] Implement the fixed trusted Darwin passwd-home + Application Support
+  `runtime_cutover` source authority and value-free canonical key-name observer;
+  the historical live path was candidate evidence only and no live secret file
+  was accessed.
+- [x] Keep SOPS/age `NOT_DEPLOYED`, `materialization_implemented=false`,
+  WordPress conflicting, cutover unimplemented, and
+  `SHOPPING_RUNTIME_ACTIVATED=NO`; claim no Notion sync.
 - [x] Close `SHOP-SERVICE-START-01A` with
   `READ_ONLY_SCOPE_COMPLETE=YES`, `LIVE_EVIDENCE_RESOLVED=NO`,
   `SERVICE_START_DECISION_READY=NO`, and `SHOPPING_RUNTIME_ACTIVATED=NO`.

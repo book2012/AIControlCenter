@@ -2,6 +2,12 @@
 
 ## ACTIVE — SHOP-SERVICE-START-01B controlled runtime governance
 
+- [x] Establish the fixed trusted Darwin-home `runtime_cutover` source authority
+  and bounded, value-free canonical key-name observer without creating a new
+  Work Unit or accessing the live secret file.
+- [x] Preserve SOPS/age `NOT_DEPLOYED`,
+  `materialization_implemented=false`, conflicting WordPress state, no cutover,
+  no runtime mutation, and `SHOPPING_RUNTIME_ACTIVATED=NO`.
 - [x] Close `SHOP-SERVICE-START-01A` architecture discovery, observer contracts,
   live read-only adapter, typed diagnostics, and bounded observation.
 - [x] Establish the non-authorizing

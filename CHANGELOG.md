@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-09-03 — SHOP-SERVICE-START-01B runtime-cutover source authority
+
+- Added the repository-authoritative, fixed trusted-home source suffix
+  `Library/Application Support/AIControlCenter/secrets/shopping-commerce.env`,
+  informed by historical live metadata without treating that observation or a
+  literal user home as authority.
+- Reused Darwin UID/passwd-home and trusted UID/GID primitives with
+  descriptor-relative no-follow traversal, canonical closed parent-chain
+  ownership/mode policy, strict file metadata, bounded stable reading, and
+  canonical `secret-contract.json` key-name presence only.
+- Added no Work Unit, caller-selected path, executor, cutover, authorization,
+  materialization, or mutation surface. No live secret file was accessed and no
+  secret value was exposed.
+- Preserved SOPS/age `NOT_DEPLOYED`, `materialization_implemented=false`,
+  conflicting WordPress state, `SHOPPING_RUNTIME_ACTIVATED=NO`, and no Notion
+  sync claim.
+
 ## 2026-09-03 — SHOP-SERVICE-START-01A closed and runtime governance rebaselined
 
 - Closed `SHOP-SERVICE-START-01A` after completed architecture discovery,

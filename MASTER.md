@@ -1,5 +1,22 @@
 # MASTER
 
+## Current authoritative status — runtime-cutover source authority established
+
+`SHOP-SERVICE-START-01B` remains authoritative and no new Work Unit was
+created. Its repository-owned secret-source prerequisite now binds trusted
+Darwin passwd home to the fixed portable suffix
+`Library/Application Support/AIControlCenter/secrets/shopping-commerce.env`.
+Historical live metadata informed the suffix but conferred no authority.
+
+The boundary is read-only, descriptor-relative, no-follow, parent-chain safe,
+trusted UID/GID and maximum-`0600` bound, bounded, stable, and value-free.
+Required names come only from `deploy/shopping/config/secret-contract.json`; no
+caller path, executor,
+authorization, or mutation is exposed. No live secret file or value was
+accessed. SOPS/age remains `NOT_DEPLOYED`,
+`materialization_implemented=false`, WordPress remains conflicting, and
+`SHOPPING_RUNTIME_ACTIVATED=NO`. There was no Notion sync.
+
 ## Current authoritative status — controlled non-Production runtime governance
 
 `SHOP-SERVICE-START-01A=CLOSED`: architecture discovery, observer contracts,

@@ -1,5 +1,23 @@
 # Project History
 
+## 2026-09-03 — Runtime-cutover source authority established
+
+The existing authoritative `SHOP-SERVICE-START-01B` work item gained its fixed
+repository-owned `runtime_cutover` source prerequisite; no new Work Unit was
+created. The portable contract derives from trusted Darwin passwd home and the
+fixed `Library/Application Support/AIControlCenter/secrets/shopping-commerce.env`
+suffix. Historical live Docker metadata informed the suffix but did not confer
+authority, and no literal user-home path was made authoritative.
+
+The implementation reused descriptor-relative no-follow and trusted ownership
+patterns, accepted only a regular non-empty maximum-`0600` file, bounded and
+stability-checked observation, and emitted canonical contract key names only.
+No live secret file was accessed, no secret value was exposed, and no runtime,
+Docker, Compose, MariaDB, Production, Ubuntu, authorization, or Notion action
+occurred. SOPS/age stayed `NOT_DEPLOYED`,
+`materialization_implemented=false`; WordPress stayed conflicting and
+`SHOPPING_RUNTIME_ACTIVATED=NO`.
+
 ## 2026-09-03 — Shopping runtime governance rebaseline
 
 `SHOP-SERVICE-START-01A` closed with architecture discovery, observer contracts,
