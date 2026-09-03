@@ -6,6 +6,10 @@
   pure fail-closed recovery classification without mutation capability.
 - [x] Expose preservation or verified backup/restore only as a safety fact for
   both named Shopping state volumes; it grants no destructive authority.
+- [x] Implement immutable canonical-volume snapshots, pure pre/post volume
+  identity comparison, and the fixed-identity macOS read-only evidence adapter.
+  The adapter has not been used against live Docker; it exposes no physical
+  mountpoint or environment value and grants no authority.
 - [x] Require independent lifecycle-only proof for the sole healthy stopped
   start candidate; Broken and Unknown select no mutation.
 - [x] Establish the fixed trusted Darwin-home `runtime_cutover` source authority
@@ -51,6 +55,10 @@ Production WU09, `SHOP-CMS-01B`, and Apple signing are outside this path.
 `MUTATION_EXECUTED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+
+Continuity invariant: `VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY !=
+CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`, and
+`SAFETY_EVIDENCE != AUTHORITY`.
 
 Current source status from the later bounded live read-only preflight:
 `SOURCE_READY=YES`, `SOURCE_REASON=READY`, `SECRET_SOURCE_ACCESSED=YES`,

@@ -6,8 +6,16 @@
   recovery policy without mutation capability.
 - [x] Require lifecycle-only proof for a healthy stopped start candidate and
   expose storage-safety proof separately without granting destructive recovery.
+- [x] Add pure canonical-volume observations, pre/post identity-continuity
+  comparison, and a fixed macOS read-only adapter without live Docker use,
+  mountpoint projection, environment access, mutation, or authority.
 - [ ] Prove preservation or verified backup/restore before considering any
   destructive or state-replacing recovery candidate.
+
+Keep the boundary explicit: `VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY`;
+`VOLUME_IDENTITY_CONTINUITY != CONTENT_PRESERVATION`;
+`CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`; and
+`SAFETY_EVIDENCE != AUTHORITY`.
 
 `AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
 `BROKEN_PROFILE_POLICY=IMPLEMENTED`

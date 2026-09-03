@@ -1,5 +1,26 @@
 # AI Home Datacenter Architecture
 
+## SHOP-SERVICE-START-01B volume continuity evidence boundary
+
+The Mac Control Plane now owns pure immutable Shopping volume observations and
+a read-only, injected-runner adapter fixed to context
+`colima-aicontrolcenter-commerce`, project `ai-shopping`, canonical containers,
+and volumes `ai-shopping-database` at `/var/lib/mysql` and
+`ai-shopping-wordpress` at `/var/www/html`. It requests only structured volume
+identity and mount/Compose-label fields. Environment values and physical host
+mountpoints are neither requested nor projected.
+
+The comparison proves only `VOLUME_IDENTITY_CONTINUITY_PROVEN` when two complete
+observations retain exact stable creation identity and unambiguous named-volume
+attachments. It fails closed on absence, malformed/incomplete evidence,
+unexpected identities, destination/type mismatch, ambiguity, or changed
+identity metadata. `VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY`;
+`VOLUME_IDENTITY_CONTINUITY != CONTENT_PRESERVATION`;
+`CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`; and
+`SAFETY_EVIDENCE != AUTHORITY`. The adapter has not been used against live
+Docker. Ubuntu and Production were untouched; no authorization, executor,
+runtime mutation, recovery-policy wiring, or Notion sync was introduced.
+
 ## SHOP-SERVICE-START-01B Broken-profile recovery policy
 
 The existing authoritative work item now has a repository-only infrastructure

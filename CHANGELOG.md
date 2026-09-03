@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 2026-09-03 — SHOP-SERVICE-START-01B volume continuity evidence
+
+- Added frozen, value-free contracts for canonical Shopping volume existence,
+  identity metadata, expected attachment, completeness, and typed failure.
+- Added a pure pre/post policy that can prove only volume identity continuity;
+  same-name replacement, malformed evidence, wrong/bind/duplicate attachment,
+  absence, and unexpected identities fail closed.
+- Added a fixed-context, fixed-project, fixed-volume macOS read-only adapter
+  with injected command execution. It requests no environment data and exposes
+  no physical mountpoint.
+- Kept content preservation, backup/restore, recovery authority, and mutation
+  false. The adapter was not used against live Docker; Production, Ubuntu,
+  Colima, secrets, runtime state, and Notion were untouched.
+
+`VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY`
+`VOLUME_IDENTITY_CONTINUITY != CONTENT_PRESERVATION`
+`CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`
+`SAFETY_EVIDENCE != AUTHORITY`
+
 ## 2026-09-03 — SHOP-SERVICE-START-01B Broken-profile policy
 
 - Added separate infrastructure profile-health facts and a pure deterministic

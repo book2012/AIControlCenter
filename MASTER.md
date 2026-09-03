@@ -1,5 +1,24 @@
 # MASTER
 
+## Current authoritative volume continuity boundary
+
+Within `SHOP-SERVICE-START-01B`, immutable observations and a fixed macOS
+read-only adapter now distinguish canonical volume existence, expected
+attachment, stable identity continuity, content preservation, verified
+backup/restore, and mutation authority. Only pre/post stable identity plus
+exact unambiguous named-volume attachment can prove volume identity continuity.
+The adapter has not been used against live Docker and does not request secrets,
+environment values, or physical mountpoints.
+
+`VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY`
+`VOLUME_IDENTITY_CONTINUITY != CONTENT_PRESERVATION`
+`CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`
+`SAFETY_EVIDENCE != AUTHORITY`
+
+Content preservation and backup/restore remain unproven. Destructive recovery,
+authorization, mutation selection/execution, Production access, Ubuntu access,
+runtime activation, and Notion sync remain absent.
+
 ## Current authoritative Broken-profile boundary
 
 `SHOP-SERVICE-START-01B` now owns a pure repository-only profile-health and

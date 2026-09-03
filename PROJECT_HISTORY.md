@@ -1,5 +1,21 @@
 # Project History
 
+## 2026-09-03 — Volume continuity evidence adapter added in place
+
+The existing `SHOP-SERVICE-START-01B` work item gained immutable, value-free
+canonical volume snapshots, a pure pre/post identity-continuity comparison, and
+a fixed-context/project/container/volume macOS read-only adapter. The adapter
+has not been used against live Docker. It requests no environment data and
+never projects physical mountpoints.
+
+The boundary records that `VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY`,
+`VOLUME_IDENTITY_CONTINUITY != CONTENT_PRESERVATION`,
+`CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`, and
+`SAFETY_EVIDENCE != AUTHORITY`. Content preservation and backup/restore remain
+unproven. No destructive candidate, recovery wiring, authorization, mutation,
+Production/Ubuntu/live-secret access, runtime activation, or Notion sync was
+introduced.
+
 ## 2026-09-03 — Broken-profile recovery policy added in place
 
 The authoritative `SHOP-SERVICE-START-01B` work item gained a repository-only

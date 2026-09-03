@@ -1,5 +1,21 @@
 # AIControlCenter
 
+## SHOP-SERVICE-START-01B volume identity continuity
+
+This existing work item now includes immutable, JSON-safe observations for the
+two canonical Shopping volumes and a fixed-context macOS read-only adapter.
+Continuity requires matching stable creation identity plus exact, unambiguous
+Docker-volume attachment at `/var/lib/mysql` and `/var/www/html`; the name alone
+is insufficient. Physical mountpoints and environment values are excluded.
+
+`VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY`;
+`VOLUME_IDENTITY_CONTINUITY != CONTENT_PRESERVATION`;
+`CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`; and
+`SAFETY_EVIDENCE != AUTHORITY`. The adapter has not been used against live
+Docker. Backup/restore and content preservation remain unproven, destructive
+recovery remains unavailable, and no mutation, authorization, Production,
+Ubuntu, live-secret access, or Notion sync occurred.
+
 ## SHOP-SERVICE-START-01B Broken-profile recovery policy
 
 The authoritative work item now includes a repository-only pure profile-health
