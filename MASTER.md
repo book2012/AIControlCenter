@@ -1,6 +1,34 @@
 # MASTER
 
-## Current authoritative status — service-start read-only observation complete
+## Current authoritative status — controlled non-Production runtime governance
+
+`SHOP-SERVICE-START-01A=CLOSED`: architecture discovery, observer contracts,
+live read-only adapter, typed diagnostic semantics, and bounded live observation
+are complete. `READ_ONLY_SCOPE_COMPLETE=YES`, while
+`LIVE_EVIDENCE_RESOLVED=NO`, `SERVICE_START_DECISION_READY=NO`, and
+`SHOPPING_RUNTIME_ACTIVATED=NO`.
+
+`SHOP-SERVICE-START-01B` is now the authoritative
+`CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE` work. It grants no mutation
+authority. Fresh evidence must traverse repository, local process, Colima,
+conditional Docker-context, and conditional Compose-project observations before
+a deterministic decision, explicit human approval, one bounded mutation, and
+fresh read-only reconciliation. The candidates remain unselected and the
+decision is `MUTATION_UNDETERMINED`.
+
+The canonical runtime identities are `aicontrolcenter-commerce`,
+`colima-aicontrolcenter-commerce`, and `ai-shopping`. Runtime-layer resolution
+requires neither secrets nor authenticated MariaDB access. The future executor
+is Mac-only, governed, one-use, fixed-invocation, JSON-emitting, no-retry, and
+no-automatic-rollback; it accepts neither shell strings nor arbitrary argv and
+cannot combine dependency-layer mutations under one approval. Ubuntu and
+Production authority remain unavailable.
+
+Endpoint authority is `127.0.0.1:58081` for the observer Control Plane base and
+desired `127.0.0.1:58082` for WordPress. Port `8000` and
+`bokstory.iptime.org:58088` remain historical references.
+
+## Closed authoritative status — service-start read-only observation
 
 `SHOP-SERVICE-START-01A` now includes the minimum Mac-only live adapter over
 the existing runtime inspector and six-state model. Valid repository-defined
@@ -33,8 +61,8 @@ reported `loopback_http_unavailable`.
 `MARIADB_CONTINUITY_STATE=UNRESOLVED`
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
-`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
-`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
 
 ## Current authoritative status — WU09 Production composition ready
 

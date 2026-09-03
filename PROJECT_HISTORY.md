@@ -1,5 +1,26 @@
 # Project History
 
+## 2026-09-03 — Shopping runtime governance rebaseline
+
+`SHOP-SERVICE-START-01A` closed with architecture discovery, observer contracts,
+the live read-only adapter, typed diagnostic semantics, and bounded live
+observation complete. The evidence remained unresolved, no service-start
+decision became ready, and Shopping was not activated.
+
+Repository identifier review found no conflicting authoritative `01B`, so
+`SHOP-SERVICE-START-01B` became the next authoritative work, of kind
+`CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`. The boundary itself authorizes
+nothing. It records three unselected candidates—Colima profile create/start,
+Docker context create/select, and Shopping Compose provision/start—and requires
+fresh ordered evidence, explicit human approval for exactly one mutation, and
+fresh read-only reconciliation. Ambiguity remains `MUTATION_UNDETERMINED`.
+
+The future executor constraints, canonical runtime identities, secret and
+MariaDB-auth exclusions, endpoint authority distinctions, dependency-by-
+dependency soft-launch sequence, and separation from Production WU09,
+`SHOP-CMS-01B`, and Apple external signing were recorded without code, runtime
+access, mutation, or authorization consumption.
+
 ## 2026-09-03 — Shopping service-start read-only observation completed
 
 Implemented the minimum Mac-only live adapter by composing the existing
@@ -50,8 +71,8 @@ stateless worker. The next safe step is read-only local observation preparation.
 `MARIADB_CONTINUITY_STATE=UNRESOLVED`
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
-`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
-`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
 
 ## 2026-09-02 — WU09 Production composition prepared
 

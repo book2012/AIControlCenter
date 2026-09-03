@@ -2,6 +2,36 @@
 
 ## Current work boundary
 
+`SHOP-SERVICE-START-01A=CLOSED`. Its read-only scope—architecture discovery,
+observer contracts, live adapter, typed diagnostics, and bounded observation—is
+complete. Evidence remains unresolved, no service-start decision is ready, and
+Shopping is not activated.
+
+The next authoritative work is `SHOP-SERVICE-START-01B`, a
+`CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE` boundary. It does not authorize
+mutation. It resolves dependency layers in order using fresh credential-blind,
+fail-closed evidence, then permits at most one separately human-approved,
+predetermined mutation followed immediately by read-only reconciliation.
+Candidates are Colima profile create/start, Docker context create/select, and
+Shopping Compose provision/start; none is selected and the decision remains
+`MUTATION_UNDETERMINED`.
+
+The Mac mini M4 and AIControlCenter remain the sole Control Plane. The future
+executor must be Mac-only, one-use, fixed-invocation, structured-JSON, no-retry,
+and no-automatic-rollback, with fresh preconditions and reconciliation. It may
+not accept arbitrary commands/argv, access Ubuntu, gain Production authority,
+silently read secrets, or combine multiple runtime-layer mutations in one
+approval. Runtime availability resolution needs no secrets or MariaDB login.
+
+Canonical runtime identities are Colima `aicontrolcenter-commerce`, Docker
+context `colima-aicontrolcenter-commerce`, and Compose project `ai-shopping`.
+The observer base remains `127.0.0.1:58081`; desired WordPress is
+`127.0.0.1:58082`. `127.0.0.1:8000` and `bokstory.iptime.org:58088` are
+historical unless separately revalidated. Production WU09, `SHOP-CMS-01B`, and
+Apple external signing remain outside this path.
+
+## Closed work boundary — SHOP-SERVICE-START-01A
+
 `SHOP-SERVICE-START-01A` includes a Mac-only, credential-blind live adapter
 that reuses the existing runtime inspector and six-state aggregation model.
 Valid repository-defined HTTP non-healthy responses produce complete unhealthy
@@ -37,8 +67,8 @@ AIControlCenter Shopping, Dashboard, and Homepage reported
 `MARIADB_CONTINUITY_STATE=UNRESOLVED`
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
-`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
-`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
 
 ## Current authoritative — WU09 Production composition ready
 

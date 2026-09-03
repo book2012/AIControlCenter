@@ -1,5 +1,36 @@
 # CHANGELOG
 
+## 2026-09-03 — SHOP-SERVICE-START-01A closed and runtime governance rebaselined
+
+- Closed `SHOP-SERVICE-START-01A` after completed architecture discovery,
+  observer contracts, live read-only adapter, typed diagnostics, and bounded
+  observation. `READ_ONLY_SCOPE_COMPLETE=YES`; evidence and the service-start
+  decision remain unresolved, and Shopping remains inactive.
+- Established `SHOP-SERVICE-START-01B` as the non-authorizing
+  `CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE` boundary. It requires ordered,
+  fresh, credential-blind, fail-closed evidence, explicit human approval for
+  exactly one evidence-supported mutation, and fresh read-only reconciliation.
+- Recorded the unselected candidates `COLIMA_PROFILE_CREATE_OR_START`,
+  `DOCKER_CONTEXT_CREATE_OR_SELECT`, and
+  `SHOPPING_COMPOSE_PROVISION_OR_START`; ambiguous evidence remains
+  `MUTATION_UNDETERMINED`.
+- Specified the future Mac-only, one-use, fixed-invocation JSON executor
+  constraints without implementing an executor or authorizing mutation.
+- Confirmed runtime-layer resolution needs neither secrets nor MariaDB
+  authentication. Historical credential continuity remains unresolved; any
+  required secret handling belongs to a later separately governed
+  Compose/bootstrap boundary.
+- Preserved current endpoint authority (`127.0.0.1:58081` observer Control Plane
+  base; desired WordPress `127.0.0.1:58082`) and kept `127.0.0.1:8000` and
+  `bokstory.iptime.org:58088` historical. Production WU09, `SHOP-CMS-01B`, and
+  Apple external signing remain outside this path.
+
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
+`MUTATION_AUTHORIZED=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_DECISION=MUTATION_UNDETERMINED`
+
 ## 2026-09-03 — Shopping service-start live read-only observation bundle
 
 - Added the minimum Mac-only live adapter by composing canonical repository
@@ -53,8 +84,8 @@
 `MARIADB_CONTINUITY_STATE=UNRESOLVED`
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
-`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
-`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
 
 ## 2026-09-02 — WU09 Production composition ready
 

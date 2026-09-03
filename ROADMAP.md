@@ -1,6 +1,31 @@
 # Roadmap
 
-## ACTIVE — SHOP-SERVICE-START-01A read-only observation completed
+## ACTIVE — SHOP-SERVICE-START-01B controlled runtime governance
+
+- [x] Close `SHOP-SERVICE-START-01A` architecture discovery, observer contracts,
+  live read-only adapter, typed diagnostics, and bounded observation.
+- [x] Establish the non-authorizing
+  `CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE` boundary.
+- [ ] Obtain fresh evidence in strict order: repository preflight -> local
+  executable/process -> Colima read-only -> conditional Docker context ->
+  conditional Compose project.
+- [ ] Make a deterministic decision; incomplete or ambiguous evidence remains
+  `MUTATION_UNDETERMINED`.
+- [ ] Under separate explicit human approval, execute exactly one selected
+  bounded mutation, then reconcile read-only immediately.
+- [ ] Repeat governance only for the next unresolved dependency, progressing
+  through MariaDB, WordPress on `58082`, separately governed WooCommerce
+  bootstrap if required, WooCommerce, AIControlCenter Shopping, Dashboard,
+  Homepage, activation, and separate storefront soft-launch validation.
+
+No candidate is selected. Candidates are `COLIMA_PROFILE_CREATE_OR_START`,
+`DOCKER_CONTEXT_CREATE_OR_SELECT`, and
+`SHOPPING_COMPOSE_PROVISION_OR_START`. The future executor requirements remain
+documentation-only. Secret access and MariaDB authentication are unnecessary
+for runtime-layer resolution; historical credential continuity is unresolved.
+Production WU09, `SHOP-CMS-01B`, and Apple signing are outside this path.
+
+## COMPLETE — SHOP-SERVICE-START-01A read-only observation
 
 Observer-contract implementation is complete at
 `24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
@@ -23,8 +48,8 @@ observation contracts`).
   `1135d3cd1b8546c7a064a462fd420726`: `4573 passed, 5 deselected, 463
   warnings, 2 subtests passed in 466.83s (0:07:46)` at
   `/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`.
-- [ ] Establish any later mutation boundary only as a separate governed work
-  item after read-only evidence is reviewed.
+- [x] Establish later mutation governance as a separate, non-authorizing work
+  item after read-only evidence review.
 
 No Production/runtime mutation, authorization consumption, secret read,
 MariaDB authentication, SQL, retry, Ubuntu access, or activation occurred.
@@ -45,8 +70,8 @@ Production paths. Apple external signing/distribution is deferred.
 `MARIADB_CONTINUITY_STATE=UNRESOLVED`
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
-`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
-`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
 
 ## Current authoritative — WU09 Production composition ready
 

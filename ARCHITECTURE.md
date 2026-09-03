@@ -1,6 +1,89 @@
 # AI Home Datacenter Architecture
 
-## Current authoritative boundary — Shopping service-start read-only observation
+## Current authoritative boundary — Shopping runtime mutation governance
+
+`SHOP-SERVICE-START-01A=CLOSED`. Architecture discovery, observer contracts,
+the live read-only adapter, typed diagnostic semantics, and bounded live
+observation are complete. The observation remains unresolved and did not
+activate Shopping:
+
+`READ_ONLY_SCOPE_COMPLETE=YES`
+`READ_ONLY_OBSERVER_IMPLEMENTED=YES`
+`LIVE_OBSERVATION_PERFORMED=YES`
+`LIVE_EVIDENCE_RESOLVED=NO`
+`SERVICE_START_DECISION_READY=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+
+The next authoritative work is `SHOP-SERVICE-START-01B`, of kind
+`CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`. Creating this boundary does not
+authorize mutation. Its purpose is to resolve the first unavailable local
+runtime dependency using fresh, credential-blind, fail-closed evidence, then
+permit at most one separately approved bounded mutation justified by that exact
+evidence.
+
+The mandatory decision order is: repository preflight -> local
+executable/process observation -> Colima read-only observation -> conditional
+Docker-context observation -> conditional Compose-project observation ->
+deterministic mutation decision -> explicit human approval -> exactly one
+bounded mutation -> fresh read-only reconciliation. Incomplete or ambiguous
+evidence produces `MUTATION_DECISION=MUTATION_UNDETERMINED`.
+
+`MUTATION_AUTHORIZED=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_DECISION=MUTATION_UNDETERMINED`
+
+Candidate mutations are documented but not selected:
+`COLIMA_PROFILE_CREATE_OR_START`, `DOCKER_CONTEXT_CREATE_OR_SELECT`, and
+`SHOPPING_COMPOSE_PROVISION_OR_START`. The canonical identities are Colima
+profile `aicontrolcenter-commerce`, Docker context
+`colima-aicontrolcenter-commerce`, and Compose project `ai-shopping`.
+The dependency order is Colima profile -> Docker context -> Shopping Compose
+project -> MariaDB -> WordPress -> WooCommerce -> AIControlCenter Shopping ->
+Dashboard -> Homepage.
+
+A future bounded executor must be Mac-only and remain under AIControlCenter
+governance. It must accept an injected one-use execution capability and execute
+exactly one predetermined invocation; it must never accept arbitrary shell
+strings or externally supplied arbitrary argv. It has no retry or automatic
+rollback authority, emits structured JSON, requires fresh preconditions
+immediately before mutation and read-only reconciliation immediately after it,
+never accesses Ubuntu or obtains Production authority, never silently reads
+secrets, and never combines Colima, Docker-context, and Compose mutations under
+one approval. No executor is implemented by this documentation boundary.
+
+Secret access is unnecessary to resolve Colima profile, Docker context, or
+runtime availability, and authenticated MariaDB access is unnecessary for this
+runtime-layer resolution. Historical MariaDB credential continuity remains
+unresolved. Secrets may enter only a later separately governed Compose/bootstrap
+boundary when its exact mutation requires them.
+
+`SECRET_ACCESS_REQUIRED_FOR_RUNTIME_LAYER_RESOLUTION=NO`
+`MARIADB_AUTH_REQUIRED_FOR_RUNTIME_LAYER_RESOLUTION=NO`
+
+Endpoint authority remains distinct: the current observer Control Plane base is
+`127.0.0.1:58081`, while the desired WordPress loopback is
+`127.0.0.1:58082`. References to `127.0.0.1:8000` and
+`bokstory.iptime.org:58088` remain historical unless current authoritative
+repository contracts separately revalidate and promote them; historical records
+must not be rewritten merely to normalize ports.
+
+The fast-track soft-launch sequence is: `SHOP-SERVICE-START-01A` closed ->
+runtime governance/evidence boundary -> exactly one evidence-supported mutation
+-> read-only reconciliation -> repeat only while another dependency layer is
+unresolved -> MariaDB readiness -> WordPress readiness and `58082` binding ->
+separately governed WooCommerce/bootstrap operation if required -> WooCommerce
+read-only readiness -> AIControlCenter Shopping validation -> Dashboard
+validation -> Homepage validation -> `SHOPPING_RUNTIME_ACTIVATED` -> separate
+storefront soft-launch validation. Production WU09 and Apple external signing
+remain outside this path. `SHOP-CMS-01B` and WU09 remain Production paths and
+cannot authorize this controlled non-Production path.
+
+The Mac mini M4 and AIControlCenter remain the sole Control Plane. Ubuntu is a
+stateless infrastructure worker and owns no Shopping business logic, application
+state, AI workload, governance, authorization, or deployment authority.
+`CONTROLLED_NON_PRODUCTION` is not Production authorization.
+
+## Closed boundary — Shopping service-start read-only observation
 
 `SHOP-SERVICE-START-01A` now has a Mac-only, credential-blind live adapter that
 composes the existing runtime inspector, canonical repository facts, fixed
@@ -51,8 +134,8 @@ governed boundary after fresh evidence resolves the `UNKNOWN` runtime state.
 `MARIADB_CONTINUITY_STATE=UNRESOLVED`
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
-`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
-`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
 
 ## Current authoritative boundary — WU09 Production composition ready
 

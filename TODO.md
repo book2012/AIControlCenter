@@ -1,6 +1,30 @@
 # TODO
 
-## Active — SHOP-SERVICE-START-01A read-only observation completed
+## Active — SHOP-SERVICE-START-01B controlled runtime governance
+
+- [x] Close `SHOP-SERVICE-START-01A` with
+  `READ_ONLY_SCOPE_COMPLETE=YES`, `LIVE_EVIDENCE_RESOLVED=NO`,
+  `SERVICE_START_DECISION_READY=NO`, and `SHOPPING_RUNTIME_ACTIVATED=NO`.
+- [x] Define the fresh, credential-blind, fail-closed evidence order and record
+  that the boundary itself grants no mutation authority.
+- [x] Document the future Mac-only, one-use, predetermined-invocation executor;
+  do not implement it.
+- [ ] Observe repository, process, Colima, conditional Docker context, and
+  conditional Compose project state in order.
+- [ ] Keep `MUTATION_DECISION=MUTATION_UNDETERMINED` until evidence uniquely
+  supports one of the three documented candidates.
+- [ ] Obtain separate explicit human approval for exactly one candidate, require
+  fresh preconditions, execute once without retry or automatic rollback, and
+  perform immediate read-only reconciliation.
+
+Canonical identities: `aicontrolcenter-commerce`,
+`colima-aicontrolcenter-commerce`, and `ai-shopping`. Runtime-layer resolution
+requires neither secrets nor MariaDB authentication. Preserve observer
+`127.0.0.1:58081`, desired WordPress `127.0.0.1:58082`, and historical-only
+`127.0.0.1:8000` / `bokstory.iptime.org:58088`. Keep Ubuntu, Production WU09,
+`SHOP-CMS-01B`, and Apple signing outside this path.
+
+## Complete — SHOP-SERVICE-START-01A read-only observation
 
 - [x] Complete observer contracts at
   `24c11be991707287d0132a1bf0f1a52a58f57e07` (`feat: add shopping service-start
@@ -22,8 +46,8 @@
   `1135d3cd1b8546c7a064a462fd420726`: `4573 passed, 5 deselected, 463
   warnings, 2 subtests passed in 466.83s (0:07:46)` at
   `/private/tmp/aicontrolcenter-canonical-evidence.0Q7FTA`.
-- [ ] Keep service-start mutation outside this work item and subject it to a
-  later, separate governance decision.
+- [x] Keep service-start mutation outside this work item and subject it to the
+  separate non-authorizing `SHOP-SERVICE-START-01B` governance boundary.
 
 No Production/runtime mutation, authorization consumption, secret read,
 MariaDB authentication, SQL, automatic retry, Ubuntu access, or activation
@@ -42,8 +66,8 @@ AIControlCenter Shopping, Dashboard, and Homepage reported
 `MARIADB_CONTINUITY_STATE=UNRESOLVED`
 `SERVICE_START_PLANNING=ACTIVE`
 `EXISTING_REUSABLE_RUNTIME_BOUNDARY=CONTROLLED_NON_PRODUCTION`
-`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01A`
-`NEXT_WORK_KIND=READ_ONLY_DISCOVERY`
+`AUTHORITATIVE_NEXT_WORK=SHOP-SERVICE-START-01B`
+`NEXT_WORK_KIND=CONTROLLED_NON_PRODUCTION_RUNTIME_GOVERNANCE`
 
 ## WU09 Production composition ready
 
