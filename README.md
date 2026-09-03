@@ -1,5 +1,35 @@
 # AIControlCenter
 
+## SHOP-SERVICE-START-01B Broken-profile recovery policy
+
+The authoritative work item now includes a repository-only pure profile-health
+and recovery decision policy. Infrastructure `HEALTHY`, `BROKEN`, and `UNKNOWN`
+remain separate from Shopping service state. Broken never becomes `STOPPED` or
+selects start; Unknown selects no mutation. Only an existing healthy, stopped
+profile with independent lifecycle-only proof may expose an unselected
+`START_EXISTING_PROFILE_ONCE` candidate. The configuration-bearing
+`--save-config` planner is not that proof.
+
+`ai-shopping-wordpress` and `ai-shopping-database` remain protected persistent
+state. Preservation and verified backup/restore evidence are safety facts, not
+authority; neither is proven, and destructive recovery is unavailable. No
+repair, recreation, live mutation, authorization,
+runtime activation, Production/Ubuntu access, or Notion sync occurred.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`BROKEN_PROFILE_POLICY=IMPLEMENTED`
+`BROKEN_NORMALIZES_TO_STOPPED=NO`
+`BROKEN_AUTOMATIC_START=NO`
+`STORAGE_PROTECTION_EVIDENCE_IS_AUTHORITY=NO`
+`REPAIR_EXECUTOR_IMPLEMENTED=NO`
+`RECREATE_EXECUTOR_IMPLEMENTED=NO`
+`DESTRUCTIVE_RECOVERY_AVAILABLE=NO`
+`STORAGE_PRESERVATION_PROVEN=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
+
 ## Runtime-cutover secret source authority
 
 Within the existing authoritative `SHOP-SERVICE-START-01B` work item, the
@@ -13,8 +43,20 @@ key-name presence from
 `deploy/shopping/config/secret-contract.json`.
 
 No new Work Unit, caller path override, executor, cutover, authorization,
-materialization, or runtime mutation was added. No live secret file or secret
-value was accessed. SOPS/age remains `NOT_DEPLOYED`,
+materialization, or runtime mutation was added. The implementation bundle did
+not access the live source, and repository tests used fixtures. A later bounded
+live read-only preflight accessed and parsed the source value-blind; no secret
+value was inspected, serialized, emitted, logged, hashed, compared, or exposed.
+
+`SOURCE_READY=YES`
+`SOURCE_REASON=READY`
+`SECRET_SOURCE_ACCESSED=YES`
+`SECRET_CONTENT_PARSED_VALUE_BLIND=YES`
+`SECRET_VALUES_EMITTED=NO`
+`SECRET_VALUES_LOGGED=NO`
+`SECRET_VALUES_HASHED=NO`
+
+SOPS/age remains `NOT_DEPLOYED`,
 `materialization_implemented=false`, WordPress remains conflicting, and
 `SHOPPING_RUNTIME_ACTIVATED=NO`. No Notion synchronization is claimed.
 

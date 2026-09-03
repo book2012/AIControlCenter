@@ -1,5 +1,45 @@
 # AI Home Datacenter Architecture
 
+## SHOP-SERVICE-START-01B Broken-profile recovery policy
+
+The existing authoritative work item now has a repository-only infrastructure
+profile-health contract (`HEALTHY`, `BROKEN`, `UNKNOWN`) separate from Shopping
+`ServiceStartState`. It retains exact profile identity, existence, value-free
+raw inventory status, runtime-running state, and health. Raw status is
+diagnostic evidence, not authorization input. `BROKEN` never normalizes to
+`STOPPED` and cannot select ordinary start.
+
+Only an existing `HEALTHY`, stopped profile with independently proven
+lifecycle-only semantics may expose `START_EXISTING_PROFILE_ONCE` as an
+unselected candidate. The existing configuration-bearing `--save-config`
+planner does not provide that proof. `BROKEN` and `UNKNOWN` select no mutation.
+
+Named volumes `ai-shopping-wordpress` and `ai-shopping-database` are persistent
+Shopping state. Preservation and verified backup/restore evidence are safety
+facts, never authority. Neither is proven, and no destructive recovery
+mechanism exists.
+No physical mountpoint is inferred. Existing volume-deletion prohibitions
+remain in force.
+
+AIControlCenter remains the sole Control Plane. This is infrastructure policy,
+not Shopping business logic. Ubuntu remains stateless; Production and external
+components receive no authority. Retry, authorization, executor, selected
+mutation, runtime activation, and live reconciliation are absent.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`BROKEN_PROFILE_POLICY=IMPLEMENTED`
+`BROKEN_NORMALIZES_TO_STOPPED=NO`
+`BROKEN_AUTOMATIC_START=NO`
+`STORAGE_PROTECTION_EVIDENCE_IS_AUTHORITY=NO`
+`REPAIR_EXECUTOR_IMPLEMENTED=NO`
+`RECREATE_EXECUTOR_IMPLEMENTED=NO`
+`DESTRUCTIVE_RECOVERY_AVAILABLE=NO`
+`STORAGE_PRESERVATION_PROVEN=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
+
 ## SHOP-SERVICE-START-01B runtime-cutover source authority
 
 The authoritative work item remains `SHOP-SERVICE-START-01B`; no new Work Unit
@@ -15,8 +55,19 @@ shared `AIControlCenter` parent, exact `0700` on `secrets`, regular-file and
 maximum-`0600` checks, bounded stable reads, and exact key-name metadata from
 `secret-contract.json`. Its projection
 is deterministic and value-free. It provides no caller path override, secret
-materialization, authorization, or mutation surface. The live secret file was
-not accessed and no secret value was exposed during this bundle.
+materialization, authorization, or mutation surface. The implementation bundle
+did not access the live source, and repository tests used fixtures. A later
+bounded live read-only preflight accessed and parsed the source value-blind;
+no secret value was inspected, serialized, emitted, logged, hashed, compared,
+or exposed.
+
+`SOURCE_READY=YES`
+`SOURCE_REASON=READY`
+`SECRET_SOURCE_ACCESSED=YES`
+`SECRET_CONTENT_PARSED_VALUE_BLIND=YES`
+`SECRET_VALUES_EMITTED=NO`
+`SECRET_VALUES_LOGGED=NO`
+`SECRET_VALUES_HASHED=NO`
 
 SOPS/age remains `NOT_DEPLOYED` and `materialization_implemented=false`.
 WordPress remains conflicting pending separately authorized cutover;

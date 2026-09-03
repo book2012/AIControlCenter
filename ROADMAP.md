@@ -2,9 +2,16 @@
 
 ## ACTIVE — SHOP-SERVICE-START-01B controlled runtime governance
 
+- [x] Add separate `HEALTHY` / `BROKEN` / `UNKNOWN` infrastructure health and
+  pure fail-closed recovery classification without mutation capability.
+- [x] Expose preservation or verified backup/restore only as a safety fact for
+  both named Shopping state volumes; it grants no destructive authority.
+- [x] Require independent lifecycle-only proof for the sole healthy stopped
+  start candidate; Broken and Unknown select no mutation.
 - [x] Establish the fixed trusted Darwin-home `runtime_cutover` source authority
   and bounded, value-free canonical key-name observer without creating a new
-  Work Unit or accessing the live secret file.
+  Work Unit. The implementation and fixture tests did not access the live
+  source; a later bounded read-only preflight did.
 - [x] Preserve SOPS/age `NOT_DEPLOYED`,
   `materialization_implemented=false`, conflicting WordPress state, no cutover,
   no runtime mutation, and `SHOPPING_RUNTIME_ACTIVATED=NO`.
@@ -30,6 +37,25 @@ No candidate is selected. Candidates are `COLIMA_PROFILE_CREATE_OR_START`,
 documentation-only. Secret access and MariaDB authentication are unnecessary
 for runtime-layer resolution; historical credential continuity is unresolved.
 Production WU09, `SHOP-CMS-01B`, and Apple signing are outside this path.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`BROKEN_PROFILE_POLICY=IMPLEMENTED`
+`BROKEN_NORMALIZES_TO_STOPPED=NO`
+`BROKEN_AUTOMATIC_START=NO`
+`STORAGE_PROTECTION_EVIDENCE_IS_AUTHORITY=NO`
+`REPAIR_EXECUTOR_IMPLEMENTED=NO`
+`RECREATE_EXECUTOR_IMPLEMENTED=NO`
+`DESTRUCTIVE_RECOVERY_AVAILABLE=NO`
+`STORAGE_PRESERVATION_PROVEN=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
+
+Current source status from the later bounded live read-only preflight:
+`SOURCE_READY=YES`, `SOURCE_REASON=READY`, `SECRET_SOURCE_ACCESSED=YES`,
+`SECRET_CONTENT_PARSED_VALUE_BLIND=YES`, `SECRET_VALUES_EMITTED=NO`,
+`SECRET_VALUES_LOGGED=NO`, and `SECRET_VALUES_HASHED=NO`.
 
 ## COMPLETE — SHOP-SERVICE-START-01A read-only observation
 

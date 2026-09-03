@@ -2,10 +2,35 @@
 
 ## Active — SHOP-SERVICE-START-01B controlled runtime governance
 
+- [x] Implement separate Broken-profile classification and pure fail-closed
+  recovery policy without mutation capability.
+- [x] Require lifecycle-only proof for a healthy stopped start candidate and
+  expose storage-safety proof separately without granting destructive recovery.
+- [ ] Prove preservation or verified backup/restore before considering any
+  destructive or state-replacing recovery candidate.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`BROKEN_PROFILE_POLICY=IMPLEMENTED`
+`BROKEN_NORMALIZES_TO_STOPPED=NO`
+`BROKEN_AUTOMATIC_START=NO`
+`STORAGE_PROTECTION_EVIDENCE_IS_AUTHORITY=NO`
+`REPAIR_EXECUTOR_IMPLEMENTED=NO`
+`RECREATE_EXECUTOR_IMPLEMENTED=NO`
+`DESTRUCTIVE_RECOVERY_AVAILABLE=NO`
+`STORAGE_PRESERVATION_PROVEN=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
 - [x] Implement the fixed trusted Darwin passwd-home + Application Support
   `runtime_cutover` source authority and value-free canonical key-name observer;
-  the historical live path was candidate evidence only and no live secret file
-  was accessed.
+  the historical live path was candidate evidence only. The implementation and
+  fixture tests did not access the live source; a later bounded read-only
+  preflight did.
+- [x] Reconcile current source status as `SOURCE_READY=YES`,
+  `SOURCE_REASON=READY`, `SECRET_SOURCE_ACCESSED=YES`,
+  `SECRET_CONTENT_PARSED_VALUE_BLIND=YES`, `SECRET_VALUES_EMITTED=NO`,
+  `SECRET_VALUES_LOGGED=NO`, and `SECRET_VALUES_HASHED=NO`.
 - [x] Keep SOPS/age `NOT_DEPLOYED`, `materialization_implemented=false`,
   WordPress conflicting, cutover unimplemented, and
   `SHOPPING_RUNTIME_ACTIVATED=NO`; claim no Notion sync.

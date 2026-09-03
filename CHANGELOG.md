@@ -1,5 +1,31 @@
 # CHANGELOG
 
+## 2026-09-03 — SHOP-SERVICE-START-01B Broken-profile policy
+
+- Added separate infrastructure profile-health facts and a pure deterministic
+  recovery policy. Broken does not normalize to Shopping stopped or select
+  ordinary start; Unknown selects no mutation.
+- Exposed preservation or verified backup/restore proof only as a safety fact
+  for the two named Shopping state volumes; it grants no authority, and
+  destructive recovery remains unavailable for every policy result.
+- Added no command, subprocess, repair, recreation, backup, restore,
+  authorization, retry, or live mutation surface. The configuration-bearing
+  `--save-config` planner is not lifecycle-only proof.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`BROKEN_PROFILE_POLICY=IMPLEMENTED`
+`BROKEN_NORMALIZES_TO_STOPPED=NO`
+`BROKEN_AUTOMATIC_START=NO`
+`STORAGE_PROTECTION_EVIDENCE_IS_AUTHORITY=NO`
+`REPAIR_EXECUTOR_IMPLEMENTED=NO`
+`RECREATE_EXECUTOR_IMPLEMENTED=NO`
+`DESTRUCTIVE_RECOVERY_AVAILABLE=NO`
+`STORAGE_PRESERVATION_PROVEN=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
+
 ## 2026-09-03 — SHOP-SERVICE-START-01B runtime-cutover source authority
 
 - Added the repository-authoritative, fixed trusted-home source suffix
@@ -13,6 +39,18 @@
 - Added no Work Unit, caller-selected path, executor, cutover, authorization,
   materialization, or mutation surface. No live secret file was accessed and no
   secret value was exposed.
+- Reconciled current status with the later bounded live read-only preflight:
+  the source was ready, accessed, and parsed value-blind while no secret value
+  was emitted, logged, or hashed. The implementation bundle itself did not
+  access the source, and repository tests used fixtures.
+
+`SOURCE_READY=YES`
+`SOURCE_REASON=READY`
+`SECRET_SOURCE_ACCESSED=YES`
+`SECRET_CONTENT_PARSED_VALUE_BLIND=YES`
+`SECRET_VALUES_EMITTED=NO`
+`SECRET_VALUES_LOGGED=NO`
+`SECRET_VALUES_HASHED=NO`
 - Preserved SOPS/age `NOT_DEPLOYED`, `materialization_implemented=false`,
   conflicting WordPress state, `SHOPPING_RUNTIME_ACTIVATED=NO`, and no Notion
   sync claim.

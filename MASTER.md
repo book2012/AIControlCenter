@@ -1,5 +1,31 @@
 # MASTER
 
+## Current authoritative Broken-profile boundary
+
+`SHOP-SERVICE-START-01B` now owns a pure repository-only profile-health and
+recovery policy without a new Work Unit. Broken and Unknown select no mutation.
+Only a healthy stopped profile with independent lifecycle-only proof can expose
+an unselected one-time start candidate; the existing configured planner is not
+proof. Persistent volumes `ai-shopping-wordpress` and
+`ai-shopping-database` are protected by fail-closed safety evidence.
+Preservation and verified backup/restore remain unproven and grant no
+authority. AIControlCenter stays the sole Control Plane, Ubuntu stays stateless,
+and Production authority is false.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`BROKEN_PROFILE_POLICY=IMPLEMENTED`
+`BROKEN_NORMALIZES_TO_STOPPED=NO`
+`BROKEN_AUTOMATIC_START=NO`
+`STORAGE_PROTECTION_EVIDENCE_IS_AUTHORITY=NO`
+`REPAIR_EXECUTOR_IMPLEMENTED=NO`
+`RECREATE_EXECUTOR_IMPLEMENTED=NO`
+`DESTRUCTIVE_RECOVERY_AVAILABLE=NO`
+`STORAGE_PRESERVATION_PROVEN=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
+
 ## Current authoritative status — runtime-cutover source authority established
 
 `SHOP-SERVICE-START-01B` remains authoritative and no new Work Unit was
@@ -12,8 +38,20 @@ The boundary is read-only, descriptor-relative, no-follow, parent-chain safe,
 trusted UID/GID and maximum-`0600` bound, bounded, stable, and value-free.
 Required names come only from `deploy/shopping/config/secret-contract.json`; no
 caller path, executor,
-authorization, or mutation is exposed. No live secret file or value was
-accessed. SOPS/age remains `NOT_DEPLOYED`,
+authorization, or mutation is exposed. The implementation bundle did not
+access the live source, and repository tests used fixtures. A later bounded
+live read-only preflight found it ready and parsed it value-blind; no secret
+value was inspected, serialized, emitted, logged, hashed, compared, or exposed.
+
+`SOURCE_READY=YES`
+`SOURCE_REASON=READY`
+`SECRET_SOURCE_ACCESSED=YES`
+`SECRET_CONTENT_PARSED_VALUE_BLIND=YES`
+`SECRET_VALUES_EMITTED=NO`
+`SECRET_VALUES_LOGGED=NO`
+`SECRET_VALUES_HASHED=NO`
+
+SOPS/age remains `NOT_DEPLOYED`,
 `materialization_implemented=false`, WordPress remains conflicting, and
 `SHOPPING_RUNTIME_ACTIVATED=NO`. There was no Notion sync.
 

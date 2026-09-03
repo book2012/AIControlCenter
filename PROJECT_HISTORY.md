@@ -1,5 +1,48 @@
 # Project History
 
+## 2026-09-03 — Broken-profile recovery policy added in place
+
+The authoritative `SHOP-SERVICE-START-01B` work item gained a repository-only
+infrastructure profile-health contract and pure deterministic recovery policy;
+no Work Unit was created. Broken cannot be interpreted as a stopped Shopping
+service and cannot automatically select start or destructive recovery. Unknown
+selects no mutation. The existing configuration-bearing planner does not prove
+lifecycle-only semantics.
+
+The policy records `ai-shopping-wordpress` and `ai-shopping-database` as
+persistent state and treats preservation or verified backup/restore only as a
+safety fact, never authority. Neither is proven. No repair, recreation, live
+mutation, authorization, Production/Ubuntu access, activation, or Notion sync
+occurred.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`BROKEN_PROFILE_POLICY=IMPLEMENTED`
+`BROKEN_NORMALIZES_TO_STOPPED=NO`
+`BROKEN_AUTOMATIC_START=NO`
+`STORAGE_PROTECTION_EVIDENCE_IS_AUTHORITY=NO`
+`REPAIR_EXECUTOR_IMPLEMENTED=NO`
+`RECREATE_EXECUTOR_IMPLEMENTED=NO`
+`DESTRUCTIVE_RECOVERY_AVAILABLE=NO`
+`STORAGE_PRESERVATION_PROVEN=NO`
+`MUTATION_SELECTED=NO`
+`MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
+
+Current status also incorporates a later bounded live read-only preflight. The
+repository implementation bundle did not access the source and its tests used
+fixtures; the later preflight found the source ready and parsed it value-blind.
+No secret value was inspected, serialized, emitted, logged, hashed, compared,
+or exposed.
+
+`SOURCE_READY=YES`
+`SOURCE_REASON=READY`
+`SECRET_SOURCE_ACCESSED=YES`
+`SECRET_CONTENT_PARSED_VALUE_BLIND=YES`
+`SECRET_VALUES_EMITTED=NO`
+`SECRET_VALUES_LOGGED=NO`
+`SECRET_VALUES_HASHED=NO`
+
 ## 2026-09-03 — Runtime-cutover source authority established
 
 The existing authoritative `SHOP-SERVICE-START-01B` work item gained its fixed
