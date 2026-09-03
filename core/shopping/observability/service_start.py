@@ -65,6 +65,23 @@ class ObservationError(str, Enum):
     AMBIGUOUS_EVIDENCE = "ambiguous_evidence"
 
 
+class ObservationSource(str, Enum):
+    CONTAINER_RUNTIME = "container_runtime"
+    LOOPBACK_HTTP = "loopback_http"
+
+
+class ObservationReason(str, Enum):
+    RUNTIME_UNAVAILABLE = "runtime_unavailable"
+    DOCKER_INSPECTION_UNAVAILABLE = "docker_inspection_unavailable"
+    RUNTIME_NOT_DEPLOYED = "runtime_not_deployed"
+    RUNTIME_NOT_HEALTHY = "runtime_not_healthy"
+    MALFORMED_DOCKER_INSPECTION = "malformed_docker_inspection"
+    PORT_COLLISION = "port_collision"
+    LOOPBACK_HTTP_UNAVAILABLE = "loopback_http_unavailable"
+    HTTP_NON_SUCCESS = "http_non_success"
+    MALFORMED_HTTP_EVIDENCE = "malformed_http_evidence"
+
+
 @dataclass(frozen=True, slots=True)
 class ServiceStartEvidence:
     """Value-free result supplied by a future read-only observer."""
@@ -77,6 +94,8 @@ class ServiceStartEvidence:
     healthy: bool | None = None
     conflict: bool | None = None
     error: ObservationError = ObservationError.NONE
+    source: ObservationSource | None = None
+    reason: ObservationReason | None = None
 
     def is_complete(self) -> bool:
         return (
@@ -148,14 +167,27 @@ def build_service_start_projection(
 ) -> dict[str, Any]:
     """Build a stable, JSON-safe Dashboard projection without side effects."""
     rows = tuple(evidence)
-    components = [
-        {
+    components = []
+    for component in ShoppingComponent:
+        component_rows = sorted(
+            (row for row in rows if row.component is component),
+            key=lambda row: row.category.value,
+        )
+        components.append({
             "component": component.value,
             "kind": COMPONENT_KINDS[component].value,
             "status": aggregate_service_start_state(component, rows).value,
-        }
-        for component in ShoppingComponent
-    ]
+            "diagnostics": [
+                {
+                    "category": row.category.value,
+                    "completeness": row.completeness.value,
+                    "error": row.error.value,
+                    **({"source": row.source.value} if row.source is not None else {}),
+                    **({"reason": row.reason.value} if row.reason is not None else {}),
+                }
+                for row in component_rows
+            ],
+        })
     statuses = [item["status"] for item in components]
     observation_complete = all(
         status != ServiceStartState.UNKNOWN.value
@@ -195,6 +227,8 @@ __all__ = (
     "ObservationCategory",
     "ObservationCompleteness",
     "ObservationError",
+    "ObservationReason",
+    "ObservationSource",
     "ServiceStartEvidence",
     "ServiceStartState",
     "ShoppingComponent",

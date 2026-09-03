@@ -87,6 +87,29 @@ def _published_ports(row: dict[str, object]) -> set[int]:
     }
 
 
+def _publishers(row: dict[str, object]) -> list[dict[str, object]] | None:
+    """Normalize Compose publisher JSON without inferring omitted evidence."""
+    if "Publishers" not in row:
+        return None
+    value = row["Publishers"]
+    if value is None:
+        return []
+    if not isinstance(value, list) or any(not isinstance(item, dict) for item in value):
+        raise ValueError("compose publishers are malformed")
+    fields = ("URL", "TargetPort", "PublishedPort", "Protocol")
+    if any(set(item) < set(fields) for item in value):
+        raise ValueError("compose publisher is incomplete")
+    if any(
+        not isinstance(item["URL"], str)
+        or type(item["TargetPort"]) is not int
+        or type(item["PublishedPort"]) is not int
+        or not isinstance(item["Protocol"], str)
+        for item in value
+    ):
+        raise ValueError("compose publisher has invalid field types")
+    return [{field: item[field] for field in fields} for item in value]
+
+
 def inspect_runtime(runner: Runner = _run) -> dict[str, object]:
     result: dict[str, object] = {
         "schema_version": "1.0", "project": PROJECT, "context": CONTEXT,
@@ -95,6 +118,7 @@ def inspect_runtime(runner: Runner = _run) -> dict[str, object]:
         "wordpress": {"present": False, "running": False, "healthy": False},
         "database": {"present": False, "running": False, "healthy": False},
         "woocommerce": {"kind": "wordpress-hosted-capability", "ready": False},
+        "publishers": {"wordpress": None, "database": None},
         "error_type": None,
     }
     colima = runner(("colima", "status", "--profile", PROFILE))
@@ -122,6 +146,7 @@ def inspect_runtime(runner: Runner = _run) -> dict[str, object]:
                 "running": state == "running",
                 "healthy": state == "running" and health == "healthy",
             }
+            result["publishers"][key] = _publishers(row)
         wordpress = result["wordpress"]
         database = result["database"]
         healthy = bool(wordpress["healthy"] and database["healthy"])
