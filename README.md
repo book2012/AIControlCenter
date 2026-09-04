@@ -1,5 +1,24 @@
 # AIControlCenter
 
+## SHOP-SERVICE-START-01B read-only preflight closeout
+
+`ops/macos/shopping/shop_service_start_01b_preflight.py` is the fixed JSON-first
+read-only entrypoint for the authoritative work item. It composes the existing
+runtime observation, canonical attachment-aware storage continuity observation,
+and fixed trusted `runtime_cutover` source observation into one projection. It
+has no caller-configurable trusted source path/home, exposes neither secrets nor
+the actual noncanonical source port value, and creates no authorization or
+mutation capability. It cannot recreate WordPress or activate Shopping; the Mac
+mini remains the sole Control Plane and Production and Ubuntu have no authority.
+
+Canonical evidence: `ops/macos/validation/run-deployment-regression-gate.sh -q`;
+invocation `8a481e805dcd4832a7e8abc4d5d2875e`; state `COMPLETED_PASS`; result
+`4773 passed, 5 deselected, 539 warnings, 2 subtests passed`.
+`CANONICAL_RERUN_REQUIRED=NO`. This repository record is the durable,
+Git-traceable evidence; a transient `/private/tmp` directory is not authority.
+No live WordPress authorization was created or consumed, no WordPress mutation
+was executed, Shopping remains inactive, and Notion was not synchronized.
+
 ## SHOP-SERVICE-START-01B fixed source remediation boundary
 
 The existing work item includes narrow controlled-non-production domain

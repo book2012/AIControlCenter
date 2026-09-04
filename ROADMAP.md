@@ -1,5 +1,24 @@
 # Roadmap
 
+## COMPLETE — SHOP-SERVICE-START-01B JSON-first read-only preflight
+
+- [x] Provide the fixed, caller-unconfigurable macOS preflight entrypoint that
+  composes existing runtime observation, canonical attachment-aware storage
+  continuity observation, and the fixed trusted `runtime_cutover` source
+  observation into one JSON-first projection.
+- [x] Preserve read-only semantics: no authorization creation/consumption, no
+  mutation, no WordPress recreation authority, no Shopping activation, no
+  Production/Ubuntu authority, no secret exposure, and no exposure of the
+  actual noncanonical source port value.
+- [x] Record Git-traceable canonical evidence for
+  `ops/macos/validation/run-deployment-regression-gate.sh -q`: invocation
+  `8a481e805dcd4832a7e8abc4d5d2875e`, state `COMPLETED_PASS`, result `4773
+  passed, 5 deselected, 539 warnings, 2 subtests passed`.
+
+`CANONICAL_RERUN_REQUIRED=NO`. The Mac mini remains the sole Control Plane,
+Notion was not synchronized, and transient `/private/tmp` evidence is not
+durable authority.
+
 ## ACTIVE — SHOP-SERVICE-START-01B controlled runtime governance
 
 - [x] Implement the fixed trusted-source `SHOPPING_WORDPRESS_PORT=58082`

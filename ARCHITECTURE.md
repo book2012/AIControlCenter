@@ -1,5 +1,31 @@
 # AI Home Datacenter Architecture
 
+## SHOP-SERVICE-START-01B JSON-first read-only preflight
+
+The Mac mini remains the sole Control Plane. The fixed, caller-unconfigurable
+`ops/macos/shopping/shop_service_start_01b_preflight.py` entrypoint composes the
+existing runtime observation, the canonical attachment-aware storage continuity
+observer, and the fixed trusted `runtime_cutover` source observer into one
+JSON-first projection. It is strictly read-only: it creates and consumes no
+authorization, performs no mutation, grants neither Production nor Ubuntu
+authority, and cannot activate Shopping or authorize WordPress recreation.
+There is no caller-configurable trusted source path or home. Secret values and
+the actual noncanonical source port value are not exposed.
+
+Git-traceable canonical validation evidence is command
+`ops/macos/validation/run-deployment-regression-gate.sh -q`, invocation
+`8a481e805dcd4832a7e8abc4d5d2875e`, state `COMPLETED_PASS`, result `4773
+passed, 5 deselected, 539 warnings, 2 subtests passed`. No canonical rerun is
+required; transient `/private/tmp` evidence is not durable authority.
+
+`LIVE_WORDPRESS_AUTHORIZATION_CREATED=NO`
+`LIVE_WORDPRESS_AUTHORIZATION_CONSUMED=NO`
+`LIVE_WORDPRESS_MUTATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`PRODUCTION_AUTHORITY=NO`
+`UBUNTU_AUTHORITY=NO`
+`NOTION_SYNC=NO`
+
 ## SHOP-SERVICE-START-01B runtime-cutover port source remediation
 
 The existing work item now has a dedicated controlled-non-production boundary

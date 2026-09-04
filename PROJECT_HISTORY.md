@@ -1,5 +1,24 @@
 # Project History
 
+## 2026-09-04 — SHOP-SERVICE-START-01B read-only preflight validated
+
+The existing work item gained a fixed JSON-first read-only entrypoint at
+`ops/macos/shopping/shop_service_start_01b_preflight.py`. It composes existing
+runtime observation, the canonical attachment-aware storage continuity
+observer, and the fixed trusted `runtime_cutover` source observer into one
+projection. It has no caller-configurable trusted source path/home, exposes no
+secret values or actual noncanonical source port value, and creates or consumes
+no authorization. It performs no mutation, cannot authorize WordPress
+recreation, and did not activate Shopping. The Mac mini remains the sole
+Control Plane; Production and Ubuntu received no authority, and Notion was not
+synchronized.
+
+Canonical command `ops/macos/validation/run-deployment-regression-gate.sh -q`
+completed with invocation `8a481e805dcd4832a7e8abc4d5d2875e`, state
+`COMPLETED_PASS`, and result `4773 passed, 5 deselected, 539 warnings, 2
+subtests passed`. No canonical rerun is required. This Git-traceable record,
+not any transient `/private/tmp` directory, is the durable evidence.
+
 ## 2026-09-04 — Fixed runtime-cutover source remediation implemented in place
 
 The existing `SHOP-SERVICE-START-01B` work item gained a narrow fixed-path,

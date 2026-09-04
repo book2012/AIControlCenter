@@ -1,5 +1,25 @@
 # MASTER
 
+## SHOP-SERVICE-START-01B read-only preflight completed
+
+The fixed `ops/macos/shopping/shop_service_start_01b_preflight.py` entrypoint
+now provides one JSON-first projection composed from the existing runtime
+observation, canonical attachment-aware storage continuity observer, and fixed
+trusted `runtime_cutover` source observer. It is caller-unconfigurable for the
+trusted path/home, exposes no secret or actual noncanonical source port value,
+and is strictly read-only. It creates and consumes no authorization, performs
+no mutation, does not authorize WordPress recreation, and does not activate
+Shopping. Mac remains the sole Control Plane; Production and Ubuntu have no
+authority.
+
+Canonical evidence is recorded in Git: command
+`ops/macos/validation/run-deployment-regression-gate.sh -q`, invocation
+`8a481e805dcd4832a7e8abc4d5d2875e`, `COMPLETED_PASS`, `4773 passed, 5
+deselected, 539 warnings, 2 subtests passed`. `CANONICAL_RERUN_REQUIRED=NO`;
+transient `/private/tmp` evidence is not durable authority. No live WordPress
+authorization creation/consumption or mutation occurred, Shopping remains
+inactive, and `NOTION_SYNC=NO`.
+
 ## Current runtime-cutover source remediation boundary
 
 `SHOP-SERVICE-START-01B` now owns a dedicated controlled-non-production adapter

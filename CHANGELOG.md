@@ -1,5 +1,22 @@
 # CHANGELOG
 
+## 2026-09-04 — SHOP-SERVICE-START-01B read-only preflight closeout
+
+- Closed documentation for the validated fixed JSON-first read-only preflight
+  entrypoint, which composes existing runtime, canonical attachment-aware
+  storage continuity, and fixed trusted `runtime_cutover` source observations.
+- Preserved the Mac mini as sole Control Plane. The entrypoint accepts no
+  caller-configurable trusted source path/home, exposes no secret values or
+  actual noncanonical source port value, grants no Production/Ubuntu authority,
+  and creates/consumes no authorization or mutation capability.
+- It does not authorize WordPress recreation, execute WordPress mutation,
+  activate Shopping, or synchronize Notion.
+- Recorded durable Git-traceable canonical evidence: command
+  `ops/macos/validation/run-deployment-regression-gate.sh -q`, invocation
+  `8a481e805dcd4832a7e8abc4d5d2875e`, state `COMPLETED_PASS`, result `4773
+  passed, 5 deselected, 539 warnings, 2 subtests passed`; rerun not required.
+  Transient `/private/tmp` evidence is not treated as durable authority.
+
 ## 2026-09-04 — SHOP-SERVICE-START-01B fixed source remediation
 
 - Added a fixed-key/value/path controlled-non-production domain boundary and a
