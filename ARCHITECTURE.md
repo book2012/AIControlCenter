@@ -5553,3 +5553,26 @@ authorization but selects and executes no mutation, with no restore or retry.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+
+## SHOP-SERVICE-START-01B WordPress source-value guard
+
+The trusted Darwin passwd-home runtime-cutover observer now proves the
+non-secret `SHOPPING_WORDPRESS_PORT` assignment is exactly canonical ASCII
+`58082`. It retains and projects only the fixed expected value and a boolean
+validation result. Secret assignment records retain the pre-existing strict
+UTF-8 validation contract; secret values may be transiently decoded for syntax
+validation but are not retained, serialized, emitted, logged, hashed, or
+semantically compared. Source readiness and both reconciliation passes fail closed unless
+this guard succeeds. This is repository governance only: the live source was
+not observed and no authorization, mutation, activation, Ubuntu access, or
+Production access occurred.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`WORDPRESS_PORT_EXPECTED=58082`
+`WORDPRESS_PORT_SOURCE_VALUE_GUARD_IMPLEMENTED=YES`
+`SECRET_VALUES_RETAINED=NO`
+`SECRET_VALUES_EMITTED=NO`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`

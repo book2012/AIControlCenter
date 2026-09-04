@@ -4917,3 +4917,26 @@ authorization but selects and executes no mutation, with no restore or retry.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+
+## COMPLETE — SHOP-SERVICE-START-01B source-value guard implementation
+
+- [x] Validate `SHOPPING_WORDPRESS_PORT` as exact canonical ASCII `58082` from
+  the fixed trusted Darwin-home runtime-cutover source.
+- [x] Expose only fixed expected-value and boolean/reason evidence.
+- [x] Require the value guard before candidate classification and again after
+  authorization consumption.
+- [x] Preserve strict UTF-8 syntax validation for secret assignment records;
+  values may be transiently decoded for validation but are not retained,
+  serialized, emitted, logged, hashed, or semantically compared.
+- [ ] Separately observe the live host source and authorize any cutover; neither
+  occurred in this work.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`WORDPRESS_PORT_EXPECTED=58082`
+`WORDPRESS_PORT_SOURCE_VALUE_GUARD_IMPLEMENTED=YES`
+`SECRET_VALUES_RETAINED=NO`
+`SECRET_VALUES_EMITTED=NO`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`

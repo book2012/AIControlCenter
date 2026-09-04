@@ -4956,3 +4956,25 @@ authorization but selects and executes no mutation, with no restore or retry.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+
+## WordPress runtime-cutover port source guard
+
+`SHOP-SERVICE-START-01B` now validates the trusted runtime-cutover source's
+non-secret `SHOPPING_WORDPRESS_PORT` bytes against exact `58082`. The observer
+publishes boolean/reason evidence rather than an assignment record, and the
+initial and post-authorization reconciliation classifications both require the
+guard. No live source observation or cutover is claimed.
+
+Secret assignment records retain the pre-existing strict UTF-8 validation
+contract. Secret values may be transiently decoded for syntax validation but
+are not retained, serialized, emitted, logged, hashed, or semantically compared.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`WORDPRESS_PORT_EXPECTED=58082`
+`WORDPRESS_PORT_SOURCE_VALUE_GUARD_IMPLEMENTED=YES`
+`SECRET_VALUES_RETAINED=NO`
+`SECRET_VALUES_EMITTED=NO`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`

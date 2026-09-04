@@ -5868,3 +5868,24 @@ authorization but selects and executes no mutation, with no restore or retry.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+
+## Current guard — WordPress runtime-cutover source value
+
+The existing `SHOP-SERVICE-START-01B` boundary now requires trusted source
+evidence that `SHOPPING_WORDPRESS_PORT` is exactly `58082`, including the fresh
+observation after authorization consumption. The evidence surface contains a
+fixed expectation and boolean validity only. Secret assignment records retain
+strict UTF-8 validation; secret values may be transiently decoded for syntax
+validation but are not retained, serialized, emitted, logged, hashed, or
+semantically compared. This implementation did not inspect the live
+source and did not perform the governed mutation.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`WORDPRESS_PORT_EXPECTED=58082`
+`WORDPRESS_PORT_SOURCE_VALUE_GUARD_IMPLEMENTED=YES`
+`SECRET_VALUES_RETAINED=NO`
+`SECRET_VALUES_EMITTED=NO`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
