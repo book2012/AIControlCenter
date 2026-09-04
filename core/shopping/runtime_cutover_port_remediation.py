@@ -5,6 +5,9 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import StrEnum
 from typing import Callable, Protocol
+from core.shopping.runtime_cutover_source_authorization import (
+    SourceMutationConsumptionResult, validate_consumption_result,
+)
 
 from core.shopping.runtime_cutover_secret_source import (
     WORDPRESS_PORT_EXPECTED,
@@ -32,7 +35,7 @@ class Outcome(StrEnum):
 
 
 class AuthorizationConsumption(Protocol):
-    def consume_once(self, mutation_id: str) -> bool: ...
+    def consume(self) -> SourceMutationConsumptionResult: ...
 
 
 class FixedSourceMutation(Protocol):
@@ -128,7 +131,9 @@ def execute_remediation(
         return Result(initial.classification, initial.reason_codes, False, False, False,
                       None, False, False, False)
     try:
-        consumed = authorization.consume_once(MUTATION_ID) is True
+        consumption = authorization.consume()
+        validate_consumption_result(consumption)
+        consumed = True
     except Exception:
         consumed = False
     if not consumed:

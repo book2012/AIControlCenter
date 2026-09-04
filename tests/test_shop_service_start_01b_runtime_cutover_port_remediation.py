@@ -9,7 +9,9 @@ import pytest
 
 from core.shopping import runtime_cutover_port_remediation as domain
 from core.shopping import runtime_cutover_secret_source as source
+from core.shopping import runtime_cutover_source_authorization as source_auth
 from ops.macos.shopping import runtime_cutover_port_remediation_operator as operator
+from ops.macos.shopping import runtime_cutover_source_authorization_store as auth_store
 from tests.test_shop_service_start_01b_runtime_cutover_secret_source import (
     ROOT, SECRET_MARKER, artifact_bytes, complete_records, trust,
 )
@@ -26,10 +28,26 @@ def observation(reason=source.SourceReason.WORDPRESS_PORT_VALUE_INVALID):
 
 class Auth:
     def __init__(self, events, allowed=True): self.events, self.allowed = events, allowed
-    def consume_once(self, mutation_id):
-        self.events.append(("auth", mutation_id))
+    def consume(self):
+        self.events.append(("auth", domain.MUTATION_ID))
         allowed, self.allowed = self.allowed, False
-        return allowed
+        if not allowed:
+            raise source_auth.AuthorizationError("spent")
+        receipt = object.__new__(source_auth.SourceMutationConsumptionReceipt)
+        values = {
+            "authorization_id": "test", "issued_at": "2026-09-04T00:00:00+00:00",
+            "expires_at": "2026-09-04T00:10:00+00:00", "trusted_uid": 501,
+            "trusted_gid": 20, "authoritative_work_item": domain.AUTHORITATIVE_WORK_ITEM,
+            "environment": domain.ENVIRONMENT, "mutation_id": domain.MUTATION_ID,
+            "source_role": source.SOURCE_ROLE, "source_key": source.WORDPRESS_PORT_KEY,
+            "desired_value": domain.DESIRED_VALUE, "maximum_uses": 1,
+            "state": source_auth.ConsumptionState.COMMITTED,
+            "production_authority": False, "ubuntu_authority": False,
+        }
+        for name, value in values.items(): object.__setattr__(receipt, name, value)
+        result = object.__new__(source_auth.SourceMutationConsumptionResult)
+        object.__setattr__(result, "receipt", receipt)
+        return result
 
 
 class Mutation:
@@ -200,15 +218,46 @@ def test_json_is_value_free_and_authority_fixed() -> None:
     assert tuple(inspect.signature(operator.run).parameters) == ()
 
 
-def test_public_operator_is_inert_and_rejects_caller_authorization(monkeypatch) -> None:
+def test_public_operator_fails_closed_and_rejects_caller_authorization(monkeypatch) -> None:
     monkeypatch.setattr(operator, "_replace_wordpress_port_at_trusted_source",
                         lambda **_kwargs: pytest.fail("mutation executed"))
+    class AbsentStore:
+        @classmethod
+        def open_existing(cls): raise RuntimeError("unavailable")
+    monkeypatch.setattr(operator, "RuntimeCutoverSourceAuthorizationStore", AbsentStore)
+    monkeypatch.setattr(operator, "observe_runtime_cutover_source", observation)
     result = operator.run()
-    assert result.classification is domain.Classification.BLOCKED
-    assert result.reason_codes == ("LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE",)
+    assert result.classification is domain.Classification.CANDIDATE
     assert not result.authorization_consumed and not result.mutation_executed
     with pytest.raises(TypeError):
         operator.run(authorization=Auth([], allowed=True))
+
+
+def test_public_operator_absent_store_has_zero_filesystem_mutation(monkeypatch, tmp_path) -> None:
+    class Home: passwd_home = str(tmp_path); bound_uid = os.getuid()
+    class Ownership: expected_uid = os.getuid(); expected_gid = os.getgid()
+    monkeypatch.setattr(auth_store, "resolve_trusted_mac_account_home", lambda: Home())
+    monkeypatch.setattr(auth_store, "issue_trusted_ownership_expectation", lambda _home: Ownership())
+    monkeypatch.setattr(operator, "observe_runtime_cutover_source", observation)
+    before = tuple(tmp_path.rglob("*"))
+    result = operator.run()
+    assert tuple(tmp_path.rglob("*")) == before
+    assert not result.authorization_consumed and not result.mutation_executed
+
+
+def test_public_operator_empty_store_changes_no_durable_state(monkeypatch, tmp_path) -> None:
+    class Home: passwd_home = str(tmp_path); bound_uid = os.getuid()
+    class Ownership: expected_uid = os.getuid(); expected_gid = os.getgid()
+    path = tmp_path.joinpath(*auth_store._COMPONENTS)
+    auth_store.RuntimeCutoverSourceAuthorizationStore._for_test(
+        path, uid=os.getuid(), gid=os.getgid())
+    monkeypatch.setattr(auth_store, "resolve_trusted_mac_account_home", lambda: Home())
+    monkeypatch.setattr(auth_store, "issue_trusted_ownership_expectation", lambda _home: Ownership())
+    monkeypatch.setattr(operator, "observe_runtime_cutover_source", observation)
+    before = path.read_bytes(), path.stat().st_mode, path.stat().st_mtime_ns
+    result = operator.run()
+    assert (path.read_bytes(), path.stat().st_mode, path.stat().st_mtime_ns) == before
+    assert not result.authorization_consumed and not result.mutation_executed
 
 
 def test_operator_exports_only_inert_run_and_no_public_mutation_api() -> None:

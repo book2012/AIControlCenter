@@ -16,11 +16,15 @@ from core.secrets.mariadb_continuity_trusted_ownership_expectation import (
     issue_trusted_ownership_expectation,
 )
 from core.shopping.runtime_cutover_port_remediation import (
-    Classification, DESIRED_VALUE, Outcome, Result,
+    DESIRED_VALUE, Outcome, Result, execute_remediation,
 )
 from core.shopping.runtime_cutover_secret_source import (
     MAX_RECORD_BYTES, MAX_SOURCE_BYTES, SOURCE_COMPONENTS, WORDPRESS_PORT_KEY,
     RuntimeCutoverSourceError, SourceReason, _KEY_NAME, _open_source, _required_and_known_names,
+    observe_runtime_cutover_source,
+)
+from ops.macos.shopping.runtime_cutover_source_authorization_store import (
+    RuntimeCutoverSourceAuthorizationStore,
 )
 
 _ROOT = Path(__file__).resolve().parents[3]
@@ -167,17 +171,17 @@ def _write_all(fd: int, payload: bytes) -> None:
 
 
 def run() -> Result:
-    """Public live operator: inert until a durable adapter is separately reviewed."""
-    return Result(
-        classification=Classification.BLOCKED,
-        reason_codes=("LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE",),
-        authorization_consumed=False,
-        mutation_selected=False,
-        mutation_executed=False,
-        outcome=None,
-        fresh_read_only_reconciliation_required=False,
-        source_ready_after=False,
-        source_port_valid_after=False,
+    """Run the sole fixed repair, failing closed unless durable authority exists."""
+    initial = observe_runtime_cutover_source()
+    try:
+        authorization = RuntimeCutoverSourceAuthorizationStore.open_existing()
+    except Exception:
+        authorization = None
+    return execute_remediation(
+        initial_observation=initial,
+        observe_source=observe_runtime_cutover_source,
+        authorization=authorization,
+        mutation=_AtomicRuntimeCutoverPortMutation(),
     )
 
 
