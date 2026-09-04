@@ -13,6 +13,7 @@ from ops.macos.shopping.wordpress_port_authorization_store import WordPressPortA
 
 _REPOSITORY_ROOT = Path(__file__).resolve().parents[3]
 _TRUSTED_DOCKER_ENTRYPOINT = Path("/opt/homebrew/bin/docker")
+_TRUSTED_COMPOSE_ENTRYPOINT = Path("/opt/homebrew/bin/docker-compose")
 _TRUSTED_EXECUTABLE_ROOT = Path("/opt/homebrew")
 _FIXED_PATH = "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 _DOCKER_SELECTION_VARIABLES = frozenset({
@@ -52,6 +53,41 @@ def _trusted_docker_executable() -> str:
                 or parent_metadata.st_uid not in (0, trusted_uid)
                 or parent_metadata.st_mode & 0o022):
             raise RuntimeError("unsafe Docker executable path")
+    return str(resolved)
+
+def _trusted_compose_executable() -> str:
+    """Resolve the sole mutation Compose entrypoint, fail closed."""
+    entrypoint = _TRUSTED_COMPOSE_ENTRYPOINT
+    try:
+        resolved = entrypoint.resolve(strict=True)
+        metadata = resolved.stat()
+        trusted_uid = pwd.getpwuid(os.getuid()).pw_uid
+    except (KeyError, OSError, RuntimeError) as error:
+        raise RuntimeError("trusted Compose executable unavailable") from error
+    try:
+        resolved.relative_to(_TRUSTED_EXECUTABLE_ROOT)
+    except ValueError as error:
+        raise RuntimeError("unexpected Compose executable identity") from error
+    if (not stat.S_ISREG(metadata.st_mode)
+            or metadata.st_uid not in (0, trusted_uid)
+            or metadata.st_mode & 0o022
+            or not metadata.st_mode & 0o111):
+        raise RuntimeError("unsafe Compose executable identity")
+    parents = {_TRUSTED_EXECUTABLE_ROOT, entrypoint.parent}
+    current = _TRUSTED_EXECUTABLE_ROOT
+    for component in resolved.parent.relative_to(
+            _TRUSTED_EXECUTABLE_ROOT).parts:
+        current = current / component
+        parents.add(current)
+    try:
+        for parent in parents:
+            parent_metadata = parent.stat()
+            if (not stat.S_ISDIR(parent_metadata.st_mode)
+                    or parent_metadata.st_uid not in (0, trusted_uid)
+                    or parent_metadata.st_mode & 0o022):
+                raise RuntimeError("unsafe Compose executable path")
+    except OSError as error:
+        raise RuntimeError("trusted Compose executable path unavailable") from error
     return str(resolved)
 
 def _fixed_environment() -> dict[str, str]:
@@ -118,7 +154,17 @@ def _run_compose(invocation: MutationInvocation) -> ExecutionOutcome:
             or not compose_file.is_file()
             or compose_file.resolve() != compose_file):
         raise RuntimeError("repository Compose file identity unavailable")
-    try: completed=_command(invocation.argv)
+    try:
+        command = [
+            _trusted_compose_executable(),
+            *invocation.argv[1:3],
+            *invocation.argv[4:],
+        ]
+        completed = subprocess.run(
+            command, cwd=_REPOSITORY_ROOT, env=_fixed_environment(), text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.DEVNULL, timeout=30,
+            check=False,
+        )
     except Exception: return ExecutionOutcome.UNCERTAIN
     return ExecutionOutcome.SUCCEEDED if completed.returncode==0 else ExecutionOutcome.FAILED
 
