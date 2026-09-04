@@ -2171,3 +2171,12 @@ authorization but selects and executes no mutation, with no restore or retry.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+## SHOP-SERVICE-START-01B live follow-up
+
+- [x] Add fixed bounded read-only post-mutation health stabilization without
+  adding mutation retry or caller-configurable timing.
+
+- Request a new WordPress-specific human authorization only when ready for governed execution.
+- Run the zero-argument fixed operator once; do not reuse source authority or retry FAILED/UNCERTAIN authority.
+- Require exact post-runtime, READY source, and storage identity continuity evidence before considering Shopping activation. Volume identity is not preservation or backup proof.
+- Implementation created no live authorization and performed no live mutation; Shopping is inactive.

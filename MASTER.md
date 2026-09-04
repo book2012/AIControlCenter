@@ -5914,3 +5914,10 @@ source and did not perform the governed mutation.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+## SHOP-SERVICE-START-01B boundary status
+
+Successful WordPress recreation now receives a fixed bounded read-only health
+convergence window derived from the Compose healthcheck. The single Compose
+invocation limit and exact final validation remain unchanged.
+
+The controlled-non-production WordPress operator is zero-argument and fixed-target. Its dedicated authority is separate from source remediation, permits one bounded mutation, and is consumed before fresh revalidation. Exact post-binding and storage/source continuity are required; volume identity is not content or backup proof. Implementation performed no live authorization or mutation. Shopping activation remains pending governed execution.

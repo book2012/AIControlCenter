@@ -5005,3 +5005,6 @@ are not retained, serialized, emitted, logged, hashed, or semantically compared.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+### Controlled WordPress port reconciliation
+
+`SHOP-SERVICE-START-01B` now has a fixed zero-argument Mac operator and a dedicated one-use WordPress authorization store. Source-repair authority is not reusable. Authority is spent before fresh checks, failed/uncertain attempts do not retry, and a successful Compose return receives only fixed, bounded, read-only post-state observations across the repository healthcheck horizon. Exact healthy `58082` state remains mandatory. No authorization or live mutation was performed while implementing this boundary; Shopping remains inactive. Named-volume continuity is identity evidence only, not content-preservation or backup proof.

@@ -5004,3 +5004,10 @@ runtime mutation or activation occurred.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+## 2026-09-04 — SHOP-SERVICE-START-01B WordPress authority boundary
+
+Implemented a dedicated irreversible WordPress authorization domain/store, exact structured receipt validation, interactive fixed-contract issuance, and a zero-argument Mac live operator. Authorization is separate from source remediation and spent before fresh revalidation; FAILED/UNCERTAIN cannot retry. Validated success requires exact `58082` runtime state plus source and storage continuity. Named-volume identity does not prove content preservation or backup. No live authorization was created or consumed, no live WordPress mutation occurred, and Shopping remained inactive.
+
+Post-mutation validation now permits a successful Compose return to converge
+through a fixed bounded sequence of read-only observations derived from the
+repository WordPress healthcheck; it never invokes Compose a second time.

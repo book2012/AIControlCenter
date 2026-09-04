@@ -5469,3 +5469,12 @@ authorization but selects and executes no mutation, with no restore or retry.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+## SHOP-SERVICE-START-01B WordPress durable authority
+
+- Added fixed, bounded, read-only post-mutation stabilization across the
+  repository WordPress healthcheck horizon. It performs no Compose retry and
+  still requires exact healthy runtime, source, and storage continuity evidence.
+
+- Added separate short-lived, one-use WordPress authority, interactive issuance, fixed live operator, JSON-first runtime observation, and exact post-runtime/source/storage validation.
+- Failed and uncertain executions remain spent and non-retryable; subprocess success alone is not validated success.
+- No live WordPress authorization was created or consumed and no live mutation occurred. Shopping remains inactive.

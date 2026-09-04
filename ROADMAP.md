@@ -4953,3 +4953,9 @@ authorization but selects and executes no mutation, with no restore or retry.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+## SHOP-SERVICE-START-01B next gate
+
+- [x] Stabilize successful recreation with fixed bounded read-only observations;
+  never retry the Compose mutation.
+
+Implementation of the separate WordPress durable-authority and fixed zero-argument operator is complete. A future human-governed run must issue one short-lived authorization, spend it before fresh revalidation, prohibit retry after FAILED/UNCERTAIN, and prove the exact `58082` post-state. No live authorization or mutation occurred here; Shopping remains inactive.

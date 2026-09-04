@@ -5612,3 +5612,6 @@ Production access occurred.
 `AUTHORIZATION_CONSUMED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+## SHOP-SERVICE-START-01B WordPress live boundary
+
+The fixed, zero-argument Mac operator uses a WordPress-specific durable authority that is separate from runtime-cutover source authority. One short-lived authorization permits one bounded WordPress-only Compose recreation and is irreversibly spent before fresh runtime, storage, and source revalidation. Failed or uncertain attempts cannot retry. After a successful Compose return, only fixed read-only observations may repeat: an immediate check plus at most 24 checks separated by the repository-defined 15-second WordPress health interval, covering its 60-second start period and 20 retries. Success requires exact post-runtime `127.0.0.1:58082->80/tcp`, healthy database/WordPress evidence, READY source evidence, and named-volume identity continuity. Volume identity proves neither content preservation nor backup/restore. This implementation created no live authorization and performed no live mutation; Shopping remains inactive pending governed live execution.
