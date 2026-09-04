@@ -25,6 +25,7 @@ from core.shopping.observability.storage_continuity import (
 )
 from core.shopping.runtime_cutover_secret_source import (
     SOURCE_COMPONENTS,
+    WORDPRESS_PORT_EXPECTED,
     RuntimeCutoverSourceObservation,
     SourceReason,
     observe_runtime_cutover_source,
@@ -207,6 +208,8 @@ def classify_reconciliation(
         and source.reason_code is SourceReason.READY
         and source.filesystem_safe is True
         and source.values_exposed is False
+        and source.wordpress_port_expected == WORDPRESS_PORT_EXPECTED
+        and source.wordpress_port_value_valid is True
     ):
         reasons.append("RUNTIME_CUTOVER_SOURCE_NOT_READY")
     if wordpress.publishers == (EXPECTED_AFTER_BINDING,):

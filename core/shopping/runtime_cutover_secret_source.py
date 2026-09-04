@@ -1,8 +1,8 @@
 """Trusted, read-only runtime-cutover secret source observation.
 
-This module establishes only source provenance, filesystem safety, and key-name
-presence.  It grants no authorization and deliberately exposes no assignment
-values or raw records.
+This module establishes source provenance, filesystem safety, key-name presence,
+and one fixed non-secret configuration guard. It grants no authorization and
+deliberately exposes no assignment values or raw records.
 """
 
 from __future__ import annotations
@@ -37,6 +37,8 @@ SOURCE_RELATIVE_PATH = str(PurePath(*SOURCE_COMPONENTS))
 MAX_SOURCE_BYTES = 64 * 1024
 MAX_RECORD_BYTES = 4096
 _KEY_NAME = re.compile(r"SHOPPING_[A-Z0-9_]+")
+WORDPRESS_PORT_KEY = "SHOPPING_WORDPRESS_PORT"
+WORDPRESS_PORT_EXPECTED = "58082"
 
 
 class SourceReason(str, Enum):
@@ -51,6 +53,7 @@ class SourceReason(str, Enum):
     DUPLICATE_KEY_NAMES = "DUPLICATE_KEY_NAMES"
     UNKNOWN_KEY_NAMES = "UNKNOWN_KEY_NAMES"
     MISSING_REQUIRED_KEY_NAMES = "MISSING_REQUIRED_KEY_NAMES"
+    WORDPRESS_PORT_VALUE_INVALID = "WORDPRESS_PORT_VALUE_INVALID"
     CONTRACT_UNAVAILABLE = "CONTRACT_UNAVAILABLE"
 
 
@@ -75,6 +78,8 @@ class RuntimeCutoverSourceObservation:
     unknown_key_names: tuple[str, ...]
     ready: bool
     reason_code: SourceReason
+    wordpress_port_expected: str = WORDPRESS_PORT_EXPECTED
+    wordpress_port_value_valid: bool = False
     values_exposed: bool = False
     mutation_performed: bool = False
 
@@ -91,6 +96,8 @@ class RuntimeCutoverSourceObservation:
             "unknown_key_names": list(self.unknown_key_names),
             "ready": self.ready,
             "reason_code": self.reason_code.value,
+            "wordpress_port_expected": WORDPRESS_PORT_EXPECTED,
+            "wordpress_port_value_valid": self.wordpress_port_value_valid,
             "values_exposed": False,
             "mutation_performed": False,
         }
@@ -252,11 +259,14 @@ def _open_source(
         raise RuntimeCutoverSourceError(SourceReason.UNSAFE_FILESYSTEM_METADATA) from None
 
 
-def _observe_records(descriptor: int, expected_size: int) -> tuple[frozenset[str], tuple[str, ...]]:
+def _observe_records(
+    descriptor: int, expected_size: int,
+) -> tuple[frozenset[str], tuple[str, ...], bool]:
     present: set[str] = set()
     duplicates: set[str] = set()
     pending = bytearray()
     total = 0
+    wordpress_port_value_valid = False
 
     def accept(raw_record: bytes) -> None:
         if len(raw_record) > MAX_RECORD_BYTES:
@@ -268,14 +278,20 @@ def _observe_records(descriptor: int, expected_size: int) -> tuple[frozenset[str
         except UnicodeDecodeError:
             raise RuntimeCutoverSourceError(SourceReason.UNSAFE_RECORD_STRUCTURE) from None
         if not record or record.startswith("#"):
+            del record
             return
-        name, separator, _value = record.partition("=")
+        name, separator, decoded_value = record.partition("=")
+        del decoded_value, record
         if not separator or _KEY_NAME.fullmatch(name) is None:
             raise RuntimeCutoverSourceError(SourceReason.MALFORMED_ASSIGNMENT)
         if name in present:
             duplicates.add(name)
         present.add(name)
-        del _value
+        if name == WORDPRESS_PORT_KEY:
+            nonlocal wordpress_port_value_valid
+            _raw_name, _raw_separator, raw_value = raw_record.partition(b"=")
+            wordpress_port_value_valid = raw_value == WORDPRESS_PORT_EXPECTED.encode("ascii")
+            del raw_value, _raw_name, _raw_separator
 
     while total <= MAX_SOURCE_BYTES:
         chunk = os.read(descriptor, min(8192, MAX_SOURCE_BYTES + 1 - total))
@@ -293,7 +309,7 @@ def _observe_records(descriptor: int, expected_size: int) -> tuple[frozenset[str
         raise RuntimeCutoverSourceError(SourceReason.OVERSIZED_SOURCE)
     if pending:
         accept(bytes(pending))
-    return frozenset(present), tuple(sorted(duplicates))
+    return frozenset(present), tuple(sorted(duplicates)), wordpress_port_value_valid
 
 
 def _failure(reason: SourceReason, required: tuple[str, ...] = ()) -> RuntimeCutoverSourceObservation:
@@ -314,7 +330,9 @@ def _observe_runtime_cutover_source(
     try:
         required, known = _required_and_known_names(repository_root)
         opened, descriptors = _open_source(resolved_home, ownership, repository_root)
-        present, duplicates = _observe_records(opened.descriptor, opened.metadata.st_size)
+        present, duplicates, wordpress_port_value_valid = _observe_records(
+            opened.descriptor, opened.metadata.st_size,
+        )
         after = os.fstat(opened.descriptor)
         before = opened.metadata
         if (before.st_dev, before.st_ino, before.st_mode, before.st_uid, before.st_gid,
@@ -328,12 +346,15 @@ def _observe_runtime_cutover_source(
             SourceReason.DUPLICATE_KEY_NAMES if duplicates
             else SourceReason.UNKNOWN_KEY_NAMES if unknown
             else SourceReason.MISSING_REQUIRED_KEY_NAMES if missing
+            else SourceReason.WORDPRESS_PORT_VALUE_INVALID
+            if not wordpress_port_value_valid
             else SourceReason.READY
         )
         return RuntimeCutoverSourceObservation(
             "1.0", SOURCE_AUTHORITY, SOURCE_ROLE, PATH_ROLE, True,
             tuple(name for name in required if name in present), missing,
             duplicates, unknown, reason is SourceReason.READY, reason,
+            wordpress_port_value_valid=wordpress_port_value_valid,
         )
     except RuntimeCutoverSourceError as error:
         required_names = locals().get("required", ())
@@ -361,6 +382,7 @@ def observe_runtime_cutover_source() -> RuntimeCutoverSourceObservation:
 
 __all__ = (
     "PATH_ROLE", "SOURCE_AUTHORITY", "SOURCE_RELATIVE_PATH", "SOURCE_ROLE",
+    "WORDPRESS_PORT_EXPECTED", "WORDPRESS_PORT_KEY",
     "RuntimeCutoverSourceObservation", "SourceReason",
     "observe_runtime_cutover_source",
 )

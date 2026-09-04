@@ -42,10 +42,11 @@ def storage(*items: VolumeContinuitySnapshot) -> StorageContinuityObservation:
     ))
 
 
-def source(*, ready: bool = True) -> RuntimeCutoverSourceObservation:
+def source(*, ready: bool = True, port_valid: bool = True) -> RuntimeCutoverSourceObservation:
     return RuntimeCutoverSourceObservation(
         "1.0", SOURCE_AUTHORITY, SOURCE_ROLE, PATH_ROLE, ready, (), (), (), (),
         ready, SourceReason.READY if ready else SourceReason.TRUST_SOURCE_UNAVAILABLE,
+        wordpress_port_value_valid=port_valid,
     )
 
 
@@ -178,6 +179,13 @@ def test_runtime_cutover_source_must_be_ready() -> None:
     assert not decision.mutation_selected
 
 
+def test_runtime_cutover_source_port_value_must_be_exact() -> None:
+    decision = reconciliation.classify_reconciliation(facts(), source(port_valid=False))
+    assert decision.classification is reconciliation.Classification.BLOCKED
+    assert "RUNTIME_CUTOVER_SOURCE_NOT_READY" in decision.reason_codes
+    assert decision.mutation_selected is False
+
+
 def test_target_and_source_cannot_be_caller_overridden() -> None:
     assert tuple(inspect.signature(reconciliation.build_mutation_invocation).parameters) == ()
     execution_parameters = inspect.signature(reconciliation.execute_reconciliation).parameters
@@ -302,6 +310,21 @@ def test_fresh_source_change_consumes_authorization_without_execution(monkeypatc
     result = execute(OneShotAuthorization(), calls.append)
     assert result.authorization_consumed
     assert not result.decision.mutation_selected and not result.mutation_executed
+    assert calls == []
+
+
+def test_fresh_port_change_consumes_authorization_without_execution(monkeypatch) -> None:
+    observations = [source(), source(port_valid=False)]
+    monkeypatch.setattr(
+        reconciliation, "observe_runtime_cutover_source",
+        lambda: observations.pop(0),
+    )
+    calls = []
+    result = execute(OneShotAuthorization(), calls.append)
+    assert result.authorization_consumed is True
+    assert result.decision.mutation_selected is False
+    assert result.mutation_executed is False
+    assert result.to_json_safe()["automatic_retry"] is False
     assert calls == []
 
 
