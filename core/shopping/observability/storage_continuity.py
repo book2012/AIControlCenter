@@ -137,6 +137,13 @@ def _validate(observation: StorageContinuityObservation) -> tuple[ContinuityReas
     return tuple(dict.fromkeys(reasons))
 
 
+def validate_storage_observation(
+    observation: StorageContinuityObservation,
+) -> tuple[ContinuityReason, ...]:
+    """Validate one identity snapshot without claiming temporal continuity."""
+    return _validate(observation)
+
+
 def compare_volume_identity_continuity(
     before: StorageContinuityObservation,
     after: StorageContinuityObservation,
@@ -164,5 +171,5 @@ __all__ = (
     "DATABASE_DESTINATION", "DATABASE_VOLUME", "EXPECTED_DESTINATIONS",
     "StorageContinuityObservation", "VolumeContinuitySnapshot",
     "VolumeIdentityContinuityResult", "WORDPRESS_DESTINATION", "WORDPRESS_VOLUME",
-    "compare_volume_identity_continuity",
+    "compare_volume_identity_continuity", "validate_storage_observation",
 )

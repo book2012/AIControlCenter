@@ -1,0 +1,343 @@
+"""Governed one-shot WordPress publisher reconciliation boundary.
+
+Planning is pure. Runtime observation, authorization consumption, and the one
+allowed Compose invocation are injected capabilities. This module never issues
+authorization and never retries or rolls back.
+"""
+
+from __future__ import annotations
+
+from dataclasses import dataclass
+from enum import StrEnum
+from pathlib import Path
+from typing import Callable, Protocol
+
+from core.secrets.mariadb_continuity_trusted_mac_account_home_runtime_resolver import (
+    resolve_trusted_mac_account_home,
+)
+from core.shopping.observability.storage_continuity import (
+    DATABASE_VOLUME,
+    WORDPRESS_VOLUME,
+    StorageContinuityObservation,
+    VolumeIdentityContinuityResult,
+    compare_volume_identity_continuity,
+    validate_storage_observation,
+)
+from core.shopping.runtime_cutover_secret_source import (
+    SOURCE_COMPONENTS,
+    RuntimeCutoverSourceObservation,
+    SourceReason,
+    observe_runtime_cutover_source,
+)
+
+
+AUTHORITATIVE_WORK_ITEM = "SHOP-SERVICE-START-01B"
+ENVIRONMENT = "CONTROLLED_NON_PRODUCTION"
+TARGET_CONTEXT = "colima-aicontrolcenter-commerce"
+COMPOSE_PROJECT = "ai-shopping"
+COMPOSE_FILE = "deploy/shopping/compose.yaml"
+COMPOSE_SERVICE = "wordpress"
+WORDPRESS_CONTAINER = "shopping-wordpress"
+DATABASE_CONTAINER = "shopping-db"
+EXPECTED_BEFORE_BINDING = "127.0.0.1:58081->80/tcp"
+EXPECTED_AFTER_BINDING = "127.0.0.1:58082->80/tcp"
+MUTATION_ID = "SHOP-SERVICE-START-01B:WORDPRESS_PORT_58081_TO_58082"
+
+
+@dataclass(frozen=True, slots=True)
+class ContainerRuntimeFact:
+    exists: bool
+    running: bool
+    healthy: bool
+    publishers: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class WordPressPortRuntimeFacts:
+    target_context: str
+    compose_project: str
+    database_container: str
+    wordpress_container: str
+    docker_context_reachable: bool
+    database: ContainerRuntimeFact
+    wordpress: ContainerRuntimeFact
+    storage: StorageContinuityObservation
+
+
+class Classification(StrEnum):
+    CANDIDATE = "CANDIDATE"
+    ALREADY_DESIRED = "ALREADY_DESIRED"
+    BLOCKED = "BLOCKED"
+
+
+@dataclass(frozen=True, slots=True)
+class ReconciliationDecision:
+    classification: Classification
+    reason_codes: tuple[str, ...]
+    mutation_selected: bool
+
+    def to_json_safe(self) -> dict[str, object]:
+        return _base_projection(
+            mutation_selected=self.mutation_selected,
+            mutation_executed=False,
+            classification=self.classification.value,
+            reason_codes=list(self.reason_codes),
+        )
+
+
+class AuthorizationConsumption(Protocol):
+    """Externally supplied human authorization; implementations own freshness."""
+
+    def consume_once(self, mutation_id: str) -> bool: ...
+
+
+class ExecutionOutcome(StrEnum):
+    SUCCEEDED = "SUCCEEDED"
+    FAILED = "FAILED"
+    UNCERTAIN = "UNCERTAIN"
+
+
+@dataclass(frozen=True, slots=True)
+class MutationInvocation:
+    argv: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ReconciliationResult:
+    decision: ReconciliationDecision
+    mutation_executed: bool
+    outcome: ExecutionOutcome | None
+    authorization_consumed: bool
+    fresh_read_only_reconciliation_required: bool
+    pre_storage_observation: StorageContinuityObservation
+    post_storage_observation: StorageContinuityObservation | None
+    storage_identity_continuity: VolumeIdentityContinuityResult | None
+
+    def to_json_safe(self) -> dict[str, object]:
+        return _base_projection(
+            mutation_selected=self.decision.mutation_selected,
+            mutation_executed=self.mutation_executed,
+            classification=self.decision.classification.value,
+            reason_codes=list(self.decision.reason_codes),
+            outcome=self.outcome.value if self.outcome else None,
+            authorization_consumed=self.authorization_consumed,
+            fresh_read_only_reconciliation_required=(
+                self.fresh_read_only_reconciliation_required
+            ),
+            pre_storage_observation=self.pre_storage_observation.to_json_safe(),
+            post_storage_observation=(
+                self.post_storage_observation.to_json_safe()
+                if self.post_storage_observation else None
+            ),
+            storage_identity_continuity=(
+                self.storage_identity_continuity.to_json_safe()
+                if self.storage_identity_continuity else None
+            ),
+            content_preservation_proven=False,
+            backup_restore_proven=False,
+        )
+
+
+def _base_projection(*, mutation_selected: bool, mutation_executed: bool,
+                     **extra: object) -> dict[str, object]:
+    return {
+        "authoritative_work_item": AUTHORITATIVE_WORK_ITEM,
+        "environment": ENVIRONMENT,
+        "target_context": TARGET_CONTEXT,
+        "compose_project": COMPOSE_PROJECT,
+        "compose_service": COMPOSE_SERVICE,
+        "expected_before_binding": EXPECTED_BEFORE_BINDING,
+        "expected_after_binding": EXPECTED_AFTER_BINDING,
+        "database_mutation_allowed": False,
+        "volume_deletion_allowed": False,
+        "automatic_retry": False,
+        "production_authority": False,
+        "ubuntu_authority": False,
+        "authorization_required": True,
+        "mutation_selected": mutation_selected,
+        "mutation_executed": mutation_executed,
+        **extra,
+    }
+
+
+def classify_reconciliation(
+    facts: WordPressPortRuntimeFacts,
+    source: RuntimeCutoverSourceObservation,
+) -> ReconciliationDecision:
+    """Pure fail-closed classification with no runtime or authorization calls."""
+    reasons: list[str] = []
+    if facts.target_context != TARGET_CONTEXT:
+        reasons.append("TARGET_CONTEXT_MISMATCH")
+    if facts.compose_project != COMPOSE_PROJECT:
+        reasons.append("COMPOSE_PROJECT_MISMATCH")
+    if facts.database_container != DATABASE_CONTAINER:
+        reasons.append("DATABASE_CONTAINER_MISMATCH")
+    if facts.wordpress_container != WORDPRESS_CONTAINER:
+        reasons.append("WORDPRESS_CONTAINER_MISMATCH")
+    if facts.docker_context_reachable is not True:
+        reasons.append("DOCKER_CONTEXT_UNREACHABLE")
+    database = facts.database
+    if not database.exists:
+        reasons.append("DATABASE_ABSENT")
+    if not database.running:
+        reasons.append("DATABASE_NOT_RUNNING")
+    if not database.healthy:
+        reasons.append("DATABASE_NOT_HEALTHY")
+    if database.publishers:
+        reasons.append("DATABASE_HOST_PUBLISHER_PRESENT")
+    wordpress = facts.wordpress
+    if not wordpress.exists:
+        reasons.append("WORDPRESS_ABSENT")
+    if not wordpress.running:
+        reasons.append("WORDPRESS_NOT_RUNNING")
+    if not wordpress.healthy:
+        reasons.append("WORDPRESS_NOT_HEALTHY")
+    storage_targets = {
+        item.volume_name: (item.service, item.container)
+        for item in facts.storage.volumes
+    }
+    if validate_storage_observation(facts.storage) or storage_targets != {
+        DATABASE_VOLUME: ("database", DATABASE_CONTAINER),
+        WORDPRESS_VOLUME: (COMPOSE_SERVICE, WORDPRESS_CONTAINER),
+    }:
+        reasons.append("CANONICAL_STORAGE_NOT_READY")
+    if not (
+        type(source) is RuntimeCutoverSourceObservation
+        and source.ready is True
+        and source.reason_code is SourceReason.READY
+        and source.filesystem_safe is True
+        and source.values_exposed is False
+    ):
+        reasons.append("RUNTIME_CUTOVER_SOURCE_NOT_READY")
+    if wordpress.publishers == (EXPECTED_AFTER_BINDING,):
+        if reasons:
+            return ReconciliationDecision(Classification.BLOCKED, tuple(reasons), False)
+        return ReconciliationDecision(Classification.ALREADY_DESIRED, (), False)
+    if wordpress.publishers != (EXPECTED_BEFORE_BINDING,):
+        reasons.append("WORDPRESS_BINDING_NOT_EXPECTED_BEFORE")
+    if reasons:
+        return ReconciliationDecision(Classification.BLOCKED, tuple(reasons), False)
+    return ReconciliationDecision(Classification.CANDIDATE, (), False)
+
+
+def _with_storage(
+    facts: WordPressPortRuntimeFacts,
+    storage: StorageContinuityObservation,
+) -> WordPressPortRuntimeFacts:
+    """Bind an independently observed storage snapshot to runtime facts."""
+    return WordPressPortRuntimeFacts(
+        facts.target_context, facts.compose_project, facts.database_container,
+        facts.wordpress_container, facts.docker_context_reachable,
+        facts.database, facts.wordpress, storage,
+    )
+
+
+def _select_governed_mutation(
+    decision: ReconciliationDecision,
+) -> ReconciliationDecision:
+    """Select only an already revalidated candidate inside execution."""
+    if decision.classification is not Classification.CANDIDATE:
+        raise ValueError("only an exact candidate can be selected")
+    return ReconciliationDecision(Classification.CANDIDATE, (), True)
+
+
+def _trusted_runtime_cutover_path() -> str:
+    """Resolve the sole env-file path from the trusted Darwin passwd authority."""
+    home = resolve_trusted_mac_account_home()
+    return str(Path(home.passwd_home).joinpath(*SOURCE_COMPONENTS))
+
+
+def build_mutation_invocation() -> MutationInvocation:
+    """Build the immutable WordPress-only invocation; accepts no caller target."""
+    return MutationInvocation((
+        "docker", "--context", TARGET_CONTEXT, "compose",
+        "--project-name", COMPOSE_PROJECT, "--file", COMPOSE_FILE,
+        "--env-file", _trusted_runtime_cutover_path(), "up", "-d",
+        "--no-deps", "--pull", "never", "--force-recreate", COMPOSE_SERVICE,
+    ))
+
+
+def execute_reconciliation(
+    *,
+    observe_runtime: Callable[[], WordPressPortRuntimeFacts],
+    observe_storage: Callable[[], StorageContinuityObservation],
+    authorization: AuthorizationConsumption | None,
+    runner: Callable[[MutationInvocation], ExecutionOutcome],
+) -> ReconciliationResult:
+    """Consume at most one authorization and make at most one mutation call."""
+    initial_runtime = observe_runtime()
+    pre_storage = observe_storage()
+    initial_facts = _with_storage(initial_runtime, pre_storage)
+    initial_source = observe_runtime_cutover_source()
+    candidate = classify_reconciliation(initial_facts, initial_source)
+    if candidate.classification is not Classification.CANDIDATE:
+        return ReconciliationResult(candidate, False, None, False, False,
+                                    pre_storage, None, None)
+    if authorization is None:
+        return ReconciliationResult(candidate, False, None, False, False,
+                                    pre_storage, None, None)
+    if not authorization.consume_once(MUTATION_ID):
+        return ReconciliationResult(candidate, False, None, False, False,
+                                    pre_storage, None, None)
+
+    fresh_runtime: WordPressPortRuntimeFacts | None = None
+    fresh_storage: StorageContinuityObservation | None = None
+    fresh_source: RuntimeCutoverSourceObservation | None = None
+    observation_reasons: list[str] = []
+    try:
+        fresh_runtime = observe_runtime()
+    except Exception:
+        observation_reasons.append("FRESH_RUNTIME_OBSERVATION_FAILED")
+    try:
+        fresh_storage = observe_storage()
+    except Exception:
+        observation_reasons.append("FRESH_STORAGE_OBSERVATION_FAILED")
+    try:
+        fresh_source = observe_runtime_cutover_source()
+    except Exception:
+        observation_reasons.append("FRESH_RUNTIME_CUTOVER_SOURCE_OBSERVATION_FAILED")
+    if observation_reasons:
+        blocked = ReconciliationDecision(
+            Classification.BLOCKED, tuple(observation_reasons), False,
+        )
+        return ReconciliationResult(
+            blocked, False, None, True, False,
+            pre_storage, fresh_storage, None,
+        )
+
+    assert fresh_runtime is not None
+    assert fresh_storage is not None
+    assert fresh_source is not None
+    fresh_facts = _with_storage(fresh_runtime, fresh_storage)
+    revalidated = classify_reconciliation(fresh_facts, fresh_source)
+    if revalidated.classification is not Classification.CANDIDATE:
+        return ReconciliationResult(
+            revalidated, False, None, True, False,
+            pre_storage, fresh_storage, None,
+        )
+
+    selected = _select_governed_mutation(revalidated)
+    invocation = build_mutation_invocation()
+    try:
+        outcome = runner(invocation)
+        if outcome not in tuple(ExecutionOutcome):
+            outcome = ExecutionOutcome.UNCERTAIN
+    except Exception:
+        outcome = ExecutionOutcome.UNCERTAIN
+    try:
+        post_storage = observe_storage()
+        continuity = compare_volume_identity_continuity(fresh_storage, post_storage)
+    except Exception:
+        post_storage = None
+        continuity = None
+    return ReconciliationResult(
+        selected, True, outcome, True, True, pre_storage, post_storage, continuity,
+    )
+
+
+__all__ = (
+    "AUTHORITATIVE_WORK_ITEM", "Classification", "ContainerRuntimeFact",
+    "ENVIRONMENT", "ExecutionOutcome", "MutationInvocation",
+    "ReconciliationDecision", "ReconciliationResult", "WordPressPortRuntimeFacts",
+    "build_mutation_invocation", "classify_reconciliation", "execute_reconciliation",
+)
