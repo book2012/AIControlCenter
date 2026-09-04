@@ -5004,3 +5004,14 @@ evidence locator.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `PRODUCTION_AUTHORITY=NO`
 `UBUNTU_AUTHORITY=NO`
+## COMPLETE — SHOP-SERVICE-START-01B execution-selection hardening
+
+- [x] Preserve the logical repository-relative Compose authorization binding.
+- [x] Derive and use a fixed repository execution cwd in the Mac adapter.
+- [x] Reject unavailable, unexpected, or unsafe Docker executable identity;
+  ambient PATH and Docker/Compose selectors are non-authoritative.
+- [x] Keep every context, project, source, service, port, argv, executable, and
+  cwd choice caller-unconfigurable.
+- [ ] Obtain a new WordPress-specific human authorization only for a future
+  separately governed run. No WordPress authority or mutation exists yet and
+  Shopping remains inactive. `NOTION_SYNC=NO`.

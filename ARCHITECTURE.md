@@ -5667,3 +5667,19 @@ evidence locator.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `PRODUCTION_AUTHORITY=NO`
 `UBUNTU_AUTHORITY=NO`
+## SHOP-SERVICE-START-01B execution-selection hardening
+
+The zero-argument Mac WordPress operator now derives the repository root from
+its repository-owned module, executes every fixed Docker command with that root
+as `cwd`, and anchors the logical `deploy/shopping/compose.yaml` authorization
+binding to that root. The adapter accepts only the exact domain invocation and
+replaces its logical `docker` token with the resolved `/opt/homebrew/bin/docker`
+Apple Silicon entrypoint after fail-closed ownership, mode, type, and trusted
+prefix validation. Ambient PATH and Docker/Compose selection variables cannot
+choose the executable, context, project, Compose file, or source.
+
+The earlier separate runtime-cutover remediation succeeded using a source-only
+authorization that was created and consumed and is permanently unusable for
+WordPress. Read-only live storage-continuity observation has occurred. No
+WordPress authorization has been created or consumed, no WordPress mutation has
+executed, and Shopping remains inactive. `NOTION_SYNC=NO`.

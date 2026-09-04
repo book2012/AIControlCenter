@@ -5967,3 +5967,16 @@ evidence locator.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `PRODUCTION_AUTHORITY=NO`
 `UBUNTU_AUTHORITY=NO`
+## SHOP-SERVICE-START-01B execution-selection authority
+
+The Mac adapter now owns repository-root, subprocess-cwd, trusted Docker
+executable, and Docker/Compose environment selection. The domain retains the
+portable logical `deploy/shopping/compose.yaml` contract and exact immutable
+mutation argv. Resolution is fail closed and neither caller cwd nor ambient
+PATH can select the mutation target or executable.
+
+The separate source remediation previously succeeded; its authorization was
+created and consumed and is permanently non-reusable for WordPress. Live
+storage continuity was observed read-only. WordPress authorization creation,
+WordPress authorization consumption, WordPress mutation, Shopping activation,
+and Notion sync remain absent (`NOTION_SYNC=NO`).

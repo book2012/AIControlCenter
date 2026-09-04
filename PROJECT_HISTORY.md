@@ -5056,3 +5056,15 @@ evidence locator.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `PRODUCTION_AUTHORITY=NO`
 `UBUNTU_AUTHORITY=NO`
+## 2026-09-04 — SHOP-SERVICE-START-01B execution-selection gap closed
+
+The WordPress Mac adapter now derives a fixed repository cwd from its module,
+anchors the authorized logical Compose path there, and uses a fail-closed
+trusted Apple Silicon Docker executable boundary with bounded selection
+environment. This changed no domain contract and performed no live access.
+
+Established history also records that runtime-cutover source remediation
+succeeded under a separately created and consumed source authorization which
+cannot authorize WordPress, and that live storage continuity was observed
+read-only. No WordPress authorization was created or consumed, no WordPress
+mutation executed, Shopping remains inactive, and `NOTION_SYNC=NO`.

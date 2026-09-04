@@ -5521,3 +5521,16 @@ evidence locator.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `PRODUCTION_AUTHORITY=NO`
 `UBUNTU_AUTHORITY=NO`
+## 2026-09-04 — SHOP-SERVICE-START-01B execution-selection hardening
+
+- Anchored the logical Compose file to a module-derived repository root and
+  supplied that root as the fixed subprocess working directory.
+- Added a private fail-closed Apple Silicon Homebrew Docker resolver and bound
+  subprocess environment selection so ambient PATH and Docker/Compose selector
+  variables cannot redirect the fixed invocation.
+- Preserved the domain contract, exact one-use authority, consumption order,
+  single mutation budget, no-retry behavior, and post-state validation.
+- Recorded established history: separate source remediation succeeded with its
+  now-consumed, WordPress-ineligible authority; live storage continuity was
+  observed read-only. No WordPress authority or mutation occurred, Shopping is
+  inactive, and `NOTION_SYNC=NO`.

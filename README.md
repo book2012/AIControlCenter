@@ -5053,3 +5053,16 @@ evidence locator.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `PRODUCTION_AUTHORITY=NO`
 `UBUNTU_AUTHORITY=NO`
+## SHOP-SERVICE-START-01B execution selection closed
+
+The fixed Mac WordPress operator now anchors its logical Compose file to the
+repository root derived from its own module, supplies that root as subprocess
+`cwd`, resolves Docker only through the trusted Apple Silicon Homebrew
+entrypoint, and removes ambient Docker/Compose selectors while binding trusted
+Darwin account state. Caller cwd and PATH can no longer redirect execution.
+
+Runtime-cutover source remediation already succeeded under its separately
+created and consumed source authorization; that authority cannot authorize
+WordPress. A read-only live storage-continuity observation has occurred. No
+WordPress authorization has been created or consumed, no WordPress mutation has
+executed, Shopping is not activated, and `NOTION_SYNC=NO`.

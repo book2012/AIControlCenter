@@ -2180,3 +2180,12 @@ authorization but selects and executes no mutation, with no restore or retry.
 - Run the zero-argument fixed operator once; do not reuse source authority or retry FAILED/UNCERTAIN authority.
 - Require exact post-runtime, READY source, and storage identity continuity evidence before considering Shopping activation. Volume identity is not preservation or backup proof.
 - Implementation created no live authorization and performed no live mutation; Shopping is inactive.
+## Completed locally — SHOP-SERVICE-START-01B execution selection
+
+- [x] Anchor the logical Compose file and subprocess cwd to the module-derived
+  repository root.
+- [x] Replace ambient Docker lookup with fail-closed trusted Apple Silicon
+  executable resolution and bind Docker/Compose selection environment.
+- [ ] Request a new WordPress-only authorization before any future live run.
+  Source authority is already consumed and is not reusable; no WordPress
+  authority or mutation exists, Shopping is inactive, and `NOTION_SYNC=NO`.
