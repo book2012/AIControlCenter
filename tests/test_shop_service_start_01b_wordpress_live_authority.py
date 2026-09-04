@@ -245,3 +245,86 @@ def test_runner_accepts_only_exact_invocation(monkeypatch):
     from core.shopping.wordpress_port_reconciliation import MutationInvocation, ExecutionOutcome, build_mutation_invocation
     assert operator._run_compose(build_mutation_invocation()) is ExecutionOutcome.SUCCEEDED
     with pytest.raises(ValueError): operator._run_compose(MutationInvocation(("docker","compose","down")))
+
+def _trusted_execution_boundary(monkeypatch, tmp_path):
+    repository = tmp_path / "repository"
+    compose = repository / "deploy/shopping/compose.yaml"
+    compose.parent.mkdir(parents=True)
+    compose.write_text("services: {}\n")
+    prefix = tmp_path / "homebrew"
+    executable = prefix / "Cellar/docker/1/bin/docker"
+    executable.parent.mkdir(parents=True)
+    executable.write_text("binary")
+    executable.chmod(0o755)
+    entrypoint = prefix / "bin/docker"
+    entrypoint.parent.mkdir()
+    entrypoint.symlink_to(executable)
+    monkeypatch.setattr(operator, "_REPOSITORY_ROOT", repository)
+    monkeypatch.setattr(operator, "_TRUSTED_EXECUTABLE_ROOT", prefix)
+    monkeypatch.setattr(operator, "_TRUSTED_DOCKER_ENTRYPOINT", entrypoint)
+    return repository, executable
+
+def test_mutation_anchors_compose_and_subprocess_to_repository(monkeypatch, tmp_path):
+    repository, executable = _trusted_execution_boundary(monkeypatch, tmp_path)
+    caller = tmp_path / "caller"
+    fake_compose = caller / "deploy/shopping/compose.yaml"
+    fake_compose.parent.mkdir(parents=True)
+    fake_compose.write_text("attacker-controlled")
+    calls = []
+    class Completed: returncode = 0
+    monkeypatch.setattr(operator.subprocess, "run", lambda argv, **kwargs: calls.append((argv, kwargs)) or Completed())
+    previous = Path.cwd()
+    try:
+        os.chdir(caller)
+        assert operator._run_compose(domain_invocation()) is operator.ExecutionOutcome.SUCCEEDED
+    finally:
+        os.chdir(previous)
+    argv, kwargs = calls[0]
+    assert argv[0] == str(executable.resolve())
+    assert argv[7] == "deploy/shopping/compose.yaml"
+    assert kwargs["cwd"] == repository
+    assert (kwargs["cwd"] / argv[7]).read_text() == "services: {}\n"
+
+def domain_invocation():
+    from core.shopping.wordpress_port_reconciliation import build_mutation_invocation
+    return build_mutation_invocation()
+
+def test_caller_path_and_docker_compose_selectors_are_not_authoritative(monkeypatch, tmp_path):
+    _, executable = _trusted_execution_boundary(monkeypatch, tmp_path)
+    monkeypatch.setenv("PATH", str(tmp_path / "attacker"))
+    for name in operator._DOCKER_SELECTION_VARIABLES:
+        monkeypatch.setenv(name, "attacker-selected")
+    calls = []
+    class Completed: returncode = 0
+    monkeypatch.setattr(operator.subprocess, "run", lambda argv, **kwargs: calls.append((argv, kwargs)) or Completed())
+    assert operator._run_compose(domain_invocation()) is operator.ExecutionOutcome.SUCCEEDED
+    argv, kwargs = calls[0]
+    assert argv[0] == str(executable.resolve())
+    assert kwargs["env"]["PATH"] == operator._FIXED_PATH
+    assert kwargs["env"]["DOCKER_CONFIG"].endswith("/.docker")
+    assert all(kwargs["env"].get(name) != "attacker-selected" for name in operator._DOCKER_SELECTION_VARIABLES)
+
+def test_trusted_docker_resolution_failure_fails_before_mutation(monkeypatch, tmp_path):
+    repository = tmp_path / "repository"
+    compose = repository / "deploy/shopping/compose.yaml"
+    compose.parent.mkdir(parents=True)
+    compose.write_text("services: {}\n")
+    monkeypatch.setattr(operator, "_REPOSITORY_ROOT", repository)
+    monkeypatch.setattr(operator, "_TRUSTED_DOCKER_ENTRYPOINT", tmp_path / "missing/docker")
+    monkeypatch.setattr(operator, "_TRUSTED_EXECUTABLE_ROOT", tmp_path / "trusted")
+    monkeypatch.setattr(operator.subprocess, "run", lambda *_a, **_k: pytest.fail("mutation executed"))
+    assert operator._run_compose(domain_invocation()) is operator.ExecutionOutcome.UNCERTAIN
+
+def test_unsafe_or_unexpected_docker_resolution_is_rejected(monkeypatch, tmp_path):
+    _, executable = _trusted_execution_boundary(monkeypatch, tmp_path)
+    executable.chmod(0o777)
+    with pytest.raises(RuntimeError, match="unsafe"):
+        operator._trusted_docker_executable()
+    outside = tmp_path / "outside/docker"
+    outside.parent.mkdir()
+    outside.write_text("binary")
+    outside.chmod(0o755)
+    operator._TRUSTED_DOCKER_ENTRYPOINT.unlink()
+    operator._TRUSTED_DOCKER_ENTRYPOINT.symlink_to(outside)
+    with pytest.raises(RuntimeError, match="unexpected"):
+        operator._trusted_docker_executable()
