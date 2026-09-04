@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 2026-09-04 — SHOP-SERVICE-START-01B fixed source remediation
+
+- Added a fixed-key/value/path controlled-non-production domain boundary and a
+  private Mac-local descriptor-safe, metadata-preserving atomic implementation.
+- Added injectable domain consume-before-fresh-revalidation orchestration,
+  value-free JSON evidence, post-publication read-only validation, no retry, and
+  focused filesystem/adversarial tests.
+- Kept public `run()` structurally fail closed: it accepts no caller authority
+  and returns `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without observation or
+  mutation because no durable live consumer exists. Fake/in-memory consumers
+  remain domain test seams, not live authority. No public direct live mutation
+  capability is exposed.
+- No live source or runtime mutation, authorization creation or consumption,
+  Shopping activation, Production/Ubuntu access, or Notion sync occurred.
+- Secret values may be transiently decoded/read only for strict syntax and
+  byte preservation; none are retained, emitted, logged, hashed, or
+  semantically compared. Source remediation and WordPress recreation remain
+  separately authorized, and no content/backup claim was added.
+
 ## 2026-09-03 — SHOP-SERVICE-START-01B volume continuity evidence
 
 - Added frozen, value-free contracts for canonical Shopping volume existence,

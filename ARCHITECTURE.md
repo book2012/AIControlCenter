@@ -1,5 +1,31 @@
 # AI Home Datacenter Architecture
 
+## SHOP-SERVICE-START-01B runtime-cutover port source remediation
+
+The existing work item now has a dedicated controlled-non-production boundary
+fixed to `SHOPPING_WORDPRESS_PORT=58082` and the trusted Darwin passwd-home
+source. Its pure classifier cannot select mutation. The domain orchestration
+supports an injected consume-once authorization protocol for tests and future
+governed wiring, then a fresh exact expected-before observation, descriptor-safe
+reopen/revalidation, same-directory
+exclusive temporary file, metadata-preserving atomic replacement, parent
+directory fsync, and fresh read-only post-observation. The fixed-source atomic
+implementation is private and fixture tested. No suitable live durable
+authorization adapter exists: public `run()` accepts no caller authority and
+returns `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without source observation or
+mutation. Fake or in-memory protocol implementations are not a live authority
+path. No public direct live mutation capability is exposed.
+
+The byte transformation preserves every non-target byte, including assignment
+order, comments, whitespace, secret values, and final-newline state. Secret
+values may be transiently decoded for strict UTF-8 syntax validation and held
+in the source buffer for exact transformation; they are never retained,
+emitted, logged, hashed, or semantically compared. This implementation did not
+access or mutate the live source, create or consume authorization, recreate
+WordPress, activate Shopping, prove content preservation or backup/restore, or
+sync Notion. Source remediation and WordPress recreation require separate human
+authorizations. Shopping remains inactive and Notion remains unsynced.
+
 ## SHOP-SERVICE-START-01B volume continuity evidence boundary
 
 The Mac Control Plane now owns pure immutable Shopping volume observations and

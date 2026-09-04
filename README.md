@@ -1,5 +1,26 @@
 # AIControlCenter
 
+## SHOP-SERVICE-START-01B fixed source remediation boundary
+
+The existing work item includes narrow controlled-non-production domain
+remediation orchestration and a private, fixture-tested atomic implementation
+fixed to the trusted runtime-cutover source and
+`SHOPPING_WORDPRESS_PORT=58082`. The injectable domain orchestration preserves
+consume-before-fresh-exact-revalidation ordering, atomic mutation, and read-only
+post-validation for tests and future governed wiring. There is no durable live
+authorization adapter: public `run()` accepts no caller authorization and
+returns `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without observation or
+mutation. A caller-supplied fake or in-memory consumer is a test seam only, not
+a live authority path. No public direct live mutation capability is exposed.
+
+No live source mutation, authorization creation/consumption, WordPress runtime
+mutation, Shopping activation, Production/Ubuntu access, or Notion sync
+occurred. Secret values may be transiently UTF-8 validated/read for exact
+byte-preserving transformation, but are not retained, emitted, logged, hashed,
+or semantically compared. Source remediation and WordPress recreation require
+separate human authorizations; no content-preservation or backup/restore claim
+is created. Shopping remains inactive and Notion remains unsynced.
+
 ## SHOP-SERVICE-START-01B volume identity continuity
 
 This existing work item now includes immutable, JSON-safe observations for the

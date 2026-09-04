@@ -2,6 +2,17 @@
 
 ## Active — SHOP-SERVICE-START-01B controlled runtime governance
 
+- [x] Implement and fixture-validate the fixed runtime-cutover source port
+  remediation implementation without live execution or authorization
+  consumption.
+- [x] Keep public `run()` authority-free and structurally inert while the
+  durable adapter is unavailable; expose no public direct mutation capability,
+  and keep caller fakes as domain test seams only.
+- [ ] Supply a separately reviewed durable controlled-non-production live
+  authorization consumer before any source remediation can be considered.
+- [ ] Obtain separate human authorizations for source remediation and any later
+  WordPress recreation; neither has occurred and Shopping remains inactive.
+
 - [x] Implement separate Broken-profile classification and pure fail-closed
   recovery policy without mutation capability.
 - [x] Require lifecycle-only proof for a healthy stopped start candidate and

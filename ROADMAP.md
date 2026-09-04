@@ -2,6 +2,16 @@
 
 ## ACTIVE — SHOP-SERVICE-START-01B controlled runtime governance
 
+- [x] Implement the fixed trusted-source `SHOPPING_WORDPRESS_PORT=58082`
+  remediation boundary with injectable domain consume-once orchestration, fresh
+  exact revalidation, byte/metadata-preserving atomic replacement, and read-only
+  post-validation. Public `run()` accepts no authority and remains inert with
+  `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE`; fake/in-memory consumers are test
+  seams only. The atomic implementation is private and fixture tested; no
+  public direct mutation capability, live authorization adapter, or execution
+  was introduced; source repair and WordPress recreation require separate human
+  authorizations.
+
 - [x] Add separate `HEALTHY` / `BROKEN` / `UNKNOWN` infrastructure health and
   pure fail-closed recovery classification without mutation capability.
 - [x] Expose preservation or verified backup/restore only as a safety fact for

@@ -1,5 +1,27 @@
 # Project History
 
+## 2026-09-04 — Fixed runtime-cutover source remediation implemented in place
+
+The existing `SHOP-SERVICE-START-01B` work item gained a narrow fixed-path,
+fixed-key, fixed-value controlled-non-production remediation boundary. It
+preserves non-target bytes and verified metadata through a private,
+fixture-tested descriptor-safe, same-directory atomic implementation. Its
+injectable domain seam consumes test authority before fresh
+expected-before validation, never retries, and performs read-only post-state
+validation. No appropriate live authorization adapter was added: public
+`run()` accepts no caller authority and returns
+`LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without observation or mutation.
+Fake/in-memory consumers are test seams, not a live authority path. No public
+direct live mutation capability is exposed.
+
+Secret values may be transiently decoded/read for strict UTF-8 validation and
+exact byte preservation, but are never retained, emitted, logged, hashed, or
+semantically compared. No live source/runtime mutation, authorization creation
+or consumption, WordPress recreation, Shopping activation, content-preservation
+or backup/restore claim, Production/Ubuntu access, or Notion sync occurred.
+Source remediation and WordPress recreation remain separately authorized.
+Shopping remains inactive and Notion remains unsynced.
+
 ## 2026-09-03 — Volume continuity evidence adapter added in place
 
 The existing `SHOP-SERVICE-START-01B` work item gained immutable, value-free
