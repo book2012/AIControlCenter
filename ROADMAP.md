@@ -5,12 +5,15 @@
 - [x] Implement the fixed trusted-source `SHOPPING_WORDPRESS_PORT=58082`
   remediation boundary with injectable domain consume-once orchestration, fresh
   exact revalidation, byte/metadata-preserving atomic replacement, and read-only
-  post-validation. Public `run()` accepts no authority and remains inert with
-  `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE`; fake/in-memory consumers are test
-  seams only. The atomic implementation is private and fixture tested; no
-  public direct mutation capability, live authorization adapter, or execution
-  was introduced; source repair and WordPress recreation require separate human
-  authorizations.
+  post-validation. Public `run()` accepts no arguments and consumes only the
+  fixed durable store. Interactive one-use controlled-non-production issuance,
+  irreversible SQLite claim/commit, restart replay denial, and authorization
+  separation are complete. SEC-02 Production authority is not reused; source
+  repair and WordPress recreation require separate human authorizations. No
+  live issuance or execution occurred.
+  Operator discovery is immutable read-only and creates no state when the
+  store or usable authorization is absent; store creation is issuer-only after
+  exact human acknowledgement.
 
 - [x] Add separate `HEALTHY` / `BROKEN` / `UNKNOWN` infrastructure health and
   pure fail-closed recovery classification without mutation capability.

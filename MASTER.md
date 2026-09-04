@@ -6,13 +6,16 @@
 fixed to the trusted Darwin-home source and `SHOPPING_WORDPRESS_PORT=58082`.
 Injectable domain authorization consumption, fresh expected-before observation,
 exact write-time revalidation, at-most-one atomic replacement, and read-only
-post-validation are separate ordered stages. No durable live authorization
-adapter exists, so
-public `run()` accepts no authority input and returns
-`LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without observation or mutation.
-Fake/in-memory consumers are test seams rather than live authority. The atomic
-implementation is private and fixture tested; no public direct live mutation
-capability is exposed.
+post-validation are separate ordered stages. The dedicated fixed-path SQLite
+store commits an irreversible claim before returning an exact typed receipt;
+restart replay and stranded claims are permanently denied. Public `run()`
+accepts no input and exposes no direct mutation capability. Interactive human
+issuance is short-lived and one-use. This controlled-non-production authority
+is separate from SEC-02 Production authority and from protected-evidence
+acquisition authority; only their durable SQLite security pattern is reused.
+The operator's open-existing discovery is immutable and read-only; absence,
+emptiness, expiry, or invalidity cannot create, chmod, initialize, or journal
+the store. Only exact issuer acknowledgement unlocks creation and hardening.
 
 All non-target bytes and verified uid/gid/mode are preserved. Secret values may
 be transiently UTF-8 validated/read for exact preservation but are not retained,

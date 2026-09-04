@@ -8,11 +8,19 @@ preserves non-target bytes and verified metadata through a private,
 fixture-tested descriptor-safe, same-directory atomic implementation. Its
 injectable domain seam consumes test authority before fresh
 expected-before validation, never retries, and performs read-only post-state
-validation. No appropriate live authorization adapter was added: public
-`run()` accepts no caller authority and returns
-`LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without observation or mutation.
-Fake/in-memory consumers are test seams, not a live authority path. No public
-direct live mutation capability is exposed.
+validation. A dedicated Mac-local interactive issuer now records one exact,
+short-lived controlled-non-production authorization in a repository-fixed
+SQLite store. Consumption durably claims and commits before returning an exact
+receipt; replay and stranded claims are permanently spent. The public operator
+accepts no arguments and exposes no direct mutation capability.
+Final review split store creation from consumption: only the issuer may create,
+initialize, or harden it after exact acknowledgement. Operator discovery uses
+immutable read-only open-existing access and leaves no filesystem/governance
+change when the store or usable authorization is absent, expired, or invalid.
+
+This model is separate from SEC-02 Production authority and protected-evidence
+acquisition authority. Only irreversible SQLite mechanics are reused. The
+source authorization cannot authorize WordPress recreation.
 
 Secret values may be transiently decoded/read for strict UTF-8 validation and
 exact byte preservation, but are never retained, emitted, logged, hashed, or

@@ -5,16 +5,26 @@
 The existing work item now has a dedicated controlled-non-production boundary
 fixed to `SHOPPING_WORDPRESS_PORT=58082` and the trusted Darwin passwd-home
 source. Its pure classifier cannot select mutation. The domain orchestration
-supports an injected consume-once authorization protocol for tests and future
-governed wiring, then a fresh exact expected-before observation, descriptor-safe
+uses a dedicated fixed-path SQLite consumer that transitions an exact human
+authorization through `AVAILABLE -> DURABLY_CLAIMED -> COMMITTED` before a
+fresh exact expected-before observation, descriptor-safe
 reopen/revalidation, same-directory
 exclusive temporary file, metadata-preserving atomic replacement, parent
 directory fsync, and fresh read-only post-observation. The fixed-source atomic
-implementation is private and fixture tested. No suitable live durable
-authorization adapter exists: public `run()` accepts no caller authority and
-returns `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without source observation or
-mutation. Fake or in-memory protocol implementations are not a live authority
-path. No public direct live mutation capability is exposed.
+implementation is private and fixture tested. The no-argument public operator
+can consume only this fixed store and fails closed without a valid receipt.
+Its open-existing discovery validates ownership, schema, and exactly one usable
+authorization through immutable read-only SQLite access: it cannot create,
+chmod, initialize, journal, or otherwise change governance state. Store
+creation and hardening exist only behind the issuer's exact acknowledgement.
+Stranded claims remain spent, replay after restart is denied, and ambiguous
+commit reconciliation is restricted to exact read-back in the same call.
+
+This controlled-non-production model is separate from SEC-02 Production
+authority and reuses only its irreversible SQLite security pattern. Explicit
+interactive human issuance is required; one issuance permits at most one exact
+source attempt. It grants neither Production nor Ubuntu authority. Source
+remediation and WordPress recreation require separate authorizations.
 
 The byte transformation preserves every non-target byte, including assignment
 order, comments, whitespace, secret values, and final-newline state. Secret

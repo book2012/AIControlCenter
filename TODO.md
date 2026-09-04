@@ -5,13 +5,17 @@
 - [x] Implement and fixture-validate the fixed runtime-cutover source port
   remediation implementation without live execution or authorization
   consumption.
-- [x] Keep public `run()` authority-free and structurally inert while the
-  durable adapter is unavailable; expose no public direct mutation capability,
-  and keep caller fakes as domain test seams only.
-- [ ] Supply a separately reviewed durable controlled-non-production live
-  authorization consumer before any source remediation can be considered.
+- [x] Keep public `run()` caller-unconfigurable, expose no public mutation
+  capability, and require the exact durable structured consumption receipt.
+- [x] Implement the separate fixed-path durable controlled-non-production
+  issuer/consumer with interactive acknowledgement, one-use expiry,
+  irreversible claim, and replay denial.
+- [x] Split issuer-only post-acknowledgement store creation from immutable
+  read-only operator discovery; absent, empty, expired, and invalid authority
+  changes no governance/filesystem state.
 - [ ] Obtain separate human authorizations for source remediation and any later
   WordPress recreation; neither has occurred and Shopping remains inactive.
+  The implemented source authorization cannot authorize WordPress recreation.
 
 - [x] Implement separate Broken-profile classification and pure fail-closed
   recovery policy without mutation capability.

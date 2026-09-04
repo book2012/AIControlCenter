@@ -7,11 +7,18 @@
 - Added injectable domain consume-before-fresh-revalidation orchestration,
   value-free JSON evidence, post-publication read-only validation, no retry, and
   focused filesystem/adversarial tests.
-- Kept public `run()` structurally fail closed: it accepts no caller authority
-  and returns `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without observation or
-  mutation because no durable live consumer exists. Fake/in-memory consumers
-  remain domain test seams, not live authority. No public direct live mutation
-  capability is exposed.
+- Added the mutation-specific interactive issuer and fixed-path SQLite
+  `AVAILABLE -> DURABLY_CLAIMED -> COMMITTED` consumer with permanent replay
+  denial, stranded-claim exhaustion, and same-call-only commit reconciliation.
+- Wired the no-argument public operator exclusively to the exact structured
+  receipt; it exposes no direct mutation capability and fails closed without
+  durable authorization.
+- Split acknowledgement-gated store creation from immutable read-only
+  open-existing discovery, so absent, empty, expired, or invalid authority
+  causes zero operator-side governance/filesystem mutation.
+- Kept this authority separate from SEC-02 Production authority and the
+  protected-evidence authority model; only irreversible SQLite mechanics are
+  reused. Source remediation cannot authorize WordPress recreation.
 - No live source or runtime mutation, authorization creation or consumption,
   Shopping activation, Production/Ubuntu access, or Notion sync occurred.
 - Secret values may be transiently decoded/read only for strict syntax and

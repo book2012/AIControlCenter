@@ -7,11 +7,17 @@ remediation orchestration and a private, fixture-tested atomic implementation
 fixed to the trusted runtime-cutover source and
 `SHOPPING_WORDPRESS_PORT=58082`. The injectable domain orchestration preserves
 consume-before-fresh-exact-revalidation ordering, atomic mutation, and read-only
-post-validation for tests and future governed wiring. There is no durable live
-authorization adapter: public `run()` accepts no caller authorization and
-returns `LIVE_AUTHORIZATION_ADAPTER_UNAVAILABLE` without observation or
-mutation. A caller-supplied fake or in-memory consumer is a test seam only, not
-a live authority path. No public direct live mutation capability is exposed.
+post-validation. A dedicated, fixed-path SQLite store irreversibly consumes a
+short-lived interactive human authorization before returning the exact typed
+receipt. The public `run()` remains no-argument and exposes no direct mutation
+capability. This is controlled-non-production authority, separate from SEC-02
+Production authority; only the durable claim/commit/replay-denial mechanics are
+reused. One issuance allows at most one exact source attempt, and cannot
+authorize WordPress recreation.
+Operator discovery opens only an existing store through immutable read-only
+SQLite and stops without filesystem change when the store or usable authority
+is absent or invalid. Only the issuer, after exact acknowledgement, may create,
+initialize, or harden the fixed store.
 
 No live source mutation, authorization creation/consumption, WordPress runtime
 mutation, Shopping activation, Production/Ubuntu access, or Notion sync
