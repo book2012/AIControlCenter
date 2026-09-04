@@ -56,6 +56,7 @@ Production WU09, `SHOP-CMS-01B`, and Apple signing are outside this path.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
 
+
 Continuity invariant: `VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY !=
 CONTENT_PRESERVATION != VERIFIED_BACKUP_RESTORE`, and
 `SAFETY_EVIDENCE != AUTHORITY`.
@@ -4883,3 +4884,36 @@ canonical invocation `9b77e3f128b64c3a88f229a9a8898f93` completed and
 validated PASS with `4533 passed, 5 deselected, 447 warnings, 2 subtests passed
 in 468.64s (0:07:48)` from
 `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`.
+## ACTIVE — SHOP-SERVICE-START-01B WordPress reconciliation execution boundary
+
+- [x] Implement the exact WordPress-only `58081` to `58082` candidate.
+- [x] Require independently complete runtime, storage, and value-blind fixed
+  source evidence plus fresh one-use human authorization.
+- [x] Prohibit dependency/database recreation, deletion, pull/build, retry,
+  rollback, Ubuntu, Production, bootstrap, and activation.
+- [ ] Separately authorize a future controlled non-production execution.
+- [ ] After any future attempt, perform fresh narrow read-only reconciliation.
+
+Execution invariant:
+`AUTHORIZATION_CONSUMPTION -> FRESH_EXPECTED_BEFORE_OBSERVATION -> EXACT_REVALIDATION -> AT_MOST_ONE_MUTATION`.
+Pure classification never selects mutation. Failed fresh validation consumes
+authorization but selects and executes no mutation, with no restore or retry.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`COLIMA_HOST_STATE=RUNNING`
+`DOCKER_REACHABLE=YES`
+`MARIADB_STATE=HEALTHY`
+`MARIADB_HOST_PORT_PUBLISHED=NO`
+`WORDPRESS_STATE=CONFLICTING`
+`WORDPRESS_ACTUAL_BINDING=127.0.0.1:58081`
+`WORDPRESS_DESIRED_BINDING=127.0.0.1:58082`
+`DATABASE_VOLUME_PRESENT=YES`
+`WORDPRESS_VOLUME_PRESENT=YES`
+`SINGLE_SNAPSHOT_PROVES_CONTINUITY=NO`
+`CONTENT_PRESERVATION_PROVEN=NO`
+`BACKUP_RESTORE_PROVEN=NO`
+`WORDPRESS_PORT_RECONCILIATION_EXECUTOR_IMPLEMENTED=YES`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`

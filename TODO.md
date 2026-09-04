@@ -30,6 +30,7 @@ Keep the boundary explicit: `VOLUME_EXISTS != VOLUME_IDENTITY_CONTINUITY`;
 `MUTATION_EXECUTED=NO`
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
+
 - [x] Implement the fixed trusted Darwin passwd-home + Application Support
   `runtime_cutover` source authority and value-free canonical key-name observer;
   the historical live path was candidate evidence only. The implementation and
@@ -2101,3 +2102,34 @@ consumption, SEC-02 single-invocation permission, and invocation are absent.
   `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`: invocation
   `9b77e3f128b64c3a88f229a9a8898f93`, completed and validated PASS, `4533 passed,
   5 deselected, 447 warnings, 2 subtests passed in 468.64s (0:07:48)`.
+## Active — governed WordPress port reconciliation
+
+- [x] Implement and test the repository-side exact WordPress-only executor
+  under `SHOP-SERVICE-START-01B` without creating a Work Unit.
+- [ ] Obtain separate explicit human authorization before any future mutation.
+- [ ] Use fresh narrow JSON-safe observation after any future single attempt;
+  do not infer continuity, preservation, or backup readiness from one snapshot.
+
+Execution invariant:
+`AUTHORIZATION_CONSUMPTION -> FRESH_EXPECTED_BEFORE_OBSERVATION -> EXACT_REVALIDATION -> AT_MOST_ONE_MUTATION`.
+Pure classification never selects mutation. Failed fresh validation consumes
+authorization but selects and executes no mutation, with no restore or retry.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`COLIMA_HOST_STATE=RUNNING`
+`DOCKER_REACHABLE=YES`
+`MARIADB_STATE=HEALTHY`
+`MARIADB_HOST_PORT_PUBLISHED=NO`
+`WORDPRESS_STATE=CONFLICTING`
+`WORDPRESS_ACTUAL_BINDING=127.0.0.1:58081`
+`WORDPRESS_DESIRED_BINDING=127.0.0.1:58082`
+`DATABASE_VOLUME_PRESENT=YES`
+`WORDPRESS_VOLUME_PRESENT=YES`
+`SINGLE_SNAPSHOT_PROVES_CONTINUITY=NO`
+`CONTENT_PRESERVATION_PROVEN=NO`
+`BACKUP_RESTORE_PROVEN=NO`
+`WORDPRESS_PORT_RECONCILIATION_EXECUTOR_IMPLEMENTED=YES`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`

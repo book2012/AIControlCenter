@@ -61,6 +61,7 @@ mutation, runtime activation, and live reconciliation are absent.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
 
+
 ## SHOP-SERVICE-START-01B runtime-cutover source authority
 
 The authoritative work item remains `SHOP-SERVICE-START-01B`; no new Work Unit
@@ -5518,3 +5519,37 @@ Validation: focused `52 passed in 0.13s`; final durable canonical invocation
 `9b77e3f128b64c3a88f229a9a8898f93` completed and validated PASS with `4533
 passed, 5 deselected, 447 warnings, 2 subtests passed in 468.64s (0:07:48)` from
 `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`.
+## SHOP-SERVICE-START-01B WordPress port reconciliation executor
+
+The Mac Control Plane now owns a repository-side, one-shot WordPress-only
+reconciliation boundary. It fixes context `colima-aicontrolcenter-commerce`,
+Compose project `ai-shopping`, file `deploy/shopping/compose.yaml`, service
+`wordpress`, container `shopping-wordpress`, and the trusted Darwin-home
+`runtime_cutover` source. Planning is pure; execution requires a fresh external
+human authorization, consumes it before one injected runner call, and never
+retries or rolls back. MariaDB, volumes, Colima, Ubuntu, Production, bootstrap,
+build, image pull, and dependency recreation remain outside its authority.
+
+Execution invariant:
+`AUTHORIZATION_CONSUMPTION -> FRESH_EXPECTED_BEFORE_OBSERVATION -> EXACT_REVALIDATION -> AT_MOST_ONE_MUTATION`.
+Pure classification never selects mutation. Failed fresh validation consumes
+authorization but selects and executes no mutation, with no restore or retry.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`COLIMA_HOST_STATE=RUNNING`
+`DOCKER_REACHABLE=YES`
+`MARIADB_STATE=HEALTHY`
+`MARIADB_HOST_PORT_PUBLISHED=NO`
+`WORDPRESS_STATE=CONFLICTING`
+`WORDPRESS_ACTUAL_BINDING=127.0.0.1:58081`
+`WORDPRESS_DESIRED_BINDING=127.0.0.1:58082`
+`DATABASE_VOLUME_PRESENT=YES`
+`WORDPRESS_VOLUME_PRESENT=YES`
+`SINGLE_SNAPSHOT_PROVES_CONTINUITY=NO`
+`CONTENT_PRESERVATION_PROVEN=NO`
+`BACKUP_RESTORE_PROVEN=NO`
+`WORDPRESS_PORT_RECONCILIATION_EXECUTOR_IMPLEMENTED=YES`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`

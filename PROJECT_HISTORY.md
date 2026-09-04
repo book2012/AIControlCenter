@@ -45,6 +45,7 @@ occurred.
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
 
+
 Current status also incorporates a later bounded live read-only preflight. The
 repository implementation bundle did not access the source and its tests used
 fixtures; the later preflight found the source ready and parsed it value-blind.
@@ -4917,3 +4918,35 @@ Implementation commit: `cfde5874392b75206cd66b7e7ee3202517de5e54`
 `9b77e3f128b64c3a88f229a9a8898f93` completed and validated PASS with `4533
 passed, 5 deselected, 447 warnings, 2 subtests passed in 468.64s (0:07:48)`;
 evidence directory: `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`.
+## 2026-09-04 — WordPress port reconciliation executor
+
+The existing `SHOP-SERVICE-START-01B` work item gained a repository-side,
+one-shot WordPress reconciliation executor. It preserves the Mac-only Control
+Plane, derives the env-file from the trusted Darwin passwd home, validates the
+existing narrow runtime/storage/source evidence, and requires an externally
+supplied fresh authorization. The implementation made no live call and did not
+create or consume authorization.
+
+Execution invariant:
+`AUTHORIZATION_CONSUMPTION -> FRESH_EXPECTED_BEFORE_OBSERVATION -> EXACT_REVALIDATION -> AT_MOST_ONE_MUTATION`.
+Pure classification never selects mutation. Failed fresh validation consumes
+authorization but selects and executes no mutation, with no restore or retry.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`COLIMA_HOST_STATE=RUNNING`
+`DOCKER_REACHABLE=YES`
+`MARIADB_STATE=HEALTHY`
+`MARIADB_HOST_PORT_PUBLISHED=NO`
+`WORDPRESS_STATE=CONFLICTING`
+`WORDPRESS_ACTUAL_BINDING=127.0.0.1:58081`
+`WORDPRESS_DESIRED_BINDING=127.0.0.1:58082`
+`DATABASE_VOLUME_PRESENT=YES`
+`WORDPRESS_VOLUME_PRESENT=YES`
+`SINGLE_SNAPSHOT_PROVES_CONTINUITY=NO`
+`CONTENT_PRESERVATION_PROVEN=NO`
+`BACKUP_RESTORE_PROVEN=NO`
+`WORDPRESS_PORT_RECONCILIATION_EXECUTOR_IMPLEMENTED=YES`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`

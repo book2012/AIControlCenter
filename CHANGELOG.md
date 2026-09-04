@@ -45,6 +45,7 @@
 `SHOPPING_RUNTIME_ACTIVATED=NO`
 `NOTION_SYNC=NO`
 
+
 ## 2026-09-03 — SHOP-SERVICE-START-01B runtime-cutover source authority
 
 - Added the repository-authoritative, fixed trusted-home source suffix
@@ -5383,3 +5384,38 @@ WU08 does not authorize WU09, WU10, or WU11 and creates no reusable Production a
   `/private/tmp/aicontrolcenter-canonical-evidence.iaI3ci`, completed and
   validated PASS; `4533 passed, 5 deselected, 447 warnings, 2 subtests passed in
   468.64s (0:07:48)`.
+## 2026-09-04 — SHOP-SERVICE-START-01B WordPress reconciliation executor
+
+- Added a pure fail-closed classifier and an injectable one-shot execution
+  boundary for the exact WordPress `58081` to `58082` publisher correction.
+- Reused the fixed trusted Darwin-home `runtime_cutover` authority and canonical
+  storage observer; identity comparison remains distinct from preservation and
+  backup proof.
+- Added coverage for exact runtime prerequisites, immutable target/source,
+  bounded argv, one-use authorization, failure/uncertainty consumption, and no
+  retry. No live mutation, authorization creation/consumption, runtime
+  activation, Ubuntu/Production access, or Notion sync occurred.
+
+Execution invariant:
+`AUTHORIZATION_CONSUMPTION -> FRESH_EXPECTED_BEFORE_OBSERVATION -> EXACT_REVALIDATION -> AT_MOST_ONE_MUTATION`.
+Pure classification never selects mutation. Failed fresh validation consumes
+authorization but selects and executes no mutation, with no restore or retry.
+
+`AUTHORITATIVE_WORK_ITEM=SHOP-SERVICE-START-01B`
+`COLIMA_HOST_STATE=RUNNING`
+`DOCKER_REACHABLE=YES`
+`MARIADB_STATE=HEALTHY`
+`MARIADB_HOST_PORT_PUBLISHED=NO`
+`WORDPRESS_STATE=CONFLICTING`
+`WORDPRESS_ACTUAL_BINDING=127.0.0.1:58081`
+`WORDPRESS_DESIRED_BINDING=127.0.0.1:58082`
+`DATABASE_VOLUME_PRESENT=YES`
+`WORDPRESS_VOLUME_PRESENT=YES`
+`SINGLE_SNAPSHOT_PROVES_CONTINUITY=NO`
+`CONTENT_PRESERVATION_PROVEN=NO`
+`BACKUP_RESTORE_PROVEN=NO`
+`WORDPRESS_PORT_RECONCILIATION_EXECUTOR_IMPLEMENTED=YES`
+`LIVE_MUTATION_EXECUTED=NO`
+`AUTHORIZATION_CONSUMED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`NOTION_SYNC=NO`
