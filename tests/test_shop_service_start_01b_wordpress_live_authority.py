@@ -63,10 +63,11 @@ def source_domain_values():
 def store(tmp_path,fault=None): return WordPressPortAuthorizationStore._for_test(tmp_path/"authority.sqlite3",uid=os.getuid(),gid=os.getgid(),fault=fault)
 def tree(path): return tuple(sorted((str(p.relative_to(path)),p.stat().st_mode,p.stat().st_size,p.stat().st_mtime_ns) for p in path.rglob("*"))) if path.exists() else ()
 
-def test_public_surfaces_are_zero_argument_and_operator_exports_only_run():
+def test_public_surfaces_are_zero_argument_and_operator_exports_cli():
     assert tuple(inspect.signature(issuer.issue).parameters)==()
     assert tuple(inspect.signature(operator.run).parameters)==()
-    assert operator.__all__ == ("run",)
+    assert tuple(inspect.signature(operator.main).parameters)==()
+    assert operator.__all__ == ("main", "run")
 
 def test_non_tty_denied(monkeypatch):
     monkeypatch.setattr(issuer.sys.stdin,"isatty",lambda:False); monkeypatch.setattr(issuer.sys.stdout,"isatty",lambda:True)

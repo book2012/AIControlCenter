@@ -1,6 +1,6 @@
 """Zero-argument Mac-local operator for the fixed WordPress reconciliation."""
 from __future__ import annotations
-import json, os, pwd, stat, subprocess
+import json, os, pwd, stat, subprocess, sys
 from pathlib import Path
 from core.shopping.observability.storage_continuity import StorageContinuityObservation
 from core.shopping.wordpress_port_reconciliation import (
@@ -173,4 +173,22 @@ def run():
     except Exception: authorization=None
     return execute_reconciliation(observe_runtime=_observe_runtime,observe_storage=observe_storage_continuity,authorization=authorization,runner=_run_compose)
 
-__all__=("run",)
+def main():
+    """Execute the fixed governed operation once and emit its safe projection."""
+    try:
+        result = run()
+        print(json.dumps(result.to_json_safe(), sort_keys=True, separators=(",", ":")))
+        return 0
+    except Exception:
+        error = {
+            "error": "WORDPRESS_PORT_OPERATOR_CLI_FAILURE",
+            "production_authority": False,
+            "ubuntu_authority": False,
+        }
+        print(json.dumps(error, sort_keys=True, separators=(",", ":")), file=sys.stderr)
+        return 1
+
+__all__=("main","run")
+
+if __name__ == "__main__":
+    raise SystemExit(main())
