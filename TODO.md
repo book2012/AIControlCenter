@@ -1,5 +1,22 @@
 # TODO
 
+## Complete — SHOP-SERVICE-START-01B Compose executable hardening
+
+- [x] Bind the mutation adapter directly to fail-closed
+  `/opt/homebrew/bin/docker-compose` resolution without changing the logical
+  domain or authorization contract.
+- [x] Reject unsafe executable identity, unsafe parents, outside-prefix
+  resolution, alternate argv, caller cwd/file selection, PATH selection, user
+  CLI plugin selection, and `cliPluginsExtraDirs` selection.
+- [ ] A separate live WordPress authorization is still required before any
+  future mutation. Source remediation already succeeded and its authorization
+  is spent; preflight proves source `READY` and both volumes `COMPLETE`, while
+  WordPress remains at `127.0.0.1:58081` versus desired `127.0.0.1:58082`.
+
+No live WordPress authorization was created or consumed, no mutation executed,
+Shopping remains inactive, Production/Ubuntu authority are false, and
+`NOTION_SYNC=NO`.
+
 ## Active — SHOP-SERVICE-START-01B controlled runtime governance
 
 - [x] Implement and fixture-validate the fixed runtime-cutover source port

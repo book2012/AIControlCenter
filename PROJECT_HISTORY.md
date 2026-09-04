@@ -1,5 +1,30 @@
 # Project History
 
+## 2026-09-04 — WordPress Compose executable boundary hardened
+
+`SHOP-SERVICE-START-01B` retained its logical mutation and authorization
+contracts while the Mac-local mutation adapter was narrowed to direct,
+fail-closed `/opt/homebrew/bin/docker-compose` execution. The resolved target
+and every relevant parent beneath `/opt/homebrew` must satisfy exact type,
+ownership, mode, executable, and prefix policy. Exact argv translation plus the
+fixed repository cwd and non-symlink Compose-file identity prevent PATH, user
+plugins, `cliPluginsExtraDirs`, caller cwd, or alternate invocation selection.
+
+The earlier source remediation succeeded and its authorization is spent; it
+cannot authorize WordPress. Host preflight proves source `READY`, both canonical
+volumes `COMPLETE`, current `127.0.0.1:58081`, and desired
+`127.0.0.1:58082`. No live WordPress authorization was created or consumed, no
+WordPress mutation executed, Shopping remains inactive, Production and Ubuntu
+authority remain false, and `NOTION_SYNC=NO`.
+
+Final canonical validation for this Compose executable boundary used command
+`ops/macos/validation/run-deployment-regression-gate.sh -q`, invocation ID
+`63fff193ae85462e9639c58d3f747ae5`, state `COMPLETED_PASS`, and full result
+`4779 passed, 5 deselected, 551 warnings, 2 subtests passed in 468.23s`. The exit
+status was `0`, `FINAL_CANONICAL_VALIDATED_PASS=true`, and
+`CANONICAL_RERUN_REQUIRED=NO`. This durable Git documentation record supersedes
+no earlier canonical evidence.
+
 ## 2026-09-04 — SHOP-SERVICE-START-01B read-only preflight validated
 
 The existing work item gained a fixed JSON-first read-only entrypoint at

@@ -1,5 +1,27 @@
 # CHANGELOG
 
+## 2026-09-04 — SHOP-SERVICE-START-01B Compose executable hardening
+
+- Preserved the exact logical `docker --context ... compose ...` domain contract
+  while translating its sole accepted mutation argv to the direct fixed
+  `/opt/homebrew/bin/docker-compose` executable.
+- Added fail-closed resolution beneath `/opt/homebrew`, trusted owner, regular
+  executable, non-writable target, and trusted non-writable parent checks.
+- Proved caller PATH, user CLI plugins, `cliPluginsExtraDirs`, caller cwd, and
+  alternate argv cannot select the mutation executable or Compose file.
+- Source remediation previously succeeded; its authorization is spent and
+  cannot authorize WordPress. Preflight proves source `READY`, both canonical
+  volumes `COMPLETE`, current `127.0.0.1:58081`, and desired
+  `127.0.0.1:58082`. No WordPress authorization or mutation occurred, Shopping
+  remains inactive, Production/Ubuntu authority remain false, and
+  `NOTION_SYNC=NO`.
+- Recorded final canonical validation command
+  `ops/macos/validation/run-deployment-regression-gate.sh -q`, invocation ID
+  `63fff193ae85462e9639c58d3f747ae5`, state `COMPLETED_PASS`, full result `4779
+  passed, 5 deselected, 551 warnings, 2 subtests passed in 468.23s`, exit status
+  `0`, `FINAL_CANONICAL_VALIDATED_PASS=true`, and
+  `CANONICAL_RERUN_REQUIRED=NO`, without altering earlier canonical evidence.
+
 ## 2026-09-04 — SHOP-SERVICE-START-01B read-only preflight closeout
 
 - Closed documentation for the validated fixed JSON-first read-only preflight

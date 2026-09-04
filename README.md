@@ -1,5 +1,23 @@
 # AIControlCenter
 
+## SHOP-SERVICE-START-01B Compose executable boundary hardening
+
+The controlled-non-production WordPress mutation path preserves its exact
+logical domain contract and now executes only the directly resolved
+`/opt/homebrew/bin/docker-compose` entrypoint. The adapter rejects missing,
+non-regular, non-executable, unexpectedly owned, writable, outside-prefix, or
+unsafe-parent executable paths. PATH, Docker user CLI plugins,
+`cliPluginsExtraDirs`, caller cwd, and alternate argv cannot select the mutation
+executable or repository Compose file. The one-attempt, no-retry,
+authorization-consume-before-fresh-revalidation contract is unchanged.
+
+Source remediation previously succeeded and its spent authorization cannot
+authorize WordPress. Preflight now proves source `READY` and both canonical
+volumes `COMPLETE`. WordPress remains healthy at `127.0.0.1:58081`; the desired
+binding remains `127.0.0.1:58082`. No live WordPress authorization was created
+or consumed, no mutation executed, Shopping remains inactive, Production and
+Ubuntu authority remain false, and `NOTION_SYNC=NO`.
+
 ## SHOP-SERVICE-START-01B read-only preflight closeout
 
 `ops/macos/shopping/shop_service_start_01b_preflight.py` is the fixed JSON-first

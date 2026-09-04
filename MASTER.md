@@ -1,5 +1,21 @@
 # MASTER
 
+## SHOP-SERVICE-START-01B trusted Compose executable boundary complete
+
+The WordPress mutation adapter now accepts only the unchanged fixed logical
+domain invocation and translates it to the directly resolved
+`/opt/homebrew/bin/docker-compose`. Fail-closed executable and parent ownership,
+type, mode, prefix, repository-cwd, and non-symlink Compose-file checks prevent
+PATH, user CLI plugins, `cliPluginsExtraDirs`, caller cwd, or alternate argv
+from selecting mutation behavior. At most one attempt remains possible, with no
+automatic retry and authorization consumption before fresh revalidation.
+
+Source remediation succeeded earlier; its authorization is spent and is not
+WordPress authority. Preflight proves source `READY`, both canonical volumes
+`COMPLETE`, current `127.0.0.1:58081`, and desired `127.0.0.1:58082`. No live
+WordPress authority was created or consumed, no mutation executed, Shopping is
+inactive, Production and Ubuntu authority are false, and `NOTION_SYNC=NO`.
+
 ## SHOP-SERVICE-START-01B read-only preflight completed
 
 The fixed `ops/macos/shopping/shop_service_start_01b_preflight.py` entrypoint

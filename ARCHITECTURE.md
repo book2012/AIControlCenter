@@ -1,5 +1,25 @@
 # AI Home Datacenter Architecture
 
+## SHOP-SERVICE-START-01B trusted Compose mutation boundary
+
+The logical domain invocation remains `docker --context
+colima-aicontrolcenter-commerce compose ...`, but the Mac-local mutation adapter
+now translates only that exact contract to the resolved
+`/opt/homebrew/bin/docker-compose` executable. Resolution is fail-closed under
+`/opt/homebrew`: the target must be a regular executable owned by root or the
+trusted Darwin account, neither it nor any relevant parent may be group/world
+writable, and every relevant parent must be a trusted directory. PATH, user CLI
+plugins, `cliPluginsExtraDirs`, caller cwd, and caller parameters cannot select
+the mutation executable or Compose file. Read-only observations may still use
+the trusted Docker CLI.
+
+Source remediation previously succeeded; its authorization is spent and cannot
+authorize WordPress. Host preflight proves source `READY` and both canonical
+volumes `COMPLETE`; the current binding is `127.0.0.1:58081` and the desired
+binding remains `127.0.0.1:58082`. No live WordPress authorization was created
+or consumed, no WordPress mutation executed, Shopping remains inactive,
+Production and Ubuntu authority remain false, and `NOTION_SYNC=NO`.
+
 ## SHOP-SERVICE-START-01B JSON-first read-only preflight
 
 The Mac mini remains the sole Control Plane. The fixed, caller-unconfigurable

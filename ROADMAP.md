@@ -1,5 +1,20 @@
 # Roadmap
 
+## COMPLETE — SHOP-SERVICE-START-01B Compose executable boundary
+
+- [x] Preserve the exact logical domain invocation, context, project, repository
+  Compose file, fixed env source, WordPress service, flags, and one-attempt
+  no-retry authorization ordering.
+- [x] Execute the mutation path only through the fail-closed resolved
+  `/opt/homebrew/bin/docker-compose`, with trusted ownership/mode/prefix and
+  relevant parent-directory validation.
+- [x] Prevent PATH, user CLI plugins, `cliPluginsExtraDirs`, caller cwd, and
+  malformed or alternate invocations from selecting mutation execution.
+- [x] Preserve false Production and Ubuntu authority. Source remediation is
+  complete and its authorization spent; WordPress remains unauthorized and
+  unmutated at `127.0.0.1:58081`, desired `127.0.0.1:58082`, Shopping inactive,
+  and `NOTION_SYNC=NO`.
+
 ## COMPLETE — SHOP-SERVICE-START-01B JSON-first read-only preflight
 
 - [x] Provide the fixed, caller-unconfigurable macOS preflight entrypoint that
