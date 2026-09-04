@@ -5615,3 +5615,29 @@ Production access occurred.
 ## SHOP-SERVICE-START-01B WordPress live boundary
 
 The fixed, zero-argument Mac operator uses a WordPress-specific durable authority that is separate from runtime-cutover source authority. One short-lived authorization permits one bounded WordPress-only Compose recreation and is irreversibly spent before fresh runtime, storage, and source revalidation. Failed or uncertain attempts cannot retry. After a successful Compose return, only fixed read-only observations may repeat: an immediate check plus at most 24 checks separated by the repository-defined 15-second WordPress health interval, covering its 60-second start period and 20 retries. Success requires exact post-runtime `127.0.0.1:58082->80/tcp`, healthy database/WordPress evidence, READY source evidence, and named-volume identity continuity. Volume identity proves neither content preservation nor backup/restore. This implementation created no live authorization and performed no live mutation; Shopping remains inactive pending governed live execution.
+
+## SHOP-SERVICE-START-01B WordPress canonical evidence closeout
+
+The final reviewed code state passed the canonical deployment regression before
+the implementation and boundary-documentation commits below. Those commits
+recorded the already validated implementation and its documentation; no code or
+test correction followed the canonical run, so no rerun is required. This
+Git-tracked record, not any transient `/private/tmp` path, is the durable
+evidence locator.
+
+`FINAL_CANONICAL_COMMAND=ops/macos/validation/run-deployment-regression-gate.sh -q`
+`FINAL_CANONICAL_INVOCATION_ID=abe97993c5ab4a1eb565a27dfb47fad9`
+`FINAL_CANONICAL_STATE=COMPLETED_PASS`
+`FINAL_CANONICAL_RESULT=4768 passed, 5 deselected, 535 warnings, 2 subtests passed`
+`FINAL_CANONICAL_EXIT_STATUS=0`
+`FINAL_CANONICAL_VALIDATED_PASS=true`
+`CANONICAL_RERUN_REQUIRED=NO`
+`IMPLEMENTATION_COMMIT=1031c9fc293aeb076aecb8d56f8ea86673bde209`
+`WORDPRESS_BOUNDARY_DOCUMENTATION_COMMIT=0b5628beaadc527f319afb3538e6a7a64b070158`
+`LIVE_WORDPRESS_AUTHORIZATION_CREATED=NO`
+`LIVE_WORDPRESS_AUTHORIZATION_CONSUMED=NO`
+`LIVE_WORDPRESS_MUTATION_EXECUTED=NO`
+`SOURCE_REMEDIATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`PRODUCTION_AUTHORITY=NO`
+`UBUNTU_AUTHORITY=NO`

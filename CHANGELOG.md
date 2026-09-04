@@ -5478,3 +5478,29 @@ authorization but selects and executes no mutation, with no restore or retry.
 - Added separate short-lived, one-use WordPress authority, interactive issuance, fixed live operator, JSON-first runtime observation, and exact post-runtime/source/storage validation.
 - Failed and uncertain executions remain spent and non-retryable; subprocess success alone is not validated success.
 - No live WordPress authorization was created or consumed and no live mutation occurred. Shopping remains inactive.
+
+## 2026-09-04 — SHOP-SERVICE-START-01B WordPress canonical evidence closeout
+
+The final reviewed code state passed the canonical deployment regression before
+the implementation and boundary-documentation commits below. Those commits
+recorded the already validated implementation and its documentation; no code or
+test correction followed the canonical run, so no rerun is required. This
+Git-tracked record, not any transient `/private/tmp` path, is the durable
+evidence locator.
+
+`FINAL_CANONICAL_COMMAND=ops/macos/validation/run-deployment-regression-gate.sh -q`
+`FINAL_CANONICAL_INVOCATION_ID=abe97993c5ab4a1eb565a27dfb47fad9`
+`FINAL_CANONICAL_STATE=COMPLETED_PASS`
+`FINAL_CANONICAL_RESULT=4768 passed, 5 deselected, 535 warnings, 2 subtests passed`
+`FINAL_CANONICAL_EXIT_STATUS=0`
+`FINAL_CANONICAL_VALIDATED_PASS=true`
+`CANONICAL_RERUN_REQUIRED=NO`
+`IMPLEMENTATION_COMMIT=1031c9fc293aeb076aecb8d56f8ea86673bde209`
+`WORDPRESS_BOUNDARY_DOCUMENTATION_COMMIT=0b5628beaadc527f319afb3538e6a7a64b070158`
+`LIVE_WORDPRESS_AUTHORIZATION_CREATED=NO`
+`LIVE_WORDPRESS_AUTHORIZATION_CONSUMED=NO`
+`LIVE_WORDPRESS_MUTATION_EXECUTED=NO`
+`SOURCE_REMEDIATION_EXECUTED=NO`
+`SHOPPING_RUNTIME_ACTIVATED=NO`
+`PRODUCTION_AUTHORITY=NO`
+`UBUNTU_AUTHORITY=NO`
