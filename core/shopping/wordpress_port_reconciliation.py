@@ -8,8 +8,10 @@ authorization and never retries or rolls back.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from enum import StrEnum
 from pathlib import Path
+from time import sleep
 from typing import Callable, Protocol
 
 from core.secrets.mariadb_continuity_trusted_mac_account_home_runtime_resolver import (
@@ -43,6 +45,12 @@ DATABASE_CONTAINER = "shopping-db"
 EXPECTED_BEFORE_BINDING = "127.0.0.1:58081->80/tcp"
 EXPECTED_AFTER_BINDING = "127.0.0.1:58082->80/tcp"
 MUTATION_ID = "SHOP-SERVICE-START-01B:WORDPRESS_PORT_58081_TO_58082"
+
+# deploy/shopping/compose.yaml gives WordPress a 60-second start period followed
+# by 20 healthcheck retries at 15-second intervals. Observe immediately, then
+# cover that fixed 360-second convergence horizon without exposing timing knobs.
+_POST_STABILIZATION_INTERVAL_SECONDS = 15
+_POST_STABILIZATION_MAX_OBSERVATIONS = 25
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,9 +95,9 @@ class ReconciliationDecision:
 
 
 class AuthorizationConsumption(Protocol):
-    """Externally supplied human authorization; implementations own freshness."""
+    """Dedicated durable WordPress authority; no caller-selected mutation."""
 
-    def consume_once(self, mutation_id: str) -> bool: ...
+    def consume(self) -> object: ...
 
 
 class ExecutionOutcome(StrEnum):
@@ -113,6 +121,9 @@ class ReconciliationResult:
     pre_storage_observation: StorageContinuityObservation
     post_storage_observation: StorageContinuityObservation | None
     storage_identity_continuity: VolumeIdentityContinuityResult | None
+    post_runtime_observation: WordPressPortRuntimeFacts | None = None
+    post_source_observation: RuntimeCutoverSourceObservation | None = None
+    post_runtime_validated: bool = False
 
     def to_json_safe(self) -> dict[str, object]:
         return _base_projection(
@@ -136,6 +147,7 @@ class ReconciliationResult:
             ),
             content_preservation_proven=False,
             backup_restore_proven=False,
+            post_runtime_validated=self.post_runtime_validated,
         )
 
 
@@ -260,6 +272,68 @@ def build_mutation_invocation() -> MutationInvocation:
     ))
 
 
+def _sleep_between_post_observations() -> None:
+    """Private fixed timing seam; tests may replace it without public knobs."""
+    sleep(_POST_STABILIZATION_INTERVAL_SECONDS)
+
+
+def _observe_post_state(
+    observe_runtime: Callable[[], WordPressPortRuntimeFacts],
+    observe_storage: Callable[[], StorageContinuityObservation],
+    pre_mutation_storage: StorageContinuityObservation,
+) -> tuple[
+    WordPressPortRuntimeFacts | None,
+    StorageContinuityObservation | None,
+    RuntimeCutoverSourceObservation | None,
+    VolumeIdentityContinuityResult | None,
+    bool,
+]:
+    """Collect one fail-closed, read-only post-mutation evidence set."""
+    try:
+        post_runtime = observe_runtime()
+        post_storage = observe_storage()
+        post_source = observe_runtime_cutover_source()
+        continuity = compare_volume_identity_continuity(
+            pre_mutation_storage, post_storage,
+        )
+        post_facts = _with_storage(post_runtime, post_storage)
+        post_decision = classify_reconciliation(post_facts, post_source)
+        validated = (
+            post_decision.classification is Classification.ALREADY_DESIRED
+            and continuity.volume_identity_continuity_proven
+        )
+        return post_runtime, post_storage, post_source, continuity, validated
+    except Exception:
+        return None, None, None, None, False
+
+
+def _stabilize_succeeded_post_state(
+    observe_runtime: Callable[[], WordPressPortRuntimeFacts],
+    observe_storage: Callable[[], StorageContinuityObservation],
+    pre_mutation_storage: StorageContinuityObservation,
+) -> tuple[
+    WordPressPortRuntimeFacts | None,
+    StorageContinuityObservation | None,
+    RuntimeCutoverSourceObservation | None,
+    VolumeIdentityContinuityResult | None,
+    bool,
+]:
+    """Bound successful mutation follow-up to fixed read-only observations."""
+    latest = (None, None, None, None, False)
+    for observation_number in range(_POST_STABILIZATION_MAX_OBSERVATIONS):
+        if observation_number:
+            _sleep_between_post_observations()
+        observed = _observe_post_state(
+            observe_runtime, observe_storage, pre_mutation_storage,
+        )
+        if all(item is None for item in observed[:4]):
+            break
+        latest = observed
+        if latest[-1]:
+            break
+    return latest
+
+
 def execute_reconciliation(
     *,
     observe_runtime: Callable[[], WordPressPortRuntimeFacts],
@@ -279,7 +353,18 @@ def execute_reconciliation(
     if authorization is None:
         return ReconciliationResult(candidate, False, None, False, False,
                                     pre_storage, None, None)
-    if not authorization.consume_once(MUTATION_ID):
+    try:
+        from core.secrets.mariadb_continuity_trusted_ownership_expectation import (
+            issue_trusted_ownership_expectation,
+        )
+        from core.shopping.wordpress_port_authorization import validate_consumption_result
+        trusted_home = resolve_trusted_mac_account_home()
+        identity = issue_trusted_ownership_expectation(trusted_home)
+        validate_consumption_result(
+            authorization.consume(), now=datetime.now(timezone.utc),
+            uid=identity.expected_uid, gid=identity.expected_gid,
+        )
+    except Exception:
         return ReconciliationResult(candidate, False, None, False, False,
                                     pre_storage, None, None)
 
@@ -327,14 +412,21 @@ def execute_reconciliation(
             outcome = ExecutionOutcome.UNCERTAIN
     except Exception:
         outcome = ExecutionOutcome.UNCERTAIN
-    try:
-        post_storage = observe_storage()
-        continuity = compare_volume_identity_continuity(fresh_storage, post_storage)
-    except Exception:
-        post_storage = None
-        continuity = None
+    if outcome is ExecutionOutcome.SUCCEEDED:
+        (post_runtime, post_storage, post_source, continuity,
+         post_validated) = _stabilize_succeeded_post_state(
+             observe_runtime, observe_storage, fresh_storage,
+         )
+    else:
+        (post_runtime, post_storage, post_source, continuity,
+         post_validated) = _observe_post_state(
+             observe_runtime, observe_storage, fresh_storage,
+         )
+    if outcome is ExecutionOutcome.SUCCEEDED and not post_validated:
+        outcome = ExecutionOutcome.UNCERTAIN
     return ReconciliationResult(
         selected, True, outcome, True, True, pre_storage, post_storage, continuity,
+        post_runtime, post_source, post_validated,
     )
 
 
