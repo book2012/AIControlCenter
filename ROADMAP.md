@@ -1,5 +1,44 @@
 # Roadmap
 
+## 2026-09-05 — SHOP-SERVICE-START-01B operator failure diagnostic hardening
+
+Handoff: `SHOP_SERVICE_START_01B_OPERATOR_FAILURE_DIAGNOSTIC_HARDENING`.
+Initial runtime, storage, source, fact-binding, and classification exceptions now
+return blocked, value-free diagnostics with repository-owned stage/reason codes.
+Malformed storage mount mappings, including missing required keys alongside
+extra keys, produce `MALFORMED` evidence without escaping as `KeyError`.
+
+`authorization_consumption_state` distinguishes `NOT_CONSUMED`, `CONSUMED`, and
+`UNCERTAIN`. The compatible `authorization_consumed` field is false, true, or
+JSON null respectively. A claim commit attempt is uncertain until commit
+returns; a completed durable claim remains consumed even if final processing
+fails. Unknown consumer exceptions and invalid receipts never authorize mutation.
+The CLI emits structured diagnostics and never prints exception text.
+
+Mac remains the sole Control Plane. The exact mutation ID remains
+`SHOP-SERVICE-START-01B:WORDPRESS_PORT_58081_TO_58082`, expected-before remains
+`127.0.0.1:58081->80/tcp`, and expected-after remains
+`127.0.0.1:58082->80/tcp`. Consumption precedes fresh revalidation. The fixed
+logical Compose command and trusted executable selection are unchanged; at most
+one runner invocation is allowed, with no retry, rollback, compose down, volume
+deletion, database recreation, pull, or build. Caller target selection and
+Production/Ubuntu authority remain prohibited.
+
+Focused validation: **138 passed**. Architecture, security, final code review,
+and `git diff --check`: **PASS**. Exactly one final canonical command was run:
+`ops/macos/validation/run-deployment-regression-gate.sh -q`.
+Invocation ID: `5055b694c03f4a6e86421c5cec7cfb1c`.
+Result: `COMPLETED_PASS`; `4808 passed, 5 deselected, 555 warnings, 2 subtests
+passed in 469.10s (0:07:49)`; exit status `0`.
+`FINAL_CANONICAL_VALIDATED_PASS=true`; `CANONICAL_RERUN_REQUIRED=NO`.
+
+No live authorization was issued or consumed by this implementation handoff.
+No live WordPress mutation was executed. Tests used synthetic evidence and
+temporary authorization databases; live runtime state was not re-observed.
+`LIVE_AUTHORIZATION_ISSUED=NO`; `LIVE_AUTHORIZATION_CONSUMED=NO`;
+`LIVE_WORDPRESS_MUTATION_EXECUTED=NO`; `SHOPPING_RUNTIME_ACTIVATED=NO`;
+`PRODUCTION_AUTHORITY=NO`; `UBUNTU_AUTHORITY=NO`; `NOTION_SYNC=NO`.
+
 ## COMPLETE — SHOP-SERVICE-START-01B Compose executable boundary
 
 - [x] Preserve the exact logical domain invocation, context, project, repository
