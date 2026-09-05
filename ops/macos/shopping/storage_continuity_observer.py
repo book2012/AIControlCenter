@@ -85,22 +85,21 @@ def observe_storage_continuity(runner: Runner = _run) -> StorageContinuityObserv
             mounts = attachment["Mounts"]
             if not isinstance(mounts, list) or any(
                 not isinstance(item, dict)
-                or not {"Type", "Name", "Destination"}.issubset(item)
+                or any(not isinstance(item.get(key), str) or not item[key].strip()
+                       for key in ("Type", "Destination"))
+                or (item.get("Type") == "volume" and (
+                    not isinstance(item.get("Name"), str) or not item["Name"].strip()))
                 for item in mounts
             ):
                 raise ValueError
-            matches = [item for item in mounts if item.get("Name") == name]
+            matches = [item for item in mounts if item["Type"] == "volume" and item["Name"] == name]
             if len(matches) != 1:
                 reason = ContinuityReason.AMBIGUOUS_ATTACHMENT if len(matches) > 1 else ContinuityReason.ATTACHMENT_ABSENT
                 rows.append(_failure(name, ContinuityCompleteness.INCOMPLETE, reason))
                 continue
             mount = matches[0]
-            if not {"Type", "Name", "Destination"}.issubset(mount):
-                raise ValueError
             attachment_type = mount["Type"]
-            if attachment_type != "volume":
-                reason = ContinuityReason.ATTACHMENT_NOT_VOLUME
-            elif mount["Destination"] != EXPECTED_DESTINATIONS[name]:
+            if mount["Destination"] != EXPECTED_DESTINATIONS[name]:
                 reason = ContinuityReason.ATTACHMENT_DESTINATION_MISMATCH
             else:
                 reason = ContinuityReason.NONE
