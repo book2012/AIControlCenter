@@ -83,7 +83,11 @@ def observe_storage_continuity(runner: Runner = _run) -> StorageContinuityObserv
             if attachment["Project"] != COMPOSE_PROJECT or attachment["Service"] != service:
                 raise ValueError
             mounts = attachment["Mounts"]
-            if not isinstance(mounts, list) or any(not isinstance(item, dict) for item in mounts):
+            if not isinstance(mounts, list) or any(
+                not isinstance(item, dict)
+                or not {"Type", "Name", "Destination"}.issubset(item)
+                for item in mounts
+            ):
                 raise ValueError
             matches = [item for item in mounts if item.get("Name") == name]
             if len(matches) != 1:
@@ -91,7 +95,7 @@ def observe_storage_continuity(runner: Runner = _run) -> StorageContinuityObserv
                 rows.append(_failure(name, ContinuityCompleteness.INCOMPLETE, reason))
                 continue
             mount = matches[0]
-            if set(mount) < {"Type", "Name", "Destination"}:
+            if not {"Type", "Name", "Destination"}.issubset(mount):
                 raise ValueError
             attachment_type = mount["Type"]
             if attachment_type != "volume":

@@ -7,7 +7,7 @@ from datetime import datetime, timedelta, timezone
 from enum import StrEnum
 
 from core.shopping.wordpress_port_reconciliation import (
-    AUTHORITATIVE_WORK_ITEM, COMPOSE_FILE, COMPOSE_PROJECT, COMPOSE_SERVICE,
+    AuthorizationConsumptionState, AUTHORITATIVE_WORK_ITEM, COMPOSE_FILE, COMPOSE_PROJECT, COMPOSE_SERVICE,
     DATABASE_CONTAINER, ENVIRONMENT, EXPECTED_AFTER_BINDING,
     EXPECTED_BEFORE_BINDING, MUTATION_ID, TARGET_CONTEXT, WORDPRESS_CONTAINER,
 )
@@ -18,6 +18,14 @@ MAXIMUM_LIFETIME = timedelta(minutes=10)
 
 class AuthorizationError(RuntimeError):
     pass
+
+
+class ConsumptionFailure(AuthorizationError):
+    """Value-free durable progress evidence from the repository store."""
+
+    def __init__(self, state: AuthorizationConsumptionState):
+        super().__init__("AUTHORIZATION_CONSUMPTION_FAILED")
+        self.state = state
 
 
 class ConsumptionState(StrEnum):

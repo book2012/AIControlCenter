@@ -12,7 +12,7 @@ from typing import Callable
 from core.secrets.mariadb_continuity_trusted_mac_account_home_runtime_resolver import resolve_trusted_mac_account_home
 from core.secrets.mariadb_continuity_trusted_ownership_expectation import issue_trusted_ownership_expectation
 from core.shopping.wordpress_port_authorization import (
-    AuthorizationError, ConsumptionState, WordPressMutationAuthorization,
+    AuthorizationConsumptionState, ConsumptionFailure, AuthorizationError, ConsumptionState, WordPressMutationAuthorization,
     WordPressMutationConsumptionReceipt, WordPressMutationConsumptionResult,
     validate_authorization,
 )
@@ -146,6 +146,13 @@ class WordPressPortAuthorizationStore:
             db.execute(f"INSERT INTO wordpress_mutation_authorizations ({_COLUMNS},state,claimed_at,committed_at) VALUES ({placeholders},'AVAILABLE',NULL,NULL)",tuple(getattr(authorization,n) for n in _FIELDS)); db.commit()
 
     def consume(self):
+        progress = [AuthorizationConsumptionState.NOT_CONSUMED]
+        try:
+            return self._consume(progress)
+        except Exception:
+            raise ConsumptionFailure(progress[0]) from None
+
+    def _consume(self, progress):
         now=datetime.now(timezone.utc); authorization=None
         try:
             with self._write() as db:
@@ -153,7 +160,10 @@ class WordPressPortAuthorizationStore:
                 if len(rows)!=1: raise AuthorizationError("exactly one available authorization required")
                 authorization=self._authorization(rows[0]); validate_authorization(authorization,now=now,uid=self._uid,gid=self._gid)
                 if db.execute("UPDATE wordpress_mutation_authorizations SET state='DURABLY_CLAIMED',claimed_at=? WHERE authorization_id=? AND state='AVAILABLE'",(now.isoformat(),authorization.authorization_id)).rowcount!=1: raise AuthorizationError("authorization claim lost")
-                self._inject("before_claim_commit",db); db.commit()
+                self._inject("before_claim_commit",db)
+                progress[0] = AuthorizationConsumptionState.UNCERTAIN
+                db.commit()
+                progress[0] = AuthorizationConsumptionState.CONSUMED
             self._inject("after_claim_commit",db)
         except (sqlite3.DatabaseError,WordPressAuthorizationStoreError) as exc: raise WordPressAuthorizationStoreError("durable claim failed closed") from exc
         committed_at=datetime.now(timezone.utc).isoformat(); attempted=False

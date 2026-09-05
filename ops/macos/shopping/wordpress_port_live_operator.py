@@ -182,6 +182,10 @@ def main():
     except Exception:
         error = {
             "error": "WORDPRESS_PORT_OPERATOR_CLI_FAILURE",
+            "failure_stage": "OPERATOR_CLI",
+            "reason_codes": ["WORDPRESS_PORT_OPERATOR_CLI_FAILURE"],
+            "authorization_consumption_state": "UNCERTAIN",
+            "authorization_consumed": None,
             "production_authority": False,
             "ubuntu_authority": False,
         }

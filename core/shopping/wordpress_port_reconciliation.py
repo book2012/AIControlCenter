@@ -100,6 +100,12 @@ class AuthorizationConsumption(Protocol):
     def consume(self) -> object: ...
 
 
+class AuthorizationConsumptionState(StrEnum):
+    NOT_CONSUMED = "NOT_CONSUMED"
+    CONSUMED = "CONSUMED"
+    UNCERTAIN = "UNCERTAIN"
+
+
 class ExecutionOutcome(StrEnum):
     SUCCEEDED = "SUCCEEDED"
     FAILED = "FAILED"
@@ -116,14 +122,23 @@ class ReconciliationResult:
     decision: ReconciliationDecision
     mutation_executed: bool
     outcome: ExecutionOutcome | None
-    authorization_consumed: bool
+    authorization_consumed: bool | None
     fresh_read_only_reconciliation_required: bool
-    pre_storage_observation: StorageContinuityObservation
+    pre_storage_observation: StorageContinuityObservation | None
     post_storage_observation: StorageContinuityObservation | None
     storage_identity_continuity: VolumeIdentityContinuityResult | None
     post_runtime_observation: WordPressPortRuntimeFacts | None = None
     post_source_observation: RuntimeCutoverSourceObservation | None = None
     post_runtime_validated: bool = False
+
+    failure_stage: str | None = None
+
+    @property
+    def authorization_consumption_state(self) -> AuthorizationConsumptionState:
+        if self.authorization_consumed is None:
+            return AuthorizationConsumptionState.UNCERTAIN
+        return (AuthorizationConsumptionState.CONSUMED if self.authorization_consumed
+                else AuthorizationConsumptionState.NOT_CONSUMED)
 
     def to_json_safe(self) -> dict[str, object]:
         return _base_projection(
@@ -133,10 +148,13 @@ class ReconciliationResult:
             reason_codes=list(self.decision.reason_codes),
             outcome=self.outcome.value if self.outcome else None,
             authorization_consumed=self.authorization_consumed,
+            authorization_consumption_state=self.authorization_consumption_state.value,
+            failure_stage=self.failure_stage,
             fresh_read_only_reconciliation_required=(
                 self.fresh_read_only_reconciliation_required
             ),
-            pre_storage_observation=self.pre_storage_observation.to_json_safe(),
+            pre_storage_observation=(self.pre_storage_observation.to_json_safe()
+                                     if self.pre_storage_observation else None),
             post_storage_observation=(
                 self.post_storage_observation.to_json_safe()
                 if self.post_storage_observation else None
@@ -334,6 +352,15 @@ def _stabilize_succeeded_post_state(
     return latest
 
 
+def _diagnostic_failure(stage: str, consumed: bool | None) -> ReconciliationResult:
+    """Only repository-owned stages enter this value-free failure projection."""
+    return ReconciliationResult(
+        ReconciliationDecision(Classification.BLOCKED, (stage + "_FAILED",), False),
+        False, None, consumed, consumed is not False, None, None, None,
+        failure_stage=stage,
+    )
+
+
 def execute_reconciliation(
     *,
     observe_runtime: Callable[[], WordPressPortRuntimeFacts],
@@ -342,17 +369,28 @@ def execute_reconciliation(
     runner: Callable[[MutationInvocation], ExecutionOutcome],
 ) -> ReconciliationResult:
     """Consume at most one authorization and make at most one mutation call."""
-    initial_runtime = observe_runtime()
-    pre_storage = observe_storage()
-    initial_facts = _with_storage(initial_runtime, pre_storage)
-    initial_source = observe_runtime_cutover_source()
-    candidate = classify_reconciliation(initial_facts, initial_source)
+    pre_storage = None
+    stage = "INITIAL_RUNTIME_OBSERVATION"
+    try:
+        initial_runtime = observe_runtime()
+        stage = "INITIAL_STORAGE_OBSERVATION"
+        pre_storage = observe_storage()
+        stage = "INITIAL_FACT_BINDING"
+        initial_facts = _with_storage(initial_runtime, pre_storage)
+        stage = "INITIAL_SOURCE_OBSERVATION"
+        initial_source = observe_runtime_cutover_source()
+        stage = "INITIAL_CLASSIFICATION"
+        candidate = classify_reconciliation(initial_facts, initial_source)
+    except Exception:
+        return _diagnostic_failure(stage, False)
     if candidate.classification is not Classification.CANDIDATE:
         return ReconciliationResult(candidate, False, None, False, False,
                                     pre_storage, None, None)
     if authorization is None:
         return ReconciliationResult(candidate, False, None, False, False,
                                     pre_storage, None, None)
+    consumed = False
+    stage = "AUTHORIZATION_PREPARATION"
     try:
         from core.secrets.mariadb_continuity_trusted_ownership_expectation import (
             issue_trusted_ownership_expectation,
@@ -360,13 +398,20 @@ def execute_reconciliation(
         from core.shopping.wordpress_port_authorization import validate_consumption_result
         trusted_home = resolve_trusted_mac_account_home()
         identity = issue_trusted_ownership_expectation(trusted_home)
+        stage = "AUTHORIZATION_CONSUMPTION"
+        consumed = None  # Entering consume may cross a durable boundary.
+        consumption = authorization.consume()
+        stage = "AUTHORIZATION_RECEIPT_VALIDATION"
         validate_consumption_result(
-            authorization.consume(), now=datetime.now(timezone.utc),
+            consumption, now=datetime.now(timezone.utc),
             uid=identity.expected_uid, gid=identity.expected_gid,
         )
-    except Exception:
-        return ReconciliationResult(candidate, False, None, False, False,
-                                    pre_storage, None, None)
+    except Exception as error:
+        from core.shopping.wordpress_port_authorization import ConsumptionFailure
+        if type(error) is ConsumptionFailure:
+            consumed = {AuthorizationConsumptionState.NOT_CONSUMED: False,
+                        AuthorizationConsumptionState.CONSUMED: True}.get(error.state)
+        return _diagnostic_failure(stage, consumed)
 
     fresh_runtime: WordPressPortRuntimeFacts | None = None
     fresh_storage: StorageContinuityObservation | None = None
@@ -396,8 +441,11 @@ def execute_reconciliation(
     assert fresh_runtime is not None
     assert fresh_storage is not None
     assert fresh_source is not None
-    fresh_facts = _with_storage(fresh_runtime, fresh_storage)
-    revalidated = classify_reconciliation(fresh_facts, fresh_source)
+    try:
+        fresh_facts = _with_storage(fresh_runtime, fresh_storage)
+        revalidated = classify_reconciliation(fresh_facts, fresh_source)
+    except Exception:
+        return _diagnostic_failure("FRESH_CLASSIFICATION", True)
     if revalidated.classification is not Classification.CANDIDATE:
         return ReconciliationResult(
             revalidated, False, None, True, False,
@@ -405,7 +453,10 @@ def execute_reconciliation(
         )
 
     selected = _select_governed_mutation(revalidated)
-    invocation = build_mutation_invocation()
+    try:
+        invocation = build_mutation_invocation()
+    except Exception:
+        return _diagnostic_failure("MUTATION_PREPARATION", True)
     try:
         outcome = runner(invocation)
         if outcome not in tuple(ExecutionOutcome):

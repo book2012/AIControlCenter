@@ -100,6 +100,10 @@ def test_cli_exception_is_bounded_and_non_secret(monkeypatch, capsys):
     assert captured.out == "" and secret not in captured.err
     assert json.loads(captured.err) == {
         "error": "WORDPRESS_PORT_OPERATOR_CLI_FAILURE",
+        "failure_stage": "OPERATOR_CLI",
+        "reason_codes": ["WORDPRESS_PORT_OPERATOR_CLI_FAILURE"],
+        "authorization_consumption_state": "UNCERTAIN",
+        "authorization_consumed": None,
         "production_authority": False,
         "ubuntu_authority": False,
     }
