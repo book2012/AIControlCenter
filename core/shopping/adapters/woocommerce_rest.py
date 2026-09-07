@@ -32,6 +32,13 @@ class WooCommerceRESTAdapter:
         session: requests.Session | None = None,
         connect_base_url: str | None = None,
     ):
+        for value in (base_url, connect_base_url or base_url):
+            parsed = urlsplit(value)
+            if (parsed.scheme not in {"http", "https"} or not parsed.hostname
+                    or parsed.username is not None or parsed.password is not None
+                    or parsed.query or parsed.fragment
+                    or any(ord(char) < 33 for char in value)):
+                raise WooCommerceAPIError("Invalid WooCommerce identity")
         self.base_url = base_url.rstrip("/")
         self.connect_base_url = (
             connect_base_url.rstrip("/")
@@ -42,6 +49,7 @@ class WooCommerceRESTAdapter:
         self.consumer_secret = consumer_secret
         self.timeout_seconds = timeout_seconds
         self.session = session or requests.Session()
+        self.session.trust_env = False
 
     @property
     def _uses_https(self) -> bool:
@@ -117,6 +125,10 @@ class WooCommerceRESTAdapter:
         params: dict[str, Any] | None = None,
     ) -> requests.Response:
         query = dict(params or {})
+        if (not path.startswith("/") or any(char in path for char in "?#\\")
+                or any(str(key).lower().startswith(("oauth_", "consumer_", "authorization"))
+                       for key in query)):
+            raise WooCommerceAPIError("Invalid WooCommerce read request")
         signature_url = (
             f"{self.base_url}/wp-json/wc/v3{path}"
         )
@@ -132,20 +144,19 @@ class WooCommerceRESTAdapter:
                 self.base_url
             ).netloc
 
-        if self._uses_https:
+        if self._uses_https and self.connect_base_url.lower().startswith("https://"):
             auth = (
                 self.consumer_key,
                 self.consumer_secret,
             )
         else:
-            query.update(
-                self._oauth_params(
-                    method="GET",
-                    url=signature_url,
-                    params=query,
-                )
+            oauth = self._oauth_params("GET", signature_url, query)
+            headers["Authorization"] = "OAuth " + ", ".join(
+                f'{_percent_encode(key)}="{_percent_encode(value)}"'
+                for key, value in sorted(oauth.items())
             )
 
+        failed = False
         try:
             response = self.session.get(
                 request_url,
@@ -155,23 +166,17 @@ class WooCommerceRESTAdapter:
                 timeout=self.timeout_seconds,
                 allow_redirects=False,
             )
-        except requests.RequestException as error:
-            raise WooCommerceAPIError(
-                f"WooCommerce request failed: {error}"
-            ) from error
+        except requests.RequestException:
+            failed = True
+        finally:
+            headers.pop("Authorization", None)
+
+        if failed:
+            raise WooCommerceAPIError("WooCommerce request failed")
 
         if response.status_code >= 400:
-            try:
-                payload = response.json()
-                code = payload.get("code", "unknown")
-                message = payload.get("message", "")
-            except ValueError:
-                code = "unknown"
-                message = response.text[:200]
-
             raise WooCommerceAPIError(
-                "WooCommerce returned "
-                f"HTTP {response.status_code}: {code}: {message}"
+                f"WooCommerce returned HTTP {response.status_code}"
             )
 
         return response

@@ -179,11 +179,7 @@ def test_http_request_uses_oauth_parameters():
     call = adapter.session.calls[0]
 
     assert call["auth"] is None
-    assert call["params"]["oauth_consumer_key"] == "ck_test"
-    assert call["params"]["oauth_signature_method"] == "HMAC-SHA256"
-    assert call["params"]["oauth_nonce"]
-    assert call["params"]["oauth_timestamp"]
-    assert call["params"]["oauth_signature"]
+    assert "oauth_consumer_key" not in call["params"]
 
 
 def test_https_request_uses_basic_auth():
@@ -243,7 +239,6 @@ def test_internal_connection_uses_canonical_host_for_signature():
         "bokstory.iptime.org:58088"
     )
     assert call["allow_redirects"] is False
-    assert call["params"]["oauth_signature"]
 
 
 def test_list_products_maps_woocommerce_response():

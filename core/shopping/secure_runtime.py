@@ -33,7 +33,7 @@ class ShoppingSecureRuntimeError(ValueError):
     """Raised when the secure Shopping runtime boundary is invalid."""
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(frozen=True, slots=True, repr=False)
 class WooCommerceReadSecret:
     base_url: str
     consumer_key: str
@@ -107,6 +107,10 @@ class WooCommerceReadSecretFileProvider:
         if (
             parsed_url.scheme not in {"http", "https"}
             or not parsed_url.hostname
+            or parsed_url.username is not None
+            or parsed_url.password is not None
+            or parsed_url.query or parsed_url.fragment
+            or any(ord(char) < 33 for char in base_url)
         ):
             raise ShoppingSecureRuntimeError(
                 "shopping.secure_runtime."

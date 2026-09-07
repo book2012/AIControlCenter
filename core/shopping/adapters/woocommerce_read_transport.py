@@ -21,6 +21,15 @@ class WooCommerceReadTransportSession:
         if connect_timeout_seconds <= 0 or read_timeout_seconds <= 0 or total_timeout_seconds <= 0:
             raise ValueError("timeouts must be positive")
         self._session = session or requests.Session()
+        self._session.trust_env = False
+        if isinstance(self._session, requests.Session):
+            self._session.proxies.clear()
+            self._session.auth = None
+            self._session.cookies.clear()
+            self._session.headers.clear()
+            self._session.hooks = {"response": []}
+            for scheme in ("http://", "https://"):
+                self._session.mount(scheme, requests.adapters.HTTPAdapter(max_retries=0))
         self.connect_timeout_seconds = float(connect_timeout_seconds)
         self.read_timeout_seconds = float(read_timeout_seconds)
         self.total_timeout_seconds = float(total_timeout_seconds)
@@ -49,14 +58,29 @@ class WooCommerceReadTransportSession:
             raise requests.Timeout("WooCommerce total read deadline exceeded")
         connect_timeout = min(self.connect_timeout_seconds, remaining)
         read_timeout = min(self.read_timeout_seconds, remaining)
-        response = self._session.get(
-            url,
-            params=params,
-            auth=auth,
-            headers=headers,
-            timeout=(connect_timeout, read_timeout),
-            allow_redirects=False,
-        )
+        self._session.trust_env = False
+        failure = None
+        response = None
+        try:
+            response = self._session.get(
+                url,
+                params=params,
+                auth=auth,
+                headers=headers,
+                timeout=(connect_timeout, read_timeout),
+                allow_redirects=False,
+            )
+        except requests.RequestException as error:
+            self._scrub(getattr(error, "request", None))
+            self._scrub_response(getattr(error, "response", None))
+            failure = requests.Timeout if isinstance(error, requests.Timeout) else requests.RequestException
+        finally:
+            if isinstance(headers, dict):
+                headers.pop("Authorization", None)
+        # Raise outside the handler so raw exception context is not retained.
+        if failure is not None:
+            raise failure("WooCommerce read transport failed")
+        self._scrub_response(response)
         elapsed = self._monotonic() - started
         if elapsed > self.total_timeout_seconds:
             closer = getattr(response, "close", None)
@@ -64,3 +88,18 @@ class WooCommerceReadTransportSession:
                 closer()
             raise requests.Timeout("WooCommerce total read deadline exceeded")
         return response
+
+    @staticmethod
+    def _scrub(request):
+        if request is not None:
+            request.headers.clear()
+            request.body = None
+
+    @classmethod
+    def _scrub_response(cls, response):
+        if response is not None:
+            cls._scrub(getattr(response, "request", None))
+            if hasattr(response, "_next"):
+                response._next = None
+            for previous in getattr(response, "history", ()):
+                cls._scrub(getattr(previous, "request", None))

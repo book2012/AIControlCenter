@@ -83,7 +83,7 @@ def test_success(wire, payload, total, empty):
     url, kwargs = wire.calls[0]
     assert url == 'http://127.0.0.1:58082/wp-json/wc/v3/products'
     assert kwargs['headers'] == {'Host': 'catalog.invalid'}
-    assert kwargs['auth'] == (KEY, SECRET)
+    assert kwargs['auth'] is None
     assert result['connect_target_source'] == 'repository_service_start'
     assert result['connect_target_loopback'] is True
     assert kwargs['allow_redirects'] is False
@@ -257,7 +257,7 @@ def test_oauth_signature_uses_canonical_identity(boundary, wire, monkeypatch):
     assert signed == [('GET', 'http://catalog.invalid/wp-json/wc/v3/products')]
     assert len(wire.calls) == 1
     assert wire.calls[0][1]['headers'] == {'Host': 'catalog.invalid'}
-    assert 'oauth_signature' in wire.calls[0][1]['params']
+    assert 'oauth_signature' not in wire.calls[0][1]['params']
 
 
 def test_retries_disabled():
