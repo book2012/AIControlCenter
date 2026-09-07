@@ -343,3 +343,19 @@ def test_non_mac_platform_is_unsupported_without_observer_calls() -> None:
         platform="linux",
     )
     assert set(states(asyncio.run(adapter.observe())).values()) == {"UNKNOWN"}
+
+
+@pytest.mark.parametrize('port,url,status', [(0, '', 'RUNNING'), (3306, '', 'CONFLICTING'),
+    (3306, '127.0.0.1', 'CONFLICTING'), (0, '127.0.0.1', 'UNKNOWN')])
+def test_mariadb_effective_host_publication(port, url, status):
+    publishers = [{'Protocol': 'tcp', 'PublishedPort': port, 'TargetPort': 3306, 'URL': url}]
+    assert states(observe(runtime(database_publishers=publishers)))['mariadb'] == status
+
+
+@pytest.mark.parametrize('publishers', [[{}], ['bad'], [{'Protocol': 'tcp', 'PublishedPort': False,
+    'TargetPort': 3306, 'URL': ''}], [{'Protocol': 'tcp', 'PublishedPort': -1,
+    'TargetPort': 3306, 'URL': ''}]])
+def test_mariadb_malformed_publishers_fail_closed(publishers):
+    item = component(observe(runtime(database_publishers=publishers)), 'mariadb')
+    assert item['status'] == 'UNKNOWN'
+    assert {row['error'] for row in item['diagnostics']} == {'malformed_evidence'}

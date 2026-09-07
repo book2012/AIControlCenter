@@ -157,7 +157,27 @@ def _container_evidence(
     conflict: bool | None = None
     if binding_complete:
         if component is ShoppingComponent.MARIADB:
-            conflict = bool(publishers)
+            fields = {"URL", "TargetPort", "PublishedPort", "Protocol"}
+            malformed = any(
+                not isinstance(item, dict)
+                or set(item) != fields
+                or not isinstance(item["URL"], str)
+                or type(item["TargetPort"]) is not int
+                or not 1 <= item["TargetPort"] <= 65535
+                or type(item["PublishedPort"]) is not int
+                or not 0 <= item["PublishedPort"] <= 65535
+                or not isinstance(item["Protocol"], str)
+                or item["Protocol"] not in {"tcp", "udp", "sctp"}
+                or (item["PublishedPort"] == 0 and item["URL"] != "")
+                for item in publishers
+            )
+            if malformed:
+                return _unknown(
+                    component, ObservationError.MALFORMED_EVIDENCE,
+                    ObservationSource.CONTAINER_RUNTIME,
+                    completeness=ObservationCompleteness.MALFORMED,
+                )
+            conflict = any(item["PublishedPort"] > 0 for item in publishers)
         else:
             expected = {
                 "URL": "127.0.0.1", "TargetPort": 80,
