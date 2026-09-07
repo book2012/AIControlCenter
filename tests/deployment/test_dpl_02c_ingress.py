@@ -65,7 +65,7 @@ def test_canonical_contract_and_ready_repository_configuration():
 @pytest.mark.parametrize(
     ("component", "field", "value", "reason"),
     [
-        ("caddy", "port", 58082, "caddy-commerce-port"),
+        ("caddy", "port", 58081, "caddy-commerce-port"),
         ("compose", "port_source", "OTHER_PORT", "commerce-compose-port"),
         ("caddy", "host", "192.168.1.2", "caddy-loopback"),
         ("compose", "host", "0.0.0.0", "wordpress-loopback"),

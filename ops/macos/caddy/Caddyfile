@@ -1,21 +1,35 @@
 {
     http_port 58080
     https_port 58443
+    log default {
+        output discard
+    }
 }
 
 bokstory.duckdns.org {
+    log {
+        output discard
+    }
     header {
         X-Content-Type-Options nosniff
         Referrer-Policy strict-origin-when-cross-origin
         -Server
     }
 
-    respond /__aicontrolcenter_ingress_health "ok" 200
-    handle /healthz {
-        respond "ok" 200
-    }
-
-    handle {
-        reverse_proxy 127.0.0.1:58081
+    # Private Control Plane routes only; storefront queries and methods remain eligible.
+    @shopping_namespace path /wp-json/aicontrolcenter/v1/shopping /wp-json/aicontrolcenter/v1/shopping/*
+    # Parsed query matcher checks every value, including repeated/URL-encoded keys.
+    @shopping_rest_route query rest_route=/aicontrolcenter/v1/shopping rest_route=/aicontrolcenter/v1/shopping/*
+    # Namespace-only parser ambiguity guard: case, encoded spelling, nested escapes,
+    # PHP dot/space key aliases, optional leading slash and semicolon separators.
+    # Each atom matches a literal or its percent-encoded ASCII spelling (see tests).
+    @shopping_rest_route_ambiguous vars_regexp {http.request.uri.query} `(?i)(^|[&;])(?:r|%(?:25)*(?:52|72))(?:e|%(?:25)*(?:45|65))(?:s|%(?:25)*(?:53|73))(?:t|%(?:25)*(?:54|74))(?:_|[.+]|%(?:25)*(?:5f|20|2e))(?:r|%(?:25)*(?:52|72))(?:o|%(?:25)*(?:4f|6f))(?:u|%(?:25)*(?:55|75))(?:t|%(?:25)*(?:54|74))(?:e|%(?:25)*(?:45|65))=(?:/|%(?:25)*2f)*(?:a|%(?:25)*(?:41|61))(?:i|%(?:25)*(?:49|69))(?:c|%(?:25)*(?:43|63))(?:o|%(?:25)*(?:4f|6f))(?:n|%(?:25)*(?:4e|6e))(?:t|%(?:25)*(?:54|74))(?:r|%(?:25)*(?:52|72))(?:o|%(?:25)*(?:4f|6f))(?:l|%(?:25)*(?:4c|6c))(?:c|%(?:25)*(?:43|63))(?:e|%(?:25)*(?:45|65))(?:n|%(?:25)*(?:4e|6e))(?:t|%(?:25)*(?:54|74))(?:e|%(?:25)*(?:45|65))(?:r|%(?:25)*(?:52|72))(?:/|%(?:25)*2f)(?:v|%(?:25)*(?:56|76))(?:1|%(?:25)*(?:31))(?:/|%(?:25)*2f)(?:s|%(?:25)*(?:53|73))(?:h|%(?:25)*(?:48|68))(?:o|%(?:25)*(?:4f|6f))(?:p|%(?:25)*(?:50|70))(?:p|%(?:25)*(?:50|70))(?:i|%(?:25)*(?:49|69))(?:n|%(?:25)*(?:4e|6e))(?:g|%(?:25)*(?:47|67))((?:/|%(?:25)*2f)|[&;]|$)`
+    route {
+        respond @shopping_namespace "Forbidden" 403
+        respond @shopping_rest_route "Forbidden" 403
+        respond @shopping_rest_route_ambiguous "Forbidden" 403
+        respond /__aicontrolcenter_ingress_health "ok" 200
+        respond /healthz "ok" 200
+        reverse_proxy 127.0.0.1:58082
     }
 }

@@ -68,8 +68,10 @@ class IngressReadinessService:
              and desired["public_edge"]["direct_public_application_ports"] is False),
             ("caddy-loopback", caddy.get("host") in {"127.0.0.1", "localhost", "::1"}),
             ("caddy-commerce-port", caddy.get("port") == canonical_port),
-            ("commerce-compose-port", colima.get("port_source") == source
-             and compose.get("port_source") == source
+            ("commerce-compose-port", all(
+                item.get("port_source") == source
+                or (item.get("port_source") is None and item.get("port") == canonical_port)
+                for item in (colima, compose))
              and (colima.get("port") or canonical_port) == (compose.get("port") or canonical_port)),
             ("wordpress-loopback", compose.get("host") in {"127.0.0.1", "localhost", "::1"}),
             ("mariadb-not-published", compose.get("database_host_published") is False),

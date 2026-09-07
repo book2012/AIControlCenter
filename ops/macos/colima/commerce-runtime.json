@@ -19,6 +19,14 @@
     {
       "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront",
       "writable": false
+    },
+    {
+      "path": "deploy/shopping/config/shopping-apache-safety.conf",
+      "writable": false
+    },
+    {
+      "path": "deploy/shopping/config/shopping-php-safety.ini",
+      "writable": false
     }
   ],
   "network_address": false,
@@ -32,5 +40,5 @@
   "ssh_agent": false,
   "ubuntu_runtime_allowed": false,
   "vm_type": "vz",
-  "wordpress_host_binding": "127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80"
+  "wordpress_host_binding": "127.0.0.1:58082:80"
 }

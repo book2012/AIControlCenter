@@ -18,7 +18,7 @@
   "upstream": {
     "host": "127.0.0.1",
     "port_source": "SHOPPING_WORDPRESS_PORT",
-    "port": 58081
+    "port": 58082
   },
   "database": {
     "engine": "mariadb",
