@@ -41,7 +41,7 @@ def test_wordpress_desired_port_is_loopback_only_and_not_control_plane_reserved(
         (ROOT / "deploy/shopping/.env.example").read_text().split("SHOPPING_WORDPRESS_PORT=", 1)[1].splitlines()[0]
     )
     assert compose()["services"]["wordpress"]["ports"] == [
-        "127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80"
+        f"127.0.0.1:{wordpress_port}:80"
     ]
     services = json.loads((ROOT / "config/services/mac-standalone-production.json").read_text())["services"]
     reserved = {

@@ -139,11 +139,15 @@ def test_cli_missing_required_presence_returns_non_success(monkeypatch, capsys) 
 def test_compose_remains_secret_independent_and_ingress_contract_preserved() -> None:
     text = (ROOT / "deploy/shopping/compose.yaml").read_text(encoding="utf-8")
     compose = yaml.safe_load(text)
+    ingress = json.loads((ROOT / "config/deployment/ingress.json").read_text())
+    upstream = ingress["upstream"]
+    assert upstream["host"] == "127.0.0.1"
     assert compose["services"]["wordpress"]["ports"] == [
-        "127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80"
+        f"{upstream['host']}:{upstream['port']}:80"
     ]
     assert "ports" not in compose["services"]["database"]
-    for name in RUNTIME:
+    # The non-secret port is pinned; database inputs remain interpolated.
+    for name in set(RUNTIME) - {"SHOPPING_WORDPRESS_PORT"}:
         assert f"${{{name}}}" in text
     assert ":?" not in text
     assert ":-" not in text

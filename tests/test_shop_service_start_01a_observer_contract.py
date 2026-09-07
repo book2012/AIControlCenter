@@ -7,6 +7,7 @@ from dataclasses import FrozenInstanceError, fields
 from pathlib import Path
 
 import pytest
+import yaml
 
 from core.shopping.observability.service_start import (
     COMPONENT_KINDS,
@@ -243,3 +244,24 @@ def test_contract_and_loader_have_no_live_access_surface(monkeypatch) -> None:
             if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
         }
         assert not functions & forbidden_calls
+
+
+@pytest.mark.parametrize("ports", [
+    ["0.0.0.0:58082:80"],
+    ["58082:80"],
+    ["127.0.0.1:58081:80"],
+    ["127.0.0.1:58082:81"],
+    ["127.0.0.1:${SHOPPING_WORDPRESS_PORT}:80"],
+    ["127.0.0.1:58082:80", "0.0.0.0:8080:80"],
+    [],
+])
+def test_repository_loader_rejects_noncanonical_bindings(tmp_path, ports) -> None:
+    paths = ShoppingRepositoryPaths.canonical(ROOT)
+    compose = yaml.safe_load(paths.compose.read_text())
+    compose["services"]["wordpress"]["ports"] = ports
+    fixture = tmp_path / "compose.yaml"
+    fixture.write_text(yaml.safe_dump(compose))
+    with pytest.raises(RepositoryFactError):
+        load_shopping_repository_facts(ShoppingRepositoryPaths(
+            fixture, paths.services, paths.capabilities, paths.environment_example,
+        ))

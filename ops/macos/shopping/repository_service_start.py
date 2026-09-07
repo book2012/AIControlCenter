@@ -80,7 +80,8 @@ def load_shopping_repository_facts(paths: ShoppingRepositoryPaths) -> dict[str, 
     if not isinstance(database, Mapping) or not isinstance(wordpress, Mapping):
         raise RepositoryFactError("canonical Shopping services are malformed")
     port = _example_port(paths.environment_example)
-    expected_binding = f"127.0.0.1:${{SHOPPING_WORDPRESS_PORT}}:80"
+    # The pinned Compose binding must agree with the repository port example.
+    expected_binding = f"127.0.0.1:{port}:80"
     facts = {
         "runtime_owner": (
             "mac"

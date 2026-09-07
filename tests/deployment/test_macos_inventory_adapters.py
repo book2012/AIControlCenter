@@ -311,7 +311,9 @@ def test_caddy_sole_edge_mapping() -> None:
     ).observe_caddy_desired_state()
     assert result["owner"] == "host-caddy"
     assert result["sole_public_edge"] is True
-    assert result["upstreams"] == ["127.0.0.1:58081"]
+    ingress = json.loads((ROOT / "config/deployment/ingress.json").read_text())
+    upstream = ingress["upstream"]
+    assert result["upstreams"] == [f"{upstream['host']}:{upstream['port']}"]
 
 
 def test_colima_contract_mapping() -> None:
