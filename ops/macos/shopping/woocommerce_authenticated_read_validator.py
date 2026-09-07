@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 import sys
+from pathlib import Path
 
 from core.shopping.secure_runtime import (
     DEFAULT_WOOCOMMERCE_READ_SECRET_PATH,
@@ -11,6 +12,11 @@ from core.shopping.secure_runtime import (
 from core.shopping.adapters.woocommerce_rest import WooCommerceRESTAdapter
 from core.shopping.adapters.woocommerce_read_transport import WooCommerceReadTransportSession
 from core.shopping.governance.external_read_policy import evaluate_external_read
+
+from ops.macos.shopping.repository_service_start import (
+    ShoppingRepositoryPaths,
+    load_shopping_repository_facts,
+)
 
 
 class _ReadFailure(Exception):
@@ -71,6 +77,26 @@ def validate_once() -> dict:
     except Exception:
         return result
     result["credential_boundary_valid"] = True
+    try:
+        facts = load_shopping_repository_facts(
+            ShoppingRepositoryPaths.canonical(Path(__file__).resolve().parents[3])
+        )
+        port = facts["wordpress_port"]
+        if (
+            facts["runtime_owner"] != "mac"
+            or facts["ubuntu_dependency"] is not False
+            or facts["mariadb_host_published_port"] is not False
+            or facts["wordpress_bind_host"] != "127.0.0.1"
+            or type(port) is not int or not 1 <= port <= 65535
+            or facts["woocommerce_host_service_id"] != "shopping-runtime"
+            or facts["woocommerce_kind"] != "wordpress-plugin-commerce-engine"
+        ):
+            raise ValueError("invalid repository target")
+        connect_base_url = f"http://127.0.0.1:{port}"
+    except Exception:
+        result["reason_codes"] = ["RUNTIME_TARGET_INVALID"]
+        return result
+    result.update(connect_target_source="repository_service_start", connect_target_loopback=True)
     transport = None
     response = None
     try:
@@ -83,6 +109,7 @@ def validate_once() -> dict:
         transport = _StatusCheckedReadTransport()
         adapter = WooCommerceRESTAdapter(
             base_url=secret.base_url,
+            connect_base_url=connect_base_url,
             consumer_key=secret.consumer_key,
             consumer_secret=secret.consumer_secret,
             session=transport,
