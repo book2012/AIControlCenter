@@ -22,7 +22,7 @@ CONTAINER_FORMAT = (
     '{"status":{{json .State.Status}},"pid":{{json .State.Pid}},"exit_code":{{json .State.ExitCode}},'
     '"host_ports":{{json .HostConfig.PortBindings}},"network_mode":{{json .HostConfig.NetworkMode}},"id":{{json .Id}},"started":{{json .State.StartedAt}},'
     '"restart_count":{{json .RestartCount}},"running":{{json .State.Running}},'
-    '"healthy":{{if .State.Health}}{{json .State.Health.Status}}{{else}}null{{end}},"paused":{{json .State.Paused}},'
+    '"healthy":{{with (index .State "Health")}}{{json .Status}}{{else}}null{{end}},"paused":{{json .State.Paused}},'
     '"restarting":{{json .State.Restarting}},"image":{{json .Image}},'
     '"configured_image":{{json .Config.Image}},'
     '"project":{{json (index .Config.Labels "com.docker.compose.project")}},'

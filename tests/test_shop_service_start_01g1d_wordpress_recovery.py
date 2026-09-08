@@ -415,3 +415,8 @@ def test_created_unattached_network_and_port_metadata_is_bound(tmp_path):
     with pytest.raises(a.ConsumptionFailure): value.consume(lambda: drift)
     assert state(value) == 'AVAILABLE'
     c.validate_post(before, snapshot(True))
+
+
+def test_container_format_uses_optional_health_lookup():
+    assert ".State.Health" not in op.CONTAINER_FORMAT
+    assert 'index .State "Health"' in op.CONTAINER_FORMAT
