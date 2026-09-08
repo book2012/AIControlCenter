@@ -1,65 +1,106 @@
-# Shopping 01G effective runtime attestation
+# Shopping 01G2 closed deployment proof contract
 
-Run from the repository root, with no arguments:
+Schema: `shopping/effective-runtime-attestation/v2`. This repository-only
+implementation follows SHOP-SERVICE-START-01B and the 01G1B approved model.
+v1 used an intentionally impossible loaded-state proof model: universal
+Apache/WordPress behavior could not be maintainably observed. v2 separates
+control-enforced repository invariants, deployment identity binding, runtime
+observations, and closed component/control obligations. No security requirement
+was removed. Logging safety describes the reviewed closed deployment invariant,
+not observation of arbitrary future executable behavior.
 
-```sh
-.venv/bin/python -m ops.macos.shopping.effective_runtime_attestor
-```
+## Contract and decisions
 
-Schema: `shopping/effective-runtime-attestation/v1`. Stdout is one compact JSON
-object; exit 0 means PASS, exit 2 means BLOCKED. Both retain activation BLOCKED.
-There is no input evidence file, environment override, remediation or bearer path.
-The pure reducer is internal, not an interface for submitting runtime assertions.
+The pure internal reducer accepts only closed boolean groups and exact reviewed
+manifest policy plus identity-only component observations from a trusted collector. There is no human evidence ingestion
+interface. Unknown fields/types, missing facts, unresolved identities, mismatches,
+and duplicate component identifiers fail closed; input values are never emitted.
+The aggregate schema is versioned rather than reinterpreting v1 fields.
 
-The Mac account resolver binds the fixed commerce Docker socket to passwd/UID.
-Selected inspect fields establish project/service identity, running state, exact
-loopback publish, database port absence and both network IDs. A second observation
-rejects changed metadata, including container IDs and start times. Environment,
-container logs and Docker credential configuration are never inspected.
+* `repository_invariants`: reviewed edge/safety policy, fixed target with no
+  generic proxy, and absence of a public observation endpoint.
+* `deployment_identity`: pinned immutable expected WordPress image and matched
+  actual image, container identity, fresh runtime and serving-generation provenance,
+  expected mounts/configuration and artifact integrity, no unexpected mutable code
+  or configuration, Caddy executable/config generation, Control Plane implementation.
+* `caddy_effective` and `topology`: runtime observations; loaded Caddy configuration
+  must equal the reviewed adaptation under host process identity. Upstream and
+  WordPress publication are exactly 127.0.0.1:58082, private namespace/rest_route
+  denied, no alternate handler, no database publication, expected networks only,
+  and trusted Mac binding. `transport` requires fixed bounded read-only transport.
+* `closed_controls`: Apache configuration closure and discard-only access/error
+  sinks, PHP disabled/discard logging, disabled display/startup errors, suppressed
+  exception arguments, false WordPress debug/log/display policy, reviewed
+  Authorization code without deliberate secret projection, no Authorization-capture
+  tracing/APM/logging, and no unresolved executable/logging components.
 
-Caddy proof requires a single host Caddy process owning the fixed admin and edge
-listeners, executable identity matching the local Homebrew executable, successful
-HTTP 200 admin configuration reads, and complete equality with adaptation of the
-digest-bound reviewed policy. Reads bracket adaptation and listener identity.
-Extra routes, changed ordering, stale upstreams or any logging changes block.
-Adaptation alone cannot prove anything about loaded state. Missing privileges,
-admin access or listener visibility block; the attestor does not enable them.
+`public_edge_runtime_isolation_proven` requires the edge repository controls,
+loaded Caddy edge facts, topology and fixed transport. It does not require the
+Apache/PHP/WordPress logging inventory or the Caddy logging sink decision.
+`deployment_logging_safety_proven` requires repository safety, every deployment
+binding and closed control, complete component identity comparison, and loaded
+Caddy identity/config equality with discard sinks. Repository file hashes or
+Apache/PHP file equality alone cannot pass it.
+`controlled_nonprod_soft_launch_ready` requires both decisions, all exact
+component/deployment identities and every required fact without errors. It is an
+informational prerequisite only: activation remains BLOCKED and no capability,
+verifier installation or authenticated request is authorized. Production=false;
+Ubuntu=false, even with complete synthetic evidence.
 
-The filesystem probe uses `php -n` without loading WordPress, plugins or ini files.
-It emits only selected public-file digests and booleans. It tokenizes wp-config
-without executing it, never prints configuration values, and treats duplicate or
-nonliteral debug definitions as unproven. Plugin presence and reviewed file identity
-are distinct from activation. Any component beyond the reviewed read plugin and
-standard inert plugin index, any mu-plugin or known drop-in is unapproved.
-Plugin filenames/configuration and wp-config hashes are not emitted.
+Digest-bound reviewed artifacts establish edge/safety controls but do not close
+the full route/proxy registration inventory. The collector keeps
+`no_generic_proxy_or_caller_target` and `no_public_observation_endpoint` false;
+generic repository safety cannot establish these specific absence claims.
 
-**This collector cannot currently produce a live PASS.** It intentionally has no
-authoritative observation channel into the already-running Apache/PHP SAPI or
-WordPress active-plugin state. Apache config-test output, fresh CLI ini/module
-output, persisted constants and on-disk extension absence would not establish
-that loaded state. Those controls remain false with explicit `*_UNOBSERVABLE`
-reason codes even when every inspected file matches. Unknown extensions, active
-plugins and cached code therefore cannot be silently classified as safe. Adding
-an authoritative observation mechanism requires a separately reviewed design;
-this task installs none and does not bootstrap WordPress to query its database.
+## Component closure
 
-Transport proof reuses the reviewed complete-source identities and checks fixed
-loopback/port, disabled environment/redirect/retry behavior, total deadline and
-response bound. No transport method or capability operation is invoked.
+`config/schemas/shopping-runtime-component-manifest.schema.json` defines
+`shopping/runtime-component-manifest/v1`; the repository manifest is
+`config/deployment/shopping-runtime-component-manifest.json`.
+All seven categories currently remain DISCOVERY_REQUIRED. This is never an empty
+approved inventory. REVIEWED_COMPLETE with an empty list represents explicitly
+reviewed absence; it still needs trusted actual inventory and deployment binding.
+Runtime reports identity; AIControlCenter owns and applies component policy.
+Observed entries contain exactly `identifier`, `version`, and
+`artifact_digest_or_immutable_identity`; the enclosing category supplies category.
+All additional observed keys are rejected. Role, effect class, permissions,
+Authorization handling, observation participation, identity approval status and
+approval membership come only from the repository manifest.
+`CONTROL_ENFORCED != RUNTIME_OBSERVED`.
+Required identities must all occur; optional approved identities may occur; every
+unknown identity is denied. No wildcard approval or existence-implies-safe rule.
 
-Each subprocess has at most five seconds, stdout is capped while streaming at
-128 KiB, and observations share a 30-second monotonic deadline (with up to one
-second to reap a killed local inspection child). Stderr is discarded. Malformed,
-duplicate, oversized, changed or unavailable evidence blocks with fixed codes.
-Only local inspection subprocesses may be killed for timeout cleanup; no service
-process is signaled. These are point-in-time observations, not a continuous lease.
+WooCommerce, ai-shopping-storefront and ai-controlcenter-shopping-read are required.
+WooCommerce deployed version/identity is unknown. Source versions 0.16.0 and 1.0.0
+for the other two do not establish deployed identity. Storefront source uses
+wp_remote_get and set_transient and activation writes options/rewrites. Shopping
+read handles authorization, has no explicit source application-state writes or
+outbound requests. These source annotations do not approve dependency behavior.
+None participates in observation. Exact artifact identities remain null/UNRESOLVED.
+Apache/PHP/Zend, network plugins, mu-plugins and drop-ins remain unresolved and BLOCKED.
 
-Architecture review: fixed Mac path, engine boundaries preserved, Ubuntu and
-production authority false; no activation or desired-state apply path.
-Security review: bounded output, strict JSON, explicit unknown-state blockers,
-no application bootstrap, secret projection, credential use or runtime writes.
-Maintainability review: one collector, one pure reducer, fixed schema/commands,
-and deterministic synthetic failure coverage. No project readiness promotion.
+## Collector limits and execution boundary
+
+The rejected FILES_PROBE and its Docker exec/PHP subprocess were removed.
+No native Apache module, WordPress runtime sensor, public telemetry endpoint or
+custom image was added. No WordPress bootstrap occurs. Existing fixed read-only
+metadata and Caddy mechanisms are retained for a separately authorized later run;
+none was executed in this implementation pass. No runtime deployment performed.
+
+The collector has zero arguments, trusted passwd/UID Mac account resolution, fixed
+commands, no caller/environment overrides, no secret/environment inspection,
+no shell/retry/mutation, streaming 128 KiB stdout bounds, five-second child limits
+and a 30-second total deadline. Synthetic tests replace runtime commands.
+Its existing reads cannot establish immutable image/mount integrity or authoritative
+serving-generation provenance. These fields stay false with deterministic missing
+field reasons and RUNTIME_BINDING_UNPROVEN / SERVING_GENERATION_PROVENANCE_UNPROVEN.
+Repeated metadata is not proof that no reload occurred or opcode cache is current.
+The collector supplies no actual component inventory, so cannot pass logging or
+soft launch even after future manifest review without new reviewed binding support.
+
+Soft launch is still BLOCKED. No runtime inspection, deployment, canonical,
+capability creation, verifier mutation or authenticated read occurred in 01G2.
+The historical evidence below is v1 only and was not rerun.
 
 ## 01G execution evidence
 

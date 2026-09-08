@@ -2,9 +2,8 @@
 
 No WordPress bootstrap, PHP application execution, credentials, logs, environment
 inspection or remediation. File observations NEVER establish loaded SAPI state.
-Absent a safe authoritative loaded-state interface, the relevant proof is false.
+Unbound deployment identities and serving generations remain explicitly unproven.
 """
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -32,58 +31,6 @@ CONTAINER_FORMAT = (
 )
 NETWORK_FORMAT = ('{"internal":{{json .Internal}},"name":{{json .Name}},"id":{{json .Id}},'
                   '"project":{{json (index .Labels "com.docker.compose.project")}}}')
-
-# A fresh CLI with ALL ini loading disabled reads fixed files only. It never
-# includes wp-config, loads WordPress/plugins, queries options or reads Env.
-# Only booleans and hashes of the two public safety files/read plugin leave PHP.
-# Literal debug observations are diagnostic, NOT effective constant assertions.
-FILES_PROBE = r'''
-function digest($p) {
-    return is_file($p) && !is_link($p) && filesize($p) <= 131072 ? hash_file('sha256', $p) : null;
-}
-$base = '/var/www/html/wp-content';
-$read = $base . '/plugins/ai-controlcenter-shopping-read';
-$plugins = glob($base . '/plugins/*');
-$mu = is_dir($base . '/mu-plugins') ? glob($base . '/mu-plugins/*') : array();
-$drops = array('advanced-cache.php','db.php','db-error.php','install.php','maintenance.php',
-    'object-cache.php','php-error.php','fatal-error-handler.php','sunrise.php');
-$dropFree = true;
-foreach ($drops as $name) { if (file_exists($base . '/' . $name) || is_link($base . '/' . $name)) $dropFree = false; }
-$approved = is_array($plugins);
-if ($approved) foreach ($plugins as $p) {
-    if ($p !== $read && !($p === $base . '/plugins/index.php' &&
-        digest($p) === hash('sha256', "<?php\n// Silence is golden.\n"))) $approved = false;
-}
-$debug = array(false, false, false);
-$config = '/var/www/html/wp-config.php';
-if (is_file($config) && !is_link($config) && filesize($config) <= 131072) {
-    $tokens = token_get_all(file_get_contents($config));
-    $words = array();
-    foreach ($tokens as $t) {
-        if (is_array($t)) { if (!in_array($t[0], array(T_WHITESPACE,T_COMMENT,T_DOC_COMMENT))) $words[] = $t[1]; }
-        else $words[] = $t;
-    }
-    foreach (array('WP_DEBUG','WP_DEBUG_LOG','WP_DEBUG_DISPLAY') as $j => $key) {
-        $count = 0; $safe = false;
-        foreach ($words as $i => $word) {
-            if ($word === "'".$key."'" || $word === '"'.$key.'"') {
-                $count++;
-                $safe = $i >= 2 && strtolower($words[$i-2]) === 'define' && $words[$i-1] === '('
-                    && ($words[$i+1] ?? '') === ',' && strtolower($words[$i+2] ?? '') === 'false'
-                    && ($words[$i+3] ?? '') === ')';
-            }
-        }
-        $debug[$j] = $count === 1 && $safe;
-    }
-}
-echo json_encode(array(
-    'apache_digest' => digest('/etc/apache2/sites-enabled/000-default.conf'),
-    'php_digest' => digest('/usr/local/etc/php/conf.d/zz-shopping-safety.ini'),
-    'read_plugin_digest' => digest($read . '/ai-controlcenter-shopping-read.php'),
-    'read_plugin_single_file' => glob($read . '/*') === array($read . '/ai-controlcenter-shopping-read.php'),
-    'plugins_approved' => $approved, 'mu_empty' => $mu === array(), 'drop_ins_absent' => $dropFree,
-    'debug_literals' => $debug));
-'''
 
 
 class EvidenceError(Exception):
@@ -239,35 +186,6 @@ def _admin_json(raw):
     return _json(body)
 
 
-def _file_observations(value):
-    expected = {"apache_digest", "php_digest", "read_plugin_digest", "read_plugin_single_file",
-                "plugins_approved", "mu_empty", "drop_ins_absent", "debug_literals"}
-    if type(value) is not dict or set(value) != expected:
-        raise EvidenceError("UNEXPECTED_EVIDENCE")
-    for key in ("read_plugin_single_file", "plugins_approved", "mu_empty", "drop_ins_absent"):
-        if type(value[key]) is not bool:
-            raise EvidenceError("UNEXPECTED_EVIDENCE")
-    if (type(value["debug_literals"]) is not list or len(value["debug_literals"]) != 3
-            or any(type(v) is not bool for v in value["debug_literals"])):
-        raise EvidenceError("UNEXPECTED_EVIDENCE")
-    def matches(key, relative):
-        return type(value[key]) is str and value[key] == hashlib.sha256(
-            (repository.ROOT / relative).read_bytes()).hexdigest()
-    apache = matches("apache_digest", "deploy/shopping/config/shopping-apache-safety.conf")
-    php = matches("php_digest", "deploy/shopping/config/shopping-php-safety.ini")
-    read = matches("read_plugin_digest", "deploy/shopping/wordpress/plugins/ai-controlcenter-shopping-read/ai-controlcenter-shopping-read.php") and value["read_plugin_single_file"]
-    errors = []
-    for safe, reason in ((apache, "DEPLOYED_APACHE_POLICY_MISMATCH"), (php, "DEPLOYED_PHP_POLICY_MISMATCH"),
-                         (read, "READ_PLUGIN_NOT_DEPLOYED"),
-                         (all(value["debug_literals"]), "WORDPRESS_DEBUG_LITERALS_UNPROVEN"),
-                         (all(value[k] for k in ("plugins_approved", "mu_empty", "drop_ins_absent")),
-                          "UNAPPROVED_WORDPRESS_COMPONENT")):
-        if not safe:
-            errors.append(reason)
-    # Even absence on disk doesn't prove absence in loaded PHP/opcache memory.
-    return read, errors
-
-
 def observe():
     deadline = time.monotonic() + TOTAL_SECONDS
     facts, errors = {}, []
@@ -280,6 +198,11 @@ def observe():
     try:
         safe = all((repository.ROOT / path).stat().st_size <= LIMIT for path in
                    repository.ARTIFACTS | {"config/deployment/shopping-logging-policy.json"}) and repository._repository_facts()
+        facts["repository_invariants"] = dict(
+            reviewed_edge_policy_valid=safe, reviewed_safety_controls_valid=safe,
+            # Reviewed digests do not close the full route/proxy inventory.
+            no_generic_proxy_or_caller_target=False, no_public_observation_endpoint=False,
+        )
         adapter = transport.ControlPlaneShoppingReadAdapter
         facts["transport"] = dict(
             repository_controls_proven=safe,
@@ -330,16 +253,9 @@ def observe():
                     errors.append("CADDY_LOADED_CONFIG_MISMATCH")
         except EvidenceError as exc:
             errors.append(exc.args[0])
-        if facts["topology"]["wordpress_identity_proven"]:
-            files = read(prefix + ["exec", "shopping-wordpress", "/usr/local/bin/php", "-n", "-r", FILES_PROBE])
-            if files is not None:
-                deployed, file_errors = _file_observations(files)
-                facts["wordpress_effective"] = {"read_plugin_deployed_proven": safe and deployed}
-                errors.extend(file_errors)
-        # Do not execute apache config tests, php --ini, WP-CLI or wp-load.php
-        # and mislabel a fresh process/bootstrap as the already-loaded runtime.
-        errors.extend(("APACHE_LOADED_STATE_UNOBSERVABLE", "PHP_APACHE_SAPI_LOADED_STATE_UNOBSERVABLE",
-                       "WORDPRESS_EFFECTIVE_CONSTANTS_UNOBSERVABLE", "WORDPRESS_ACTIVE_PLUGINS_UNOBSERVABLE"))
+        # Current fixed reads cannot bind immutable images/mounts or serving
+        # generations. Metadata stability is not startup/reload/opcache provenance.
+        errors.extend(("RUNTIME_BINDING_UNPROVEN", "SERVING_GENERATION_PROVENANCE_UNPROVEN"))
         if metadata != [read(command) for command in commands]:
             facts["topology"] = {}
             errors.append("UNEXPECTED_EVIDENCE")
@@ -348,6 +264,8 @@ def observe():
         errors.append(exc.args[0])
     except Exception:
         errors.append("INSPECTION_UNAVAILABLE")
+    # Repository manifest is not an observed inventory. No current mechanism
+    # establishes the closed deployment controls or actual component bindings.
     return reduce_evidence(facts, errors)
 
 

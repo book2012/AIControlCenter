@@ -1,6 +1,5 @@
 """Synthetic only: no runtime commands, WordPress bootstrap or bearer secrets."""
 import copy
-import hashlib
 import inspect
 import json
 from pathlib import Path
@@ -11,6 +10,15 @@ import pytest
 
 from core.shopping.control_plane_read.effective_runtime import CHECKS, FALSE_FIELDS, reduce_evidence
 from ops.macos.shopping import effective_runtime_attestor as attestor
+
+
+from tests.test_shopping_runtime_components import reviewed_fixture
+
+
+def reduce_evidence(facts, errors=()):
+    from core.shopping.control_plane_read.effective_runtime import reduce_evidence as reduce
+    manifest, observed = reviewed_fixture()
+    return reduce(facts, errors, manifest=manifest, observed_components=observed)
 
 
 def complete():
@@ -177,39 +185,6 @@ def test_ambiguous_or_wrong_host_listeners_block(raw):
     assert attestor._host_pid(raw) is None
 
 
-def files():
-    def digest(relative):
-        return hashlib.sha256((attestor.repository.ROOT / relative).read_bytes()).hexdigest()
-    return dict(
-        apache_digest=digest("deploy/shopping/config/shopping-apache-safety.conf"),
-        php_digest=digest("deploy/shopping/config/shopping-php-safety.ini"),
-        read_plugin_digest=digest("deploy/shopping/wordpress/plugins/ai-controlcenter-shopping-read/ai-controlcenter-shopping-read.php"),
-        read_plugin_single_file=True, plugins_approved=True, mu_empty=True,
-        drop_ins_absent=True, debug_literals=[True, True, True],
-    )
-
-
-@pytest.mark.parametrize("key,value,reason", [
-    ("apache_digest", "CustomLog unsafe Authorization synthetic-secret", "DEPLOYED_APACHE_POLICY_MISMATCH"),
-    ("php_digest", "log_errors=On display_errors=On", "DEPLOYED_PHP_POLICY_MISMATCH"),
-    ("php_digest", "zend.exception_ignore_args=Off", "DEPLOYED_PHP_POLICY_MISMATCH"),
-    ("php_digest", "extension=unknown-apm", "DEPLOYED_PHP_POLICY_MISMATCH"),
-    ("read_plugin_digest", None, "READ_PLUGIN_NOT_DEPLOYED"),
-    ("plugins_approved", False, "UNAPPROVED_WORDPRESS_COMPONENT"),
-    ("mu_empty", False, "UNAPPROVED_WORDPRESS_COMPONENT"),
-    ("drop_ins_absent", False, "UNAPPROVED_WORDPRESS_COMPONENT"),
-    ("debug_literals", [False, True, True], "WORDPRESS_DEBUG_LITERALS_UNPROVEN"),
-    ("debug_literals", [True, False, True], "WORDPRESS_DEBUG_LITERALS_UNPROVEN"),
-    ("debug_literals", [True, True, False], "WORDPRESS_DEBUG_LITERALS_UNPROVEN"),
-])
-def test_unsafe_file_diagnostics_are_value_free(key, value, reason):
-    evidence = files()
-    evidence[key] = value
-    deployed, errors = attestor._file_observations(evidence)
-    assert reason in errors
-    assert "synthetic-secret" not in json.dumps([deployed, errors])
-
-
 def install_collector(monkeypatch):
     monkeypatch.setattr(attestor.sys, "platform", "darwin")
     monkeypatch.setattr(attestor.repository, "_socket", lambda: "unix:///trusted/.colima/aicontrolcenter-commerce/docker.sock")
@@ -221,9 +196,6 @@ def install_collector(monkeypatch):
         assert deadline > 0
         if argv[0] == attestor.repository.DOCKER:
             assert argv[1:3] == ["--host", "unix:///trusted/.colima/aicontrolcenter-commerce/docker.sock"]
-            if "exec" in argv:
-                assert argv[3:] == ["exec", "shopping-wordpress", "/usr/local/bin/php", "-n", "-r", attestor.FILES_PROBE]
-                return json.dumps(files()).encode()
             assert "Env" not in argv[-2]
             return json.dumps(values[argv[-1]]).encode()
         if argv[0] == "/usr/sbin/lsof":
@@ -242,15 +214,13 @@ def test_safe_files_and_cli_never_become_loaded_runtime_proof(monkeypatch):
     calls = install_collector(monkeypatch)
     result = attestor.observe()
     assert result["status"] == "BLOCKED"
-    assert result["public_edge_runtime_isolation_proven"]
+    assert not result["public_edge_runtime_isolation_proven"]
     assert not result["deployment_logging_safety_proven"]
-    assert result["wordpress_effective"]["read_plugin_deployed_proven"]
-    assert not result["wordpress_effective"]["read_plugin_active_proven"]
-    for reason in ("APACHE_LOADED_STATE_UNOBSERVABLE", "PHP_APACHE_SAPI_LOADED_STATE_UNOBSERVABLE",
-                   "WORDPRESS_EFFECTIVE_CONSTANTS_UNOBSERVABLE", "WORDPRESS_ACTIVE_PLUGINS_UNOBSERVABLE"):
+    assert not result["controlled_nonprod_soft_launch_ready"]
+    for reason in ("RUNTIME_BINDING_UNPROVEN", "SERVING_GENERATION_PROVENANCE_UNPROVEN"):
         assert reason in result["reason_codes"]
     assert all(result[key] is False for key in FALSE_FIELDS)
-    assert len(calls) == 15
+    assert len(calls) == 14
 
 
 def test_environment_poisoning_is_ignored(monkeypatch):
@@ -304,6 +274,18 @@ def test_no_application_execution_or_mutation_commands(monkeypatch):
         assert not set(argv) & {"up", "down", "restart", "recreate", "reload", "start", "stop", "ssh", "wp", "--env", "-e"}
         assert not any("Authorization:" in word for word in argv)
     assert "shell=True" not in inspect.getsource(attestor)
-    for forbidden in ("getenv", "get_option", "require", "include", "file_put_contents", "unlink", "fwrite"):
-        assert forbidden not in attestor.FILES_PROBE
-    assert "-n" in next(argv for argv in calls if "exec" in argv)
+    assert not hasattr(attestor, "FILES_PROBE")
+    assert not any("exec" in argv for argv in calls)
+    assert "wp-load.php" not in inspect.getsource(attestor)
+
+
+def test_repository_safety_does_not_establish_route_absence(monkeypatch):
+    install_collector(monkeypatch)
+    monkeypatch.setattr(attestor.repository, '_repository_facts', lambda: True)
+    result = attestor.observe()
+    invariants = result['repository_invariants']
+    assert invariants['reviewed_edge_policy_valid']
+    assert invariants['reviewed_safety_controls_valid']
+    assert invariants['no_generic_proxy_or_caller_target'] is False
+    assert invariants['no_public_observation_endpoint'] is False
+    assert not result['public_edge_runtime_isolation_proven']

@@ -1,0 +1,82 @@
+{
+  "schema_version": "shopping/runtime-component-manifest/v1",
+  "apache_modules": {
+    "required": [],
+    "optional_approved": [],
+    "forbidden_unknown": true,
+    "inventory_status": "DISCOVERY_REQUIRED"
+  },
+  "php_extensions": {
+    "required": [],
+    "optional_approved": [],
+    "forbidden_unknown": true,
+    "inventory_status": "DISCOVERY_REQUIRED"
+  },
+  "zend_extensions": {
+    "required": [],
+    "optional_approved": [],
+    "forbidden_unknown": true,
+    "inventory_status": "DISCOVERY_REQUIRED"
+  },
+  "wordpress_plugins": {
+    "required": [
+      {
+        "identifier": "woocommerce",
+        "version": null,
+        "artifact_digest_or_immutable_identity": null,
+        "identity_status": "UNRESOLVED",
+        "role": "commerce_engine",
+        "effect_class": "DEPENDENCY_BEHAVIOR_UNRESOLVED",
+        "outbound_network_allowed": null,
+        "application_state_write_allowed": null,
+        "handles_authorization": null,
+        "participates_in_observation": false
+      },
+      {
+        "identifier": "ai-shopping-storefront",
+        "version": "0.16.0",
+        "artifact_digest_or_immutable_identity": null,
+        "identity_status": "UNRESOLVED",
+        "role": "presentation_adapter",
+        "effect_class": "SOURCE_NETWORK_TRANSIENT_OPTION_REWRITE_WRITES",
+        "outbound_network_allowed": true,
+        "application_state_write_allowed": true,
+        "handles_authorization": false,
+        "participates_in_observation": false
+      },
+      {
+        "identifier": "ai-controlcenter-shopping-read",
+        "version": "1.0.0",
+        "artifact_digest_or_immutable_identity": null,
+        "identity_status": "UNRESOLVED",
+        "role": "fixed_authenticated_product_read_projection",
+        "effect_class": "SOURCE_NO_EXPLICIT_APPLICATION_STATE_WRITE",
+        "outbound_network_allowed": false,
+        "application_state_write_allowed": false,
+        "handles_authorization": true,
+        "participates_in_observation": false
+      }
+    ],
+    "optional_approved": [],
+    "forbidden_unknown": true,
+    "inventory_status": "DISCOVERY_REQUIRED"
+  },
+  "wordpress_network_plugins": {
+    "required": [],
+    "optional_approved": [],
+    "forbidden_unknown": true,
+    "inventory_status": "DISCOVERY_REQUIRED"
+  },
+  "wordpress_mu_plugins": {
+    "required": [],
+    "optional_approved": [],
+    "forbidden_unknown": true,
+    "inventory_status": "DISCOVERY_REQUIRED"
+  },
+  "wordpress_dropins": {
+    "required": [],
+    "optional_approved": [],
+    "forbidden_unknown": true,
+    "inventory_status": "DISCOVERY_REQUIRED"
+  }
+}

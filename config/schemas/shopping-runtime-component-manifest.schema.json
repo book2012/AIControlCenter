@@ -1,0 +1,336 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "shopping/runtime-component-manifest/v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "apache_modules",
+    "php_extensions",
+    "zend_extensions",
+    "wordpress_plugins",
+    "wordpress_network_plugins",
+    "wordpress_mu_plugins",
+    "wordpress_dropins"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "shopping/runtime-component-manifest/v1"
+    },
+    "apache_modules": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "optional_approved",
+        "forbidden_unknown",
+        "inventory_status"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "optional_approved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "forbidden_unknown": {
+          "const": true
+        },
+        "inventory_status": {
+          "enum": [
+            "DISCOVERY_REQUIRED",
+            "REVIEWED_COMPLETE"
+          ]
+        }
+      }
+    },
+    "php_extensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "optional_approved",
+        "forbidden_unknown",
+        "inventory_status"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "optional_approved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "forbidden_unknown": {
+          "const": true
+        },
+        "inventory_status": {
+          "enum": [
+            "DISCOVERY_REQUIRED",
+            "REVIEWED_COMPLETE"
+          ]
+        }
+      }
+    },
+    "zend_extensions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "optional_approved",
+        "forbidden_unknown",
+        "inventory_status"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "optional_approved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "forbidden_unknown": {
+          "const": true
+        },
+        "inventory_status": {
+          "enum": [
+            "DISCOVERY_REQUIRED",
+            "REVIEWED_COMPLETE"
+          ]
+        }
+      }
+    },
+    "wordpress_plugins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "optional_approved",
+        "forbidden_unknown",
+        "inventory_status"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "optional_approved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "forbidden_unknown": {
+          "const": true
+        },
+        "inventory_status": {
+          "enum": [
+            "DISCOVERY_REQUIRED",
+            "REVIEWED_COMPLETE"
+          ]
+        }
+      }
+    },
+    "wordpress_network_plugins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "optional_approved",
+        "forbidden_unknown",
+        "inventory_status"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "optional_approved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "forbidden_unknown": {
+          "const": true
+        },
+        "inventory_status": {
+          "enum": [
+            "DISCOVERY_REQUIRED",
+            "REVIEWED_COMPLETE"
+          ]
+        }
+      }
+    },
+    "wordpress_mu_plugins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "optional_approved",
+        "forbidden_unknown",
+        "inventory_status"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "optional_approved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "forbidden_unknown": {
+          "const": true
+        },
+        "inventory_status": {
+          "enum": [
+            "DISCOVERY_REQUIRED",
+            "REVIEWED_COMPLETE"
+          ]
+        }
+      }
+    },
+    "wordpress_dropins": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "optional_approved",
+        "forbidden_unknown",
+        "inventory_status"
+      ],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "optional_approved": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/component"
+          }
+        },
+        "forbidden_unknown": {
+          "const": true
+        },
+        "inventory_status": {
+          "enum": [
+            "DISCOVERY_REQUIRED",
+            "REVIEWED_COMPLETE"
+          ]
+        }
+      }
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "identifier",
+        "version",
+        "artifact_digest_or_immutable_identity",
+        "identity_status",
+        "role",
+        "effect_class",
+        "outbound_network_allowed",
+        "application_state_write_allowed",
+        "handles_authorization",
+        "participates_in_observation"
+      ],
+      "properties": {
+        "identifier": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^[a-zA-Z0-9_.:/-]+$"
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^[^*?]+$"
+        },
+        "artifact_digest_or_immutable_identity": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^[^*?]+$"
+        },
+        "identity_status": {
+          "enum": [
+            "UNRESOLVED",
+            "REVIEWED_EXACT"
+          ]
+        },
+        "role": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^[^*?]+$"
+        },
+        "effect_class": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^[^*?]+$"
+        },
+        "outbound_network_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "application_state_write_allowed": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "handles_authorization": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "participates_in_observation": {
+          "const": false
+        }
+      }
+    }
+  }
+}
