@@ -7,12 +7,14 @@ Unbound deployment identities and serving generations remain explicitly unproven
 import json
 import os
 from pathlib import Path
+import re
 import selectors
 import subprocess
 import sys
 import time
 
 from core.shopping.control_plane_read.effective_runtime import CHECKS, reduce_evidence
+from core.shopping.control_plane_read.runtime_components import CATEGORIES
 from core.shopping.control_plane_read import transport
 from ops.macos.shopping import preactivation_observer as repository
 
@@ -31,6 +33,85 @@ CONTAINER_FORMAT = (
 )
 NETWORK_FORMAT = ('{"internal":{{json .Internal}},"name":{{json .Name}},"id":{{json .Id}},'
                   '"project":{{json (index .Labels "com.docker.compose.project")}}}')
+
+
+WORDPRESS_IMAGE = "wordpress:php8.3-apache@sha256:9fac4d47b61186131ffefb5d966f0045d0eea94bfd7bd40cafae29b78a709d1b"
+BINDING_FORMAT = (
+    '{"id":{{json .Id}},"image":{{json .Image}},"configured_image":{{json .Config.Image}},'
+    '"started":{{json .State.StartedAt}},"running":{{json .State.Running}},'
+    '"paused":{{json .State.Paused}},"restarting":{{json .State.Restarting}},'
+    '"pid":{{json .State.Pid}},"restart_count":{{json .RestartCount}},'
+    '"mounts":{{json .Mounts}}}'
+)
+IMAGE_FORMAT = '{"id":{{json .Id}},"digests":{{json .RepoDigests}}}'
+
+
+def _normalize_mounts(raw):
+    """Project Docker identity fields only; metadata cannot supply proof policy."""
+    if type(raw) is not list:
+        return None
+    required = {"Type", "Source", "Destination", "RW"}
+    mounts, destinations = [], set()
+    for item in raw:
+        if (type(item) is not dict or not required <= item.keys()
+                or any(type(item[key]) is not str for key in ("Type", "Source", "Destination"))
+                or type(item["RW"]) is not bool
+                or item["Type"] not in ("volume", "bind")
+                or any(not item[key] for key in ("Type", "Source", "Destination"))
+                or item["Destination"] in destinations):
+            return None
+        name = item.get("Name", "")
+        if type(name) is not str or (item["Type"] == "volume" and not name):
+            return None
+        destinations.add(item["Destination"])
+        mounts.append(dict(type=item["Type"], name=name, source=item["Source"],
+                           destination=item["Destination"], rw=item["RW"]))
+    return mounts
+
+
+def _deployment_binding(before, after, image_before, image_after, topology, safe):
+    """Bind inspect identities only; stability is neither freshness nor SAPI provenance."""
+    result = dict.fromkeys(CHECKS["deployment_identity"], False)
+    result["reviewed_pinned_identity_contract"] = safe is True
+    result["expected_immutable_wordpress_image"] = safe is True
+    keys = {"id", "image", "configured_image", "started", "running", "paused",
+            "restarting", "pid", "restart_count", "mounts"}
+    if (type(before) is not dict or set(before) != keys or before != after
+            or not topology or not all(topology.values()) or before["running"] is not True
+            or before["paused"] is not False or before["restarting"] is not False
+            or type(before["pid"]) is not int or before["pid"] <= 0
+            or type(before["restart_count"]) is not int or before["restart_count"] < 0
+            or type(before["id"]) is not str or not re.fullmatch(r"[0-9a-f]{64}", before["id"])
+            or type(before["started"]) is not str or not re.fullmatch(
+                r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{1,9}Z", before["started"])
+            or before["started"].startswith("0001-")):
+        return result
+    result["container_identity_bound"] = True
+    result["runtime_generation_identity_bound"] = True
+    result["actual_runtime_image_matches"] = (
+        safe is True and before["configured_image"] == WORDPRESS_IMAGE
+        and type(image_before) is dict and set(image_before) == {"id", "digests"}
+        and image_before == image_after and type(image_before["id"]) is str
+        and re.fullmatch(r"sha256:[0-9a-f]{64}", image_before["id"]) is not None
+        and before["image"] == image_before["id"]
+        and type(image_before["digests"]) is list
+        and "wordpress@" + WORDPRESS_IMAGE.split("@", 1)[1] in image_before["digests"])
+    expected = [dict(type="volume", name="ai-shopping-wordpress",
+                     destination="/var/www/html", rw=True)]
+    for source, destination in (
+        ("config/shopping-apache-safety.conf", "/etc/apache2/sites-enabled/000-default.conf"),
+        ("config/shopping-php-safety.ini", "/usr/local/etc/php/conf.d/zz-shopping-safety.ini"),
+        ("wordpress/plugins/ai-shopping-storefront", "/var/www/html/wp-content/plugins/ai-shopping-storefront"),
+    ):
+        expected.append(dict(type="bind", name="", source=str(repository.ROOT / "deploy/shopping" / source),
+                             destination=destination, rw=False))
+    mounts = _normalize_mounts(before["mounts"])
+    if (safe is True and mounts is not None and len(mounts) == len(expected)
+            and all(sum(all(m[k] == v for k, v in e.items()) for m in mounts) == 1 for e in expected)):
+        result["expected_mounts_config_bound"] = True
+    # A read-only bind identifies the mount, not immutable bytes or loaded state.
+    # The writable WordPress volume also prevents executable-config closure.
+    return result
 
 
 class EvidenceError(Exception):
@@ -189,6 +270,8 @@ def _admin_json(raw):
 def observe():
     deadline = time.monotonic() + TOTAL_SECONDS
     facts, errors = {}, []
+    manifest = None
+    observed_components = dict.fromkeys(CATEGORIES, None)  # unknown, never an empty inventory
     if sys.platform != "darwin":
         return reduce_evidence({}, ["MAC_IDENTITY_UNPROVEN"])
     try:
@@ -196,6 +279,8 @@ def observe():
     except Exception:
         return reduce_evidence({}, ["MAC_IDENTITY_UNPROVEN"])
     try:
+        with (repository.ROOT / "config/deployment/shopping-runtime-component-manifest.json").open("rb") as stream:
+            manifest = _json(stream.read(LIMIT + 1))
         safe = all((repository.ROOT / path).stat().st_size <= LIMIT for path in
                    repository.ARTIFACTS | {"config/deployment/shopping-logging-policy.json"}) and repository._repository_facts()
         facts["repository_invariants"] = dict(
@@ -226,6 +311,9 @@ def observe():
             except EvidenceError as exc:
                 errors.append(exc.args[0])
                 return None
+        binding_command = prefix + ["inspect", "--format", BINDING_FORMAT, "shopping-wordpress"]
+        image_command = prefix + ["image", "inspect", "--format", IMAGE_FORMAT, WORDPRESS_IMAGE]
+        binding_before, image_before = read(binding_command), read(image_command)
         metadata = [read(command) for command in commands]
         facts["topology"] = _topology(*metadata)
         listeners = ["/usr/sbin/lsof", "-nP", "-iTCP:2019", "-iTCP:58080", "-iTCP:58443",
@@ -253,12 +341,19 @@ def observe():
                     errors.append("CADDY_LOADED_CONFIG_MISMATCH")
         except EvidenceError as exc:
             errors.append(exc.args[0])
-        # Current fixed reads cannot bind immutable images/mounts or serving
-        # generations. Metadata stability is not startup/reload/opcache provenance.
-        errors.extend(("RUNTIME_BINDING_UNPROVEN", "SERVING_GENERATION_PROVENANCE_UNPROVEN"))
-        if metadata != [read(command) for command in commands]:
+        metadata_after = [read(command) for command in commands]
+        binding_after, image_after = read(binding_command), read(image_command)
+        if metadata != metadata_after:
             facts["topology"] = {}
             errors.append("UNEXPECTED_EVIDENCE")
+        binding_topology = facts["topology"]
+        if (not metadata or type(metadata[0]) is not dict or type(binding_before) is not dict
+                or metadata[0].get("id") != binding_before.get("id")
+                or metadata[0].get("started") != binding_before.get("started")):
+            binding_topology = {"wordpress_identity_proven": False}
+        facts["deployment_identity"] = _deployment_binding(
+            binding_before, binding_after, image_before, image_after, binding_topology, safe)
+        errors.extend(("RUNTIME_BINDING_UNPROVEN", "SERVING_GENERATION_PROVENANCE_UNPROVEN"))
         _remaining(deadline)
     except EvidenceError as exc:
         errors.append(exc.args[0])
@@ -266,7 +361,7 @@ def observe():
         errors.append("INSPECTION_UNAVAILABLE")
     # Repository manifest is not an observed inventory. No current mechanism
     # establishes the closed deployment controls or actual component bindings.
-    return reduce_evidence(facts, errors)
+    return reduce_evidence(facts, errors, manifest=manifest, observed_components=observed_components)
 
 
 def main():

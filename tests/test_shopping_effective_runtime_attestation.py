@@ -197,7 +197,7 @@ def install_collector(monkeypatch):
         if argv[0] == attestor.repository.DOCKER:
             assert argv[1:3] == ["--host", "unix:///trusted/.colima/aicontrolcenter-commerce/docker.sock"]
             assert "Env" not in argv[-2]
-            return json.dumps(values[argv[-1]]).encode()
+            return json.dumps(values.get(argv[-1], {})).encode()
         if argv[0] == "/usr/sbin/lsof":
             return ("n" + str(Path(sys.executable).resolve()) + "\n").encode() if "-a" in argv else LISTENERS
         if argv[0] == "/usr/bin/curl":
@@ -220,7 +220,7 @@ def test_safe_files_and_cli_never_become_loaded_runtime_proof(monkeypatch):
     for reason in ("RUNTIME_BINDING_UNPROVEN", "SERVING_GENERATION_PROVENANCE_UNPROVEN"):
         assert reason in result["reason_codes"]
     assert all(result[key] is False for key in FALSE_FIELDS)
-    assert len(calls) == 14
+    assert len(calls) == 18
 
 
 def test_environment_poisoning_is_ignored(monkeypatch):
@@ -289,3 +289,229 @@ def test_repository_safety_does_not_establish_route_absence(monkeypatch):
     assert invariants['no_generic_proxy_or_caller_target'] is False
     assert invariants['no_public_observation_endpoint'] is False
     assert not result['public_edge_runtime_isolation_proven']
+
+
+def binding_fixture():
+    mounts = [dict(Type="volume", Name="ai-shopping-wordpress", Source="/fixed/volume",
+                   Destination="/var/www/html", RW=True)]
+    for source, destination in (
+        ("config/shopping-apache-safety.conf", "/etc/apache2/sites-enabled/000-default.conf"),
+        ("config/shopping-php-safety.ini", "/usr/local/etc/php/conf.d/zz-shopping-safety.ini"),
+        ("wordpress/plugins/ai-shopping-storefront", "/var/www/html/wp-content/plugins/ai-shopping-storefront"),
+    ):
+        mounts.append(dict(Type="bind", Name="", Source=str(attestor.repository.ROOT / "deploy/shopping" / source),
+                           Destination=destination, RW=False))
+    binding = dict(id="a" * 64, image="sha256:" + "b" * 64,
+                   configured_image=attestor.WORDPRESS_IMAGE, started="2026-09-08T01:02:03.000000001Z",
+                   running=True, paused=False, restarting=False, pid=42, restart_count=0, mounts=mounts)
+    image = dict(id=binding["image"], digests=["wordpress@" + attestor.WORDPRESS_IMAGE.split("@")[1]])
+    return binding, image
+
+
+def binding_proofs(binding, image, after=None):
+    return attestor._deployment_binding(binding, binding if after is None else after,
+                                        image, image, attestor._topology(*metadata()), True)
+
+
+def test_stable_binding_does_not_invent_loaded_state_or_freshness():
+    binding, image = binding_fixture()
+    result = binding_proofs(binding, image)
+    for key in ("actual_runtime_image_matches", "container_identity_bound",
+                "runtime_generation_identity_bound", "expected_mounts_config_bound"):
+        assert result[key] is True
+    for key in ("runtime_generation_fresh", "serving_generation_provenance_bound",
+                "mount_artifact_integrity_proven", "no_unexpected_mutable_executable_config"):
+        assert result[key] is False
+
+
+@pytest.mark.parametrize("key,value", [("id", "c" * 64), ("pid", 43), ("restart_count", 1),
+                                        ("started", "2026-09-08T01:02:04.000000001Z"),
+                                        ("paused", True), ("running", False)])
+def test_generation_change_invalidates_binding(key, value):
+    binding, image = binding_fixture()
+    after = copy.deepcopy(binding)
+    after[key] = value
+    result = binding_proofs(binding, image, after)
+    assert not result["runtime_generation_identity_bound"]
+    assert not result["actual_runtime_image_matches"]
+
+
+@pytest.mark.parametrize("change", ["image", "digest", "rw", "source", "extra", "duplicate"])
+def test_wrong_image_or_mount_binding_fails_closed(change):
+    binding, image = binding_fixture()
+    if change == "image": image["id"] = "sha256:" + "c" * 64
+    elif change == "digest": image["digests"] = []
+    elif change == "rw": binding["mounts"][1]["RW"] = True
+    elif change == "source": binding["mounts"][1]["Source"] = "/other"
+    elif change == "extra": binding["mounts"].append(copy.deepcopy(binding["mounts"][1]))
+    else: binding["mounts"][2] = copy.deepcopy(binding["mounts"][1])
+    result = binding_proofs(binding, image)
+    assert not result["actual_runtime_image_matches" if change in ("image", "digest")
+                      else "expected_mounts_config_bound"]
+
+
+def test_collector_passes_manifest_and_unknown_identity_categories(monkeypatch):
+    install_collector(monkeypatch)
+    original = attestor.reduce_evidence
+    seen = {}
+    def reduce(facts, errors, **kwargs):
+        seen.update(kwargs)
+        return original(facts, errors, **kwargs)
+    monkeypatch.setattr(attestor, "reduce_evidence", reduce)
+    result = attestor.observe()
+    assert seen["manifest"] == json.loads((attestor.repository.ROOT /
+        "config/deployment/shopping-runtime-component-manifest.json").read_text())
+    assert seen["observed_components"] == dict.fromkeys(attestor.CATEGORIES, None)
+    assert result["complete_component_identity_proven"] is False
+
+
+def test_binding_format_uses_native_mount_json():
+    assert '"mounts":{{json .Mounts}}' in attestor.BINDING_FORMAT
+    assert "range" not in attestor.BINDING_FORMAT
+    assert "index" not in attestor.BINDING_FORMAT
+
+
+def test_raw_docker_mount_projection_ignores_metadata_policy():
+    binding, image = binding_fixture()
+    raw = binding["mounts"]
+    raw[1].update(Mode="ro", Propagation="rprivate", Driver="local",
+                  rw=True, runtime_generation_fresh=True,
+                  mount_artifact_integrity_proven=True)
+    original = copy.deepcopy(raw)
+    projected = attestor._normalize_mounts(raw)
+    assert projected == [dict(type=m["Type"], name=m["Name"], source=m["Source"],
+                              destination=m["Destination"], rw=m["RW"]) for m in raw]
+    assert raw == original
+    assert binding_proofs(binding, image)["expected_mounts_config_bound"]
+    assert not binding_proofs(binding, image)["runtime_generation_fresh"]
+    assert not binding_proofs(binding, image)["mount_artifact_integrity_proven"]
+
+
+@pytest.mark.parametrize("mount_index,field,change", [
+    (index, field, change)
+    for index in (0, 1)
+    for field in ("Type", "Name", "Source", "Destination", "RW")
+    for change in ("missing", "null", "integer", "list", "dict")
+    if (index, field, change) != (1, "Name", "missing")
+])
+def test_malformed_docker_mount_field_blocks(field, change, mount_index):
+    binding, image = binding_fixture()
+    mount = binding["mounts"][mount_index]
+    if change == "missing":
+        del mount[field]
+    else:
+        mount[field] = {"null": None, "integer": 1, "list": [], "dict": {}}[change]
+    assert attestor._normalize_mounts(binding["mounts"]) is None
+    assert not binding_proofs(binding, image)["expected_mounts_config_bound"]
+
+
+@pytest.mark.parametrize("omit_bind_name", [False, True])
+def test_type_aware_mount_names_normalize(omit_bind_name):
+    binding, image = binding_fixture()
+    if omit_bind_name:
+        for mount in binding["mounts"][1:]:
+            del mount["Name"]
+    original = copy.deepcopy(binding["mounts"])
+    normalized = attestor._normalize_mounts(binding["mounts"])
+    assert normalized[0] == dict(type="volume", name="ai-shopping-wordpress",
+        source="/fixed/volume", destination="/var/www/html", rw=True)
+    assert all(m["name"] == "" for m in normalized[1:])
+    assert all(set(m) == {"type", "name", "source", "destination", "rw"} for m in normalized)
+    assert binding["mounts"] == original
+    proofs = binding_proofs(binding, image)
+    assert {key for key, value in proofs.items() if value} == {
+        "reviewed_pinned_identity_contract", "expected_immutable_wordpress_image",
+        "actual_runtime_image_matches", "container_identity_bound",
+        "runtime_generation_identity_bound", "expected_mounts_config_bound"}
+    result = attestor.reduce_evidence({"deployment_identity": proofs})
+    assert not any(result["closed_controls"].values())
+    assert not any(result["repository_invariants"].values())
+    assert all(result[key] is False for key in FALSE_FIELDS)
+    assert not result["complete_component_identity_proven"]
+
+
+@pytest.mark.parametrize("mount_index,field,value", [
+    (0, "Name", ""), (0, "Type", "tmpfs"), (1, "Type", "tmpfs"),
+])
+def test_empty_volume_name_and_unknown_mount_type_block(mount_index, field, value):
+    binding, image = binding_fixture()
+    binding["mounts"][mount_index][field] = value
+    assert attestor._normalize_mounts(binding["mounts"]) is None
+    assert not binding_proofs(binding, image)["expected_mounts_config_bound"]
+
+
+@pytest.mark.parametrize("mount_index", [1, 2, 3])
+@pytest.mark.parametrize("field,value", [("Source", "/unexpected"),
+    ("Destination", "/unexpected"), ("RW", True), ("Name", "unexpected")])
+def test_each_safety_bind_enforces_expected_binding(mount_index, field, value):
+    binding, image = binding_fixture()
+    binding["mounts"][mount_index][field] = value
+    assert not binding_proofs(binding, image)["expected_mounts_config_bound"]
+
+
+@pytest.mark.parametrize("field,value", [("Type", ""), ("Source", ""),
+    ("Destination", ""), ("RW", "false"), ("Type", True), ("Name", False),
+    ("Source", True), ("Destination", True)])
+def test_invalid_mount_primitives_block(field, value):
+    binding, image = binding_fixture()
+    binding["mounts"][1][field] = value
+    assert attestor._normalize_mounts(binding["mounts"]) is None
+    assert not binding_proofs(binding, image)["expected_mounts_config_bound"]
+
+
+@pytest.mark.parametrize("mounts", [None, {}, "mounts", [None], [[]], ["mount"]])
+def test_invalid_mount_collection_blocks(mounts):
+    binding, image = binding_fixture()
+    binding["mounts"] = mounts
+    assert not binding_proofs(binding, image)["expected_mounts_config_bound"]
+
+
+@pytest.mark.parametrize("change", ["destination", "duplicate_destination", "extra", "name", "type"])
+def test_closed_expected_mount_set_blocks(change):
+    binding, image = binding_fixture()
+    mounts = binding["mounts"]
+    if change == "destination":
+        mounts[1]["Destination"] = "/etc/apache2/other.conf"
+    elif change == "duplicate_destination":
+        mounts[2]["Destination"] = mounts[1]["Destination"]
+        assert attestor._normalize_mounts(mounts) is None
+    elif change == "extra":
+        mounts.append(dict(Type="bind", Name="", Source="/extra/config",
+                           Destination="/usr/local/etc/php/conf.d/extra.ini", RW=False))
+    elif change == "name":
+        mounts[0]["Name"] = "other-volume"
+    else:
+        mounts[1]["Type"] = "volume"
+    assert not binding_proofs(binding, image)["expected_mounts_config_bound"]
+
+
+def test_stable_mounts_leave_loaded_controls_and_inventory_unproven():
+    binding, image = binding_fixture()
+    result = attestor.reduce_evidence({"deployment_identity": binding_proofs(binding, image)})
+    assert result["deployment_identity"]["expected_mounts_config_bound"]
+    assert not any(result["closed_controls"].values())
+    assert not any(result["repository_invariants"].values())
+    assert not result["complete_component_identity_proven"]
+    assert not result["public_edge_runtime_isolation_proven"]
+    assert not result["deployment_logging_safety_proven"]
+    assert all(result[key] is False for key in FALSE_FIELDS)
+
+
+def test_collector_commands_remain_fixed_read_only_arrays(monkeypatch):
+    calls = install_collector(monkeypatch)
+    attestor.observe()
+    docker_calls = [argv for argv in calls if argv[0] == attestor.repository.DOCKER]
+    prefix = [attestor.repository.DOCKER, "--host",
+              "unix:///trusted/.colima/aicontrolcenter-commerce/docker.sock"]
+    expected = [prefix + ["inspect", "--format", attestor.BINDING_FORMAT, "shopping-wordpress"],
+                prefix + ["image", "inspect", "--format", attestor.IMAGE_FORMAT, attestor.WORDPRESS_IMAGE]]
+    expected += [prefix + ["inspect", "--format", attestor.CONTAINER_FORMAT, name]
+                 for name in ("shopping-wordpress", "shopping-db")]
+    expected += [prefix + ["network", "inspect", "--format", attestor.NETWORK_FORMAT, name]
+                 for name in ("ai-shopping-internal", "ai-shopping-network")]
+    assert len(docker_calls) == 2 * len(expected)
+    assert all(docker_calls.count(command) == 2 for command in expected)
+    assert all(type(argv) is list for argv in calls)
+    assert not any(token in {"exec", "php", "ssh", "compose", "restart", "reload"}
+                   for argv in calls for token in argv)
+    assert "shell=True" not in inspect.getsource(attestor)
