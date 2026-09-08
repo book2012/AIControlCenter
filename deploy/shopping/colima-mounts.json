@@ -1,0 +1,19 @@
+{
+  "work_item": "SHOP-SERVICE-START-01G1E",
+  "profile": "aicontrolcenter-commerce",
+  "profile_file": "/Users/kyouhan/.colima/aicontrolcenter-commerce/colima.yaml",
+  "mountType": "virtiofs",
+  "mounts": [
+    {
+      "location": "/Users/kyouhan/AIControlCenter/deploy/shopping/wordpress/plugins/ai-shopping-storefront",
+      "writable": false
+    },
+    {
+      "location": "/Users/kyouhan/AIControlCenter/deploy/shopping/config",
+      "writable": false
+    }
+  ],
+  "production_authority": false,
+  "ubuntu_authority": false,
+  "lifecycle_authority": false
+}
