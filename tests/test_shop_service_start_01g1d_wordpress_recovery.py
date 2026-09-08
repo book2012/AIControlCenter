@@ -1,4 +1,4 @@
-"""Fixture-only 01G1C tests: no Docker, live issuer or live authority store."""
+"""Fixture-only 01G1D tests: no Docker, live issuer or live authority store."""
 from datetime import datetime, timedelta, timezone
 import inspect
 import json
@@ -10,29 +10,32 @@ from concurrent.futures import ThreadPoolExecutor
 
 import pytest
 
-from core.shopping import wordpress_generation_reconciliation as c
-from core.shopping import wordpress_generation_authorization as a
+from core.shopping import wordpress_recovery_reconciliation as c
+from core.shopping import wordpress_recovery_authorization as a
 from core.shopping import wordpress_port_authorization as old
-from ops.macos.shopping import wordpress_generation_operator as op
-from ops.macos.shopping import issue_wordpress_generation_authorization as issuer
-from ops.macos.shopping.wordpress_generation_authorization_store import WordPressGenerationAuthorizationStore as Store
+from ops.macos.shopping import wordpress_recovery_operator as op
+from ops.macos.shopping import issue_wordpress_recovery_authorization as issuer
+from ops.macos.shopping.wordpress_recovery_authorization_store import WordPressRecoveryAuthorizationStore as Store
 from ops.macos.shopping.wordpress_port_authorization_store import WordPressPortAuthorizationStore as OldStore
 
 
 def snapshot(post=False):
-    networks = {name: dict(id=char * 64, internal=(name == c.NETWORKS[0])) for name, char in zip(c.NETWORKS, 'ab')}
+    networks = {name: dict(id=c.NETWORK_IDS[name], internal=(name == c.NETWORKS[0])) for name, char in zip(c.NETWORKS, 'ab')}
     containers = {}
     for service, char in [('wordpress', 'c' if not post else 'd'), ('database', 'e')]:
-        containers[service] = dict(id=char * 64, started='2026-09-08T01:00:00.123Z', restart_count=0,
-            running=True, healthy=True, paused=False, restarting=False, image='sha256:' + 'f' * 64,
+        containers[service] = dict(id=(c.DATABASE_ID if service == 'database' else ('d'*64 if post else c.FAILED_ID)), started=('2026-09-03T03:10:22.559242003Z' if service == 'database' else ('2026-09-08T01:00:00.123Z' if post else '0001-01-01T00:00:00Z')), restart_count=0,
+            status='created' if service == 'wordpress' and not post else 'running',
+            pid=0 if service == 'wordpress' and not post else 123, exit_code=127 if service == 'wordpress' and not post else 0,
+            running=service == 'database' or post, healthy=service == 'database' or post, paused=False, restarting=False, image='sha256:' + 'f' * 64,
             configured_image=c.WORDPRESS_IMAGE if service == 'wordpress' else 'mariadb:11.4.12@sha256:a794d9eb009e20de605858a11f32f63b4075cbd197c650436f0e3b457e4caed7',
-            project=c.COMPOSE_PROJECT, service=service,
+            project=c.COMPOSE_PROJECT, service=service, network_mode=c.NETWORKS[0],
+            host_ports={'80/tcp': [{'HostIp': '127.0.0.1', 'HostPort': '58082'}]} if service == 'wordpress' else {},
             ports={'80/tcp': [{'HostIp': '127.0.0.1', 'HostPort': '58082'}]} if service == 'wordpress' else {'3306/tcp': None},
             networks={name: networks[name]['id'] for name in (c.NETWORKS if service == 'wordpress' else c.NETWORKS[:1])},
             mounts=c.expected_mounts(post) if service == 'wordpress' else [c.volume_mount(c.VOLUMES[1], '/var/lib/mysql')])
     return dict(head='1' * 40, clean=True, artifacts=dict(c.ARTIFACTS), **containers,
                 image=dict(id='sha256:'+'f'*64, digest='wordpress@'+c.WORDPRESS_IMAGE.split('@')[1]),
-                volumes={name: dict(Name=name, Driver='local', Scope='local', CreatedAt='2026-08-01T01:00:00Z') for name in c.VOLUMES},
+                volumes={name: dict(Name=name, Driver='local', Scope='local', CreatedAt=c.VOLUME_CREATED[name]) for name in c.VOLUMES},
                 networks=networks, source_metadata=dict(st_dev=1, st_ino=2, st_mode=33152, st_uid=os.getuid(), st_gid=os.getgid(), st_size=20, st_nlink=1, st_mtime_ns=1, st_ctime_ns=1),
                 production=False, ubuntu=False)
 
@@ -63,7 +66,7 @@ def state(value):
 def test_distinct_one_shot(tmp_path):
     value = store(tmp_path)
     receipt = value.consume(snapshot)
-    assert a.validate_consumption_result(receipt, now=datetime.now(timezone.utc), uid=os.getuid(), gid=os.getgid()).mutation_id == 'SHOP-SERVICE-START-01G1C:WORDPRESS_RUNTIME_GENERATION_RECONCILIATION'
+    assert a.validate_consumption_result(receipt, now=datetime.now(timezone.utc), uid=os.getuid(), gid=os.getgid()).mutation_id == 'SHOP-SERVICE-START-01G1D:WORDPRESS_RUNTIME_GENERATION_RECOVERY'
     assert state(value) == 'COMMITTED'
     with pytest.raises(a.ConsumptionFailure):
         value.consume(snapshot)
@@ -84,7 +87,7 @@ def test_authorization_rejects_scope_changes(changes):
 DRIFTS = [
     ('head', '2'*40), ('clean', False), ('artifacts', {}), ('production', True), ('ubuntu', True),
     ('wordpress.id', '9'*64), ('wordpress.started', '2026-09-08T02:00:00Z'), ('wordpress.restart_count', 1),
-    ('wordpress.image', 'sha256:'+'9'*64), ('wordpress.healthy', False), ('wordpress.mounts', []),
+    ('wordpress.image', 'sha256:'+'9'*64), ('wordpress.healthy', True), ('wordpress.mounts', []),
     ('database.id', '9'*64), ('database.started', '2026-09-08T02:00:00Z'), ('database.restart_count', 1),
     ('database.healthy', False), ('database.ports', {'3306/tcp': [{'HostIp': '127.0.0.1', 'HostPort': '3306'}]}),
     ('wordpress.ports', {'80/tcp': [{'HostIp': '0.0.0.0', 'HostPort': '58082'}]}),
@@ -118,7 +121,7 @@ def test_bound_drift_before_consumption(tmp_path, path, replacement):
 @pytest.mark.parametrize('path,replacement', [x for x in DRIFTS if x[0] not in {'wordpress.id', 'wordpress.started', 'wordpress.restart_count'}])
 def test_postconditions_reject_drift(path, replacement):
     after = snapshot(True)
-    change(after, path, replacement)
+    change(after, path, False if path == 'wordpress.healthy' else replacement)
     with pytest.raises(ValueError):
         c.validate_post(snapshot(), after)
 
@@ -149,7 +152,7 @@ def test_fixed_execution_no_target_or_removal(monkeypatch):
     assert not inspect.signature(mutate).parameters
     assert not inspect.signature(c.build_mutation_invocation).parameters
     assert mutate() is c.ExecutionOutcome.SUCCEEDED
-    assert calls[0][0][0] == ('/trusted/docker-compose', '--context', 'colima-aicontrolcenter-commerce', '--project-name', 'ai-shopping', '--file', 'deploy/shopping/compose.yaml', '--env-file', '/trusted/source.env', 'up', '-d', '--no-deps', '--pull', 'never', '--force-recreate', 'wordpress')
+    assert calls[0][0][0] == ('/trusted/docker', '--context', 'colima-aicontrolcenter-commerce', 'compose', '--project-name', 'ai-shopping', '--file', 'deploy/shopping/compose.yaml', '--env-file', '/trusted/source.env', 'up', '-d', '--no-deps', '--pull', 'never', '--force-recreate', 'wordpress')
     assert calls[0][1]['stdout'] == op.subprocess.DEVNULL
     assert len(calls) == 1
 
@@ -157,7 +160,7 @@ def test_fixed_execution_no_target_or_removal(monkeypatch):
 def wire(monkeypatch, value, outcome):
     monkeypatch.setattr(op, 'resolve_trusted_mac_account_home', lambda: object())
     monkeypatch.setattr(op, 'issue_trusted_ownership_expectation', lambda _: SimpleNamespace(expected_uid=os.getuid(), expected_gid=os.getgid()))
-    monkeypatch.setattr(op.WordPressGenerationAuthorizationStore, 'open_existing', lambda: value)
+    monkeypatch.setattr(op.WordPressRecoveryAuthorizationStore, 'open_existing', lambda: value)
     monkeypatch.setattr(op, 'observe_preconditions', snapshot)
     calls = []
     def mutate():
@@ -303,7 +306,7 @@ def test_fixture_issuer_requires_exact_ack_and_stability(monkeypatch, capsys, ac
     monkeypatch.setattr(issuer, 'observe_preconditions', lambda: next(observations))
     monkeypatch.setattr('builtins.input', lambda _: ack)
     issued = []
-    monkeypatch.setattr(issuer.WordPressGenerationAuthorizationStore, '_initialize_for_issuer', lambda: SimpleNamespace(_issue=issued.append))
+    monkeypatch.setattr(issuer.WordPressRecoveryAuthorizationStore, '_initialize_for_issuer', lambda: SimpleNamespace(_issue=issued.append))
     if expected:
         assert issuer.issue()['status'] == 'AVAILABLE'
         assert len(issued) == 1
@@ -325,7 +328,7 @@ def test_inspection_commands_are_fixed_and_only_read_metadata(monkeypatch):
         if args[0] == 'network': return snapshot()['networks'][name]
         if args[0] == 'volume': return snapshot()['volumes'][name]
         value = snapshot()['wordpress' if name == c.WORDPRESS_CONTAINER else 'database']
-        value['healthy'] = 'healthy'
+        value['healthy'] = 'healthy' if value['healthy'] else None
         value['networks'] = {k: {'NetworkID': v} for k, v in value['networks'].items()}
         value['mounts'] = [{k.title() if k != 'rw' else 'RW': v for k, v in m.items()} for m in value['mounts']]
         return value
@@ -343,8 +346,7 @@ def test_repository_digest_and_clean_contract(monkeypatch):
         commands.append(args)
         return SimpleNamespace(returncode=0, stdout=b'1'*40 if args[1] == 'rev-parse' else b'')
     monkeypatch.setattr(op.subprocess, 'run', git)
-    # Historical reviewed Compose digest must reject the corrected current artifact.
-    with pytest.raises(ValueError): op._repository()
+    assert op._repository() == ('1'*40, c.ARTIFACTS)
     assert commands[-1][-1] == '--untracked-files=all'
     monkeypatch.setattr(op.subprocess, 'run', lambda *args, **kw: SimpleNamespace(returncode=0, stdout=b'dirty'))
     with pytest.raises(ValueError): op._repository()
@@ -358,3 +360,58 @@ def test_secret_canary_rejected_from_persisted_schema(where):
               'network': value['networks'][c.NETWORKS[0]], 'metadata': value['source_metadata']}[where]
     target['secret-canary'] = 'secret-canary'
     with pytest.raises(ValueError): c.canonical_snapshot(value)
+
+
+def test_current_destination_and_historical_distinction():
+    from core.shopping import wordpress_generation_reconciliation as historical
+    current = c.expected_mounts(True)
+    assert len(current) == 4
+    assert '/etc/apache2/sites-available/000-default.conf' in {m['destination'] for m in current}
+    assert '/etc/apache2/sites-enabled/000-default.conf' in {m['destination'] for m in historical.expected_mounts(True)}
+    after = snapshot(True)
+    after['wordpress']['mounts'] = c.expected_mounts(False)
+    with pytest.raises(ValueError): c.validate_post(snapshot(), after)
+    compose = (c.ROOT / c.COMPOSE_FILE).read_text()
+    assert './config/shopping-apache-safety.conf:/etc/apache2/sites-available/000-default.conf:ro' in compose
+    assert '/etc/apache2/sites-enabled/000-default.conf' not in compose
+
+
+def test_recovery_cannot_reissue_or_use_historical_authority(tmp_path):
+    from core.shopping import wordpress_generation_authorization as historical
+    from ops.macos.shopping.wordpress_generation_authorization_store import WordPressGenerationAuthorizationStore
+    value = store(tmp_path)
+    receipt = value.consume(snapshot)
+    with pytest.raises(a.AuthorizationError): value._issue(auth(authorization_id='another'))
+    with pytest.raises(historical.AuthorizationError):
+        historical.validate_consumption_result(receipt, now=datetime.now(timezone.utc), uid=os.getuid(), gid=os.getgid())
+    with pytest.raises(Exception):
+        WordPressGenerationAuthorizationStore._open_existing_for_test(value._path, uid=os.getuid(), gid=os.getgid())
+
+
+@pytest.mark.parametrize('field,value', [('status','exited'), ('pid',1), ('exit_code',0), ('running',True), ('started','2026-09-08T00:00:00Z')])
+def test_exact_failed_created_state(field, value):
+    before = snapshot()
+    c.validate_snapshot(before)
+    before['wordpress'][field] = value
+    with pytest.raises(ValueError): c.validate_snapshot(before)
+
+
+@pytest.mark.parametrize('field,value', [('started','0001-01-01T00:00:00Z'), ('started','2026-99-99T00:00:00Z'), ('healthy',False), ('running',False), ('pid',0)])
+def test_post_requires_valid_running_generation(field, value):
+    after = snapshot(True)
+    after['wordpress'][field] = value
+    with pytest.raises(ValueError): c.validate_post(snapshot(), after)
+
+
+def test_created_unattached_network_and_port_metadata_is_bound(tmp_path):
+    before = snapshot()
+    before['wordpress']['ports'] = {}
+    before['wordpress']['networks'] = {name: '' for name in c.NETWORKS}
+    c.validate_snapshot(before)
+    value = Store._for_test(tmp_path / 'created.sqlite3', uid=os.getuid(), gid=os.getgid())
+    value._issue(auth(precondition_json=c.canonical_snapshot(before)))
+    drift = json.loads(json.dumps(before))
+    drift['wordpress']['networks'][c.NETWORKS[0]] = c.NETWORK_IDS[c.NETWORKS[0]]
+    with pytest.raises(a.ConsumptionFailure): value.consume(lambda: drift)
+    assert state(value) == 'AVAILABLE'
+    c.validate_post(before, snapshot(True))

@@ -99,7 +99,7 @@ def _deployment_binding(before, after, image_before, image_after, topology, safe
     expected = [dict(type="volume", name="ai-shopping-wordpress",
                      destination="/var/www/html", rw=True)]
     for source, destination in (
-        ("config/shopping-apache-safety.conf", "/etc/apache2/sites-enabled/000-default.conf"),
+        ("config/shopping-apache-safety.conf", "/etc/apache2/sites-available/000-default.conf"),
         ("config/shopping-php-safety.ini", "/usr/local/etc/php/conf.d/zz-shopping-safety.ini"),
         ("wordpress/plugins/ai-shopping-storefront", "/var/www/html/wp-content/plugins/ai-shopping-storefront"),
     ):

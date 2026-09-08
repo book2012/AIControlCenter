@@ -25,6 +25,16 @@ from core.secrets.mariadb_continuity_validation import (
 
 
 ROOT = Path(__file__).resolve().parents[1]
+# SM-01B-02D-05 consumes caller-supplied ContinuityObservation facts only.
+# SM-01B-02D-06 canonical profiles are enums in mariadb_continuity_validation;
+# its port/adapter receive an opaque capability, with no config loader or paths.
+# Thus this historical contract owns no config/ files. Keep the scope closed;
+# Shopping deployment/logging policy is not a continuity configuration input.
+MARIADB_CONTINUITY_CONFIG_PATHS = ()
+MARIADB_CONTINUITY_HISTORICAL_PATHS = (
+    "core/secrets/mariadb_continuity.py",
+    *MARIADB_CONTINUITY_CONFIG_PATHS,
+)
 PRODUCTION_FILES = (
     ROOT / "core/secrets/mariadb_continuity_validation.py",
     ROOT / "core/secrets/mariadb_continuity_validation_port.py",
@@ -299,11 +309,48 @@ def test_exact_six_existing_provisioning_actions_are_preserved():
     )
 
 
-def test_sm_01b_02d_05_and_config_are_unchanged_from_head():
+def _assert_mariadb_historical_artifacts_unchanged_from_head():
     subprocess.run(
-        ["git", "diff", "--quiet", "HEAD", "--", "core/secrets/mariadb_continuity.py"],
+        ["git", "diff", "--quiet", "HEAD", "--", *MARIADB_CONTINUITY_HISTORICAL_PATHS],
         cwd=ROOT, check=True,
     )
-    subprocess.run(
-        ["git", "diff", "--quiet", "HEAD", "--", "config/"], cwd=ROOT, check=True,
-    )
+
+
+def test_sm_01b_02d_05_and_config_are_unchanged_from_head():
+    _assert_mariadb_historical_artifacts_unchanged_from_head()
+
+
+@pytest.mark.parametrize(
+    ("changed_path", "must_fail"),
+    (
+        ("config/deployment/shopping-logging-policy.json", False),
+        ("core/secrets/mariadb_continuity.py", True),
+    ),
+)
+def test_historical_isolation_has_closed_ownership_and_fails_on_owned_changes(
+    monkeypatch, changed_path, must_fail,
+):
+    calls = []
+
+    def fake_run(command, *, cwd, check):
+        calls.append(command)
+        assert cwd == ROOT
+        assert check is True
+        assert command == [
+            "git", "diff", "--quiet", "HEAD", "--",
+            "core/secrets/mariadb_continuity.py",
+        ]
+        returncode = int(changed_path in command[5:])
+        if returncode:
+            raise subprocess.CalledProcessError(returncode, command)
+        return subprocess.CompletedProcess(command, returncode)
+
+    assert MARIADB_CONTINUITY_CONFIG_PATHS == ()
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    if must_fail:
+        with pytest.raises(subprocess.CalledProcessError) as error:
+            _assert_mariadb_historical_artifacts_unchanged_from_head()
+        assert error.value.returncode == 1
+    else:
+        _assert_mariadb_historical_artifacts_unchanged_from_head()
+    assert len(calls) == 1

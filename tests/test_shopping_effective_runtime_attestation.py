@@ -295,7 +295,7 @@ def binding_fixture():
     mounts = [dict(Type="volume", Name="ai-shopping-wordpress", Source="/fixed/volume",
                    Destination="/var/www/html", RW=True)]
     for source, destination in (
-        ("config/shopping-apache-safety.conf", "/etc/apache2/sites-enabled/000-default.conf"),
+        ("config/shopping-apache-safety.conf", "/etc/apache2/sites-available/000-default.conf"),
         ("config/shopping-php-safety.ini", "/usr/local/etc/php/conf.d/zz-shopping-safety.ini"),
         ("wordpress/plugins/ai-shopping-storefront", "/var/www/html/wp-content/plugins/ai-shopping-storefront"),
     ):

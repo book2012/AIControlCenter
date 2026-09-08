@@ -135,6 +135,23 @@ def test_repository_controls_and_no_machine_identity():
     assert not (observer.ROOT / "ops/macos/shopping/shop_service_start_01f_evidence.json").exists()
 
 
+def test_current_compose_review_preserves_historical_01g1c_contract():
+    import hashlib
+    from core.shopping import wordpress_generation_reconciliation as historical
+    from core.shopping import wordpress_recovery_reconciliation as recovery
+
+    relative = "deploy/shopping/compose.yaml"
+    compose = (observer.ROOT / relative).read_bytes()
+    policy = json.loads((observer.ROOT / "config/deployment/shopping-logging-policy.json").read_text())
+    actual = hashlib.sha256(compose).hexdigest()
+    assert actual == "e90b116f9683d3ece0abc0111865ea41d9129a835070232e3a823c5c2e7e85ac"
+    assert policy["reviewed_repository_artifacts"][relative] == recovery.ARTIFACTS[relative] == actual
+    assert historical.ARTIFACTS[relative] == "341c9dfcd69cb001bc9514d34427335a47b1b4dcad6d95cb40072752a1643f8b"
+    assert historical.ARTIFACTS[relative] != actual
+    assert b"./config/shopping-apache-safety.conf:/etc/apache2/sites-available/000-default.conf:ro" in compose
+    assert b"/etc/apache2/sites-enabled/000-default.conf" not in compose
+
+
 @pytest.mark.parametrize("field", observer.FALSE_POLICY_FIELDS)
 def test_policy_rejects_capture_debug_and_authority(monkeypatch, tmp_path, field):
     path = tmp_path / "config/deployment/shopping-logging-policy.json"

@@ -53,7 +53,7 @@ services:
         define('DISALLOW_FILE_EDIT', true);
     volumes:
       - shopping_wordpress:/var/www/html
-      - ./config/shopping-apache-safety.conf:/etc/apache2/sites-enabled/000-default.conf:ro
+      - ./config/shopping-apache-safety.conf:/etc/apache2/sites-available/000-default.conf:ro
       - ./config/shopping-php-safety.ini:/usr/local/etc/php/conf.d/zz-shopping-safety.ini:ro
       - ./wordpress/plugins/ai-shopping-storefront:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
     networks:
