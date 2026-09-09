@@ -383,6 +383,32 @@ def test_snapshot_only_fixed_read_commands(monkeypatch,wrong_endpoint):
         assert len(calls)==5
 
 
+@pytest.mark.parametrize('provision_fields,accepted',[
+ ({},True),
+ ({'provision':None},True),
+ ({'provision':[]},True),
+ ({'provision':[{'script':'secret-canary'}]},False),
+ ({'provision':{}},False),
+ ({'provision':''},False),
+ ({'provision':False},False),
+ ({'provision':0},False),
+],ids=['missing','null','empty-list','nonempty-list','mapping','string','bool','number'])
+def test_startup_guard_empty_provision_contract(monkeypatch,provision_fields,accepted):
+    profile=dict(vmType='vz',runtime='docker',mountType='virtiofs',mounts=c.MOUNTS,
+                 autoActivate=False,kubernetes={'enabled':False},**provision_fields)
+    monkeypatch.setattr(op,'_owner',lambda:object())
+    monkeypatch.setattr(op.observation,'_profile',lambda _: (b'fixture',None))
+    monkeypatch.setattr(c,'digest',lambda _:c.PROFILE_SHA256)
+    monkeypatch.setattr(c.declared,'_parse',lambda _:('',None,profile))
+    monkeypatch.setattr(op.os.path,'lexists',lambda _:False)
+    monkeypatch.setattr(op.Path,'exists',lambda _:True)
+    monkeypatch.setattr(op.Path,'resolve',lambda self,strict=False:self)
+    if accepted:
+        assert op._startup_guard() is profile
+    else:
+        with pytest.raises(ValueError): op._startup_guard()
+
+
 @pytest.mark.parametrize('field,value',[
  ('autoActivate',True),('autoActivate',None),('provision',[{'script':'secret-canary'}]),
  ('kubernetes',{'enabled':True}),('layer',True),('runtime','containerd'),('vmType','qemu'),

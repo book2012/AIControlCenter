@@ -38,7 +38,8 @@ def _startup_guard():
     profile = c.declared._parse(raw)[2]
     c.require(profile.get('vmType') == 'vz' and profile.get('runtime') == 'docker')
     c.require(profile.get('mounts') == c.MOUNTS)
-    c.require(profile.get('provision', []) == [])
+    provision = profile.get('provision')
+    c.require(provision is None or (isinstance(provision, list) and len(provision) == 0))
     c.require(profile.get('kubernetes', {}).get('enabled', False) is False)
     c.require(profile.get('layer', False) is False)
     # Default is true: absence cannot establish no context mutation.
