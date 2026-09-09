@@ -28,6 +28,7 @@ DATA_ROOT = "/Users/kyouhan/Library/Application Support/AIControlCenter/data"
 EXPECTED_ENVIRONMENT = {
     "HOME": "/Users/kyouhan",
     "AICONTROLCENTER_DATA_ROOT": DATA_ROOT,
+    "AICONTROLCENTER_SHOPPING_PROFILE": "woocommerce_read_only",
     "PYTHONUNBUFFERED": "1",
     "PATH": "/usr/local/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
 }

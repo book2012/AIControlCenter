@@ -57,3 +57,26 @@ def test_plan_is_first_activation_without_forbidden_content() -> None:
         assert forbidden not in text
     sources = [step["source"] for step in plan["installation_plan"] if step["step"] == "install_file"]
     assert sources == [str(ROOT / "ops/macos/runtime/run-canonical-api-immutable-source.sh"), str(ROOT / "ops/macos/launchd/com.aicontrolcenter.api.plist")]
+
+
+def test_canonical_daemon_declares_woocommerce_read_only_profile_without_credentials() -> None:
+    module = load_module()
+    payload = module.load_plist(
+        ROOT / "ops/macos/launchd/com.aicontrolcenter.api.plist"
+    )
+    environment = payload["EnvironmentVariables"]
+
+    assert module.EXPECTED_ENVIRONMENT[
+        "AICONTROLCENTER_SHOPPING_PROFILE"
+    ] == "woocommerce_read_only"
+    assert environment[
+        "AICONTROLCENTER_SHOPPING_PROFILE"
+    ] == "woocommerce_read_only"
+
+    serialized = str(environment).lower()
+    for forbidden in (
+        "shopping_woocommerce_consumer_key",
+        "shopping_woocommerce_consumer_secret",
+        "shopping_woocommerce_base_url",
+    ):
+        assert forbidden not in serialized

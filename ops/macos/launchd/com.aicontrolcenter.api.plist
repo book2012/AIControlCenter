@@ -19,6 +19,8 @@
     <string>/Users/kyouhan</string>
     <key>AICONTROLCENTER_DATA_ROOT</key>
     <string>/Users/kyouhan/Library/Application Support/AIControlCenter/data</string>
+    <key>AICONTROLCENTER_SHOPPING_PROFILE</key>
+    <string>woocommerce_read_only</string>
     <key>PYTHONUNBUFFERED</key>
     <string>1</string>
     <key>PATH</key>
