@@ -5164,3 +5164,26 @@ created and consumed source authorization; that authority cannot authorize
 WordPress. A read-only live storage-continuity observation has occurred. No
 WordPress authorization has been created or consumed, no WordPress mutation has
 executed, Shopping is not activated, and `NOTION_SYNC=NO`.
+
+## SHOP-STOREFRONT-S01 Fashion Homepage v1
+
+Orange Coco Fashion Homepage v1 presentation is live and validated over public
+HTTPS. The PHP/server-rendered storefront shell owns header, navigation,
+presentation composition and footer, while JavaScript no longer generates the
+application shell. The women-first storefront keeps MEN as one structural
+category.
+
+AI Style Preview is an editorial presentation layer and remains visible when
+the Shopping API is unavailable. Live validation confirmed the preview class
+and demo asset references while the commerce failure notice remained fail
+closed.
+
+`SHOP_STOREFRONT_S01_PRESENTATION=CLOSED`
+
+`SHOP_API_READ_001=OPEN`
+
+WooCommerce remains catalog truth. The persisted WordPress Shopping API base
+still points to `http://host.docker.internal:8000`; it must not be replaced by
+an unvalidated mock/shadow target. The next production milestone is governed
+WooCommerce read-only activation of the canonical AIControlCenter Shopping API,
+followed by WordPress API-base alignment and live catalog validation.

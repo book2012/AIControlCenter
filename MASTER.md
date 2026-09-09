@@ -6076,3 +6076,38 @@ created and consumed and is permanently non-reusable for WordPress. Live
 storage continuity was observed read-only. WordPress authorization creation,
 WordPress authorization consumption, WordPress mutation, Shopping activation,
 and Notion sync remain absent (`NOTION_SYNC=NO`).
+
+## Current authoritative status — SHOP-STOREFRONT-S01 Fashion Homepage v1
+
+Orange Coco Fashion Homepage v1 presentation is complete and live.
+
+The storefront uses a PHP/server-rendered shell and AIControlCenter-compatible
+headless boundaries. WordPress remains the presentation/CMS surface and
+WooCommerce remains commerce/catalog truth. Shopping business logic remains
+AIControlCenter-owned.
+
+The storefront is women-first with one MEN structural category. AI Style
+Preview is explicitly editorial/demo presentation and is independent of
+commerce API availability.
+
+Live HTTPS validation confirmed:
+
+- Orange Coco storefront response HTTP 200
+- AI Style Preview rendered
+- preview demo assets rendered
+- women-focused category links rendered
+- MEN category link rendered
+- commerce failure notice rendered
+- API-backed SHOP BY CATEGORY and featured sections remained fail closed
+
+`SHOP_STOREFRONT_S01_PRESENTATION=CLOSED`
+
+`SHOP_API_READ_001=OPEN`
+
+The current WordPress API option remains
+`http://host.docker.internal:8000`. No shortcut to the shadow API or mock
+canonical catalog is authorized.
+
+The next Shopping production boundary is governed canonical WooCommerce
+read-only activation, followed by catalog-source validation and WordPress
+Shopping API-base reconciliation.

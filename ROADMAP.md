@@ -5110,3 +5110,37 @@ evidence locator.
 - [ ] Obtain a new WordPress-specific human authorization only for a future
   separately governed run. No WordPress authority or mutation exists yet and
   Shopping remains inactive. `NOTION_SYNC=NO`.
+
+## COMPLETE — SHOP-STOREFRONT-S01 Fashion Homepage v1 presentation
+
+- [x] Establish the Orange Coco PHP/server-rendered storefront shell.
+- [x] Establish the women-first taxonomy with one MEN structural category.
+- [x] Keep WooCommerce as commerce/catalog truth.
+- [x] Remove JavaScript ownership of the storefront application shell.
+- [x] Add AI Style Preview as an editorial/demo presentation layer.
+- [x] Make AI Style Preview independent from Shopping API availability.
+- [x] Validate public HTTPS storefront response.
+- [x] Validate AI Style Preview and demo asset rendering live.
+- [x] Preserve fail-closed commerce behavior.
+- [x] Harden bootstrap activation checks for the Shopping Storefront plugin.
+
+`SHOP_STOREFRONT_S01_PRESENTATION=CLOSED`
+
+## ACTIVE — SHOP-API-READ-001 canonical WooCommerce read path
+
+- [ ] Activate the existing canonical WooCommerce read-only profile through a
+  separately governed production lifecycle.
+- [ ] Prove canonical `/shopping/health` reports the intended read-only runtime.
+- [ ] Prove canonical categories and featured/product reads are backed by
+  WooCommerce rather than the mock catalog.
+- [ ] Reconcile the WordPress Shopping API base through the governed
+  configuration path.
+- [ ] Validate live SHOP BY CATEGORY and product sections.
+- [ ] Preserve read-only operation and fail closed on configuration/catalog
+  failure.
+- [ ] Perform no Shopping write until separately authorized.
+
+Do not route production WordPress to the shadow API and do not treat a
+transport-only endpoint change as catalog integration.
+
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

@@ -5,7 +5,8 @@ umask 077
 WP_PATH="/var/www/html"
 WOO_PACKAGE="/opt/aicontrolcenter/woocommerce.zip"
 WOO_SLUG="woocommerce"
-STOREFRONT_SLUG="ai-shopping-storefront"
+STOREFRONT_PLUGIN_SLUG="ai-shopping-storefront"
+STOREFRONT_THEME_SLUG="storefront"
 STOREFRONT_VERSION="4.6.2"
 STOREFRONT_PACKAGE_PATH="/opt/aicontrolcenter/storefront.zip"
 STOREFRONT_PACKAGE_SHA256="163b5bf217dad76a823432d8c01598ab3dc3f15cbdd69067b98f5a6ddf05c1c4"
@@ -20,10 +21,10 @@ STOREFRONT_PACKAGE_SHA256="163b5bf217dad76a823432d8c01598ab3dc3f15cbdd69067b98f5
 : "${SHOPPING_ADMIN_PASSWORD:?SHOPPING_ADMIN_PASSWORD is required}"
 : "${SHOPPING_ADMIN_EMAIL:?SHOPPING_ADMIN_EMAIL is required}"
 
-printf "%s\n" "[BOOTSTRAP][01/07] configuration contract verified"
+printf "%s\n" "[BOOTSTRAP][01/08] configuration contract verified"
 
 if wp core is-installed --path="$WP_PATH" >/dev/null 2>&1; then
-    printf "%s\n" "[BOOTSTRAP][02/07] WordPress core already installed"
+    printf "%s\n" "[BOOTSTRAP][02/08] WordPress core already installed"
 else
     WP_ADMIN_PASSWORD_STDIN="$SHOPPING_ADMIN_PASSWORD"
   printf "%s\n" "$WP_ADMIN_PASSWORD_STDIN" | wp core install \
@@ -35,14 +36,14 @@ else
         --admin_email="$SHOPPING_ADMIN_EMAIL" \
         --skip-email \
         --quiet
-    printf "%s\n" "[BOOTSTRAP][02/07] WordPress core installed"
+    printf "%s\n" "[BOOTSTRAP][02/08] WordPress core installed"
 fi
 
 wp core is-installed --path="$WP_PATH" >/dev/null 2>&1
-printf "%s\n" "[BOOTSTRAP][03/07] WordPress core installation verified"
+printf "%s\n" "[BOOTSTRAP][03/08] WordPress core installation verified"
 
 if wp plugin is-installed "$WOO_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
-    printf "%s\n" "[BOOTSTRAP][04/07] WooCommerce already installed"
+    printf "%s\n" "[BOOTSTRAP][04/08] WooCommerce already installed"
 else
     WOOCOMMERCE_PACKAGE_SHA256="6e58fc3ba9b18d1c9aee6b0227d3c3c09e4fe2c1332823bd2e0ac54ffcff64a9"
     WOOCOMMERCE_PACKAGE_ACTUAL_SHA256="$(sha256sum /opt/aicontrolcenter/woocommerce.zip | cut -c 1-64)"
@@ -52,18 +53,29 @@ else
     fi
 
     wp plugin install "$WOO_PACKAGE" --path="$WP_PATH" --quiet
-    printf "%s\n" "[BOOTSTRAP][04/07] WooCommerce installed from tracked package"
+    printf "%s\n" "[BOOTSTRAP][04/08] WooCommerce installed from tracked package"
 fi
 
 if wp plugin is-active "$WOO_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
-    printf "%s\n" "[BOOTSTRAP][05/07] WooCommerce already active"
+    printf "%s\n" "[BOOTSTRAP][05/08] WooCommerce already active"
 else
     wp plugin activate "$WOO_SLUG" --path="$WP_PATH" --quiet
-    printf "%s\n" "[BOOTSTRAP][05/07] WooCommerce activated"
+    printf "%s\n" "[BOOTSTRAP][05/08] WooCommerce activated"
 fi
 
-if wp theme is-installed "$STOREFRONT_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
-    printf "%s\n" "[BOOTSTRAP][06/07] Storefront theme already installed"
+if ! wp plugin is-installed "$STOREFRONT_PLUGIN_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
+    printf "%s\n" "[BOOTSTRAP][FAIL] AI Shopping Storefront plugin bind mount is missing" >&2
+    exit 1
+fi
+if wp plugin is-active "$STOREFRONT_PLUGIN_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
+    printf "%s\n" "[BOOTSTRAP][06/08] AI Shopping Storefront plugin already active"
+else
+    wp plugin activate "$STOREFRONT_PLUGIN_SLUG" --path="$WP_PATH" --quiet
+    wp plugin is-active "$STOREFRONT_PLUGIN_SLUG" --path="$WP_PATH" >/dev/null 2>&1
+    printf "%s\n" "[BOOTSTRAP][06/08] AI Shopping Storefront plugin activated"
+fi
+if wp theme is-installed "$STOREFRONT_THEME_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
+    printf "%s\n" "[BOOTSTRAP][07/08] Storefront theme already installed"
 else
     STOREFRONT_PACKAGE_ACTUAL_SHA256="$(sha256sum "$STOREFRONT_PACKAGE_PATH" | cut -c 1-64)"
 if [ "$STOREFRONT_PACKAGE_ACTUAL_SHA256" != "$STOREFRONT_PACKAGE_SHA256" ]; then
@@ -71,24 +83,25 @@ if [ "$STOREFRONT_PACKAGE_ACTUAL_SHA256" != "$STOREFRONT_PACKAGE_SHA256" ]; then
     exit 1
 fi
 wp theme install "$STOREFRONT_PACKAGE_PATH" --path="$WP_PATH" --quiet
-    printf "%s\n" "[BOOTSTRAP][06/07] Storefront theme installed"
+    printf "%s\n" "[BOOTSTRAP][07/08] Storefront theme installed"
 fi
 
-STOREFRONT_INSTALLED_VERSION="$(wp theme get "$STOREFRONT_SLUG" --field=version --path="$WP_PATH")"
+STOREFRONT_INSTALLED_VERSION="$(wp theme get "$STOREFRONT_THEME_SLUG" --field=version --path="$WP_PATH")"
 if [ "$STOREFRONT_INSTALLED_VERSION" != "$STOREFRONT_VERSION" ]; then
     printf "%s\n" "[BOOTSTRAP][FAIL] Storefront theme version mismatch" >&2
     exit 1
 fi
 
-if wp theme is-active "$STOREFRONT_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
-    printf "%s\n" "[BOOTSTRAP][06/07] Storefront theme already active"
+if wp theme is-active "$STOREFRONT_THEME_SLUG" --path="$WP_PATH" >/dev/null 2>&1; then
+    printf "%s\n" "[BOOTSTRAP][07/08] Storefront theme already active"
 else
-    wp theme activate "$STOREFRONT_SLUG" --path="$WP_PATH" --quiet
-    wp theme is-active "$STOREFRONT_SLUG" --path="$WP_PATH" >/dev/null 2>&1
-    printf "%s\n" "[BOOTSTRAP][06/07] Storefront theme activated"
+    wp theme activate "$STOREFRONT_THEME_SLUG" --path="$WP_PATH" --quiet
+    wp theme is-active "$STOREFRONT_THEME_SLUG" --path="$WP_PATH" >/dev/null 2>&1
+    printf "%s\n" "[BOOTSTRAP][07/08] Storefront theme activated"
 fi
 
 wp plugin is-active "$WOO_SLUG" --path="$WP_PATH" >/dev/null 2>&1
-wp theme is-active "$STOREFRONT_SLUG" --path="$WP_PATH" >/dev/null 2>&1
+wp plugin is-active "$STOREFRONT_PLUGIN_SLUG" --path="$WP_PATH" >/dev/null 2>&1
+wp theme is-active "$STOREFRONT_THEME_SLUG" --path="$WP_PATH" >/dev/null 2>&1
 
-printf "%s\n" "[BOOTSTRAP][07/07] Commerce bootstrap completed"
+printf "%s\n" "[BOOTSTRAP][08/08] Commerce bootstrap completed"

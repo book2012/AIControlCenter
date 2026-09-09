@@ -20,21 +20,40 @@ final class AI_Shopping_Renderer
             <header class="ai-shopping-storefront__header">
                 <div class="ai-shopping-storefront__hero-copy">
                     <p class="ai-shopping-storefront__eyebrow">
-                        DAILY MOOD
+                        NEW SEASON
                     </p>
-
                     <h2>
-                        아름다운 인생,<br>
-                        더 아름답게
+                        Everyday pieces.<br>
+                        Made for your moment.
                     </h2>
-
                     <p>
-                        매일의 순간을 더욱 아름답게 만드는 스타일
+                        가볍게 입고 오래 좋아할 수 있는,
+                        지금의 무드를 위한 에디트.
                     </p>
+                    <div class="ai-shopping-storefront__hero-actions">
+                        <a
+                            class="ai-shopping-storefront__hero-link"
+                            href="<?php echo esc_url(
+                                add_query_arg(
+                                    [
+                                        'ai_shop_search' => '1',
+                                        'ai_shop_category' => 'new',
+                                        'ai_shop_page' => '1',
+                                    ],
+                                    home_url('/')
+                                )
+                            ); ?>"
+                        >
+                            SHOP THE EDIT
+                        </a>
+                    </div>
                 </div>
             </header>
 
             <?php
+            if ($search_result === null) {
+                echo $this->ai_style_preview();
+            }
             if (
                 empty($featured['success'])
                 || empty($categories['success'])
@@ -48,6 +67,7 @@ final class AI_Shopping_Renderer
                 echo $this->categories(
                     $categories['data']['items'] ?? []
                 );
+
 
                 if ($search_result !== null) {
                     echo $this->search_results(
@@ -91,7 +111,7 @@ final class AI_Shopping_Renderer
         ?>
         <section class="ai-shopping-category-section">
             <p class="ai-shopping-category-section__title">
-                CATEGORY
+                SHOP BY CATEGORY
             </p>
 
             <nav
@@ -384,6 +404,119 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
+    private function ai_style_preview(): string
+    {
+        $groups = [
+            [
+                'id' => 'women-dresses',
+                'title' => 'DRESSES',
+                'subtitle' => 'Soft silhouettes for everyday moments.',
+                'images' => ['demo-001.jpg', 'demo-002.jpg', 'demo-003.jpg'],
+            ],
+            [
+                'id' => 'women-tops',
+                'title' => 'TOPS',
+                'subtitle' => 'Easy layers, clean lines.',
+                'images' => ['demo-004.jpg', 'demo-005.jpg', 'demo-006.jpg'],
+            ],
+            [
+                'id' => 'women-bottoms',
+                'title' => 'BOTTOMS',
+                'subtitle' => 'Relaxed proportions for daily styling.',
+                'images' => ['demo-007.jpg', 'demo-008.jpg', 'demo-009.jpg'],
+            ],
+            [
+                'id' => 'women-outer',
+                'title' => 'OUTERWEAR',
+                'subtitle' => 'The layer that completes the look.',
+                'images' => ['demo-010.jpg', 'demo-011.jpg', 'demo-012.jpg'],
+            ],
+            [
+                'id' => 'women-accessories',
+                'title' => 'ACCESSORIES',
+                'subtitle' => 'Small details, distinct mood.',
+                'images' => [
+                    'products/demo-036.jpg',
+                    'products/demo-037.jpg',
+                    'products/demo-038.jpg',
+                ],
+            ],
+            [
+                'id' => 'men',
+                'title' => 'MEN',
+                'subtitle' => 'A single edit of essential menswear.',
+                'images' => [
+                    'products/demo-039.jpg',
+                    'products/demo-040.jpg',
+                    'products/demo-041.jpg',
+                ],
+            ],
+        ];
+
+        ob_start();
+        ?>
+        <section
+            class="orange-coco-ai-preview"
+            aria-labelledby="orange-coco-ai-preview-title"
+        >
+            <header class="orange-coco-ai-preview__header">
+                <p>AI STYLE PREVIEW</p>
+                <h2 id="orange-coco-ai-preview-title">
+                    Find your next mood.
+                </h2>
+                <span>
+                    Women-first style inspiration curated for Orange Coco.
+                </span>
+            </header>
+
+            <div class="orange-coco-ai-preview__groups">
+                <?php foreach ($groups as $group) : ?>
+                    <?php
+                    $url = add_query_arg(
+                        [
+                            'ai_shop_search' => '1',
+                            'ai_shop_category' => $group['id'],
+                            'ai_shop_page' => '1',
+                        ],
+                        home_url('/')
+                    );
+                    ?>
+                    <article class="orange-coco-ai-preview__group">
+                        <div class="orange-coco-ai-preview__group-copy">
+                            <h3>
+                                <?php echo esc_html($group['title']); ?>
+                            </h3>
+                            <p>
+                                <?php echo esc_html($group['subtitle']); ?>
+                            </p>
+                            <a href="<?php echo esc_url($url); ?>">
+                                SHOP EDIT
+                            </a>
+                        </div>
+
+                        <div class="orange-coco-ai-preview__images">
+                            <?php foreach ($group['images'] as $image) : ?>
+                                <img
+                                    src="<?php echo esc_url(
+                                        AI_SHOPPING_STOREFRONT_URL
+                                        . 'assets/demo/'
+                                        . $image
+                                    ); ?>"
+                                    alt=""
+                                    loading="lazy"
+                                    decoding="async"
+                                >
+                            <?php endforeach; ?>
+                        </div>
+                    </article>
+                <?php endforeach; ?>
+            </div>
+        </section>
+        <?php
+
+        return (string) ob_get_clean();
+    }
+
     private function featured_section(
         array $products
     ): string {
@@ -391,17 +524,10 @@ final class AI_Shopping_Renderer
         ?>
         <section id="ai-shopping-products" class="ai-shopping-featured">
             <header class="ai-shopping-section-header">
-                <div>
-                    <p class="ai-shopping-section-header__eyebrow">
-                        ORANGE COCO PICK
-                    </p>
-                    <div>
-                    <p class="ai-shopping-section-header__eyebrow">
-                        RECOMMEND
-                    </p>
-
-                </div>
-                </div>
+                <p class="ai-shopping-section-header__eyebrow">
+                    ORANGE COCO PICK
+                </p>
+                <h2>RECOMMEND</h2>
             </header>
 
             <?php echo $this->products($products); ?>

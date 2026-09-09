@@ -5636,3 +5636,22 @@ evidence locator.
   now-consumed, WordPress-ineligible authority; live storage continuity was
   observed read-only. No WordPress authority or mutation occurred, Shopping is
   inactive, and `NOTION_SYNC=NO`.
+
+## 2026-09-10 — SHOP-STOREFRONT-S01 Fashion Homepage v1
+
+- Completed the Orange Coco women-first Fashion Homepage v1 presentation.
+- Moved storefront shell ownership from JavaScript-generated markup to the
+  PHP/server-rendered front-page template and renderer composition.
+- Kept MEN as one structural category and preserved WooCommerce as commerce and
+  catalog truth.
+- Added the AI Style Preview editorial layer using demo presentation assets.
+- Decoupled AI Style Preview rendering from Shopping API success so presentation
+  remains available while commerce reads fail closed.
+- Hardened commerce bootstrap naming and activation checks for the
+  `ai-shopping-storefront` plugin and `storefront` theme.
+- Live public HTTPS validation confirmed AI Style Preview and demo assets render
+  while the commerce notice remains active.
+- `SHOP-STOREFRONT-S01` presentation is closed.
+- `SHOP-API-READ-001` remains open; no production API-base shortcut, shadow
+  routing, WooCommerce write, Ubuntu business logic, or production launchd
+  activation was performed.
