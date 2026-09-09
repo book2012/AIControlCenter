@@ -19,10 +19,13 @@ def issue():
         raise RuntimeError("TTY_REQUIRED")
     home = resolve_trusted_mac_account_home()
     owner = issue_trusted_ownership_expectation(home)
-    expected_head = input("Reviewed expected Git HEAD (40 lowercase hex characters): ")
+    expected_head = input("Issuance expected clean Git HEAD (40 lowercase hex characters): ")
+    expected_artifact = input("Canonical-reviewed artifact SHA-256 (from independent review record): ")
     before = canonical_snapshot(observe_preconditions())
     if json.loads(before)["head"] != expected_head:
         raise RuntimeError("EXPECTED_HEAD_REQUIRED")
+    if json.loads(before)["reviewed_artifact"] != expected_artifact:
+        raise RuntimeError("REVIEWED_ARTIFACT_REQUIRED")
     print(json.dumps({**immutable_contract(uid=owner.expected_uid, gid=owner.expected_gid),
                       "preconditions": json.loads(before),
                       "mutation_argv": ["/opt/homebrew/bin/docker", *MUTATION_ARGS],

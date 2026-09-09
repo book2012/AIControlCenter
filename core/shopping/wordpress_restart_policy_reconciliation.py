@@ -20,8 +20,9 @@ DENIED = ('production_authority', 'ubuntu_authority', 'business_mutation_authori
 
 
 def validate_snapshot(v, *, post=False):
-    keys(v, 'head clean owner compose_sha256 desired_restart context endpoint socket wordpress database storage attachment')
+    keys(v, 'head reviewed_artifact clean owner compose_sha256 desired_restart context endpoint socket wordpress database storage attachment')
     require(type(v['head']) is str and re.fullmatch('[0-9a-f]{40}', v['head']))
+    require(type(v['reviewed_artifact']) is str and re.fullmatch('[0-9a-f]{64}', v['reviewed_artifact']))
     require(v['clean'] is True and v['compose_sha256'] == COMPOSE_SHA256 and v['desired_restart'] == 'no')
     keys(v['owner'], 'uid gid')
     require(type(v['owner']['uid']) is int and v['owner']['uid'] > 0)

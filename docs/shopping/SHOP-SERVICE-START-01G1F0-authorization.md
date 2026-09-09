@@ -8,16 +8,58 @@ The issuer and operator are separate zero-argument commands:
 - `python -m ops.macos.shopping.issue_wordpress_restart_policy_authorization`
 - `python -m ops.macos.shopping.wordpress_restart_policy_operator`
 
-Execution requires a separately reviewed, clean Git HEAD containing this implementation.
-The issuer asks the human for that exact 40-character HEAD, observes twice, displays
-only allowlisted metadata and the mutation argv, and requires exactly:
+Three identities have distinct roles:
+
+- Supplied implementation baseline: `470de1254010e94ba805903ff68fe112ae9a37e9`
+  for this closeout (the original implementation baseline was
+  `f4d50eae4e452434922013463a3a486a2bbd8c52`). Neither grants authority.
+- Canonical-reviewed artifact identity: a SHA-256 content digest obtained from an
+  independent canonical review record. This implementation does not claim that
+  canonical review has occurred. Canonical validation remains a separate gate.
+- Issuance-observed clean Git HEAD: the exact current 40-character commit SHA,
+  independently observed and matched to the human's expected HEAD at issuance.
+
+The artifact uses schema `SHOP-SERVICE-START-01G1F0:reviewed-artifact:v1`.
+Inventory is `git ls-files -z -- core ops integrations config configs requirements.txt
+ deploy/shopping/compose.yaml`. Every tracked file in these authority roots is
+included, including package initializers, transitive local trust/observation/store
+helpers, historical dependencies, immutable constants, configuration, and dependency
+versions. The scope and digest verifier are themselves included. Each sorted entry
+is `[repository-relative path, integer permission mode, SHA-256 of exact file bytes]`; the final SHA-256 hashes
+ASCII JSON `[schema, entries]` with `ensure_ascii=True` and separators `(',', ':')`.
+File reads use no-follow descriptors and reject metadata drift across the read.
+They retain the existing ownership, mode, regular-file, hardlink, symlink,
+ancestor and size checks. Missing, unsafe or oversized files fail closed.
+
+Commit metadata, documentation and tests are outside the artifact scope. A new
+commit packaging the same reviewed authority bytes therefore has the same artifact
+identity. Any edit, addition, deletion or rename inside the scope changes or
+invalidates that identity; extending authority through a new import also changes
+its covered importing implementation. The implementation assumes the existing
+trusted Python/dependency runtime; this is not runtime supply-chain attestation.
+
+The issuer requires both the expected clean HEAD and the canonical-reviewed digest
+from the independent review record, observes twice, displays only allowlisted
+metadata and mutation argv, and requires exactly:
 
 `AUTHORIZE SHOP-SERVICE-START-01G1F0:WORDPRESS_RESTART_POLICY_RECONCILIATION`
 
-The supplied implementation baseline was `f4d50eae4e452434922013463a3a486a2bbd8c52`.
-It is not an authorization for a later implementation HEAD. The reviewed compose
+A clean later HEAD alone is insufficient. The expected artifact must match the
+observed bytes before acknowledgement, and the complete observations must still
+match afterward. The reviewer must not substitute a freshly computed, unreviewed
+digest for the review record. The human review boundary attests provenance; a hash
+alone does not prove review. No digest or packaging HEAD is embedded in its own
+hashed implementation, and there is no automatic review-record refresh.
+
+Both `head` and `reviewed_artifact` are durably bound in `precondition_json` and
+propagate unchanged into the consumption receipt. Consumption and the final
+pre-mutation check re-observe both; postconditions retain both. Old F0 bindings
+without the artifact field fail closed. Historical 01G1C/01G1D authorization types,
+stores and 01G1F semantics remain isolated and unchanged. The reviewed compose
 SHA-256 remains `0120c2e8bbdb00d6e9ae690fa504a5bd5aee124a70ed37b47e75658e7c278f2c`.
-Historical 01G1C/01G1D identities and 01G1F semantics are unchanged.
+
+This closeout runs synthetic focused tests only, with Git/Docker observations
+stubbed. No authorization, operator execution or canonical validation is performed.
 
 Authority lasts at most ten minutes and permits one use. The dedicated store under
 the trusted Mac account's `Library/Application Support/AIControlCenter/authorization/`

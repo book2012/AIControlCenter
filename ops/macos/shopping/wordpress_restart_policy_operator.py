@@ -8,6 +8,7 @@ import sys
 import yaml
 
 from core.shopping import wordpress_restart_policy_reconciliation as c
+from core.shopping.wordpress_restart_policy_artifact import ARTIFACT_PATHS, artifact_identity
 from core.shopping.wordpress_restart_policy_authorization import ConsumptionFailure, validate_consumption_result
 from ops.macos.shopping.wordpress_restart_policy_authorization_store import WordPressRestartPolicyAuthorizationStore
 from ops.macos.shopping import colima_projection_operator as observation
@@ -47,13 +48,17 @@ def _repository(owner):
     env = {'PATH': '/usr/bin:/bin', 'HOME': '/var/empty', 'GIT_CONFIG_NOSYSTEM': '1'}
     head = _read(['/usr/bin/git', 'rev-parse', 'HEAD'], env).decode('ascii').strip()
     c.require(not _read(['/usr/bin/git', 'status', '--porcelain=v1', '--untracked-files=all'], env).strip())
+    tracked = _read(['/usr/bin/git', 'ls-files', '-z', '--', *ARTIFACT_PATHS], env).decode('utf-8').split('\0')
+    c.require(tracked[-1] == '')
+    reviewed_artifact = artifact_identity(c.ROOT, tracked[:-1],
+        lambda file: observation._safe_file(file, owner))
     path = c.ROOT / 'deploy/shopping/compose.yaml'
     observation._safe_file(path, owner)
     raw = path.read_bytes()
     c.require(c.digest(raw) == c.COMPOSE_SHA256)
     desired = yaml.safe_load(raw)['services']['wordpress']['restart']
     c.require(desired == 'no')
-    return dict(head=head, clean=True, compose_sha256=c.digest(raw), desired_restart=desired)
+    return dict(head=head, reviewed_artifact=reviewed_artifact, clean=True, compose_sha256=c.digest(raw), desired_restart=desired)
 
 
 def _snapshot():

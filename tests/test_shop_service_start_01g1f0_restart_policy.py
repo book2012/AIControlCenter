@@ -18,6 +18,7 @@ from ops.macos.shopping.wordpress_restart_policy_authorization_store import Word
 
 
 _original_environment = op._environment
+_original_repository = op._repository
 
 
 @pytest.fixture(autouse=True)
@@ -30,7 +31,7 @@ def no_live(monkeypatch):
 
 
 def snapshot():
-    return dict(head='f4d50eae4e452434922013463a3a486a2bbd8c52', clean=True,
+    return dict(head='f4d50eae4e452434922013463a3a486a2bbd8c52', clean=True, reviewed_artifact='a'*64,
         owner=dict(uid=os.getuid(),gid=os.getgid()), compose_sha256=c.COMPOSE_SHA256,
         desired_restart='no', context=c.CONTEXT, endpoint='unix://'+c.SOCKET,
         socket=dict(dev=1,ino=2,mode=stat.S_IFSOCK|0o600,uid=os.getuid(),gid=os.getgid()),
@@ -72,7 +73,7 @@ def change(v,path,value):
     v[parts[-1]]=value
 
 
-DRIFTS=[('head','2'*40),('clean',False),('compose_sha256','f'*64),('desired_restart','unless-stopped'),
+DRIFTS=[('reviewed_artifact','b'*64),('head','2'*40),('clean',False),('compose_sha256','f'*64),('desired_restart','unless-stopped'),
  ('context','default'),('endpoint','ssh://worker'),('socket.ino',3),('socket.uid',999),
  ('wordpress.id','f'*64),('wordpress.status','exited'),('wordpress.running',True),
  ('wordpress.restart_count',1),('wordpress.restart_count',False),('wordpress.restart','no'),
@@ -193,10 +194,13 @@ def test_exact_ack(monkeypatch,ack,head,success):
     monkeypatch.setattr(issuer,'resolve_trusted_mac_account_home',lambda:object())
     monkeypatch.setattr(issuer,'issue_trusted_ownership_expectation',lambda _:SimpleNamespace(expected_uid=os.getuid(),expected_gid=os.getgid()))
     monkeypatch.setattr(issuer,'observe_preconditions',snapshot)
-    answers=iter([head,ack]);issued=[]
+    answers=iter([head,snapshot()['reviewed_artifact'],ack]);issued=[]
     monkeypatch.setattr('builtins.input',lambda _:next(answers))
     monkeypatch.setattr(Store,'_initialize_for_issuer',lambda:SimpleNamespace(_issue=issued.append))
-    if success:assert issuer.issue()['status']=='AVAILABLE' and len(issued)==1
+    if success:
+        assert issuer.issue()['status']=='AVAILABLE' and len(issued)==1
+        assert json.loads(issued[0].precondition_json)['head']==head
+        assert json.loads(issued[0].precondition_json)['reviewed_artifact']==snapshot()['reviewed_artifact']
     else:
         with pytest.raises(RuntimeError):issuer.issue()
         assert not issued
@@ -227,7 +231,7 @@ def test_historical_isolation(tmp_path):
 def test_snapshot_read_allowlist(monkeypatch):
     before=snapshot()
     monkeypatch.setattr(op,'_owner',lambda:SimpleNamespace(expected_uid=os.getuid(),expected_gid=os.getgid()))
-    monkeypatch.setattr(op,'_repository',lambda _: {n:before[n] for n in ('head','clean','compose_sha256','desired_restart')})
+    monkeypatch.setattr(op,'_repository',lambda _: {n:before[n] for n in ('head','reviewed_artifact','clean','compose_sha256','desired_restart')})
     monkeypatch.setattr(op,'_socket',lambda _:before['socket'])
     monkeypatch.setattr(op,'_executable',lambda:'/trusted/docker')
     monkeypatch.setattr(op,'_environment',lambda:{})
@@ -283,7 +287,7 @@ def test_issuer_drift_after_ack(monkeypatch):
     monkeypatch.setattr(issuer,'resolve_trusted_mac_account_home',lambda:object())
     monkeypatch.setattr(issuer,'issue_trusted_ownership_expectation',lambda _:SimpleNamespace(expected_uid=os.getuid(),expected_gid=os.getgid()))
     later=snapshot();later['socket']['ino']=5
-    observations=iter([snapshot(),later]);answers=iter([snapshot()['head'],issuer.ACKNOWLEDGEMENT])
+    observations=iter([snapshot(),later]);answers=iter([snapshot()['head'],snapshot()['reviewed_artifact'],issuer.ACKNOWLEDGEMENT])
     monkeypatch.setattr(issuer,'observe_preconditions',lambda:next(observations))
     monkeypatch.setattr('builtins.input',lambda _:next(answers))
     with pytest.raises(RuntimeError,match='PRECONDITION_DRIFT'):issuer.issue()
@@ -293,3 +297,114 @@ def test_environment_filters_ambient(monkeypatch):
     monkeypatch.setattr(op.trusted,'_fixed_environment',lambda:dict(HOME=c.HOME,USER='u',LOGNAME='u',
         PATH='/fixed',DOCKER_CONFIG='/fixed/config',DOCKER_HOST='ssh://worker',TMPDIR='/tmp',LC_ALL='bad'))
     assert set(_original_environment())=={'HOME','USER','LOGNAME','PATH','DOCKER_CONFIG'}
+
+
+@pytest.mark.parametrize('reviewed', ['', 'b'*64])
+def test_later_clean_head_without_reviewed_artifact_denied(monkeypatch, reviewed):
+    monkeypatch.setattr(issuer.sys,'stdin',SimpleNamespace(isatty=lambda:True))
+    monkeypatch.setattr(issuer.sys,'stdout',SimpleNamespace(isatty=lambda:True))
+    monkeypatch.setattr(issuer,'resolve_trusted_mac_account_home',lambda:object())
+    monkeypatch.setattr(issuer,'issue_trusted_ownership_expectation',lambda _:SimpleNamespace(expected_uid=os.getuid(),expected_gid=os.getgid()))
+    later=snapshot();later['head']='2'*40
+    monkeypatch.setattr(issuer,'observe_preconditions',lambda:later)
+    answers=iter([later['head'],reviewed])
+    monkeypatch.setattr('builtins.input',lambda _:next(answers))
+    with pytest.raises(RuntimeError,match='REVIEWED_ARTIFACT_REQUIRED'):
+        issuer.issue()
+
+
+@pytest.mark.parametrize('changed', [
+    'core/shopping/wordpress_restart_policy_artifact.py',
+    'core/shopping/wordpress_restart_policy_authorization.py',
+    'core/shopping/wordpress_restart_policy_reconciliation.py',
+    'ops/macos/shopping/issue_wordpress_restart_policy_authorization.py',
+    'ops/macos/shopping/wordpress_restart_policy_authorization_store.py',
+    'ops/macos/shopping/wordpress_restart_policy_operator.py',
+    'core/secrets/mariadb_continuity_trusted_ownership_expectation.py',
+    'ops/macos/shopping/wordpress_port_live_operator.py',
+    'deploy/shopping/compose.yaml', 'requirements.txt',
+])
+def test_authority_bytes_change_identity(tmp_path, changed):
+    from core.shopping.wordpress_restart_policy_artifact import artifact_identity
+    file=tmp_path/changed;file.parent.mkdir(parents=True,exist_ok=True)
+    file.write_bytes(b'reviewed implementation')
+    reviewed=artifact_identity(tmp_path,[changed],lambda _:None)
+    file.write_bytes(b'modified implementation')
+    assert artifact_identity(tmp_path,[changed],lambda _:None)!=reviewed
+    file.unlink()
+    with pytest.raises(FileNotFoundError):artifact_identity(tmp_path,[changed],lambda _:None)
+
+
+@pytest.mark.parametrize('head', ['1'*40, '2'*40])
+def test_same_artifact_on_clean_committed_head_observed(monkeypatch,tmp_path,head):
+    from core.shopping.wordpress_restart_policy_artifact import artifact_identity, ARTIFACT_PATHS
+    compose=tmp_path/'deploy/shopping/compose.yaml';compose.parent.mkdir(parents=True)
+    compose.write_bytes((c.ROOT/'deploy/shopping/compose.yaml').read_bytes())
+    implementation=tmp_path/'core/authority.py';implementation.parent.mkdir()
+    implementation.write_bytes(b'immutable implementation')
+    paths=['core/authority.py','deploy/shopping/compose.yaml']
+    reviewed=artifact_identity(tmp_path,paths,lambda _:None)
+    monkeypatch.setattr(c,'ROOT',tmp_path)
+    monkeypatch.setattr(op.observation,'_safe_file',lambda *_:None)
+    calls=[]
+    def read(argv,env):
+        calls.append(argv)
+        if argv==['/usr/bin/git','rev-parse','HEAD']:return head.encode()+b'\n'
+        if argv==['/usr/bin/git','status','--porcelain=v1','--untracked-files=all']:return b''
+        assert argv==['/usr/bin/git','ls-files','-z','--',*ARTIFACT_PATHS]
+        return ('\0'.join(paths)+'\0').encode()
+    monkeypatch.setattr(op,'_read',read)
+    observed=_original_repository(object())
+    assert observed['head']==head and observed['clean'] is True
+    assert observed['reviewed_artifact']==reviewed
+    bound=snapshot();bound.update(observed)
+    authorization=auth(precondition_json=c.canonical_snapshot(bound))
+    a.validate_authorization(authorization,now=datetime.now(timezone.utc),uid=os.getuid(),gid=os.getgid())
+    assert json.loads(authorization.precondition_json)['head']==head
+    implementation.write_bytes(b'changed authority')
+    assert _original_repository(object())['reviewed_artifact']!=reviewed
+    monkeypatch.setattr(op,'_read',lambda argv,env:head.encode() if 'rev-parse' in argv else b' M core/authority.py\n')
+    with pytest.raises(ValueError):_original_repository(object())
+
+
+def test_artifact_inventory_and_historical_binding_fail_closed(tmp_path):
+    from core.shopping.wordpress_restart_policy_artifact import artifact_identity
+    file=tmp_path/'authority.py';file.write_bytes(b'authority')
+    first=artifact_identity(tmp_path,['authority.py'],lambda _:None)
+    extra=tmp_path/'added.py';extra.write_bytes(b'new authority')
+    assert artifact_identity(tmp_path,['added.py','authority.py'],lambda _:None)!=first
+    for names in ([],['authority.py','authority.py'],['../authority.py']):
+        with pytest.raises(ValueError):artifact_identity(tmp_path,names,lambda _:None)
+    historical=snapshot();historical.pop('reviewed_artifact')
+    with pytest.raises(ValueError):c.canonical_snapshot(historical)
+
+
+def test_loaded_local_authority_dependencies_are_in_artifact_scope():
+    import sys
+    from core.shopping.wordpress_restart_policy_artifact import ARTIFACT_PATHS
+    root=Path(__file__).resolve().parents[1]
+    for name,module in tuple(sys.modules.items()):
+        if not name.startswith(('core.', 'ops.', 'integrations.')) or not getattr(module,'__file__',None):
+            continue
+        relative=Path(module.__file__).resolve().relative_to(root).as_posix()
+        assert any(relative==scope or relative.startswith(scope+'/') for scope in ARTIFACT_PATHS)
+
+
+def test_artifact_mode_and_unsafe_files(tmp_path):
+    from core.shopping.wordpress_restart_policy_artifact import artifact_identity
+    file=tmp_path/'authority.py';file.write_bytes(b'authority');file.chmod(0o600)
+    before=artifact_identity(tmp_path,['authority.py'],lambda _:None)
+    file.chmod(0o700)
+    assert artifact_identity(tmp_path,['authority.py'],lambda _:None)!=before
+    file.write_bytes(b'x'*65537)
+    with pytest.raises(ValueError):artifact_identity(tmp_path,['authority.py'],lambda _:None)
+    file.unlink();file.symlink_to(tmp_path/'missing')
+    with pytest.raises(OSError):artifact_identity(tmp_path,['authority.py'],lambda _:None)
+
+
+def test_artifact_safe_file_validation_cannot_be_bypassed(tmp_path):
+    from core.shopping.wordpress_restart_policy_artifact import artifact_identity
+    file=tmp_path/'authority.py';file.write_bytes(b'authority')
+    def reject(_):raise ValueError('unsafe ownership or mode')
+    with pytest.raises(ValueError,match='unsafe ownership or mode'):
+        artifact_identity(tmp_path,['authority.py'],reject)
