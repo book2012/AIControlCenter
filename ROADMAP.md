@@ -1,5 +1,46 @@
 # Roadmap
 
+## 2026-09-09 — Controlled Shopping Soft Launch runtime closeout
+
+The Shopping runtime has reached the controlled soft-launch operational state on
+the Mac mini Control Plane. Ubuntu remains outside Shopping business logic and
+application state.
+
+Runtime and governance evidence:
+
+- `SHOP-SERVICE-START-01G1F0` restart-policy reconciliation: `RECONCILED`.
+- `SHOP-SERVICE-START-01G1F` lifecycle attempt: `UNCERTAIN`; it was not retried.
+  Later read-only observation confirmed Colima recovery, the same MariaDB
+  container and named volume, healthy database runtime, and zero restart count.
+- `SHOP-SERVICE-START-01G1G:WORDPRESS_EXISTING_GENERATION_START`: `ACCEPTED`.
+  The existing WordPress generation was started without recreation.
+- WordPress container:
+  `0636d4cad86d31f0119ccadb1c83ef59ea4b2192bdd74b3f459c2947d24f2a0e`,
+  `running`, `healthy`, restart policy `no`.
+- MariaDB container:
+  `434c15132d947937481b635cf7caabf76c640e8875186eb656b5332a7563d323`,
+  `running`, `healthy`, restart count `0`.
+- Caddy repository desired upstream was already `127.0.0.1:58082`; the loaded
+  runtime still held stale `127.0.0.1:58081`. A validated graceful Caddy reload
+  converged the loaded runtime to `127.0.0.1:58082`.
+- Public `https://bokstory.duckdns.org/` returns HTTP `200`.
+- Public TLS verification succeeds.
+- Public WordPress REST returns HTTP `200`.
+- WooCommerce REST namespace `wc/v3` is present.
+- Runtime validation HEAD:
+  `642837a4824e0f13b4a8717bac148d924cf0e7e6`.
+- The previously recorded canonical regression gate for the 01G1G implementation
+  completed successfully with `6449 passed, 5 deselected, 659 warnings,
+  2 subtests passed`.
+- Existing historical sections below remain historical evidence and are not
+  rewritten to reflect current runtime truth.
+
+`SHOPPING_CONTROLLED_SOFT_LAUNCH_RUNTIME_READY=YES`
+`PRODUCTION_AUTHORITY_EXPANDED=NO`
+`UBUNTU_AUTHORITY=NO`
+`NOTION_SYNC=NO`
+
+
 ## 2026-09-05 — SHOP-SERVICE-START-01B operator failure diagnostic hardening
 
 Handoff: `SHOP_SERVICE_START_01B_OPERATOR_FAILURE_DIAGNOSTIC_HARDENING`.
