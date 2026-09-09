@@ -32,7 +32,8 @@ def test_compose_isolated_persistent_and_fail_closed() -> None:
     assert "shopping_wordpress:/var/www/html" in wp["volumes"]
     assert data["networks"]["shopping_internal"]["internal"] is True
     assert data["services"]["wordpress-cli"]["profiles"] == ["activation"]
-    assert all(service["restart"] == "unless-stopped" for service in (db, wp))
+    assert db["restart"] == "unless-stopped"
+    assert wp["restart"] == "no"
     assert "utf8mb4" in " ".join(db["command"])
 
 

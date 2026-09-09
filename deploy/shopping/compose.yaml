@@ -31,7 +31,7 @@ services:
   wordpress:
     image: wordpress:php8.3-apache@sha256:9fac4d47b61186131ffefb5d966f0045d0eea94bfd7bd40cafae29b78a709d1b
     container_name: shopping-wordpress
-    restart: unless-stopped
+    restart: "no"
     depends_on:
       database:
         condition: service_healthy

@@ -9,6 +9,7 @@ import sqlite3
 from types import SimpleNamespace
 
 import pytest
+import yaml
 
 from core.shopping import colima_lifecycle_reconciliation as c
 from core.shopping import colima_lifecycle_authorization as a
@@ -25,6 +26,12 @@ def no_live(monkeypatch):
                          (op.observation, '_profile'), (Store, '_initialize_for_issuer'),
                          (Store, 'open_existing')]:
         monkeypatch.setattr(module, name, forbidden)
+
+
+def test_repository_compose_wordpress_restart_is_no():
+    root = Path(__file__).resolve().parents[1]
+    compose = yaml.safe_load((root / 'deploy/shopping/compose.yaml').read_text())
+    assert compose['services']['wordpress']['restart'] == 'no'
 
 
 def snapshot():

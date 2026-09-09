@@ -144,8 +144,10 @@ def test_current_compose_review_preserves_historical_01g1c_contract():
     compose = (observer.ROOT / relative).read_bytes()
     policy = json.loads((observer.ROOT / "config/deployment/shopping-logging-policy.json").read_text())
     actual = hashlib.sha256(compose).hexdigest()
-    assert actual == "e90b116f9683d3ece0abc0111865ea41d9129a835070232e3a823c5c2e7e85ac"
-    assert policy["reviewed_repository_artifacts"][relative] == recovery.ARTIFACTS[relative] == actual
+    assert actual == "0120c2e8bbdb00d6e9ae690fa504a5bd5aee124a70ed37b47e75658e7c278f2c"
+    assert policy["reviewed_repository_artifacts"][relative] == actual
+    assert recovery.ARTIFACTS[relative] == "e90b116f9683d3ece0abc0111865ea41d9129a835070232e3a823c5c2e7e85ac"
+    assert recovery.ARTIFACTS[relative] != actual
     assert historical.ARTIFACTS[relative] == "341c9dfcd69cb001bc9514d34427335a47b1b4dcad6d95cb40072752a1643f8b"
     assert historical.ARTIFACTS[relative] != actual
     assert b"./config/shopping-apache-safety.conf:/etc/apache2/sites-available/000-default.conf:ro" in compose

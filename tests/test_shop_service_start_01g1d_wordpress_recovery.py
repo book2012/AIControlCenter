@@ -346,7 +346,13 @@ def test_repository_digest_and_clean_contract(monkeypatch):
         commands.append(args)
         return SimpleNamespace(returncode=0, stdout=b'1'*40 if args[1] == 'rev-parse' else b'')
     monkeypatch.setattr(op.subprocess, 'run', git)
-    assert op._repository() == ('1'*40, c.ARTIFACTS)
+    import hashlib
+    compose = c.ROOT / c.COMPOSE_FILE
+    assert hashlib.sha256(compose.read_bytes()).hexdigest() == '0120c2e8bbdb00d6e9ae690fa504a5bd5aee124a70ed37b47e75658e7c278f2c'
+    assert c.ARTIFACTS[c.COMPOSE_FILE] == 'e90b116f9683d3ece0abc0111865ea41d9129a835070232e3a823c5c2e7e85ac'
+    # Even a clean evolved repository cannot satisfy the consumed 01G1D contract.
+    with pytest.raises(ValueError, match='GENERATION_IDENTITY_REJECTED'):
+        op._repository()
     assert commands[-1][-1] == '--untracked-files=all'
     monkeypatch.setattr(op.subprocess, 'run', lambda *args, **kw: SimpleNamespace(returncode=0, stdout=b'dirty'))
     with pytest.raises(ValueError): op._repository()

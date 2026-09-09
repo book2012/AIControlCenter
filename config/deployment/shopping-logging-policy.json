@@ -26,7 +26,7 @@
   "reviewed_repository_artifacts": {
     "ops/macos/caddy/Caddyfile": "a75f659c53d6ab662f2c8bacb939fd71aece224d5af9147ba1d435d6030be35b",
     "config/deployment/ingress.json": "a6da9a7dfa8bce1aa9f73aa255c1dfd3d24aa089ba13914deaea142c9182fe35",
-    "deploy/shopping/compose.yaml": "e90b116f9683d3ece0abc0111865ea41d9129a835070232e3a823c5c2e7e85ac",
+    "deploy/shopping/compose.yaml": "0120c2e8bbdb00d6e9ae690fa504a5bd5aee124a70ed37b47e75658e7c278f2c",
     "ops/macos/colima/commerce-runtime.json": "61a9194ab22dfff9515d44d3d41af9eafdf3647e8ee5d6f0cb6fe92f77f473ea",
     "deploy/shopping/config/shopping-apache-safety.conf": "b9b6ee7bbe7649d6e2392658c8b06af08f392bdb7807c9c69e8eadf1ac0261b9",
     "deploy/shopping/config/shopping-php-safety.ini": "7c1a0eb3f858102b9f14db79e4e279fc2f0403f5c2b4e034d81b5f325a18c7eb",
