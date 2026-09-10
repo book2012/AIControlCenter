@@ -57,8 +57,8 @@ def test_bootstrap_script_is_idempotent_and_does_not_trace_secrets() -> None:
     assert "wp core install" in text
     assert "wp plugin is-installed \"$WOO_SLUG\"" in text
     assert "wp plugin is-active \"$WOO_SLUG\"" in text
-    assert "wp theme is-installed \"$STOREFRONT_SLUG\"" in text
-    assert "wp theme is-active \"$STOREFRONT_SLUG\"" in text
+    assert "wp theme is-installed \"$STOREFRONT_THEME_SLUG\"" in text
+    assert "wp theme is-active \"$STOREFRONT_THEME_SLUG\"" in text
     for line in text.splitlines():
         if "printf" in line:
             assert "SHOPPING_ADMIN_PASSWORD" not in line
@@ -129,12 +129,12 @@ def test_storefront_bootstrap_installs_pinned_theme_before_activation():
 
     assert "STOREFRONT_VERSION=\"4.6.2\"" in source
     install = "wp theme install \"$STOREFRONT_PACKAGE_PATH\" --path=\"$WP_PATH\" --quiet"
-    active_check = "if wp theme is-active \"$STOREFRONT_SLUG\" --path=\"$WP_PATH\" >/dev/null 2>&1; then"
-    final_assertion = "wp theme is-active \"$STOREFRONT_SLUG\" --path=\"$WP_PATH\" >/dev/null 2>&1"
+    active_check = "if wp theme is-active \"$STOREFRONT_THEME_SLUG\" --path=\"$WP_PATH\" >/dev/null 2>&1; then"
+    final_assertion = "wp theme is-active \"$STOREFRONT_THEME_SLUG\" --path=\"$WP_PATH\" >/dev/null 2>&1"
 
     assert install in source
     assert source.index(install) < source.index(active_check)
-    activation = "wp theme activate \"$STOREFRONT_SLUG\" --path=\"$WP_PATH\" --quiet"
+    activation = "wp theme activate \"$STOREFRONT_THEME_SLUG\" --path=\"$WP_PATH\" --quiet"
     install_position = source.index(install)
     initial_check_position = source.index(active_check, install_position)
     activation_position = source.index(activation, initial_check_position)
@@ -143,7 +143,7 @@ def test_storefront_bootstrap_installs_pinned_theme_before_activation():
     assert source.count(activation) == 1
     assert "STOREFRONT_ACTIVATION_ATTEMPT" not in source
     assert "sleep 1" not in source
-    assert "wp theme get \"$STOREFRONT_SLUG\" --field=version --path=\"$WP_PATH\"" in source
+    assert "wp theme get \"$STOREFRONT_THEME_SLUG\" --field=version --path=\"$WP_PATH\"" in source
     assert "Storefront theme version mismatch" in source
     assert "storefront plugin" not in source
 

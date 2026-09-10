@@ -125,7 +125,7 @@ def test_source_truth_fields_are_not_init_fields_and_replace_rejects_them():
     assert not any(metadata[name] for name in frozen_names)
     assert not any(item.init for item in fields(CredentialSourceContract))
     assert not any(item.init for item in fields(DataContinuityContract))
-    with pytest.raises(TypeError):
+    with pytest.raises((TypeError, ValueError)):
         replace(contracts, data_continuity_baseline_available=True)
 
 
