@@ -5144,3 +5144,22 @@ Do not route production WordPress to the shadow API and do not treat a
 transport-only endpoint change as catalog integration.
 
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+
+## COMPLETE — RUNTIME-BUILD-TEST-001 test-harness prerequisite
+
+- [x] Identify `/private/tmp` pytest sandbox UID/GID mismatch.
+- [x] Preserve native invoking-account filesystem identity.
+- [x] Validate Darwin user temp parent ownership and exact `0700` mode.
+- [x] Keep all Runtime-build test bindings inside one isolated pytest root.
+- [x] Harden cleanup for non-searchable test-created directories.
+- [x] Reject sandbox identity drift, symlink roots, and outside-root cleanup.
+- [x] Pass bootstrap phase validation: `27 passed`.
+- [x] Pass representative security validation: `63 passed`.
+- [ ] Rebuild the immutable Runtime from the next clean committed Git revision.
+- [ ] Generate and validate the matching immutable source artifact.
+- [ ] Perform separately governed canonical Runtime/service activation.
+- [ ] Perform separately governed SHOP-01E3D WooCommerce read-only activation.
+
+`RUNTIME_BUILD_TEST_001=CLOSED_SOURCE_LEVEL`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

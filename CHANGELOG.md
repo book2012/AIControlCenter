@@ -5655,3 +5655,25 @@ evidence locator.
 - `SHOP-API-READ-001` remains open; no production API-base shortcut, shadow
   routing, WooCommerce write, Ubuntu business logic, or production launchd
   activation was performed.
+
+## 2026-09-10 — RUNTIME-BUILD-TEST-001 pytest sandbox identity hardening
+
+- Fixed the canonical immutable Runtime builder test sandbox so it no longer
+  hard-codes `/private/tmp`, which produced a filesystem GID mismatch against
+  the invoking macOS account and caused fail-closed security/governance tests.
+- Added validated Darwin user-temporary-directory selection with exact
+  UID/GID and `0700` checks.
+- Replaced broad pytest-root `rm -rf` cleanup with identity-bound,
+  descriptor-relative owned-tree cleanup that does not follow symlink targets
+  and can recover owner traversal permission for test-created directories.
+- Preserved all existing filesystem, authorization, symlink, hardlink, and
+  fail-closed security semantics.
+- Validation: bootstrap tests `27 passed`; representative security tests
+  `63 passed`; shell syntax and `git diff --check` passed.
+- No immutable Runtime rebuild, Runtime activation, launchd mutation, Docker
+  mutation, secret access, WooCommerce activation, commit, or push was
+  performed by the validation work.
+
+`RUNTIME_BUILD_TEST_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=PENDING`
+`SHOP_API_READ_001=OPEN`

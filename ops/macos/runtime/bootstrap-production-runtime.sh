@@ -27,6 +27,7 @@ CURRENT_TARGET_AFTER=""
 ACTIVATED=false
 TEST_STATUS="not_started"
 PYTEST_ROOT=""
+PYTEST_IDENTITY=""
 IMPORT_STATUS="not_started"
 INSTALL_STATUS="not_started"
 
@@ -193,14 +194,93 @@ write_report() {
       }'
 }
 
+# Validate the native temp lookup result, including any TMPDIR influence. Keep cleanup
+# descriptor-relative and verify the identity recorded at creation before mutation.
+pytest_sandbox() {
+    "$PYTHON_PATH" - "$@" <<'PY_SANDBOX'
+import os
+from pathlib import Path
+import stat
+import subprocess
+import sys
+import tempfile
+
+def temp_parent():
+    raw = subprocess.check_output(
+        ["/usr/bin/getconf", "DARWIN_USER_TEMP_DIR"], text=True
+    ).rstrip("\n")
+    path = Path(raw)
+    if (not path.is_absolute() or ".." in path.parts or raw.rstrip("/") != str(path)
+            or any(c in raw for c in "\n\r\0")):
+        raise RuntimeError("Ambiguous pytest temp parent")
+    if path.is_symlink():
+        raise RuntimeError("Symlink pytest temp parent")
+    # macOS returns /var/folders; /var is the system alias for /private/var.
+    parent = path.resolve(strict=True)
+    info = parent.lstat()
+    if (not stat.S_ISDIR(info.st_mode)
+            or (info.st_uid, info.st_gid) != (os.getuid(), os.getgid())
+            or stat.S_IMODE(info.st_mode) != 0o700):
+        raise RuntimeError("Unsafe pytest temp parent")
+    return parent
+
+def identity(info):
+    return f"{info.st_dev}:{info.st_ino}:{info.st_uid}:{info.st_gid}"
+
+def remove_contents(fd):
+    os.fchmod(fd, 0o700)
+    for name in os.listdir(fd):
+        info = os.stat(name, dir_fd=fd, follow_symlinks=False)
+        if stat.S_ISDIR(info.st_mode):
+            child = os.open(name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=fd)
+            try:
+                if identity(os.fstat(child)) != identity(info) or info.st_uid != os.getuid():
+                    raise RuntimeError("Changed or unowned pytest directory")
+                remove_contents(child)
+            finally:
+                os.close(child)
+            os.rmdir(name, dir_fd=fd)
+        else:
+            # Unlink symlinks and hardlinks without touching their targets.
+            os.unlink(name, dir_fd=fd)
+
+parent = temp_parent()
+parent_fd = os.open(parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
+try:
+    if sys.argv[1] == "create":
+        root = Path(tempfile.mkdtemp(prefix="aicontrolcenter-runtime-pytest.", dir=parent))
+        info = root.lstat()
+        if (info.st_uid, info.st_gid, stat.S_IMODE(info.st_mode)) != (os.getuid(), os.getgid(), 0o700):
+            os.rmdir(root)
+            raise RuntimeError("Unsafe pytest sandbox identity")
+        print(root)
+        print(identity(info))
+    elif sys.argv[1] == "cleanup":
+        root = Path(sys.argv[2])
+        if root.parent != parent or not root.name.startswith("aicontrolcenter-runtime-pytest."):
+            raise RuntimeError("Unexpected pytest sandbox")
+        fd = os.open(root.name, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=parent_fd)
+        try:
+            info = os.fstat(fd)
+            if identity(info) != sys.argv[3] or (info.st_uid, info.st_gid) != (os.getuid(), os.getgid()):
+                raise RuntimeError("Changed pytest sandbox identity")
+            remove_contents(fd)
+        finally:
+            os.close(fd)
+        os.rmdir(root.name, dir_fd=parent_fd)
+    else:
+        raise RuntimeError("Unknown pytest sandbox operation")
+finally:
+    os.close(parent_fd)
+PY_SANDBOX
+}
+
 cleanup_owned_test_state() {
-    if [[ -n "$PYTEST_ROOT" && -d "$PYTEST_ROOT" ]]; then
-        case "$PYTEST_ROOT" in
-            /private/tmp/aicontrolcenter-runtime-pytest.*) rm -rf -- "$PYTEST_ROOT" ;;
-            *) echo "Refusing to clean unexpected pytest root: $PYTEST_ROOT" >&2 ;;
-        esac
+    if [[ -n "$PYTEST_ROOT" ]]; then
+        pytest_sandbox cleanup "$PYTEST_ROOT" "$PYTEST_IDENTITY" || return $?
     fi
     PYTEST_ROOT=""
+    PYTEST_IDENTITY=""
 }
 
 cleanup_owned_state() {
@@ -374,8 +454,10 @@ PY
     normalized="$(printf '%s' "$test_command" | tr '\n\t' '  ' | awk '{$1=$1; print}')"
     case "$normalized" in
         "python -m pytest -q"|"python3 -m pytest -q")
-            PYTEST_ROOT="$(mktemp -d /private/tmp/aicontrolcenter-runtime-pytest.XXXXXX)" || return $?
-            chmod 700 "$PYTEST_ROOT" || return $?
+            local sandbox
+            sandbox="$(pytest_sandbox create)" || return $?
+            PYTEST_ROOT="${sandbox%$'\n'*}"
+            PYTEST_IDENTITY="${sandbox##*$'\n'}"
             local application_root="$PYTEST_ROOT/application-root"
             local bootstrap_test_root="$PYTEST_ROOT/bootstrap-test-root"
             local data_root="$PYTEST_ROOT/data-root"
@@ -402,7 +484,7 @@ PY
                 -u AICONTROLCENTER_M3_A4B3_TRUSTED_BINDING \
                 PYTHONPATH="$ROOT" \
                 PYTHONDONTWRITEBYTECODE=1 \
-                TMPDIR=/private/tmp \
+                TMPDIR="$PYTEST_ROOT" \
                 AICONTROLCENTER_APPLICATION_ROOT="$application_root" \
                 AICONTROLCENTER_BOOTSTRAP_TEST_ROOT="$bootstrap_test_root" \
                 AICONTROLCENTER_DATA_ROOT="$data_root" \

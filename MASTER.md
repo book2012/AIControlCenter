@@ -6111,3 +6111,29 @@ canonical catalog is authorized.
 The next Shopping production boundary is governed canonical WooCommerce
 read-only activation, followed by catalog-source validation and WordPress
 Shopping API-base reconciliation.
+
+## Current authoritative status — RUNTIME-BUILD-TEST-001
+
+The immutable Runtime build test-harness blocker caused by the macOS
+`/private/tmp` ownership/GID contract is repaired at source level.
+
+The canonical builder now uses a validated native Darwin user temp parent,
+requires invoking UID/GID ownership and exact `0700` mode, creates an isolated
+pytest root, and performs identity-bound descriptor-relative cleanup without
+following symlink targets.
+
+Validation evidence:
+- bootstrap phase tests: `27 passed`
+- representative filesystem/security tests: `63 passed`
+- shell syntax: PASS
+- diff check: PASS
+
+This closes only the source-level Runtime test-harness defect. A new immutable
+Runtime has not yet been built, the source artifact has not yet been generated,
+`runtime/current` has not changed, canonical launchd has not been mutated, and
+SHOP-01E3D has not been activated.
+
+`RUNTIME_BUILD_TEST_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=PENDING_REBUILD`
+`SHOP_API_READ_001=OPEN`
+`PRODUCTION_SHOPPING_WRITE_AUTHORIZED=NO`

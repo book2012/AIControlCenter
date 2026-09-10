@@ -5187,3 +5187,28 @@ still points to `http://host.docker.internal:8000`; it must not be replaced by
 an unvalidated mock/shadow target. The next production milestone is governed
 WooCommerce read-only activation of the canonical AIControlCenter Shopping API,
 followed by WordPress API-base alignment and live catalog validation.
+
+## RUNTIME-BUILD-TEST-001 immutable Runtime pytest isolation
+
+The canonical immutable Runtime builder pytest harness no longer hard-codes
+`/private/tmp`. The previous sandbox inherited a macOS filesystem group that
+did not match the invoking account GID, causing fail-closed filesystem and
+governance tests to reject otherwise synthetic test state.
+
+The builder now resolves and validates the native Darwin user temporary
+directory, requires the expected invoking UID/GID and exact `0700` directory
+mode, creates an isolated `0700` pytest root, and binds all Runtime-build test
+state beneath that root. Cleanup records and revalidates the sandbox filesystem
+identity and removes only that owned tree using descriptor-relative traversal
+without following symlink targets.
+
+Focused validation completed:
+- Runtime bootstrap phase tests: `27 passed`
+- Representative filesystem/security tests: `63 passed`
+- shell syntax: PASS
+- `git diff --check`: PASS
+
+`RUNTIME_BUILD_TEST_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=PENDING`
+`PRODUCTION_RUNTIME_ACTIVATION=NO`
+`SHOP_API_READ_001=OPEN`

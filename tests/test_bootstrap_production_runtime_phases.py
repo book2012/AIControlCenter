@@ -91,6 +91,19 @@ def make_build_fixture(tmp_path: Path, dependency_file: str = "requirements.txt"
         'if [ "$1 $2" = "-m pytest" ]; then\n'
         '  printf "PYTHON=%s\\nARGS=%s\\n" "$0" "$*"\n'
         '  env | sort\n'
+        '  "@PYTHON@" - <<\'PROBE\'\n'
+        'import os, stat\n'
+        'from pathlib import Path\n'
+        'root = Path(os.environ["AICONTROLCENTER_APPLICATION_ROOT"]).parent\n'
+        'print("SANDBOX_IDENTITY=" + str((root.stat().st_uid, root.stat().st_gid, stat.S_IMODE(root.stat().st_mode))))\n'
+        'protected = root / "protected"\n'
+        'protected.mkdir()\n'
+        '(protected / "child").mkdir()\n'
+        '(protected / "child" / "file").touch()\n'
+        'if os.environ.get("FAKE_OUTSIDE"):\n'
+        '    (protected / "outside").symlink_to(os.environ["FAKE_OUTSIDE"], target_is_directory=True)\n'
+        'protected.chmod(0o600)\n'
+        'PROBE\n'
         '  exit "${FAKE_PYTEST_STATUS:-0}"\n'
         'fi\n'
         'exec "@PYTHON@" "$@"\n'
@@ -299,6 +312,11 @@ def test_build_finalizes_metadata_without_changing_current(tmp_path: Path) -> No
 
 def test_build_pytest_uses_isolated_owned_bindings_and_cleans_them(tmp_path: Path) -> None:
     app_root, contract, commit, environment = make_build_fixture(tmp_path)
+    outside = tmp_path / "outside"
+    outside.mkdir()
+    sentinel = outside / "sentinel"
+    sentinel.write_text("preserve")
+    environment.update({"FAKE_OUTSIDE": str(outside)})
     historical = {
         "AICONTROLCENTER_M3_A4B3_OPERATIONAL_SNAPSHOT": "must-not-leak",
         "AICONTROLCENTER_M3_A4B3_EVIDENCE_SNAPSHOT": "must-not-leak",
@@ -331,13 +349,20 @@ def test_build_pytest_uses_isolated_owned_bindings_and_cleans_them(tmp_path: Pat
     roots = {Path(env[name]).parent for name in bindings}
     assert len(roots) == 1
     owned_root = roots.pop()
-    assert str(owned_root).startswith("/private/tmp/aicontrolcenter-runtime-pytest.")
+    native_parent = Path(subprocess.check_output(
+        ["/usr/bin/getconf", "DARWIN_USER_TEMP_DIR"], text=True
+    ).strip()).resolve()
+    assert owned_root.parent == native_parent
+    assert owned_root.name.startswith("aicontrolcenter-runtime-pytest.")
+    assert env["SANDBOX_IDENTITY"] == str((os.getuid(), os.getgid(), 0o700))
     assert all(Path(env[name]).is_relative_to(owned_root) for name in bindings)
     assert not owned_root.exists()
+    assert sentinel.read_text() == "preserve"
+    assert stat.S_IMODE(outside.stat().st_mode) == 0o755
     assert not historical.keys() & env.keys()
     assert env["PYTHONPATH"] == str(app_root)
     assert env["PYTHONDONTWRITEBYTECODE"] == "1"
-    assert env["TMPDIR"] == "/private/tmp"
+    assert env["TMPDIR"] == str(owned_root)
     assert f"PYTHON={runtime_root}/venvs/.staging-" in log
     assert "ARGS=-m pytest -q -p no:cacheprovider --basetemp " in log
     assert str(owned_root / "pytest-basetemp") in log
@@ -403,3 +428,57 @@ def test_build_failure_removes_only_owned_staging(tmp_path: Path) -> None:
     assert result.returncode != 0
     assert (preserved / "sentinel").read_text(encoding="utf-8") == "keep"
     assert not list((runtime_root / "venvs").glob(".staging-*"))
+
+
+def sandbox_code() -> str:
+    return SCRIPT.read_text().split("<<'PY_SANDBOX'\n", 1)[1].split("\nPY_SANDBOX", 1)[0]
+
+
+@pytest.mark.parametrize("unsafe", ["mode", "symlink", "relative", "ambiguous", "uid", "gid"])
+def test_sandbox_rejects_unsafe_native_parent(tmp_path: Path, monkeypatch, unsafe: str) -> None:
+    parent = tmp_path / "native"
+    parent.mkdir(mode=0o700)
+    raw = str(parent)
+    if unsafe == "mode":
+        parent.chmod(0o750)
+    elif unsafe == "symlink":
+        link = tmp_path / "alias"
+        link.symlink_to(parent)
+        raw = str(link)
+    elif unsafe == "relative":
+        raw = "relative"
+    elif unsafe == "ambiguous":
+        raw = str(parent / ".." / "native")
+    elif unsafe == "uid":
+        monkeypatch.setattr(os, "getuid", lambda: parent.stat().st_uid + 1)
+    elif unsafe == "gid":
+        monkeypatch.setattr(os, "getgid", lambda: parent.stat().st_gid + 1)
+    monkeypatch.setattr(subprocess, "check_output", lambda *a, **kw: raw + "\n")
+    monkeypatch.setattr(sys, "argv", ["sandbox", "create"])
+    with pytest.raises(RuntimeError):
+        exec(compile(sandbox_code(), str(SCRIPT), "exec"), {})
+    assert list(parent.iterdir()) == []
+
+
+@pytest.mark.parametrize("attack", ["identity", "symlink", "outside"])
+def test_cleanup_rejects_unowned_root(tmp_path: Path, monkeypatch, attack: str) -> None:
+    parent = tmp_path / "native"
+    parent.mkdir(mode=0o700)
+    outside = tmp_path / "outside"
+    outside.mkdir(mode=0o700)
+    sentinel = outside / "sentinel"
+    sentinel.write_text("keep")
+    root = parent / "aicontrolcenter-runtime-pytest.test"
+    if attack == "symlink":
+        root.symlink_to(outside)
+    elif attack == "outside":
+        root = outside
+    else:
+        root.mkdir(mode=0o700)
+        (root / "sentinel").write_text("keep")
+    monkeypatch.setattr(subprocess, "check_output", lambda *a, **kw: str(parent) + "\n")
+    monkeypatch.setattr(sys, "argv", ["sandbox", "cleanup", str(root), "wrong-identity"])
+    with pytest.raises((RuntimeError, OSError)):
+        exec(compile(sandbox_code(), str(SCRIPT), "exec"), {})
+    assert sentinel.read_text() == "keep"
+    assert root.exists()
