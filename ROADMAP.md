@@ -5197,3 +5197,28 @@ test-root confinement source change and must not be reused for another build.
 `IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_SOURCE_GIT_CLOSEOUT`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+## COMPLETE SOURCE/GIT — ACTIVATION-01B-LIVE-PROCESS-EVIDENCE-001
+
+- [x] Stop deriving serving-target evidence from launchd wrapper arguments.
+- [x] Observe the exact canonical launchd PID through bounded `/bin/ps`.
+- [x] Parse live process argv and require exact serving-target token matching.
+- [x] Preserve fail-closed process/PID/error handling.
+- [x] Sanitize process command evidence before report serialization.
+- [x] Pass targeted validation: `82 passed`.
+- [x] Pass `git diff --check`.
+- [x] Commit implementation as `945e27c`.
+- [x] Run read-only live observation with zero Production writes.
+- [x] Prove active process currently serves `core.api.app:app`.
+- [x] Preserve canonical expected target
+  `ops.macos.runtime.application:app`.
+- [x] Keep validated candidate Runtime `28869898a28f` separate from active
+  Runtime `d8f9f550093d`.
+- [ ] Perform separately authorized canonical Runtime pointer activation.
+- [ ] Perform read-only post-activation validation.
+- [ ] Continue governed SHOP-01E3D WooCommerce read-only activation path.
+- [ ] Reconcile the WordPress Shopping API base only after canonical validation.
+
+`ACTIVATION_01B_LIVE_PROCESS_EVIDENCE_001=CLOSED_SOURCE_GIT`
+`PRODUCTION_RUNTIME_ACTIVATION=NO`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

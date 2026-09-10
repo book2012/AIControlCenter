@@ -5729,3 +5729,27 @@ evidence locator.
 `CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+## 2026-09-10 — ACTIVATION-01B-LIVE-PROCESS-EVIDENCE-001
+
+- Corrected ACTIVATION-01B serving-target observation so launchd wrapper
+  arguments are no longer treated as evidence of the application actually
+  serving traffic.
+- Added bounded `/bin/ps` observation of the exact launchd PID, strict process
+  parsing, exact argv-token serving-target matching, fail-closed PID/error
+  handling, and sanitized process evidence.
+- Targeted `.venv` validation completed with `82 passed`; `git diff --check`
+  passed.
+- Committed the implementation as `945e27c`
+  (`fix: inspect canonical serving target from live process`).
+- Read-only live inspection observed `core.api.app:app` from the canonical
+  service process while policy expects `ops.macos.runtime.application:app`.
+- Listener/PID evidence remained consistent and no Production write occurred.
+- Immutable Runtime candidate `28869898a28f` and its matching source artifact
+  remain validated and available; active `runtime/current` remains
+  `d8f9f550093d`.
+- No Runtime activation, Production authorization, launchd mutation,
+  WooCommerce activation, or Shopping write authorization was performed.
+
+`ACTIVATION_01B_LIVE_PROCESS_EVIDENCE_001=CLOSED_SOURCE_GIT`
+`PRODUCTION_RUNTIME_ACTIVATION=NO`
+`SHOP_API_READ_001=OPEN`

@@ -6200,3 +6200,39 @@ activation, or Shopping write authorization has occurred.
 `SHOP_API_READ_001=OPEN`
 `PRODUCTION_SHOPPING_WRITE_AUTHORIZED=NO`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+## Current authoritative status — ACTIVATION-01B-LIVE-PROCESS-EVIDENCE-001
+
+The read-only Activation Inspector now derives serving-target truth from the
+actual process associated with the exact canonical launchd PID rather than from
+the launchd wrapper command.
+
+The observation path is:
+
+`launchd exact PID -> bounded /bin/ps -> parsed argv -> exact serving-target token`
+
+Process command evidence is sanitized before entering the report. Invalid PID,
+missing/multiple process records, malformed argv, timeout, command failure, and
+PID mismatch remain fail closed.
+
+Validation completed with `82 passed` and a clean `git diff --check`. The
+implementation commit is `945e27c`.
+
+Live read-only evidence currently reports:
+- active Runtime: `d8f9f550093d`
+- validated candidate Runtime: `28869898a28f`
+- observed serving target: `core.api.app:app`
+- canonical expected target: `ops.macos.runtime.application:app`
+- Production writes: `0`
+
+Therefore the remaining mismatch is a genuine pre-activation Runtime condition.
+It is not authorization to mutate the Production pointer or launchd service.
+The candidate Runtime and matching immutable source artifact are validated, but
+Production activation and Production authorization remain separate, pending
+governance actions.
+
+`ACTIVATION_01B_LIVE_PROCESS_EVIDENCE_001=CLOSED_SOURCE_GIT`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=CANDIDATE_READY_ACTIVE_NOT_SWITCHED`
+`PRODUCTION_RUNTIME_ACTIVATION=NO`
+`PRODUCTION_SHOPPING_WRITE_AUTHORIZED=NO`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

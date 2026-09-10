@@ -5274,3 +5274,34 @@ activation, or Shopping write authorization has occurred.
 `CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+## ACTIVATION-01B-LIVE-PROCESS-EVIDENCE-001 canonical live-process evidence
+
+Activation Inspector serving-target evidence now follows the canonical launchd
+service PID to the live process and performs a bounded `/bin/ps` observation.
+The inspector parses the observed command into argv tokens, compares the
+application target as an exact token, and publishes only sanitized command
+evidence.
+
+Targeted validation completed with `82 passed`, and `git diff --check` passed.
+The implementation is committed as `945e27c`
+(`fix: inspect canonical serving target from live process`).
+
+Read-only live inspection confirmed:
+- canonical launchd PID and listener PID match
+- actual live serving target: `core.api.app:app`
+- expected canonical serving target: `ops.macos.runtime.application:app`
+- `production_writes=0`
+- `read_only=true`
+
+The resulting serving-target mismatch is real pre-activation evidence, not an
+Inspector wrapper-parsing defect. The validated immutable Runtime candidate
+`28869898a28f` and matching source artifact are available, while
+`runtime/current` remains `d8f9f550093d`. No Production Runtime activation,
+Production authorization, launchd mutation, WooCommerce activation, or
+Shopping write authorization has been performed.
+
+`ACTIVATION_01B_LIVE_PROCESS_EVIDENCE_001=CLOSED_SOURCE_GIT`
+`CANONICAL_RUNTIME_CANDIDATE_28869898A28F=READY_VALIDATED`
+`PRODUCTION_RUNTIME_ACTIVATION=NO`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
