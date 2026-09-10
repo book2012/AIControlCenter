@@ -249,11 +249,39 @@ def test_activate_rejects_repository_venv(tmp_path: Path) -> None:
     assert result.returncode != 0
 
 
+def test_activate_rejects_expected_current_runtime_mismatch(tmp_path: Path) -> None:
+    app_root, runtime_root, release = make_release(
+        tmp_path, marker=(COMMIT + "\n").encode()
+    )
+    previous_id = "b" * 12
+    previous = runtime_root / "venvs" / previous_id
+    previous.mkdir(parents=True)
+    (runtime_root / "current").symlink_to(previous)
+
+    result, _ = run_script(
+        tmp_path,
+        "--mode",
+        "activate",
+        "--release",
+        str(release),
+        "--expected-source-commit",
+        COMMIT,
+        "--expected-current-runtime",
+        "c" * 12,
+        root=app_root,
+    )
+
+    assert result.returncode != 0
+    assert os.readlink(runtime_root / "current") == str(previous)
+    assert not list(runtime_root.glob(".current.*.tmp"))
+
+
 def test_successful_activation_atomically_switches_and_reports_targets(tmp_path: Path) -> None:
     app_root, runtime_root, release = make_release(
         tmp_path, marker=(COMMIT + "\n").encode()
     )
-    previous = runtime_root / "venvs/previous"
+    previous_id = "b" * 12
+    previous = runtime_root / "venvs" / previous_id
     previous.mkdir(parents=True)
     (runtime_root / "current").symlink_to(previous)
     result, _ = run_script(
@@ -264,6 +292,8 @@ def test_successful_activation_atomically_switches_and_reports_targets(tmp_path:
         str(release),
         "--expected-source-commit",
         COMMIT,
+        "--expected-current-runtime",
+        previous_id,
         root=app_root,
     )
     assert result.returncode == 0, result.stderr
@@ -274,6 +304,29 @@ def test_successful_activation_atomically_switches_and_reports_targets(tmp_path:
     assert report["runtime"]["current_target_after"] == str(release)
     assert os.readlink(runtime_root / "current") == str(release)
     assert not list(runtime_root.glob(".current.*.tmp"))
+
+
+def test_activate_requires_expected_current_runtime(tmp_path: Path) -> None:
+    app_root, runtime_root, release = make_release(
+        tmp_path, marker=(COMMIT + "\n").encode()
+    )
+    previous = runtime_root / "venvs/previous"
+    previous.mkdir(parents=True)
+    (runtime_root / "current").symlink_to(previous)
+
+    result, _ = run_script(
+        tmp_path,
+        "--mode",
+        "activate",
+        "--release",
+        str(release),
+        "--expected-source-commit",
+        COMMIT,
+        root=app_root,
+    )
+
+    assert result.returncode != 0
+    assert os.readlink(runtime_root / "current") == str(previous)
 
 
 def test_builder_contains_no_service_operations_and_build_has_no_activation() -> None:

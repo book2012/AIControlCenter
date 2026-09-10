@@ -12,6 +12,7 @@ MODE=""
 CONTRACT=""
 RELEASE_PATH=""
 EXPECTED_COMMIT=""
+EXPECTED_CURRENT_RUNTIME=""
 GIT_COMMIT=""
 GIT_SHORT=""
 DEPENDENCY_FILE=""
@@ -35,7 +36,7 @@ usage() {
     cat >&2 <<'USAGE'
 Usage:
   bootstrap-production-runtime.sh --mode build --contract <contract.json>
-  bootstrap-production-runtime.sh --mode activate --release <release-path> --expected-source-commit <40-char-sha>
+  bootstrap-production-runtime.sh --mode activate --release <release-path> --expected-source-commit <40-char-sha> --expected-current-runtime <12-char-runtime-id>
 USAGE
 }
 
@@ -62,6 +63,11 @@ parse_arguments() {
                 EXPECTED_COMMIT="$2"
                 shift 2
                 ;;
+            --expected-current-runtime)
+                [[ "$#" -ge 2 ]] || { usage; return 64; }
+                EXPECTED_CURRENT_RUNTIME="$2"
+                shift 2
+                ;;
             -h|--help)
                 usage
                 exit 0
@@ -76,13 +82,13 @@ parse_arguments() {
 
     case "$MODE" in
         build)
-            [[ -n "$CONTRACT" && -z "$RELEASE_PATH" && -z "$EXPECTED_COMMIT" ]] || {
+            [[ -n "$CONTRACT" && -z "$RELEASE_PATH" && -z "$EXPECTED_COMMIT" && -z "$EXPECTED_CURRENT_RUNTIME" ]] || {
                 usage
                 return 64
             }
             ;;
         activate)
-            [[ -z "$CONTRACT" && -n "$RELEASE_PATH" && -n "$EXPECTED_COMMIT" ]] || {
+            [[ -z "$CONTRACT" && -n "$RELEASE_PATH" && -n "$EXPECTED_COMMIT" && -n "$EXPECTED_CURRENT_RUNTIME" ]] || {
                 usage
                 return 64
             }
@@ -543,6 +549,10 @@ activate_runtime() {
         echo "Expected source commit must be 40 lowercase hexadecimal characters." >&2
         return 64
     }
+    [[ "$EXPECTED_CURRENT_RUNTIME" =~ ^[0-9a-f]{12}$ ]] || {
+        echo "Expected current Runtime must be 12 lowercase hexadecimal characters." >&2
+        return 64
+    }
     local canonical_venv_root canonical_release canonical_repo_venv
     canonical_venv_root="$(canonical_path "$VENV_ROOT")"
     canonical_release="$(canonical_path "$RELEASE_PATH")"
@@ -575,6 +585,14 @@ activate_runtime() {
     local temporary_link="$RUNTIME_ROOT/.current.$$.tmp"
     trap 'status=$?; rm -f -- "$temporary_link"; handle_error "$status"' ERR
     ln -s "$VENV_PATH" "$temporary_link" || return $?
+    local expected_current_path current_target_now
+    expected_current_path="$canonical_venv_root/$EXPECTED_CURRENT_RUNTIME"
+    current_target_now="$(read_current_target)"
+    [[ "$current_target_now" == "$expected_current_path" ]] || {
+        echo "Current Runtime does not match the authorized expected Runtime." >&2
+        rm -f -- "$temporary_link"
+        return 65
+    }
     mv -f -h "$temporary_link" "$RUNTIME_ROOT/current" || {
         local switch_status="$?"
         rm -f -- "$temporary_link"
