@@ -5163,3 +5163,31 @@ transport-only endpoint change as catalog integration.
 `RUNTIME_BUILD_TEST_001=CLOSED_SOURCE_LEVEL`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+
+## COMPLETE SOURCE LEVEL — RUNTIME-CONTRACT-CANONICAL-TARGET-001
+
+- [x] Prove the previous producer selected Shadow runtime authority.
+- [x] Add RED coverage requiring the canonical immutable Production runner.
+- [x] Replace Shadow launcher authority with
+  `ops/macos/runtime/run-canonical-api-immutable-source.sh`.
+- [x] Prove selected target is `ops.macos.runtime.application:app`.
+- [x] Preserve malformed, missing, multiple, and ambiguous target fail-closed
+  behavior.
+- [x] Pass targeted discovery validation: `8 passed`.
+- [ ] Commit and push the producer correction.
+- [ ] Generate a new Runtime Contract from the clean committed current HEAD.
+- [ ] Verify the new contract selects
+  `ops.macos.runtime.application:app`.
+- [ ] Build the matching immutable Runtime VENV.
+- [ ] Generate the matching immutable source artifact.
+- [ ] Perform separately governed canonical Runtime activation.
+- [ ] Perform E3D WooCommerce read-only validation.
+- [ ] Reconcile the WordPress Shopping API base and validate live commerce.
+
+The previous `25d4558` Runtime Contract must not be reused.
+
+`RUNTIME_CONTRACT_CANONICAL_TARGET_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_RUNTIME_CONTRACT_PRODUCER`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

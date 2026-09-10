@@ -6137,3 +6137,27 @@ SHOP-01E3D has not been activated.
 `CANONICAL_IMMUTABLE_RUNTIME_PARITY=PENDING_REBUILD`
 `SHOP_API_READ_001=OPEN`
 `PRODUCTION_SHOPPING_WRITE_AUTHORIZED=NO`
+
+## Current authoritative status — RUNTIME-CONTRACT-CANONICAL-TARGET-001
+
+The Runtime Contract discovery producer has been corrected at source level.
+Its canonical launcher authority is now
+`ops/macos/runtime/run-canonical-api-immutable-source.sh`, and the selected
+Production target is `ops.macos.runtime.application:app`.
+
+Targeted test-first validation completed with `8 passed`. Shadow runtime
+support remains separate and was not removed or repurposed.
+
+The old `25d4558` Runtime Contract resolved `core.api.shadow:app`; it is not a
+valid canonical Production artifact and must not be reused. The next Runtime
+Contract must be generated from the clean committed HEAD after Git closeout.
+
+No immutable Runtime rebuild, matching source artifact generation,
+`runtime/current` mutation, canonical launchd activation, or SHOP-01E3D
+activation has occurred.
+
+`RUNTIME_CONTRACT_CANONICAL_TARGET_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_RUNTIME_CONTRACT_PRODUCER`
+`SHOP_API_READ_001=OPEN`
+`PRODUCTION_SHOPPING_WRITE_AUTHORIZED=NO`

@@ -14,80 +14,141 @@ DISCOVERY = importlib.util.module_from_spec(SPEC)
 SPEC.loader.exec_module(DISCOVERY)
 
 
-def write_launchers(root: Path, *sources: str) -> None:
-    for relative, source in zip(
-        DISCOVERY.CANONICAL_RUNTIME_LAUNCHERS, sources, strict=True
-    ):
+def write_launchers(
+    root: Path,
+    monkeypatch,
+    *sources: str,
+) -> None:
+    relatives = tuple(
+        f"launchers/runtime-{index}.sh"
+        for index in range(len(sources))
+    )
+    monkeypatch.setattr(
+        DISCOVERY,
+        "CANONICAL_RUNTIME_LAUNCHERS",
+        relatives,
+    )
+    for relative, source in zip(relatives, sources, strict=True):
         path = root / relative
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text(source, encoding="utf-8")
 
 
-def test_canonical_launchers_agree_on_shadow_target() -> None:
+def test_discovery_uses_canonical_production_runner() -> None:
+    assert DISCOVERY.CANONICAL_RUNTIME_LAUNCHERS == (
+        "ops/macos/runtime/run-canonical-api-immutable-source.sh",
+    )
     contract = DISCOVERY.discover_launcher_contract(ROOT)
-
     assert contract["agreed"] is True
-    assert contract["selected_runtime_target"] == "core.api.shadow:app"
-    assert contract["targets"] == ["core.api.shadow:app"]
+    assert (
+        contract["selected_runtime_target"]
+        == "ops.macos.runtime.application:app"
+    )
+    assert contract["targets"] == [
+        "ops.macos.runtime.application:app"
+    ]
 
 
-def test_fastapi_application_objects_are_diagnostic_only(tmp_path: Path) -> None:
+def test_canonical_launcher_selects_canonical_target() -> None:
+    contract = DISCOVERY.discover_launcher_contract(ROOT)
+    assert contract["agreed"] is True
+    assert (
+        contract["selected_runtime_target"]
+        == "ops.macos.runtime.application:app"
+    )
+    assert contract["targets"] == [
+        "ops.macos.runtime.application:app"
+    ]
+
+
+def test_fastapi_application_objects_are_diagnostic_only(
+    tmp_path: Path,
+) -> None:
     app = tmp_path / "core/api/app.py"
     app.parent.mkdir(parents=True)
-    app.write_text("from fastapi import FastAPI\napp = FastAPI()\n", encoding="utf-8")
-    contract = DISCOVERY.discover_python_contract(tmp_path, [app])
-
-    assert contract["inferred_runtime_targets"] == ["core.api.app:app"]
+    app.write_text(
+        "from fastapi import FastAPI\napp = FastAPI()\n",
+        encoding="utf-8",
+    )
+    contract = DISCOVERY.discover_python_contract(
+        tmp_path,
+        [app],
+    )
+    assert contract["inferred_runtime_targets"] == [
+        "core.api.app:app"
+    ]
     assert "runtime_targets" not in contract
 
 
-def test_launcher_disagreement_fails_closed(tmp_path: Path) -> None:
+def test_launcher_disagreement_fails_closed(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
     write_launchers(
         tmp_path,
-        "python -m uvicorn core.api.shadow:app\n",
-        "python -m uvicorn core.api.other:app\n",
+        monkeypatch,
+        "python -m uvicorn core.api.one:app\n",
+        "python -m uvicorn core.api.two:app\n",
     )
-
     contract = DISCOVERY.discover_launcher_contract(tmp_path)
     assert contract["agreed"] is False
     assert contract["selected_runtime_target"] is None
 
 
-def test_missing_launcher_target_fails_closed(tmp_path: Path) -> None:
+def test_missing_launcher_target_fails_closed(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
     write_launchers(
         tmp_path,
+        monkeypatch,
         "echo no-target\n",
-        "python -m uvicorn core.api.shadow:app\n",
+        "python -m uvicorn core.api.valid:app\n",
     )
-
     contract = DISCOVERY.discover_launcher_contract(tmp_path)
     assert contract["selected_runtime_target"] is None
-    assert contract["canonical_launchers"][0]["error"] == "launcher_target_missing"
-
-
-def test_multiple_targets_in_launcher_fail_closed(tmp_path: Path) -> None:
-    write_launchers(
-        tmp_path,
-        "python -m uvicorn core.api.shadow:app\npython -m uvicorn core.api.other:app\n",
-        "python -m uvicorn core.api.shadow:app\n",
+    assert (
+        contract["canonical_launchers"][0]["error"]
+        == "launcher_target_missing"
     )
 
-    contract = DISCOVERY.discover_launcher_contract(tmp_path)
-    assert contract["selected_runtime_target"] is None
-    assert contract["canonical_launchers"][0]["error"] == "launcher_target_multiple"
 
-
-def test_malformed_and_abbreviated_targets_are_rejected(tmp_path: Path) -> None:
+def test_multiple_targets_in_launcher_fail_closed(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
     write_launchers(
         tmp_path,
+        monkeypatch,
+        (
+            "python -m uvicorn core.api.one:app\n"
+            "python -m uvicorn core.api.two:app\n"
+        ),
+        "python -m uvicorn core.api.one:app\n",
+    )
+    contract = DISCOVERY.discover_launcher_contract(tmp_path)
+    assert contract["selected_runtime_target"] is None
+    assert (
+        contract["canonical_launchers"][0]["error"]
+        == "launcher_target_multiple"
+    )
+
+
+def test_malformed_and_abbreviated_targets_are_rejected(
+    tmp_path: Path,
+    monkeypatch,
+) -> None:
+    write_launchers(
+        tmp_path,
+        monkeypatch,
         "python -m uvicorn app\n",
-        "python -m uvicorn core.api.shadow-app\n",
+        "python -m uvicorn core.api.invalid-app\n",
     )
-
     contract = DISCOVERY.discover_launcher_contract(tmp_path)
     assert contract["selected_runtime_target"] is None
     assert {
-        item["error"] for item in contract["canonical_launchers"]
+        item["error"]
+        for item in contract["canonical_launchers"]
     } == {"launcher_target_malformed"}
 
 

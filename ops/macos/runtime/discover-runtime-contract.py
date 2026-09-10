@@ -64,8 +64,7 @@ ENVIRONMENT_PATTERN = re.compile(
 )
 
 CANONICAL_RUNTIME_LAUNCHERS = (
-    "ops/macos/launchd/run-shadow-api.sh",
-    "ops/macos/launchd/run-shadow-daemon.sh",
+    "ops/macos/runtime/run-canonical-api-immutable-source.sh",
 )
 
 UVICORN_TARGET_PATTERN = re.compile(

@@ -5677,3 +5677,23 @@ evidence locator.
 `RUNTIME_BUILD_TEST_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
 `IMMUTABLE_RUNTIME_BUILD_RETRY=PENDING`
 `SHOP_API_READ_001=OPEN`
+
+## 2026-09-10 — RUNTIME-CONTRACT-CANONICAL-TARGET-001 producer correction
+
+- Replaced Shadow launcher authority in Runtime Contract discovery with the
+  canonical immutable Production runner.
+- Canonical discovered serving target is now
+  `ops.macos.runtime.application:app`.
+- Added test-first coverage preserving launcher ambiguity, missing-target,
+  multiple-target, and malformed-target fail-closed behavior.
+- Targeted discovery validation: `8 passed`.
+- The prior `25d4558` contract selecting `core.api.shadow:app` is invalid for
+  canonical Production and must not be reused.
+- No new Runtime Contract generation, immutable Runtime build, source artifact
+  generation, production activation, launchd mutation, or WooCommerce
+  activation was performed.
+
+`RUNTIME_CONTRACT_CANONICAL_TARGET_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_RUNTIME_CONTRACT_PRODUCER`
+`SHOP_API_READ_001=OPEN`

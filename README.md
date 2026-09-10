@@ -5212,3 +5212,25 @@ Focused validation completed:
 `IMMUTABLE_RUNTIME_BUILD_RETRY=PENDING`
 `PRODUCTION_RUNTIME_ACTIVATION=NO`
 `SHOP_API_READ_001=OPEN`
+
+## RUNTIME-CONTRACT-CANONICAL-TARGET-001 canonical producer correction
+
+Runtime Contract discovery no longer treats the Shadow launchers as the
+canonical Production runtime authority. The producer now reads
+`ops/macos/runtime/run-canonical-api-immutable-source.sh`, whose serving target
+is `ops.macos.runtime.application:app`.
+
+Targeted test-first validation completed with `8 passed`. No new Runtime
+Contract has been generated from this uncommitted revision, no immutable
+Runtime rebuild has been retried, no source artifact has been generated, and
+no canonical production activation has occurred.
+
+The previous `25d4558` Runtime Contract selected `core.api.shadow:app` and must
+not be reused. A new contract may be generated only after this producer change
+is committed and pushed from a clean current HEAD.
+
+`RUNTIME_CONTRACT_CANONICAL_TARGET_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_RUNTIME_CONTRACT_PRODUCER`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
