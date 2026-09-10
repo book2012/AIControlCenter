@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Any
 
 from core.deployment.contracts import (
+    DeploymentSchemaRegistry,
     load_schema_registry,
     sha256_digest,
     validate_contract_payload,
@@ -87,16 +88,17 @@ def _normalized_errors(
     )
 
 
-def evaluate_activation_inspection(
-    request: InspectionEvaluationRequest,
-) -> InspectionEvaluation:
-    registry = load_schema_registry()
+def validate_inspection_contracts(
+    *,
+    registry: DeploymentSchemaRegistry,
+    policy: dict[str, Any],
+    route_manifest: dict[str, Any],
+) -> str:
+    """Bind HTTP probes to the policy listener before any observation.
 
-    policy = thaw_json(request.policy)
-    route_manifest = thaw_json(
-        request.route_manifest
-    )
-
+    The v1 format supports policy-selected services; the historical Shadow
+    policy and manifest remain unchanged, including their digest binding.
+    """
     validate_contract_payload(
         registry=registry,
         contract_name=POLICY_CONTRACT,
@@ -123,6 +125,30 @@ def evaluate_activation_inspection(
         raise ActivationInspectionEvaluationError(
             "ROUTE_MANIFEST_DIGEST_MISMATCH"
         )
+
+    if policy["listener"]["port"] != route_manifest["target"]["port"]:
+        raise ActivationInspectionEvaluationError(
+            "ROUTE_MANIFEST_PORT_MISMATCH"
+        )
+
+    return manifest_digest
+
+
+def evaluate_activation_inspection(
+    request: InspectionEvaluationRequest,
+) -> InspectionEvaluation:
+    registry = load_schema_registry()
+
+    policy = thaw_json(request.policy)
+    route_manifest = thaw_json(
+        request.route_manifest
+    )
+
+    manifest_digest = validate_inspection_contracts(
+        registry=registry,
+        policy=policy,
+        route_manifest=route_manifest,
+    )
 
     checks = _sorted_checks(
         request.checks
@@ -241,4 +267,5 @@ __all__ = (
     "ERROR",
     "READY",
     "evaluate_activation_inspection",
+    "validate_inspection_contracts",
 )

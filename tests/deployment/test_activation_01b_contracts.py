@@ -128,6 +128,55 @@ def test_fixture_digest_bindings() -> None:
     )
 
 
+@pytest.mark.parametrize(
+    "contract_name,section",
+    [
+        ("ActivationInspectionPolicy", "listener"),
+        ("ActivationRouteManifest", "target"),
+    ],
+)
+@pytest.mark.parametrize("port", [1, 18100, 58081, 65535])
+def test_policy_selected_port_is_valid(contract_name, section, port) -> None:
+    payload = fixture(contract_name)
+    payload[section]["port"] = port
+
+    validate_contract_payload(
+        registry=load_schema_registry(),
+        contract_name=contract_name,
+        payload=payload,
+    )
+
+
+@pytest.mark.parametrize(
+    "contract_name,section",
+    [
+        ("ActivationInspectionPolicy", "listener"),
+        ("ActivationRouteManifest", "target"),
+    ],
+)
+@pytest.mark.parametrize("port", [-1, 0, 65536, 58081.5, "58081", True, None])
+def test_policy_selected_port_is_bounded(contract_name, section, port) -> None:
+    payload = fixture(contract_name)
+    payload[section]["port"] = port
+
+    reject(contract_name, payload)
+
+
+@pytest.mark.parametrize(
+    "contract_name,section",
+    [
+        ("ActivationInspectionPolicy", "listener"),
+        ("ActivationRouteManifest", "target"),
+    ],
+)
+@pytest.mark.parametrize("host", ["0.0.0.0", "localhost", "::1"])
+def test_canonical_port_keeps_exact_loopback(contract_name, section, host) -> None:
+    payload = fixture(contract_name)
+    payload[section].update(host=host, port=58081)
+
+    reject(contract_name, payload)
+
+
 def test_policy_is_strict_and_fail_closed() -> None:
     payload = fixture(
         "ActivationInspectionPolicy"

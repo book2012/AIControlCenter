@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import FrozenInstanceError
+from dataclasses import FrozenInstanceError, replace
 from pathlib import Path
 import copy
 import json
@@ -355,6 +355,26 @@ def test_models_are_immutable() -> None:
         result.report[
             "production_authorized"
         ] = True
+
+
+@pytest.mark.parametrize("policy_port,manifest_port", [(18100, 58081), (58081, 18100)])
+def test_manifest_port_mismatch_fails_even_with_valid_digest(
+    policy_port, manifest_port,
+) -> None:
+    request = make_request()
+    policy = thaw_json(request.policy)
+    manifest = thaw_json(request.route_manifest)
+    policy["listener"]["port"] = policy_port
+    manifest["target"]["port"] = manifest_port
+    policy["route_manifest"]["manifest_digest"] = sha256_digest(manifest)
+
+    with pytest.raises(
+        ActivationInspectionEvaluationError,
+        match="^ROUTE_MANIFEST_PORT_MISMATCH$",
+    ):
+        evaluate_activation_inspection(
+            replace(request, policy=policy, route_manifest=manifest)
+        )
 
 
 def test_pure_evaluator_uses_no_host_runtime(

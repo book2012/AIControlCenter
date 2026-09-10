@@ -41,10 +41,12 @@ from .models import (
 )
 from .ports import HttpProbeRequest
 from .service import (
+    ActivationInspectionEvaluationError,
     BLOCKED,
     ERROR,
     READY,
     evaluate_activation_inspection,
+    validate_inspection_contracts,
 )
 
 
@@ -194,41 +196,28 @@ def load_contracts(
     policy = load_json(policy_path)
     manifest = load_json(manifest_path)
 
-    registry = load_schema_registry()
+    _validate_contracts(policy=policy, manifest=manifest)
 
+    return policy, manifest
+
+
+def _validate_contracts(
+    *,
+    policy: dict[str, Any],
+    manifest: dict[str, Any],
+) -> None:
     try:
-        validate_contract_payload(
-            registry=registry,
-            contract_name=(
-                "ActivationRouteManifest"
-            ),
-            payload=manifest,
+        validate_inspection_contracts(
+            registry=load_schema_registry(),
+            policy=policy,
+            route_manifest=manifest,
         )
-
-        validate_contract_payload(
-            registry=registry,
-            contract_name=(
-                "ActivationInspectionPolicy"
-            ),
-            payload=policy,
-        )
+    except ActivationInspectionEvaluationError as error:
+        raise ActivationInspectorContractError(str(error)) from error
     except Exception as error:
         raise ActivationInspectorContractError(
             "CONTRACT_VALIDATION_FAILED"
         ) from error
-
-    expected_digest = policy[
-        "route_manifest"
-    ]["manifest_digest"]
-
-    actual_digest = sha256_digest(manifest)
-
-    if expected_digest != actual_digest:
-        raise ActivationInspectorContractError(
-            "ROUTE_MANIFEST_DIGEST_MISMATCH"
-        )
-
-    return policy, manifest
 
 
 def exit_code_for_status(status: str) -> int:
@@ -1024,6 +1013,8 @@ def run_inspection(
     now: Callable[[], datetime] = utc_now,
     id_factory: Callable[[], str] = inspection_id,
 ) -> dict[str, Any]:
+    _validate_contracts(policy=policy, manifest=manifest)
+
     started = now()
     inspection_identifier = id_factory()
 
