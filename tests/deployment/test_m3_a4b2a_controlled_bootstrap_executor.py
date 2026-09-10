@@ -219,6 +219,56 @@ def test_failure_injection_cleanup_and_permit_non_reuse(test_root, step):
     assert not (test_root / "application-state").exists()
 
 
+def test_path_confinement_accepts_explicit_tmpdir_sandbox(tmp_path, monkeypatch):
+    sandbox = tmp_path / "runtime-sandbox"
+    root = sandbox / "bootstrap"
+    root.mkdir(parents=True)
+    monkeypatch.setenv("TMPDIR", str(sandbox))
+    monkeypatch.setenv("AICONTROLCENTER_BOOTSTRAP_TEST_ROOT", str(root))
+    ControlledMacBootstrapExecutor(
+        config=OperationalBootstrapExecutorConfig(
+            root,
+            ROOT,
+            OperationalBootstrapExecutionMode.TEST_ONLY_BOOTSTRAP_VALIDATION,
+        ),
+        permit_registry=Registry(),
+    )._validate_root()
+
+
+def test_path_confinement_rejects_root_outside_explicit_tmpdir(tmp_path, monkeypatch):
+    sandbox = tmp_path / "runtime-sandbox"
+    root = tmp_path / "outside" / "bootstrap"
+    sandbox.mkdir()
+    root.mkdir(parents=True)
+    monkeypatch.setenv("TMPDIR", str(sandbox))
+    monkeypatch.setenv("AICONTROLCENTER_BOOTSTRAP_TEST_ROOT", str(root))
+    with pytest.raises(OperationalBootstrapError, match="TEST_ROOT_NOT_PRIVATE_TMP"):
+        ControlledMacBootstrapExecutor(
+            config=OperationalBootstrapExecutorConfig(
+                root,
+                ROOT,
+                OperationalBootstrapExecutionMode.TEST_ONLY_BOOTSTRAP_VALIDATION,
+            ),
+            permit_registry=Registry(),
+        )._validate_root()
+
+
+def test_path_confinement_rejects_tmpdir_itself(tmp_path, monkeypatch):
+    sandbox = tmp_path / "runtime-sandbox"
+    sandbox.mkdir()
+    monkeypatch.setenv("TMPDIR", str(sandbox))
+    monkeypatch.setenv("AICONTROLCENTER_BOOTSTRAP_TEST_ROOT", str(sandbox))
+    with pytest.raises(OperationalBootstrapError, match="TEST_ROOT_NOT_PRIVATE_TMP"):
+        ControlledMacBootstrapExecutor(
+            config=OperationalBootstrapExecutorConfig(
+                sandbox,
+                ROOT,
+                OperationalBootstrapExecutionMode.TEST_ONLY_BOOTSTRAP_VALIDATION,
+            ),
+            permit_registry=Registry(),
+        )._validate_root()
+
+
 def test_path_confinement_rejects_repository_application_support_and_symlink(tmp_path, monkeypatch):
     candidates = (
         ROOT / "bootstrap", Path.home() / "Library/Application Support/AIControlCenter",

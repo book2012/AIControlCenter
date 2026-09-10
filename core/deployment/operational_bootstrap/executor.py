@@ -150,7 +150,18 @@ class ControlledMacBootstrapExecutor:
         if not expected or root != Path(expected) or not root.is_absolute() or ".." in root.parts:
             raise OperationalBootstrapError("TEST_ROOT_BINDING_INVALID")
         raw = str(root)
-        if not raw.startswith("/private/tmp/"):
+        private_tmp_allowed = raw.startswith("/private/tmp/")
+        tmpdir_allowed = False
+        tmpdir_raw = os.environ.get("TMPDIR", "")
+        if tmpdir_raw:
+            tmpdir = Path(tmpdir_raw)
+            if tmpdir.is_absolute() and ".." not in tmpdir.parts:
+                try:
+                    root.resolve().relative_to(tmpdir.resolve())
+                    tmpdir_allowed = root.resolve() != tmpdir.resolve()
+                except ValueError:
+                    pass
+        if not private_tmp_allowed and not tmpdir_allowed:
             raise OperationalBootstrapError("TEST_ROOT_NOT_PRIVATE_TMP")
         protected = ("/System", "/Library", "/Applications", "/usr", "/bin", "/sbin",
                      "/etc", "/home", "/var", "/srv", "/mnt", "/media", "/Volumes")

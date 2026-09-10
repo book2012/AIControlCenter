@@ -5174,9 +5174,12 @@ transport-only endpoint change as catalog integration.
 - [x] Preserve malformed, missing, multiple, and ambiguous target fail-closed
   behavior.
 - [x] Pass targeted discovery validation: `8 passed`.
-- [ ] Commit and push the producer correction.
-- [ ] Generate a new Runtime Contract from the clean committed current HEAD.
-- [ ] Verify the new contract selects
+- [x] Commit and push the producer correction (`11eaaf1`).
+- [x] Generate and validate the `11eaaf1` Runtime Contract selecting
+  `ops.macos.runtime.application:app`.
+- [ ] Commit and push the current test-root confinement correction.
+- [ ] Generate a fresh Runtime Contract from the new clean committed HEAD.
+- [ ] Verify the fresh contract selects
   `ops.macos.runtime.application:app`.
 - [ ] Build the matching immutable Runtime VENV.
 - [ ] Generate the matching immutable source artifact.
@@ -5185,9 +5188,12 @@ transport-only endpoint change as catalog integration.
 - [ ] Reconcile the WordPress Shopping API base and validate live commerce.
 
 The previous `25d4558` Runtime Contract must not be reused.
+The validated `11eaaf1` Runtime Contract is also stale after the current
+test-root confinement source change and must not be reused for another build.
 
-`RUNTIME_CONTRACT_CANONICAL_TARGET_001=PATCHED_TARGETED_PASS_ARCH_REVIEW_PASS`
+`RUNTIME_CONTRACT_CANONICAL_TARGET_001=CLOSED_SOURCE_GIT`
+`RUNTIME_BUILD_TEST_ROOT_CONFINEMENT_001=SOURCE_VALIDATED_GIT_CLOSEOUT_PENDING`
 `CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
-`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_RUNTIME_CONTRACT_PRODUCER`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_SOURCE_GIT_CLOSEOUT`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

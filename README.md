@@ -5234,3 +5234,43 @@ is committed and pushed from a clean current HEAD.
 `IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_RUNTIME_CONTRACT_PRODUCER`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+
+## RUNTIME-BUILD-TEST-ROOT-CONFINEMENT-001 native TMPDIR confinement
+
+The immutable Runtime build test failure caused by the operational bootstrap
+executor's legacy `/private/tmp`-only confinement has been corrected at source
+level.
+
+The executor still preserves the explicit
+`AICONTROLCENTER_BOOTSTRAP_TEST_ROOT` binding, absolute/no-`..` validation,
+protected-target rejection, repository-target rejection, and symlink-target
+rejection. In addition to the legacy `/private/tmp/...` deployment-test path,
+a bootstrap test root may now be a strict descendant of the explicitly bound
+`TMPDIR`. The `TMPDIR` directory itself and roots outside that directory remain
+rejected.
+
+Validation completed successfully:
+- focused TMPDIR confinement/security coverage: `3 passed`
+- canonical deployment regression: `22 passed, 220 warnings`
+- Runtime builder sandbox contract: `1 passed`
+- `git diff --check`: PASS
+
+The pytest cleanup warnings are expected from deliberate protected-directory
+permission tests and are non-blocking.
+
+The Runtime Contract producer correction is already committed and pushed.
+The previously generated `11eaaf1` Runtime Contract is now stale because the
+current source tree contains this test-root confinement change and must not be
+used for another immutable Runtime build.
+
+An immutable Runtime build retry using the `11eaaf1` contract previously
+reached the test-suite phase and failed there. No successful/finalized
+immutable Runtime build, source artifact generation, `runtime/current`
+mutation, canonical service activation, launchd mutation, WooCommerce
+activation, or Shopping write authorization has occurred.
+
+`RUNTIME_BUILD_TEST_ROOT_CONFINEMENT_001=SOURCE_VALIDATED_GIT_CLOSEOUT_PENDING`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_SOURCE_GIT_CLOSEOUT`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

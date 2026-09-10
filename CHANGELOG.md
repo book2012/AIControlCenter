@@ -5697,3 +5697,35 @@ evidence locator.
 `CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
 `IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_RUNTIME_CONTRACT_PRODUCER`
 `SHOP_API_READ_001=OPEN`
+
+## 2026-09-10 — RUNTIME-BUILD-TEST-ROOT-CONFINEMENT-001 native TMPDIR confinement
+- Corrected the operational bootstrap executor's legacy `/private/tmp`-only
+  test-root confinement so the canonical immutable Runtime pytest sandbox may
+  use an explicitly bound native Darwin `TMPDIR`.
+- Preserved the existing `/private/tmp` deployment-regression path while adding
+  strict descendant confinement beneath resolved `TMPDIR`.
+- Preserved exact `AICONTROLCENTER_BOOTSTRAP_TEST_ROOT` binding, absolute-path
+  validation, protected-target rejection, repository-target rejection, and
+  symlink-target rejection.
+- Added regression coverage accepting a child beneath explicit `TMPDIR`,
+  rejecting a root outside that `TMPDIR`, and rejecting `TMPDIR` itself.
+- Validation completed successfully:
+  - focused TMPDIR confinement/security coverage: `3 passed`
+  - canonical deployment regression: `22 passed, 220 warnings`
+  - Runtime builder sandbox contract: `1 passed`
+  - `git diff --check`: PASS
+- The pytest cleanup warnings are expected from deliberate protected-directory
+  permission tests and are non-blocking.
+- The previously validated `11eaaf1` Runtime Contract is stale after this source
+  change and must not be reused.
+- An immutable Runtime build retry using the `11eaaf1` contract previously
+  reached the test-suite phase and failed there.
+- No successful/finalized immutable Runtime build, source artifact generation,
+  `runtime/current` mutation, canonical service activation, launchd mutation,
+  WooCommerce activation, or Shopping write authorization has occurred.
+
+`RUNTIME_BUILD_TEST_ROOT_CONFINEMENT_001=SOURCE_VALIDATED_GIT_CLOSEOUT_PENDING`
+`IMMUTABLE_RUNTIME_BUILD_RETRY=BLOCKED_BY_SOURCE_GIT_CLOSEOUT`
+`CANONICAL_IMMUTABLE_RUNTIME_PARITY=BLOCKED_STALE_RELEASE`
+`SHOP_API_READ_001=OPEN`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
