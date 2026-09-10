@@ -8,6 +8,7 @@ from typing import Any, Callable
 from uuid import uuid4
 import json
 import re
+import shlex
 import sys
 
 from core.deployment.contracts import (
@@ -29,6 +30,7 @@ from .macos import (
     ListenerRecord,
     MacOSObservationError,
     MacOSReadOnlyAdapter,
+    ProcessObservation,
     RuntimeFilesystemObservation,
     RuntimePythonObservation,
     StdlibHttpTransport,
@@ -138,6 +140,10 @@ EXIT_CONTRACT_INVALID = 3
 EXIT_OBSERVATION_ERROR = 4
 
 _CHECK_ID = re.compile(r"[^A-Z0-9_]+")
+_SERVING_TARGET = re.compile(
+    r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*"
+    r":[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*"
+)
 
 
 class ActivationInspectorContractError(ValueError):
@@ -672,7 +678,7 @@ def _launchd_section(
 def _process_section(
     *,
     policy: dict[str, Any],
-    launchd: LaunchdObservation,
+    process: ProcessObservation | None,
 ) -> tuple[dict[str, Any], bool, str | None]:
     section = deepcopy(
         REPORT_TEMPLATE["process"]
@@ -682,60 +688,32 @@ def _process_section(
         "application"
     ]["serving_target"]
 
-    observed = (
-        expected
-        if expected
-        in launchd.program_arguments
-        else None
-    )
+    arguments = process.arguments if process is not None else ()
+    matches = expected in arguments
+    observed = expected if matches else None
+    if not matches:
+        uvicorn_index = next(
+            (
+                index for index, argument in enumerate(arguments)
+                if (index == 0 and Path(argument).name == "uvicorn")
+                or (index > 0 and arguments[index - 1] == "-m" and argument == "uvicorn")
+            ),
+            None,
+        )
+        if uvicorn_index is not None:
+            observed = next(
+                (
+                    argument for argument in arguments[uvicorn_index + 1:]
+                    if _SERVING_TARGET.fullmatch(argument)
+                ),
+                None,
+            )
 
-    matches = observed == expected
-
-    _set_aliases(
-        section,
-        launchd.pid,
-        "pid",
-    )
-
-    _set_aliases(
-        section,
-        launchd.application_user,
-        "application_user",
-        "user",
-    )
-
-    _set_aliases(
-        section,
-        expected,
-        "expected_serving_target",
-        "serving_target",
-    )
-
-    _set_aliases(
-        section,
-        observed,
-        "observed_serving_target",
-        "actual_serving_target",
-    )
-
-    _set_aliases(
-        section,
-        matches,
-        "serving_target_matches",
-        "matches",
-    )
-
-    _set_aliases(
-        section,
-        launchd.running,
-        "running",
-    )
-
-    _set_aliases(
-        section,
-        list(launchd.program_arguments),
-        "arguments",
-        "program_arguments",
+    section.update(
+        pid=process.pid if process is not None else None,
+        user=process.user if process is not None else None,
+        observed_count=int(process is not None),
+        root_process=process is not None and process.user in {"root", "0"},
     )
 
     return (
@@ -743,6 +721,45 @@ def _process_section(
         matches,
         observed,
     )
+
+
+def _process_evidence(
+    process: ProcessObservation | None,
+    observed_target: str | None,
+) -> dict[str, Any] | None:
+    """Retain serving evidence without publishing arbitrary command values.
+
+    Only the interpreter name, uvicorn invocation, application target and
+    numeric host/port values are disclosed. The command is reconstructed
+    from that sanitized argv; raw ps output never enters the report.
+    """
+    if process is None:
+        return None
+
+    arguments = process.arguments
+    safe = ["[REDACTED]"] * len(arguments)
+    executable = Path(arguments[0]).name
+    if re.fullmatch(r"python(?:[0-9]+(?:\.[0-9]+)*)?|uvicorn", executable):
+        safe[0] = executable
+    for index, argument in enumerate(arguments):
+        if argument == observed_target and _SERVING_TARGET.fullmatch(argument):
+            safe[index] = argument
+        if argument == "-m" and arguments[index + 1:index + 2] == ("uvicorn",):
+            safe[index:index + 2] = ["-m", "uvicorn"]
+        if argument in {"--host", "--port"} and index + 1 < len(arguments):
+            value = arguments[index + 1]
+            safe[index] = argument
+            pattern = r"[0-9a-fA-F.:]{1,45}" if argument == "--host" else r"[0-9]{1,5}"
+            if re.fullmatch(pattern, value):
+                safe[index + 1] = value
+
+    return {
+        "pid": process.pid,
+        "user": process.user,
+        "command": shlex.join(safe),
+        "arguments": safe,
+        "command_sanitized": True,
+    }
 
 
 def _listener_section(
@@ -1092,6 +1109,14 @@ def run_inspection(
         policy["launchd"]["identity"]
     )
 
+    process = (
+        adapter.inspect_process(launchd.pid)
+        if launchd.pid is not None
+        else None
+    )
+    if process is not None and process.pid != launchd.pid:
+        raise MacOSObservationError("PROCESS_PID_MISMATCH")
+
     listeners = adapter.inspect_listeners(
         host=policy["listener"]["host"],
         port=policy["listener"]["port"],
@@ -1120,8 +1145,10 @@ def run_inspection(
         observed_serving_target,
     ) = _process_section(
         policy=policy,
-        launchd=launchd,
+        process=process,
     )
+    process_evidence = _process_evidence(process, observed_serving_target)
+    process_evidence_reference = "process-argv:" + sha256_digest(process_evidence)
 
     (
         listener_section,
@@ -1319,6 +1346,17 @@ def run_inspection(
         ),
     )
 
+    # The frozen v1 process object has no argv fields. Its extensible check
+    # records carry sanitized command evidence without changing that schema.
+    add_check(
+        check_id="PROCESS_PID_MATCH",
+        expected={"pid": launchd.pid},
+        actual=process_evidence,
+        passed=process is not None and process.pid == launchd.pid,
+        blocking=True,
+        evidence_reference=process_evidence_reference,
+    )
+
     add_check(
         check_id="PROCESS_SERVING_TARGET_MATCH",
         expected=policy[
@@ -1327,10 +1365,7 @@ def run_inspection(
         actual=observed_serving_target,
         passed=process_matches,
         blocking=True,
-        evidence_reference=(
-            "process:"
-            + process_section["evidence_digest"]
-        ),
+        evidence_reference=process_evidence_reference,
     )
 
     add_check(

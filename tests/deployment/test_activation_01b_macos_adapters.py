@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from dataclasses import FrozenInstanceError
 from types import SimpleNamespace
 import json
 import subprocess
@@ -21,6 +22,7 @@ from core.deployment.activation_inspector import (
     parse_launchctl_print,
     parse_lsof_fields,
 )
+from core.deployment.activation_inspector.macos import PS, parse_ps_output
 
 
 class RecordingExecutor:
@@ -197,6 +199,105 @@ def test_launchctl_conflicting_fields_fail_closed() -> None:
                 b"state = waiting\n"
             ),
         )
+
+
+def test_ps_command_is_exact_and_parsed() -> None:
+    command = b"/runtime/bin/python -m uvicorn core.api.app:app --host 127.0.0.1 --port 58081"
+    subject, executor, _ = adapter(results=[
+        CommandResult(returncode=0, stdout=b"  4242 kyouhan  " + command + b"\n", stderr=b""),
+    ])
+    observation = subject.inspect_process(4242)
+    request = executor.requests[0]
+    assert request.argv == (PS, "-ww", "-p", "4242", "-o", "pid=,user=,command=")
+    assert PS == "/bin/ps"
+    assert request.timeout_seconds == 3.0
+    assert request.max_output_bytes == 65_536
+    assert observation.pid == 4242
+    assert observation.user == "kyouhan"
+    assert observation.command == command.decode("utf-8")
+    assert observation.arguments == (
+        "/runtime/bin/python", "-m", "uvicorn", "core.api.app:app",
+        "--host", "127.0.0.1", "--port", "58081",
+    )
+    with pytest.raises(FrozenInstanceError):
+        observation.pid = 7
+
+
+@pytest.mark.parametrize("pid", [None, True, False, 0, -1, 4242.0, "4242", "4242,7", 2**31, 10**100])
+def test_ps_invalid_pid_is_rejected_before_command(pid) -> None:
+    subject, executor, _ = adapter(results=[])
+    with pytest.raises(MacOSObservationError, match="^PROCESS_PID_INVALID$"):
+        subject.inspect_process(pid)
+    with pytest.raises(MacOSObservationError, match="^PROCESS_PID_INVALID$"):
+        parse_ps_output(pid=pid, stdout=b"")
+    assert executor.requests == []
+
+
+@pytest.mark.parametrize("stdout,marker", [
+    (b"", "PROCESS_RECORD_MISSING"),
+    (b" \n", "PROCESS_RECORD_MISSING"),
+    (b"4242 kyouhan python\n4242 kyouhan python\n", "PROCESS_RECORD_COUNT_INVALID"),
+    (b"4242 kyouhan python\n7 root python\n", "PROCESS_RECORD_COUNT_INVALID"),
+    (b"4242 kyouhan python\n\n", "PROCESS_RECORD_COUNT_INVALID"),
+    (b"PID USER COMMAND\n", "PROCESS_RECORD_MALFORMED"),
+    (b"4242 kyouhan\n", "PROCESS_RECORD_MALFORMED"),
+    (b"4242 kyouhan   \n", "PROCESS_RECORD_MALFORMED"),
+    (b"0 kyouhan python\n", "PROCESS_RECORD_MALFORMED"),
+    (b"-4242 kyouhan python\n", "PROCESS_RECORD_MALFORMED"),
+    (b"7 kyouhan python\n", "PROCESS_PID_MISMATCH"),
+    (b"4242 kyouhan python\x00 -m uvicorn\n", "PROCESS_RECORD_MALFORMED"),
+    (b"4242 kyouhan python\x1b[0m\n", "PROCESS_RECORD_MALFORMED"),
+    (b"4242 kyouhan python\r\n", "PROCESS_RECORD_MALFORMED"),
+    (b"4242 kyouhan python\v\n", "PROCESS_RECORD_MALFORMED"),
+    (b"4242 kyouhan python 'unclosed\n", "PROCESS_ARGUMENTS_MALFORMED"),
+    (b"4242 kyouhan ''\n", "PROCESS_ARGUMENTS_MALFORMED"),
+    (b"4242 kyouhan python\xff\n", "PROCESS_INVALID_UTF8"),
+    (b"4242 kyouhan " + b"x" * 65_536, "PROCESS_OUTPUT_LIMIT_EXCEEDED"),
+    (b"4242 kyouhan python " + b"x " * 1024, "PROCESS_ARGUMENT_LIMIT_EXCEEDED"),
+])
+def test_ps_parser_fails_closed(stdout, marker) -> None:
+    with pytest.raises(MacOSObservationError, match=f"^{marker}$"):
+        parse_ps_output(pid=4242, stdout=stdout)
+
+
+def test_ps_parser_keeps_quoted_arguments_as_exact_tokens() -> None:
+    observation = parse_ps_output(
+        pid=4242,
+        stdout=b'4242 kyouhan "/runtime/Application Support/bin/python" -m uvicorn "prefix core.api.app:app suffix"\n',
+    )
+    assert observation.arguments == (
+        "/runtime/Application Support/bin/python", "-m", "uvicorn", "prefix core.api.app:app suffix",
+    )
+    assert "core.api.app:app" not in observation.arguments
+
+
+@pytest.mark.parametrize("result,marker", [
+    (CommandResult(124, b"", b"", timed_out=True), "PROCESS_TIMEOUT"),
+    (CommandResult(1, b"", b""), "PROCESS_INSPECTION_FAILED"),
+    (CommandResult(2, b"4242 kyouhan python\n", b"fixture-error"), "PROCESS_INSPECTION_FAILED"),
+    (CommandResult(0, b"4242 kyouhan python\n", b"fixture-warning"), "PROCESS_UNEXPECTED_STDERR"),
+    (CommandResult(0, b"not a process", b""), "PROCESS_RECORD_MALFORMED"),
+    (CommandResult(0, b"", b""), "PROCESS_RECORD_MISSING"),
+    (CommandResult(0, b"x" * 65_536, b"y"), "PROCESS_OUTPUT_LIMIT_EXCEEDED"),
+])
+def test_ps_adapter_rejects_failed_or_unbounded_results(result, marker) -> None:
+    subject, _, _ = adapter(results=[result])
+    with pytest.raises(MacOSObservationError, match=f"^{marker}$"):
+        subject.inspect_process(4242)
+
+
+def test_ps_subprocess_timeout_is_sanitized() -> None:
+    def fake_run(argv, **kwargs):
+        assert kwargs["shell"] is False
+        assert kwargs["timeout"] == 3.0
+        raise subprocess.TimeoutExpired(argv, kwargs["timeout"], output=b"fixture-sensitive-output")
+
+    subject = MacOSReadOnlyAdapter(
+        executor=SubprocessCommandExecutor(run_callable=fake_run),
+        http_transport=RecordingTransport(HttpProbeResponse(status=200, body=b"")),
+    )
+    with pytest.raises(MacOSObservationError, match="^PROCESS_TIMEOUT$"):
+        subject.inspect_process(4242)
 
 
 def test_lsof_command_is_exact_and_parsed() -> None:
@@ -548,6 +649,11 @@ def test_adapter_commands_are_read_only_only() -> None:
                 stderr=b"",
             ),
             CommandResult(
+                returncode=0,
+                stdout=b"4242 kyouhan python -m uvicorn core.api.shadow:app\n",
+                stderr=b"",
+            ),
+            CommandResult(
                 returncode=1,
                 stdout=b"",
                 stderr=b"",
@@ -563,6 +669,8 @@ def test_adapter_commands_are_read_only_only() -> None:
     subject.inspect_launchd(
         "system/com.aicontrolcenter.api.shadow"
     )
+
+    subject.inspect_process(4242)
 
     subject.inspect_listeners(
         host="127.0.0.1",

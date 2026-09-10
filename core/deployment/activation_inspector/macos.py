@@ -7,6 +7,7 @@ import http.client
 import json
 import os
 import re
+import shlex
 import subprocess
 
 from .ports import (
@@ -21,6 +22,7 @@ from .ports import (
 
 LAUNCHCTL = "/bin/launchctl"
 LSOF = "/usr/sbin/lsof"
+PS = "/bin/ps"
 
 _SAFE_ENVIRONMENT = {
     "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
@@ -72,6 +74,14 @@ class LaunchdObservation:
             ),
             "allowed_operation": "print",
         }
+
+
+@dataclass(frozen=True, slots=True)
+class ProcessObservation:
+    pid: int
+    user: str
+    command: str
+    arguments: tuple[str, ...]
 
 
 @dataclass(frozen=True, slots=True)
@@ -517,6 +527,65 @@ def parse_launchctl_print(
     )
 
 
+def _validate_process_pid(pid: int) -> None:
+    if type(pid) is not int or not 0 < pid <= 2_147_483_647:
+        raise MacOSObservationError("PROCESS_PID_INVALID")
+
+
+def parse_ps_output(
+    *,
+    pid: int,
+    stdout: bytes,
+    max_output_bytes: int = 65_536,
+) -> ProcessObservation:
+    """Parse one headerless `ps -ww -p PID -o pid=,user=,command=` row.
+
+    ps provides command text, not NUL-delimited argv. Tokenization is
+    confined here; malformed quoting and additional records are rejected.
+    The command is evidence only and is never executed.
+    """
+    _validate_process_pid(pid)
+    text = _bounded_utf8(
+        stdout, limit=max_output_bytes, component="PROCESS",
+    )
+    if not text.strip():
+        raise MacOSObservationError("PROCESS_RECORD_MISSING")
+    if any(
+        (ord(char) < 32 and char not in "\t\n") or 127 <= ord(char) <= 159
+        for char in text
+    ):
+        raise MacOSObservationError("PROCESS_RECORD_MALFORMED")
+
+    lines = text.removesuffix("\n").split("\n")
+    if len(lines) != 1:
+        raise MacOSObservationError("PROCESS_RECORD_COUNT_INVALID")
+
+    line = lines[0]
+    match = re.fullmatch(
+        r"[ \t]*([0-9]{1,10})[ \t]+([A-Za-z0-9_][A-Za-z0-9_.-]{0,255})"
+        r"[ \t]+(\S(?:.*\S)?)[ \t]*",
+        line,
+    )
+    if match is None or int(match.group(1)) <= 0:
+        raise MacOSObservationError("PROCESS_RECORD_MALFORMED")
+    if int(match.group(1)) != pid:
+        raise MacOSObservationError("PROCESS_PID_MISMATCH")
+
+    command = match.group(3)
+    try:
+        arguments = tuple(shlex.split(command, comments=False, posix=True))
+    except ValueError as error:
+        raise MacOSObservationError("PROCESS_ARGUMENTS_MALFORMED") from error
+    if not arguments or not arguments[0]:
+        raise MacOSObservationError("PROCESS_ARGUMENTS_MALFORMED")
+    if len(arguments) > 1024:
+        raise MacOSObservationError("PROCESS_ARGUMENT_LIMIT_EXCEEDED")
+
+    return ProcessObservation(
+        pid=pid, user=match.group(2), command=command, arguments=arguments,
+    )
+
+
 def parse_lsof_fields(
     stdout: bytes,
     *,
@@ -660,6 +729,27 @@ class MacOSReadOnlyAdapter:
             max_output_bytes=(
                 request.max_output_bytes
             ),
+        )
+
+    def inspect_process(self, pid: int) -> ProcessObservation:
+        _validate_process_pid(pid)
+        request = CommandRequest(
+            argv=(PS, "-ww", "-p", str(pid), "-o", "pid=,user=,command="),
+            timeout_seconds=3.0,
+            max_output_bytes=65_536,
+        )
+        result = self._executor.run(request)
+        if len(result.stdout) + len(result.stderr) > request.max_output_bytes:
+            raise MacOSObservationError("PROCESS_OUTPUT_LIMIT_EXCEEDED")
+        if result.timed_out:
+            raise MacOSObservationError("PROCESS_TIMEOUT")
+        if result.returncode != 0:
+            raise MacOSObservationError("PROCESS_INSPECTION_FAILED")
+        if result.stderr:
+            raise MacOSObservationError("PROCESS_UNEXPECTED_STDERR")
+
+        return parse_ps_output(
+            pid=pid, stdout=result.stdout, max_output_bytes=request.max_output_bytes,
         )
 
     def inspect_listeners(
@@ -975,14 +1065,17 @@ class MacOSReadOnlyAdapter:
 __all__ = (
     "LAUNCHCTL",
     "LSOF",
+    "PS",
     "LaunchdObservation",
     "ListenerRecord",
     "MacOSObservationError",
     "MacOSReadOnlyAdapter",
+    "ProcessObservation",
     "RuntimeFilesystemObservation",
     "RuntimePythonObservation",
     "StdlibHttpTransport",
     "SubprocessCommandExecutor",
     "parse_launchctl_print",
     "parse_lsof_fields",
+    "parse_ps_output",
 )

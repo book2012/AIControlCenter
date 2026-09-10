@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
+from dataclasses import replace
 from pathlib import Path
 import copy
 import json
+import shlex
 
 import pytest
 
@@ -13,6 +15,10 @@ from core.deployment.activation_inspector import (
     ListenerRecord,
     RuntimeFilesystemObservation,
     RuntimePythonObservation,
+)
+from core.deployment.activation_inspector.macos import (
+    MacOSObservationError,
+    ProcessObservation,
 )
 from core.deployment.activation_inspector.runner import (
     ActivationInspectorContractError,
@@ -71,13 +77,22 @@ class FakeAdapter:
         policy,
         manifest,
         http_status_delta=0,
+        process_arguments=None,
     ):
         self.policy = policy
         self.manifest = manifest
         self.http_status_delta = http_status_delta
         self.http_requests = []
         self.launchd_requests = []
+        self.process_requests = []
         self.listener_requests = []
+        self.process_arguments = (
+            process_arguments if process_arguments is not None else (
+                "/runtime/bin/python", "-m", "uvicorn",
+                policy["application"]["serving_target"],
+                "--host", "127.0.0.1", "--port", str(policy["listener"]["port"]),
+            )
+        )
 
     def inspect_runtime_filesystem(self, **kwargs):
         runtime = self.policy["runtime"]
@@ -128,13 +143,18 @@ class FakeAdapter:
             ]["application_user"],
             state="running",
             program_arguments=(
-                "/runtime/bin/python",
-                "-m",
-                "uvicorn",
-                self.policy[
-                    "application"
-                ]["serving_target"],
+                "/bin/bash",
+                "/usr/local/libexec/aicontrolcenter/run-canonical-api-immutable-source.sh",
             ),
+        )
+
+    def inspect_process(self, pid):
+        self.process_requests.append(pid)
+        return ProcessObservation(
+            pid=pid,
+            user=self.policy["launchd"]["application_user"],
+            command=shlex.join(self.process_arguments),
+            arguments=self.process_arguments,
         )
 
     def inspect_listeners(self, *, host, port):
@@ -220,6 +240,7 @@ def execute(
     blocked_git=False,
     http_status_delta=0,
     contracts=None,
+    process_arguments=None,
 ):
     policy, manifest = load_contracts() if contracts is None else contracts
     snapshot, validation = git_evidence(
@@ -231,6 +252,7 @@ def execute(
         policy=policy,
         manifest=manifest,
         http_status_delta=http_status_delta,
+        process_arguments=process_arguments,
     )
 
     report = run_inspection(
@@ -352,8 +374,8 @@ def test_http_mismatch_is_blocked():
     )
 
 
-def test_process_target_is_observed_from_launchd():
-    policy, _, _, report = execute()
+def test_process_target_uses_exact_launchd_pid_despite_wrapper_arguments():
+    policy, _, adapter, report = execute()
 
     expected = policy[
         "application"
@@ -370,6 +392,111 @@ def test_process_target_is_observed_from_launchd():
     assert check["actual"] == expected
     assert check["result"] == "PASS"
     assert check["blocking"] is True
+    assert adapter.process_requests == [4242]
+    assert expected not in adapter.inspect_launchd(policy["launchd"]["identity"]).program_arguments
+    evidence = next(item for item in report["checks"] if item["check_id"] == "PROCESS_PID_MATCH")
+    assert evidence["result"] == "PASS"
+    assert evidence["actual"]["pid"] == report["process"]["pid"] == 4242
+    assert evidence["actual"]["user"] == report["process"]["user"] == policy["launchd"]["application_user"]
+    assert evidence["actual"]["arguments"] == ["python", *adapter.process_arguments[1:]]
+    assert expected in evidence["actual"]["command"]
+    assert evidence["evidence_reference"] == check["evidence_reference"]
+    assert evidence["evidence_reference"] == "process-argv:" + sha256_digest(evidence["actual"])
+
+
+@pytest.mark.parametrize("argument", [
+    "prefix.core.api.shadow:app",
+    "core.api.shadow:app_extra",
+    "--target=core.api.shadow:app",
+    "prefix core.api.shadow:app suffix",
+])
+def test_process_target_substring_is_rejected(argument):
+    _, _, _, report = execute(
+        process_arguments=("python", "-m", "uvicorn", argument),
+    )
+    check = next(item for item in report["checks"] if item["check_id"] == "PROCESS_SERVING_TARGET_MATCH")
+    assert check["result"] == "FAIL"
+    assert report["overall_status"] == "BLOCKED"
+    assert "PROCESS_SERVING_TARGET_MATCH" in report["blocking_reasons"]
+
+
+def test_launchd_target_cannot_mask_process_mismatch(monkeypatch):
+    original = FakeAdapter.inspect_launchd
+
+    def launchd_with_target(self, identity):
+        return replace(original(self, identity), program_arguments=(self.policy["application"]["serving_target"],))
+
+    monkeypatch.setattr(FakeAdapter, "inspect_launchd", launchd_with_target)
+    _, _, _, report = execute(process_arguments=("python", "-m", "uvicorn", "core.api.app:app"))
+    check = next(item for item in report["checks"] if item["check_id"] == "PROCESS_SERVING_TARGET_MATCH")
+    assert check["actual"] == "core.api.app:app"
+    assert check["result"] == "FAIL"
+    assert report["overall_status"] == "BLOCKED"
+
+
+def test_process_evidence_redacts_arbitrary_arguments():
+    _, _, _, report = execute(process_arguments=(
+        "python", "-m", "uvicorn", "core.api.shadow:app",
+        "--password", "fixture-sensitive-value", "TOKEN=fixture-env-value",
+        "https://fixture-user:fixture-pass@example.invalid/",
+    ))
+    serialized = json.dumps(report)
+    for value in ("fixture-sensitive-value", "fixture-env-value", "fixture-pass"):
+        assert value not in serialized
+    evidence = next(item for item in report["checks"] if item["check_id"] == "PROCESS_PID_MATCH")
+    assert evidence["actual"]["arguments"][4:] == ["[REDACTED]"] * 4
+    assert evidence["actual"]["command_sanitized"] is True
+    assert report["overall_status"] == "READY_FOR_AUTHORIZATION_REVIEW"
+
+
+def test_process_user_is_observed_independently_of_launchd(monkeypatch):
+    original = FakeAdapter.inspect_process
+
+    def root_process(self, pid):
+        return replace(original(self, pid), user="root")
+
+    monkeypatch.setattr(FakeAdapter, "inspect_process", root_process)
+    policy, _, _, report = execute()
+    assert report["launchd"]["application_user"] == policy["launchd"]["application_user"]
+    assert report["process"]["user"] == "root"
+    assert report["process"]["root_process"] is True
+
+
+def test_absent_launchd_pid_skips_ps_and_blocks(monkeypatch):
+    original = FakeAdapter.inspect_launchd
+
+    def stopped_launchd(self, identity):
+        return replace(original(self, identity), pid=None, running=False)
+
+    monkeypatch.setattr(FakeAdapter, "inspect_launchd", stopped_launchd)
+    _, _, adapter, report = execute()
+    assert adapter.process_requests == []
+    assert report["process"]["pid"] is None
+    assert report["process"]["user"] is None
+    assert report["process"]["observed_count"] == 0
+    assert report["overall_status"] == "BLOCKED"
+    assert {"LAUNCHD_RUNNING", "PROCESS_PID_MATCH", "PROCESS_SERVING_TARGET_MATCH", "LISTENER_PID_MATCH"} <= set(report["blocking_reasons"])
+
+
+def test_unexpected_process_pid_fails_closed(monkeypatch):
+    original = FakeAdapter.inspect_process
+
+    def wrong_process(self, pid):
+        return replace(original(self, pid), pid=pid + 1)
+
+    monkeypatch.setattr(FakeAdapter, "inspect_process", wrong_process)
+    with pytest.raises(MacOSObservationError, match="^PROCESS_PID_MISMATCH$"):
+        execute()
+
+
+@pytest.mark.parametrize("marker", ["PROCESS_RECORD_MISSING", "PROCESS_TIMEOUT", "PROCESS_INSPECTION_FAILED"])
+def test_process_observation_error_fails_closed(monkeypatch, marker):
+    def failing_process(self, pid):
+        raise MacOSObservationError(marker)
+
+    monkeypatch.setattr(FakeAdapter, "inspect_process", failing_process)
+    with pytest.raises(MacOSObservationError, match=f"^{marker}$"):
+        execute()
 
 
 def test_exit_code_contract():
@@ -407,7 +534,8 @@ def test_policy_copy_mutation_breaks_manifest_binding():
     )
 
 
-def test_canonical_contracts_use_the_shared_runner(tmp_path):
+@pytest.mark.parametrize("actual_target", ["ops.macos.runtime.application:app", "core.api.app:app"])
+def test_canonical_contracts_use_the_shared_runner(tmp_path, actual_target):
     # Build separate test inputs without rewriting the historical v1 JSON.
     policy, manifest = load_contracts()
     source_commit = "28869898a28fbc0f0d0fd6c995104defa645ada3"
@@ -431,10 +559,15 @@ def test_canonical_contracts_use_the_shared_runner(tmp_path):
     policy_path.write_text(json.dumps(policy), encoding="utf-8")
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
     contracts = load_contracts(policy_path=policy_path, manifest_path=manifest_path)
-    _, _, adapter, report = execute(contracts=contracts)
+    _, _, adapter, report = execute(
+        contracts=contracts,
+        process_arguments=("python", "-m", "uvicorn", actual_target, "--host", "127.0.0.1", "--port", "58081"),
+    )
 
-    assert report["overall_status"] == "READY_FOR_AUTHORIZATION_REVIEW"
+    matches = actual_target == policy["application"]["serving_target"]
+    assert report["overall_status"] == ("READY_FOR_AUTHORIZATION_REVIEW" if matches else "BLOCKED")
     assert adapter.launchd_requests == ["system/com.aicontrolcenter.api"]
+    assert adapter.process_requests == [4242]
     assert adapter.listener_requests == [("127.0.0.1", 58081)]
     assert report["launchd"]["identity"] == "system/com.aicontrolcenter.api"
     assert report["listener"]["port"] == report["http"]["port"] == 58081
@@ -451,8 +584,9 @@ def test_canonical_contracts_use_the_shared_runner(tmp_path):
         if item["check_id"] == "PROCESS_SERVING_TARGET_MATCH"
     )
     assert target_check["expected"] == "ops.macos.runtime.application:app"
-    assert target_check["actual"] == target_check["expected"]
-    assert target_check["result"] == "PASS"
+    assert target_check["actual"] == actual_target
+    assert target_check["result"] == ("PASS" if matches else "FAIL")
+    assert report["blocking_reasons"] == ([] if matches else ["PROCESS_SERVING_TARGET_MATCH"])
     assert target_check["blocking"] is True
     assert len(adapter.http_requests) == len(manifest["probes"])
     assert all(
