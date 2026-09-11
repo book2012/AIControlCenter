@@ -5305,3 +5305,17 @@ Shopping write authorization has been performed.
 `PRODUCTION_RUNTIME_ACTIVATION=NO`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+
+## Expected-current Runtime activation guard
+
+Canonical Runtime activate mode requires an explicit `--expected-current-runtime`
+value. The activation fails closed when `runtime/current` does not exactly match
+that expected Runtime before the pointer switch.
+
+This guard is an optimistic expected-current precondition. It is not an atomic
+compare-and-swap primitive, does not provide concurrent activation serialization,
+and does not grant Production authorization.
+
+Current validated candidate Runtime is `28869898a28f`; observed active Runtime
+remains `d8f9f550093d`. No Production Runtime activation has been performed.
+Implementation commit: `6559f92`.

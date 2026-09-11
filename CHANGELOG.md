@@ -5753,3 +5753,18 @@ evidence locator.
 `ACTIVATION_01B_LIVE_PROCESS_EVIDENCE_001=CLOSED_SOURCE_GIT`
 `PRODUCTION_RUNTIME_ACTIVATION=NO`
 `SHOP_API_READ_001=OPEN`
+
+## 2026-09-11 — Expected-current Runtime activation guard
+
+- Added mandatory `--expected-current-runtime` binding to canonical activate mode.
+- Activation now fails closed when the observed current Runtime differs from the
+  explicitly expected Runtime before pointer replacement.
+- Added regression coverage for missing, matching, and mismatching expected-current
+  Runtime identities.
+- Implementation commit: `6559f92`.
+- The mechanism is an optimistic expected-current precondition, not atomic CAS,
+  concurrency serialization, or Production authorization.
+- Validated candidate remains `28869898a28f`; active Runtime remains
+  `d8f9f550093d`.
+- No Production Runtime activation, launchd mutation, WooCommerce activation, or
+  Shopping write authorization occurred.

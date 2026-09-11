@@ -5783,3 +5783,19 @@ authorization that was created and consumed and is permanently unusable for
 WordPress. Read-only live storage-continuity observation has occurred. No
 WordPress authorization has been created or consumed, no WordPress mutation has
 executed, and Shopping remains inactive. `NOTION_SYNC=NO`.
+
+## Expected-current Runtime activation precondition
+
+Production Runtime activation must bind the requested candidate to the exact
+expected existing `runtime/current` identity through `--expected-current-runtime`.
+A mismatch fails closed before the pointer replacement.
+
+This is an optimistic expected-current precondition plus filesystem pointer
+replacement, not an atomic compare-and-swap contract. Concurrent Production
+activation still requires a separately governed serialization or single-use
+execution capability. This precondition does not constitute Production
+authorization.
+
+Validated candidate: `28869898a28f`.
+Current active Runtime remains: `d8f9f550093d`.
+Implementation commit: `6559f92`.

@@ -6236,3 +6236,23 @@ governance actions.
 `PRODUCTION_SHOPPING_WRITE_AUTHORIZED=NO`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+
+## Expected-current Runtime activation guard
+
+The canonical Runtime activation primitive now requires
+`--expected-current-runtime`. A mismatch between that value and the observed
+`runtime/current` fails closed before pointer replacement.
+
+The guard is not Production authorization and is not an atomic compare-and-swap
+or concurrency-locking mechanism. Production activation still requires separate
+governance, authorization, single-invocation control, and read-only
+post-activation validation.
+
+- implementation: `6559f92`
+- validated candidate Runtime: `28869898a28f`
+- active Runtime: `d8f9f550093d`
+- Production Runtime activation: NO
+- Production Shopping write authorization: NO
+
+`EXPECTED_CURRENT_RUNTIME_GUARD=SOURCE_TEST_GIT_CLOSED_DOC_PENDING`
+`NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`

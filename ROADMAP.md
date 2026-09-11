@@ -5222,3 +5222,19 @@ test-root confinement source change and must not be reused for another build.
 `PRODUCTION_RUNTIME_ACTIVATION=NO`
 `SHOP_API_READ_001=OPEN`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+
+## Runtime activation expected-current guard
+
+- [x] Require `--expected-current-runtime` for activate mode.
+- [x] Fail closed when observed `runtime/current` differs from the expected Runtime.
+- [x] Preserve candidate `28869898a28f` separately from active `d8f9f550093d`.
+- [x] Commit implementation as `6559f92`.
+- [ ] Close documentation and Git for the guard.
+- [ ] Generate fresh Activation Inspector governance contracts from final governance HEAD.
+- [ ] Run read-only pre-activation inspection.
+- [ ] Establish separately governed single-invocation Production activation capability.
+- [ ] Perform separately authorized Runtime activation.
+- [ ] Perform read-only post-activation validation.
+
+The expected-current guard is not atomic CAS and does not itself serialize
+concurrent activation or grant Production authorization.
