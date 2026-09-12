@@ -1,5 +1,23 @@
 # AIControlCenter
 
+## 2026-09-13 — SHOP_API_READ_002 read health and deterministic failures
+
+Source implementation is complete. `GET /shopping/health/read-path` performs one
+fresh catalog list read through the existing service, adapter, policy, and
+bounded GET transport. It validates JSON, pagination, visibility, and product
+mapping; an empty valid catalog is healthy. Existing liveness and readiness
+remain configuration-only.
+
+Failures use existing repository-owned health codes. Public product error codes
+remain stable; framework pagination errors now use the same canonical 422 JSON
+as service query errors. Health reports sanitized classification without vendor
+payloads, exception messages, timestamps, or credentials.
+
+Validation: **413 passed, 15 existing deprecation warnings**, fixture-only.
+No production/Ubuntu access, runtime activation, or WooCommerce mutation occurred.
+Latency/counter collection remains deferred because no active request telemetry
+convention exists. See the [contract and evidence](docs/architecture/SHOP-API-READ-002-READ-HEALTH.md).
+
 ## 2026-09-09 — Controlled Shopping Soft Launch runtime closeout
 
 The Shopping runtime has reached the controlled soft-launch operational state on

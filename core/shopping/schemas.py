@@ -1,6 +1,9 @@
 from decimal import Decimal
+from typing import Literal
 
 from pydantic import BaseModel, Field
+
+from core.shopping.observability.health_probe import HealthFailureCode, HealthState
 
 
 class ShoppingHealthResponse(BaseModel):
@@ -11,6 +14,14 @@ class ShoppingHealthResponse(BaseModel):
     deployment_target: str
     control_plane: str
     write_mode: str
+
+
+class ShoppingReadPathHealthResponse(BaseModel):
+    service: str
+    healthy: bool
+    state: HealthState
+    failure_code: HealthFailureCode
+    read_only: bool
 
 
 class ShoppingReadinessChecks(BaseModel):
@@ -56,6 +67,16 @@ class ProductListResponse(BaseModel):
     total: int = Field(ge=0)
     page: int = Field(ge=1)
     page_size: int = Field(ge=1, le=100)
+
+
+class ProductReadErrorDetail(BaseModel):
+    code: Literal["shopping_invalid_product_query", "shopping_catalog_unavailable",
+                  "shopping_product_not_found"]
+    product_id: str | None = None
+
+
+class ProductReadErrorResponse(BaseModel):
+    detail: ProductReadErrorDetail
 
 
 class ShoppingIntegrationResponse(BaseModel):

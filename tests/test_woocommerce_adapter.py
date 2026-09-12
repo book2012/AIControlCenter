@@ -133,6 +133,7 @@ def test_health_returns_connected_status():
             FakeResponse(
                 [],
                 status_code=200,
+                headers={"X-WP-Total": "0"},
             )
         ]
     )
@@ -171,6 +172,7 @@ def test_http_request_uses_oauth_parameters():
             FakeResponse(
                 [],
                 status_code=200,
+                headers={"X-WP-Total": "0"},
             )
         ]
     )
@@ -189,6 +191,7 @@ def test_https_request_uses_basic_auth():
             FakeResponse(
                 [],
                 status_code=200,
+                headers={"X-WP-Total": "0"},
             )
         ]
     )
@@ -217,6 +220,7 @@ def test_internal_connection_uses_canonical_host_for_signature():
             FakeResponse(
                 [],
                 status_code=200,
+                headers={"X-WP-Total": "0"},
             )
         ]
     )

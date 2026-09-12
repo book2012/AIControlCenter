@@ -1,5 +1,29 @@
 # AI Home Datacenter Architecture
 
+## SHOP_API_READ_002 — explicit catalog read health (2026-09-13)
+
+The new `GET /shopping/health/read-path` route uses
+`ShoppingService.list_products(page=1, page_size=1)`, preserving the configured
+`CommerceCatalogPort`, factory, external-read policy, and bounded GET transport.
+The existing liveness/readiness surfaces retain their configuration-only
+semantics. `WooCommerceRESTAdapter.health()` now uses its validated list path
+instead of accepting HTTP 200 without inspecting the observation.
+
+`CatalogReadUnavailable.failure_code` carries the existing pure
+`HealthFailureCode` vocabulary across the vendor-independent port. Read health
+projects the existing failure-to-state mapping; rate limiting is `DEGRADED`,
+with HTTP 503 and `healthy=false`. Other failures are `UNAVAILABLE`.
+Product 404/422/503 bodies use the same canonical JSON renderer as success.
+Only product routes override FastAPI validation-error rendering.
+
+There is no telemetry sink, scheduler, persistence, retry, fallback catalog,
+new write capability, or production activation. Latency/counter collection is
+deferred because no active request collector convention exists. The Mac mini
+continues to own the sole Control Plane; no Ubuntu responsibility changes.
+
+See [the full read-health contract](docs/architecture/SHOP-API-READ-002-READ-HEALTH.md).
+Fixture validation: **413 passed, 15 existing deprecation warnings**.
+
 ## 2026-09-09 — Controlled Shopping Soft Launch runtime closeout
 
 The Shopping runtime has reached the controlled soft-launch operational state on

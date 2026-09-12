@@ -1,10 +1,23 @@
 from typing import Protocol
 
 from core.shopping.models import Product
+from core.shopping.observability.health_probe import HealthFailureCode
 
 
 class CatalogReadUnavailable(RuntimeError):
     """The catalog could not supply a valid observation; never an empty result."""
+
+    def __init__(self, message: str, *, failure_code: HealthFailureCode = HealthFailureCode.UNKNOWN):
+        super().__init__(message)
+        # Only repository-owned codes cross the adapter boundary.
+        try:
+            code = HealthFailureCode(failure_code)
+        except (TypeError, ValueError):
+            code = HealthFailureCode.UNKNOWN
+        self.failure_code = (
+            HealthFailureCode.UNKNOWN
+            if code in {HealthFailureCode.NONE, HealthFailureCode.LATENCY} else code
+        )
 
 
 class CatalogReadQueryError(ValueError):

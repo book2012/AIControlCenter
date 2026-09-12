@@ -13,13 +13,15 @@ import requests
 
 from core.shopping.models import Product
 from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable
+from core.shopping.observability.health_probe import HealthFailureCode
 from core.shopping.adapters.woocommerce_read_transport import WooCommerceReadTransportSession
 from core.shopping.governance.external_read_policy import evaluate_external_read
 
 
 class WooCommerceAPIError(CatalogReadUnavailable):
-    def __init__(self, message: str, *, status_code: int | None = None):
-        super().__init__(message)
+    def __init__(self, message: str, *, status_code: int | None = None,
+                 failure_code: HealthFailureCode = HealthFailureCode.UNKNOWN):
+        super().__init__(message, failure_code=failure_code)
         self.status_code = status_code
 
 
@@ -43,7 +45,8 @@ class WooCommerceRESTAdapter:
                     or parsed.username is not None or parsed.password is not None
                     or parsed.query or parsed.fragment
                     or any(ord(char) < 33 for char in value)):
-                raise WooCommerceAPIError("Invalid WooCommerce identity")
+                raise WooCommerceAPIError("Invalid WooCommerce identity",
+                                          failure_code=HealthFailureCode.CONFIGURATION)
         self.base_url = base_url.rstrip("/")
         self.connect_base_url = (
             connect_base_url.rstrip("/")
@@ -139,7 +142,8 @@ class WooCommerceRESTAdapter:
         if (not path.startswith("/") or any(char in path for char in "?#\\")
                 or any(str(key).lower().startswith(("oauth_", "consumer_", "authorization"))
                        for key in query)):
-            raise WooCommerceAPIError("Invalid WooCommerce read request")
+            raise WooCommerceAPIError("Invalid WooCommerce read request",
+                                      failure_code=HealthFailureCode.AUTHORIZATION)
         signature_url = (
             f"{self.base_url}/wp-json/wc/v3{path}"
         )
@@ -167,7 +171,7 @@ class WooCommerceRESTAdapter:
                 for key, value in sorted(oauth.items())
             )
 
-        failed = False
+        failure = None
         try:
             response = self._transport.get(
                 request_url,
@@ -177,18 +181,25 @@ class WooCommerceRESTAdapter:
                 timeout=self.timeout_seconds,
                 allow_redirects=False,
             )
+        except requests.Timeout:
+            failure = HealthFailureCode.TIMEOUT
         except requests.RequestException:
-            failed = True
+            failure = HealthFailureCode.TRANSPORT
         finally:
             headers.pop("Authorization", None)
 
-        if failed:
-            raise WooCommerceAPIError("WooCommerce request failed")
+        if failure is not None:
+            raise WooCommerceAPIError("WooCommerce request failed", failure_code=failure)
 
         if response.status_code != 200:
             raise WooCommerceAPIError(
                 f"WooCommerce returned HTTP {response.status_code}",
                 status_code=response.status_code,
+                failure_code={
+                    401: HealthFailureCode.AUTHENTICATION,
+                    403: HealthFailureCode.AUTHORIZATION,
+                    429: HealthFailureCode.RATE_LIMIT,
+                }.get(response.status_code, HealthFailureCode.DEPENDENCY_UNAVAILABLE),
             )
 
         return response
@@ -227,6 +238,9 @@ class WooCommerceRESTAdapter:
             image_url = (images[0].get("src") or images[0].get("thumbnail")) if images else None
             if not isinstance(category, str) or (image_url is not None and not isinstance(image_url, str)):
                 raise ValueError
+            for value in (name, slug, description, category, image_url):
+                if isinstance(value, str):
+                    value.encode("utf-8")
             # Normalize equivalent vendor money strings without decimal-context rounding.
             amount = format(price, "f")
             if "." in amount:
@@ -237,7 +251,8 @@ class WooCommerceRESTAdapter:
                 in_stock=stock_status == "instock", source="woocommerce", image_url=image_url,
             )
         except (KeyError, TypeError, ValueError, InvalidOperation):
-            raise WooCommerceAPIError("Invalid WooCommerce product payload") from None
+            raise WooCommerceAPIError("Invalid WooCommerce product payload",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH) from None
 
     @staticmethod
     def _product_identifier(product_id: str) -> str:
@@ -254,28 +269,26 @@ class WooCommerceRESTAdapter:
             query={key: str(value) for key, value in params.items()},
         )
         if not decision.allowed:
-            raise WooCommerceAPIError("WooCommerce product read denied")
+            raise WooCommerceAPIError("WooCommerce product read denied",
+                                      failure_code=HealthFailureCode.AUTHORIZATION)
 
     @staticmethod
     def _json_payload(response: requests.Response) -> Any:
         try:
             return response.json()
         except ValueError:
-            raise WooCommerceAPIError("Invalid WooCommerce JSON") from None
+            raise WooCommerceAPIError("Invalid WooCommerce JSON",
+                                      failure_code=HealthFailureCode.INVALID_PAYLOAD) from None
 
     def health(self) -> dict:
-        response = self._request(
-            "/products",
-            params={
-                "page": 1,
-                "per_page": 1,
-            },
-        )
+        # Exercise the exact authorized catalog path, including JSON, pagination,
+        # visibility and product mapping. An HTTP 200 alone is not healthy.
+        self.list_products(page=1, page_size=1)
 
         return {
-            "healthy": response.status_code == 200,
+            "healthy": True,
             "source": "woocommerce",
-            "status_code": response.status_code,
+            "status_code": 200,
             "transport": (
                 "https_basic"
                 if self._uses_https
@@ -301,9 +314,11 @@ class WooCommerceRESTAdapter:
             raise
         payload = self._json_payload(response)
         if not isinstance(payload, dict):
-            raise WooCommerceAPIError("invalid product payload")
+            raise WooCommerceAPIError("invalid product payload",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         if type(payload.get("id")) is not int or str(payload["id"]) != identifier:
-            raise WooCommerceAPIError("WooCommerce product identity mismatch")
+            raise WooCommerceAPIError("WooCommerce product identity mismatch",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         return dict(payload)
 
     def list_products_raw(
@@ -320,23 +335,27 @@ class WooCommerceRESTAdapter:
         response = self._request("/products", params=params)
         payload = self._json_payload(response)
         if not isinstance(payload, list):
-            raise WooCommerceAPIError("invalid product list payload")
+            raise WooCommerceAPIError("invalid product list payload",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         items = []
         for item in payload:
             if not isinstance(item, dict):
-                raise WooCommerceAPIError("invalid product list item")
+                raise WooCommerceAPIError("invalid product list item",
+                                          failure_code=HealthFailureCode.SCHEMA_MISMATCH)
             items.append(dict(item))
         raw_total = response.headers.get("X-WP-Total")
         if (not isinstance(raw_total, str) or not raw_total.isascii()
                 or not raw_total.isdecimal() or len(raw_total) > 20):
-            raise WooCommerceAPIError("Invalid WooCommerce product total")
+            raise WooCommerceAPIError("Invalid WooCommerce product total",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         total = int(raw_total)
         expected_count = min(page_size, max(0, total - (page - 1) * page_size))
         identifiers = [item.get("id") for item in items]
         if (len(items) != expected_count
                 or any(type(identifier) is not int or identifier <= 0 for identifier in identifiers)
                 or identifiers != sorted(set(identifiers))):
-            raise WooCommerceAPIError("Inconsistent WooCommerce product page")
+            raise WooCommerceAPIError("Inconsistent WooCommerce product page",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         return items, total
 
     def get_order_summary_raw(
@@ -364,7 +383,8 @@ class WooCommerceRESTAdapter:
     ) -> tuple[list[Product], int]:
         items, total = self.list_products_raw(page, page_size)
         if any(item.get("status") != "publish" for item in items):
-            raise WooCommerceAPIError("Unexpected WooCommerce product visibility")
+            raise WooCommerceAPIError("Unexpected WooCommerce product visibility",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         return [self._to_product(item) for item in items], total
 
     def get_product(
@@ -376,11 +396,13 @@ class WooCommerceRESTAdapter:
             return None
         visibility = payload.get("status")
         if not isinstance(visibility, str):
-            raise WooCommerceAPIError("Invalid WooCommerce product visibility")
+            raise WooCommerceAPIError("Invalid WooCommerce product visibility",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         if visibility in {"draft", "pending", "private", "trash", "future"}:
             return None
         if visibility != "publish":
-            raise WooCommerceAPIError("Invalid WooCommerce product visibility")
+            raise WooCommerceAPIError("Invalid WooCommerce product visibility",
+                                      failure_code=HealthFailureCode.SCHEMA_MISMATCH)
         return self._to_product(payload)
 
     def list_categories(self) -> list[dict[str, Any]]:

@@ -47,13 +47,14 @@ def test_homepage_shopping_dashboard_exact_keys_and_shapes_are_consumed() -> Non
 
     assert route.methods == {"GET"}
 
-def test_homepage_shopping_dashboard_existing_get_routes_remain_unchanged() -> None:
+def test_homepage_shopping_dashboard_get_routes_include_read_path_health() -> None:
     routes = {route.path: route.methods for route in shopping.router.routes}
     assert routes == {
         "/shopping/product-drafts": {"GET"},
         "/shopping/product-drafts/{draft_id}": {"GET"},
         "/shopping/product-drafts/{draft_id}/revisions/{revision_id}": {"GET"},
         "/shopping/health": {"GET"},
+        "/shopping/health/read-path": {"GET"},
         "/shopping/readiness": {"GET"},
         "/shopping/capabilities": {"GET"},
         "/shopping/integrations": {"GET"},

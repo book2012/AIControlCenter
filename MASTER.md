@@ -1,5 +1,32 @@
 # MASTER
 
+## Current source status — SHOP_API_READ_002 (2026-09-13)
+
+Read-path health, adapter failure classification, malformed-response
+observability, and deterministic product error JSON are implemented.
+The configured catalog is sampled with one bounded read on explicit
+`GET /shopping/health/read-path` requests. Health never claims success from HTTP
+status alone, and disabled/policy-denied reads make no upstream request.
+
+The Mac mini remains the single Control Plane; AIControlCenter owns error and
+health contracts. WordPress and WooCommerce retain CMS/Commerce ownership.
+Latency and cumulative outcome instrumentation are deferred: the existing
+observability package supplies pure health contracts but no active collector.
+No new storage, logging, network exporter, background job, or write authority
+was added.
+
+Final fixture validation: **413 passed, 15 existing deprecation warnings**.
+Baseline: clean approved `feature/homepage-product-management-console`,
+`6cae4c1`, synchronized with its configured upstream. Git closure follows the
+repository's approved feature-branch workflow. This source milestone does not
+authorize or claim production activation or live health verification.
+
+`SHOP_API_READ_002_IMPLEMENTATION=COMPLETE`
+`SHOP_API_READ_002_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_002_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
+
+[Contract and validation evidence](docs/architecture/SHOP-API-READ-002-READ-HEALTH.md).
+
 ## 2026-09-09 — Controlled Shopping Soft Launch runtime closeout
 
 The Shopping runtime has reached the controlled soft-launch operational state on

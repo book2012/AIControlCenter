@@ -1,5 +1,25 @@
 # Roadmap
 
+## SOURCE COMPLETE / ACTIVATION NOT AUTHORIZED — SHOP_API_READ_002
+
+- [x] Validate a fresh read through the catalog service and governed adapter.
+- [x] Classify adapter failures using existing health failure codes.
+- [x] Expose malformed JSON/schema observations as sanitized read-health failures.
+- [x] Canonicalize product errors, including framework query validation.
+- [x] Verify fixtures, health contracts, route inventory, adapter isolation,
+  downstream shopping behavior, and read-only method boundaries: **413 passed**.
+
+Latency/counter instrumentation is deferred until an active request telemetry
+convention is established. Live verification and runtime activation remain
+separate, unauthorized work; this task performed no production or Ubuntu access
+and no WooCommerce state change.
+
+`SHOP_API_READ_002_IMPLEMENTATION=COMPLETE`
+`SHOP_API_READ_002_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_002_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
+
+[Architecture and exact validation](docs/architecture/SHOP-API-READ-002-READ-HEALTH.md).
+
 ## 2026-09-09 — Controlled Shopping Soft Launch runtime closeout
 
 The Shopping runtime has reached the controlled soft-launch operational state on

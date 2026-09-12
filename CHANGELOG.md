@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-09-13 — SHOP_API_READ_002 read-path health and error classification
+
+- Added `GET /shopping/health/read-path` with deterministic health JSON and
+  HTTP 200/503. Preserved configuration-only liveness and readiness.
+- Reused `HealthFailureCode` for timeout, transport, authentication,
+  authorization, rate limiting, invalid JSON, schema mismatch, unavailable
+  dependencies, configuration, and unknown adapter failures.
+- Changed the WooCommerce adapter health probe to validate a published product
+  page through the same governed GET path as product reads.
+- Made product 404/422/503 responses canonical UTF-8 JSON; framework product
+  query validation now returns `shopping_invalid_product_query` without input
+  echo. Added OpenAPI response models for these errors and read health.
+- Rejected invalid replacement-adapter observations and unpaired Unicode;
+  unexpected adapter exceptions return sanitized unavailable responses.
+- Fixture validation: **413 passed, 15 existing deprecation warnings**.
+  No live reads, deployment, production mutation, WooCommerce state change,
+  telemetry sink, retry, persistence, or new write capability was introduced.
+
+See [scope, compatibility, classification, and exact tests](docs/architecture/SHOP-API-READ-002-READ-HEALTH.md).
+
 ## 2026-09-09 — Controlled Shopping Soft Launch runtime closeout
 
 The Shopping runtime has reached the controlled soft-launch operational state on

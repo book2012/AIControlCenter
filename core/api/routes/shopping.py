@@ -3,6 +3,8 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
+from fastapi.routing import APIRoute
 
 from core.api.dependencies.shopping import (
     get_product_draft_query_service,
@@ -15,8 +17,10 @@ from core.shopping.schemas import (
     ShoppingCategoryListResponse,
     ProductListResponse,
     ProductResponse,
+    ProductReadErrorResponse,
     ShoppingCapabilitiesResponse,
     ShoppingHealthResponse,
+    ShoppingReadPathHealthResponse,
     ShoppingIntegrationResponse,
     ShoppingReadinessResponse,
 )
@@ -49,12 +53,27 @@ class ProductJSONResponse(JSONResponse):
                           sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
-def _catalog_error(error: Exception) -> HTTPException:
+class CatalogReadRoute(APIRoute):
+    """Keep framework query errors within the deterministic product contract."""
+
+    def get_route_handler(self):
+        handler = super().get_route_handler()
+
+        async def handle(request):
+            try:
+                return await handler(request)
+            except RequestValidationError:
+                return _catalog_error(CatalogReadQueryError())
+
+        return handle
+
+
+def _catalog_error(error: Exception) -> ProductJSONResponse:
     if isinstance(error, CatalogReadQueryError):
-        return HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
-                             detail={"code": "shopping_invalid_product_query"})
-    return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                         detail={"code": "shopping_catalog_unavailable"})
+        return ProductJSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                                   content={"detail": {"code": "shopping_invalid_product_query"}})
+    return ProductJSONResponse(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                               content={"detail": {"code": "shopping_catalog_unavailable"}})
 
 
 def _product_draft_error(error: Exception) -> HTTPException:
@@ -103,6 +122,17 @@ def product_draft_revision(draft_id: str, revision_id: str, service: ProductDraf
 )
 def shopping_health(service: ShoppingCatalog):
     return service.health()
+
+
+@router.get(
+    "/health/read-path",
+    response_model=ShoppingReadPathHealthResponse,
+    response_class=ProductJSONResponse,
+    responses={503: {"model": ShoppingReadPathHealthResponse}},
+)
+def shopping_read_path_health(service: ShoppingCatalog):
+    result = service.read_path_health()
+    return ProductJSONResponse(content=result, status_code=200 if result["healthy"] else 503)
 
 
 @router.get(
@@ -220,11 +250,6 @@ def shopping_categories(service: ShoppingCatalog):
     return service.list_categories()
 
 
-@router.get(
-    "/products",
-    response_model=ProductListResponse,
-    response_class=ProductJSONResponse,
-)
 def shopping_products(
     service: ShoppingCatalog,
     page: int = Query(default=1, ge=1),
@@ -233,24 +258,34 @@ def shopping_products(
     try:
         return service.list_products(page=page, page_size=page_size)
     except (CatalogReadQueryError, CatalogReadUnavailable) as error:
-        raise _catalog_error(error) from None
+        return _catalog_error(error)
 
 
-@router.get(
-    "/products/{product_id}",
-    response_model=ProductResponse,
-    response_class=ProductJSONResponse,
-)
 def shopping_product(product_id: str, service: ShoppingCatalog):
     try:
         return service.get_product(product_id)
     except (CatalogReadQueryError, CatalogReadUnavailable) as error:
-        raise _catalog_error(error) from None
+        return _catalog_error(error)
     except ProductNotFoundError as error:
-        raise HTTPException(
+        return ProductJSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail={
+            content={"detail": {
                 "code": "shopping_product_not_found",
                 "product_id": str(error),
-            },
-        ) from error
+            }},
+        )
+
+
+# Apply canonical validation errors only to the public product reads.
+router.add_api_route(
+    "/products", shopping_products, methods=["GET"],
+    response_model=ProductListResponse, response_class=ProductJSONResponse,
+    route_class_override=CatalogReadRoute,
+    responses={422: {"model": ProductReadErrorResponse}, 503: {"model": ProductReadErrorResponse}},
+)
+router.add_api_route(
+    "/products/{product_id}", shopping_product, methods=["GET"],
+    response_model=ProductResponse, response_class=ProductJSONResponse,
+    route_class_override=CatalogReadRoute,
+    responses={code: {"model": ProductReadErrorResponse} for code in (404, 422, 503)},
+)
