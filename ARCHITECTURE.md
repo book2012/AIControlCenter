@@ -5799,3 +5799,51 @@ authorization.
 Validated candidate: `28869898a28f`.
 Current active Runtime remains: `d8f9f550093d`.
 Implementation commit: `6559f92`.
+
+## ACTIVATION-01C — Production Runtime activation capability
+
+Status: `IMPLEMENTATION_COMPLETE`; Production Gate implementation checks: `READY`.
+Production activation remains `NOT_AUTHORIZED`; this closeout is an uncommitted
+repository change and did not inspect or mutate the live Runtime.
+
+The Python Control Plane enforces this execution order:
+
+`exact immutable plan binding -> request/plan-bound human authorization -> execution lane -> read-only artifact verification -> permanent single-use claim -> exactly one primitive invocation -> receipt`.
+
+`FilesystemProductionRuntimeActivationArtifactVerifier` takes an explicitly
+configured canonical Runtime root. It validates `venvs/<candidate_runtime_id>`
+against the bootstrap-owned `metadata.json` and exact
+`.aicontrolcenter-source-commit` bytes (`<40 lowercase hex characters>\n`). The
+full source commit must match the plan, and its first 12 characters must match
+the Runtime ID. The existing metadata schema and Runtime modes are preserved.
+
+For `sources/<candidate_runtime_id>`, the verifier reuses the Control Plane's
+`ops/macos/runtime/runtime-source-artifact.py` read-only `validate_artifact`
+implementation. The plan's `source_artifact_content_digest` means
+`sha256:<recomputed content_sha256>` under the existing source manifest contract.
+Both the manifest's digest and the plan's digest must match actual source
+content. It is not a metadata JSON digest or a new venv hashing convention.
+Governance JSON digests and claim serialization reuse `core/deployment/contracts`.
+
+Missing/invalid directories, symlinked path components, escaped source symlinks,
+nonregular identity files, malformed/mismatched markers, invalid metadata,
+invalid manifests, writable source artifacts, and content mismatches fail closed.
+The verifier reads no current pointer and executes no candidate code. Callers
+must preserve finalized candidate immutability between verification and execution;
+the activation lane serializes activation attempts, not external artifact writers.
+
+Lane contention invokes no verifier, creates no permanent claim, and invokes no
+primitive. Verification failure releases the lane, preserves its reusable lock
+file, creates no permanent claim, and invokes no primitive. Primitive failure
+retains the claim and permits no retry;
+the reusable execution lane is released. The exact primitive identity remains
+`BOOTSTRAP_PRODUCTION_RUNTIME_ACTIVATE_V1`. The bootstrap shell is unchanged;
+authorization, plan binding, and replay prevention stay in Python. There is no
+service restart, Ubuntu authority, automatic rollback, or Production activation
+authority in this implementation closeout.
+
+Validation: ACTIVATION-01C `76 passed, 275 warnings`; related bootstrap, Runtime
+metadata, source artifact, and deployment contract regression
+`86 passed, 280 warnings`. All tests used local fixtures; known pytest cleanup
+warnings were nonfunctional. Git review and a separate future live authorization
+gate remain outside implementation readiness.

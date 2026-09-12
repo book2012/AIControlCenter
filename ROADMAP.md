@@ -5238,3 +5238,24 @@ test-root confinement source change and must not be reused for another build.
 
 The expected-current guard is not atomic CAS and does not itself serialize
 concurrent activation or grant Production authorization.
+
+## ACTIVATION-01C — Production Runtime activation implementation closeout
+
+- [x] Bind the immutable plan and human authorization to the exact request.
+- [x] Verify bootstrap Runtime metadata, exact source markers, safe candidate
+  paths, and existing source artifact `content_sha256` read-only.
+- [x] Acquire the execution lane before verification; verify before creating a
+  permanent claim. Lane contention invokes no verifier, claim, or primitive.
+- [x] Serialize activation, claim once, invoke the exact primitive once, retain
+  failed claims, and reject replay without adding shell governance.
+- [x] Pass ACTIVATION-01C regression (`76 passed, 275 warnings`) and related
+  bootstrap/metadata/source artifact/contracts regression (`86 passed, 280 warnings`).
+- [x] Update implementation documentation after green tests.
+- [ ] Complete human Git review; commit only when separately requested.
+- [ ] Prepare fresh governance evidence and obtain separate live activation
+  authorization before any Production operation.
+- [ ] Perform separately authorized activation and read-only post-validation.
+
+Production Gate implementation checks: `READY`. This status grants no Production
+authorization. No live Runtime access, pointer mutation, service restart, or
+Ubuntu access occurred; the changes remain uncommitted.

@@ -6256,3 +6256,30 @@ post-activation validation.
 
 `EXPECTED_CURRENT_RUNTIME_GUARD=SOURCE_TEST_GIT_CLOSED_DOC_PENDING`
 `NEXT_PRODUCTION_MILESTONE=SHOP_API_READ_001_CANONICAL_WOOCOMMERCE_READ_PATH`
+
+## ACTIVATION-01C — Production Runtime activation implementation complete
+
+The governed Python capability now includes concrete read-only verification of
+the candidate Runtime's bootstrap identity and matching source artifact. The
+source digest remains the existing `content_sha256` contract. Exact plan and
+human authorization binding precede execution lane acquisition and verification;
+the permanent single-use claim, one primitive invocation, and receipt follow.
+Lane contention cannot verify, claim, or execute. Verification failure releases
+the lane and cannot claim or execute; primitive failure retains the claim and
+cannot replay.
+The shell primitive and exact primitive identity remain unchanged.
+
+ACTIVATION-01C regression: `76 passed, 275 warnings`. Related bootstrap, metadata,
+source artifact, and deployment contract regression: `86 passed, 280 warnings`.
+The bounded implementation meets its acceptance criteria; changes are uncommitted
+and await human review. Candidate immutability must hold through any future
+separately authorized execution. No live Runtime observation or mutation was
+performed during this implementation closeout.
+
+`ACTIVATION_01C_IMPLEMENTATION=COMPLETE`
+`ACTIVATION_01C_PRODUCTION_GATE_IMPLEMENTATION=READY`
+`ACTIVATION_01C_GIT_REVIEW=PENDING`
+`PRODUCTION_RUNTIME_ACTIVATION=NO`
+`PRODUCTION_AUTHORIZATION=NO`
+`LAUNCHCTL_RESTARTS=0`
+`UBUNTU_CHANGES=0`

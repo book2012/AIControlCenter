@@ -5319,3 +5319,24 @@ and does not grant Production authorization.
 Current validated candidate Runtime is `28869898a28f`; observed active Runtime
 remains `d8f9f550093d`. No Production Runtime activation has been performed.
 Implementation commit: `6559f92`.
+
+## ACTIVATION-01C — Production Runtime activation capability
+
+The repository implementation is complete. The Python coordinator binds the exact
+plan and human authorization, acquires the execution lane, verifies the candidate
+read-only, permanently claims the authorization, invokes the fixed primitive once,
+and emits a receipt. Lane contention invokes no verifier, claim, or primitive.
+Verification failure releases the lane and leaves no claim; primitive failure
+preserves the claim and cannot replay.
+
+The concrete filesystem verifier uses bootstrap metadata and the exact source
+commit marker, then reuses the existing source artifact `content_sha256` contract.
+It rejects missing or malformed candidates, unsafe paths/symlinks, source identity
+mismatches, and content mismatches. No new hashing convention or shell governance
+was added. See [the architecture contract](ARCHITECTURE.md).
+
+Focused regression: `76 passed, 275 warnings`. Related bootstrap, metadata,
+source artifact, and deployment contract regression: `86 passed, 280 warnings`.
+Production Gate implementation checks are `READY`; live activation is
+`NOT_AUTHORIZED`. No live Runtime access, pointer mutation, launchctl restart,
+Ubuntu access, or commit occurred in this closeout. Changes await human Git review.

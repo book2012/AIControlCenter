@@ -5768,3 +5768,31 @@ evidence locator.
   `d8f9f550093d`.
 - No Production Runtime activation, launchd mutation, WooCommerce activation, or
   Shopping write authorization occurred.
+
+## 2026-09-11 — ACTIVATION-01C implementation closeout (uncommitted)
+
+- Added a read-only filesystem artifact verifier using bootstrap metadata, exact
+  source commit markers, canonical Runtime paths, and the existing source artifact
+  validator's recomputed `content_sha256`. Manifest and plan must both match the
+  actual source content; no new digest convention was introduced.
+- Reused deployment contract helpers for governance JSON digests and claim bytes.
+- Enforced plan binding, human authorization, execution lane, artifact verification,
+  permanent claim, fixed primitive invocation, and receipt in that order; the
+  bootstrap shell and artifact digest semantics remain unchanged.
+- Added concrete failure/read-only tests and coordinator coverage proving no
+  claim or primitive on verification failure, lane ownership and claim creation before
+  invocation, permanent claim retention on failure, and replay rejection.
+- Fixed the symlink test fixture's macOS rename failure by making only its owned
+  fixture directory writable before relocation; verifier path checks remain strict.
+- Lane-busy regression: `1 passed, 265 warnings in 0.09s`; verifier, permanent
+  claim, and primitive are all untouched when the lane is busy.
+- Verifier regression: `55 passed, 265 warnings in 0.34s`.
+- Complete ACTIVATION-01C regression: `76 passed, 275 warnings in 0.42s`.
+- Related bootstrap, metadata, source artifact, and deployment contract regression:
+  `86 passed, 280 warnings in 6.57s` with the repository Python and normal `022`
+  umask. The deployment wrapper's `077` umask initially caused one bootstrap
+  fixture mode assertion failure; no bootstrap code or tests were changed.
+- Known pytest cleanup warnings did not cause functional failures.
+- Production Gate implementation checks: `READY`. Live Production activation:
+  `NOT_AUTHORIZED`. No live Runtime access, pointer change, launchctl restart,
+  Ubuntu access, or commit was performed.
