@@ -6283,3 +6283,24 @@ performed during this implementation closeout.
 `PRODUCTION_AUTHORIZATION=NO`
 `LAUNCHCTL_RESTARTS=0`
 `UBUNTU_CHANGES=0`
+
+## Current source status — SHOP_API_READ_001
+
+The authorized product list/detail source implementation is complete. The
+existing `ShoppingService`, `CommerceCatalogPort`, product response contracts,
+and replaceable WooCommerce adapter now provide a validated read-only path with
+AIControlCenter-owned deterministic JSON. Invalid queries are rejected before
+I/O; unavailable or malformed upstream observations fail closed. No parallel
+shopping stack or production activation was introduced.
+
+Final fixture evidence: `113 passed, 1 warning` focused and
+`166 passed, 15 warnings` relevant shopping regressions. No implementation
+blocker remains. The prior broader production milestone remains pending live
+authorization and verification; these source tests make no live health or
+catalog claim. See the [full contract and exact tests](docs/architecture/SHOP-API-READ-001-PRODUCT-READ-PATH.md).
+
+`SHOP_API_READ_001_IMPLEMENTATION=COMPLETE`
+`SHOP_API_READ_001_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_001_GIT=UNCOMMITTED`
+`SHOP_API_READ_001_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
+`PRODUCTION_SHOPPING_WRITE_AUTHORIZED=NO`

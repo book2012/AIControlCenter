@@ -129,6 +129,9 @@ def test_raw_vendor_reads_are_get_only():
     assert total == 1
     assert client.get_order_summary_raw("7")["id"] == 7
     assert session.calls[0]["params"] == {"context": "view"}
-    assert session.calls[1]["params"] == {"context": "view", "status": "publish", "page": 1, "per_page": 2}
+    assert session.calls[1]["params"] == {
+        "context": "view", "status": "publish", "page": 1, "per_page": 2,
+        "orderby": "id", "order": "asc",
+    }
     assert session.calls[2]["params"] == {"context": "view"}
     assert all(call["allow_redirects"] is False for call in session.calls)

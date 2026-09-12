@@ -44,7 +44,7 @@ class ProductResponse(BaseModel):
     name: str
     slug: str
     description: str
-    price: Decimal
+    price: Decimal = Field(ge=0, allow_inf_nan=False)
     currency: str
     category: str
     in_stock: bool
@@ -53,7 +53,7 @@ class ProductResponse(BaseModel):
 
 class ProductListResponse(BaseModel):
     items: list[ProductResponse]
-    total: int
+    total: int = Field(ge=0)
     page: int = Field(ge=1)
     page_size: int = Field(ge=1, le=100)
 

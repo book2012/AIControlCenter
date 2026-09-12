@@ -5340,3 +5340,25 @@ source artifact, and deployment contract regression: `86 passed, 280 warnings`.
 Production Gate implementation checks are `READY`; live activation is
 `NOT_AUTHORIZED`. No live Runtime access, pointer mutation, launchctl restart,
 Ubuntu access, or commit occurred in this closeout. Changes await human Git review.
+
+## SHOP_API_READ_001 — read-only product API source complete
+
+`GET /shopping/products?page=1&page_size=20` and
+`GET /shopping/products/{product_id}` reuse the existing Shopping service,
+catalog port, product response contracts, and replaceable WooCommerce adapter.
+AIControlCenter validates and serializes deterministic JSON; WooCommerce owns
+catalog data. The adapter now reuses bounded GET transport, validates published
+products and pagination, and fails closed on malformed or unavailable reads.
+Prices remain decimal strings under the existing KRW WooCommerce contract.
+
+Final fixture-only validation: **113 focused tests passed; 166 shopping API and
+architecture regressions passed**. The source is ready for Git review and remains
+uncommitted. No runtime profile was activated, no live runtime or real credentials
+were accessed, and no external writes were performed. Production activation and
+live storefront verification remain separately governed work.
+
+See the [contract, adapter boundaries, exact tests, and limitations](docs/architecture/SHOP-API-READ-001-PRODUCT-READ-PATH.md).
+
+`SHOP_API_READ_001_IMPLEMENTATION=COMPLETE`
+`SHOP_API_READ_001_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_001_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`

@@ -5847,3 +5847,27 @@ metadata, source artifact, and deployment contract regression
 `86 passed, 280 warnings`. All tests used local fixtures; known pytest cleanup
 warnings were nonfunctional. Git review and a separate future live authorization
 gate remain outside implementation readiness.
+
+## SHOP_API_READ_001 — canonical public product reads
+
+The bounded source implementation preserves the existing composition:
+`ShoppingRuntime -> ShoppingService -> CommerceCatalogPort -> WooCommerceRESTAdapter`.
+The adapter now uses `WooCommerceReadTransportSession` and the existing product
+GET policy for list/detail reads. No parallel port, vendor service, snapshot
+contract, or API family was introduced. The asynchronous `CommerceReadPort` and
+canonical snapshot schemas remain available for their existing consumers.
+
+AIControlCenter owns `ProductResponse`/`ProductListResponse`, JSON validation,
+sorted compact UTF-8 response bytes, and public 404/422/503 semantics. The
+replaceable WooCommerce adapter owns vendor mapping, published-product reads,
+stable ID ordering, and upstream page/identity validation. Missing or malformed
+commerce data never becomes an invented product or successful empty catalog.
+The existing KRW mapping and string IDs are retained; no new snapshot identity
+scheme is implied. WooCommerce remains the Commerce Engine and the Mac mini the
+sole Control Plane.
+
+The [SHOP_API_READ_001 contract and evidence](docs/architecture/SHOP-API-READ-001-PRODUCT-READ-PATH.md)
+records the exact API, adapter behavior, boundaries, and commands. Final focused
+validation: `113 passed, 1 warning`; relevant shopping regression:
+`166 passed, 15 warnings`. All evidence used fixtures/fakes. Source changes are
+uncommitted; live activation, production access, and writes remain unauthorized.

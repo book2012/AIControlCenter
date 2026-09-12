@@ -5,7 +5,8 @@ from core.shopping.config import (
     load_shopping_settings,
 )
 from core.shopping.factory import create_catalog_adapter
-from core.shopping.ports import CommerceCatalogPort
+from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable, CommerceCatalogPort
+from core.shopping.schemas import ProductListResponse, ProductResponse
 
 
 class ProductNotFoundError(Exception):
@@ -211,28 +212,42 @@ class ShoppingService:
         page: int,
         page_size: int,
     ) -> dict:
+        if (type(page) is not int or page < 1 or type(page_size) is not int
+                or not 1 <= page_size <= 100):
+            raise CatalogReadQueryError("shopping_invalid_product_query")
+        if not self.settings.enabled:
+            raise CatalogReadUnavailable("shopping_catalog_unavailable")
         products, total = self.catalog.list_products(
             page=page,
             page_size=page_size,
         )
 
-        return {
-            "items": [
-                asdict(product)
-                for product in products
-            ],
-            "total": total,
-            "page": page,
-            "page_size": page_size,
-        }
+        try:
+            return ProductListResponse(
+                items=[ProductResponse(**asdict(product)) for product in products],
+                total=total, page=page, page_size=page_size,
+            ).model_dump(mode="json")
+        except (TypeError, ValueError):
+            raise CatalogReadUnavailable("shopping_catalog_unavailable") from None
 
     def get_product(
         self,
         product_id: str,
     ) -> dict:
+        if (not isinstance(product_id, str) or not product_id or len(product_id) > 128
+                or not product_id.isascii()
+                or not all(char.isalnum() or char in "-_" for char in product_id)):
+            raise CatalogReadQueryError("shopping_invalid_product_query")
+        if not self.settings.enabled:
+            raise CatalogReadUnavailable("shopping_catalog_unavailable")
         product = self.catalog.get_product(product_id)
 
         if product is None:
             raise ProductNotFoundError(product_id)
 
-        return asdict(product)
+        try:
+            if product.id != product_id:
+                raise ValueError("product identity mismatch")
+            return ProductResponse(**asdict(product)).model_dump(mode="json")
+        except (TypeError, ValueError):
+            raise CatalogReadUnavailable("shopping_catalog_unavailable") from None

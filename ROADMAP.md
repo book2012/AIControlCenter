@@ -5126,7 +5126,16 @@ evidence locator.
 
 `SHOP_STOREFRONT_S01_PRESENTATION=CLOSED`
 
-## ACTIVE — SHOP-API-READ-001 canonical WooCommerce read path
+## SOURCE COMPLETE / PRODUCTION PENDING — SHOP-API-READ-001 canonical WooCommerce read path
+
+- [x] Implement the bounded list-products/get-by-ID source path using the existing
+  service, catalog port, product contracts, and replaceable WooCommerce adapter.
+- [x] Validate deterministic AIControlCenter JSON, read-only policy/transport,
+  malformed observations, empty/not-found/unavailable semantics, and adapter reuse.
+- [x] Pass focused fixture tests (`113 passed`) and shopping regressions
+  (`166 passed`); update required source documentation.
+
+The following live work remains outside the source-only authorization:
 
 - [ ] Activate the existing canonical WooCommerce read-only profile through a
   separately governed production lifecycle.
@@ -5259,3 +5268,19 @@ concurrent activation or grant Production authorization.
 Production Gate implementation checks: `READY`. This status grants no Production
 authorization. No live Runtime access, pointer mutation, service restart, or
 Ubuntu access occurred; the changes remain uncommitted.
+
+## SHOP_API_READ_001 — bounded source closeout
+
+Product list/detail implementation and fixture validation are complete; changes
+remain uncommitted for review. The existing public routes and contracts are
+preserved, with strict WooCommerce mapping, deterministic JSON, and fail-closed
+reads. Final evidence: **113 focused + 166 relevant shopping tests passed**.
+See [architecture, exact tests, and boundaries](docs/architecture/SHOP-API-READ-001-PRODUCT-READ-PATH.md).
+
+- [x] Complete the authorized source implementation and documentation.
+- [ ] Review and commit only when separately requested.
+- [ ] Obtain separate authorization for any production activation or live read.
+
+`SHOP_API_READ_001_IMPLEMENTATION=COMPLETE`
+`SHOP_API_READ_001_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_001_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`

@@ -5796,3 +5796,26 @@ evidence locator.
 - Production Gate implementation checks: `READY`. Live Production activation:
   `NOT_AUTHORIZED`. No live Runtime access, pointer change, launchctl restart,
   Ubuntu access, or commit was performed.
+
+## 2026-09-12 — SHOP_API_READ_001 product list/detail source implementation
+
+- Reused `CommerceCatalogPort`, `Product`, existing public response models,
+  runtime composition, factory, and `WooCommerceRESTAdapter` for the two current
+  GET product routes.
+- Consolidated product reads on existing raw GET methods and bounded transport;
+  added pre-I/O query/policy checks, stable numeric ordering, strict total/page
+  validation, published visibility checks, and detail identity matching.
+- Validated vendor mapping and decimal money; removed synthetic-zero behavior
+  for invalid/missing prices. AIControlCenter now returns JSON-compatible service
+  results and deterministic public product response bytes.
+- Added catalog-port query/unavailable errors, sanitized 503 responses, and
+  disabled-catalog rejection while preserving valid 404 and empty-list semantics.
+- Added fixture-only end-to-end tests and updated existing WooCommerce fixtures
+  for valid numeric missing IDs, explicit published status, and stable ordering.
+- Final tests: `113 passed, 1 warning` focused; `166 passed, 15 warnings` shopping
+  regressions. Warnings are existing framework/datetime deprecations. Exact
+  commands and the fixture isolation boundary are in the
+  [architecture record](docs/architecture/SHOP-API-READ-001-PRODUCT-READ-PATH.md).
+- Updated README, ARCHITECTURE, MASTER, and ROADMAP after passing tests. Source
+  changes remain uncommitted. No production/Ubuntu runtime access, launchctl,
+  real credential access, activation, external writes, staging, or push occurred.

@@ -1,6 +1,8 @@
+import json
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import JSONResponse
 
 from core.api.dependencies.shopping import (
     get_product_draft_query_service,
@@ -22,6 +24,7 @@ from core.shopping.service import (
     ProductNotFoundError,
     ShoppingService,
 )
+from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable
 from core.shopping.product_drafts.read import (
     ProductDraftQueryService,
     ProductDraftReadUnavailable,
@@ -36,6 +39,22 @@ router = APIRouter(
 
 ProductDraftQuery = Annotated[ProductDraftQueryService, Depends(get_product_draft_query_service)]
 ShoppingCatalog = Annotated[ShoppingService, Depends(get_shopping_service)]
+
+
+class ProductJSONResponse(JSONResponse):
+    """Stable UTF-8 JSON for the existing AIControlCenter product contract."""
+
+    def render(self, content: object) -> bytes:
+        return json.dumps(content, ensure_ascii=False, allow_nan=False,
+                          sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def _catalog_error(error: Exception) -> HTTPException:
+    if isinstance(error, CatalogReadQueryError):
+        return HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_CONTENT,
+                             detail={"code": "shopping_invalid_product_query"})
+    return HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                         detail={"code": "shopping_catalog_unavailable"})
 
 
 def _product_draft_error(error: Exception) -> HTTPException:
@@ -204,25 +223,29 @@ def shopping_categories(service: ShoppingCatalog):
 @router.get(
     "/products",
     response_model=ProductListResponse,
+    response_class=ProductJSONResponse,
 )
 def shopping_products(
     service: ShoppingCatalog,
     page: int = Query(default=1, ge=1),
     page_size: int = Query(default=20, ge=1, le=100),
 ):
-    return service.list_products(
-        page=page,
-        page_size=page_size,
-    )
+    try:
+        return service.list_products(page=page, page_size=page_size)
+    except (CatalogReadQueryError, CatalogReadUnavailable) as error:
+        raise _catalog_error(error) from None
 
 
 @router.get(
     "/products/{product_id}",
     response_model=ProductResponse,
+    response_class=ProductJSONResponse,
 )
 def shopping_product(product_id: str, service: ShoppingCatalog):
     try:
         return service.get_product(product_id)
+    except (CatalogReadQueryError, CatalogReadUnavailable) as error:
+        raise _catalog_error(error) from None
     except ProductNotFoundError as error:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

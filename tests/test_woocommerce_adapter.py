@@ -65,6 +65,7 @@ def test_get_product_returns_product():
     response = FakeResponse(
         {
             "id": 202,
+            "status": "publish",
             "name": "상세 상품",
             "slug": "detail-product",
             "description": "상세 설명",
@@ -95,7 +96,7 @@ def test_get_product_returns_none_for_404():
         ]
     )
 
-    assert adapter.get_product("missing") is None
+    assert adapter.get_product("404") is None
 
 
 def test_list_categories_maps_response():
@@ -248,6 +249,7 @@ def test_list_products_maps_woocommerce_response():
                 [
                     {
                         "id": 101,
+                        "status": "publish",
                         "name": "테스트 상품",
                         "slug": "test-product",
                         "description": "상품 설명",
@@ -306,6 +308,7 @@ def test_product_without_image_maps_none():
                 [
                     {
                         "id": 202,
+                        "status": "publish",
                         "name": "이미지 없는 상품",
                         "slug": "product-without-image",
                         "description": "",

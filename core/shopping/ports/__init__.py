@@ -3,6 +3,14 @@ from typing import Protocol
 from core.shopping.models import Product
 
 
+class CatalogReadUnavailable(RuntimeError):
+    """The catalog could not supply a valid observation; never an empty result."""
+
+
+class CatalogReadQueryError(ValueError):
+    """Invalid product identifier or pagination; rejected before external I/O."""
+
+
 class CommerceCatalogPort(Protocol):
     def list_products(
         self,
