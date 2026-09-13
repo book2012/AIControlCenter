@@ -1,4 +1,5 @@
 from dataclasses import asdict
+from collections.abc import Callable
 
 from core.shopping.config import (
     ShoppingSettings,
@@ -7,6 +8,9 @@ from core.shopping.config import (
 from core.shopping.factory import create_catalog_adapter
 from core.shopping.models import Product
 from core.shopping.observability.health_probe import DEFAULT_STATE_BY_FAILURE, HealthFailureCode
+from core.shopping.observability.read_telemetry import (
+    CatalogReadOperation, CatalogReadOutcome, CatalogReadTelemetry, CatalogReadTelemetrySnapshot,
+)
 from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable, CommerceCatalogPort
 from core.shopping.schemas import ProductListResponse, ProductResponse
 
@@ -20,8 +24,11 @@ class ShoppingService:
         self,
         settings: ShoppingSettings | None = None,
         catalog: CommerceCatalogPort | None = None,
+        *,
+        read_telemetry: CatalogReadTelemetry | None = None,
     ):
         self.settings = settings or load_shopping_settings()
+        self._read_telemetry = read_telemetry if read_telemetry is not None else CatalogReadTelemetry()
 
         self.catalog = catalog or create_catalog_adapter(
             self.settings.catalog_adapter,
@@ -95,7 +102,9 @@ class ShoppingService:
         """One fresh bounded catalog read; liveness remains configuration-only."""
         failure = HealthFailureCode.NONE
         try:
-            self.list_products(page=1, page_size=1)
+            self._observe_catalog_read(
+                CatalogReadOperation.HEALTH, lambda: self._list_products(page=1, page_size=1),
+            )
         except CatalogReadUnavailable as error:
             failure = error.failure_code
         except CatalogReadQueryError:
@@ -108,6 +117,35 @@ class ShoppingService:
             "failure_code": failure.value,
             "read_only": True,
         }
+
+    def read_path_telemetry(self) -> CatalogReadTelemetrySnapshot:
+        """Project completed observations without a catalog read or clock tick."""
+        return self._read_telemetry.snapshot()
+
+    def _observe_catalog_read(self, operation: CatalogReadOperation, read: Callable[[], dict]) -> dict:
+        started = self._read_telemetry.start()
+        outcome, failure = CatalogReadOutcome.UNAVAILABLE, HealthFailureCode.UNKNOWN
+        try:
+            result = read()
+            outcome, failure = CatalogReadOutcome.SUCCESS, HealthFailureCode.NONE
+            return result
+        except ProductNotFoundError:
+            outcome, failure = CatalogReadOutcome.NOT_FOUND, HealthFailureCode.NONE
+            raise
+        except CatalogReadQueryError:
+            outcome, failure = CatalogReadOutcome.INVALID_QUERY, None
+            if operation is CatalogReadOperation.HEALTH:
+                outcome, failure = CatalogReadOutcome.UNAVAILABLE, HealthFailureCode.UNKNOWN
+            raise
+        except CatalogReadUnavailable as error:
+            outcome, failure = CatalogReadOutcome.UNAVAILABLE, error.failure_code
+            raise
+        finally:
+            try:
+                self._read_telemetry.record(operation, outcome, failure, started)
+            except Exception:
+                # Observability must never replace a catalog result or expose errors.
+                pass
 
     def capabilities(self) -> dict:
         return {
@@ -232,6 +270,11 @@ class ShoppingService:
         page: int,
         page_size: int,
     ) -> dict:
+        return self._observe_catalog_read(
+            CatalogReadOperation.LIST, lambda: self._list_products(page, page_size),
+        )
+
+    def _list_products(self, page: int, page_size: int) -> dict:
         if (type(page) is not int or page < 1 or type(page_size) is not int
                 or not 1 <= page_size <= 100):
             raise CatalogReadQueryError("shopping_invalid_product_query")
@@ -273,6 +316,11 @@ class ShoppingService:
         self,
         product_id: str,
     ) -> dict:
+        return self._observe_catalog_read(
+            CatalogReadOperation.DETAIL, lambda: self._get_product(product_id),
+        )
+
+    def _get_product(self, product_id: str) -> dict:
         if (not isinstance(product_id, str) or not product_id or len(product_id) > 128
                 or not product_id.isascii()
                 or not all(char.isalnum() or char in "-_" for char in product_id)):

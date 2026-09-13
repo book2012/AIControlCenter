@@ -1,5 +1,27 @@
 # AI Home Datacenter Architecture
 
+## SHOP_API_READ_003 — operational read telemetry (2026-09-13)
+
+The application-owned `ShoppingService` now retains bounded, instance-local
+outcome/failure counters and last observations for list, detail, and explicit
+read-health operations. It reuses `HealthProbeResult`, canonical `AdapterHealth`
+latency, `HealthFailureCode`, and `HealthMonitorSnapshot`. The same catalog,
+policy, and single-attempt GET path remain authoritative; public product and
+read-health JSON retain their existing deterministic contracts.
+An unavailable observation with no failure code normalizes to the existing
+`HealthFailureCode.UNKNOWN` before probe creation and counter publication.
+
+Dashboard consumes the service's immutable Python snapshot through
+`shopping_read_telemetry` and `GET /dashboard/shopping/read-telemetry`. Projection
+reads add no upstream request. Health is explicitly last-observed, with fixed
+operation slots and no persistence, scheduler, exporter, or activation authority.
+The Mac mini remains the sole Control Plane; WooCommerce remains Commerce Engine.
+This supersedes the SHOP_API_READ_002 telemetry deferral below.
+
+Validation: **488 passed, 22 existing deprecation warnings**, fixture-only,
+using repository-owned pytest tooling.
+See [telemetry semantics, Dashboard contract, and exact tests](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
+
 ## SHOP_API_READ_002 — explicit catalog read health (2026-09-13)
 
 The new `GET /shopping/health/read-path` route uses

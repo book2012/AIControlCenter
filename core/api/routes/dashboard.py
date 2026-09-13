@@ -22,6 +22,10 @@ from core.dashboard.shopping_management import (
     build_shopping_management_dashboard_payload,
     unavailable_shopping_management_dashboard_payload,
 )
+from core.dashboard.shopping_read_telemetry import (
+    build_shopping_read_telemetry_dashboard_payload,
+    unavailable_shopping_read_telemetry_dashboard_payload,
+)
 from core.governance.audit_query import AuditQueryService
 from core.shopping.application.management_source import (
     ShoppingServiceManagementSourceAdapter,
@@ -52,6 +56,17 @@ def build_default_shopping_management_dashboard_payload(
         return unavailable_shopping_management_dashboard_payload()
 
 
+@router.get("/dashboard/shopping/read-telemetry")
+def shopping_read_telemetry(
+    shopping_service: Annotated[ShoppingService, Depends(get_shopping_service)],
+):
+    """Read the local projection without collecting other Dashboard sources."""
+    try:
+        return build_shopping_read_telemetry_dashboard_payload(shopping_service.read_path_telemetry())
+    except Exception:
+        return unavailable_shopping_read_telemetry_dashboard_payload()
+
+
 @router.get("/dashboard")
 def dashboard(
     audit_service: Annotated[
@@ -72,6 +87,7 @@ def dashboard(
             lambda: build_default_shopping_management_dashboard_payload(shopping_service)
         ),
         product_drafts=lambda: build_product_draft_dashboard_payload(product_draft_service),
+        shopping_read_telemetry=lambda: shopping_service.read_path_telemetry(),
     ).status(["ubuntu-main"])
 
     payload["model_governance_audit"] = (

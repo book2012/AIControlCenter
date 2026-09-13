@@ -1,5 +1,25 @@
 # CHANGELOG
 
+## 2026-09-13 — SHOP_API_READ_003 operational telemetry and Dashboard projection
+
+- Added fixed service-instance counters and last observations for canonical
+  list, detail, and read-health reads; each explicit probe records once.
+- Reused Shopping health/failure/latency contracts with injectable clocks,
+  immutable snapshots, bounded retention, and atomic concurrent publication.
+- Added the optional `shopping_read_telemetry` Dashboard section and GET-only
+  `/dashboard/shopping/read-telemetry`, consuming Python service snapshots
+  without an extra upstream read. Projection failures remain sanitized/isolated.
+- Preserved product/read-health JSON and read-only policy/transport behavior.
+  No persistence, job, exporter, runtime/production access, or mutation was added.
+- Normalized unavailable observations with `failure=None` to the existing
+  `HealthFailureCode.UNKNOWN` contract, with one focused regression test.
+- Replaced the temporary validation launcher dependency with repository-owned
+  pytest tooling retaining the same fixture guards and bounded regression scope.
+- Validation: **488 passed, 22 existing deprecation warnings**, fixture-only;
+  `git diff --check` passed. Documentation followed green tests; no commit/push.
+
+See [architecture, telemetry scope, and exact tests](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
+
 ## 2026-09-13 — SHOP_API_READ_002 read-path health and error classification
 
 - Added `GET /shopping/health/read-path` with deterministic health JSON and

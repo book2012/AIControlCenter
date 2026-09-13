@@ -9,6 +9,11 @@ from core.control_plane.status import ControlPlaneStatus
 from core.dashboard.shopping_management import (
     unavailable_shopping_management_dashboard_payload,
 )
+from core.dashboard.shopping_read_telemetry import (
+    build_shopping_read_telemetry_dashboard_payload,
+    unavailable_shopping_read_telemetry_dashboard_payload,
+)
+from core.shopping.observability.read_telemetry import CatalogReadTelemetrySnapshot
 from core.shopping.product_drafts.read import unavailable_dashboard_projection
 from core.datacenter.backup_registry import BackupRegistry
 from core.datacenter.snapshot import DatacenterSnapshotService
@@ -37,6 +42,7 @@ class DashboardAPI:
             ShoppingManagementProjection | None
         ) = None,
         product_drafts: ProductDraftProjection | None = None,
+        shopping_read_telemetry: Callable[[], CatalogReadTelemetrySnapshot] | None = None,
     ):
         self.snapshot = snapshot or MonitoringSnapshot()
         self.brain = brain or BrainStatus()
@@ -48,6 +54,7 @@ class DashboardAPI:
         )
         self.shopping_management = shopping_management
         self.product_drafts = product_drafts
+        self.shopping_read_telemetry = shopping_read_telemetry
 
     def _datacenter_status(self) -> dict:
         if self.datacenter is not None:
@@ -120,5 +127,13 @@ class DashboardAPI:
                 result["product_draft_review"] = deepcopy(dict(projection))
             except Exception:
                 result["product_draft_review"] = unavailable_dashboard_projection()
+
+        if self.shopping_read_telemetry is not None:
+            try:
+                result["shopping_read_telemetry"] = build_shopping_read_telemetry_dashboard_payload(
+                    self.shopping_read_telemetry()
+                )
+            except Exception:
+                result["shopping_read_telemetry"] = unavailable_shopping_read_telemetry_dashboard_payload()
 
         return result

@@ -1,5 +1,33 @@
 # MASTER
 
+## Current source status — SHOP_API_READ_003 (2026-09-13)
+
+Bounded operational telemetry and Dashboard consumption are complete. The
+canonical Shopping service owns per-instance outcome/failure counters and last
+health/latency observations for list, detail, and explicit read-health calls.
+Existing Shopping metrics/health contracts remain authoritative. Dashboard
+consumes typed Python snapshots, including a dedicated local projection route;
+there is no extra vendor read or direct Dashboard-to-WooCommerce dependency.
+The SHOP_API_READ_002 telemetry deferral is superseded by this bounded collector.
+
+Final fixture regressions using repository-owned pytest tooling:
+**488 passed, 22 existing deprecation warnings**. Unavailable observations with
+`failure=None` now retain counters and health evidence as `unknown`.
+Closeout baseline: existing SHOP_API_READ_003 changes only on
+`feature/homepage-product-management-console`, HEAD `0293019`, local HEAD/upstream
+comparison `0 0`. Documentation was updated after green tests.
+Changes remain unstaged and uncommitted as requested. No production/Ubuntu or
+Production Runtime access, runtime activation, launchctl, WooCommerce mutation,
+persistence, background job, exporter, or authority expansion occurred.
+
+`SHOP_API_READ_003_IMPLEMENTATION=COMPLETE`
+`SHOP_API_READ_003_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_003_GIT=UNCOMMITTED`
+`SHOP_API_READ_003_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
+`READY_FOR_COMMIT=YES`
+
+Blockers: none within scope. [Contract, boundaries, and exact validation](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
+
 ## Current source status — SHOP_API_READ_002 (2026-09-13)
 
 Read-path health, adapter failure classification, malformed-response

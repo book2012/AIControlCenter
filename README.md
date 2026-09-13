@@ -1,5 +1,27 @@
 # AIControlCenter
 
+## 2026-09-13 — SHOP_API_READ_003 read telemetry and Dashboard
+
+Source implementation is complete and uncommitted. Canonical Shopping list,
+detail, and read-health operations now provide bounded service-instance outcome
+and failure counters, measured latency, and last-observed health using the
+existing observability contracts. Product and read-health response bytes retain
+their existing contracts. This completes the telemetry work deferred in
+SHOP_API_READ_002.
+
+Dashboard JSON includes `shopping_read_telemetry`.
+`GET /dashboard/shopping/read-telemetry` reads that local projection alone,
+without collecting other Dashboard sources or making an additional catalog
+request. It consumes AIControlCenter Python models/services. Counters reset with
+the service instance; the projection does not claim fresh or production health.
+
+Validation: **488 passed, 22 existing deprecation warnings**, fixture-only,
+using repository-owned pytest tooling. Missing failure codes on unavailable
+observations normalize to `unknown`, preserving counters and health evidence.
+No production/Ubuntu/Production Runtime access, launchctl, WooCommerce mutation,
+persistence, background job, exporter, commit, or push occurred.
+See the [contract, limits, and exact validation](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
+
 ## 2026-09-13 — SHOP_API_READ_002 read health and deterministic failures
 
 Source implementation is complete. `GET /shopping/health/read-path` performs one

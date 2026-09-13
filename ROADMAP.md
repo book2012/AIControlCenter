@@ -1,5 +1,32 @@
 # Roadmap
 
+## SOURCE COMPLETE / ACTIVATION NOT AUTHORIZED — SHOP_API_READ_003
+
+- [x] Add fixed, instance-local canonical read outcome/failure counters and
+  last-observation latency using existing Shopping health contracts.
+- [x] Project last-observed health with explicit empty and query-rejection
+  semantics, deterministic fixture clocks, and no duplicate probe counting.
+- [x] Wire typed service snapshots into `shopping_read_telemetry` and GET-only
+  `/dashboard/shopping/read-telemetry`, without extra catalog reads.
+- [x] Normalize unavailable observations with a missing failure code to `unknown`,
+  with one focused test preserving counters and health evidence.
+- [x] Reproduce the same bounded fixture regression with repository-owned pytest
+  tooling, removing the temporary launcher dependency.
+- [x] Validate relevant fixture regressions: **488 passed**, 22 existing warnings;
+  pass `git diff --check` and update documentation only after green tests.
+- [x] Leave the sprint unstaged and uncommitted at the user's requested boundary.
+
+The SHOP_API_READ_002 telemetry deferral is superseded. Persistence, background
+jobs, exporters, production/Ubuntu/Production Runtime access, launchctl,
+WooCommerce writes, and activation remain outside this sprint's authority.
+
+`SHOP_API_READ_003_IMPLEMENTATION=COMPLETE`
+`SHOP_API_READ_003_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_003_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
+`READY_FOR_COMMIT=YES`
+
+[Architecture, telemetry limitations, and exact tests](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
+
 ## SOURCE COMPLETE / ACTIVATION NOT AUTHORIZED — SHOP_API_READ_002
 
 - [x] Validate a fresh read through the catalog service and governed adapter.

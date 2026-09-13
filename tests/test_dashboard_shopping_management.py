@@ -314,7 +314,11 @@ def test_dashboard_route_remains_get_only_and_wires_projection(
                     decorator.func.attr.lower()
                 )
 
-    assert methods == ["get"]
+    assert methods == ["get", "get"]
+    assert {route.path: route.methods for route in dashboard_route.router.routes} == {
+        "/dashboard": {"GET"},
+        "/dashboard/shopping/read-telemetry": {"GET"},
+    }
 
     dashboard_calls = [
         node
