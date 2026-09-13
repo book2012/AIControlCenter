@@ -20,6 +20,8 @@ This supersedes the SHOP_API_READ_002 telemetry deferral below.
 
 Validation: **488 passed, 22 existing deprecation warnings**, fixture-only,
 using repository-owned pytest tooling.
+Implementation commit: `9bc8890` (committed and pushed). Production activation
+remains not authorized and was not performed.
 See [telemetry semantics, Dashboard contract, and exact tests](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
 
 ## SHOP_API_READ_002 — explicit catalog read health (2026-09-13)

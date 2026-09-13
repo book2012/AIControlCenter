@@ -13,18 +13,18 @@ The SHOP_API_READ_002 telemetry deferral is superseded by this bounded collector
 Final fixture regressions using repository-owned pytest tooling:
 **488 passed, 22 existing deprecation warnings**. Unavailable observations with
 `failure=None` now retain counters and health evidence as `unknown`.
-Closeout baseline: existing SHOP_API_READ_003 changes only on
-`feature/homepage-product-management-console`, HEAD `0293019`, local HEAD/upstream
-comparison `0 0`. Documentation was updated after green tests.
-Changes remain unstaged and uncommitted as requested. No production/Ubuntu or
+Implementation committed and pushed as `9bc8890` on
+`feature/homepage-product-management-console`. Documentation closeout started
+with a clean working tree at that HEAD and local HEAD/upstream comparison `0 0`.
+Documentation was updated after green tests. No production/Ubuntu or
 Production Runtime access, runtime activation, launchctl, WooCommerce mutation,
 persistence, background job, exporter, or authority expansion occurred.
 
 `SHOP_API_READ_003_IMPLEMENTATION=COMPLETE`
 `SHOP_API_READ_003_VALIDATION=FIXTURE_ONLY_PASS`
-`SHOP_API_READ_003_GIT=UNCOMMITTED`
+`SHOP_API_READ_003_IMPLEMENTATION_COMMIT=9bc8890`
+`SHOP_API_READ_003_GIT=COMMITTED_AND_PUSHED`
 `SHOP_API_READ_003_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
-`READY_FOR_COMMIT=YES`
 
 Blockers: none within scope. [Contract, boundaries, and exact validation](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
 

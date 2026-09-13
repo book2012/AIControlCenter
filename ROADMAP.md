@@ -14,16 +14,19 @@
   tooling, removing the temporary launcher dependency.
 - [x] Validate relevant fixture regressions: **488 passed**, 22 existing warnings;
   pass `git diff --check` and update documentation only after green tests.
-- [x] Leave the sprint unstaged and uncommitted at the user's requested boundary.
+- [x] Commit and push implementation as `9bc8890`; verify post-push working tree
+  clean and HEAD/upstream comparison `0 0`.
 
 The SHOP_API_READ_002 telemetry deferral is superseded. Persistence, background
 jobs, exporters, production/Ubuntu/Production Runtime access, launchctl,
 WooCommerce writes, and activation remain outside this sprint's authority.
+Production activation was not performed.
 
 `SHOP_API_READ_003_IMPLEMENTATION=COMPLETE`
 `SHOP_API_READ_003_VALIDATION=FIXTURE_ONLY_PASS`
+`SHOP_API_READ_003_IMPLEMENTATION_COMMIT=9bc8890`
+`SHOP_API_READ_003_GIT=COMMITTED_AND_PUSHED`
 `SHOP_API_READ_003_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
-`READY_FOR_COMMIT=YES`
 
 [Architecture, telemetry limitations, and exact tests](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
 

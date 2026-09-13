@@ -2,7 +2,8 @@
 
 ## 2026-09-13 — SHOP_API_READ_003 read telemetry and Dashboard
 
-Source implementation is complete and uncommitted. Canonical Shopping list,
+Source implementation is complete, committed and pushed as `9bc8890`.
+Canonical Shopping list,
 detail, and read-health operations now provide bounded service-instance outcome
 and failure counters, measured latency, and last-observed health using the
 existing observability contracts. Product and read-health response bytes retain
@@ -19,7 +20,8 @@ Validation: **488 passed, 22 existing deprecation warnings**, fixture-only,
 using repository-owned pytest tooling. Missing failure codes on unavailable
 observations normalize to `unknown`, preserving counters and health evidence.
 No production/Ubuntu/Production Runtime access, launchctl, WooCommerce mutation,
-persistence, background job, exporter, commit, or push occurred.
+persistence, background job, or exporter occurred. Production activation remains
+not authorized and was not performed.
 See the [contract, limits, and exact validation](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
 
 ## 2026-09-13 — SHOP_API_READ_002 read health and deterministic failures

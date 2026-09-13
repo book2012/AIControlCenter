@@ -16,7 +16,10 @@
 - Replaced the temporary validation launcher dependency with repository-owned
   pytest tooling retaining the same fixture guards and bounded regression scope.
 - Validation: **488 passed, 22 existing deprecation warnings**, fixture-only;
-  `git diff --check` passed. Documentation followed green tests; no commit/push.
+  `git diff --check` passed. Documentation followed green tests.
+- Implementation committed and pushed as `9bc8890`; post-push working tree clean
+  and HEAD/upstream comparison `0 0`. Production activation remains not authorized
+  and was not performed.
 
 See [architecture, telemetry scope, and exact tests](docs/architecture/SHOP-API-READ-003-OPERATIONAL-TELEMETRY.md).
 

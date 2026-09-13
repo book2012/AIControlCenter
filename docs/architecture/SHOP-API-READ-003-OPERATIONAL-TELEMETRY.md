@@ -1,9 +1,9 @@
 # SHOP_API_READ_003 — bounded operational telemetry and Dashboard consumption
 
 Status: source implementation complete; fixture validation passed (2026-09-13).
-Closeout baseline: existing SHOP_API_READ_003 changes only on
-`feature/homepage-product-management-console`, HEAD `0293019`, with local
-HEAD/upstream comparison `0 0`. Changes remain uncommitted by request.
+Implementation commit: `9bc8890`, committed and pushed on
+`feature/homepage-product-management-console`. Documentation closeout started
+with a clean working tree at that HEAD and local HEAD/upstream comparison `0 0`.
 This sprint supersedes the telemetry deferral recorded in SHOP_API_READ_002.
 
 ## Architecture
@@ -225,20 +225,20 @@ were updated only after green fixture regressions. No production or Ubuntu
 access, Production Runtime access, launchctl, runtime activation, production
 write, WooCommerce mutation, persistence, background job, exporter, or new
 write authority was introduced or exercised. Host Caddy and deployment remain
-outside scope. No staging, commit, or push was performed.
+outside scope. Production activation remains not authorized and was not performed.
 
-Closeout edits are limited to the collector normalization, its focused test,
-the repository-owned fixture launcher, and these six documentation files.
-The final working tree contains only the SHOP_API_READ_003 scope: nine modified
-tracked files and five untracked files; the index is unchanged. `git diff --check`
-passes, HEAD remains `0293019`, and local HEAD/upstream comparison remains `0 0`.
+The implementation was committed and pushed as `9bc8890`, with a clean post-push
+working tree and local HEAD/upstream comparison `0 0`. This documentation-only
+reconciliation changes only the six files named above; application code, tests,
+and the index are unchanged. `git diff --check` passes, HEAD remains `9bc8890`,
+and local HEAD/upstream comparison remains `0 0`.
 
 `SHOP_API_READ_003_IMPLEMENTATION=COMPLETE`
 `SHOP_API_READ_003_VALIDATION=FIXTURE_ONLY_PASS`
-`SHOP_API_READ_003_GIT=UNCOMMITTED`
+`SHOP_API_READ_003_IMPLEMENTATION_COMMIT=9bc8890`
+`SHOP_API_READ_003_GIT=COMMITTED_AND_PUSHED`
 `SHOP_API_READ_003_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
-`READY_FOR_COMMIT=YES`
 
 Blockers: none for this bounded source sprint. Live validation and activation
-remain separate unauthorized work. Proposed commit:
+remain separate unauthorized work. Implementation commit `9bc8890`:
 `feat(shopping): add bounded read telemetry and dashboard projection`
