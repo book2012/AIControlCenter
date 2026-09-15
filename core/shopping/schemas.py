@@ -50,6 +50,13 @@ class ShoppingCapabilitiesResponse(BaseModel):
     production_mutation_authorized: bool
 
 
+class ProductVariantResponse(BaseModel):
+    id: str
+    label: str
+    option_type: str
+    available: bool
+
+
 class ProductResponse(BaseModel):
     id: str
     name: str
@@ -61,6 +68,7 @@ class ProductResponse(BaseModel):
     in_stock: bool
     source: str
     image_url: str | None = None
+    variants: list[ProductVariantResponse] = Field(default_factory=list)
 
 class ProductListResponse(BaseModel):
     items: list[ProductResponse]

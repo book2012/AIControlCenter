@@ -5,13 +5,14 @@ import hashlib
 import hmac
 import secrets
 import time
+import re
 from decimal import Decimal, InvalidOperation
 from typing import Any
 from urllib.parse import quote, urlsplit, urlunsplit
 
 import requests
 
-from core.shopping.models import Product
+from core.shopping.models import Product, ProductVariant
 from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable
 from core.shopping.observability.health_probe import HealthFailureCode
 from core.shopping.adapters.woocommerce_read_transport import WooCommerceReadTransportSession
@@ -249,10 +250,33 @@ class WooCommerceRESTAdapter:
                 id=str(data["id"]), name=name, slug=slug, description=description,
                 price=Decimal(amount), currency="KRW", category=category,
                 in_stock=stock_status == "instock", source="woocommerce", image_url=image_url,
+                variants=WooCommerceRESTAdapter._to_variants(data.get("variants", [])),
             )
         except (KeyError, TypeError, ValueError, InvalidOperation):
             raise WooCommerceAPIError("Invalid WooCommerce product payload",
                                       failure_code=HealthFailureCode.SCHEMA_MISMATCH) from None
+
+    @staticmethod
+    def _to_variants(raw: Any) -> tuple[ProductVariant, ...]:
+        """Normalize an optional canonical variant projection without inventing options."""
+        if raw is None:
+            return ()
+        if not isinstance(raw, list):
+            raise ValueError
+        variants = []
+        seen = set()
+        for item in raw:
+            if not isinstance(item, dict):
+                raise ValueError
+            identifier, label, option_type, available = (item.get(key) for key in ("id", "label", "option_type", "available"))
+            if (not isinstance(identifier, str) or not re.fullmatch(r"[A-Za-z0-9_-]{1,128}", identifier)
+                    or not isinstance(label, str) or not label.strip() or any(char.isspace() for char in label)
+                    or not isinstance(option_type, str) or not option_type.strip() or not isinstance(available, bool)
+                    or identifier in seen):
+                raise ValueError
+            seen.add(identifier)
+            variants.append(ProductVariant(identifier, label, option_type, available))
+        return tuple(variants)
 
     @staticmethod
     def _product_identifier(product_id: str) -> str:

@@ -1,7 +1,8 @@
 import json
+import re
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError
 from fastapi.routing import APIRoute
@@ -29,6 +30,9 @@ from core.shopping.service import (
     ShoppingService,
 )
 from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable
+from core.shopping.inquiries import (InquiryCreateRequest, InquiryMessageRequest, InquiryRepository,
+                                     InquiryResponse, configured_contact_channels, sanitize_message)
+from core.api.dependencies.inquiries import get_inquiry_repository
 from core.shopping.product_drafts.read import (
     ProductDraftQueryService,
     ProductDraftReadUnavailable,
@@ -43,6 +47,7 @@ router = APIRouter(
 
 ProductDraftQuery = Annotated[ProductDraftQueryService, Depends(get_product_draft_query_service)]
 ShoppingCatalog = Annotated[ShoppingService, Depends(get_shopping_service)]
+InquiryStore = Annotated[InquiryRepository, Depends(get_inquiry_repository)]
 
 
 class ProductJSONResponse(JSONResponse):
@@ -283,6 +288,101 @@ router.add_api_route(
     route_class_override=CatalogReadRoute,
     responses={422: {"model": ProductReadErrorResponse}, 503: {"model": ProductReadErrorResponse}},
 )
+
+
+@router.get("/contact-channels")
+def contact_channels():
+    return {"items": configured_contact_channels()}
+
+
+@router.post("/inquiries", response_model=InquiryResponse)
+def create_inquiry(request: InquiryCreateRequest, service: ShoppingCatalog, repository: InquiryStore):
+    try:
+        product = service.get_product(request.product_id)
+    except ProductNotFoundError:
+        raise HTTPException(status_code=404, detail={"code": "shopping_product_not_found", "product_id": request.product_id}) from None
+    except (CatalogReadQueryError, CatalogReadUnavailable):
+        raise HTTPException(status_code=503, detail={"code": "shopping_catalog_unavailable"}) from None
+    variants = getattr(product, "get", lambda key, default=None: default)("variants", []) or []
+    variant = next((item for item in variants if item["id"] == request.variant_id), None) if request.variant_id else None
+    if variants and request.variant_id is None:
+        raise HTTPException(status_code=422, detail={"code": "shopping_variant_required"})
+    if request.variant_id and variant is None:
+        raise HTTPException(status_code=422, detail={"code": "shopping_invalid_variant"})
+    if variant and not variant["available"]:
+        raise HTTPException(status_code=422, detail={"code": "shopping_variant_unavailable"})
+    from core.shopping.models import ProductVariant, Product
+    canonical_variant = ProductVariant(**variant) if variant else None
+    canonical_product = Product(**{key: product[key] for key in Product.__dataclass_fields__})
+    return repository.create(canonical_product, canonical_variant, sanitize_message(request.message))
+
+
+@router.get("/inquiries/{inquiry_id}", response_model=InquiryResponse)
+def get_inquiry(inquiry_id: str, repository: InquiryStore):
+    if not re.fullmatch(r"AG-INQ-[0-9]{6,18}", inquiry_id):
+        raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+    result = repository.get(inquiry_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+    return result.model_copy(update={"public_access_token": None})
+
+
+def _customer_token(request) -> str:
+    token = request.headers.get("x-inquiry-access-token", "")
+    if not token or len(token) > 256:
+        raise HTTPException(status_code=401, detail={"code": "inquiry_access_required"})
+    return token
+
+
+@router.post("/inquiries/{inquiry_id}/messages")
+def create_customer_message(inquiry_id: str, body: InquiryMessageRequest, request: Request, repository: InquiryStore):
+    token = _customer_token(request)
+    if not repository.authorize(inquiry_id, token):
+        raise HTTPException(status_code=403, detail={"code": "inquiry_access_denied"})
+    result = repository.append_message(inquiry_id, body.body, "customer")
+    if result is None:
+        raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+    return result
+
+
+@router.get("/inquiries/{inquiry_id}/messages")
+def customer_messages(inquiry_id: str, request: Request, repository: InquiryStore):
+    if not repository.authorize(inquiry_id, _customer_token(request)):
+        raise HTTPException(status_code=403, detail={"code": "inquiry_access_denied"})
+    result = repository.get(inquiry_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+    return {"items": result.messages}
+
+
+def _operator(request: Request):
+    import os
+    expected = os.getenv("AICC_OPERATOR_TOKEN", "")
+    supplied = request.headers.get("authorization", "")
+    if not expected or supplied != f"Bearer {expected}":
+        raise HTTPException(status_code=401, detail={"code": "operator_authorization_required"})
+
+
+@router.get("/operator/inquiries")
+def operator_inquiries(request: Request, repository: InquiryStore):
+    _operator(request)
+    return {"items": [item.model_copy(update={"public_access_token": None}) for item in repository.list()]}
+
+
+@router.get("/operator/inquiries/{inquiry_id}")
+def operator_inquiry(inquiry_id: str, request: Request, repository: InquiryStore):
+    _operator(request)
+    result = repository.get(inquiry_id)
+    if result is None: raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+    return result.model_copy(update={"public_access_token": None})
+
+
+@router.post("/operator/inquiries/{inquiry_id}/messages")
+def operator_message(inquiry_id: str, body: InquiryMessageRequest, request: Request, repository: InquiryStore):
+    _operator(request)
+    result = repository.append_message(inquiry_id, body.body, "operator")
+    if result is None: raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+    return result
 router.add_api_route(
     "/products/{product_id}", shopping_product, methods=["GET"],
     response_model=ProductResponse, response_class=ProductJSONResponse,

@@ -62,8 +62,15 @@ def test_homepage_shopping_dashboard_get_routes_include_read_path_health() -> No
         "/shopping/featured-products": {"GET"},
         "/shopping/categories": {"GET"},
         "/shopping/products": {"GET"},
-        "/shopping/products/{product_id}": {"GET"},
-    }
+            "/shopping/products/{product_id}": {"GET"},
+            "/shopping/contact-channels": {"GET"},
+            "/shopping/inquiries": {"POST"},
+            "/shopping/inquiries/{inquiry_id}": {"GET"},
+            "/shopping/inquiries/{inquiry_id}/messages": {"GET"},
+            "/shopping/operator/inquiries": {"GET"},
+            "/shopping/operator/inquiries/{inquiry_id}": {"GET"},
+            "/shopping/operator/inquiries/{inquiry_id}/messages": {"POST"},
+        }
 
 
 def test_homepage_shopping_dashboard_product_draft_contract_is_unchanged() -> None:

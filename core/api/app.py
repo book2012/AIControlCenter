@@ -11,6 +11,8 @@ from core.runtime.service_health import ServiceHealth
 from core.capabilities import CapabilityGovernanceExtensions, UnavailableCapabilityObserver
 from core.capabilities.service import CapabilityStatusService
 from core.shopping.runtime_composition import build_shopping_runtime
+from core.shopping.inquiries import SQLiteInquiryRepository
+from core.runtime.data_paths import resolve_data_path
 from core.notifications import NotificationPlatform
 
 
@@ -44,6 +46,7 @@ def create_app(
         )
     )
     app.state.shopping_runtime = build_shopping_runtime()
+    app.state.inquiry_repository = SQLiteInquiryRepository(str(resolve_data_path("inquiries.db")))
 
     app.include_router(health.router)
     app.include_router(homepage.router)

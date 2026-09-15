@@ -23,7 +23,9 @@ def test_shopping_routes_are_read_only_and_use_application_runtime():
     ]
 
     assert shopping_api_routes
-    assert all(route.methods == {"GET"} for route in shopping_api_routes)
+    assert all(route.methods == {"GET"} or (route.path.startswith("/shopping/inquiries") and route.methods == {"POST"})
+               or (route.path.startswith("/shopping/operator/inquiries") and route.methods == {"POST"})
+               for route in shopping_api_routes)
     assert isinstance(app.state.shopping_runtime, ShoppingRuntime)
     assert get_shopping_runtime.__module__ == "core.api.dependencies.shopping"
     assert get_shopping_service.__module__ == "core.api.dependencies.shopping"

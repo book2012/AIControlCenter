@@ -10,7 +10,7 @@ from core.shopping.catalog.orange_coco import (
     OrangeCocoCatalogBundle,
     OrangeCocoCatalogLoader,
 )
-from core.shopping.models import Product
+from core.shopping.models import Product, ProductVariant
 
 
 CATEGORY_DEFINITIONS = {
@@ -66,6 +66,17 @@ CATEGORY_ORDER = (
     "acc",
     "sale",
 )
+
+# Explicit demo read-model data. Production adapters must supply equivalent
+# canonical options; the PDP never invents or hardcodes these values.
+DEMO_VARIANTS = {
+    "oc-demo-top-0001": (
+        ProductVariant("oc-demo-top-0001-s", "S", "size", True),
+        ProductVariant("oc-demo-top-0001-m", "M", "size", True),
+        ProductVariant("oc-demo-top-0001-l", "L", "size", False),
+    ),
+    "oc-demo-top-0002": (ProductVariant("oc-demo-top-0002-free", "FREE", "size", True),),
+}
 
 
 class DemoCommerceCatalogAdapter:
@@ -271,6 +282,7 @@ class DemoCommerceCatalogAdapter:
                 f"{self._site_base_url}/"
                 f"{image_path}"
             ),
+            variants=DEMO_VARIANTS.get(product_id, ()),
         )
 
     def _matches_query(
