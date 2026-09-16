@@ -12,16 +12,27 @@
       "demo_batch_id": "orange-coco-v1",
       "category": "top",
       "local_path": "products/top/oc-demo-top-0001.jpg",
-      "source": "pexels",
-      "source_photo_id": 6773232,
-      "source_page_url": "https://www.pexels.com/photo/woman-on-floor-surrounded-with-vases-with-roses-6773232/",
-      "photographer": "Jill Burrow",
-      "photographer_url": "https://www.pexels.com/@jill-burrow",
-      "search_query": "korean woman blouse minimal fashion",
-      "alt": "Full body of young thoughtful female in trendy clothes sitting on white floor with glass vases with flowers near white wall with shadows",
-      "width": 4480,
-      "height": 6720,
-      "sha256": "de4dfdad765aba02b9d6a9917ba4a52bb3a4850b3cdc5a13b6dccff2b46d86c2"
+      "source": "generated",
+      "alt": "소프트 린넨 블라우스 — 따뜻한 부티크의 성인 여성 모델, 생성형 데모 이미지",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "c8656be14bd37b9d4578439f360f7a9bc764b5b403f09d0ac04aaa42fa1e0009",
+      "generation": {
+        "tool": "image_gen (built-in)",
+        "prompt": "Use case: photorealistic-natural. Asset type: single demo fashion product photograph for Orange Coco Korean boutique, product oc-demo-top-0001, canonical name '소프트 린넨 블라우스'. Depict a fictional adult brunette European female fashion model in her late twenties wearing a soft ivory linen blouse, understated feminine styling. Portrait 2:3 photograph, face and top clearly visible, mid-thigh upward, natural relaxed pose. Consistent warm ivory boutique with pale oak racks and softly blurred cream and muted apricot clothes behind her; soft daylight and subtle orange ambient light. Clothing is the focus, complete neckline and sleeves readable. Editorial, feminine, modern, approachable, realistic fabric and anatomy. Cream/ivory/cocoa palette with restrained orange accents. No text, logo, watermark, celebrity likeness or branded campaign imitation. Single image, no collage, no frame. This is fictional demo imagery; avoid accessories covering the garment.",
+        "source_artifact": "exec-202b7e06-12fc-4678-8cf2-d7b7e95dd978.png",
+        "source_sha256": "d93d6b78f8a168f62a905a866180b074ab759daae6a55986307451c6d6f62b16",
+        "encoding": "JPEG, sips formatOptions 88",
+        "generated_on": "2026-09-14"
+      },
+      "previous_asset": {
+        "source": "pexels",
+        "source_photo_id": 6773232,
+        "source_page_url": "https://www.pexels.com/photo/woman-on-floor-surrounded-with-vases-with-roses-6773232/",
+        "photographer": "Jill Burrow",
+        "photographer_url": "https://www.pexels.com/@jill-burrow",
+        "sha256": "de4dfdad765aba02b9d6a9917ba4a52bb3a4850b3cdc5a13b6dccff2b46d86c2"
+      }
     },
     {
       "id": "oc-demo-top-0002",
@@ -30,16 +41,27 @@
       "demo_batch_id": "orange-coco-v1",
       "category": "top",
       "local_path": "products/top/oc-demo-top-0002.jpg",
-      "source": "pexels",
-      "source_photo_id": 19384659,
-      "source_page_url": "https://www.pexels.com/photo/model-in-a-black-headscarf-beige-blouse-and-jeans-standing-in-a-parking-garage-19384659/",
-      "photographer": "Ihsan Adityawarman",
-      "photographer_url": "https://www.pexels.com/@ihsanaditya",
-      "search_query": "korean woman blouse minimal fashion",
-      "alt": "Woman with hijab poses fashionably in a modern parking garage setting.",
-      "width": 4089,
-      "height": 6134,
-      "sha256": "8a83ce7f08d2ff090acb4d20bc9a09d74cd3592474f422aac8b135aba2adba15"
+      "source": "generated",
+      "alt": "내추럴 코튼 셔츠 — 따뜻한 부티크의 성인 여성 모델, 생성형 데모 이미지",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "94a579a2d463ece5628ccead7f4d9924c33111835e7faafd02963817f2cd5d0c",
+      "generation": {
+        "tool": "image_gen (built-in)",
+        "prompt": "Use case: photorealistic-natural. Asset type: single demo fashion product photograph for Orange Coco Korean boutique, product oc-demo-top-0002, canonical name '내추럴 코튼 셔츠'. Depict a fictional adult female fashion model in her late twenties with Mediterranean features and dark wavy hair wearing a natural white cotton button-front shirt with a relaxed clean collar. Portrait 2:3 photograph, face and top clearly visible, mid-thigh upward, natural relaxed pose. Consistent warm ivory boutique with pale oak racks and softly blurred cream and muted apricot clothes behind her; soft daylight and subtle orange ambient light. Clothing is the focus, complete neckline and sleeves readable. Editorial, feminine, modern, approachable, realistic fabric and anatomy. Cream/ivory/cocoa palette with restrained orange accents. No text, logo, watermark, celebrity likeness or branded campaign imitation. Single image, no collage, no frame. This is fictional demo imagery; avoid accessories covering the garment.",
+        "source_artifact": "exec-4b61d825-e844-4e66-8932-5aa70b178e4e.png",
+        "source_sha256": "29ca9191b2f14014bc5e8553449f2f4c88494368083d7bb10cb1075735e3b3d3",
+        "encoding": "JPEG, sips formatOptions 88",
+        "generated_on": "2026-09-14"
+      },
+      "previous_asset": {
+        "source": "pexels",
+        "source_photo_id": 19384659,
+        "source_page_url": "https://www.pexels.com/photo/model-in-a-black-headscarf-beige-blouse-and-jeans-standing-in-a-parking-garage-19384659/",
+        "photographer": "Ihsan Adityawarman",
+        "photographer_url": "https://www.pexels.com/@ihsanaditya",
+        "sha256": "8a83ce7f08d2ff090acb4d20bc9a09d74cd3592474f422aac8b135aba2adba15"
+      }
     },
     {
       "id": "oc-demo-top-0003",
@@ -48,16 +70,27 @@
       "demo_batch_id": "orange-coco-v1",
       "category": "top",
       "local_path": "products/top/oc-demo-top-0003.jpg",
-      "source": "pexels",
-      "source_photo_id": 11044912,
-      "source_page_url": "https://www.pexels.com/photo/unrecognizable-woman-rolling-up-sleeves-of-white-blouse-11044912/",
-      "photographer": "Маргарита Архангельская",
-      "photographer_url": "https://www.pexels.com/@172634301",
-      "search_query": "korean woman blouse minimal fashion",
-      "alt": "Chic fashion portrait of a woman rolling up sleeves on white blouse indoors in Moscow.",
-      "width": 6667,
-      "height": 10000,
-      "sha256": "a7c4f33479ae8b45cef93a82d2ae6f3ecf569246a747113310f9ba5ead0869a9"
+      "source": "generated",
+      "alt": "클래식 카라 블라우스 — 따뜻한 부티크의 성인 여성 모델, 생성형 데모 이미지",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "0988e2c609252048787ff2772c475f86b5c00096e6a38cca1c7fad544ec2965b",
+      "generation": {
+        "tool": "image_gen (built-in)",
+        "prompt": "Use case: photorealistic-natural. Asset type: single demo fashion product photograph for Orange Coco Korean boutique, product oc-demo-top-0003, canonical name '클래식 카라 블라우스'. Depict a fictional adult European female fashion model in her early thirties with softly styled dark blonde hair wearing a classic cream collared blouse, crisp elegant neckline and feminine silhouette. Portrait 2:3 photograph, face and top clearly visible, mid-thigh upward, natural relaxed pose. Consistent warm ivory boutique with pale oak racks and softly blurred cream and muted apricot clothes behind her; soft daylight and subtle orange ambient light. Clothing is the focus, complete neckline and sleeves readable. Editorial, feminine, modern, approachable, realistic fabric and anatomy. Cream/ivory/cocoa palette with restrained orange accents. No text, logo, watermark, celebrity likeness or branded campaign imitation. Single image, no collage, no frame. This is fictional demo imagery; avoid accessories covering the garment.",
+        "source_artifact": "exec-c16d0b4d-3c71-4c19-be86-255549914c3e.png",
+        "source_sha256": "121f015a936256d7f5e676a3abf3fda1cc0a5531882a1e5bc0e921ec39e06808",
+        "encoding": "JPEG, sips formatOptions 88",
+        "generated_on": "2026-09-14"
+      },
+      "previous_asset": {
+        "source": "pexels",
+        "source_photo_id": 11044912,
+        "source_page_url": "https://www.pexels.com/photo/unrecognizable-woman-rolling-up-sleeves-of-white-blouse-11044912/",
+        "photographer": "Маргарита Архангельская",
+        "photographer_url": "https://www.pexels.com/@172634301",
+        "sha256": "a7c4f33479ae8b45cef93a82d2ae6f3ecf569246a747113310f9ba5ead0869a9"
+      }
     },
     {
       "id": "oc-demo-top-0004",
@@ -66,16 +99,27 @@
       "demo_batch_id": "orange-coco-v1",
       "category": "top",
       "local_path": "products/top/oc-demo-top-0004.jpg",
-      "source": "pexels",
-      "source_photo_id": 33170519,
-      "source_page_url": "https://www.pexels.com/photo/elegant-woman-posing-against-pink-background-33170519/",
-      "photographer": "quang vinh",
-      "photographer_url": "https://www.pexels.com/@vietnamcows",
-      "search_query": "korean woman blouse minimal fashion",
-      "alt": "Stylish woman in white blouse and black skirt poses confidently on a pink backdrop.",
-      "width": 4000,
-      "height": 6000,
-      "sha256": "a6bfd5be84bdcbe9c993b90c5f56df24dce5f3aeb76e994fe8e08e5916d2edc9"
+      "source": "generated",
+      "alt": "라이트 데일리 니트 — 따뜻한 부티크의 성인 여성 모델, 생성형 데모 이미지",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "19b7a492481d748ec7bbbf5b5213a690f3b688a547b298ff16dfa875d365b9be",
+      "generation": {
+        "tool": "image_gen (built-in)",
+        "prompt": "Use case: photorealistic-natural. Asset type: single demo fashion product photograph for Orange Coco Korean boutique, product oc-demo-top-0004, canonical name '라이트 데일리 니트'. Depict a fictional adult European female fashion model with shoulder-length chestnut hair, age late twenties to early thirties, wearing a lightweight muted apricot fine-gauge crewneck knit top. Portrait 2:3 photograph, complete face and top clearly visible, mid-thigh upward, natural relaxed standing pose. Consistent warm ivory boutique with pale oak racks and softly blurred cream and muted apricot clothes behind her; soft daylight and subtle warm orange ambient light. Clothing is the focus, complete neckline and sleeves readable, no bag covering the garment. Editorial, feminine, modern, approachable, realistic fabric and natural anatomy. Cream/ivory/cocoa palette with restrained orange accents. No text, logo, watermark, celebrity likeness or branded campaign imitation. Single photograph, no collage, no frame. Fictional demo imagery.",
+        "source_artifact": "exec-a743ea23-ce2e-4fe9-a0fa-939979dd067d.png",
+        "source_sha256": "ece41ecaeff8ce48781d689b81dec965582c2fb7cf7a102a4acce1edf326ac9e",
+        "encoding": "JPEG, sips formatOptions 88",
+        "generated_on": "2026-09-14"
+      },
+      "previous_asset": {
+        "source": "pexels",
+        "source_photo_id": 33170519,
+        "source_page_url": "https://www.pexels.com/photo/elegant-woman-posing-against-pink-background-33170519/",
+        "photographer": "quang vinh",
+        "photographer_url": "https://www.pexels.com/@vietnamcows",
+        "sha256": "a6bfd5be84bdcbe9c993b90c5f56df24dce5f3aeb76e994fe8e08e5916d2edc9"
+      }
     },
     {
       "id": "oc-demo-top-0005",
@@ -138,16 +182,27 @@
       "demo_batch_id": "orange-coco-v1",
       "category": "top",
       "local_path": "products/top/oc-demo-top-0008.jpg",
-      "source": "pexels",
-      "source_photo_id": 7273345,
-      "source_page_url": "https://www.pexels.com/photo/woman-in-gray-long-sleeves-looking-down-7273345/",
-      "photographer": "www.kaboompics.com",
-      "photographer_url": "https://www.pexels.com/@karola-g",
-      "search_query": "korean woman blouse minimal fashion",
-      "alt": "A woman in casual attire sits thoughtfully against a minimal white backdrop indoors.",
-      "width": 4480,
-      "height": 6720,
-      "sha256": "e0164378417e64e12d3ae612ca6fae3a6ef13662de2ecc7e7a226c1a917e2675"
+      "source": "generated",
+      "alt": "내추럴 슬리브리스 — 따뜻한 부티크의 성인 여성 모델, 생성형 데모 이미지",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "a55052436133bfc5a63a62a2335b08e9b1ba578c3bf5c36db2110df26194d15f",
+      "generation": {
+        "tool": "image_gen (built-in)",
+        "prompt": "Use case: photorealistic-natural. Asset type: single demo fashion product photograph for Orange Coco Korean boutique, product oc-demo-top-0008, canonical name '내추럴 슬리브리스'. Depict a fictional adult European female fashion model with a loose brunette updo, age late twenties to early thirties, wearing a tasteful ivory sleeveless top with a simple modest rounded neckline. Portrait 2:3 photograph, complete face and top clearly visible, mid-thigh upward, natural relaxed standing pose. Consistent warm ivory boutique with pale oak racks and softly blurred cream and muted apricot clothes behind her; soft daylight and subtle warm orange ambient light. Clothing is the focus, complete neckline and sleeves readable, no bag covering the garment. Editorial, feminine, modern, approachable, realistic fabric and natural anatomy. Cream/ivory/cocoa palette with restrained orange accents. No text, logo, watermark, celebrity likeness or branded campaign imitation. Single photograph, no collage, no frame. Fictional demo imagery.",
+        "source_artifact": "exec-1f2b02c6-255c-442c-a4d1-712c2e701f39.png",
+        "source_sha256": "d47df79b3ec55f15e43e501bcbdeac60f711486afdf1e998c0352fa28ee74a44",
+        "encoding": "JPEG, sips formatOptions 88",
+        "generated_on": "2026-09-14"
+      },
+      "previous_asset": {
+        "source": "pexels",
+        "source_photo_id": 7273345,
+        "source_page_url": "https://www.pexels.com/photo/woman-in-gray-long-sleeves-looking-down-7273345/",
+        "photographer": "www.kaboompics.com",
+        "photographer_url": "https://www.pexels.com/@karola-g",
+        "sha256": "e0164378417e64e12d3ae612ca6fae3a6ef13662de2ecc7e7a226c1a917e2675"
+      }
     },
     {
       "id": "oc-demo-top-0009",
@@ -210,16 +265,27 @@
       "demo_batch_id": "orange-coco-v1",
       "category": "top",
       "local_path": "products/top/oc-demo-top-0012.jpg",
-      "source": "pexels",
-      "source_photo_id": 13076542,
-      "source_page_url": "https://www.pexels.com/photo/woman-posing-near-the-green-grass-and-trees-13076542/",
-      "photographer": "Stephen C",
-      "photographer_url": "https://www.pexels.com/@stephen-c-213168251",
-      "search_query": "korean woman blouse minimal fashion",
-      "alt": "Woman in white blouse and black skirt posing in outdoor urban setting.",
-      "width": 4000,
-      "height": 6000,
-      "sha256": "a08b8a32a201c0e2a1f9adace3f1c1779f94d8e1b9782d49d37d4b5e7ae08f4a"
+      "source": "generated",
+      "alt": "내추럴 코튼 셔츠 12 — 따뜻한 부티크의 성인 여성 모델, 생성형 데모 이미지",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "d76e8129025dffb3b88736d6366e1c929fcf6d8a7105aa4938a364efe0feb626",
+      "generation": {
+        "tool": "image_gen (built-in)",
+        "prompt": "Use case: photorealistic-natural. Asset type: single demo fashion product photograph for Orange Coco Korean boutique, product oc-demo-top-0012, canonical name '내추럴 코튼 셔츠 12'. Depict a fictional adult female fashion model with Mediterranean features and a chin-length dark bob, age late twenties to early thirties, wearing a natural cream cotton button-front shirt, casually styled with neat sleeves. Portrait 2:3 photograph, complete face and top clearly visible, mid-thigh upward, natural relaxed standing pose. Consistent warm ivory boutique with pale oak racks and softly blurred cream and muted apricot clothes behind her; soft daylight and subtle warm orange ambient light. Clothing is the focus, complete neckline and sleeves readable, no bag covering the garment. Editorial, feminine, modern, approachable, realistic fabric and natural anatomy. Cream/ivory/cocoa palette with restrained orange accents. No text, logo, watermark, celebrity likeness or branded campaign imitation. Single photograph, no collage, no frame. Fictional demo imagery.",
+        "source_artifact": "exec-f8a1b140-2065-4dbe-ba90-b2f429d3b879.png",
+        "source_sha256": "4a676e614ead876510a5277ec63577ccf8ebe92e3a98aae3b4ff9a0991a3503f",
+        "encoding": "JPEG, sips formatOptions 88",
+        "generated_on": "2026-09-14"
+      },
+      "previous_asset": {
+        "source": "pexels",
+        "source_photo_id": 13076542,
+        "source_page_url": "https://www.pexels.com/photo/woman-posing-near-the-green-grass-and-trees-13076542/",
+        "photographer": "Stephen C",
+        "photographer_url": "https://www.pexels.com/@stephen-c-213168251",
+        "sha256": "a08b8a32a201c0e2a1f9adace3f1c1779f94d8e1b9782d49d37d4b5e7ae08f4a"
+      }
     },
     {
       "id": "oc-demo-top-0013",
@@ -282,16 +348,27 @@
       "demo_batch_id": "orange-coco-v1",
       "category": "top",
       "local_path": "products/top/oc-demo-top-0016.jpg",
-      "source": "pexels",
-      "source_photo_id": 19310132,
-      "source_page_url": "https://www.pexels.com/photo/woman-in-white-blouse-and-bodycon-dress-with-camera-19310132/",
-      "photographer": "Alexander Mass",
-      "photographer_url": "https://www.pexels.com/@rebornfilmes",
-      "search_query": "korean woman blouse minimal fashion",
-      "alt": "Elegant woman in bodycon dress capturing a moment with a vintage camera.",
-      "width": 4160,
-      "height": 6240,
-      "sha256": "11690ca2d47960a7cd0b2d40c9073d203ba4159a585214e3dde434e520452fb3"
+      "source": "generated",
+      "alt": "미니멀 오버핏 셔츠 16 — 따뜻한 부티크의 성인 여성 모델, 생성형 데모 이미지",
+      "width": 1024,
+      "height": 1536,
+      "sha256": "77dd490cd855aacee1b6ae9c75406b7f9e69e41b922e600ba80d82173484247c",
+      "generation": {
+        "tool": "image_gen (built-in)",
+        "prompt": "Use case: photorealistic-natural. Asset type: single demo fashion product photograph for Orange Coco Korean boutique, product oc-demo-top-0016, canonical name '미니멀 오버핏 셔츠 16'. Depict a fictional adult European female fashion model with long softly wavy light brown hair, age late twenties to early thirties, wearing a minimal relaxed oversized ivory shirt with a clear collar and loose long sleeves. Portrait 2:3 photograph, complete face and top clearly visible, mid-thigh upward, natural relaxed standing pose. Consistent warm ivory boutique with pale oak racks and softly blurred cream and muted apricot clothes behind her; soft daylight and subtle warm orange ambient light. Clothing is the focus, complete neckline and sleeves readable, no bag covering the garment. Editorial, feminine, modern, approachable, realistic fabric and natural anatomy. Cream/ivory/cocoa palette with restrained orange accents. No text, logo, watermark, celebrity likeness or branded campaign imitation. Single photograph, no collage, no frame. Fictional demo imagery.",
+        "source_artifact": "exec-f8249216-0ffe-4be0-aff6-c935de509642.png",
+        "source_sha256": "e9634e9de3f28a75e87b7b664f8e1e5be1b492bc5d125a6d88cb09ce77e99da1",
+        "encoding": "JPEG, sips formatOptions 88",
+        "generated_on": "2026-09-14"
+      },
+      "previous_asset": {
+        "source": "pexels",
+        "source_photo_id": 19310132,
+        "source_page_url": "https://www.pexels.com/photo/woman-in-white-blouse-and-bodycon-dress-with-camera-19310132/",
+        "photographer": "Alexander Mass",
+        "photographer_url": "https://www.pexels.com/@rebornfilmes",
+        "sha256": "11690ca2d47960a7cd0b2d40c9073d203ba4159a585214e3dde434e520452fb3"
+      }
     },
     {
       "id": "oc-demo-top-0017",
