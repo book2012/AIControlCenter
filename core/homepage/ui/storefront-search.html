@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="agachichi — Everyday Comfort, Playful Touch. 상품을 둘러보는 미리보기 공간입니다.">
+  <title>상품 검색 | agachichi</title>
+  <link rel="stylesheet" href="/homepage/assets/storefront.css">
+  <script src="/homepage/assets/storefront.js" defer></script>
+</head>
+<body data-server-rendered="true">
+  <a class="skip-link" href="#main-content">본문 바로가기</a>
+  <header class="store-header">
+    <a class="wordmark" id="store-home-link" href="/homepage/storefront" aria-label="agachichi 홈">agachichi<span>Everyday Comfort, Playful Touch</span></a>
+    <a class="header-search" href="/homepage/storefront/search" aria-label="상품 검색">검색 <span aria-hidden="true">↗</span></a>
+    <p class="preview-notice">상품 미리보기 · 현재 구매는 지원하지 않습니다.</p>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <div id="listing-view">
+      <section class="collection" id="collection" aria-labelledby="collection-title">
+        <div class="collection-heading">
+          <h1 id="collection-title">상품 둘러보기</h1>
+          <p id="product-count">{{count}}</p>
+        </div>
+        <form id="search-panel" class="search-panel" role="search" method="get" action="/homepage/storefront/search">
+          <input id="search-category" type="hidden" name="category" value="{{category}}">
+          <label for="search-input">상품 검색</label>
+          <div class="search-fields">
+            <input id="search-input" name="q" type="search" value="{{query}}" maxlength="200" placeholder="상품명이나 떠오르는 단어를 입력하세요" autocomplete="off">
+            <button class="solid-button" type="submit">검색</button>
+          </div>
+          <p id="search-context" class="field-note">{{search_context}}</p>
+        </form>
+        <nav class="category-nav" id="category-nav" aria-label="상품 카테고리">
+          {{categories}}
+        </nav>
+        <p id="category-status" class="field-note" role="status">{{category_status}}</p>
+        <div class="tag-strip">
+          <p class="tag-caption" id="mood-caption">이런 검색어는 어때요?</p>
+          <div class="tags" role="group" aria-labelledby="mood-caption">
+            <a data-query="블라우스" href="{{mood_블라우스}}">#블라우스</a>
+            <a data-query="미니멀" href="{{mood_미니멀}}">#미니멀</a>
+            <a data-query="내추럴" href="{{mood_내추럴}}">#내추럴</a>
+            <a data-query="주말" href="{{mood_주말}}">#주말</a>
+            <a data-query="출근" href="{{mood_출근}}">#출근</a>
+          </div>
+          <p class="field-note">검색어 예시이며, 상품 속성 필터가 아닙니다.</p>
+        </div>
+        <p id="active-conditions" class="active-conditions" role="status" aria-live="polite">{{conditions}}</p>
+        <div class="catalog-feedback">
+          <p id="catalog-status" role="status" aria-live="polite">{{status}}</p>
+          <button id="retry" class="text-button" type="button" hidden>다시 시도</button>
+          <a id="clear-filters" class="text-button" href="/homepage/storefront/search" {{clear_hidden}}>검색·카테고리 초기화</a>
+        </div>
+        <p id="catalog-note" class="field-note">상품 미리보기</p>
+        <ul id="product-grid" class="product-grid" aria-label="상품 목록" aria-busy="false">{{cards}}</ul>
+        <nav class="pagination" aria-label="상품 목록 페이지" {{pagination_hidden}}>
+          <a id="previous-page" class="text-button" href="{{previous}}" {{previous_hidden}}>← 이전</a>
+          <span id="page-label" aria-live="polite">{{page_label}}</span>
+          <a id="next-page" class="text-button" href="{{next}}" {{next_hidden}}>다음 →</a>
+        </nav>
+      </section>
+    </div>
+
+    <noscript><p class="empty-state">카테고리와 상품 링크, 검색은 자바스크립트 없이도 이용할 수 있습니다.</p></noscript>
+  </main>
+  <footer class="store-footer"><a class="wordmark" href="/homepage/storefront">agachichi</a><p>Everyday Comfort, Playful Touch</p><span>상품 미리보기 · 현재 구매는 지원하지 않습니다.</span></footer>
+
+  <template id="product-template">
+    <li class="product-card">
+      <a class="product-link">
+        <div class="product-photo">
+          <img width="800" height="1200" loading="lazy" decoding="async" alt="">
+          <span class="photo-fallback" hidden>이미지 준비 중입니다.</span>
+        </div>
+        <div class="product-caption"><p class="product-tags"></p></div>
+      </a>
+    </li>
+  </template>
+  <script id="storefront-media" type="application/json">{{media}}</script>
+</body>
+</html>

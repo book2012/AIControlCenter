@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="agachichi — Everyday Comfort, Playful Touch. 상품을 둘러보는 미리보기 공간입니다.">
+  <title>agachichi | Everyday Comfort, Playful Touch</title>
+  <link rel="stylesheet" href="/homepage/assets/storefront.css">
+  <script src="/homepage/assets/storefront.js" defer></script>
+</head>
+<body data-server-rendered="true">
+  <a class="skip-link" href="#main-content">본문 바로가기</a>
+  <header class="store-header">
+    <a class="wordmark" id="store-home-link" href="/homepage/storefront" aria-label="agachichi 홈">agachichi<span>Everyday Comfort, Playful Touch</span></a>
+    <a class="header-search" href="/homepage/storefront/search" aria-label="상품 검색">검색 <span aria-hidden="true">↗</span></a>
+    <p class="preview-notice">상품 미리보기 · 현재 구매는 지원하지 않습니다.</p>
+  </header>
+
+  <main id="main-content" tabindex="-1">
+    <div id="home-view">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">agachichi</p>
+          <h1 id="hero-title">매일 편하게,<br><em>조금 더 사랑스럽게.</em></h1>
+        </div>
+        <figure class="hero-photo">
+          <img src="/homepage/assets/storefront/hero-boutique.jpg" alt="따뜻한 조명의 부티크에서 크림색과 오렌지색 옷을 둘러보는 여성 모델" width="1536" height="1024" fetchpriority="high">
+        </figure>
+      </section>
+      <nav id="home-filter-nav" class="filter-rail" aria-label="피드 필터">
+        {{filters}}
+      </nav>
+      <div class="feed-heading"><h1 id="feed-title">피드</h1><p id="feed-count">{{feed_count}}</p></div>
+      <p id="feed-status" class="home-status" role="status" aria-live="polite">{{feed_status}}</p>
+      <ul id="home-feed" class="product-grid unified-feed" aria-label="전체 상품 피드" aria-busy="false">{{feed}}</ul>
+      <div class="browse-link-wrap">
+        {{feed_more}}
+        <button id="home-retry" class="text-button" type="button" hidden>다시 시도</button>
+        <a id="browse-all" class="browse-link" href="/homepage/storefront/search">전체 상품 둘러보기 · 검색 <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+
+    <noscript><p class="empty-state">카테고리와 상품 링크, 검색은 자바스크립트 없이도 이용할 수 있습니다.</p></noscript>
+  </main>
+  <footer class="store-footer"><a class="wordmark" href="/homepage/storefront">agachichi</a><p>Everyday Comfort, Playful Touch</p><span>상품 미리보기 · 현재 구매는 지원하지 않습니다.</span></footer>
+
+  <template id="product-template">
+    <li class="product-card">
+      <a class="product-link">
+        <div class="product-photo">
+          <img width="800" height="1200" loading="lazy" decoding="async" alt="">
+          <span class="photo-fallback" hidden>이미지 준비 중입니다.</span>
+        </div>
+        <div class="product-caption"><p class="product-tags"></p></div>
+      </a>
+    </li>
+  </template>
+  <script id="storefront-media" type="application/json">{{media}}</script>
+</body>
+</html>
