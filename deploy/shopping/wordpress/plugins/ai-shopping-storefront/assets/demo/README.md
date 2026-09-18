@@ -1,5 +1,22 @@
 # Orange Coco Demo Images
 
+## SHOP_MEDIA_001 update — 2026-09-14
+
+The active `orange-coco-v1` catalog now has seven original generated fashion
+photographs and 85 retained sample photographs. The seven replacements keep
+their product IDs and exact JPEG paths. `orange-coco-v1/asset-manifest.json`
+records generated provenance, prompts, dimensions and checksums; old Pexels
+attribution is preserved only under each replacement's `previous_asset`.
+
+The current 92-entry completion/pending inventory is
+`brands/orange-coco/assets/media/SHOP_MEDIA_001.json` at the repository root.
+The AIControlCenter storefront hero is separately brand-owned at
+`brands/orange-coco/assets/media/storefront/hero-boutique.jpg`; it no longer
+shares a product image or depends on this plugin's deployment path.
+
+The source/license and numbered photo list below describe the retained
+historical Pexels demo assets, not the new generated photographs.
+
 Purpose:
 
 Storefront layout and UI validation only.

@@ -1,5 +1,28 @@
 # Project History
 
+## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
+
+The agachichi Home presentation moved from split NEW/BEST/category sections to
+a single mixed editorial feed of all active lookbook products. Collection and
+category filters use separate URL parameters, with explicit truth rules for
+HOT, SALE, and UPDATE. Search and canonical PDP behavior remain separate and
+unchanged; no production activation occurred.
+
+## 2026-09-15 — SHOP_MEDIA_003_AGACHICHI closeout candidate
+
+The active read-only presentation target is now documented as agachichi under
+BRAND_RENAME_001. Orange Coco remains only as superseded historical and
+compatibility material. SHOP_MEDIA_003 contains 120 GENERATED assets, 0
+PLANNED records, and 20 assets in each of six categories; local integrity,
+checksum, provenance/review, duplicate, orphan, and JPEG checks passed. The
+browse-card contract is IMAGE + HASHTAGS ONLY, with a no-whitespace hashtag
+assertion applied to raw manifest and rendered Home/Search rows.
+
+This is a 120/120 COMPLETE candidate pending Git review. Canonical Shopping
+product names and PDP fields were preserved. No production activation occurred.
+The sandbox denied loopback socket binding, so application routes were checked
+with the repository TestClient; Caddy/DEV_INGRESS_001 remains separate.
+
 ## 2026-09-05 — SHOP-SERVICE-START-01B operator failure diagnostic hardening
 
 Handoff: `SHOP_SERVICE_START_01B_OPERATOR_FAILURE_DIAGNOSTIC_HARDENING`.

@@ -1,5 +1,100 @@
 # AI Home Datacenter Architecture
 
+## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
+
+The agachichi Home route is now one read-only Instagram/editorial feed. The
+default `/homepage/storefront` renders all 120 active lookbook products in one
+mixed responsive grid. A compact horizontal rail keeps collection filters
+(`ALL`, `HOT`, `SALE`, `UPDATE`) distinct from category filters (`TOP` through
+`ACC`); category slugs remain canonical and collection state uses `collection=`.
+HOT has no explicit membership, SALE has no canonical discount data and is an
+intentional empty state, and UPDATE uses the explicit deterministic NEW
+collection policy. Search remains the dedicated text/pagination page.
+Home uses bounded paged reads and a progressive next-feed link rather than
+materializing the entire catalog in each response.
+
+Cards remain IMAGE + HASHTAGS ONLY and PDP canonical fields are unchanged. URL
+filter links preserve shareable Home state and browser navigation. No schema,
+Caddy, production, Ubuntu, WooCommerce, or activation changes were made.
+
+## 2026-09-15 — SHOP_MEDIA_003_AGACHICHI closeout candidate
+
+`SHOP_MEDIA_003_AGACHICHI` is a **120/120 COMPLETE candidate** for the
+read-only agachichi presentation. The manifest has 120 GENERATED assets,
+PLANNED 0, and exactly 20 records in each TOP/BOTTOM/OUTER/DRESS/BAG/ACC
+category. Every generated record has generator provenance, review evidence,
+an existing local JPEG, and a matching SHA-256. Duplicate paths, completed
+hashes, and orphan files are absent. The presentation card contract is
+**IMAGE + HASHTAGS ONLY**; each raw and rendered hashtag token begins with
+`#`, is non-empty, and contains no whitespace. Orange Coco is superseded
+historical/compatibility presentation material, not an active fallback.
+
+BRAND_RENAME_001 implementation status is complete for the dev presentation:
+agachichi is the active target brand. Canonical Shopping names, categories,
+prices, availability, and descriptions remain unchanged. No production
+activation was performed. Route validation uses the repository TestClient;
+the sandbox denied loopback socket binding, so no external HTTP result is
+claimed. Caddy/DEV_INGRESS_001 remains a separate dirty-tree change.
+
+## 2026-09-14 — SHOP_UI_002 stabilization / SHOP_MEDIA_001
+
+Fixed the verified stale dev-preview process: its old static handlers served
+new template files verbatim and lacked the search route. The dev preview and
+fixtures now share the repository-owned demo composition and real server-rendered
+Homepage routes. A loopback launcher reloads Python changes; raw template
+serving is guarded. Only the identified dev process on 18080 was replaced.
+
+The centered Korean boutique header, ivory/cocoa palette and 180px mobile /
+260px desktop hero now use a brand-owned warm boutique image. Seven product
+JPEGs covering all NEW/BEST home slots were replaced with generated fictional
+adult-model imagery; **85 / 92 product photos remain pending**, with exact paths
+and provenance in `brands/orange-coco/assets/media/SHOP_MEDIA_001.json`.
+
+Validation: **92 focused + 409 regression tests passed**, **40 JS helper checks**,
+**2 syntax checks**, and **7 live HTTP checks passed on the final dev upstream**.
+External dev check: **401 authentication**; authenticated external QA and
+Playwright are **NOT_RUN**. Canonical Shopping contracts remain unchanged.
+No packages, Caddy/DNS/production/Ubuntu changes, staging, commit or push.
+
+[Root cause, exact files, media status and validation](docs/architecture/SHOP-UI-002-STABILIZATION-SHOP-MEDIA-001.md).
+
+## 2026-09-14 — SHOP_UI_002 native navigation follow-up
+
+The editorial home, separate search page and PDP now return complete escaped
+HTML through the existing canonical Shopping service. Categories and product
+cards have native href links; GET search, pagination and return navigation work
+without JavaScript. Category slugs stay in URLs and resolve to canonical IDs
+for reads. Initial home/PDP HTML needs no duplicate browser read. Korean copy,
+the compact hero, canonical NEW/BEST semantics, GET-only safety and the 2/3/4
+grid remain intact. Unknown PDPs return 404; unavailable reads return 503.
+
+Image fallback: **0 / 92 photos replaced**; a repository-local exact-path swap
+plan covers all 92 images, checksums and candidate destinations. Actual image
+replacement and SHOP_RECOMMEND_001 remain deferred.
+
+Validation: **67 focused tests passed**, **409 regressions passed**, **40
+JavaScriptCore helper checks passed**, **2 syntax checks passed**. Playwright:
+**NOT_RUN**. The dirty tree and empty index remain; no staging, commit, push,
+package installation, production/runtime/Ubuntu access or Caddy change.
+
+[Exact files, architecture, image plan and validation](docs/architecture/SHOP-UI-002-EDITORIAL-HOME-SEARCH.md).
+
+## Historical SHOP_UI_002 shell architecture (superseded above)
+
+The existing FastAPI Homepage asset routes serve separate listing and product
+preview HTML shells with shared storefront CSS/JavaScript. The PDP route is
+`GET /homepage/storefront/product/{product_id}`; its shell does not resolve the
+commerce service. Browser product data comes only from canonical Shopping GET
+routes, with the PDP consuming only `GET /shopping/products/{product_id}`.
+
+Listing state is encoded as category/q/page URL parameters, and card links carry
+an allowlisted local return URL. Categories use canonical IDs across demo and
+WooCommerce adapters. Browser cancellation/version guards, safe text rendering,
+and exact decimal strings remain mandatory. Existing repository demo images
+remain the sole approved photo mapping; no browser CMS/vendor API or media
+proxy is introduced. No schema, adapter, deployment, or Control Plane authority
+changes occur. [Full assessment](docs/architecture/SHOP-UI-002-KOREAN-STOREFRONT.md).
+
 ## SHOP_API_READ_003 — operational read telemetry (2026-09-13)
 
 The application-owned `ShoppingService` now retains bounded, instance-local
@@ -5919,3 +6014,11 @@ records the exact API, adapter behavior, boundaries, and commands. Final focused
 validation: `113 passed, 1 warning`; relevant shopping regression:
 `166 passed, 15 warnings`. All evidence used fixtures/fakes. Source changes are
 uncommitted; live activation, production access, and writes remain unauthorized.
+### SHOP_MEDIA_002 category lookbook
+
+`core/homepage/preview.py` opts the real local preview into the
+`brands/orange-coco/catalog/lookbook-preview` fixture. This is a presentation
+composition over the existing `DemoCommerceCatalogAdapter`, not a Shopping
+schema or production catalog change. `storefront_media.py` validates local
+manifest records and provides only local image routes; no browser request can
+reach WooCommerce or WordPress directly.

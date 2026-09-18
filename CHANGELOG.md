@@ -1,5 +1,86 @@
 # CHANGELOG
 
+## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
+
+- Replaced split Home NEW/BEST/category sections with one mixed agachichi feed.
+- Added shareable horizontal ALL/HOT/SALE/UPDATE plus six category filters.
+- Kept collection and category semantics separate; HOT and SALE do not invent
+  commercial facts, and UPDATE follows the explicit NEW membership policy.
+- Preserved the IMAGE + HASHTAGS ONLY card contract, dedicated Search page,
+  canonical PDP data, and read-only boundaries.
+
+## 2026-09-15 — SHOP_MEDIA_003_AGACHICHI closeout candidate
+
+- Fixed the regression assertion for presentation hashtags to require a
+  non-empty `#` token with no whitespace anywhere in the token.
+- Validated raw manifest tags and rendered Home/Search card rows with the same
+  semantic rule; canonical Shopping product names were not changed.
+- Recorded SHOP_MEDIA_003 as a 120/120 COMPLETE candidate: 120 GENERATED,
+  0 PLANNED, 20 per category, complete local integrity/provenance checks.
+- Documented agachichi as the active presentation brand and Orange Coco as
+  superseded historical/compatibility material. No production activation.
+
+## 2026-09-14 — SHOP_UI_002 stabilization / SHOP_MEDIA_001
+
+Fixed the verified stale dev-preview process: its old static handlers served
+new template files verbatim and lacked the search route. The dev preview and
+fixtures now share the repository-owned demo composition and real server-rendered
+Homepage routes. A loopback launcher reloads Python changes; raw template
+serving is guarded. Only the identified dev process on 18080 was replaced.
+
+The centered Korean boutique header, ivory/cocoa palette and 180px mobile /
+260px desktop hero now use a brand-owned warm boutique image. Seven product
+JPEGs covering all NEW/BEST home slots were replaced with generated fictional
+adult-model imagery; **85 / 92 product photos remain pending**, with exact paths
+and provenance in `brands/orange-coco/assets/media/SHOP_MEDIA_001.json`.
+
+Validation: **92 focused + 409 regression tests passed**, **40 JS helper checks**,
+**2 syntax checks**, and **7 live HTTP checks passed on the final dev upstream**.
+External dev check: **401 authentication**; authenticated external QA and
+Playwright are **NOT_RUN**. Canonical Shopping contracts remain unchanged.
+No packages, Caddy/DNS/production/Ubuntu changes, staging, commit or push.
+
+[Root cause, exact files, media status and validation](docs/architecture/SHOP-UI-002-STABILIZATION-SHOP-MEDIA-001.md).
+
+## 2026-09-14 — SHOP_UI_002 native navigation follow-up
+
+The editorial home, separate search page and PDP now return complete escaped
+HTML through the existing canonical Shopping service. Categories and product
+cards have native href links; GET search, pagination and return navigation work
+without JavaScript. Category slugs stay in URLs and resolve to canonical IDs
+for reads. Initial home/PDP HTML needs no duplicate browser read. Korean copy,
+the compact hero, canonical NEW/BEST semantics, GET-only safety and the 2/3/4
+grid remain intact. Unknown PDPs return 404; unavailable reads return 503.
+
+Image fallback: **0 / 92 photos replaced**; a repository-local exact-path swap
+plan covers all 92 images, checksums and candidate destinations. Actual image
+replacement and SHOP_RECOMMEND_001 remain deferred.
+
+Validation: **67 focused tests passed**, **409 regressions passed**, **40
+JavaScriptCore helper checks passed**, **2 syntax checks passed**. Playwright:
+**NOT_RUN**. The dirty tree and empty index remain; no staging, commit, push,
+package installation, production/runtime/Ubuntu access or Caddy change.
+
+[Exact files, architecture, image plan and validation](docs/architecture/SHOP-UI-002-EDITORIAL-HOME-SEARCH.md).
+
+## 2026-09-13 — SHOP_UI_002 Korean catalog and product preview
+
+- Evolved the dirty SHOP_UI_001 source with Korean copy, `lang=ko`, warm ivory,
+  pastel orange, cocoa text, and compact desktop/mobile hero presentation.
+- Added real product-card links and a separate product-preview shell consuming
+  only `GET /shopping/products/{product_id}` for product data.
+- Added URL category/query/page state, Back/Forward handlers, and a validated
+  listing return URL. Category and search controls compose using canonical IDs.
+- Removed cart/social/wishlist affordances and promotional HOT support. Mood
+  tags are suggested searches; NEW/BEST require canonical collection membership.
+- Preserved GET-only requests, cancellation, stale-response guards, exact decimal
+  digits, safe text rendering, approved photos, and responsive 2/3/4 columns.
+- Validation: 451 Python tests, 31 JavaScriptCore helper checks, 2 syntax checks;
+  Playwright NOT_RUN. No staging, commit, push, package installation, or runtime
+  change. The pre-existing dirty Caddyfile was preserved byte-for-byte.
+
+[Architecture, API boundaries, and limitations](docs/architecture/SHOP-UI-002-KOREAN-STOREFRONT.md).
+
 ## 2026-09-13 — SHOP_API_READ_003 operational telemetry and Dashboard projection
 
 - Added fixed service-instance counters and last observations for canonical
@@ -5862,3 +5943,12 @@ evidence locator.
 - Updated README, ARCHITECTURE, MASTER, and ROADMAP after passing tests. Source
   changes remain uncommitted. No production/Ubuntu runtime access, launchctl,
   real credential access, activation, external writes, staging, or push occurred.
+## 2026-09-14 — SHOP_MEDIA_002 category lookbook
+
+- Added a repository-owned Orange Coco category lookbook presentation adapter,
+  deterministic 120-asset manifest, isolated 120-item preview catalog, and
+  four-sample-per-category homepage sections.
+- Generated and checksum-recorded 13 local fictional-adult JPEGs; the remaining
+  107 records stay explicitly `PLANNED` after the built-in generator quota.
+- Preserved canonical Shopping schemas, original catalog records, GET-only
+  behavior, and all production/runtime boundaries.

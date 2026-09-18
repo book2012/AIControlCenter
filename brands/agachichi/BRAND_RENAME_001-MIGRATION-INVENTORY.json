@@ -1,0 +1,463 @@
+{
+  "schema_version": 1,
+  "active_brand": "agachichi",
+  "superseded_presentation_brand": "orange-coco",
+  "canonical_shopping_contracts_unchanged": true,
+  "references": [
+    {
+      "path": "ARCHITECTURE.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "MASTER.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "README.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "ROADMAP.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/test_shop_ui_002_storefront.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/test_orange_coco_catalog_loader.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/shop_ui_001_browser.cjs",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/test_shop_ui_001_storefront.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/test_shopping_demo_adapter.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/test_shop_ui_002_preview.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "scripts/inventory_orange_coco_legacy_media.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "scripts/prepare_orange_coco_lookbook.py",
+      "tokens": [
+        "orange-coco",
+        "오렌지 코코"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "scripts/record_orange_coco_media.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "scripts/shopping/build_orange_coco_catalog.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "scripts/shopping/fetch_orange_coco_catalog.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "scripts/__pycache__/prepare_orange_coco_lookbook.cpython-314.pyc",
+      "tokens": [
+        "orange-coco",
+        "오렌지 코코"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "scripts/__pycache__/record_orange_coco_media.cpython-314.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "docs/shopping/STOREFRONT.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "docs/architecture/SHOP-MEDIA-002-CATEGORY-LOOKBOOK.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "docs/architecture/SHOP-UI-002-DEMO-IMAGE-SWAP.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "docs/architecture/SHOP-UI-002-DEMO-IMAGE-SWAP.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "docs/architecture/SHOP-MEDIA-002R1-LEGACY-DELETION-CANDIDATES.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "docs/architecture/SHOP-UI-002-STABILIZATION-SHOP-MEDIA-001.md",
+      "tokens": [
+        "ORANGE COCO",
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_shop_ui_002_preview.cpython-314-pytest-9.1.1.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_shop_ui_001_storefront.cpython-314-pytest-9.1.1.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_shopping_demo_adapter.cpython-314-pytest-9.1.1.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_shop_ui_002_storefront.cpython-314-pytest-9.1.1.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_orange_coco_catalog_loader.cpython-314-pytest-9.1.1.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_shop_ui_001_storefront.cpython-314.pyc",
+      "tokens": [
+        "ORANGE COCO",
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_shopping_demo_adapter.cpython-312-pytest-9.1.1.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "tests/__pycache__/test_orange_coco_catalog_loader.cpython-312-pytest-9.1.1.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "brands/orange-coco/catalog/collections.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "brands/orange-coco/catalog/pricing.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "brands/orange-coco/catalog/inventory.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "brands/orange-coco/catalog/catalog.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "brands/orange-coco/catalog/homepage.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "brands/orange-coco/assets/media/SHOP_MEDIA_001.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "brands/orange-coco/assets/media/SHOP_MEDIA_002.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "brands/orange-coco/catalog/lookbook-preview/collections.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "brands/orange-coco/catalog/lookbook-preview/pricing.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "brands/orange-coco/catalog/lookbook-preview/inventory.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "brands/orange-coco/catalog/lookbook-preview/catalog.json",
+      "tokens": [
+        "orange-coco",
+        "오렌지 코코"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "brands/orange-coco/catalog/lookbook-preview/homepage.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "brands/agachichi/assets/media/SHOP_MEDIA_003.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/ai-shopping-storefront.php",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/includes/class-renderer.php",
+      "tokens": [
+        "ORANGE COCO",
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/templates/product-detail.php",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/templates/storefront-front-page.php",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/storefront.css",
+      "tokens": [
+        "ORANGE COCO",
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/storefront-ui.js",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/orange-coco-v6.css",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/demo/README.md",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/demo/orange-coco-v1/asset-manifest.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "deploy/shopping/wordpress/plugins/ai-shopping-storefront/includes/renderers/class-product-detail-renderer.php",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "config/brands/orange-coco/demo-catalog.json",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "review"
+    },
+    {
+      "path": "core/homepage/preview.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "core/api/routes/homepage.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "core/api/routes/__pycache__/homepage.cpython-314.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "core/homepage/__pycache__/storefront_media.cpython-314.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "core/homepage/__pycache__/preview.cpython-314.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "core/shopping/catalog/orange_coco.py",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "core/shopping/catalog/__pycache__/orange_coco.cpython-314.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    },
+    {
+      "path": "core/shopping/catalog/__pycache__/orange_coco.cpython-312.pyc",
+      "tokens": [
+        "orange-coco"
+      ],
+      "classification": "historical_or_compatibility"
+    }
+  ]
+}

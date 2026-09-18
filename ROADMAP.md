@@ -1,5 +1,86 @@
 # Roadmap
 
+## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
+
+- [x] Replace split Home sections with one mixed 120-product agachichi feed.
+- [x] Add URL-state ALL/HOT/SALE/UPDATE and TOP/BOTTOM/OUTER/DRESS/BAG/ACC
+  filters without changing canonical schemas.
+- [x] Preserve dedicated Search, canonical PDP fields, and IMAGE + HASHTAGS ONLY
+  cards; keep unsupported HOT/SALE states empty and truthful.
+- [ ] Browser visual QA and any production activation remain separately gated.
+
+## 2026-09-15 — SHOP_MEDIA_003_AGACHICHI closeout candidate
+
+- [x] BRAND_RENAME_001 implementation status recorded: agachichi is the active
+  presentation brand; Orange Coco is superseded historical/compatibility data.
+- [x] SHOP_MEDIA_003 integrity candidate: 120/120 GENERATED, 0 PLANNED, 20
+  records per category, with local files, matching checksums, provenance/review,
+  no orphan files, and no duplicate paths or completed hashes.
+- [x] Card contract recorded as IMAGE + HASHTAGS ONLY; raw and rendered tokens
+  require a non-empty `#` prefix and zero whitespace.
+- [ ] Production activation remains separately gated and was not performed.
+- [ ] Stage/commit/push after review; Caddy/DEV_INGRESS_001 stays separate.
+
+## 2026-09-14 — SHOP_UI_002 stabilization / SHOP_MEDIA_001
+
+Fixed the verified stale dev-preview process: its old static handlers served
+new template files verbatim and lacked the search route. The dev preview and
+fixtures now share the repository-owned demo composition and real server-rendered
+Homepage routes. A loopback launcher reloads Python changes; raw template
+serving is guarded. Only the identified dev process on 18080 was replaced.
+
+The centered Korean boutique header, ivory/cocoa palette and 180px mobile /
+260px desktop hero now use a brand-owned warm boutique image. Seven product
+JPEGs covering all NEW/BEST home slots were replaced with generated fictional
+adult-model imagery; **85 / 92 product photos remain pending**, with exact paths
+and provenance in `brands/orange-coco/assets/media/SHOP_MEDIA_001.json`.
+
+Validation: **92 focused + 409 regression tests passed**, **40 JS helper checks**,
+**2 syntax checks**, and **7 live HTTP checks passed on the final dev upstream**.
+External dev check: **401 authentication**; authenticated external QA and
+Playwright are **NOT_RUN**. Canonical Shopping contracts remain unchanged.
+No packages, Caddy/DNS/production/Ubuntu changes, staging, commit or push.
+
+[Root cause, exact files, media status and validation](docs/architecture/SHOP-UI-002-STABILIZATION-SHOP-MEDIA-001.md).
+
+## 2026-09-14 — SHOP_UI_002 native navigation follow-up
+
+The editorial home, separate search page and PDP now return complete escaped
+HTML through the existing canonical Shopping service. Categories and product
+cards have native href links; GET search, pagination and return navigation work
+without JavaScript. Category slugs stay in URLs and resolve to canonical IDs
+for reads. Initial home/PDP HTML needs no duplicate browser read. Korean copy,
+the compact hero, canonical NEW/BEST semantics, GET-only safety and the 2/3/4
+grid remain intact. Unknown PDPs return 404; unavailable reads return 503.
+
+Image fallback: **0 / 92 photos replaced**; a repository-local exact-path swap
+plan covers all 92 images, checksums and candidate destinations. Actual image
+replacement and SHOP_RECOMMEND_001 remain deferred.
+
+Validation: **67 focused tests passed**, **409 regressions passed**, **40
+JavaScriptCore helper checks passed**, **2 syntax checks passed**. Playwright:
+**NOT_RUN**. The dirty tree and empty index remain; no staging, commit, push,
+package installation, production/runtime/Ubuntu access or Caddy change.
+
+[Exact files, architecture, image plan and validation](docs/architecture/SHOP-UI-002-EDITORIAL-HOME-SEARCH.md).
+
+## Historical SHOP_UI_002 implementation checklist (superseded above)
+
+- [x] Korean-first read-only storefront, compact warm palette, and 2/3/4 grid.
+- [x] Canonical product preview, clickable cards, URL filters, history handlers,
+  and safe return to the listing URL.
+- [x] Canonical category IDs and source membership for NEW/BEST; suggested
+  search terms without invented facets, HOT, or commerce controls.
+- [x] Source/API/helper validation: 451 Python tests, 31 JavaScriptCore checks,
+  2 JavaScript syntax checks, and `git diff --check`.
+- [ ] Playwright interaction, accessibility, and responsive visual verification:
+  **NOT_RUN** in this environment; offline fixture suite prepared.
+
+Photos, external media approval, missing product attributes, production
+activation, and Git closure remain outside this implementation-only sprint.
+No staging, commit, push, package installation, Caddy/runtime change, or Ubuntu
+access is authorized. [Contract and limitations](docs/architecture/SHOP-UI-002-KOREAN-STOREFRONT.md).
+
 ## SOURCE COMPLETE / ACTIVATION NOT AUTHORIZED — SHOP_API_READ_003
 
 - [x] Add fixed, instance-local canonical read outcome/failure counters and
@@ -5334,3 +5415,10 @@ See [architecture, exact tests, and boundaries](docs/architecture/SHOP-API-READ-
 `SHOP_API_READ_001_IMPLEMENTATION=COMPLETE`
 `SHOP_API_READ_001_VALIDATION=FIXTURE_ONLY_PASS`
 `SHOP_API_READ_001_PRODUCTION_ACTIVATION=NOT_AUTHORIZED`
+## SHOP_MEDIA_002_CATEGORY_LOOKBOOK — source implementation complete
+
+The local preview now has six category lookbook sections and 20 canonical demo
+records per category. Media generation is resumable from
+`SHOP_MEDIA_002.json`; 13/120 files are complete and 107 remain planned until
+the image generator quota resets. No production activation, staging, commit,
+push, WooCommerce write, or runtime mutation was performed.
