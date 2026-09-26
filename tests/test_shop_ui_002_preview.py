@@ -109,6 +109,30 @@ def test_preview_does_not_expose_operator_or_raw_template_routes(client, path):
     assert client.get(path).status_code == 404
 
 
+@pytest.mark.parametrize("method,path", [
+    ("get", "/shopping/inquiries"),
+    ("post", "/shopping/inquiries"),
+    ("get", "/shopping/inquiries/AG-INQ-000001"),
+    ("get", "/shopping/inquiries/AG-INQ-000001/messages"),
+    ("post", "/shopping/inquiries/AG-INQ-000001/messages"),
+    ("get", "/shopping/operator/inquiries"),
+    ("get", "/shopping/operator/inquiries/AG-INQ-000001"),
+    ("post", "/shopping/operator/inquiries/AG-INQ-000001/messages"),
+])
+def test_preview_excludes_legacy_inquiry_and_operator_http_apis(client, method, path):
+    if method == "post":
+        response = client.post(path, json={"body": "Preview must not expose inquiry APIs"})
+    else:
+        response = client.get(path)
+    assert response.status_code == 404
+
+
+def test_preview_keeps_storefront_and_catalog_surface_available(client):
+    assert client.get("/homepage/storefront").status_code == 200
+    assert client.get("/shopping/products").status_code == 200
+    assert client.get("/shopping/categories").status_code == 200
+
+
 def test_hero_is_a_brand_owned_local_jpeg_and_visible_copy_is_fixed(client):
     path = ROOT / "brands/agachichi/assets/media/storefront/hero-agachichi.jpg"
     response = client.get("/homepage/assets/storefront/hero-boutique.jpg")

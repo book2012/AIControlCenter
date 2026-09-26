@@ -35,12 +35,13 @@ def create_app(*, lookbook: bool = True) -> FastAPI:
 
     @app.middleware("http")
     async def preview_boundary(request: Request, call_next):
-        # Do not expose operator/runtime routes from the included routers.
+        # Do not expose inquiry, operator, or runtime routes from the
+        # included routers. Preview is storefront/catalog only.
         path = request.url.path
         allowed = (path == "/openapi.json" or path == "/homepage/storefront"
                    or path.startswith("/homepage/storefront/")
                    or path.startswith("/homepage/assets/storefront")
-                   or bool(re.fullmatch(r"/shopping/(products(?:/[^/]+)?|categories|search|contact-channels|inquiries(?:/[^/]+){0,2}|operator/inquiries(?:/[^/]+){0,2})", path)))
+                   or bool(re.fullmatch(r"/shopping/(products(?:/[^/]+)?|categories|search|contact-channels)", path)))
         if request.method not in {"GET", "POST"}:
             return JSONResponse({"detail": "Method not allowed"}, status_code=405, headers={"Allow": "GET, POST"})
         if request.method == "POST" and not (path == "/shopping/inquiries" or path.endswith("/messages")):
