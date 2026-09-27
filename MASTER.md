@@ -1,6 +1,6 @@
 # MASTER
 
-## Current authoritative platform state — 2026-09-27
+## Current authoritative platform state — 2026-09-28
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.
 AIControlCenter owns governance, policy, orchestration, authorization, audit,
@@ -23,7 +23,65 @@ Product photos, image analysis, and advanced product analysis use GPT API
 Product Intelligence. Provider selection remains behind AIControlCenter
 policy/router/adapters.
 
-## SHOP_AI_001C-A / SHOP_AI_001C-B / SHOP_AI_001C-C0 / SHOP_AI_001C-C1 — phone verification foundation and durable persistence
+## SHOP_AI_001C-C2 — Provider Adapter Foundation — COMPLETE
+
+`SHOP_AI_001C-C2` is **COMPLETE** at canonical code commit
+`4c9f8851f39b944f0d875694c44f998ae5ad1000`, parent
+`fd64c2395778c69ecad0a3e1f662e1fe88444d97`, with a validated code scope of
+**12 paths**.
+
+Validation evidence:
+
+- C2/C1 regression: **74 passed, pytest exit 0**.
+- Broader SHOP_AI regression: **506 passed, 1 warning, pytest exit 0**.
+- API runtime, excluding one proven pre-existing baseline defect: **6 passed,
+  1 deselected, 11 warnings, pytest exit 0**.
+- Excluded baseline test:
+  `tests/test_shop_ai_01b3_api_runtime.py::test_app_creation_does_not_create_product_draft_database`.
+  It fails on untouched parent `fd64c2395778c69ecad0a3e1f662e1fe88444d97`
+  because the configured `inquiries.db` parent directory is absent. This is
+  pre-existing technical debt, not a C2 blocker; C2 did not fix it.
+
+C2 architecture and preserved authority:
+
+- Existing `PhoneVerificationPort`, C1 persistence, verification service,
+  session service, normalization, and customer authentication remain
+  unchanged.
+- `ProviderPhoneVerificationAdapter` is provider-neutral. Typed closed
+  START/VERIFY contracts are supplied by `ProviderTransportPort`.
+- The inert transport is unavailable, zero-network, and has no automatic
+  retry. The bounded failure taxonomy is `PROVIDER_UNAVAILABLE`, `TIMEOUT`,
+  `MALFORMED_RESPONSE`, `REJECTED`, `AMBIGUOUS_PROVIDER_IDENTIFIER`, and
+  `UNKNOWN_OUTCOME`. Timeout defaults to 10 seconds and is capped at 30.
+- `SecretReference` is value-free backend/key-name metadata only; C2 does not
+  resolve or materialize secret values. `ProviderTransportVerifyRequest` is
+  the OTP serialization/privacy boundary, while the existing
+  `ChallengeVerificationRequest` application contract is unchanged.
+- Provider timestamps are evidence only. AIControlCenter remains authorization,
+  time, and policy authority. Trusted application requests own customer,
+  challenge, replay, and phone-binding authority; provider payload does not.
+- Default runtime provider verification remains disabled. There are no new
+  routes/API activation, schema or migration, provider SDK, real network or
+  provider call, credentials, production provider selection, production
+  activation, or Ubuntu authority/state/business logic.
+
+Explicitly deferred to C3 or later: destination-phone resolution trust for
+real SMS delivery; Mac secret resolver and real provider-specific transport;
+authenticated non-production provider integration; durable `UNKNOWN_OUTCOME`
+quarantine/recovery policy; production credentials; production migration; and
+customer-facing E2E/runtime activation.
+
+README review requires no change because C2 adds no customer-facing route,
+real provider capability, production activation, or operational procedure;
+`README.md` remains unchanged.
+
+Next milestone exactly:
+`SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Architecture`
+
+Downstream sequence:
+`SHOP_ORDER_001 → SHOP_AI_002 → SHOP_AI_003 → TG_SALES_001 → SHOP_E2E_001`
+
+## Historical SHOP_AI_001C-A / SHOP_AI_001C-B / SHOP_AI_001C-C0 / SHOP_AI_001C-C1 — phone verification foundation and durable persistence
 
 - `SHOP_AI_001C-A` architecture review: **COMPLETE**.
 - `SHOP_AI_001C-B` provider-neutral phone verification foundation:
@@ -130,9 +188,9 @@ Repository/security and the durable provider-neutral verification foundation do
 not mean production readiness. The production phone provider remains
 **NOT IMPLEMENTED**, production credentials remain **NOT MATERIALIZED**, and
 no production migration, deployment, push, or production activation is
-claimed. The current next milestone is `SHOP_AI_001C-C2` — Provider Adapter
-Foundation. The production readiness evidence gate remains downstream and
-separately gated.
+claimed. The production readiness evidence gate remains downstream and
+separately gated. The next engineering milestone is now
+`SHOP_AI_001C-C3` — Destination Resolution + Mac Secret Resolver Architecture.
 
 Older conflicting architecture or readiness statements below remain historical
 and are superseded by this section.

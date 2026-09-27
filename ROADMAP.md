@@ -1,6 +1,6 @@
 # Roadmap
 
-## Current authoritative roadmap — 2026-09-27
+## Current authoritative roadmap — 2026-09-28
 
 The roadmap is re-baselined around the Mac mini M4 as the always-on Brain and
 sole AIControlCenter Control Plane. AIControlCenter owns governance, policy,
@@ -11,7 +11,66 @@ Ubuntu Server remains a stateless, on-demand infrastructure worker only.
 Ubuntu does not host AI workloads or own business logic, application state, or
 Control Plane authority.
 
-### SHOP_AI_001C-A / SHOP_AI_001C-B / SHOP_AI_001C-C0 / SHOP_AI_001C-C1 — complete
+### SHOP_AI_001C-C2 — Provider Adapter Foundation — COMPLETE
+
+- [x] Canonical code commit:
+  `4c9f8851f39b944f0d875694c44f998ae5ad1000`.
+- [x] Parent:
+  `fd64c2395778c69ecad0a3e1f662e1fe88444d97`.
+- [x] Validated code scope: **12 paths**.
+- [x] C2/C1 regression: **74 passed, pytest exit 0**.
+- [x] Broader SHOP_AI regression: **506 passed, 1 warning, pytest exit 0**.
+- [x] API runtime excluding one proven pre-existing baseline defect:
+  **6 passed, 1 deselected, 11 warnings, pytest exit 0**.
+- [x] Excluded test:
+  `tests/test_shop_ai_01b3_api_runtime.py::test_app_creation_does_not_create_product_draft_database`.
+  The same failure occurs on untouched parent because the configured
+  `inquiries.db` parent directory is absent. It is pre-existing technical debt,
+  not a C2 blocker, and C2 did not fix it.
+- [x] Preserve the existing `PhoneVerificationPort`, C1 persistence,
+  verification/session services, normalization, and customer authentication.
+- [x] Add provider-neutral `ProviderPhoneVerificationAdapter` and typed closed
+  START/VERIFY contracts through `ProviderTransportPort`.
+- [x] Keep the inert transport unavailable, zero-network, and without automatic
+  retry; map bounded failures to `PROVIDER_UNAVAILABLE`, `TIMEOUT`,
+  `MALFORMED_RESPONSE`, `REJECTED`, `AMBIGUOUS_PROVIDER_IDENTIFIER`, and
+  `UNKNOWN_OUTCOME`.
+- [x] Enforce a default 10-second timeout with a 30-second maximum.
+- [x] Keep `SecretReference` value-free and prevent C2 from resolving or
+  materializing secret values. Keep `ProviderTransportVerifyRequest` as the
+  OTP serialization/privacy boundary and preserve
+  `ChallengeVerificationRequest`.
+- [x] Preserve provider timestamps as evidence only; AIControlCenter as
+  authorization/time/policy authority; and trusted application ownership of
+  customer, challenge, replay, and phone binding.
+- [x] Keep default runtime provider verification disabled and add no routes,
+  API activation, schema/migration, provider SDK, network/provider call,
+  credentials, production selection/activation, or Ubuntu authority/state/
+  business logic.
+
+README review requires no change because C2 adds no customer-facing route, real
+provider capability, production activation, or operational procedure.
+
+### Explicitly deferred to C3 or later
+
+1. Destination-phone resolution trust boundary for real SMS delivery.
+2. Mac secret resolver and real provider-specific transport.
+3. Authenticated non-production provider integration.
+4. Durable `UNKNOWN_OUTCOME` quarantine/recovery policy, because changing it
+   would reopen C1 persistence/lifecycle authority.
+5. Production credentials.
+6. Production migration.
+7. Customer-facing E2E and runtime activation.
+
+### Next engineering milestone exactly
+
+`SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Architecture`
+
+### ROADMAP downstream sequence
+
+`SHOP_ORDER_001 → SHOP_AI_002 → SHOP_AI_003 → TG_SALES_001 → SHOP_E2E_001`
+
+### Historical SHOP_AI_001C-A / SHOP_AI_001C-B / SHOP_AI_001C-C0 / SHOP_AI_001C-C1 — complete
 
 - [x] `SHOP_AI_001C-A` architecture review: **COMPLETE**.
 - [x] `SHOP_AI_001C-B` provider-neutral phone verification foundation:

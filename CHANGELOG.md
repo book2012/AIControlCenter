@@ -1,5 +1,52 @@
 # CHANGELOG
 
+## 2026-09-28 — SHOP_AI_001C-C2 Provider Adapter Foundation closeout
+
+- `SHOP_AI_001C-C2` Provider Adapter Foundation: **COMPLETE**.
+- Canonical code commit: `4c9f8851f39b944f0d875694c44f998ae5ad1000`.
+- Parent: `fd64c2395778c69ecad0a3e1f662e1fe88444d97`.
+- Validated code scope: **12 paths**.
+- C2/C1 regression: **74 passed, pytest exit 0**.
+- Broader SHOP_AI regression: **506 passed, 1 warning, pytest exit 0**.
+- API runtime validation, excluding one proven pre-existing baseline defect:
+  **6 passed, 1 deselected, 11 warnings, pytest exit 0**.
+- The excluded test is
+  `tests/test_shop_ai_01b3_api_runtime.py::test_app_creation_does_not_create_product_draft_database`.
+  It also fails on untouched parent commit `fd64c2395778c69ecad0a3e1f662e1fe88444d97`
+  because the configured `inquiries.db` parent directory is absent. This is
+  pre-existing technical debt, not a C2 blocker; C2 did not fix it.
+- `PhoneVerificationPort`, C1 persistence, verification/session services,
+  normalization, and customer authentication remain unchanged. C2 adds the
+  provider-neutral `ProviderPhoneVerificationAdapter` and typed closed
+  `ProviderTransportPort` START/VERIFY contracts.
+- The inert transport is unavailable, zero-network, and has no automatic
+  retry. Bounded failures are `PROVIDER_UNAVAILABLE`, `TIMEOUT`,
+  `MALFORMED_RESPONSE`, `REJECTED`, `AMBIGUOUS_PROVIDER_IDENTIFIER`, and
+  `UNKNOWN_OUTCOME`. The default timeout is 10 seconds and the maximum is 30.
+- `SecretReference` contains only value-free backend/key-name metadata. C2
+  does not resolve or materialize secret values. `ProviderTransportVerifyRequest`
+  is the OTP serialization/privacy boundary; the existing
+  `ChallengeVerificationRequest` application contract was not altered.
+- AIControlCenter remains authorization, time, and policy authority. Trusted
+  application requests own customer, challenge, replay, and phone-binding
+  authority; provider payload does not. Provider timestamps are evidence only.
+- Default runtime provider verification remains disabled. No route/API
+  activation, schema or migration, provider SDK, real network/provider call,
+  credentials, production provider selection, production activation, or Ubuntu
+  authority/state/business logic was added.
+- Explicitly deferred to C3 or later: destination-phone resolution trust
+  boundary for real SMS delivery; Mac secret resolver and real provider
+  transport; authenticated non-production provider integration; durable
+  `UNKNOWN_OUTCOME` quarantine/recovery policy; production credentials;
+  production migration; and customer-facing E2E/runtime activation.
+- README review found no change required because C2 adds no customer-facing
+  route, real provider capability, production activation, or operational
+  procedure; `README.md` remains unchanged.
+- Next milestone exactly: **SHOP_AI_001C-C3 — Destination Resolution + Mac
+  Secret Resolver Architecture**.
+- Downstream sequence remains:
+  `SHOP_ORDER_001 → SHOP_AI_002 → SHOP_AI_003 → TG_SALES_001 → SHOP_E2E_001`.
+
 ## 2026-09-28 — SHOP_AI_001C-C0/C1 documentation closeout
 
 - `SHOP_AI_001C-C0` Durable Challenge / Attempt Persistence Design:
