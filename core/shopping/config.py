@@ -4,6 +4,7 @@ import os
 from dataclasses import dataclass
 
 from core.config.loader import ConfigLoader
+from core.secrets.ports import SecretReference
 
 
 TRUE_VALUES = {"1", "true", "yes", "on"}
@@ -56,6 +57,46 @@ def _env_int(
     return value
 
 
+def _env_bounded_float(
+    name: str,
+    default: float,
+    *,
+    minimum: float,
+    maximum: float,
+) -> float:
+    raw_value = os.getenv(name)
+
+    if raw_value is None:
+        return default
+
+    try:
+        value = float(raw_value)
+    except ValueError as error:
+        raise ValueError(f"{name} must be a number") from error
+
+    if not minimum < value <= maximum:
+        raise ValueError(
+            f"{name} must be greater than {minimum} and less than or equal to {maximum}"
+        )
+
+    return value
+
+
+def _optional_secret_reference() -> SecretReference | None:
+    backend = os.getenv("SHOPPING_PHONE_VERIFICATION_SECRET_BACKEND")
+    key_name = os.getenv("SHOPPING_PHONE_VERIFICATION_SECRET_KEY_NAME")
+    if backend is None and key_name is None:
+        return None
+    if backend is None or key_name is None:
+        raise ValueError(
+            "phone verification secret reference requires backend and key name"
+        )
+    try:
+        return SecretReference(backend=backend, key_name=key_name)
+    except ValueError:
+        raise ValueError("phone verification secret reference is invalid") from None
+
+
 @dataclass(frozen=True)
 class ShoppingSettings:
     enabled: bool
@@ -74,6 +115,12 @@ class ShoppingSettings:
     woocommerce_consumer_secret: str | None = None
     woocommerce_timeout_seconds: int = 10
 
+    # C2 metadata only.  Disabled and unprofiled are both default-safe.
+    phone_verification_enabled: bool = False
+    phone_verification_profile: str | None = None
+    phone_verification_secret_reference: SecretReference | None = None
+    phone_verification_timeout_seconds: float = 10.0
+
     @property
     def write_mode_supported(self) -> bool:
         return self.write_mode in SUPPORTED_WRITE_MODES
@@ -90,6 +137,11 @@ def load_shopping_settings() -> ShoppingSettings:
         "SHOPPING_CATALOG_ADAPTER",
         "mock",
     ).strip().lower()
+    phone_profile = os.getenv("SHOPPING_PHONE_VERIFICATION_PROFILE")
+    if phone_profile is not None:
+        phone_profile = phone_profile.strip()
+        if phone_profile.lower() in {"", "disabled", "off", "none"}:
+            phone_profile = None
 
     return ShoppingSettings(
         enabled=_env_bool(
@@ -140,5 +192,17 @@ def load_shopping_settings() -> ShoppingSettings:
         woocommerce_timeout_seconds=_env_int(
             "WOOCOMMERCE_TIMEOUT_SECONDS",
             10,
+        ),
+        phone_verification_enabled=_env_bool(
+            "SHOPPING_PHONE_VERIFICATION_ENABLED",
+            False,
+        ),
+        phone_verification_profile=phone_profile,
+        phone_verification_secret_reference=_optional_secret_reference(),
+        phone_verification_timeout_seconds=_env_bounded_float(
+            "SHOPPING_PHONE_VERIFICATION_TIMEOUT_SECONDS",
+            10.0,
+            minimum=0.0,
+            maximum=30.0,
         ),
     )

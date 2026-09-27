@@ -15,6 +15,7 @@ from core.shopping.ports.phone_verification import (
     PhoneVerificationPort, ProviderSourceIdentifier, ProviderVerificationIdentifier,
     ReplayReference, VerificationStatus,
 )
+from core.secrets.ports import SecretReference
 
 
 NOW = datetime(2026, 9, 27, 12, 0, tzinfo=timezone.utc)
@@ -75,3 +76,11 @@ def test_contracts_are_immutable_closed_and_provider_neutral() -> None:
     assert ChallengeStartResult is not ChallengeVerificationResult
     assert ChallengeStatus.STARTED.value == "STARTED"
     assert VerificationStatus.SUCCESS.value == "SUCCESS"
+
+
+def test_c2_secret_reference_is_metadata_only() -> None:
+    reference = SecretReference(backend="macos.keychain", key_name="shopping.provider")
+    assert reference.to_dict() == {
+        "backend": "macos.keychain",
+        "key_name": "shopping.provider",
+    }

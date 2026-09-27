@@ -17,12 +17,18 @@ SOURCE_PATHS = (
     ROOT / "core/shopping/customer_auth.py",
     ROOT / "core/shopping/phone_normalization.py",
     ROOT / "core/shopping/ports/phone_verification.py",
+    ROOT / "core/shopping/ports/phone_verification_transport.py",
     ROOT / "core/shopping/phone_verification_service.py",
+    ROOT / "core/shopping/adapters/phone_verification.py",
+    ROOT / "core/shopping/adapters/phone_verification_transport.py",
 )
 
 
 def test_new_production_sources_have_no_network_provider_ubuntu_or_api_activation_imports() -> None:
-    forbidden = {"socket", "requests", "httpx", "urllib3", "twilio", "vonage", "boto3", "core.api.app"}
+    forbidden = {
+        "socket", "requests", "httpx", "urllib", "urllib3", "subprocess",
+        "twilio", "vonage", "messagebird", "boto", "deployment", "core.api.app",
+    }
     for path in SOURCE_PATHS:
         tree = ast.parse(path.read_text())
         imports = []
