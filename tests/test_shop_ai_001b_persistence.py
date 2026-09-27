@@ -281,3 +281,29 @@ def test_lock_contention_is_bounded_and_fail_closed(inquiry, store, customer, re
     finally:
         connection.rollback()
         connection.close()
+
+
+def test_legacy_token_storage_and_projection_remain_redacted(inquiry, monkeypatch):
+    repo, inquiry_id, path = inquiry
+    from core.shopping import inquiries
+    monkeypatch.setattr(inquiries.secrets, "token_urlsafe", lambda count: "legacy-secret-token")
+    product = Product(id="second-product", name="Second", slug="second", description="Mock",
+                      price=1, currency="KRW", category="Mock", in_stock=True, source="mock")
+    created = repo.create(product, None, "Legacy")
+    assert created.public_access_token == "legacy-secret-token"
+    result = repo.get(inquiry_id)
+    assert result is not None and result.public_access_token is None
+    with sqlite3.connect(path) as connection:
+        payload = connection.execute("SELECT payload FROM inquiries WHERE id=?", (inquiry_id,)).fetchone()[0]
+        assert "public_access_token" not in payload
+        stored = connection.execute("SELECT payload,token_hash FROM inquiries WHERE id=?", (created.id,)).fetchone()
+        assert "legacy-secret-token" not in stored[0]
+        assert stored[1] == __import__("hashlib").sha256(b"legacy-secret-token").hexdigest()
+
+
+def test_no_persistence_records_grant_legacy_inquiry_access(inquiry, customer, record, store):
+    repo, inquiry_id, _ = inquiry
+    store.save_customer(customer)
+    store.save_session(record)
+    assert repo.authorize(inquiry_id, CUSTOMER_ID) is False
+    assert repo.authorize(inquiry_id, SESSION_ID) is False

@@ -416,3 +416,37 @@ def test_malformed_and_public_claims_never_produce_eligible_projection(sessions,
         update={"verified_at": None})})
     assert sessions.evaluate_session(record, malformed, now=NOW) is sessions.SessionPolicyStatus.INVALID_RECORD
     assert sessions.evaluate_session(record, customer.model_dump(), now=NOW) is sessions.SessionPolicyStatus.INVALID_RECORD
+
+
+def test_inquiry_behavior_unchanged_and_contracts_do_not_authorize_inquiries(
+        sessions, customer, record, monkeypatch):
+    from fastapi import FastAPI
+    from fastapi.testclient import TestClient
+    from core.api.dependencies.inquiries import get_inquiry_repository
+    from core.api.routes.shopping import router
+    from core.shopping import inquiries
+    from core.shopping.models import Product
+
+    monkeypatch.setattr(inquiries.secrets, "token_urlsafe", lambda count: "mock-existing-inquiry-token")
+    repository = inquiries.InMemoryInquiryRepository()
+    product = Product(id="mock-product", name="Synthetic", slug="synthetic", description="Mock",
+                      price=Decimal("1.00"), currency="KRW", category="Mock", in_stock=True, source="mock")
+    created = repository.create(product, None, "Synthetic inquiry")
+    assert created.public_access_token == "mock-existing-inquiry-token"
+    assert repository.get(created.id).public_access_token is None
+    app = FastAPI()
+    app.include_router(router)
+    app.dependency_overrides[get_inquiry_repository] = lambda: repository
+    projection = sessions.safe_session_projection(record, customer, now=NOW)
+    with TestClient(app) as client:
+        path = f"/shopping/inquiries/{created.id}"
+        for headers in ({}, {"X-Customer-ID": CUSTOMER_ID, "X-Session-ID": SESSION_ID},
+                        {"Authorization": f"Bearer {SESSION_ID}"}):
+            assert client.get(path, headers=headers).status_code == 401
+        for token in (CUSTOMER_ID, SESSION_ID, MOCK_HASH, projection.model_dump_json(), customer.model_dump_json()):
+            response = client.get(path, headers={"X-Inquiry-Access-Token": token})
+            assert response.status_code == (401 if len(token) > 256 else 403)
+        response = client.get(path, headers={"X-Inquiry-Access-Token": created.public_access_token})
+        assert response.status_code == 200
+        assert response.json() == {**created.model_dump(), "public_access_token": None}
+    assert repository.get(created.id).messages == []

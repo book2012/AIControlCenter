@@ -33,6 +33,11 @@ from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable
 from core.shopping.inquiries import (InquiryCreateRequest, InquiryMessageRequest, InquiryRepository,
                                      InquiryResponse, configured_contact_channels, sanitize_message)
 from core.api.dependencies.inquiries import get_inquiry_repository
+from core.api.dependencies.inquiries import (
+    OwnedInquiryRoute, get_owned_inquiry_authority, get_owned_inquiry_repository,
+)
+from core.shopping.inquiries import InquirySessionAuthority, OwnedInquiryMessageRequest, SQLiteInquiryRepository
+from core.shopping.customer_persistence import AuthorizationConflict, PersistenceError
 from core.shopping.product_drafts.read import (
     ProductDraftQueryService,
     ProductDraftReadUnavailable,
@@ -318,13 +323,20 @@ def create_inquiry(request: InquiryCreateRequest, service: ShoppingCatalog, repo
 
 
 @router.get("/inquiries/{inquiry_id}", response_model=InquiryResponse)
-def get_inquiry(inquiry_id: str, repository: InquiryStore):
+def get_inquiry(inquiry_id: str, request: Request, repository: InquiryStore):
+    result = _legacy_inquiry(repository, inquiry_id, _customer_token(request))
+    if result is None:
+        raise HTTPException(status_code=403, detail={"code": "inquiry_access_denied"})
     if not re.fullmatch(r"AG-INQ-[0-9]{6,18}", inquiry_id):
         raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
-    result = repository.get(inquiry_id)
-    if result is None:
-        raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
     return result.model_copy(update={"public_access_token": None})
+
+
+def _legacy_inquiry(repository, inquiry_id, token):
+    try:
+        return repository.get_legacy_authorized(inquiry_id, token)
+    except (PersistenceError, ValueError):
+        raise HTTPException(status_code=503, detail={"code": "inquiry_storage_unavailable"}) from None
 
 
 def _customer_token(request) -> str:
@@ -337,21 +349,20 @@ def _customer_token(request) -> str:
 @router.post("/inquiries/{inquiry_id}/messages")
 def create_customer_message(inquiry_id: str, body: InquiryMessageRequest, request: Request, repository: InquiryStore):
     token = _customer_token(request)
-    if not repository.authorize(inquiry_id, token):
-        raise HTTPException(status_code=403, detail={"code": "inquiry_access_denied"})
-    result = repository.append_message(inquiry_id, body.body, "customer")
+    try:
+        result = repository.append_legacy_authorized(inquiry_id, token, body.body)
+    except (PersistenceError, ValueError):
+        raise HTTPException(status_code=503, detail={"code": "inquiry_storage_unavailable"}) from None
     if result is None:
-        raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+        raise HTTPException(status_code=403, detail={"code": "inquiry_access_denied"})
     return result
 
 
 @router.get("/inquiries/{inquiry_id}/messages")
 def customer_messages(inquiry_id: str, request: Request, repository: InquiryStore):
-    if not repository.authorize(inquiry_id, _customer_token(request)):
-        raise HTTPException(status_code=403, detail={"code": "inquiry_access_denied"})
-    result = repository.get(inquiry_id)
+    result = _legacy_inquiry(repository, inquiry_id, _customer_token(request))
     if result is None:
-        raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
+        raise HTTPException(status_code=403, detail={"code": "inquiry_access_denied"})
     return {"items": result.messages}
 
 
@@ -380,7 +391,12 @@ def operator_inquiry(inquiry_id: str, request: Request, repository: InquiryStore
 @router.post("/operator/inquiries/{inquiry_id}/messages")
 def operator_message(inquiry_id: str, body: InquiryMessageRequest, request: Request, repository: InquiryStore):
     _operator(request)
-    result = repository.append_message(inquiry_id, body.body, "operator")
+    try:
+        result = repository.append_message(inquiry_id, body.body, "operator")
+    except AuthorizationConflict:
+        raise HTTPException(status_code=409, detail={"code": "owned_inquiry_versioned_mutation_required"}) from None
+    except (PersistenceError, ValueError):
+        raise HTTPException(status_code=503, detail={"code": "inquiry_storage_unavailable"}) from None
     if result is None: raise HTTPException(status_code=404, detail={"code": "inquiry_not_found"})
     return result
 router.add_api_route(
@@ -389,3 +405,40 @@ router.add_api_route(
     route_class_override=CatalogReadRoute,
     responses={code: {"model": ProductReadErrorResponse} for code in (404, 422, 503)},
 )
+
+
+# Explicit isolated opt-in only. The default app includes `router`, never this
+# router. Importing this module provisions no owned store or authentication.
+owned_inquiry_router = APIRouter(prefix="/shopping/owned-inquiries", tags=["owned-inquiries"],
+                                 route_class=OwnedInquiryRoute)
+OwnedStore = Annotated[SQLiteInquiryRepository, Depends(get_owned_inquiry_repository)]
+OwnedAuthority = Annotated[InquirySessionAuthority, Depends(get_owned_inquiry_authority)]
+
+
+def _owned_projection(item, version):
+    return {"inquiry": item.model_dump(exclude={"public_access_token"}), "version": version}
+
+
+@owned_inquiry_router.post("", status_code=201)
+def create_owned_inquiry(body: InquiryCreateRequest, authority: OwnedAuthority,
+                         repository: OwnedStore, service: ShoppingCatalog):
+    item, version = repository.create_owned(body, authority=authority, product_loader=service.get_product)
+    return _owned_projection(item, version)
+
+
+@owned_inquiry_router.get("/{inquiry_id}")
+def owned_inquiry_detail(inquiry_id: str, authority: OwnedAuthority, repository: OwnedStore):
+    return _owned_projection(*repository.get_owned(inquiry_id, authority=authority))
+
+
+@owned_inquiry_router.get("/{inquiry_id}/messages")
+def owned_inquiry_messages(inquiry_id: str, authority: OwnedAuthority, repository: OwnedStore):
+    item, version = repository.get_owned(inquiry_id, authority=authority)
+    return {"items": [message.model_dump() for message in item.messages], "version": version}
+
+
+@owned_inquiry_router.post("/{inquiry_id}/messages")
+def append_owned_inquiry_message(inquiry_id: str, body: OwnedInquiryMessageRequest,
+                                 authority: OwnedAuthority, repository: OwnedStore):
+    message = repository.append_owned_message(inquiry_id, body, authority=authority)
+    return {"message": message.model_dump(), "version": body.expected_version + 1}

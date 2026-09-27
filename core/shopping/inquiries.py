@@ -1,5 +1,8 @@
 """AIControlCenter-owned, read-only inquiry state and trusted handoff config."""
-from dataclasses import dataclass
+from __future__ import annotations
+
+from contextlib import contextmanager
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 import json
 import sqlite3
@@ -7,17 +10,24 @@ import hashlib
 import secrets
 import os
 from threading import Lock
-from typing import Protocol
+from pathlib import Path
+from typing import Callable, Protocol
+import uuid
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, SecretStr
 
 from core.shopping.models import Product, ProductVariant
-
 from core.shopping.customer_persistence import (
     AuthorizationConflict, IdempotencyConflict, InquiryVersionConflict,
     OwnershipConflict, StorageUnavailable, open_connection,
     initialize_schema, persisted_session_status,
+    SCHEMA_VERSION, PersistenceError,
 )
+from core.shopping.customer_identity import require_utc
+from core.shopping.customer_session_service import CustomerSessionService, SessionValidationCode
+from core.shopping.customer_sessions import SafeSessionProjection
+from core.shopping.migration_contract import EXPLICIT_UNOWNED_MARKER
+
 MAX_MESSAGE_LENGTH = 1000
 CONTACT_CHANNELS = ({"type": "kakao_openchat", "label": "카카오 오픈채팅",
                      "url": "https://open.kakao.com/o/sV26tFNi", "enabled": True},)
@@ -42,6 +52,44 @@ class InquiryCreateRequest(BaseModel):
 class InquiryMessageRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     body: str = Field(min_length=1, max_length=MAX_MESSAGE_LENGTH)
+
+
+class OwnedInquiryMessageRequest(InquiryMessageRequest):
+    expected_version: int = Field(strict=True, ge=0)
+    idempotency_key: str = Field(strict=True, min_length=1, max_length=128, pattern=r"^[A-Za-z0-9_-]+$")
+
+
+@dataclass(frozen=True)
+class InquirySessionAuthority:
+    """Server-held references plus credential, never accepted as browser JSON.
+
+    This object is not proof by itself. Each operation verifies its credential
+    through B3-B under the inquiry database's writer lock, then checks current
+    eligibility in that same transaction. A different database is denied.
+    """
+
+    service: CustomerSessionService = field(repr=False)
+    session_secret: SecretStr = field(repr=False)
+    customer_id: str
+    session_id: str
+    clock: Callable[[], datetime] = field(repr=False)
+
+    def revalidate(self, connection: sqlite3.Connection, database_path: str) -> datetime:
+        if Path(self.service.database_path).resolve() != Path(database_path).resolve():
+            raise AuthorizationConflict("session authority denied")
+        now = require_utc(self.clock())
+        result = self.service.validate_session(
+            self.session_id, self.session_secret.get_secret_value(), self.customer_id, now=now,
+        )
+        if result.code == SessionValidationCode.STORAGE_UNAVAILABLE:
+            raise StorageUnavailable("session authority unavailable")
+        if result.code != SessionValidationCode.VALID or type(result.projection) is not SafeSessionProjection:
+            raise AuthorizationConflict("session authority denied")
+        projection = SafeSessionProjection.model_validate(result.projection)
+        if (projection.id != self.session_id or projection.customer_id != self.customer_id
+                or persisted_session_status(connection, self.customer_id, self.session_id, now=now).value != "ELIGIBLE"):
+            raise AuthorizationConflict("session authority denied")
+        return now
 
 
 class InquiryProduct(BaseModel):
@@ -79,6 +127,8 @@ class InquiryRepository(Protocol):
     def append_message(self, inquiry_id: str, body: str, sender_type: str) -> InquiryMessage | None: ...
     def authorize(self, inquiry_id: str, token: str) -> bool: ...
     def list(self) -> list[InquiryResponse]: ...
+    def get_legacy_authorized(self, inquiry_id: str, token: str) -> InquiryResponse | None: ...
+    def append_legacy_authorized(self, inquiry_id: str, token: str, body: str) -> InquiryMessage | None: ...
 
 
 def sanitize_message(message: str) -> str:
@@ -94,6 +144,8 @@ def format_message(inquiry_id: str, product: Product, variant: ProductVariant | 
         lines.append(f"선택 사이즈: {variant.label}")
     lines.extend(["문의유형: 구매문의", "", "문의내용:", message])
     return "\n".join(lines)
+
+
 class InMemoryInquiryRepository:
     """Ephemeral Preview/test repository, never durable ownership evidence."""
     def __init__(self):
@@ -124,6 +176,14 @@ class InMemoryInquiryRepository:
     def authorize(self, inquiry_id: str, token: str) -> bool:
         return secrets.compare_digest(self._tokens.get(inquiry_id, ""), hashlib.sha256(token.encode()).hexdigest())
 
+    def get_legacy_authorized(self, inquiry_id: str, token: str) -> InquiryResponse | None:
+        # In-process-only token behavior; this is not durable classification
+        # or migration evidence.
+        return self.get(inquiry_id) if self.authorize(inquiry_id, token) else None
+
+    def append_legacy_authorized(self, inquiry_id: str, token: str, body: str) -> InquiryMessage | None:
+        return self.append_message(inquiry_id, body, "customer") if self.authorize(inquiry_id, token) else None
+
     def append_message(self, inquiry_id: str, body: str, sender_type: str) -> InquiryMessage | None:
         item = self._items.get(inquiry_id)
         if not item: return None
@@ -142,6 +202,7 @@ def _load_inquiry_payload(raw: str) -> InquiryResponse:
     # Legacy payloads may contain a creation token; never project or reuse it.
     payload.pop("public_access_token", None)
     return InquiryResponse.model_validate(payload)
+
 
 class SQLiteInquiryRepository(InMemoryInquiryRepository):
     """Durable AIControlCenter application state using the existing SQLite pattern."""
@@ -208,7 +269,7 @@ class SQLiteInquiryRepository(InMemoryInquiryRepository):
     def append_message_authorized(self, inquiry_id: str, body: str, sender_type: str, *,
                                   customer_id: str, session_id: str, expected_version: int,
                                   idempotency_key: str, actor_ref: str, correlation_id: str,
-                                  now: datetime) -> InquiryMessage:
+                                  now: datetime, authority: InquirySessionAuthority | None = None) -> InquiryMessage:
         """Atomically apply a trusted, versioned inquiry mutation.
 
         Existing token-authorized API methods intentionally remain unchanged;
@@ -234,6 +295,12 @@ class SQLiteInquiryRepository(InMemoryInquiryRepository):
         try:
             connection = open_connection(self._db_path)
             connection.execute("BEGIN IMMEDIATE")
+            if authority is not None:
+                if (authority.customer_id, authority.session_id, actor_ref, sender_type) != (
+                        customer_id, session_id, customer_id, "customer"):
+                    raise AuthorizationConflict("session authority denied")
+                now = authority.revalidate(connection, self._db_path)
+                occurred = now.isoformat(timespec="microseconds").replace("+00:00", "Z")
             ownership = connection.execute(
                 "SELECT customer_id,session_id,version FROM shopping_inquiry_ownership WHERE inquiry_id=?",
                 (inquiry_id,),
@@ -306,30 +373,184 @@ class SQLiteInquiryRepository(InMemoryInquiryRepository):
     def create(self, product: Product, variant: ProductVariant | None, message: str) -> InquiryResponse:
         result = super().create(product, variant, message)
         with sqlite3.connect(self._db_path) as connection:
-            connection.execute("INSERT INTO inquiries (id, payload, token_hash) VALUES (?, ?, ?)", (result.id, result.model_dump_json(), self._tokens[result.id]))
+            payload = result.model_dump(exclude={"public_access_token"})
+            # Only fresh, explicitly unowned creation gains this provenance.
+            # Never retrofit it onto historical records or infer it from a token.
+            payload["_ownership"] = "unowned/v1"
+            connection.execute("INSERT INTO inquiries (id, payload, token_hash) VALUES (?, ?, ?)",
+                               (result.id, json.dumps(payload), self._tokens[result.id]))
         return result
+
     def get(self, inquiry_id: str) -> InquiryResponse | None:
         with sqlite3.connect(self._db_path) as connection:
             row = connection.execute("SELECT payload FROM inquiries WHERE id = ?", (inquiry_id,)).fetchone()
         return _load_inquiry_payload(row[0]) if row else None
 
     def authorize(self, inquiry_id: str, token: str) -> bool:
-        with sqlite3.connect(self._db_path) as connection:
-            row = connection.execute("SELECT token_hash FROM inquiries WHERE id = ?", (inquiry_id,)).fetchone()
-        return bool(row and row[0] and secrets.compare_digest(row[0], hashlib.sha256(token.encode()).hexdigest()))
+        with self._transaction(require_owned_schema=False) as connection:
+            return self._legacy_row(connection, inquiry_id, token) is not None
 
     def append_message(self, inquiry_id: str, body: str, sender_type: str) -> InquiryMessage | None:
-        item = self.get(inquiry_id)
-        if item is None:
-            return None
-        result = InquiryMessage(id=secrets.token_urlsafe(18), inquiry_id=inquiry_id, sender_type=sender_type,
-                                body=sanitize_message(body), created_at=datetime.now(timezone.utc).isoformat())
-        item.messages.append(result)
-        if result:
-            with sqlite3.connect(self._db_path) as connection:
-                connection.execute("UPDATE inquiries SET payload = ? WHERE id = ?", (item.model_dump_json(), inquiry_id))
-        return result
+        with self._transaction(require_owned_schema=False) as connection:
+            row = connection.execute("SELECT payload FROM inquiries WHERE id=?", (inquiry_id,)).fetchone()
+            if row is None:
+                return None
+            # Unversioned legacy writes, including the legacy operator endpoint,
+            # must never bypass owned mutation version/idempotency/audit checks.
+            if not self._positively_unowned(connection, inquiry_id, row["payload"]):
+                raise AuthorizationConflict("versioned owned mutation required")
+            return self._append_legacy(connection, inquiry_id, row["payload"], body, sender_type)
+
     def list(self) -> list[InquiryResponse]:
         with sqlite3.connect(self._db_path) as connection:
             rows = connection.execute("SELECT payload FROM inquiries ORDER BY id DESC").fetchall()
         return [_load_inquiry_payload(row[0]) for row in rows]
+
+    @contextmanager
+    def _transaction(self, *, require_owned_schema: bool = True):
+        connection = None
+        try:
+            connection = (open_connection(self._db_path) if require_owned_schema else
+                          sqlite3.connect(self._db_path, timeout=0.75, isolation_level=None))
+            connection.row_factory = sqlite3.Row
+            connection.execute("BEGIN IMMEDIATE")
+            yield connection
+            connection.commit()
+        except sqlite3.Error:
+            if connection is not None and connection.in_transaction:
+                connection.rollback()
+            raise StorageUnavailable("inquiry storage unavailable") from None
+        except Exception:
+            if connection is not None and connection.in_transaction:
+                connection.rollback()
+            raise
+        finally:
+            if connection is not None:
+                connection.close()
+
+    @staticmethod
+    def _positively_unowned(connection, inquiry_id: str, payload: str) -> bool:
+        def trusted_marker() -> bool:
+            try:
+                value = json.loads(payload)
+            except (TypeError, ValueError):
+                return False
+            return isinstance(value, dict) and value.get("_ownership") == EXPLICIT_UNOWNED_MARKER
+
+        names = {row[0] for row in connection.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        tables = {"shopping_customer_persistence_meta", "shopping_inquiry_ownership"}
+        if not names & tables:
+            # Schema absence cannot establish the persistence contract.  A
+            # marker alone is not positive unowned evidence for durable
+            # SQLite authorization.
+            return False
+        if not tables <= names:
+            return False
+        version = connection.execute(
+            "SELECT version FROM shopping_customer_persistence_meta WHERE name='schema'"
+        ).fetchone()
+        columns = {row[1]: (row[2], row[3], row[5]) for row in connection.execute(
+            "PRAGMA table_info(shopping_inquiry_ownership)")}
+        if (version is None or version[0] != SCHEMA_VERSION or columns != {
+                "inquiry_id": ("TEXT", 0, 1), "customer_id": ("TEXT", 1, 0),
+                "session_id": ("TEXT", 1, 0), "version": ("INTEGER", 1, 0)}):
+            return False
+        if connection.execute("SELECT 1 FROM shopping_inquiry_ownership WHERE inquiry_id=?",
+                              (inquiry_id,)).fetchone() is not None:
+            return False
+        # Row absence is not provenance. Use only the existing server-written
+        # fresh-unowned marker, also required by the pre-B2 compatibility path.
+        return trusted_marker()
+
+    def _legacy_row(self, connection, inquiry_id: str, token: str):
+        row = connection.execute("SELECT payload,token_hash FROM inquiries WHERE id=?", (inquiry_id,)).fetchone()
+        if (row is None or not row["token_hash"]
+                or not secrets.compare_digest(row["token_hash"], hashlib.sha256(token.encode()).hexdigest())
+                or not self._positively_unowned(connection, inquiry_id, row["payload"])):
+            return None
+        return row
+
+    def get_legacy_authorized(self, inquiry_id: str, token: str) -> InquiryResponse | None:
+        with self._transaction(require_owned_schema=False) as connection:
+            row = self._legacy_row(connection, inquiry_id, token)
+            return _load_inquiry_payload(row["payload"]) if row is not None else None
+
+    def append_legacy_authorized(self, inquiry_id: str, token: str, body: str) -> InquiryMessage | None:
+        with self._transaction(require_owned_schema=False) as connection:
+            row = self._legacy_row(connection, inquiry_id, token)
+            if row is None:
+                return None
+            return self._append_legacy(connection, inquiry_id, row["payload"], body, "customer")
+
+    @staticmethod
+    def _append_legacy(connection, inquiry_id, raw, body, sender_type):
+        item = _load_inquiry_payload(raw)
+        result = InquiryMessage(id=secrets.token_urlsafe(18), inquiry_id=inquiry_id, sender_type=sender_type,
+                                body=sanitize_message(body), created_at=datetime.now(timezone.utc).isoformat())
+        item.messages.append(result)
+        payload = item.model_dump(exclude={"public_access_token"})
+        if json.loads(raw).get("_ownership") == "unowned/v1":
+            payload["_ownership"] = "unowned/v1"
+        connection.execute("UPDATE inquiries SET payload=? WHERE id=?", (json.dumps(payload), inquiry_id))
+        return result
+
+    def create_owned(self, request: InquiryCreateRequest, *, authority: InquirySessionAuthority,
+                     product_loader: Callable[[str], dict]) -> tuple[InquiryResponse, int]:
+        """One transaction for current authority, input, inquiry, ownership and audit."""
+        with self._transaction() as connection:
+            now = authority.revalidate(connection, self._db_path)
+            request = InquiryCreateRequest.model_validate(request.model_dump())
+            product = product_loader(request.product_id)
+            if product["id"] != request.product_id:
+                raise ValueError("invalid product")
+            variants = product.get("variants", []) or []
+            variant = next((item for item in variants if item["id"] == request.variant_id), None)
+            if ((variants and request.variant_id is None) or (request.variant_id and variant is None)
+                    or (variant is not None and variant["available"] is not True)):
+                raise ValueError("invalid variant")
+            canonical_product = Product(**{key: product[key] for key in Product.__dataclass_fields__})
+            canonical_variant = ProductVariant(**variant) if variant else None
+            # Allocate under the writer lock, independently of per-instance counters.
+            number = connection.execute("SELECT COALESCE(MAX(CAST(substr(id,8) AS INTEGER)),0)+1 FROM inquiries").fetchone()[0]
+            if not 1 <= number < 10**18:
+                raise StorageUnavailable("inquiry identifiers unavailable")
+            inquiry_id = f"AG-INQ-{number:06d}"
+            item = InquiryResponse(id=inquiry_id, status="created",
+                product=InquiryProduct(id=canonical_product.id, name=canonical_product.name),
+                variant=InquiryVariant(id=canonical_variant.id, label=canonical_variant.label) if canonical_variant else None,
+                formatted_message=format_message(inquiry_id, canonical_product, canonical_variant, sanitize_message(request.message)),
+                contact_channels=configured_contact_channels())
+            connection.execute("INSERT INTO inquiries(id,payload,token_hash) VALUES(?,?,'')",
+                               (inquiry_id, item.model_dump_json(exclude={"public_access_token"})))
+            connection.execute(
+                "INSERT INTO shopping_inquiry_ownership(inquiry_id,customer_id,session_id,version) VALUES(?,?,?,0)",
+                (inquiry_id, authority.customer_id, authority.session_id))
+            connection.execute(
+                "INSERT INTO shopping_inquiry_audit(event_id,actor_ref,resource_ref,action,outcome,correlation_id,occurred_at) VALUES(?,?,?,?,?,?,?)",
+                (uuid.uuid4().hex, authority.customer_id, inquiry_id, "INQUIRY_CREATE_OWNED", "APPLIED",
+                 uuid.uuid4().hex, now.isoformat(timespec="microseconds").replace("+00:00", "Z")))
+        with self._lock:
+            self._next = max(self._next, number + 1)
+        return item, 0
+
+    def get_owned(self, inquiry_id: str, *, authority: InquirySessionAuthority) -> tuple[InquiryResponse, int]:
+        with self._transaction() as connection:
+            authority.revalidate(connection, self._db_path)
+            owner = connection.execute(
+                "SELECT customer_id,session_id,version FROM shopping_inquiry_ownership WHERE inquiry_id=?",
+                (inquiry_id,)).fetchone()
+            if owner is None or (owner["customer_id"], owner["session_id"]) != (authority.customer_id, authority.session_id):
+                raise AuthorizationConflict("owned inquiry access denied")
+            row = connection.execute("SELECT payload FROM inquiries WHERE id=?", (inquiry_id,)).fetchone()
+            if row is None:
+                raise AuthorizationConflict("owned inquiry access denied")
+            return _load_inquiry_payload(row["payload"]), owner["version"]
+
+    def append_owned_message(self, inquiry_id: str, request: OwnedInquiryMessageRequest, *,
+                             authority: InquirySessionAuthority) -> InquiryMessage:
+        return self.append_message_authorized(
+            inquiry_id, request.body, "customer", customer_id=authority.customer_id,
+            session_id=authority.session_id, expected_version=request.expected_version,
+            idempotency_key=request.idempotency_key, actor_ref=authority.customer_id,
+            correlation_id=uuid.uuid4().hex, now=authority.clock(), authority=authority,
+        )
