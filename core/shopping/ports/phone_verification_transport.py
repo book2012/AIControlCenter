@@ -9,6 +9,7 @@ from pydantic import ConfigDict, Field, field_validator
 from core.shopping.customer_auth import VerificationPurpose
 from core.shopping.customer_identity import ClosedContract, UTCTimestamp
 from core.shopping.phone_normalization import OpaquePhoneBinding
+from core.shopping.ports.destination_resolution import DestinationHandle
 from core.shopping.ports.phone_verification import (
     ProviderSourceIdentifier, ProviderVerificationIdentifier,
 )
@@ -89,6 +90,7 @@ class _TransportContract(ClosedContract):
     model_config = ConfigDict(
         extra="forbid", frozen=True, validate_default=True,
         revalidate_instances="always", hide_input_in_errors=True,
+        arbitrary_types_allowed=True,
     )
 
 
@@ -108,11 +110,14 @@ class _TimedTransportRequest(_TransportContract):
 
 
 class ProviderTransportStartRequest(_TimedTransportRequest):
-    """The only start input is opaque binding metadata, never a raw phone."""
+    """START carries only opaque metadata and an optional destination handle."""
 
     provider_source: ProviderSourceIdentifier
     purpose: VerificationPurpose
     phone_binding: OpaquePhoneBinding
+    destination_handle: DestinationHandle | None = Field(
+        default=None, repr=False, exclude=True,
+    )
 
 
 class ProviderTransportVerifyRequest(_TimedTransportRequest):

@@ -31,6 +31,11 @@ class CanonicalPhone:
     def __str__(self) -> str:
         return self.value
 
+    def __repr__(self) -> str:
+        """Keep accidental diagnostics from rendering contact data."""
+
+        return "CanonicalPhone(<redacted>)"
+
 
 @dataclass(frozen=True)
 class OpaquePhoneBinding:

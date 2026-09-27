@@ -114,6 +114,7 @@ class ProviderPhoneVerificationAdapter(PhoneVerificationPort):
             provider_source=request.provider_source,
             purpose=request.purpose,
             phone_binding=request.subject.phone_binding,
+            destination_handle=request.destination_handle,
             timeout_seconds=self.timeout_seconds,
         )
         result = self._invoke("START", self._transport_start, transport_request)

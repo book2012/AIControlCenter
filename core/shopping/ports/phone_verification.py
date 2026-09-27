@@ -11,6 +11,7 @@ from pydantic import ConfigDict, Field
 from core.shopping.customer_auth import VerificationPurpose
 from core.shopping.customer_identity import ClosedContract, UTCTimestamp
 from core.shopping.phone_normalization import OpaquePhoneBinding, PhoneBinding
+from core.shopping.ports.destination_resolution import DestinationHandle
 
 
 _IDENTIFIER = r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,126}[A-Za-z0-9]$|^[A-Za-z0-9]$"
@@ -46,10 +47,6 @@ class ReplayReference(_Identifier):
 class ChallengeSubject(ClosedContract):
     """Only an opaque phone binding crosses into a provider adapter."""
 
-    model_config = ConfigDict(
-        extra="forbid", frozen=True, validate_default=True,
-        revalidate_instances="always", hide_input_in_errors=True,
-    )
     phone_binding: OpaquePhoneBinding
 
 
@@ -73,11 +70,20 @@ class VerificationStatus(str, Enum):
 
 
 class ChallengeStartRequest(ClosedContract):
+    model_config = ConfigDict(
+        extra="forbid", frozen=True, validate_default=True,
+        revalidate_instances="always", hide_input_in_errors=True,
+        arbitrary_types_allowed=True,
+    )
+
     provider_source: ProviderSourceIdentifier
     purpose: VerificationPurpose
     challenge_reference: ChallengeReference
     replay_reference: ReplayReference
     subject: ChallengeSubject
+    destination_handle: DestinationHandle | None = Field(
+        default=None, repr=False, exclude=True,
+    )
 
 
 class ChallengeStartResult(ClosedContract):
@@ -166,6 +172,7 @@ __all__ = [
     "ChallengeStartResult",
     "ChallengeStatus",
     "ChallengeSubject",
+    "DestinationHandle",
     "ChallengeVerificationRequest",
     "ChallengeVerificationResult",
     "ChallengeStartEvidence",

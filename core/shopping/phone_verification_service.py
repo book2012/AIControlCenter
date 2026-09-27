@@ -26,6 +26,10 @@ from core.shopping.customer_persistence import (
 from core.shopping.phone_normalization import (
     CanonicalPhone, OpaquePhoneBinding, derive_phone_binding, normalize_phone,
 )
+from core.shopping.ports.destination_resolution import (
+    DestinationHandle, DestinationResolutionPort,
+    DestinationScope,
+)
 from core.shopping.ports.phone_verification import (
     ChallengeReference, ChallengeStartRequest, ChallengeStartResult,
     ChallengeStatus, ChallengeSubject, ChallengeVerificationRequest,
@@ -135,6 +139,8 @@ class PhoneVerificationService:
         repository: SQLiteVerificationRepository | None = None, busy_timeout_ms: int = BUSY_TIMEOUT_MS,
         event_id_factory: Callable[[], str] | None = None,
         audit_failure_hook: Callable[[str], None] | None = None,
+        destination_resolution: DestinationResolutionPort | None = None,
+        destination_resolver: DestinationResolutionPort | None = None,
     ) -> None:
         if not hasattr(port, "start_challenge") or not hasattr(port, "verify_challenge"):
             raise TypeError("a phone verification port is required")
@@ -144,6 +150,17 @@ class PhoneVerificationService:
             raise TypeError("an injected UTC clock is required")
         if type(phone_binding_key) is not bytes or not phone_binding_key:
             raise ValueError("phone binding key must be non-empty injected bytes")
+        if destination_resolution is not None and destination_resolver is not None:
+            raise ValueError("choose one destination resolution port")
+        if destination_resolution is None:
+            destination_resolution = destination_resolver
+        destination_issue = None
+        if destination_resolution is not None:
+            destination_issue = getattr(destination_resolution, "issue_destination", None)
+            if not callable(destination_issue):
+                destination_issue = getattr(destination_resolution, "issue", None)
+            if not callable(destination_issue):
+                raise TypeError("a destination resolution port is required")
         if repository is not None and database_path is not None:
             raise ValueError("choose a verification repository or database path")
         if repository is None:
@@ -155,6 +172,8 @@ class PhoneVerificationService:
                 SQLiteVerificationRepository.initialize_schema(database_path)
             repository = SQLiteVerificationRepository(database_path, busy_timeout_ms=busy_timeout_ms)
         self._port, self._clock, self._binding_key = port, utc_clock, phone_binding_key
+        self._destination_resolution = destination_resolution
+        self._destination_issue = destination_issue
         self._repository = repository
         self.database_path = str(repository.database_path)
         self._provider_source = _as_identifier(provider_source, ProviderSourceIdentifier)
@@ -264,6 +283,33 @@ class PhoneVerificationService:
         finally:
             connection.close()
 
+    def _issue_destination(
+        self,
+        canonical: CanonicalPhone,
+        *,
+        customer: str,
+        purpose: VerificationPurpose,
+        challenge: ChallengeReference,
+        replay: ReplayReference,
+        binding: OpaquePhoneBinding,
+        browser: str,
+    ) -> DestinationHandle | None:
+        if self._destination_resolution is None:
+            return None
+        scope = DestinationScope(
+            provider_source=str(self._provider_source), purpose=purpose,
+            challenge_reference=str(challenge), replay_reference=str(replay),
+            customer_id=customer, phone_binding=binding,
+            browser_challenge=browser,
+        )
+        try:
+            handle = self._destination_issue(canonical, scope)
+        except Exception:
+            raise PhoneVerificationRejected("phone verification destination unavailable") from None
+        if type(handle) is not DestinationHandle:
+            raise PhoneVerificationRejected("phone verification destination unavailable")
+        return handle
+
     def start_challenge(self, phone: CanonicalPhone | str, *, customer_id: str,
                         browser_challenge: str | None = None, country_calling_code: str | None = None,
                         country_code: str | None = None, national_trunk_prefix: str | None = None,
@@ -325,7 +371,23 @@ class PhoneVerificationService:
         finally:
             connection.close()
 
-        request = ChallengeStartRequest(provider_source=self._provider_source, purpose=purpose, challenge_reference=challenge, replay_reference=replay, subject=ChallengeSubject(phone_binding=binding))
+        try:
+            destination_handle = self._issue_destination(
+                canonical, customer=customer, purpose=purpose, challenge=challenge,
+                replay=replay, binding=binding, browser=browser,
+            )
+            request = ChallengeStartRequest(
+                provider_source=self._provider_source, purpose=purpose,
+                challenge_reference=challenge, replay_reference=replay,
+                subject=ChallengeSubject(phone_binding=binding),
+                destination_handle=destination_handle,
+            )
+        except PhoneVerificationRejected:
+            self._mark_start_failed(str(challenge), claim_token, version=0)
+            raise
+        except Exception:
+            self._mark_start_failed(str(challenge), claim_token, version=0)
+            raise PhoneVerificationRejected("phone verification destination unavailable") from None
         try:
             result = self._port.start_challenge(request)
         except Exception:
@@ -408,6 +470,27 @@ class PhoneVerificationService:
                 "UPDATE shopping_verification_challenges SET status=?,version=version+1 "
                 "WHERE challenge_id=? AND status=? AND version=? AND start_claim_token=?",
                 (ChallengeStatus.START_UNKNOWN.value, challenge,
+                 ChallengeStatus.START_CLAIMED.value, version, claim_token),
+            )
+            connection.commit()
+        except (sqlite3.Error, PersistenceError, OSError):
+            if connection.in_transaction:
+                connection.rollback()
+        finally:
+            connection.close()
+
+    def _mark_start_failed(self, challenge: str, claim_token: str, *, version: int) -> None:
+        """Record a local pre-provider failure without implying provider invocation."""
+        try:
+            connection = self._open()
+        except PhoneVerificationRejected:
+            return
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            connection.execute(
+                "UPDATE shopping_verification_challenges SET status=?,version=version+1 "
+                "WHERE challenge_id=? AND status=? AND version=? AND start_claim_token=?",
+                (ChallengeStatus.FAILED.value, challenge,
                  ChallengeStatus.START_CLAIMED.value, version, claim_token),
             )
             connection.commit()
