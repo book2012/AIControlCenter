@@ -112,6 +112,25 @@ class TrustedVerificationContext:
             raise ValueError("consumed receipt references must be non-empty strings")
 
 
+@dataclass(frozen=True)
+class TrustedVerificationSeam:
+    """The existing internal hand-off from accepted evidence to session policy.
+
+    This seam deliberately contains only the B3-A receipt and its server-side
+    provenance context.  Contact data, OTPs, provider payloads, and provider
+    credentials are not part of trusted session evidence.
+    """
+
+    receipt: TrustedVerificationReceipt
+    context: TrustedVerificationContext
+
+    def __post_init__(self) -> None:
+        if type(self.receipt) is not TrustedVerificationReceipt:
+            raise TypeError("trusted seam requires the closed receipt type")
+        if type(self.context) is not TrustedVerificationContext:
+            raise TypeError("trusted seam requires the closed context type")
+
+
 def validate_trusted_receipt(
     receipt: object,
     *,
