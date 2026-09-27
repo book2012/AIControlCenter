@@ -37,6 +37,7 @@ class MockVerifier:
         self.clock = clock
         self.start_request = None
         self.verify_request = None
+        self.verify_calls = 0
         self.start_result_override = None
         self.verify_result_override = None
 
@@ -57,6 +58,7 @@ class MockVerifier:
         )
 
     def verify_challenge(self, request: ChallengeVerificationRequest):
+        self.verify_calls += 1
         self.verify_request = request
         if self.verify_result_override is not None:
             return self.verify_result_override(request)
@@ -109,8 +111,10 @@ def test_successful_synthetic_flow_creates_only_existing_trusted_seam() -> None:
     ) is ReceiptValidationResult.ACCEPTED
     assert accepted.receipt.expires_at <= NOW + timedelta(minutes=5)
 
-    # A repeated exact request is the sole deterministic in-memory idempotent case.
-    assert service.verify_challenge(request) is accepted
+    replayed = service.verify_challenge(request)
+    assert replayed == accepted
+    assert replayed is not accepted
+    assert mock.verify_calls == 1
 
 
 @pytest.mark.parametrize("field", [
@@ -184,15 +188,16 @@ def test_expired_and_future_provider_timestamps_are_rejected(timestamp: datetime
         service.verify_challenge(service.verification_request(evidence, otp="123456"))
 
 
-def test_provider_expiry_cannot_extend_local_expiry_and_replay_conflicts_fail() -> None:
+def test_provider_expiry_cannot_extend_local_expiry_and_alternate_otp_replays() -> None:
     clock = FixedClock(NOW)
     service, mock = make_service(clock)
     evidence = start(service)
     request = service.verification_request(evidence, otp="123456")
     accepted = service.verify_challenge(request)
     assert accepted.receipt.expires_at <= NOW + timedelta(minutes=5)
-    with pytest.raises(PhoneVerificationRejected):
-        service.verify_challenge(request.model_copy(update={"otp": "654321"}))
+    replayed = service.verify_challenge(request.model_copy(update={"otp": "654321"}))
+    assert replayed == accepted
+    assert mock.verify_calls == 1
 
 
 def test_malformed_provider_return_and_duplicate_provider_identifier_fail() -> None:

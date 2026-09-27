@@ -15,6 +15,18 @@ from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_valida
 
 CONTRACT_VERSION = "aicc-b3e-migration-contract/v1"
 PERSISTENCE_SCHEMA_VERSION = "shopping-customer-persistence/v1"
+# Historical B3 evidence remains v1. C1 describes, but does not execute, the
+# separately approved v1 -> v2 migration and never reclassifies old evidence.
+HISTORICAL_PERSISTENCE_SCHEMA_VERSION = PERSISTENCE_SCHEMA_VERSION
+CURRENT_PERSISTENCE_SCHEMA_VERSION = "shopping-customer-persistence/v2"
+TARGET_PERSISTENCE_SCHEMA_VERSION = CURRENT_PERSISTENCE_SCHEMA_VERSION
+C1_VERIFICATION_TABLES = (
+    "shopping_verification_challenges",
+    "shopping_verification_attempts",
+    "shopping_trusted_receipts",
+)
+C1_START_LIFECYCLE = ("START_CLAIMED", "START_UNKNOWN", "STARTED", "PENDING")
+C1_PROVIDER_START_STATUS = ("STARTED", "PENDING")
 EXPLICIT_UNOWNED_MARKER = "unowned/v1"
 SYNTHETIC_PROVENANCE = "synthetic_fixture"
 

@@ -17,7 +17,12 @@ from core.shopping.customer_sessions import (
 )
 
 
-SCHEMA_VERSION = "shopping-customer-persistence/v1"
+# v1 remains the historical B3 schema described by migration_contract.py.
+# A database must be explicitly provisioned as v2 before durable verification
+# authority may be used; opening v1 never performs an implicit migration.
+SCHEMA_VERSION = "shopping-customer-persistence/v2"
+HISTORICAL_SCHEMA_VERSION = "shopping-customer-persistence/v1"
+CURRENT_SCHEMA_VERSION = SCHEMA_VERSION
 BUSY_TIMEOUT_MS = 750
 FailureHook = Callable[[str], None]
 
@@ -79,6 +84,16 @@ def _validate_schema(connection: sqlite3.Connection) -> None:
         raise PersistenceSchemaError("persistence schema is not initialized") from None
     if row is None or row[0] != SCHEMA_VERSION:
         raise PersistenceSchemaError("unsupported persistence schema version")
+    try:
+        challenge_columns = {
+            item[1] for item in connection.execute(
+                "PRAGMA table_info(shopping_verification_challenges)"
+            ).fetchall()
+        }
+    except sqlite3.OperationalError:
+        raise PersistenceSchemaError("unsupported persistence schema shape") from None
+    if "provider_start_status" not in challenge_columns:
+        raise PersistenceSchemaError("unsupported persistence schema shape")
 
 
 def initialize_schema(database_path: str | Path, *, timeout_ms: int = BUSY_TIMEOUT_MS) -> None:
@@ -139,6 +154,40 @@ def initialize_schema(database_path: str | Path, *, timeout_ms: int = BUSY_TIMEO
             "CREATE TABLE IF NOT EXISTS shopping_auth_audit "
             "(event_id TEXT PRIMARY KEY, actor_ref TEXT NOT NULL, resource_ref TEXT NOT NULL, "
             "action TEXT NOT NULL, outcome TEXT NOT NULL, correlation_id TEXT NOT NULL, occurred_at TEXT NOT NULL)"
+        )
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS shopping_verification_challenges "
+            "(challenge_id TEXT PRIMARY KEY, customer_id TEXT NOT NULL, phone_binding TEXT NOT NULL, "
+            "provider_source TEXT NOT NULL, provider_challenge_reference TEXT, "
+            "provider_verification_id TEXT, replay_reference TEXT NOT NULL UNIQUE, "
+            "purpose TEXT NOT NULL, browser_challenge TEXT NOT NULL, status TEXT NOT NULL, "
+            "created_at TEXT NOT NULL, expires_at TEXT NOT NULL, provider_started_at TEXT, "
+            "provider_expires_at TEXT, provider_start_status TEXT, "
+            "receipt_id TEXT, start_claim_token TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0, "
+            "CHECK(status IN ('START_CLAIMED','START_UNKNOWN','STARTED','PENDING','VERIFIED','FAILED','EXPIRED')), "
+            "CHECK(provider_start_status IN ('STARTED','PENDING') OR provider_start_status IS NULL), "
+            "CHECK(version >= 0), UNIQUE(provider_source,provider_verification_id), UNIQUE(receipt_id))"
+        )
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS shopping_verification_attempts "
+            "(attempt_id TEXT PRIMARY KEY, challenge_id TEXT NOT NULL, replay_reference TEXT NOT NULL UNIQUE, "
+            "provider_source TEXT NOT NULL, provider_verification_id TEXT NOT NULL, phone_binding TEXT NOT NULL, "
+            "outcome TEXT NOT NULL, attempted_at TEXT NOT NULL, provider_verified_at TEXT, "
+            "provider_expires_at TEXT, receipt_id TEXT, "
+            "CHECK(outcome IN ('SUCCESS','FAILED','EXPIRED','REJECTED')), "
+            "FOREIGN KEY(challenge_id) REFERENCES shopping_verification_challenges(challenge_id), "
+            "UNIQUE(provider_source,provider_verification_id), UNIQUE(receipt_id))"
+        )
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS shopping_trusted_receipts "
+            "(receipt_id TEXT PRIMARY KEY, challenge_id TEXT NOT NULL UNIQUE, attempt_id TEXT NOT NULL UNIQUE, "
+            "customer_id TEXT NOT NULL, issuer_ref TEXT NOT NULL, browser_challenge TEXT NOT NULL, "
+            "purpose TEXT NOT NULL, provider_source TEXT NOT NULL, provider_verification_id TEXT NOT NULL, "
+            "phone_binding TEXT NOT NULL, issued_at TEXT NOT NULL, expires_at TEXT NOT NULL, "
+            "lifecycle TEXT NOT NULL, consumed_at TEXT, version INTEGER NOT NULL DEFAULT 0, "
+            "CHECK(lifecycle IN ('ISSUED','CONSUMED','REVOKED')), CHECK(version >= 0), "
+            "FOREIGN KEY(challenge_id) REFERENCES shopping_verification_challenges(challenge_id), "
+            "FOREIGN KEY(attempt_id) REFERENCES shopping_verification_attempts(attempt_id))"
         )
         connection.commit()
     except Exception:
@@ -299,3 +348,37 @@ class SQLiteCustomerSessionStore:
             return session_from_connection(connection, session_id)
         finally:
             connection.close()
+
+
+VERIFICATION_SCHEMA_TABLES = (
+    "shopping_verification_challenges",
+    "shopping_verification_attempts",
+    "shopping_trusted_receipts",
+)
+
+
+class SQLiteVerificationRepository:
+    """Explicit SQLite boundary for durable verification authority.
+
+    The repository deliberately exposes connections instead of hiding the
+    transaction.  TX1 and TX2 must include their own validation, projection,
+    and audit work in one ``BEGIN IMMEDIATE`` transaction.
+    """
+
+    def __init__(self, database_path: str | Path, *, busy_timeout_ms: int = BUSY_TIMEOUT_MS):
+        self.database_path = Path(database_path)
+        self.busy_timeout_ms = busy_timeout_ms
+
+    @staticmethod
+    def initialize_schema(database_path: str | Path, *, timeout_ms: int = BUSY_TIMEOUT_MS) -> None:
+        initialize_schema(database_path, timeout_ms=timeout_ms)
+
+    def open(self) -> sqlite3.Connection:
+        return open_connection(self.database_path, timeout_ms=self.busy_timeout_ms)
+
+
+# Naming aliases make the approved persistence boundary discoverable without
+# introducing a second framework or a second implementation.
+DurableVerificationRepository = SQLiteVerificationRepository
+VerificationRepository = SQLiteVerificationRepository
+PhoneVerificationRepository = SQLiteVerificationRepository

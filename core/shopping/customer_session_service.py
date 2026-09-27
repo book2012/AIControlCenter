@@ -38,7 +38,11 @@ from core.shopping.customer_sessions import (
 )
 
 
-AUTH_SCHEMA_TABLES = ("shopping_verification_receipts", "shopping_auth_audit")
+AUTH_SCHEMA_TABLES = (
+    "shopping_verification_receipts", "shopping_auth_audit",
+    "shopping_verification_challenges", "shopping_verification_attempts",
+    "shopping_trusted_receipts",
+)
 SECRET_DOMAIN = "aicontrolcenter/shopping/session/v1:"
 
 
@@ -148,6 +152,75 @@ def _audit(
         raise AuditPersistenceError("authentication audit persistence failed") from None
 
 
+def _validate_durable_trusted_receipt(
+    connection: sqlite3.Connection,
+    receipt: TrustedVerificationReceipt,
+    *,
+    now: datetime,
+) -> sqlite3.Row | None:
+    """Validate immutable server-owned challenge/attempt provenance."""
+    try:
+        row = connection.execute(
+            "SELECT r.*, c.status AS challenge_status, c.customer_id AS challenge_customer, "
+            "c.receipt_id AS challenge_receipt, c.provider_source AS challenge_source, "
+            "c.provider_verification_id AS challenge_provider_id, c.phone_binding AS challenge_binding, "
+            "c.provider_start_status AS challenge_start_status, "
+            "a.outcome AS attempt_outcome, a.receipt_id AS attempt_receipt, "
+            "a.challenge_id AS attempt_challenge, a.provider_source AS attempt_source, "
+            "a.provider_verification_id AS attempt_provider_id, a.phone_binding AS attempt_binding "
+            "FROM shopping_trusted_receipts r "
+            "JOIN shopping_verification_challenges c ON c.challenge_id=r.challenge_id "
+            "JOIN shopping_verification_attempts a ON a.attempt_id=r.attempt_id "
+            "WHERE r.receipt_id=?",
+            (receipt.receipt_id,),
+        ).fetchone()
+        if row is None:
+            # B3-A synthetic callers predate the v2 issued-receipt ledger. A
+            # receipt with a matching trusted context remains compatible only
+            # when this database has no evidence that it was a C1 receipt.
+            # Once TX1 evidence exists, a missing provenance row fails closed.
+            marker = connection.execute(
+                "SELECT 1 FROM shopping_auth_audit WHERE action='PHONE_VERIFICATION' "
+                "AND outcome='APPLIED' AND actor_ref=? LIMIT 1",
+                (receipt.customer_id,),
+            ).fetchone()
+            if marker is not None:
+                raise ReceiptPolicyDenied("receipt policy denied")
+            return None
+        if (
+            row["lifecycle"] != "ISSUED"
+            or row["challenge_status"] != "VERIFIED"
+            or row["challenge_start_status"] not in {"STARTED", "PENDING"}
+            or row["attempt_outcome"] != "SUCCESS"
+            or row["attempt_challenge"] != row["challenge_id"]
+            or row["challenge_customer"] != receipt.customer_id
+            or row["provider_source"] != row["challenge_source"]
+            or row["provider_source"] != row["attempt_source"]
+            or row["provider_verification_id"] != row["challenge_provider_id"]
+            or row["provider_verification_id"] != row["attempt_provider_id"]
+            or row["phone_binding"] != row["challenge_binding"]
+            or row["phone_binding"] != row["attempt_binding"]
+            or row["challenge_receipt"] != receipt.receipt_id
+            or row["attempt_receipt"] != receipt.receipt_id
+            or row["customer_id"] != receipt.customer_id
+            or row["issuer_ref"] != receipt.issuer_ref
+            or row["browser_challenge"] != receipt.browser_challenge
+            or row["purpose"] != receipt.purpose.value
+        ):
+            raise ReceiptPolicyDenied("receipt policy denied")
+        persisted_issued = datetime.fromisoformat(row["issued_at"].replace("Z", "+00:00"))
+        persisted_expires = datetime.fromisoformat(row["expires_at"].replace("Z", "+00:00"))
+        if persisted_issued != receipt.issued_at or persisted_expires != receipt.expires_at:
+            raise ReceiptPolicyDenied("receipt policy denied")
+        if now >= persisted_expires:
+            raise ReceiptPolicyDenied("receipt policy denied")
+        return row
+    except ReceiptPolicyDenied:
+        raise
+    except (KeyError, TypeError, ValueError, sqlite3.Error):
+        raise ReceiptPolicyDenied("receipt policy denied") from None
+
+
 class CustomerSessionService:
     """Trusted service seam; no constructor side effects or schema migration."""
 
@@ -196,6 +269,7 @@ class CustomerSessionService:
             connection = open_connection(self.database_path, timeout_ms=self.busy_timeout_ms)
             connection.execute("BEGIN IMMEDIATE")
             _required_auth_tables(connection)
+            durable_provenance = _validate_durable_trusted_receipt(connection, receipt, now=now)
             consumed = connection.execute(
                 "SELECT 1 FROM shopping_verification_receipts WHERE receipt_id=?",
                 (receipt.receipt_id,),
@@ -238,17 +312,33 @@ class CustomerSessionService:
                 (receipt.receipt_id, receipt.customer_id, receipt.issuer_ref,
                  receipt.browser_challenge, receipt.purpose.value, session.id, _utc(now)),
             )
+            if durable_provenance is not None:
+                trusted_row = connection.execute(
+                    "SELECT version FROM shopping_trusted_receipts WHERE receipt_id=? AND lifecycle='ISSUED'",
+                    (receipt.receipt_id,),
+                ).fetchone()
+                if trusted_row is None:
+                    raise ReceiptPolicyDenied("receipt policy denied")
+                changed = connection.execute(
+                    "UPDATE shopping_trusted_receipts SET lifecycle='CONSUMED',consumed_at=?,version=version+1 "
+                    "WHERE receipt_id=? AND lifecycle='ISSUED' AND version=?",
+                    (_utc(now), receipt.receipt_id, trusted_row["version"]),
+                ).rowcount
+                if changed != 1:
+                    raise ReceiptAlreadyConsumed("receipt already consumed")
             _audit(
                 connection, event_id=self._event_id_factory(), actor_ref=customer.id,
                 resource_ref=session.id, action="SESSION_ISSUE", outcome="APPLIED",
                 correlation_id=correlation_id, occurred_at=now,
                 failure_hook=self._audit_failure_hook,
             )
-            connection.commit()
             projection = safe_session_projection(record, customer, now=now)
             if projection is None:
                 raise SessionServiceError("session issuance failed")
-            return IssuedSession(session.id, SecretStr(secret), projection, receipt.receipt_id)
+            PrivateSessionRecord.model_validate(record)
+            issued = IssuedSession(session.id, SecretStr(secret), projection, receipt.receipt_id)
+            connection.commit()
+            return issued
         except (ReceiptAlreadyConsumed, CustomerNotEligible, AuditPersistenceError, ReceiptPolicyDenied,
                 SessionServiceError):
             if connection is not None and connection.in_transaction:
@@ -264,6 +354,10 @@ class CustomerSessionService:
             if connection is not None and connection.in_transaction:
                 connection.rollback()
             raise StorageUnavailable("authentication persistence is unavailable") from None
+        except Exception:
+            if connection is not None and connection.in_transaction:
+                connection.rollback()
+            raise SessionServiceError("session issuance failed") from None
         finally:
             if connection is not None:
                 connection.close()

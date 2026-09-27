@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
 from typing import Protocol, runtime_checkable
 
 from pydantic import ConfigDict, Field
@@ -53,6 +54,10 @@ class ChallengeSubject(ClosedContract):
 
 
 class ChallengeStatus(str, Enum):
+    # START_CLAIMED is durable ownership, not provider evidence.  It is
+    # intentionally not exposed as a successful start result.
+    START_CLAIMED = "START_CLAIMED"
+    START_UNKNOWN = "START_UNKNOWN"
     STARTED = "STARTED"
     PENDING = "PENDING"
     VERIFIED = "VERIFIED"
@@ -123,6 +128,26 @@ class PhoneVerificationPort(Protocol):
         ...
 
 
+@runtime_checkable
+class DurableVerificationRepository(Protocol):
+    """Approved persistence seam for Control Plane verification authority.
+
+    Implementations own only storage access.  The service owns TX1 policy and
+    must keep provider invocation outside its transaction.
+    """
+
+    database_path: str | Path
+    busy_timeout_ms: int
+
+    def open(self):
+        """Return a schema-validated SQLite connection."""
+        ...
+
+
+# Explicit port spelling for callers that describe the boundary as storage.
+VerificationPersistencePort = DurableVerificationRepository
+PhoneVerificationPersistencePort = DurableVerificationRepository
+
 # Descriptive aliases keep the boundary easy to adopt without changing its
 # closed underlying contracts.
 ProviderSourceId = ProviderSourceIdentifier
@@ -148,6 +173,9 @@ __all__ = [
     "OpaquePhoneBinding",
     "PhoneBinding",
     "PhoneVerificationPort",
+    "DurableVerificationRepository",
+    "VerificationPersistencePort",
+    "PhoneVerificationPersistencePort",
     "PhoneVerificationPurpose",
     "ProviderSourceIdentifier",
     "ProviderSourceId",
