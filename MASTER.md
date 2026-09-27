@@ -1,5 +1,70 @@
 # MASTER
 
+## Current authoritative platform state — 2026-09-27
+
+The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.
+AIControlCenter owns governance, policy, orchestration, authorization, audit,
+deployment control, workflow, recommendations, and customer/business logic.
+
+Ubuntu Server is a stateless, on-demand infrastructure worker only. It provides
+Docker, container runtime, storage, Immich, Nextcloud, Plex, backup, and file
+operations. Ubuntu does not host AI workloads or own business logic,
+application state, or Control Plane authority.
+
+Open-source and external components remain behind replaceable adapters/APIs.
+
+The Telegram architecture consists of the authenticated internal
+AIControlCenter Operator Bot and the customer-facing Shopping / Sales Bot.
+Both are interfaces/adapters and neither owns Control Plane or platform-wide
+business-logic authority.
+
+Inventory, operations, and internal automation use Mac-local Ollama/Local AI.
+Product photos, image analysis, and advanced product analysis use GPT API
+Product Intelligence. Provider selection remains behind AIControlCenter
+policy/router/adapters.
+
+## SHOP_AI repository/security milestone — complete
+
+Repository/security history:
+
+- Group D: `a3ac913813df8c0b9d425e1eb3cf3e9a6153bddc`.
+- Group A: `42de98fe4c7cb10fe39a8f4bfa34e696bc8cb54e`.
+- B3-D / B3-E: `c033c5f14a9a4df1db354f21f892fa32d3a66380`.
+
+Regression evidence is **506 passed, 293 warnings, pytest exit 0**.
+
+The current scope includes customer/session security, browser-origin and CSRF
+boundaries, owned inquiry authority, immutable ownership, current-session
+revalidation, version/idempotency/audit, explicit-unowned provenance, and
+fail-closed legacy/migration behavior.
+
+Token possession alone is insufficient for durable legacy authorization.
+Ownership-row absence alone is insufficient provenance. No-schema migration
+state fails closed. Historical records are not inferred as unowned. Owned
+records deny legacy fallback. Production owned/session router activation is
+absent by default.
+
+## Production readiness — incomplete
+
+Repository/security completion does not mean production readiness. No
+production migration, deployment, push, or production activation is claimed.
+
+The next milestone is the **SHOP_AI Production Readiness Evidence Gate**:
+
+- `SHOP_AI_001C` trusted production phone verifier.
+- Production DB inventory/evidence.
+- Backup/hash verification.
+- Isolated restore validation.
+- Migration dry-run.
+- Runtime composition QA.
+- Authenticated E2E QA.
+- Rollback drill.
+- Controlled production activation.
+
+Older conflicting architecture or readiness statements below remain historical
+and are superseded by this section.
+
+
 ## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
 
 Agachichi Home now renders one continuous mixed feed of all 120 active lookbook

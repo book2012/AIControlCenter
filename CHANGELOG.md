@@ -1,5 +1,37 @@
 # CHANGELOG
 
+## 2026-09-27 — SHOP_AI repository/security closeout
+
+- Recorded Group D
+  (`a3ac913813df8c0b9d425e1eb3cf3e9a6153bddc`):
+  `security(preview): isolate inquiry routes from storefront preview`.
+- Recorded Group A
+  (`42de98fe4c7cb10fe39a8f4bfa34e696bc8cb54e`):
+  `feat(shopping): establish customer session security foundation`.
+- Recorded B3-D/B3-E
+  (`c033c5f14a9a4df1db354f21f892fa32d3a66380`):
+  `security(shopping): close owned inquiry and migration boundaries`.
+- Recorded regression evidence:
+  **506 passed, 293 warnings, pytest exit 0**.
+- Closed the current repository/security scope for customer/session security,
+  browser-origin and CSRF boundaries, owned inquiry authority, immutable
+  ownership, current-session revalidation, version/idempotency/audit controls,
+  explicit-unowned provenance, and fail-closed legacy authorization.
+- Recorded that token possession alone is insufficient for durable legacy
+  authorization, ownership-row absence alone is insufficient provenance,
+  no-schema migration state fails closed, historical records are not inferred
+  as unowned, owned records deny legacy fallback, and production owned/session
+  router activation is absent by default.
+- Re-baselined the platform around the Mac mini M4 as the always-on Brain and
+  sole Control Plane, with Ubuntu as a stateless on-demand worker.
+- Recorded the two Telegram adapter interfaces and Local AI versus GPT Product
+  Intelligence routing policy.
+- Production readiness remains incomplete. No production migration,
+  deployment, push, or production activation is claimed.
+- Set the next production milestone to the
+  **SHOP_AI Production Readiness Evidence Gate**.
+
+
 ## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
 
 - Replaced split Home NEW/BEST/category sections with one mixed agachichi feed.

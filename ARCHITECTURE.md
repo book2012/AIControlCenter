@@ -1,5 +1,105 @@
 # AI Home Datacenter Architecture
 
+## Current authoritative platform state — 2026-09-27
+
+This section is the current architectural authority. Older sections remain
+historical records and are superseded wherever they conflict with this
+baseline.
+
+### Control Plane and infrastructure boundary
+
+The Mac mini M4 is the always-on Brain and the sole AIControlCenter Control
+Plane. AIControlCenter owns governance, policy, orchestration, authorization,
+audit, deployment control, workflows, recommendations, and customer/business
+logic.
+
+The Mac mini platform includes AIControlCenter, the AI Agent, OpenClaw,
+Ollama, OpenAI and Claude adapters, Homepage/Dashboard,
+WordPress/WooCommerce adapters, n8n, GitHub and Notion integrations,
+Ubuntu SSH control, workflow orchestration, and business logic.
+
+Ubuntu Server is a stateless, on-demand infrastructure worker only. It provides
+Docker, container runtime, storage, Immich, Nextcloud, Plex, backup, and file
+operations. Ubuntu is not an AI workload host, business-logic owner,
+application-state owner, or Control Plane.
+
+Open-source and external components remain behind replaceable adapters and
+APIs. They do not acquire platform-wide governance, policy, or business-logic
+authority.
+
+### Telegram interfaces
+
+The Telegram layer has two separate adapter interfaces:
+
+- **AIControlCenter Operator Bot** — authenticated internal operations for
+  inventory, operations, order/product administration, server/backup status,
+  approvals, and Local AI/GPT Product Intelligence routing.
+- **Shopping / Sales Bot** — customer-facing inquiries, product/order
+  consultation, AI customer support, and operator/human escalation.
+
+Neither Telegram bot is the Control Plane or a platform-wide business-logic
+owner.
+
+### AI routing policy
+
+Inventory, operations, and internal automation route to Local AI on the
+Mac mini through Ollama/local agents.
+
+Product photos, image analysis, and advanced product analysis route to the
+GPT API Product Intelligence agent.
+
+Provider selection remains behind AIControlCenter policy, routing, and
+replaceable provider adapters. Shopping business logic does not hardcode
+provider selection.
+
+### SHOP_AI repository/security closeout
+
+The current repository/security scope is complete and includes customer
+identity/session security, browser-origin and CSRF boundaries, owned inquiry
+authority, immutable ownership, current-session revalidation, version controls,
+idempotency, audit boundaries, explicit-unowned provenance, and fail-closed
+legacy authorization.
+
+Repository history:
+
+- **Group D:** `a3ac913813df8c0b9d425e1eb3cf3e9a6153bddc` —
+  `security(preview): isolate inquiry routes from storefront preview`.
+- **Group A:** `42de98fe4c7cb10fe39a8f4bfa34e696bc8cb54e` —
+  `feat(shopping): establish customer session security foundation`.
+- **B3-D / B3-E:** `c033c5f14a9a4df1db354f21f892fa32d3a66380` —
+  `security(shopping): close owned inquiry and migration boundaries`.
+
+Verified staged-snapshot regression evidence is **506 passed, 293 warnings,
+pytest exit 0**.
+
+Security semantics are explicit:
+
+- Token possession alone is insufficient for durable legacy authorization.
+- Ownership-row absence alone is insufficient provenance.
+- No-schema migration state fails closed.
+- Historical records are not inferred as unowned.
+- Owned records deny legacy fallback.
+- Production owned/session router activation is absent by default.
+
+### Repository completion versus production readiness
+
+Repository/security completion is not production readiness. No production
+migration, deployment, push, or activation is claimed by this closeout.
+
+The next production milestone is the **SHOP_AI Production Readiness Evidence
+Gate**, requiring:
+
+- `SHOP_AI_001C` trusted production phone verifier.
+- Production DB inventory/evidence.
+- Backup/hash verification.
+- Isolated restore validation.
+- Migration dry-run.
+- Runtime composition QA.
+- Authenticated E2E QA.
+- Rollback drill.
+- Controlled production activation.
+
+
 ## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
 
 The agachichi Home route is now one read-only Instagram/editorial feed. The

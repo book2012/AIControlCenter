@@ -1,5 +1,64 @@
 # Roadmap
 
+## Current authoritative roadmap — 2026-09-27
+
+The roadmap is re-baselined around the Mac mini M4 as the always-on Brain and
+sole AIControlCenter Control Plane. AIControlCenter owns governance, policy,
+orchestration, authorization, audit, deployment control, workflow,
+recommendations, and customer/business logic.
+
+Ubuntu Server remains a stateless, on-demand infrastructure worker only.
+Ubuntu does not host AI workloads or own business logic, application state, or
+Control Plane authority.
+
+### Completed SHOP_AI repository/security milestone
+
+- [x] Group D:
+  `a3ac913813df8c0b9d425e1eb3cf3e9a6153bddc`.
+- [x] Group A:
+  `42de98fe4c7cb10fe39a8f4bfa34e696bc8cb54e`.
+- [x] B3-D/B3-E:
+  `c033c5f14a9a4df1db354f21f892fa32d3a66380`.
+- [x] Regression evidence:
+  **506 passed, 293 warnings, pytest exit 0**.
+- [x] Customer/session security and browser-origin/CSRF boundary.
+- [x] Owned inquiry authority and immutable ownership.
+- [x] Current-session revalidation.
+- [x] Version/idempotency/audit boundaries.
+- [x] Explicit-unowned provenance.
+- [x] Fail-closed legacy and migration-state behavior.
+- [x] Production owned/session router activation remains absent by default.
+
+### Next production milestone — SHOP_AI Production Readiness Evidence Gate
+
+- [ ] Complete `SHOP_AI_001C` trusted production phone verifier.
+- [ ] Capture production DB inventory/evidence.
+- [ ] Verify backups and hashes.
+- [ ] Validate an isolated restore.
+- [ ] Perform a migration dry-run.
+- [ ] Complete runtime composition QA.
+- [ ] Complete authenticated E2E QA.
+- [ ] Perform a rollback drill.
+- [ ] Perform controlled production activation only after the gate passes.
+
+Production readiness remains incomplete. No production migration, deployment,
+push, or production activation is claimed by this repository closeout.
+
+### Future interface and agent layers
+
+- [ ] Add the authenticated internal AIControlCenter Operator Bot.
+- [ ] Add the customer-facing Shopping / Sales Bot.
+- [ ] Keep both Telegram bots as interfaces/adapters only.
+- [ ] Route inventory, operations, and internal automation through Mac-local
+  Ollama/Local AI.
+- [ ] Route product photos, image analysis, and advanced product analysis
+  through GPT API Product Intelligence.
+- [ ] Keep provider selection behind AIControlCenter policy/router/adapters.
+
+Older conflicting roadmap milestones below are historical/superseded and do
+not override this current roadmap authority.
+
+
 ## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
 
 - [x] Replace split Home sections with one mixed 120-product agachichi feed.
