@@ -11,7 +11,70 @@ Ubuntu Server remains a stateless, on-demand infrastructure worker only.
 Ubuntu does not host AI workloads or own business logic, application state, or
 Control Plane authority.
 
-### SHOP_AI_001C-C2 — Provider Adapter Foundation — COMPLETE
+### SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Foundation — COMPLETE for foundation scope only
+
+- [x] Canonical code commit:
+  `72310b63710d6fc13eb14e85ad133318454bb430`.
+- [x] Parent: `0de8b7ef0522b53f2089c1c302075f5d6264400c`.
+- [x] Exact code scope: **15 paths**.
+- [x] Reviewed implementation patch SHA256:
+  `e6a07f0e2f60c7e13a33a15edfa06eb33b2bcc286bb4bebf2fc1cd4055452f45`.
+- [x] C3 focused regression: **22 passed**.
+- [x] Canonical SHOP_AI validation was file-isolated: **29/29 test files
+  passed**.
+- [x] Aggregate evidence across those isolated processes: **747 passed, 1
+  deselected, 16 warnings**.
+- [x] Keep the existing API runtime baseline defect explicitly excluded:
+  `tests/test_shop_ai_01b3_api_runtime.py::test_app_creation_does_not_create_product_draft_database`.
+  C3 did not fix it.
+- [x] Treat file-per-process validation as canonical. A monolithic multi-file
+  SHOP_AI pytest invocation can leave `core.api.app` in `sys.modules` after
+  API-oriented collection/import, violating the isolation precondition of
+  persistence/security tests. This is harness contamination, not an
+  application regression.
+- [x] Redact raw phone representation from `CanonicalPhone` diagnostics.
+- [x] Keep `DestinationHandle` opaque, immutable, transient, request-scoped,
+  and one-shot; bind trusted provider/purpose/challenge/replay/customer/
+  browser/binding dimensions during scope validation.
+- [x] Keep `ProviderDestinationResolver` process-local and in-memory only;
+  never persist raw destination in SQLite, receipts, audit, JSON, or
+  provider-neutral application results.
+- [x] Carry only the opaque destination capability in `ChallengeStartRequest`
+  and `ProviderTransportStartRequest`; preserve existing C1 verification
+  persistence/result/session authority. The generic adapter forwards the
+  capability but does not resolve it.
+- [x] Keep `SecretReference` value-free. `SecretResolverPort` returns a
+  redacted one-shot `EphemeralSecretLease`, and the Mac resolver uses only an
+  explicitly injected reader foundation.
+- [x] Keep default runtime at zero Keychain reads, zero credential reads, zero
+  provider-network calls, and no provider-specific SDK construction. Default
+  runtime remains inert/disabled.
+- [x] Preserve the Mac mini as sole Control Plane; Ubuntu receives no raw
+  phone, provider credentials, verification authority, application state, or
+  business logic.
+
+Explicit C3 exclusions: no commercial SMS provider selection, provider SDK,
+authenticated provider call, Keychain access, environment credential
+materialization, production credential, route/API activation, schema/migration
+change, deployment, production activation, Ubuntu mutation, Telegram
+implementation, or durable `UNKNOWN_OUTCOME` lifecycle/schema change.
+
+Known unresolved architecture: `UNKNOWN_OUTCOME` is still not durably
+quarantined/reconciled. Do not reopen C1 persistence in this closeout; this
+must be resolved before authenticated provider integration.
+
+README review requires no change because C3 introduces no customer-facing
+route, real provider capability, production activation, deployment procedure,
+or operator workflow; `README.md` remains unchanged.
+
+### Next engineering milestone exactly
+
+`SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation`
+
+After C4, provider-specific authenticated non-production integration remains a
+separately gated milestone.
+
+### Historical SHOP_AI_001C-C2 — Provider Adapter Foundation — COMPLETE
 
 - [x] Canonical code commit:
   `4c9f8851f39b944f0d875694c44f998ae5ad1000`.
