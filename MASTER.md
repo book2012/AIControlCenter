@@ -23,6 +23,43 @@ Product photos, image analysis, and advanced product analysis use GPT API
 Product Intelligence. Provider selection remains behind AIControlCenter
 policy/router/adapters.
 
+## SHOP_AI_001C-A / SHOP_AI_001C-B — phone verification foundation
+
+- `SHOP_AI_001C-A` architecture review: **COMPLETE**.
+- `SHOP_AI_001C-B` provider-neutral phone verification foundation:
+  **COMPLETE**.
+- Code commit exactly:
+  `60a3ca0ec547fa793916702577ae8ac3650137f1`.
+- Strict phone normalization implemented.
+- Opaque keyed phone binding implemented.
+- Provider-neutral `PhoneVerificationPort` implemented.
+- Fail-closed application/mock verification foundation implemented.
+- Existing B3-A trusted receipt/session authority preserved.
+- Real repository regression: **178 passed, 289 warnings, pytest exit 0**.
+- Exact code scope: **7 files**.
+
+Production phone provider **NOT IMPLEMENTED**. Provider credentials **NOT
+MATERIALIZED**. Durable challenge/attempt persistence **NOT IMPLEMENTED**.
+Production replay/concurrency persistence **NOT IMPLEMENTED**. Production DB
+migration **NOT STARTED**. Production activation **NOT AUTHORIZED**. No
+deployment/provider/production access occurred.
+
+Architecture:
+
+- AIControlCenter = authority/control plane
+- Telegram = channel
+- AI = interpretation/recommendation, not order authority
+- OrderService = deterministic commerce operations
+- WooCommerce = commerce engine
+- Ubuntu = stateless infrastructure worker
+
+Next milestone exactly:
+`SHOP_AI_001C-C0`
+Durable Challenge / Attempt Persistence Design
+
+ROADMAP downstream sequence:
+`SHOP_AI_001C → SHOP_ORDER_001 → SHOP_AI_002 / SHOP_AI_003 → TG_SALES_001 → Telegram Customer Order E2E`
+
 ## SHOP_AI repository/security milestone — complete
 
 Repository/security history:
@@ -46,20 +83,13 @@ absent by default.
 
 ## Production readiness — incomplete
 
-Repository/security completion does not mean production readiness. No
-production migration, deployment, push, or production activation is claimed.
-
-The next milestone is the **SHOP_AI Production Readiness Evidence Gate**:
-
-- `SHOP_AI_001C` trusted production phone verifier.
-- Production DB inventory/evidence.
-- Backup/hash verification.
-- Isolated restore validation.
-- Migration dry-run.
-- Runtime composition QA.
-- Authenticated E2E QA.
-- Rollback drill.
-- Controlled production activation.
+Repository/security and the provider-neutral phone verification foundation do
+not mean production readiness. The production phone provider remains
+**NOT IMPLEMENTED**, production credentials remain **NOT MATERIALIZED**, and
+no production migration, deployment, push, or production activation is
+claimed. The current next milestone is `SHOP_AI_001C-C0` — Durable Challenge /
+Attempt Persistence Design. The production readiness evidence gate remains
+downstream and separately gated.
 
 Older conflicting architecture or readiness statements below remain historical
 and are superseded by this section.

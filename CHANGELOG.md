@@ -1,5 +1,34 @@
 # CHANGELOG
 
+## 2026-09-27 — SHOP_AI_001C-B documentation closeout
+
+- `SHOP_AI_001C-A` architecture review: **COMPLETE**.
+- `SHOP_AI_001C-B` provider-neutral phone verification foundation:
+  **COMPLETE**.
+- Code commit exactly:
+  `60a3ca0ec547fa793916702577ae8ac3650137f1`.
+- Implemented strict phone normalization, opaque keyed phone binding, and the
+  provider-neutral `PhoneVerificationPort`.
+- Implemented the fail-closed application/mock verification foundation.
+- Preserved the existing B3-A trusted receipt/session authority.
+- Real repository regression: **178 passed, 289 warnings, pytest exit 0**.
+- Exact code scope: **7 files**.
+- Production phone provider **NOT IMPLEMENTED**.
+- Provider credentials **NOT MATERIALIZED**.
+- Durable challenge/attempt persistence **NOT IMPLEMENTED**.
+- Production replay/concurrency persistence **NOT IMPLEMENTED**.
+- Production DB migration **NOT STARTED**.
+- Production activation **NOT AUTHORIZED**.
+- No deployment/provider/production access occurred.
+- Architecture remains: AIControlCenter = authority/control plane; Telegram =
+  channel; AI = interpretation/recommendation, not order authority;
+  OrderService = deterministic commerce operations; WooCommerce = commerce
+  engine; Ubuntu = stateless infrastructure worker.
+- Next milestone exactly:
+  **SHOP_AI_001C-C0 — Durable Challenge / Attempt Persistence Design**.
+- ROADMAP downstream sequence:
+  `SHOP_AI_001C → SHOP_ORDER_001 → SHOP_AI_002 / SHOP_AI_003 → TG_SALES_001 → Telegram Customer Order E2E`.
+
 ## 2026-09-27 — SHOP_AI repository/security closeout
 
 - Recorded Group D
@@ -27,9 +56,8 @@
 - Recorded the two Telegram adapter interfaces and Local AI versus GPT Product
   Intelligence routing policy.
 - Production readiness remains incomplete. No production migration,
-  deployment, push, or production activation is claimed.
-- Set the next production milestone to the
-  **SHOP_AI Production Readiness Evidence Gate**.
+  deployment, push, or production activation is claimed. The next milestone
+  is `SHOP_AI_001C-C0` — Durable Challenge / Attempt Persistence Design.
 
 
 ## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED

@@ -11,6 +11,46 @@ Ubuntu Server remains a stateless, on-demand infrastructure worker only.
 Ubuntu does not host AI workloads or own business logic, application state, or
 Control Plane authority.
 
+### SHOP_AI_001C-A / SHOP_AI_001C-B — complete
+
+- [x] `SHOP_AI_001C-A` architecture review: **COMPLETE**.
+- [x] `SHOP_AI_001C-B` provider-neutral phone verification foundation:
+  **COMPLETE**.
+- [x] Code commit exactly:
+  `60a3ca0ec547fa793916702577ae8ac3650137f1`.
+- [x] Strict phone normalization implemented.
+- [x] Opaque keyed phone binding implemented.
+- [x] Provider-neutral `PhoneVerificationPort` implemented.
+- [x] Fail-closed application/mock verification foundation implemented.
+- [x] Existing B3-A trusted receipt/session authority preserved.
+- [x] Real repository regression: **178 passed, 289 warnings, pytest exit 0**.
+- [x] Exact code scope: **7 files**.
+
+Production phone provider **NOT IMPLEMENTED**. Provider credentials **NOT
+MATERIALIZED**. Durable challenge/attempt persistence **NOT IMPLEMENTED**.
+Production replay/concurrency persistence **NOT IMPLEMENTED**. Production DB
+migration **NOT STARTED**. Production activation **NOT AUTHORIZED**. No
+deployment/provider/production access occurred.
+
+Architecture:
+
+- AIControlCenter = authority/control plane
+- Telegram = channel
+- AI = interpretation/recommendation, not order authority
+- OrderService = deterministic commerce operations
+- WooCommerce = commerce engine
+- Ubuntu = stateless infrastructure worker
+
+### Next milestone
+
+`SHOP_AI_001C-C0`
+
+Durable Challenge / Attempt Persistence Design
+
+### ROADMAP downstream sequence
+
+`SHOP_AI_001C → SHOP_ORDER_001 → SHOP_AI_002 / SHOP_AI_003 → TG_SALES_001 → Telegram Customer Order E2E`
+
 ### Completed SHOP_AI repository/security milestone
 
 - [x] Group D:
@@ -29,9 +69,9 @@ Control Plane authority.
 - [x] Fail-closed legacy and migration-state behavior.
 - [x] Production owned/session router activation remains absent by default.
 
-### Next production milestone — SHOP_AI Production Readiness Evidence Gate
+### Production readiness — incomplete
 
-- [ ] Complete `SHOP_AI_001C` trusted production phone verifier.
+- [ ] Implement and review a production phone provider.
 - [ ] Capture production DB inventory/evidence.
 - [ ] Verify backups and hashes.
 - [ ] Validate an isolated restore.
@@ -41,8 +81,10 @@ Control Plane authority.
 - [ ] Perform a rollback drill.
 - [ ] Perform controlled production activation only after the gate passes.
 
-Production readiness remains incomplete. No production migration, deployment,
-push, or production activation is claimed by this repository closeout.
+Production readiness remains incomplete. The provider-neutral foundation does
+not constitute a production phone provider. No production migration,
+deployment, push, or production activation is claimed by this repository
+closeout. Production activation remains **NOT AUTHORIZED**.
 
 ### Future interface and agent layers
 
