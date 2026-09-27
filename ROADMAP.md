@@ -11,26 +11,33 @@ Ubuntu Server remains a stateless, on-demand infrastructure worker only.
 Ubuntu does not host AI workloads or own business logic, application state, or
 Control Plane authority.
 
-### SHOP_AI_001C-A / SHOP_AI_001C-B — complete
+### SHOP_AI_001C-A / SHOP_AI_001C-B / SHOP_AI_001C-C0 / SHOP_AI_001C-C1 — complete
 
 - [x] `SHOP_AI_001C-A` architecture review: **COMPLETE**.
 - [x] `SHOP_AI_001C-B` provider-neutral phone verification foundation:
   **COMPLETE**.
-- [x] Code commit exactly:
+- [x] `SHOP_AI_001C-C0` Durable Challenge / Attempt Persistence Design:
+  **COMPLETE**.
+- [x] `SHOP_AI_001C-C1` Durable verification persistence: **COMPLETE**.
+- [x] `SHOP_AI_001C-B` code commit exactly:
   `60a3ca0ec547fa793916702577ae8ac3650137f1`.
+- [x] `SHOP_AI_001C-C1` exact code commit:
+  `57c6c4e96ff13ea3ce727dd1910c276c08e62eee`.
+- [x] Exact code scope: **7 files**.
 - [x] Strict phone normalization implemented.
 - [x] Opaque keyed phone binding implemented.
 - [x] Provider-neutral `PhoneVerificationPort` implemented.
 - [x] Fail-closed application/mock verification foundation implemented.
 - [x] Existing B3-A trusted receipt/session authority preserved.
-- [x] Real repository regression: **178 passed, 289 warnings, pytest exit 0**.
-- [x] Exact code scope: **7 files**.
+- [x] `SHOP_AI_001C-B` real repository regression: **178 passed, 289
+  warnings, pytest exit 0**.
+- [x] Targeted regression: **148 passed, 1 warning, pytest exit 0**.
+- [x] SHOP_AI regression: **473 passed, 1 warning, pytest exit 0**.
 
 Production phone provider **NOT IMPLEMENTED**. Provider credentials **NOT
-MATERIALIZED**. Durable challenge/attempt persistence **NOT IMPLEMENTED**.
-Production replay/concurrency persistence **NOT IMPLEMENTED**. Production DB
-migration **NOT STARTED**. Production activation **NOT AUTHORIZED**. No
-deployment/provider/production access occurred.
+MATERIALIZED**. Production DB migration **NOT STARTED**. Production provider
+runtime activation **NOT AUTHORIZED**. No production/provider/network access or
+deployment occurred.
 
 Architecture:
 
@@ -41,11 +48,13 @@ Architecture:
 - WooCommerce = commerce engine
 - Ubuntu = stateless infrastructure worker
 
-### Next milestone
+### Next engineering milestone exactly
 
-`SHOP_AI_001C-C0`
+`SHOP_AI_001C-C2 — Provider Adapter Foundation`
 
-Durable Challenge / Attempt Persistence Design
+C2 scope: provider-neutral adapter; inert/fake transport first;
+timeout/malformed-response mapping; Mac-only secret-reference boundary;
+disabled-by-default composition.
 
 ### ROADMAP downstream sequence
 

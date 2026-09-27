@@ -1,5 +1,69 @@
 # AI Shopping Platform Architecture
 
+## Current authoritative SHOP_AI_001C-C0/C1 closeout
+
+`SHOP_AI_001C-C0` Durable Challenge / Attempt Persistence Design and
+`SHOP_AI_001C-C1` Durable verification persistence are **COMPLETE**. The exact
+code commit is
+`57c6c4e96ff13ea3ce727dd1910c276c08e62eee`, with an exact code scope of 7
+files. The targeted regression was **148 passed, 1 warning, pytest exit 0**;
+the SHOP_AI regression was **473 passed, 1 warning, pytest exit 0**.
+
+### Authority and invocation boundary
+
+- Mac AIControlCenter is the sole verification authority.
+- Ubuntu has zero verification, business-logic, or application-state
+  authority.
+- Durable `START_CLAIMED` occurs before provider-start invocation.
+- Provider invocation occurs outside the SQLite transaction.
+- Concurrent exact starts permit one provider invocation.
+- An uncertain provider-start outcome fails closed and cannot auto-reinvoke.
+- Immutable provider-start evidence is stored separately from lifecycle state.
+- SQLite is the sole durable replay authority; there is no process-local
+  authorization or replay authority.
+
+### Durable data and security semantics
+
+- OTP is provider transport input only. OTP, OTP digest, and OTP HMAC are not
+  durable replay state or identity.
+- Raw phone, OTP, raw provider payload, and credentials are excluded from
+  durable verification state, audit, and trusted receipt.
+- Opaque phone binding is durable.
+- `provider_source + provider_verification_id` uniqueness is durable.
+- TX1 atomically covers attempt, challenge, trusted-receipt provenance, and
+  audit, and validates the returned trusted object before commit.
+- TX2 atomically validates durable provenance, consumes the receipt, creates
+  the session, records B3 consumption/audit, and validates the projection
+  before commit.
+- The injected AIControlCenter UTC clock remains authorization time authority;
+  provider timestamps are evidence only.
+- B3-A receipt/session security semantics remain preserved.
+
+### Schema and activation boundary
+
+- The fresh/current customer persistence foundation is schema v2.
+- Historical v1 is not silently upgraded or reinterpreted.
+- Existing v1 requires a separately authorized explicit migration.
+- C1 did not execute production migration or backfill.
+- Production phone provider: **NOT IMPLEMENTED**.
+- Provider credentials: **NOT MATERIALIZED**.
+- Production DB migration: **NOT STARTED**.
+- Production provider runtime activation: **NOT AUTHORIZED**.
+- No production/provider/network access occurred and no deployment occurred.
+
+README review found no content change required because production provider
+capability is not ready; `README.md` remains unchanged.
+
+The next engineering milestone is exactly:
+`SHOP_AI_001C-C2 — Provider Adapter Foundation`.
+
+C2 consists of a provider-neutral adapter, inert/fake transport first,
+timeout/malformed-response mapping, a Mac-only secret-reference boundary, and
+disabled-by-default composition.
+
+The preserved roadmap sequence is:
+`SHOP_AI_001C → SHOP_ORDER_001 → SHOP_AI_002 / SHOP_AI_003 → TG_SALES_001 → Telegram Customer Order E2E`.
+
 ## SHOP-AI-01A ProductDraft generation foundation
 
 `SHOP-AI-01A_PRODUCT_DRAFT_GENERATION_FOUNDATION_READY` preserves

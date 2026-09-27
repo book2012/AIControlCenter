@@ -23,26 +23,66 @@ Product photos, image analysis, and advanced product analysis use GPT API
 Product Intelligence. Provider selection remains behind AIControlCenter
 policy/router/adapters.
 
-## SHOP_AI_001C-A / SHOP_AI_001C-B — phone verification foundation
+## SHOP_AI_001C-A / SHOP_AI_001C-B / SHOP_AI_001C-C0 / SHOP_AI_001C-C1 — phone verification foundation and durable persistence
 
 - `SHOP_AI_001C-A` architecture review: **COMPLETE**.
 - `SHOP_AI_001C-B` provider-neutral phone verification foundation:
   **COMPLETE**.
-- Code commit exactly:
+- `SHOP_AI_001C-C0` Durable Challenge / Attempt Persistence Design:
+  **COMPLETE**.
+- `SHOP_AI_001C-C1` Durable verification persistence: **COMPLETE**.
+- `SHOP_AI_001C-B` code commit exactly:
   `60a3ca0ec547fa793916702577ae8ac3650137f1`.
+- `SHOP_AI_001C-C1` exact code commit:
+  `57c6c4e96ff13ea3ce727dd1910c276c08e62eee`.
+- Exact code scope: **7 files**.
 - Strict phone normalization implemented.
 - Opaque keyed phone binding implemented.
 - Provider-neutral `PhoneVerificationPort` implemented.
 - Fail-closed application/mock verification foundation implemented.
 - Existing B3-A trusted receipt/session authority preserved.
-- Real repository regression: **178 passed, 289 warnings, pytest exit 0**.
-- Exact code scope: **7 files**.
+- `SHOP_AI_001C-B` real repository regression: **178 passed, 289 warnings,
+  pytest exit 0**.
+- Targeted regression: **148 passed, 1 warning, pytest exit 0**.
+- SHOP_AI regression: **473 passed, 1 warning, pytest exit 0**.
+
+Durable verification authority and persistence:
+
+- Mac AIControlCenter is the sole verification authority. Ubuntu has zero
+  verification, business-logic, or application-state authority.
+- Durable `START_CLAIMED` occurs before provider-start invocation, and provider
+  invocation occurs outside the SQLite transaction. Concurrent exact starts
+  permit one provider invocation. An uncertain provider-start outcome fails
+  closed and cannot auto-reinvoke.
+- Immutable provider-start evidence is stored separately from lifecycle state.
+  SQLite is the sole durable replay authority; no process-local authorization
+  or replay authority exists.
+- OTP is provider transport input only. OTP, OTP digest, and OTP HMAC are not
+  durable replay state or identity. Raw phone, OTP, raw provider payload, and
+  credentials are excluded from durable verification state, audit, and trusted
+  receipt.
+- Opaque phone binding is durable, as is
+  `provider_source + provider_verification_id` uniqueness.
+- TX1 atomically covers attempt, challenge, trusted-receipt provenance, and
+  audit, and validates the returned trusted object before commit. TX2
+  atomically validates durable provenance, consumes the receipt, creates the
+  session, records B3 consumption/audit, and validates the projection before
+  commit.
+- The injected AIControlCenter UTC clock remains authorization time authority;
+  provider timestamps are evidence only. B3-A receipt/session security
+  semantics remain preserved.
+
+Schema and production boundary:
+
+- Fresh/current customer persistence foundation is schema v2.
+- Historical v1 is not silently upgraded or reinterpreted. Existing v1
+  requires separately authorized explicit migration.
+- C1 did not execute production migration or backfill.
 
 Production phone provider **NOT IMPLEMENTED**. Provider credentials **NOT
-MATERIALIZED**. Durable challenge/attempt persistence **NOT IMPLEMENTED**.
-Production replay/concurrency persistence **NOT IMPLEMENTED**. Production DB
-migration **NOT STARTED**. Production activation **NOT AUTHORIZED**. No
-deployment/provider/production access occurred.
+MATERIALIZED**. Production DB migration **NOT STARTED**. Production provider
+runtime activation **NOT AUTHORIZED**. No production/provider/network access or
+deployment occurred.
 
 Architecture:
 
@@ -53,9 +93,12 @@ Architecture:
 - WooCommerce = commerce engine
 - Ubuntu = stateless infrastructure worker
 
-Next milestone exactly:
-`SHOP_AI_001C-C0`
-Durable Challenge / Attempt Persistence Design
+Next engineering milestone exactly:
+`SHOP_AI_001C-C2 — Provider Adapter Foundation`
+
+C2 is provider-neutral adapter work with inert/fake transport first,
+timeout/malformed-response mapping, a Mac-only secret-reference boundary, and
+disabled-by-default composition.
 
 ROADMAP downstream sequence:
 `SHOP_AI_001C → SHOP_ORDER_001 → SHOP_AI_002 / SHOP_AI_003 → TG_SALES_001 → Telegram Customer Order E2E`
@@ -83,13 +126,13 @@ absent by default.
 
 ## Production readiness — incomplete
 
-Repository/security and the provider-neutral phone verification foundation do
+Repository/security and the durable provider-neutral verification foundation do
 not mean production readiness. The production phone provider remains
 **NOT IMPLEMENTED**, production credentials remain **NOT MATERIALIZED**, and
 no production migration, deployment, push, or production activation is
-claimed. The current next milestone is `SHOP_AI_001C-C0` — Durable Challenge /
-Attempt Persistence Design. The production readiness evidence gate remains
-downstream and separately gated.
+claimed. The current next milestone is `SHOP_AI_001C-C2` — Provider Adapter
+Foundation. The production readiness evidence gate remains downstream and
+separately gated.
 
 Older conflicting architecture or readiness statements below remain historical
 and are superseded by this section.

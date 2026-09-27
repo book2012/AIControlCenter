@@ -1,5 +1,55 @@
 # CHANGELOG
 
+## 2026-09-28 — SHOP_AI_001C-C0/C1 documentation closeout
+
+- `SHOP_AI_001C-C0` Durable Challenge / Attempt Persistence Design:
+  **COMPLETE**.
+- `SHOP_AI_001C-C1` Durable verification persistence: **COMPLETE**.
+- Exact code commit:
+  `57c6c4e96ff13ea3ce727dd1910c276c08e62eee`.
+- Exact code scope: **7 files**.
+- Targeted regression: **148 passed, 1 warning, pytest exit 0**.
+- SHOP_AI regression: **473 passed, 1 warning, pytest exit 0**.
+- Mac AIControlCenter is the sole verification authority. Ubuntu has zero
+  verification, business-logic, or application-state authority.
+- Durable `START_CLAIMED` occurs before provider-start invocation. Provider
+  invocation occurs outside the SQLite transaction. Concurrent exact starts
+  permit one provider invocation; an uncertain provider-start outcome fails
+  closed and cannot auto-reinvoke.
+- Immutable provider-start evidence is stored separately from lifecycle state.
+  SQLite is the sole durable replay authority; no process-local authorization
+  or replay authority exists.
+- OTP is provider transport input only. OTP, its digest, and its HMAC are not
+  durable replay state or identity. Raw phone, OTP, raw provider payload, and
+  credentials are excluded from durable verification state, audit, and trusted
+  receipt. Opaque phone binding and
+  `provider_source + provider_verification_id` uniqueness are durable.
+- TX1 atomically covers attempt, challenge, trusted-receipt provenance, and
+  audit, and validates the returned trusted object before commit. TX2
+  atomically validates durable provenance, consumes the receipt, creates the
+  session, records B3 consumption/audit, and validates the projection before
+  commit.
+- The injected AIControlCenter UTC clock remains authorization time authority;
+  provider timestamps are evidence only. B3-A receipt/session security
+  semantics remain preserved.
+- Fresh/current customer persistence foundation is schema v2. Historical v1 is
+  not silently upgraded or reinterpreted; existing v1 requires separately
+  authorized explicit migration. C1 executed no production migration or
+  backfill.
+- Still explicitly incomplete: production phone provider **NOT IMPLEMENTED**;
+  provider credentials **NOT MATERIALIZED**; production DB migration **NOT
+  STARTED**; production provider runtime activation **NOT AUTHORIZED**. No
+  production/provider/network access or deployment occurred.
+- README review found no content change required because production provider
+  capability is not ready; `README.md` remains unchanged.
+- Next engineering milestone exactly:
+  **SHOP_AI_001C-C2 — Provider Adapter Foundation**.
+- C2 scope: provider-neutral adapter; inert/fake transport first;
+  timeout/malformed-response mapping; Mac-only secret-reference boundary;
+  disabled-by-default composition.
+- ROADMAP downstream sequence:
+  `SHOP_AI_001C → SHOP_ORDER_001 → SHOP_AI_002 / SHOP_AI_003 → TG_SALES_001 → Telegram Customer Order E2E`.
+
 ## 2026-09-27 — SHOP_AI_001C-B documentation closeout
 
 - `SHOP_AI_001C-A` architecture review: **COMPLETE**.
