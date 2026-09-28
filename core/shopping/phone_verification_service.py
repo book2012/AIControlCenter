@@ -127,8 +127,17 @@ def _value(row: sqlite3.Row, name: str) -> object:
         raise PhoneVerificationRejected("verification storage row is malformed") from None
 
 
+def _provider_failure_code(error: BaseException) -> str | None:
+    for attribute in ("code", "failure_code", "reason_code"):
+        candidate = getattr(error, attribute, None)
+        candidate = getattr(candidate, "value", candidate)
+        if type(candidate) is str:
+            return candidate
+    return None
+
+
 class PhoneVerificationService:
-    """Provider-neutral policy over durable v2 verification state."""
+    """Provider-neutral policy over durable v3 verification state."""
 
     def __init__(
         self, port: PhoneVerificationPort, utc_clock: Callable[[], datetime] | None = None,
@@ -230,6 +239,7 @@ class PhoneVerificationService:
         binding: OpaquePhoneBinding,
         purpose: VerificationPurpose,
         browser: str,
+        now: datetime,
     ) -> ChallengeStartResult | None:
         if not rows:
             return None
@@ -244,11 +254,16 @@ class PhoneVerificationService:
             status = ChallengeStatus(row["status"])
         except (TypeError, ValueError):
             raise PhoneVerificationRejected("verification storage row is malformed") from None
-        if status in {ChallengeStatus.START_CLAIMED, ChallengeStatus.START_UNKNOWN}:
+        if status in {ChallengeStatus.START_CLAIMED, ChallengeStatus.START_UNKNOWN,
+                      ChallengeStatus.VERIFY_UNKNOWN}:
             raise PhoneVerificationRejected("challenge start is in-flight or unknown")
-        if status in {ChallengeStatus.FAILED, ChallengeStatus.EXPIRED}:
+        if status in {ChallengeStatus.FAILED, ChallengeStatus.REJECTED,
+                      ChallengeStatus.EXPIRED}:
             raise PhoneVerificationRejected("challenge start is terminal")
-        return self._start_from_row(row)
+        result = self._start_from_row(row)
+        if result.started_at > now:
+            raise PhoneVerificationRejected("challenge start timestamp is in the future")
+        return result
 
     @staticmethod
     def _start_from_row(row: sqlite3.Row) -> ChallengeStartResult:
@@ -257,7 +272,8 @@ class PhoneVerificationService:
             provider_status = ChallengeStatus(row["provider_start_status"])
             if lifecycle in {
                 ChallengeStatus.START_CLAIMED, ChallengeStatus.START_UNKNOWN,
-                ChallengeStatus.FAILED, ChallengeStatus.EXPIRED,
+                ChallengeStatus.VERIFY_UNKNOWN, ChallengeStatus.FAILED,
+                ChallengeStatus.REJECTED, ChallengeStatus.EXPIRED,
             } or provider_status not in {ChallengeStatus.STARTED, ChallengeStatus.PENDING}:
                 raise PhoneVerificationRejected("challenge start evidence is unavailable")
             return ChallengeStartResult(
@@ -277,7 +293,12 @@ class PhoneVerificationService:
         connection = self._open()
         try:
             row = connection.execute("SELECT * FROM shopping_verification_challenges WHERE challenge_id=?", (challenge,)).fetchone()
-            return None if row is None else self._start_from_row(row)
+            if row is None:
+                return None
+            result = self._start_from_row(row)
+            if result.started_at > self._now():
+                raise PhoneVerificationRejected("challenge start timestamp is in the future")
+            return result
         except (sqlite3.Error, PersistenceError):
             raise PhoneVerificationRejected("phone verification storage unavailable") from None
         finally:
@@ -342,6 +363,7 @@ class PhoneVerificationService:
                 self._start_rows(connection, challenge=str(challenge), replay=str(replay)),
                 challenge=str(challenge), customer=customer, replay=str(replay),
                 binding=binding, purpose=purpose, browser=browser,
+                now=now,
             )
             if existing is not None:
                 connection.commit()
@@ -390,13 +412,17 @@ class PhoneVerificationService:
             raise PhoneVerificationRejected("phone verification destination unavailable") from None
         try:
             result = self._port.start_challenge(request)
-        except Exception:
+        except Exception as error:
+            if _provider_failure_code(error) == "REJECTED":
+                self._mark_start_rejected(str(challenge), claim_token, version=0)
+                raise PhoneVerificationRejected("phone verification provider rejected the challenge") from None
             self._mark_start_unknown(str(challenge), claim_token, version=0)
             raise PhoneVerificationRejected("phone verification provider failed") from None
         try:
+            evidence_now = self._now()
             if type(result) is not ChallengeStartResult:
                 raise PhoneVerificationRejected("phone verification evidence rejected")
-            self._validate_start(result, request=request, now=now)
+            self._validate_start(result, request=request, now=evidence_now)
         except PhoneVerificationRejected:
             self._mark_start_unknown(str(challenge), claim_token, version=0)
             raise
@@ -405,6 +431,8 @@ class PhoneVerificationService:
         connection = self._open()
         try:
             connection.execute("BEGIN IMMEDIATE")
+            projection_now = self._now()
+            self._validate_start(result, request=request, now=projection_now)
             row = connection.execute(
                 "SELECT * FROM shopping_verification_challenges WHERE challenge_id=?",
                 (str(challenge),),
@@ -416,6 +444,8 @@ class PhoneVerificationService:
             ) or row["status"] != ChallengeStatus.START_CLAIMED.value \
                     or int(row["version"]) != 0 or row["start_claim_token"] != claim_token:
                 raise PhoneVerificationRejected("challenge start claim is no longer owned")
+            if projection_now >= _dt(row["expires_at"]):
+                raise PhoneVerificationRejected("local challenge expired")
             collision = connection.execute(
                 "SELECT 1 FROM shopping_verification_challenges "
                 "WHERE provider_source=? AND provider_verification_id=?",
@@ -459,23 +489,147 @@ class PhoneVerificationService:
             connection.close()
 
     def _mark_start_unknown(self, challenge: str, claim_token: str, *, version: int) -> None:
-        """Retain ownership after any provider outcome that cannot be trusted."""
-        try:
-            connection = self._open()
-        except PhoneVerificationRejected:
-            return
+        """Atomically quarantine an ambiguous START outcome."""
+        connection = self._open()
         try:
             connection.execute("BEGIN IMMEDIATE")
+            row = connection.execute(
+                "SELECT * FROM shopping_verification_challenges WHERE challenge_id=?",
+                (challenge,),
+            ).fetchone()
+            if (row is None or row["status"] != ChallengeStatus.START_CLAIMED.value
+                    or int(row["version"]) != version or row["start_claim_token"] != claim_token):
+                raise PhoneVerificationRejected("challenge start claim is no longer owned")
+            now = self._now()
+            next_version = version + 1
+            quarantine_id = _uuid4_shaped("AG-QTN-", "start:" + challenge)
+            command_id = "start-unknown:" + challenge
             connection.execute(
-                "UPDATE shopping_verification_challenges SET status=?,version=version+1 "
+                "INSERT INTO shopping_verification_unknown_outcomes "
+                "(quarantine_id,challenge_id,customer_id,provider_source,provider_verification_id,replay_reference,purpose,operation,state,reason_code,opened_at,updated_at,version,challenge_version,provider_status,provider_started_at,provider_verified_at,provider_expires_at,last_command_id) "
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (quarantine_id, challenge, row["customer_id"], row["provider_source"], None,
+                 row["replay_reference"], row["purpose"], "START", "OPEN", "UNKNOWN_OUTCOME",
+                 _utc(now), _utc(now), 1, next_version, "UNKNOWN_OUTCOME", None, None, None, command_id),
+            )
+            connection.execute(
+                "UPDATE shopping_verification_challenges SET status=?,version=? "
                 "WHERE challenge_id=? AND status=? AND version=? AND start_claim_token=?",
-                (ChallengeStatus.START_UNKNOWN.value, challenge,
+                (ChallengeStatus.START_UNKNOWN.value, next_version, challenge,
                  ChallengeStatus.START_CLAIMED.value, version, claim_token),
             )
+            connection.execute(
+                "INSERT INTO shopping_verification_reconciliation_events "
+                "(event_id,command_id,quarantine_id,challenge_id,operation,from_lifecycle,to_lifecycle,quarantine_version,challenge_version,provider_source,provider_verification_id,provider_status,provider_started_at,provider_verified_at,provider_expires_at,actor_ref,correlation_id,occurred_at,outcome,reason_code) "
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                ("AG-REC-" + uuid.uuid4().hex, command_id, quarantine_id, challenge,
+                 "START", ChallengeStatus.START_CLAIMED.value, ChallengeStatus.START_UNKNOWN.value,
+                 1, next_version, row["provider_source"], None, "UNKNOWN_OUTCOME", None, None, None,
+                 "system:phone-verification", command_id, _utc(now), "QUARANTINED", "UNKNOWN_OUTCOME"),
+            )
+            self._audit(connection, customer=row["customer_id"], challenge=challenge,
+                        correlation_id=command_id, now=now, outcome="UNKNOWN_QUARANTINED")
             connection.commit()
-        except (sqlite3.Error, PersistenceError, OSError):
+        except PhoneVerificationRejected:
             if connection.in_transaction:
                 connection.rollback()
+            raise
+        except (sqlite3.Error, PersistenceError, OSError, ValueError, TypeError):
+            if connection.in_transaction:
+                connection.rollback()
+            raise PhoneVerificationRejected("phone verification quarantine persistence failed") from None
+        finally:
+            connection.close()
+
+    def _mark_start_rejected(self, challenge: str, claim_token: str, *, version: int) -> None:
+        """Atomically project structured provider rejection as terminal evidence."""
+        connection = self._open()
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            row = connection.execute(
+                "SELECT * FROM shopping_verification_challenges WHERE challenge_id=?",
+                (challenge,),
+            ).fetchone()
+            if (row is None or row["status"] != ChallengeStatus.START_CLAIMED.value
+                    or int(row["version"]) != version or row["start_claim_token"] != claim_token):
+                raise PhoneVerificationRejected("challenge start claim is no longer owned")
+            now = self._now()
+            if connection.execute(
+                "UPDATE shopping_verification_challenges SET status=?,version=version+1 "
+                "WHERE challenge_id=? AND status=? AND version=? AND start_claim_token=?",
+                (ChallengeStatus.REJECTED.value, challenge,
+                 ChallengeStatus.START_CLAIMED.value, version, claim_token),
+            ).rowcount != 1:
+                raise PhoneVerificationRejected("challenge start claim is no longer owned")
+            self._audit(
+                connection, customer=row["customer_id"], challenge=challenge,
+                correlation_id="start-rejected:" + challenge, now=now, outcome="REJECTED",
+            )
+            connection.commit()
+        except PhoneVerificationRejected:
+            if connection.in_transaction:
+                connection.rollback()
+            raise
+        except (sqlite3.Error, PersistenceError, OSError, ValueError, TypeError):
+            if connection.in_transaction:
+                connection.rollback()
+            raise PhoneVerificationRejected("phone verification rejection persistence failed") from None
+        finally:
+            connection.close()
+
+    def _mark_verify_unknown(self, request: ChallengeVerificationRequest,
+                             challenge: sqlite3.Row, *, reason: str = "UNKNOWN_OUTCOME") -> None:
+        """Atomically quarantine an ambiguous VERIFY execution."""
+        connection = self._open()
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            current = connection.execute(
+                "SELECT * FROM shopping_verification_challenges WHERE challenge_id=?",
+                (str(request.challenge_reference),),
+            ).fetchone()
+            if current is None or current["status"] not in {
+                ChallengeStatus.STARTED.value, ChallengeStatus.PENDING.value,
+            } or int(current["version"]) != int(challenge["version"]):
+                raise PhoneVerificationRejected("challenge state conflict")
+            now = self._now()
+            next_version = int(current["version"]) + 1
+            quarantine_id = _uuid4_shaped("AG-QTN-", "verify:" + str(request.challenge_reference))
+            command_id = "verify-unknown:" + str(request.challenge_reference)
+            connection.execute(
+                "INSERT INTO shopping_verification_unknown_outcomes "
+                "(quarantine_id,challenge_id,customer_id,provider_source,provider_verification_id,replay_reference,purpose,operation,state,reason_code,opened_at,updated_at,version,challenge_version,provider_status,provider_started_at,provider_verified_at,provider_expires_at,last_command_id) "
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                (quarantine_id, current["challenge_id"], current["customer_id"], current["provider_source"],
+                 current["provider_verification_id"], current["replay_reference"], current["purpose"],
+                 "VERIFY", "OPEN", reason, _utc(now), _utc(now), 1, next_version, reason,
+                 current["provider_started_at"], None, None, command_id),
+            )
+            if connection.execute(
+                "UPDATE shopping_verification_challenges SET status=?,version=? WHERE challenge_id=? AND status IN ('STARTED','PENDING') AND version=?",
+                (ChallengeStatus.VERIFY_UNKNOWN.value, next_version, current["challenge_id"], int(challenge["version"])),
+            ).rowcount != 1:
+                raise PhoneVerificationRejected("challenge state conflict")
+            connection.execute(
+                "INSERT INTO shopping_verification_reconciliation_events "
+                "(event_id,command_id,quarantine_id,challenge_id,operation,from_lifecycle,to_lifecycle,quarantine_version,challenge_version,provider_source,provider_verification_id,provider_status,provider_started_at,provider_verified_at,provider_expires_at,actor_ref,correlation_id,occurred_at,outcome,reason_code) "
+                "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                ("AG-REC-" + uuid.uuid4().hex, command_id, quarantine_id, current["challenge_id"],
+                 "VERIFY", current["status"], ChallengeStatus.VERIFY_UNKNOWN.value, 1, next_version,
+                 current["provider_source"], current["provider_verification_id"], reason,
+                 current["provider_started_at"], None, None, "system:phone-verification", command_id,
+                 _utc(now), "QUARANTINED", reason),
+            )
+            self._audit(connection, customer=current["customer_id"], challenge=current["challenge_id"],
+                        correlation_id=command_id, now=now, outcome="UNKNOWN_QUARANTINED")
+            connection.commit()
+        except PhoneVerificationRejected:
+            if connection.in_transaction:
+                connection.rollback()
+            raise
+        except (sqlite3.Error, PersistenceError, OSError, ValueError, TypeError):
+            if connection.in_transaction:
+                connection.rollback()
+            raise PhoneVerificationRejected("phone verification quarantine persistence failed") from None
         finally:
             connection.close()
 
@@ -665,8 +819,13 @@ class PhoneVerificationService:
             prior = connection.execute("SELECT * FROM shopping_verification_attempts WHERE replay_reference=?", (str(request.replay_reference),)).fetchone()
             if prior is not None:
                 return self._replay_result(connection, prior, request=request, now=now)
+            if _dt(challenge["provider_started_at"]) > now:
+                raise PhoneVerificationRejected("challenge start timestamp is in the future")
             status = ChallengeStatus(challenge["status"])
-            if status in {ChallengeStatus.VERIFIED, ChallengeStatus.FAILED, ChallengeStatus.EXPIRED}: raise PhoneVerificationRejected("challenge is terminal")
+            if status in {ChallengeStatus.VERIFIED, ChallengeStatus.FAILED,
+                          ChallengeStatus.REJECTED, ChallengeStatus.EXPIRED,
+                          ChallengeStatus.START_UNKNOWN, ChallengeStatus.VERIFY_UNKNOWN}:
+                raise PhoneVerificationRejected("challenge is terminal or quarantined")
             if now >= _dt(challenge["expires_at"]):
                 connection.execute("BEGIN IMMEDIATE")
                 changed = connection.execute("UPDATE shopping_verification_challenges SET status='EXPIRED',version=version+1 WHERE challenge_id=? AND status IN ('STARTED','PENDING') AND version=?", (str(request.challenge_reference), int(challenge["version"]))).rowcount
@@ -684,15 +843,46 @@ class PhoneVerificationService:
                 try: connection.close()
                 except sqlite3.Error: pass
         now = self._now()
-        try: result = self._port.verify_challenge(request)
-        except Exception: raise PhoneVerificationRejected("phone verification provider failed") from None
-        if type(result) is not ChallengeVerificationResult: raise PhoneVerificationRejected("phone verification evidence rejected")
-        self._validate_verification(result, request=request, challenge=challenge, now=now)
+        try:
+            result = self._port.verify_challenge(request)
+        except Exception as error:
+            code = _provider_failure_code(error)
+            # An explicitly structured provider rejection is terminal evidence,
+            # not an ambiguous execution. All other provider exceptions remain
+            # quarantined because execution may have reached the provider.
+            if code == "REJECTED":
+                result = ChallengeVerificationResult(
+                    provider_source=request.provider_source,
+                    provider_verification_id=request.provider_verification_id,
+                    purpose=request.purpose,
+                    challenge_reference=request.challenge_reference,
+                    replay_reference=request.replay_reference,
+                    phone_binding=request.phone_binding,
+                    status=VerificationStatus.REJECTED,
+                    verified_at=self._now(),
+                )
+            else:
+                reason = code if code in {
+                    "UNKNOWN_OUTCOME", "TIMEOUT", "PROVIDER_UNAVAILABLE",
+                    "AMBIGUOUS_PROVIDER_IDENTIFIER", "MALFORMED_RESPONSE",
+                } else "UNKNOWN_OUTCOME"
+                self._mark_verify_unknown(request, challenge, reason=reason)
+                raise PhoneVerificationRejected("phone verification provider failed") from None
+        if type(result) is not ChallengeVerificationResult:
+            self._mark_verify_unknown(request, challenge, reason="MALFORMED_RESPONSE")
+            raise PhoneVerificationRejected("phone verification evidence rejected")
+        try:
+            evidence_now = self._now()
+            self._validate_verification(result, request=request, challenge=challenge, now=evidence_now)
+        except PhoneVerificationRejected:
+            self._mark_verify_unknown(request, challenge, reason="INVALID_EVIDENCE")
+            raise
         correlation_id = correlation_id or _uuid4_shaped("AG-COR-", "verify:" + str(request.replay_reference))
         if type(correlation_id) is not str or not 1 <= len(correlation_id) <= 160: raise PhoneVerificationRejected("verification request rejected")
         connection = self._open()
         try:
             connection.execute("BEGIN IMMEDIATE")
+            projection_now = self._now()
             current = connection.execute("SELECT * FROM shopping_verification_challenges WHERE challenge_id=?", (str(request.challenge_reference),)).fetchone()
             if current is None: raise PhoneVerificationRejected("unknown challenge")
             current_purpose = current["purpose"]
@@ -709,21 +899,26 @@ class PhoneVerificationService:
                 connection.commit()
                 return replay
             if current["status"] not in (ChallengeStatus.STARTED.value, ChallengeStatus.PENDING.value): raise PhoneVerificationRejected("challenge is terminal")
+            if result.status is VerificationStatus.SUCCESS:
+                self._validate_verification(result, request=request, challenge=current, now=projection_now)
             collision = connection.execute("SELECT 1 FROM shopping_verification_attempts WHERE provider_source=? AND provider_verification_id=?", (str(result.provider_source), str(result.provider_verification_id))).fetchone()
             if collision is not None: raise PhoneVerificationRejected("ambiguous provider verification identifier")
             attempt_id = _uuid4_shaped("AG-ATT-", "attempt:" + str(request.replay_reference))
-            connection.execute("INSERT INTO shopping_verification_attempts (attempt_id,challenge_id,replay_reference,provider_source,provider_verification_id,phone_binding,outcome,attempted_at,provider_verified_at,provider_expires_at) VALUES(?,?,?,?,?,?,?,?,?,?)", (attempt_id, str(request.challenge_reference), str(request.replay_reference), str(result.provider_source), str(result.provider_verification_id), str(result.phone_binding), result.status.value, _utc(now), _utc(result.verified_at), None if result.provider_expires_at is None else _utc(result.provider_expires_at)))
+            connection.execute("INSERT INTO shopping_verification_attempts (attempt_id,challenge_id,replay_reference,provider_source,provider_verification_id,phone_binding,outcome,attempted_at,provider_verified_at,provider_expires_at) VALUES(?,?,?,?,?,?,?,?,?,?)", (attempt_id, str(request.challenge_reference), str(request.replay_reference), str(result.provider_source), str(result.provider_verification_id), str(result.phone_binding), result.status.value, _utc(projection_now), _utc(result.verified_at), None if result.provider_expires_at is None else _utc(result.provider_expires_at)))
             if result.status is not VerificationStatus.SUCCESS:
-                next_status = result.status.value if result.status in {VerificationStatus.FAILED, VerificationStatus.EXPIRED} else ChallengeStatus.FAILED.value
+                next_status = result.status.value if result.status in {
+                    VerificationStatus.FAILED, VerificationStatus.REJECTED,
+                    VerificationStatus.EXPIRED,
+                } else ChallengeStatus.FAILED.value
                 if connection.execute("UPDATE shopping_verification_challenges SET status=?,version=version+1 WHERE challenge_id=? AND status IN ('STARTED','PENDING') AND version=?", (next_status, str(request.challenge_reference), int(current["version"]))).rowcount != 1: raise PhoneVerificationRejected("challenge state conflict")
-                self._audit(connection, customer=current["customer_id"], challenge=str(request.challenge_reference), correlation_id=correlation_id, now=now, outcome="REJECTED")
+                self._audit(connection, customer=current["customer_id"], challenge=str(request.challenge_reference), correlation_id=correlation_id, now=projection_now, outcome="REJECTED")
                 connection.commit(); raise PhoneVerificationRejected("verification did not succeed")
             receipt_id = _uuid4_shaped("AG-VRF-", "receipt:" + str(request.replay_reference))
-            receipt_expires_at = min(_dt(current["expires_at"]), now + RECEIPT_MAX_LIFETIME)
+            receipt_expires_at = min(_dt(current["expires_at"]), projection_now + RECEIPT_MAX_LIFETIME)
             if connection.execute("UPDATE shopping_verification_challenges SET status='VERIFIED',receipt_id=?,version=version+1 WHERE challenge_id=? AND status IN ('STARTED','PENDING') AND version=?", (receipt_id, str(request.challenge_reference), int(current["version"]))).rowcount != 1: raise PhoneVerificationRejected("challenge state conflict")
-            connection.execute("INSERT INTO shopping_trusted_receipts (receipt_id,challenge_id,attempt_id,customer_id,issuer_ref,browser_challenge,purpose,provider_source,provider_verification_id,phone_binding,issued_at,expires_at,lifecycle,version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,0)", (receipt_id, str(request.challenge_reference), attempt_id, current["customer_id"], self._issuer_ref, current["browser_challenge"], current["purpose"], str(result.provider_source), str(result.provider_verification_id), str(result.phone_binding), _utc(now), _utc(receipt_expires_at), "ISSUED"))
+            connection.execute("INSERT INTO shopping_trusted_receipts (receipt_id,challenge_id,attempt_id,customer_id,issuer_ref,browser_challenge,purpose,provider_source,provider_verification_id,phone_binding,issued_at,expires_at,lifecycle,version) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,0)", (receipt_id, str(request.challenge_reference), attempt_id, current["customer_id"], self._issuer_ref, current["browser_challenge"], current["purpose"], str(result.provider_source), str(result.provider_verification_id), str(result.phone_binding), _utc(projection_now), _utc(receipt_expires_at), "ISSUED"))
             connection.execute("UPDATE shopping_verification_attempts SET receipt_id=? WHERE attempt_id=?", (receipt_id, attempt_id))
-            self._audit(connection, customer=current["customer_id"], challenge=str(request.challenge_reference), correlation_id=correlation_id, now=now, outcome="APPLIED")
+            self._audit(connection, customer=current["customer_id"], challenge=str(request.challenge_reference), correlation_id=correlation_id, now=projection_now, outcome="APPLIED")
             persisted_attempt = connection.execute(
                 "SELECT * FROM shopping_verification_attempts WHERE attempt_id=?",
                 (attempt_id,),
@@ -731,7 +926,7 @@ class PhoneVerificationService:
             if persisted_attempt is None:
                 raise PhoneVerificationRejected("verification result persistence failed")
             outcome = self._replay_result(
-                connection, persisted_attempt, request=request, now=now,
+                connection, persisted_attempt, request=request, now=projection_now,
             )
             connection.commit()
             return outcome
@@ -749,6 +944,8 @@ class PhoneVerificationService:
 
     def _validate_verification(self, result: ChallengeVerificationResult, *, request: ChallengeVerificationRequest, challenge: sqlite3.Row, now: datetime) -> None:
         if result.provider_source != request.provider_source or result.provider_verification_id != request.provider_verification_id or result.purpose is not request.purpose or result.challenge_reference != request.challenge_reference or result.replay_reference != request.replay_reference or result.phone_binding != request.phone_binding: raise PhoneVerificationRejected("verification binding rejected")
+        if result.verified_at > now:
+            raise PhoneVerificationRejected("invalid verification timestamp")
         if result.status is not VerificationStatus.SUCCESS:
             if result.status not in {VerificationStatus.FAILED, VerificationStatus.EXPIRED, VerificationStatus.REJECTED}: raise PhoneVerificationRejected("verification evidence rejected")
             return

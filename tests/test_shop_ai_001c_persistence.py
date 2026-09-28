@@ -556,3 +556,93 @@ def test_existing_b3_receipt_ledger_semantics_are_not_repurposed():
     assert persistence.HISTORICAL_SCHEMA_VERSION == PERSISTENCE_SCHEMA_VERSION
     assert persistence.SCHEMA_VERSION == CURRENT_PERSISTENCE_SCHEMA_VERSION
     assert "shopping_verification_receipts" not in persistence.VERIFICATION_SCHEMA_TABLES
+
+
+def test_c4_schema_metadata_is_v3_and_reconciliation_history_is_append_only(tmp_path):
+    path = tmp_path / "c4-schema.sqlite3"
+    persistence.initialize_schema(path)
+    with sqlite3.connect(path) as db:
+        assert db.execute(
+            "SELECT version FROM shopping_customer_persistence_meta WHERE name='schema'"
+        ).fetchone()[0] == "shopping-customer-persistence/v3"
+        assert {
+            row[0] for row in db.execute(
+            "SELECT name FROM sqlite_master WHERE type='trigger' AND "
+            "name LIKE 'shopping_verification_reconciliation_events_no_%'"
+            ).fetchall()
+        } == {
+            "shopping_verification_reconciliation_events_no_delete",
+            "shopping_verification_reconciliation_events_no_update",
+        }
+
+
+@pytest.mark.parametrize(
+    "trigger_name",
+    [
+        "shopping_verification_reconciliation_events_no_update",
+        "shopping_verification_reconciliation_events_no_delete",
+    ],
+)
+def test_open_rejects_v3_schema_missing_required_append_only_trigger(tmp_path, trigger_name):
+    path = tmp_path / f"missing-{trigger_name}.sqlite3"
+    persistence.initialize_schema(path)
+    with sqlite3.connect(path) as db:
+        db.execute(f"DROP TRIGGER {trigger_name}")
+        db.commit()
+    with pytest.raises(persistence.PersistenceSchemaError):
+        persistence.open_connection(path)
+
+
+def test_open_rejects_malformed_v3_append_only_trigger(tmp_path):
+    path = tmp_path / "malformed-trigger.sqlite3"
+    persistence.initialize_schema(path)
+    with sqlite3.connect(path) as db:
+        db.execute("DROP TRIGGER shopping_verification_reconciliation_events_no_update")
+        db.execute(
+            "CREATE TRIGGER shopping_verification_reconciliation_events_no_update "
+            "BEFORE DELETE ON shopping_verification_reconciliation_events BEGIN "
+            "SELECT RAISE(ABORT, 'wrong shape'); END"
+        )
+        db.commit()
+    with pytest.raises(persistence.PersistenceSchemaError):
+        persistence.open_connection(path)
+
+
+def test_initialize_schema_rejects_existing_unversioned_user_schema(tmp_path):
+    path = tmp_path / "unversioned-user-schema.sqlite3"
+    with sqlite3.connect(path) as db:
+        db.execute("CREATE TABLE user_owned_data (id INTEGER PRIMARY KEY)")
+        db.commit()
+    with pytest.raises(persistence.PersistenceSchemaError):
+        persistence.initialize_schema(path)
+    with sqlite3.connect(path) as db:
+        assert db.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' "
+            "AND name='shopping_customer_persistence_meta'"
+        ).fetchone() is None
+
+
+@pytest.mark.parametrize("historical_version", ["shopping-customer-persistence/v1", "shopping-customer-persistence/v2"])
+def test_historical_v1_and_v2_open_fail_closed_without_silent_upgrade(tmp_path, historical_version):
+    path = tmp_path / (historical_version.rsplit("/", 1)[-1] + ".sqlite3")
+    with sqlite3.connect(path) as db:
+        db.execute(
+            "CREATE TABLE shopping_customer_persistence_meta "
+            "(name TEXT PRIMARY KEY, version TEXT NOT NULL)"
+        )
+        db.execute(
+            "INSERT INTO shopping_customer_persistence_meta VALUES ('schema', ?)",
+            (historical_version,),
+        )
+        db.commit()
+    with pytest.raises(persistence.PersistenceSchemaError):
+        persistence.open_connection(path)
+    with pytest.raises(persistence.PersistenceSchemaError):
+        persistence.initialize_schema(path)
+    with sqlite3.connect(path) as db:
+        assert db.execute(
+            "SELECT version FROM shopping_customer_persistence_meta WHERE name='schema'"
+        ).fetchone()[0] == historical_version
+        assert db.execute(
+            "SELECT name FROM sqlite_master WHERE name='shopping_verification_unknown_outcomes'"
+        ).fetchone() is None

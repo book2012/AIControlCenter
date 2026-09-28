@@ -18,7 +18,7 @@ PERSISTENCE_SCHEMA_VERSION = "shopping-customer-persistence/v1"
 # Historical B3 evidence remains v1. C1 describes, but does not execute, the
 # separately approved v1 -> v2 migration and never reclassifies old evidence.
 HISTORICAL_PERSISTENCE_SCHEMA_VERSION = PERSISTENCE_SCHEMA_VERSION
-CURRENT_PERSISTENCE_SCHEMA_VERSION = "shopping-customer-persistence/v2"
+CURRENT_PERSISTENCE_SCHEMA_VERSION = "shopping-customer-persistence/v3"
 TARGET_PERSISTENCE_SCHEMA_VERSION = CURRENT_PERSISTENCE_SCHEMA_VERSION
 C1_VERIFICATION_TABLES = (
     "shopping_verification_challenges",

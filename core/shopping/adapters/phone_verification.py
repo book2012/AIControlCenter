@@ -39,6 +39,16 @@ class ProviderPhoneVerificationError(RuntimeError):
         return f"ProviderPhoneVerificationError(code={self.code.value!r})"
 
 
+class ProviderPhoneVerificationRejected(ProviderPhoneVerificationError):
+    """Structured provider rejection, distinct from ambiguous execution."""
+
+    def __init__(self) -> None:
+        super().__init__(ProviderTransportFailureCode.REJECTED)
+
+    def __repr__(self) -> str:
+        return "ProviderPhoneVerificationRejected()"
+
+
 ProviderAdapterFailureCode = ProviderTransportFailureCode
 ProviderAdapterErrorCode = ProviderTransportFailureCode
 ProviderAdapterError = ProviderPhoneVerificationError
@@ -195,6 +205,12 @@ class ProviderPhoneVerificationAdapter(PhoneVerificationPort):
         try:
             return method(request)
         except ProviderTransportError as error:
+            if error.code is ProviderTransportFailureCode.REJECTED:
+                # A typed rejection is provider evidence.  It must remain
+                # distinguishable from an exception whose execution outcome
+                # is unknown so the Control Plane can project REJECTED rather
+                # than opening an UNKNOWN_OUTCOME quarantine.
+                raise ProviderPhoneVerificationRejected() from None
             raise ProviderPhoneVerificationError(error.code) from None
         except TimeoutError:
             raise ProviderPhoneVerificationError(
@@ -207,6 +223,8 @@ class ProviderPhoneVerificationAdapter(PhoneVerificationPort):
 
     @staticmethod
     def _raise(code: ProviderTransportFailureCode) -> None:
+        if code is ProviderTransportFailureCode.REJECTED:
+            raise ProviderPhoneVerificationRejected()
         raise ProviderPhoneVerificationError(code)
 
 
@@ -216,4 +234,5 @@ __all__ = [
     "ProviderAdapterFailureCode",
     "ProviderPhoneVerificationAdapter",
     "ProviderPhoneVerificationError",
+    "ProviderPhoneVerificationRejected",
 ]

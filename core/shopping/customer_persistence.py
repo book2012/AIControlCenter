@@ -17,10 +17,9 @@ from core.shopping.customer_sessions import (
 )
 
 
-# v1 remains the historical B3 schema described by migration_contract.py.
-# A database must be explicitly provisioned as v2 before durable verification
-# authority may be used; opening v1 never performs an implicit migration.
-SCHEMA_VERSION = "shopping-customer-persistence/v2"
+# v1 and v2 remain historical schemas. C4 is a separately provisioned v3;
+# opening either historical version never performs an implicit migration.
+SCHEMA_VERSION = "shopping-customer-persistence/v3"
 HISTORICAL_SCHEMA_VERSION = "shopping-customer-persistence/v1"
 CURRENT_SCHEMA_VERSION = SCHEMA_VERSION
 BUSY_TIMEOUT_MS = 750
@@ -94,6 +93,92 @@ def _validate_schema(connection: sqlite3.Connection) -> None:
         raise PersistenceSchemaError("unsupported persistence schema shape") from None
     if "provider_start_status" not in challenge_columns:
         raise PersistenceSchemaError("unsupported persistence schema shape")
+    challenge_sql = connection.execute(
+        "SELECT sql FROM sqlite_master WHERE name='shopping_verification_challenges'"
+    ).fetchone()
+    if challenge_sql is None or any(
+        marker not in challenge_sql[0]
+        for marker in ("VERIFY_UNKNOWN", "'REJECTED'")
+    ):
+        raise PersistenceSchemaError("unsupported persistence schema shape")
+    try:
+        tables = {
+            item[0] for item in connection.execute(
+                "SELECT name FROM sqlite_master WHERE type='table'"
+            ).fetchall()
+        }
+        if not {
+            "shopping_verification_unknown_outcomes",
+            "shopping_verification_reconciliation_events",
+        }.issubset(tables):
+            raise PersistenceSchemaError("unsupported persistence schema shape")
+        quarantine_columns = {
+            item[1] for item in connection.execute(
+                "PRAGMA table_info(shopping_verification_unknown_outcomes)"
+            ).fetchall()
+        }
+        event_columns = {
+            item[1] for item in connection.execute(
+                "PRAGMA table_info(shopping_verification_reconciliation_events)"
+            ).fetchall()
+        }
+        if not {
+            "challenge_id", "state", "version", "challenge_version",
+            "operation", "provider_source",
+        }.issubset(quarantine_columns) or not {
+            "command_id", "challenge_id", "quarantine_id", "operation",
+            "challenge_version", "quarantine_version", "actor_ref",
+        }.issubset(event_columns):
+            raise PersistenceSchemaError("unsupported persistence schema shape")
+        trigger_sql = {
+            item[0]: item[1]
+            for item in connection.execute(
+                "SELECT name,sql FROM sqlite_master WHERE type='trigger' AND "
+                "name IN (?,?)",
+                (
+                    "shopping_verification_reconciliation_events_no_update",
+                    "shopping_verification_reconciliation_events_no_delete",
+                ),
+            ).fetchall()
+        }
+        trigger_requirements = {
+            "shopping_verification_reconciliation_events_no_update": (
+                "BEFORE UPDATE ON SHOPPING_VERIFICATION_RECONCILIATION_EVENTS",
+            ),
+            "shopping_verification_reconciliation_events_no_delete": (
+                "BEFORE DELETE ON SHOPPING_VERIFICATION_RECONCILIATION_EVENTS",
+            ),
+        }
+        for name, required_fragments in trigger_requirements.items():
+            sql = trigger_sql.get(name)
+            normalized = "" if not isinstance(sql, str) else " ".join(sql.upper().split())
+            if not normalized or any(fragment not in normalized for fragment in required_fragments):
+                raise PersistenceSchemaError("unsupported persistence schema shape")
+            if "RAISE(ABORT" not in normalized or "APPEND-ONLY RECONCILIATION HISTORY" not in normalized:
+                raise PersistenceSchemaError("unsupported persistence schema shape")
+    except sqlite3.OperationalError:
+        raise PersistenceSchemaError("unsupported persistence schema shape") from None
+
+
+def _is_pristine_inquiry_shell(connection: sqlite3.Connection) -> bool:
+    """Recognize the historical repository's empty pre-created table only."""
+    objects = connection.execute(
+        "SELECT name,type FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' "
+        "AND type IN ('table','index','trigger','view')"
+    ).fetchall()
+    if {(row[0], row[1]) for row in objects} != {("inquiries", "table")}:
+        return False
+    columns = [
+        (row[1], row[2], row[3], row[4], row[5])
+        for row in connection.execute("PRAGMA table_info(inquiries)").fetchall()
+    ]
+    if columns != [
+        ("id", "TEXT", 0, None, 1),
+        ("payload", "TEXT", 1, None, 0),
+        ("token_hash", "TEXT", 1, None, 0),
+    ]:
+        return False
+    return True
 
 
 def initialize_schema(database_path: str | Path, *, timeout_ms: int = BUSY_TIMEOUT_MS) -> None:
@@ -102,18 +187,29 @@ def initialize_schema(database_path: str | Path, *, timeout_ms: int = BUSY_TIMEO
                                  isolation_level=None)
     try:
         connection.execute(f"PRAGMA busy_timeout={int(timeout_ms)}")
+        existing_objects = connection.execute(
+            "SELECT name FROM sqlite_master WHERE name NOT LIKE 'sqlite_%' "
+            "AND type IN ('table','index','trigger','view') LIMIT 1"
+        ).fetchone()
+        if existing_objects is not None and not _is_pristine_inquiry_shell(connection):
+            existing_meta = connection.execute(
+                "SELECT name FROM sqlite_master "
+                "WHERE type='table' AND name='shopping_customer_persistence_meta'"
+            ).fetchone()
+            if existing_meta is None:
+                raise PersistenceSchemaError("persistence schema is not initialized")
+            try:
+                _validate_schema(connection)
+            except PersistenceSchemaError:
+                raise
+            return
         connection.execute("BEGIN IMMEDIATE")
         connection.execute(
-            "CREATE TABLE IF NOT EXISTS shopping_customer_persistence_meta "
+            "CREATE TABLE shopping_customer_persistence_meta "
             "(name TEXT PRIMARY KEY, version TEXT NOT NULL)"
         )
-        existing = connection.execute(
-            "SELECT version FROM shopping_customer_persistence_meta WHERE name='schema'"
-        ).fetchone()
-        if existing is not None and existing[0] != SCHEMA_VERSION:
-            raise PersistenceSchemaError("unsupported persistence schema version")
         connection.execute(
-            "INSERT OR IGNORE INTO shopping_customer_persistence_meta(name,version) VALUES('schema',?)",
+            "INSERT INTO shopping_customer_persistence_meta(name,version) VALUES('schema',?)",
             (SCHEMA_VERSION,),
         )
         connection.execute(
@@ -164,7 +260,7 @@ def initialize_schema(database_path: str | Path, *, timeout_ms: int = BUSY_TIMEO
             "created_at TEXT NOT NULL, expires_at TEXT NOT NULL, provider_started_at TEXT, "
             "provider_expires_at TEXT, provider_start_status TEXT, "
             "receipt_id TEXT, start_claim_token TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 0, "
-            "CHECK(status IN ('START_CLAIMED','START_UNKNOWN','STARTED','PENDING','VERIFIED','FAILED','EXPIRED')), "
+             "CHECK(status IN ('START_CLAIMED','START_UNKNOWN','STARTED','PENDING','VERIFY_UNKNOWN','VERIFIED','FAILED','REJECTED','EXPIRED')), "
             "CHECK(provider_start_status IN ('STARTED','PENDING') OR provider_start_status IS NULL), "
             "CHECK(version >= 0), UNIQUE(provider_source,provider_verification_id), UNIQUE(receipt_id))"
         )
@@ -185,9 +281,47 @@ def initialize_schema(database_path: str | Path, *, timeout_ms: int = BUSY_TIMEO
             "purpose TEXT NOT NULL, provider_source TEXT NOT NULL, provider_verification_id TEXT NOT NULL, "
             "phone_binding TEXT NOT NULL, issued_at TEXT NOT NULL, expires_at TEXT NOT NULL, "
             "lifecycle TEXT NOT NULL, consumed_at TEXT, version INTEGER NOT NULL DEFAULT 0, "
-            "CHECK(lifecycle IN ('ISSUED','CONSUMED','REVOKED')), CHECK(version >= 0), "
-            "FOREIGN KEY(challenge_id) REFERENCES shopping_verification_challenges(challenge_id), "
-            "FOREIGN KEY(attempt_id) REFERENCES shopping_verification_attempts(attempt_id))"
+             "CHECK(lifecycle IN ('ISSUED','CONSUMED','REVOKED')), CHECK(version >= 0), "
+             "FOREIGN KEY(challenge_id) REFERENCES shopping_verification_challenges(challenge_id), "
+             "FOREIGN KEY(attempt_id) REFERENCES shopping_verification_attempts(attempt_id))"
+        )
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS shopping_verification_unknown_outcomes "
+            "(quarantine_id TEXT PRIMARY KEY, challenge_id TEXT NOT NULL UNIQUE, "
+            "customer_id TEXT NOT NULL, provider_source TEXT NOT NULL, "
+            "provider_verification_id TEXT, replay_reference TEXT NOT NULL, "
+            "purpose TEXT NOT NULL, operation TEXT NOT NULL, state TEXT NOT NULL, "
+            "reason_code TEXT NOT NULL, opened_at TEXT NOT NULL, updated_at TEXT NOT NULL, "
+            "version INTEGER NOT NULL, challenge_version INTEGER NOT NULL, "
+            "provider_status TEXT, provider_started_at TEXT, provider_verified_at TEXT, "
+            "provider_expires_at TEXT, last_command_id TEXT, "
+            "CHECK(operation IN ('START','VERIFY')), CHECK(state IN ('OPEN','RESOLVED')), "
+            "CHECK(version >= 1), CHECK(challenge_version >= 0), "
+            "FOREIGN KEY(challenge_id) REFERENCES shopping_verification_challenges(challenge_id))"
+        )
+        connection.execute(
+            "CREATE TABLE IF NOT EXISTS shopping_verification_reconciliation_events "
+            "(event_id TEXT PRIMARY KEY, command_id TEXT NOT NULL UNIQUE, "
+            "quarantine_id TEXT NOT NULL, challenge_id TEXT NOT NULL, operation TEXT NOT NULL, "
+            "from_lifecycle TEXT NOT NULL, to_lifecycle TEXT NOT NULL, "
+            "quarantine_version INTEGER NOT NULL, challenge_version INTEGER NOT NULL, "
+            "provider_source TEXT NOT NULL, provider_verification_id TEXT, "
+            "provider_status TEXT NOT NULL, provider_started_at TEXT, "
+            "provider_verified_at TEXT, provider_expires_at TEXT, "
+            "actor_ref TEXT NOT NULL, correlation_id TEXT NOT NULL, "
+            "occurred_at TEXT NOT NULL, outcome TEXT NOT NULL, reason_code TEXT NOT NULL, "
+            "FOREIGN KEY(quarantine_id) REFERENCES shopping_verification_unknown_outcomes(quarantine_id), "
+            "FOREIGN KEY(challenge_id) REFERENCES shopping_verification_challenges(challenge_id))"
+        )
+        connection.execute(
+            "CREATE TRIGGER IF NOT EXISTS shopping_verification_reconciliation_events_no_update "
+            "BEFORE UPDATE ON shopping_verification_reconciliation_events BEGIN "
+            "SELECT RAISE(ABORT, 'append-only reconciliation history'); END"
+        )
+        connection.execute(
+            "CREATE TRIGGER IF NOT EXISTS shopping_verification_reconciliation_events_no_delete "
+            "BEFORE DELETE ON shopping_verification_reconciliation_events BEGIN "
+            "SELECT RAISE(ABORT, 'append-only reconciliation history'); END"
         )
         connection.commit()
     except Exception:
@@ -354,6 +488,8 @@ VERIFICATION_SCHEMA_TABLES = (
     "shopping_verification_challenges",
     "shopping_verification_attempts",
     "shopping_trusted_receipts",
+    "shopping_verification_unknown_outcomes",
+    "shopping_verification_reconciliation_events",
 )
 
 
