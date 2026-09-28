@@ -608,6 +608,56 @@ def test_open_rejects_malformed_v3_append_only_trigger(tmp_path):
         persistence.open_connection(path)
 
 
+def test_open_rejects_forbidden_c4_quarantine_table(tmp_path):
+    path = tmp_path / "forbidden-quarantine.sqlite3"
+    persistence.initialize_schema(path)
+    with sqlite3.connect(path) as db:
+        db.execute("CREATE TABLE shopping_verification_quarantines (id TEXT PRIMARY KEY)")
+        db.commit()
+    with pytest.raises(persistence.PersistenceSchemaError):
+        persistence.open_connection(path)
+
+
+def test_open_rejects_v3_reconciliation_event_table_without_foreign_keys(tmp_path):
+    path = tmp_path / "missing-event-foreign-keys.sqlite3"
+    persistence.initialize_schema(path)
+    with sqlite3.connect(path) as db:
+        db.execute(
+            "ALTER TABLE shopping_verification_reconciliation_events "
+            "RENAME TO malformed_reconciliation_events"
+        )
+        db.execute(
+            "DROP TRIGGER shopping_verification_reconciliation_events_no_update"
+        )
+        db.execute(
+            "DROP TRIGGER shopping_verification_reconciliation_events_no_delete"
+        )
+        db.execute(
+            "CREATE TABLE shopping_verification_reconciliation_events ("
+            "event_id TEXT PRIMARY KEY, command_id TEXT NOT NULL UNIQUE, "
+            "quarantine_id TEXT NOT NULL, challenge_id TEXT NOT NULL, operation TEXT NOT NULL, "
+            "from_lifecycle TEXT NOT NULL, to_lifecycle TEXT NOT NULL, "
+            "quarantine_version INTEGER NOT NULL, challenge_version INTEGER NOT NULL, "
+            "provider_source TEXT NOT NULL, provider_verification_id TEXT, "
+            "provider_status TEXT NOT NULL, provider_started_at TEXT, "
+            "provider_verified_at TEXT, provider_expires_at TEXT, "
+            "actor_ref TEXT NOT NULL, correlation_id TEXT NOT NULL, occurred_at TEXT NOT NULL, "
+            "outcome TEXT NOT NULL, reason_code TEXT NOT NULL)"
+        )
+        for action, trigger_name in (
+            ("UPDATE", "shopping_verification_reconciliation_events_no_update"),
+            ("DELETE", "shopping_verification_reconciliation_events_no_delete"),
+        ):
+            db.execute(
+                f"CREATE TRIGGER {trigger_name} BEFORE {action} ON "
+                "shopping_verification_reconciliation_events BEGIN "
+                "SELECT RAISE(ABORT, 'append-only reconciliation history'); END"
+            )
+        db.commit()
+    with pytest.raises(persistence.PersistenceSchemaError):
+        persistence.open_connection(path)
+
+
 def test_initialize_schema_rejects_existing_unversioned_user_schema(tmp_path):
     path = tmp_path / "unversioned-user-schema.sqlite3"
     with sqlite3.connect(path) as db:

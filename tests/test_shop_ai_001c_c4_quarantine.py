@@ -253,3 +253,46 @@ def test_verify_evidence_is_rejected_when_local_expiry_passes_after_provider_ret
             "SELECT status FROM shopping_verification_challenges"
         ).fetchone()[0] == "VERIFY_UNKNOWN"
         assert db.execute("SELECT COUNT(*) FROM shopping_verification_attempts").fetchone()[0] == 0
+
+
+def test_start_provider_rejection_after_local_expiry_projects_expired(tmp_path):
+    class LateRejectedStartVerifier(Verifier):
+        def start_challenge(self, request):
+            self.clock.value = NOW + timedelta(minutes=2)
+            raise ProviderPhoneVerificationError(ProviderTransportFailureCode.REJECTED)
+
+    path = tmp_path / "start-rejection-expiry-race.sqlite3"
+    persistence.initialize_schema(path)
+    clock = Clock(NOW)
+    verifier = LateRejectedStartVerifier(clock)
+    service, _ = make_service(path, clock, verifier, challenge_lifetime=timedelta(minutes=1))
+    with pytest.raises(PhoneVerificationRejected):
+        start(service)
+    with sqlite3.connect(path) as db:
+        assert db.execute(
+            "SELECT status FROM shopping_verification_challenges"
+        ).fetchone()[0] == "EXPIRED"
+        assert db.execute(
+            "SELECT COUNT(*) FROM shopping_verification_unknown_outcomes"
+        ).fetchone()[0] == 0
+
+
+def test_verify_provider_rejection_after_local_expiry_projects_expired(tmp_path):
+    class LateRejectedVerifyVerifier(Verifier):
+        def verify_challenge(self, request):
+            self.clock.value = NOW + timedelta(minutes=6)
+            raise ProviderPhoneVerificationError(ProviderTransportFailureCode.REJECTED)
+
+    path = tmp_path / "verify-rejection-expiry-race.sqlite3"
+    persistence.initialize_schema(path)
+    clock = Clock(NOW)
+    verifier = LateRejectedVerifyVerifier(clock)
+    service, _ = make_service(path, clock, verifier)
+    evidence = start(service)
+    with pytest.raises(PhoneVerificationRejected):
+        service.verify_challenge(service.verification_request(evidence, otp="123456"))
+    with sqlite3.connect(path) as db:
+        assert db.execute(
+            "SELECT status FROM shopping_verification_challenges"
+        ).fetchone()[0] == "EXPIRED"
+        assert db.execute("SELECT COUNT(*) FROM shopping_verification_attempts").fetchone()[0] == 0

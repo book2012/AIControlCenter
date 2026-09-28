@@ -63,6 +63,9 @@ def test_start_unknown_reconciles_to_each_explicit_lifecycle(tmp_path, status):
     values = {}
     if status in {StartReconciliationStatus.STARTED, StartReconciliationStatus.PENDING}:
         values.update(provider_verification_id="provider-reconciled", started_at=NOW)
+    elif status in {StartReconciliationStatus.FAILED, StartReconciliationStatus.REJECTED,
+                    StartReconciliationStatus.EXPIRED}:
+        values.update(provider_verification_id="provider-terminal", started_at=NOW)
     service, capability = recon_service(path, clock)
     result = service.reconcile_start(
         start_command(status=status, **values),
@@ -77,7 +80,26 @@ def test_start_unknown_reconciles_to_each_explicit_lifecycle(tmp_path, status):
         if status in {StartReconciliationStatus.STARTED, StartReconciliationStatus.PENDING}:
             assert status_row == (status.value, "provider-reconciled", status.value)
         else:
-            assert status_row == (status.value, None, None)
+            assert status_row == (status.value, "provider-terminal", None)
+
+
+def test_operator_selected_terminal_start_truth_alone_cannot_close_quarantine(tmp_path):
+    path = tmp_path / "operator-terminal-alone.sqlite3"
+    clock = Clock(NOW)
+    unknown_start(path, clock)
+    service, capability = recon_service(path, clock)
+    with pytest.raises(VerificationReconciliationError):
+        service.reconcile_start(
+            start_command(status=StartReconciliationStatus.FAILED),
+            capability=capability,
+        )
+    with sqlite3.connect(path) as db:
+        assert db.execute(
+            "SELECT status,provider_verification_id FROM shopping_verification_challenges"
+        ).fetchone() == ("START_UNKNOWN", None)
+        assert db.execute(
+            "SELECT state FROM shopping_verification_unknown_outcomes"
+        ).fetchone()[0] == "OPEN"
 
 
 def test_accepted_start_requires_provider_identity_and_respects_local_expiry(tmp_path):

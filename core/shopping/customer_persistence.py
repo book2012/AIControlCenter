@@ -74,6 +74,222 @@ def open_connection(path: str | Path, *, timeout_ms: int = BUSY_TIMEOUT_MS) -> s
     return _open(path, timeout_ms=timeout_ms)
 
 
+_C4_TABLES = {
+    "shopping_verification_unknown_outcomes",
+    "shopping_verification_reconciliation_events",
+}
+_FORBIDDEN_C4_TABLES = {"shopping_verification_quarantines"}
+
+# This is deliberately a structural contract rather than a column-subset
+# check.  The runtime relies on column order/types, NULL policy, and the
+# primary-key shape when it performs its compare-and-set projections.
+_REQUIRED_TABLE_COLUMNS = {
+    "shopping_customer_persistence_meta": (
+        ("name", "TEXT", 0, None, 1),
+        ("version", "TEXT", 1, None, 0),
+    ),
+    "shopping_auth_audit": (
+        ("event_id", "TEXT", 0, None, 1),
+        ("actor_ref", "TEXT", 1, None, 0),
+        ("resource_ref", "TEXT", 1, None, 0),
+        ("action", "TEXT", 1, None, 0),
+        ("outcome", "TEXT", 1, None, 0),
+        ("correlation_id", "TEXT", 1, None, 0),
+        ("occurred_at", "TEXT", 1, None, 0),
+    ),
+    "shopping_verification_challenges": (
+        ("challenge_id", "TEXT", 0, None, 1),
+        ("customer_id", "TEXT", 1, None, 0),
+        ("phone_binding", "TEXT", 1, None, 0),
+        ("provider_source", "TEXT", 1, None, 0),
+        ("provider_challenge_reference", "TEXT", 0, None, 0),
+        ("provider_verification_id", "TEXT", 0, None, 0),
+        ("replay_reference", "TEXT", 1, None, 0),
+        ("purpose", "TEXT", 1, None, 0),
+        ("browser_challenge", "TEXT", 1, None, 0),
+        ("status", "TEXT", 1, None, 0),
+        ("created_at", "TEXT", 1, None, 0),
+        ("expires_at", "TEXT", 1, None, 0),
+        ("provider_started_at", "TEXT", 0, None, 0),
+        ("provider_expires_at", "TEXT", 0, None, 0),
+        ("provider_start_status", "TEXT", 0, None, 0),
+        ("receipt_id", "TEXT", 0, None, 0),
+        ("start_claim_token", "TEXT", 1, None, 0),
+        ("version", "INTEGER", 1, "0", 0),
+    ),
+    "shopping_verification_attempts": (
+        ("attempt_id", "TEXT", 0, None, 1),
+        ("challenge_id", "TEXT", 1, None, 0),
+        ("replay_reference", "TEXT", 1, None, 0),
+        ("provider_source", "TEXT", 1, None, 0),
+        ("provider_verification_id", "TEXT", 1, None, 0),
+        ("phone_binding", "TEXT", 1, None, 0),
+        ("outcome", "TEXT", 1, None, 0),
+        ("attempted_at", "TEXT", 1, None, 0),
+        ("provider_verified_at", "TEXT", 0, None, 0),
+        ("provider_expires_at", "TEXT", 0, None, 0),
+        ("receipt_id", "TEXT", 0, None, 0),
+    ),
+    "shopping_trusted_receipts": (
+        ("receipt_id", "TEXT", 0, None, 1),
+        ("challenge_id", "TEXT", 1, None, 0),
+        ("attempt_id", "TEXT", 1, None, 0),
+        ("customer_id", "TEXT", 1, None, 0),
+        ("issuer_ref", "TEXT", 1, None, 0),
+        ("browser_challenge", "TEXT", 1, None, 0),
+        ("purpose", "TEXT", 1, None, 0),
+        ("provider_source", "TEXT", 1, None, 0),
+        ("provider_verification_id", "TEXT", 1, None, 0),
+        ("phone_binding", "TEXT", 1, None, 0),
+        ("issued_at", "TEXT", 1, None, 0),
+        ("expires_at", "TEXT", 1, None, 0),
+        ("lifecycle", "TEXT", 1, None, 0),
+        ("consumed_at", "TEXT", 0, None, 0),
+        ("version", "INTEGER", 1, "0", 0),
+    ),
+    "shopping_verification_unknown_outcomes": (
+        ("quarantine_id", "TEXT", 0, None, 1),
+        ("challenge_id", "TEXT", 1, None, 0),
+        ("customer_id", "TEXT", 1, None, 0),
+        ("provider_source", "TEXT", 1, None, 0),
+        ("provider_verification_id", "TEXT", 0, None, 0),
+        ("replay_reference", "TEXT", 1, None, 0),
+        ("purpose", "TEXT", 1, None, 0),
+        ("operation", "TEXT", 1, None, 0),
+        ("state", "TEXT", 1, None, 0),
+        ("reason_code", "TEXT", 1, None, 0),
+        ("opened_at", "TEXT", 1, None, 0),
+        ("updated_at", "TEXT", 1, None, 0),
+        ("version", "INTEGER", 1, None, 0),
+        ("challenge_version", "INTEGER", 1, None, 0),
+        ("provider_status", "TEXT", 0, None, 0),
+        ("provider_started_at", "TEXT", 0, None, 0),
+        ("provider_verified_at", "TEXT", 0, None, 0),
+        ("provider_expires_at", "TEXT", 0, None, 0),
+        ("last_command_id", "TEXT", 0, None, 0),
+    ),
+    "shopping_verification_reconciliation_events": (
+        ("event_id", "TEXT", 0, None, 1),
+        ("command_id", "TEXT", 1, None, 0),
+        ("quarantine_id", "TEXT", 1, None, 0),
+        ("challenge_id", "TEXT", 1, None, 0),
+        ("operation", "TEXT", 1, None, 0),
+        ("from_lifecycle", "TEXT", 1, None, 0),
+        ("to_lifecycle", "TEXT", 1, None, 0),
+        ("quarantine_version", "INTEGER", 1, None, 0),
+        ("challenge_version", "INTEGER", 1, None, 0),
+        ("provider_source", "TEXT", 1, None, 0),
+        ("provider_verification_id", "TEXT", 0, None, 0),
+        ("provider_status", "TEXT", 1, None, 0),
+        ("provider_started_at", "TEXT", 0, None, 0),
+        ("provider_verified_at", "TEXT", 0, None, 0),
+        ("provider_expires_at", "TEXT", 0, None, 0),
+        ("actor_ref", "TEXT", 1, None, 0),
+        ("correlation_id", "TEXT", 1, None, 0),
+        ("occurred_at", "TEXT", 1, None, 0),
+        ("outcome", "TEXT", 1, None, 0),
+        ("reason_code", "TEXT", 1, None, 0),
+    ),
+}
+
+_REQUIRED_UNIQUE_INDEXES = {
+    "shopping_customer_persistence_meta": {("name",)},
+    "shopping_auth_audit": {("event_id",)},
+    "shopping_verification_challenges": {
+        ("challenge_id",), ("replay_reference",),
+        ("provider_source", "provider_verification_id"), ("receipt_id",),
+    },
+    "shopping_verification_attempts": {
+        ("attempt_id",), ("replay_reference",),
+        ("provider_source", "provider_verification_id"), ("receipt_id",),
+    },
+    "shopping_trusted_receipts": {
+        ("receipt_id",), ("challenge_id",), ("attempt_id",),
+    },
+    "shopping_verification_unknown_outcomes": {
+        ("quarantine_id",), ("challenge_id",),
+    },
+    "shopping_verification_reconciliation_events": {
+        ("event_id",), ("command_id",),
+    },
+}
+
+_REQUIRED_FOREIGN_KEYS = {
+    "shopping_verification_attempts": {
+        ("shopping_verification_challenges", "challenge_id", "challenge_id", "NO ACTION", "NO ACTION", "NONE"),
+    },
+    "shopping_trusted_receipts": {
+        ("shopping_verification_attempts", "attempt_id", "attempt_id", "NO ACTION", "NO ACTION", "NONE"),
+        ("shopping_verification_challenges", "challenge_id", "challenge_id", "NO ACTION", "NO ACTION", "NONE"),
+    },
+    "shopping_verification_unknown_outcomes": {
+        ("shopping_verification_challenges", "challenge_id", "challenge_id", "NO ACTION", "NO ACTION", "NONE"),
+    },
+    "shopping_verification_reconciliation_events": {
+        ("shopping_verification_unknown_outcomes", "quarantine_id", "quarantine_id", "NO ACTION", "NO ACTION", "NONE"),
+        ("shopping_verification_challenges", "challenge_id", "challenge_id", "NO ACTION", "NO ACTION", "NONE"),
+    },
+}
+
+_REQUIRED_CHECKS = {
+    "shopping_verification_challenges": (
+        "CHECK(STATUS IN ('START_CLAIMED','START_UNKNOWN','STARTED','PENDING','VERIFY_UNKNOWN','VERIFIED','FAILED','REJECTED','EXPIRED'))",
+        "CHECK(PROVIDER_START_STATUS IN ('STARTED','PENDING') OR PROVIDER_START_STATUS IS NULL)",
+        "CHECK(VERSION >= 0)",
+    ),
+    "shopping_verification_attempts": (
+        "CHECK(OUTCOME IN ('SUCCESS','FAILED','EXPIRED','REJECTED'))",
+    ),
+    "shopping_trusted_receipts": (
+        "CHECK(LIFECYCLE IN ('ISSUED','CONSUMED','REVOKED'))",
+        "CHECK(VERSION >= 0)",
+    ),
+    "shopping_verification_unknown_outcomes": (
+        "CHECK(OPERATION IN ('START','VERIFY'))",
+        "CHECK(STATE IN ('OPEN','RESOLVED'))",
+        "CHECK(VERSION >= 1)",
+        "CHECK(CHALLENGE_VERSION >= 0)",
+    ),
+}
+
+
+def _normalized_sql(value: object) -> str:
+    return "" if not isinstance(value, str) else " ".join(value.upper().split())
+
+
+def _validate_schema_table(connection: sqlite3.Connection, table: str) -> None:
+    actual = tuple(
+        (row[1], row[2], row[3], row[4], row[5])
+        for row in connection.execute(f"PRAGMA table_info({table})").fetchall()
+    )
+    if actual != _REQUIRED_TABLE_COLUMNS[table]:
+        raise PersistenceSchemaError("unsupported persistence schema shape")
+
+    unique_indexes: set[tuple[str, ...]] = set()
+    for index in connection.execute(f"PRAGMA index_list({table})").fetchall():
+        if int(index[2]) != 1:
+            continue
+        unique_indexes.add(tuple(
+            row[2] for row in connection.execute(f"PRAGMA index_info({index[1]})").fetchall()
+        ))
+    if unique_indexes != _REQUIRED_UNIQUE_INDEXES.get(table, set()):
+        raise PersistenceSchemaError("unsupported persistence schema shape")
+
+    foreign_keys = {
+        (row[2], row[3], row[4], row[5].upper(), row[6].upper(), row[7].upper())
+        for row in connection.execute(f"PRAGMA foreign_key_list({table})").fetchall()
+    }
+    if foreign_keys != _REQUIRED_FOREIGN_KEYS.get(table, set()):
+        raise PersistenceSchemaError("unsupported persistence schema shape")
+
+    sql_row = connection.execute(
+        "SELECT sql FROM sqlite_master WHERE type='table' AND name=?", (table,)
+    ).fetchone()
+    normalized = _normalized_sql(None if sql_row is None else sql_row[0])
+    if not normalized or any(fragment not in normalized for fragment in _REQUIRED_CHECKS.get(table, ())):
+        raise PersistenceSchemaError("unsupported persistence schema shape")
+
+
 def _validate_schema(connection: sqlite3.Connection) -> None:
     try:
         row = connection.execute(
@@ -84,78 +300,33 @@ def _validate_schema(connection: sqlite3.Connection) -> None:
     if row is None or row[0] != SCHEMA_VERSION:
         raise PersistenceSchemaError("unsupported persistence schema version")
     try:
-        challenge_columns = {
-            item[1] for item in connection.execute(
-                "PRAGMA table_info(shopping_verification_challenges)"
-            ).fetchall()
-        }
-    except sqlite3.OperationalError:
-        raise PersistenceSchemaError("unsupported persistence schema shape") from None
-    if "provider_start_status" not in challenge_columns:
-        raise PersistenceSchemaError("unsupported persistence schema shape")
-    challenge_sql = connection.execute(
-        "SELECT sql FROM sqlite_master WHERE name='shopping_verification_challenges'"
-    ).fetchone()
-    if challenge_sql is None or any(
-        marker not in challenge_sql[0]
-        for marker in ("VERIFY_UNKNOWN", "'REJECTED'")
-    ):
-        raise PersistenceSchemaError("unsupported persistence schema shape")
-    try:
-        tables = {
-            item[0] for item in connection.execute(
-                "SELECT name FROM sqlite_master WHERE type='table'"
-            ).fetchall()
-        }
-        if not {
-            "shopping_verification_unknown_outcomes",
-            "shopping_verification_reconciliation_events",
-        }.issubset(tables):
+        tables = {item[0] for item in connection.execute(
+            "SELECT name FROM sqlite_master WHERE type='table'"
+        ).fetchall()}
+        if not _C4_TABLES.issubset(tables) or any(
+            forbidden.lower() in {name.lower() for name in tables}
+            for forbidden in _FORBIDDEN_C4_TABLES
+        ):
             raise PersistenceSchemaError("unsupported persistence schema shape")
-        quarantine_columns = {
-            item[1] for item in connection.execute(
-                "PRAGMA table_info(shopping_verification_unknown_outcomes)"
-            ).fetchall()
+        for table in _REQUIRED_TABLE_COLUMNS:
+            _validate_schema_table(connection, table)
+
+        expected_triggers = {
+            "shopping_verification_reconciliation_events_no_update":
+                "CREATE TRIGGER SHOPPING_VERIFICATION_RECONCILIATION_EVENTS_NO_UPDATE BEFORE UPDATE ON SHOPPING_VERIFICATION_RECONCILIATION_EVENTS BEGIN SELECT RAISE(ABORT, 'APPEND-ONLY RECONCILIATION HISTORY'); END",
+            "shopping_verification_reconciliation_events_no_delete":
+                "CREATE TRIGGER SHOPPING_VERIFICATION_RECONCILIATION_EVENTS_NO_DELETE BEFORE DELETE ON SHOPPING_VERIFICATION_RECONCILIATION_EVENTS BEGIN SELECT RAISE(ABORT, 'APPEND-ONLY RECONCILIATION HISTORY'); END",
         }
-        event_columns = {
-            item[1] for item in connection.execute(
-                "PRAGMA table_info(shopping_verification_reconciliation_events)"
-            ).fetchall()
-        }
-        if not {
-            "challenge_id", "state", "version", "challenge_version",
-            "operation", "provider_source",
-        }.issubset(quarantine_columns) or not {
-            "command_id", "challenge_id", "quarantine_id", "operation",
-            "challenge_version", "quarantine_version", "actor_ref",
-        }.issubset(event_columns):
-            raise PersistenceSchemaError("unsupported persistence schema shape")
-        trigger_sql = {
-            item[0]: item[1]
+        trigger_rows = {
+            item[0]: _normalized_sql(item[1])
             for item in connection.execute(
                 "SELECT name,sql FROM sqlite_master WHERE type='trigger' AND "
                 "name IN (?,?)",
-                (
-                    "shopping_verification_reconciliation_events_no_update",
-                    "shopping_verification_reconciliation_events_no_delete",
-                ),
+                tuple(expected_triggers),
             ).fetchall()
         }
-        trigger_requirements = {
-            "shopping_verification_reconciliation_events_no_update": (
-                "BEFORE UPDATE ON SHOPPING_VERIFICATION_RECONCILIATION_EVENTS",
-            ),
-            "shopping_verification_reconciliation_events_no_delete": (
-                "BEFORE DELETE ON SHOPPING_VERIFICATION_RECONCILIATION_EVENTS",
-            ),
-        }
-        for name, required_fragments in trigger_requirements.items():
-            sql = trigger_sql.get(name)
-            normalized = "" if not isinstance(sql, str) else " ".join(sql.upper().split())
-            if not normalized or any(fragment not in normalized for fragment in required_fragments):
-                raise PersistenceSchemaError("unsupported persistence schema shape")
-            if "RAISE(ABORT" not in normalized or "APPEND-ONLY RECONCILIATION HISTORY" not in normalized:
-                raise PersistenceSchemaError("unsupported persistence schema shape")
+        if trigger_rows != expected_triggers:
+            raise PersistenceSchemaError("unsupported persistence schema shape")
     except sqlite3.OperationalError:
         raise PersistenceSchemaError("unsupported persistence schema shape") from None
 

@@ -378,6 +378,14 @@ class VerificationReconciliationService:
             raise VerificationReconciliationError("start reconciliation command is malformed")
         now = self._now()
         self._reject_future_evidence(command, now)
+        if (command.status in {
+                StartReconciliationStatus.FAILED,
+                StartReconciliationStatus.REJECTED,
+                StartReconciliationStatus.EXPIRED,
+        } and (command.provider_verification_id is None or command.started_at is None)):
+            raise VerificationReconciliationError(
+                "terminal START evidence requires provider identity and time"
+            )
         connection = self._open()
         try:
             connection.execute("BEGIN IMMEDIATE")
@@ -393,7 +401,15 @@ class VerificationReconciliationService:
             self._validate_versions(challenge, quarantine, command)
             if quarantine["operation"] != "START" or challenge["status"] != ChallengeStatus.START_UNKNOWN.value:
                 raise ReconciliationConflict("START quarantine is not open")
+            if (challenge["provider_source"] != str(command.provider_source)
+                    or challenge["replay_reference"] != str(command.replay_reference)
+                    or challenge["provider_verification_id"] is not None
+                    or challenge["provider_start_status"] is not None):
+                raise ReconciliationConflict("START evidence binding conflict")
             provider_id = None if command.provider_verification_id is None else str(command.provider_verification_id)
+            if (quarantine["provider_verification_id"] is not None
+                    and provider_id != quarantine["provider_verification_id"]):
+                raise ReconciliationConflict("START provider identifier conflict")
             started_at = command.started_at
             provider_expires_at = command.provider_expires_at
             if command.status in {StartReconciliationStatus.STARTED, StartReconciliationStatus.PENDING}:
@@ -408,11 +424,33 @@ class VerificationReconciliationService:
                 status = command.status.value
                 new_lifecycle = command.status.value
             else:
-                if provider_id is not None or started_at is not None or provider_expires_at is not None:
-                    raise VerificationReconciliationError("terminal START evidence cannot contain provider identity")
+                # A terminal operator selection is not provider evidence.  A
+                # terminal START projection therefore needs the same bounded
+                # provider identity/timestamp evidence as an accepted START;
+                # otherwise START_UNKNOWN remains open for later review.
+                if provider_id is None or started_at is None:
+                    raise VerificationReconciliationError(
+                        "terminal START evidence requires provider identity and time"
+                    )
+                if started_at > now or now - started_at > self._evidence_max_age:
+                    raise VerificationReconciliationError("START evidence timestamp rejected")
+                if now >= _dt(challenge["expires_at"]):
+                    raise VerificationReconciliationError("START evidence exceeds local expiry")
+                if provider_expires_at is not None and provider_expires_at <= now:
+                    raise VerificationReconciliationError("START evidence is expired")
                 status = command.status.value
                 new_lifecycle = command.status.value
-                provider_expires_at = started_at = None
+            if provider_id is not None:
+                collision = connection.execute(
+                    "SELECT 1 FROM shopping_verification_challenges "
+                    "WHERE provider_source=? AND provider_verification_id=? "
+                    "AND challenge_id<>?",
+                    (str(command.provider_source), provider_id, challenge["challenge_id"]),
+                ).fetchone()
+                if collision is not None:
+                    raise VerificationReconciliationError(
+                        "ambiguous provider verification identifier"
+                    )
             new_c = int(challenge["version"]) + 1
             new_q = int(quarantine["version"]) + 1
             if connection.execute(

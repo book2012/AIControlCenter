@@ -554,16 +554,22 @@ class PhoneVerificationService:
                     or int(row["version"]) != version or row["start_claim_token"] != claim_token):
                 raise PhoneVerificationRejected("challenge start claim is no longer owned")
             now = self._now()
+            terminal_status = (
+                ChallengeStatus.EXPIRED
+                if now >= _dt(row["expires_at"])
+                else ChallengeStatus.REJECTED
+            )
             if connection.execute(
                 "UPDATE shopping_verification_challenges SET status=?,version=version+1 "
                 "WHERE challenge_id=? AND status=? AND version=? AND start_claim_token=?",
-                (ChallengeStatus.REJECTED.value, challenge,
+                (terminal_status.value, challenge,
                  ChallengeStatus.START_CLAIMED.value, version, claim_token),
             ).rowcount != 1:
                 raise PhoneVerificationRejected("challenge start claim is no longer owned")
             self._audit(
                 connection, customer=row["customer_id"], challenge=challenge,
-                correlation_id="start-rejected:" + challenge, now=now, outcome="REJECTED",
+                correlation_id="start-rejected:" + challenge, now=now,
+                outcome=terminal_status.value,
             )
             connection.commit()
         except PhoneVerificationRejected:
@@ -899,6 +905,24 @@ class PhoneVerificationService:
                 connection.commit()
                 return replay
             if current["status"] not in (ChallengeStatus.STARTED.value, ChallengeStatus.PENDING.value): raise PhoneVerificationRejected("challenge is terminal")
+            # This is the authoritative local-expiry check after the provider
+            # returned and immediately before any terminal provider result is
+            # published.  A late rejection cannot outrank local expiry.
+            if projection_now >= _dt(current["expires_at"]):
+                if connection.execute(
+                    "UPDATE shopping_verification_challenges SET status='EXPIRED',version=version+1 "
+                    "WHERE challenge_id=? AND status IN ('STARTED','PENDING') AND version=?",
+                    (str(request.challenge_reference), int(current["version"])),
+                ).rowcount != 1:
+                    raise PhoneVerificationRejected("challenge state conflict")
+                self._audit(
+                    connection, customer=current["customer_id"],
+                    challenge=str(request.challenge_reference),
+                    correlation_id=correlation_id, now=projection_now,
+                    outcome=ChallengeStatus.EXPIRED.value,
+                )
+                connection.commit()
+                raise PhoneVerificationRejected("local challenge expired")
             if result.status is VerificationStatus.SUCCESS:
                 self._validate_verification(result, request=request, challenge=current, now=projection_now)
             collision = connection.execute("SELECT 1 FROM shopping_verification_attempts WHERE provider_source=? AND provider_verification_id=?", (str(result.provider_source), str(result.provider_verification_id))).fetchone()
