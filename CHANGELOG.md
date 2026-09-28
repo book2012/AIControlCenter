@@ -1,5 +1,43 @@
 # CHANGELOG
 
+## 2026-09-29 — SHOP_AI_001C-C4 documentation closeout
+
+- Stage: `SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation`.
+- C4 implementation is **COMPLETE** at code, test, and architecture level.
+- Initial local code commit: `50bd8d9203dfa977f257d8fa48186460c894244c`.
+- A post-commit read-only review discovered blockers in the initial
+  implementation. The initial commit was **not pushed** before corrective
+  validation.
+- Corrective safety commit:
+  `ea8878c0606c2a63c9cf858fff0f7218d12066bd`. It closes those blockers
+  without rewriting Git history.
+- Final read-only architecture review: **PASS**.
+- Focused corrective gate: **6/6 test files, 112 passed**.
+- Full SHOP_AI file-isolated gate: **33/33 files passed, 785 passed,
+  1 deselected**. Pytest cleanup/deprecation warnings were non-failing.
+- The durable model is the lifecycle projection plus
+  `shopping_verification_unknown_outcomes` plus append-only
+  `shopping_verification_reconciliation_events`.
+- `START_UNKNOWN` terminal reconciliation requires validated bounded provider
+  evidence; operator-selected terminal truth alone is forbidden.
+  `VERIFY_UNKNOWN` remains durable and fail-closed until explicit
+  reconciliation. Reconciliation requires explicit Control Plane capability
+  authority. CAS/version checks and append-only event history are preserved.
+- C1 durable replay and `_replay_result` remain preserved. Provider rejection
+  publication rechecks local expiry.
+- v3 persistence structurally validates the required C4 tables/triggers and
+  rejects forbidden `shopping_verification_quarantines`. Domain
+  `VerificationStatus.UNKNOWN` is forbidden; provider-transport
+  `ProviderTransportVerificationStatus.UNKNOWN` is transport-only and may
+  exist only as transport ambiguity input.
+- No provider SDK activation, live provider call, credentials, Keychain,
+  production migration, deployment, route activation, or Ubuntu mutation
+  occurred. C4 introduces no production activation.
+- Next: **`SHOP_AI_001C-C5 — Provider-Specific Authenticated Non-Production
+  Integration`**. Provider credentials, authenticated calls, and Keychain
+  remain separately approval-gated. The overall Shopping platform is not
+  production-ready.
+
 ## 2026-09-28 — SHOP_AI_001C-C3 documentation closeout
 
 - `SHOP_AI_001C-C3` Destination Resolution + Mac Secret Resolver Foundation:

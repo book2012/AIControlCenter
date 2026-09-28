@@ -1,6 +1,6 @@
 # Roadmap
 
-## Current authoritative roadmap — 2026-09-28
+## Current authoritative roadmap — 2026-09-29
 
 The roadmap is re-baselined around the Mac mini M4 as the always-on Brain and
 sole AIControlCenter Control Plane. AIControlCenter owns governance, policy,
@@ -11,7 +11,48 @@ Ubuntu Server remains a stateless, on-demand infrastructure worker only.
 Ubuntu does not host AI workloads or own business logic, application state, or
 Control Plane authority.
 
-### SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Foundation — COMPLETE for foundation scope only
+### SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation — COMPLETE
+
+- [x] Complete C4 at code, test, and architecture level.
+- [x] Record initial local code commit:
+  `50bd8d9203dfa977f257d8fa48186460c894244c`.
+- [x] Record the post-commit read-only review finding blockers in the initial
+  implementation; the initial commit was not pushed before corrective
+  validation.
+- [x] Record corrective safety commit:
+  `ea8878c0606c2a63c9cf858fff0f7218d12066bd`, closing the blockers without
+  rewriting Git history.
+- [x] Final read-only architecture review: **PASS**.
+- [x] Focused corrective gate: **6/6 test files, 112 passed**.
+- [x] Full SHOP_AI file-isolated gate: **33/33 files passed, 785 passed,
+  1 deselected**; cleanup/deprecation warnings were non-failing.
+- [x] Preserve the durable model: lifecycle projection plus
+  `shopping_verification_unknown_outcomes` plus append-only
+  `shopping_verification_reconciliation_events`.
+- [x] Require validated bounded provider evidence for `START_UNKNOWN`
+  terminal reconciliation; reject operator-selected terminal truth alone.
+- [x] Keep `VERIFY_UNKNOWN` durable and fail-closed until explicit
+  reconciliation, with explicit Control Plane capability authority required.
+- [x] Preserve CAS/version checks, append-only event history, C1 durable
+  replay, and `_replay_result`.
+- [x] Recheck local expiry when publishing provider rejection.
+- [x] Structurally validate required v3 C4 tables/triggers and reject
+  forbidden `shopping_verification_quarantines`.
+- [x] Forbid domain `VerificationStatus.UNKNOWN`; allow
+  `ProviderTransportVerificationStatus.UNKNOWN` only as transport ambiguity
+  input.
+- [x] Record that no provider SDK activation, live provider call, credentials,
+  Keychain, production migration, deployment, route activation, or Ubuntu
+  mutation occurred. C4 introduces no production activation.
+
+### Next engineering milestone exactly
+
+`SHOP_AI_001C-C5 — Provider-Specific Authenticated Non-Production Integration`
+
+C5 provider credentials, authenticated calls, and Keychain remain separately
+approval-gated. The overall Shopping platform is not production-ready.
+
+### Historical SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Foundation — COMPLETE for foundation scope only
 
 - [x] Canonical code commit:
   `72310b63710d6fc13eb14e85ad133318454bb430`.

@@ -1,6 +1,6 @@
 # MASTER
 
-## Current authoritative platform state — 2026-09-28
+## Current authoritative platform state — 2026-09-29
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.
 AIControlCenter owns governance, policy, orchestration, authorization, audit,
@@ -23,7 +23,55 @@ Product photos, image analysis, and advanced product analysis use GPT API
 Product Intelligence. Provider selection remains behind AIControlCenter
 policy/router/adapters.
 
-## SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Foundation — COMPLETE for foundation scope only
+## SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation — COMPLETE
+
+The authoritative current C4 state is **COMPLETE** at code, test, and
+architecture level. The initial local code commit is
+`50bd8d9203dfa977f257d8fa48186460c894244c`; a post-commit read-only review
+discovered blockers before that commit was pushed. Corrective safety commit
+`ea8878c0606c2a63c9cf858fff0f7218d12066bd` closes the blockers without
+rewriting Git history. The initial commit was not pushed before corrective
+validation.
+
+Validation evidence:
+
+- Final read-only architecture review: **PASS**.
+- Focused corrective gate: **6/6 test files, 112 passed**.
+- Full SHOP_AI file-isolated gate: **33/33 files passed, 785 passed,
+  1 deselected**.
+- Pytest cleanup/deprecation warnings were non-failing.
+
+### Durable C4 authority and state
+
+- The durable model is the lifecycle projection plus
+  `shopping_verification_unknown_outcomes` plus append-only
+  `shopping_verification_reconciliation_events`.
+- `START_UNKNOWN` terminal reconciliation requires validated bounded provider
+  evidence. Operator-selected terminal truth alone is forbidden.
+- `VERIFY_UNKNOWN` remains durable and fail-closed until explicit
+  reconciliation. Reconciliation requires explicit Control Plane capability
+  authority.
+- CAS/version checks and append-only event history are preserved.
+- C1 durable replay and `_replay_result` remain preserved.
+- Provider rejection publication rechecks local expiry.
+- v3 persistence structurally validates required C4 tables/triggers and
+  rejects forbidden `shopping_verification_quarantines`.
+- Domain `VerificationStatus.UNKNOWN` is forbidden. Provider-transport
+  `ProviderTransportVerificationStatus.UNKNOWN` is transport-only and may
+  exist only as transport ambiguity input.
+
+### C4 activation boundary and next milestone
+
+No provider SDK activation, live provider call, credentials, Keychain,
+production migration, deployment, route activation, or Ubuntu mutation
+occurred. C4 introduces no production activation. The overall Shopping
+platform is not production-ready.
+
+Next: **`SHOP_AI_001C-C5 — Provider-Specific Authenticated Non-Production
+Integration`**. C5 provider credentials, authenticated calls, and Keychain
+remain separately approval-gated.
+
+## Historical SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Foundation — COMPLETE for foundation scope only
 
 `SHOP_AI_001C-C3` is **COMPLETE for foundation scope only** at canonical code
 commit `72310b63710d6fc13eb14e85ad133318454bb430`, parent

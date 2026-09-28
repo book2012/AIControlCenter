@@ -1,6 +1,6 @@
 # AIControlCenter
 
-## Current authoritative platform state — 2026-09-27
+## Current authoritative platform state — 2026-09-29
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.
 AIControlCenter owns governance, policy, orchestration, authorization, audit,
@@ -27,7 +27,17 @@ policy/router/adapters and is not hardcoded in Shopping business logic.
 
 ### SHOP_AI repository state
 
-The current repository/security scope is complete.
+The current repository/security scope, including
+`SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation`, is
+complete at code, test, and architecture level. The focused corrective gate
+passed **6/6 test files, 112 passed**; the full SHOP_AI file-isolated gate
+passed **33/33 files, 785 passed, 1 deselected**. The durable C4 model uses
+the lifecycle projection, `shopping_verification_unknown_outcomes`, and
+append-only reconciliation events, with fail-closed explicit reconciliation
+authority in AIControlCenter.
+
+No production activation is introduced. The overall Shopping platform is not
+production-ready.
 
 History:
 
@@ -52,11 +62,9 @@ absent by default.
 Repository/security completion does not mean production readiness. No
 production migration, deployment, push, or activation is claimed here.
 
-The next milestone is the **SHOP_AI Production Readiness Evidence Gate**:
-`SHOP_AI_001C` trusted production phone verifier, production DB
-inventory/evidence, backup/hash verification, isolated restore validation,
-migration dry-run, runtime composition QA, authenticated E2E QA, rollback
-drill, and controlled production activation.
+The next milestone is **`SHOP_AI_001C-C5 — Provider-Specific Authenticated
+Non-Production Integration`**. Provider credentials, authenticated calls, and
+Keychain remain separately approval-gated.
 
 
 ## 2026-09-15 — SHOP_UI_003 unified agachichi feed

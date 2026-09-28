@@ -1,6 +1,72 @@
 # AI Shopping Platform Architecture
 
-## Current authoritative SHOP_AI_001C-C3 closeout — COMPLETE for foundation scope only
+## Current authoritative SHOP_AI_001C-C4 closeout — COMPLETE
+
+`SHOP_AI_001C-C4` Durable UNKNOWN_OUTCOME Quarantine / Reconciliation is
+**COMPLETE** at code, test, and architecture level. The initial local code
+commit was `50bd8d9203dfa977f257d8fa48186460c894244c`. A post-commit
+read-only review discovered blockers in the initial implementation; that
+commit was not pushed before corrective validation. Corrective safety commit
+`ea8878c0606c2a63c9cf858fff0f7218d12066bd` closes those blockers without
+rewriting Git history.
+
+### Validation evidence
+
+- Final read-only architecture review: **PASS**.
+- Focused corrective gate: **6/6 test files, 112 passed**.
+- Full SHOP_AI file-isolated gate: **33/33 files passed, 785 passed,
+  1 deselected**.
+- Pytest cleanup/deprecation warnings were non-failing.
+
+### Durable state machine
+
+The durable model is the lifecycle projection plus
+`shopping_verification_unknown_outcomes` plus append-only
+`shopping_verification_reconciliation_events`.
+
+- A provider ambiguity is recorded durably as an unknown outcome without
+  converting the domain lifecycle into an `UNKNOWN` status.
+- `START_UNKNOWN` can reach terminal reconciliation only after validated
+  bounded provider evidence establishes the terminal truth. An operator's
+  selected terminal truth alone is forbidden.
+- `VERIFY_UNKNOWN` remains durable and fail-closed until explicit
+  reconciliation; it is not silently converted, retried, or treated as
+  success.
+- Reconciliation requires explicit AIControlCenter Control Plane capability
+  authority. CAS/version checks prevent stale writes, and the reconciliation
+  event history is append-only.
+- C1 durable replay and `_replay_result` remain preserved. Provider rejection
+  publication rechecks local expiry before it is published.
+
+### Quarantine and persistence contract
+
+v3 persistence structurally validates the required C4 tables and triggers,
+including the lifecycle projection, `shopping_verification_unknown_outcomes`,
+and `shopping_verification_reconciliation_events`. The forbidden
+`shopping_verification_quarantines` table is rejected. Domain
+`VerificationStatus.UNKNOWN` is forbidden. Provider-transport
+`ProviderTransportVerificationStatus.UNKNOWN` is transport-only and may
+exist only as transport ambiguity input; it is not a durable domain state.
+
+### Authority and fail-closed boundary
+
+AIControlCenter on the Mac mini remains the sole verification and
+reconciliation authority. No operator-selected terminal result can bypass
+validated bounded provider evidence, explicit capability authority, CAS, or
+append-only history. Unknown outcomes remain durable and fail-closed until the
+authorized reconciliation path completes.
+
+No provider SDK activation, live provider call, credentials, Keychain,
+production migration, deployment, route activation, or Ubuntu mutation
+occurred. C4 introduces no production activation. C5 provider credentials,
+authenticated calls, and Keychain remain separately approval-gated, and the
+overall Shopping platform is not production-ready.
+
+### Next milestone
+
+`SHOP_AI_001C-C5 — Provider-Specific Authenticated Non-Production Integration`
+
+## Historical SHOP_AI_001C-C3 closeout — COMPLETE for foundation scope only
 
 `SHOP_AI_001C-C3` Destination Resolution + Mac Secret Resolver Foundation is
 **COMPLETE for foundation scope only** at canonical code commit
