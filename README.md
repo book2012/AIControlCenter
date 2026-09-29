@@ -1,5 +1,56 @@
 # AIControlCenter
 
+<!-- SHOP_AI_001C-C5-C3A_CLOSEOUT -->
+## Current SHOP_AI_001C-C5-C3A status
+
+`SHOP_AI_001C-C5-C3A` trusted authenticated-read authorization foundation is
+**COMPLETE for the offline authorization scope only**.
+
+Canonical evidence:
+
+- implementation commit: `e30ca8dd4b289ba57aa0e3106d5d50eb0b72ff6e`
+- parent: `7e61ee54fccbd871c0162bc726063982fad233a7`
+- reviewed implementation patch SHA256:
+  `5586b5c52de1a0f200753b3280676c8511a57a6df0b9e29142ecab605581b335`
+- focused authorization tests: **31 passed**
+- SHOP_AI file-isolated regression: **49/49 files, 898 passed, 1 deselected**
+- deterministic static/security review: **PASS**
+
+C5-C3A establishes an AIControlCenter-owned, Twilio-specific trusted
+authenticated-read authorization authority.
+
+The trust model is authority-registry based. A capability-shaped object is not
+trusted merely because a caller possesses it. The issuing AIControlCenter
+authority must have the authoritative issuance record.
+
+Authorization is bound exactly to provider, read operation, request identity,
+correlation identity, Verify Service SID, and Verification SID where required.
+
+Capabilities are opaque, short-lived, limited to a maximum lifetime of
+60 seconds, and one-shot. A first trusted authorization attempt consumes the
+capability. Forged, expired, reused, cross-authority, or binding-mismatched
+capabilities fail closed.
+
+The generic C5-B `ProviderNetworkAuthorizationGate` remains
+`OFFLINE_DENY_ONLY` and has not gained an allow path.
+
+C5-C3A performed no provider network call, credential resolution, Keychain
+access, Twilio SDK activation, SMS send, deployment, production activation,
+schema migration, or Ubuntu mutation.
+
+This milestone does not grant live authenticated provider authorization and
+is not a production-readiness claim.
+
+Next milestone:
+
+`SHOP_AI_001C-C5-C3B` — offline SecretReference / Mac Secret Resolver /
+EphemeralSecretLease and Twilio authenticated-read transport composition
+contract.
+
+C5-C3C remains separately approval-gated for any real Keychain resolution or
+authenticated Twilio GET network call.
+
+
 <!-- SHOP_AI_001C-C5-C2_CLOSEOUT -->
 ## Current SHOP_AI_001C-C5-C2 status
 
