@@ -27,17 +27,23 @@ policy/router/adapters and is not hardcoded in Shopping business logic.
 
 ### SHOP_AI repository state
 
-The current repository/security scope, including
-`SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation`, is
-complete at code, test, and architecture level. The focused corrective gate
-passed **6/6 test files, 112 passed**; the full SHOP_AI file-isolated gate
-passed **33/33 files, 785 passed, 1 deselected**. The durable C4 model uses
-the lifecycle projection, `shopping_verification_unknown_outcomes`, and
-append-only reconciliation events, with fail-closed explicit reconciliation
-authority in AIControlCenter.
+`SHOP_AI_001C-C5-B — Provider-Neutral Offline Provider Integration Foundation`
+is **COMPLETE for C5-B offline foundation scope only** at canonical code
+commit `c4bcd6a8cbe0c2d36afe282f4e561559dbbb2885`. The Mac mini M4 remains the
+sole Control Plane. C5-B is `OFFLINE_DENY_ONLY`: generic authorization cannot
+permit an authenticated provider request, and the `DISABLED` and
+`CONTRACT_ONLY` compositions remain inert.
+
+Validation evidence is **8/8 focused files, 39 passed, 0 deselected** and the
+full SHOP_AI file-isolated gate is **41/41 files, 824 passed, 1 deselected**;
+the final adversarial architecture/security review was **PASS**. No provider
+was selected, no credentials or Keychain were accessed, no provider SDK or
+network request was made, and no SMS was sent.
 
 No production activation is introduced. The overall Shopping platform is not
-production-ready.
+production-ready. Next is **`SHOP_AI_001C-C5-C — Provider-Specific
+Authenticated Read-Only Integration`**; C5-C must establish a provider-
+specific authenticated-read boundary under separate approval gates.
 
 History:
 
@@ -62,9 +68,9 @@ absent by default.
 Repository/security completion does not mean production readiness. No
 production migration, deployment, push, or activation is claimed here.
 
-The next milestone is **`SHOP_AI_001C-C5 — Provider-Specific Authenticated
-Non-Production Integration`**. Provider credentials, authenticated calls, and
-Keychain remain separately approval-gated.
+Provider credentials, Keychain access, provider selection, network calls, SMS,
+deployment, migration, and production activation remain separately
+approval-gated and are not authorized by C5-B.
 
 
 ## 2026-09-15 — SHOP_UI_003 unified agachichi feed

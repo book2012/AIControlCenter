@@ -11,7 +11,49 @@ Ubuntu Server remains a stateless, on-demand infrastructure worker only.
 Ubuntu does not host AI workloads or own business logic, application state, or
 Control Plane authority.
 
-### SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation — COMPLETE
+### SHOP_AI_001C-C5-B — Provider-Neutral Offline Provider Integration Foundation — COMPLETE for C5-B offline foundation scope only
+
+- [x] Complete C5-B offline foundation scope at canonical code commit
+  `c4bcd6a8cbe0c2d36afe282f4e561559dbbb2885`.
+- [x] Record parent C4 documentation commit:
+  `37fb765142de909ce62bd42f3ad428dec3b3481d`.
+- [x] Record reviewed implementation patch SHA256:
+  `ddc26b31978eb226df3f326540657b80bc74102a34365d50c63a402a29fd8d2f`.
+- [x] C5 focused validation: **8/8 files, 39 passed, 0 deselected**.
+- [x] Full SHOP_AI file-isolated gate: **41/41 files, 824 passed,
+  1 deselected**.
+- [x] Final adversarial architecture/security review: **PASS**.
+- [x] Preserve the Mac mini M4 as the sole AIControlCenter Control Plane and
+  keep C5-B provider-neutral and `OFFLINE_DENY_ONLY`.
+- [x] Keep generic provider authorization deny-only: no generic capability
+  issuer or caller-injected trusted capability authority exists, and
+  configuration, activation state, allowlists, environment, or a capability
+  object cannot authorize provider I/O.
+- [x] Keep `DISABLED` and `CONTRACT_ONLY` compositions inert; construct no
+  provider transport and resolve no credentials. `SecretReference` remains
+  metadata only.
+- [x] Keep provider selection, SDK/network access, Keychain, SMS, retries,
+  fallback, route/dashboard activation, schema/migration, deployment,
+  production activation, and Ubuntu mutation absent.
+- [x] Keep C5-B without SQLite persistence authority. `UNKNOWN_OUTCOME` may
+  exist only as bounded unresolved provider evidence and is blocked from C4
+  reconciliation admission. Exact provider identifier presence/value binding
+  remains fail-closed, with `VerificationReconciliationService` as the sole
+  durable reconciliation writer.
+
+C5-B is complete only for the offline foundation scope. C5 as a whole is not
+complete, and no production-readiness claim is made.
+
+### Active next milestone
+
+`SHOP_AI_001C-C5-C — Provider-Specific Authenticated Read-Only Integration`
+
+C5-C should select or formally defer the provider and introduce a
+provider-specific authenticated-read adapter/transport boundary. Credentials,
+Keychain access, provider network calls, SMS, deployment, migration, and
+production activation remain separately approval-gated.
+
+### Historical SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation — COMPLETE
 
 - [x] Complete C4 at code, test, and architecture level.
 - [x] Record initial local code commit:

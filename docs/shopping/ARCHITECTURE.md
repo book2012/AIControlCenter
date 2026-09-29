@@ -1,8 +1,73 @@
 # AI Shopping Platform Architecture
 
-## Current authoritative SHOP_AI_001C-C4 closeout — COMPLETE
+## Current authoritative SHOP_AI_001C-C5-B closeout — COMPLETE for C5-B offline foundation scope only
 
-`SHOP_AI_001C-C4` Durable UNKNOWN_OUTCOME Quarantine / Reconciliation is
+`SHOP_AI_001C-C5-B` Provider-Neutral Offline Provider Integration Foundation is
+**COMPLETE for C5-B offline foundation scope only** at canonical code commit
+`c4bcd6a8cbe0c2d36afe282f4e561559dbbb2885`, with parent C4 documentation
+commit `37fb765142de909ce62bd42f3ad428dec3b3481d`. The reviewed
+implementation patch SHA256 is
+`ddc26b31978eb226df3f326540657b80bc74102a34365d50c63a402a29fd8d2f`.
+
+### C5-B validation evidence
+
+- C5 focused: **8/8 files, 39 passed, 0 deselected**.
+- Full SHOP_AI file-isolated gate: **41/41 files, 824 passed, 1 deselected**.
+- Final adversarial architecture/security review: **PASS**.
+
+### C5-B Control Plane and authorization model
+
+- AIControlCenter on the Mac mini remains the sole Control Plane. Ubuntu is
+  untouched and remains only an optional stateless infrastructure worker.
+- C5-B is provider-neutral and `OFFLINE_DENY_ONLY`. Generic provider
+  authorization cannot permit an authenticated provider request.
+- No generic capability issuer exists. No generic caller-injected trusted
+  capability authority exists. A capability object supplied by a caller is
+  not trusted.
+- Configuration, activation state, provider and operation allowlists,
+  environment, and a capability object are each insufficient to authorize
+  provider I/O. The generic authorization decision remains deny-only.
+- Trusted capability issuance and verification are explicitly deferred to a
+  future AIControlCenter Control Plane/provider-specific C5-C boundary.
+
+### Inert runtime and offline safety boundary
+
+- `DISABLED` and `CONTRACT_ONLY` runtime compositions remain inert.
+- Provider-specific transport is not constructed, credentials are not
+  resolved, and `SecretReference` remains value-free metadata only.
+- No Keychain access occurred. No provider was selected. No provider SDK or
+  network request occurred. No SMS was sent.
+- No automatic retry or provider fallback exists. No route/dashboard
+  activation, schema or production migration, deployment, or production
+  activation occurred. C5-B has no SQLite persistence authority.
+
+### C4 admission boundary
+
+- `UNKNOWN_OUTCOME` may exist only as bounded unresolved provider evidence.
+  C5-B blocks it from C4 reconciliation admission.
+- Normalized provider verification identifier accepts only the exact bounded
+  `ProviderVerificationIdentifier` contract or `None`; subclasses, raw
+  values, and other identifier objects are rejected.
+- Provider identifier presence and value binding are exact and fail-closed:
+  evidence and the C4 command must both carry the same exact identifier, or
+  both carry `None`.
+- `VerificationReconciliationService` remains the sole durable reconciliation
+  writer. The C5-B evidence adapter has no SQLite or persistence authority and
+  forwards only bounded normalized evidence to the existing C4 port.
+
+### Explicit C5-B non-activation statement
+
+C5-B authorizes no credentials, Keychain access, provider network calls, SMS,
+production provider selection, deployment, migration, or production
+activation. The overall Shopping platform is not production-ready. The next
+milestone is `SHOP_AI_001C-C5-C — Provider-Specific Authenticated Read-Only
+Integration`, which must select or formally defer the provider and introduce a
+provider-specific authenticated-read adapter/transport boundary under separate
+approval gates.
+
+## Historical SHOP_AI_001C-C4 closeout — COMPLETE
+
+`SHOP_AI_001C-C4` Durable UNKNOWN_OUTCOME Quarantine / Reconciliation was
 **COMPLETE** at code, test, and architecture level. The initial local code
 commit was `50bd8d9203dfa977f257d8fa48186460c894244c`. A post-commit
 read-only review discovered blockers in the initial implementation; that

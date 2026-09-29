@@ -1,5 +1,43 @@
 # CHANGELOG
 
+## 2026-09-29 — SHOP_AI_001C-C5-B offline foundation closeout
+
+- `SHOP_AI_001C-C5-B — Provider-Neutral Offline Provider Integration
+  Foundation` is **COMPLETE for C5-B offline foundation scope only**.
+- Canonical code commit:
+  `c4bcd6a8cbe0c2d36afe282f4e561559dbbb2885`.
+- Parent C4 documentation commit:
+  `37fb765142de909ce62bd42f3ad428dec3b3481d`.
+- Reviewed implementation patch SHA256:
+  `ddc26b31978eb226df3f326540657b80bc74102a34365d50c63a402a29fd8d2f`.
+- C5 focused validation: **8/8 files, 39 passed, 0 deselected**.
+- Full SHOP_AI file-isolated gate: **41/41 files, 824 passed, 1 deselected**.
+- Final adversarial architecture/security review: **PASS**.
+- AIControlCenter on the Mac mini remains the sole Control Plane. C5-B is
+  provider-neutral and `OFFLINE_DENY_ONLY`; generic provider authorization
+  cannot permit an authenticated provider request.
+- No generic capability issuer or caller-injected trusted capability authority
+  exists. Configuration, activation state, allowlists, environment, and a
+  capability object are insufficient to authorize provider I/O. Trusted
+  capability issuance/verification is deferred to the future provider-specific
+  C5-C Control Plane boundary.
+- `DISABLED` and `CONTRACT_ONLY` compositions remain inert. No provider
+  transport was constructed, credentials were resolved, or `SecretReference`
+  values were materialized. No Keychain access, provider selection, provider
+  SDK, network request, SMS, retry, or fallback occurred.
+- C5-B has no SQLite persistence authority. `UNKNOWN_OUTCOME` is limited to
+  bounded unresolved provider evidence and is blocked from C4 reconciliation
+  admission. Exact provider identifier presence/value binding remains
+  fail-closed, and `VerificationReconciliationService` remains the sole
+  durable reconciliation writer.
+- No route/dashboard activation, schema or production migration, deployment,
+  production activation, or Ubuntu mutation occurred. C5-B does not authorize
+  credentials, Keychain, provider network calls, SMS, provider selection,
+  deployment, migration, or production activation.
+- Next: **`SHOP_AI_001C-C5-C — Provider-Specific Authenticated Read-Only
+  Integration`**. C5 as a whole is not complete, and the overall Shopping
+  platform is not production-ready.
+
 ## 2026-09-29 — SHOP_AI_001C-C4 documentation closeout
 
 - Stage: `SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation`.
