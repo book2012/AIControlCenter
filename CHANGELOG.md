@@ -6333,3 +6333,13 @@ evidence locator.
   107 records stay explicitly `PLANNED` after the built-in generator quota.
 - Preserved canonical Shopping schemas, original catalog records, GET-only
   behavior, and all production/runtime boundaries.
+
+## SHOP_AI_001C-C5-C3B — Offline secret-delivery foundation
+
+- Added the Twilio authenticated-read secret-delivery boundary.
+- Reused `SecretReference`, `SecretResolverPort`, and `EphemeralSecretLease`.
+- Preserved authorization-first composition.
+- No credential resolution, Keychain access, provider network, SMS, deployment, or Ubuntu mutation was performed.
+- Canonical SHOP_AI regression mode is file-isolated: 51/51 files passed, 913 tests passed, 1 known test deselected.
+- Monolithic single-process pytest is non-canonical because existing test modules exhibit shared-process isolation interference.
+- Code commit: `cd9a171579c45c5881a2fb9a20b40a7b1b412a03`.

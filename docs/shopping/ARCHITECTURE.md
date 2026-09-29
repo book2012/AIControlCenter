@@ -855,3 +855,23 @@ The next active task is:
 ## SHOP-02A Aggregate
 
 ProductDraft is an AIControlCenter-owned proposal made of immutable revisions derived from WooCommerce snapshots. Validation is deterministic, approval is human-only and revision-bound, and deployment intent is non-executable. `DEPLOYED` is intentionally absent. WooCommerce remains source of truth and Ubuntu owns no state or logic.
+
+## SHOP_AI_001C-C5-C3B — Offline Secret Delivery
+
+C5-C3B adds the provider-specific secret-delivery seam without activating provider I/O.
+
+Architecture:
+
+`AIControlCenter trusted authorization -> Twilio credential references -> SecretResolverPort -> EphemeralSecretLease -> future Twilio authenticated-read transport`
+
+Rules:
+- AIControlCenter remains the sole Control Plane.
+- C5-B `ProviderNetworkAuthorizationGate` remains `OFFLINE_DENY_ONLY`.
+- C5-C3A trusted capability authorization remains authoritative.
+- Generic business services never resolve provider secrets.
+- Provider secret values may only reach a provider-specific transport through an ephemeral lease.
+- C5-C3B itself performs no `resolve()` or lease `consume()`.
+- No network, Keychain access, SMS, write operation, deployment, schema migration, or Ubuntu mutation is permitted.
+- Canonical SHOP_AI regression execution is file-isolated; monolithic single-process pytest is not a production gate because existing test modules have shared-process isolation interference.
+
+Live authenticated provider reads belong exclusively to separately approval-gated C5-C3C.

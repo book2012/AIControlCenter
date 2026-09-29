@@ -6907,3 +6907,19 @@ mapping and an isolated 120-record dev lookbook. Canonical Shopping GET data
 continues to supply identity, name, price, availability, and description.
 Media assets are repository-owned and checksum tracked; unfinished generation
 is represented as `PLANNED` rather than fabricated.
+
+## SHOP_AI_001C-C5-C3B Status
+
+C5-C3B is complete at the offline secret-delivery contract layer.
+
+The Mac AIControlCenter remains the sole Control Plane. C5-B remains `OFFLINE_DENY_ONLY`, and C5-C3A trusted read authorization remains authoritative. C5-C3B adds only bounded provider-specific secret-delivery metadata and composition seams.
+
+No provider credential was resolved. No Keychain access or provider network request occurred.
+
+Validation:
+- focused C5-C3B tests: 15 pass
+- canonical SHOP_AI gate: 51/51 files pass
+- SHOP_AI tests: 913 pass, 1 known deselection
+- canonical regression execution: file-isolated
+
+Next milestone: `SHOP_AI_001C-C5-C3C`, separately approval-gated for live authenticated read validation.

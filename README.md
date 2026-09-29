@@ -5657,3 +5657,15 @@ The read-only local preview includes six category lookbook sections with 20
 demo records each. See
 [SHOP_MEDIA_002 architecture](docs/architecture/SHOP-MEDIA-002-CATEGORY-LOOKBOOK.md)
 for the deterministic media manifest, generation status, and validation.
+
+## SHOP_AI_001C-C5-C3B
+
+The Shopping provider integration now includes an offline Twilio secret-delivery foundation.
+
+The implemented boundary reuses the platform secret contracts:
+
+`SecretReference -> SecretResolverPort -> EphemeralSecretLease -> provider-specific transport`
+
+C5-C3B does not resolve credentials or construct a live provider transport. Network access, Keychain access, SMS, deployment, and Ubuntu changes remain outside this phase.
+
+The canonical SHOP_AI regression gate is file-isolated and currently passes 51 test files with 913 passing tests and 1 known deselection.

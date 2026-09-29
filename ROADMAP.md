@@ -5829,3 +5829,18 @@ records per category. Media generation is resumable from
 `SHOP_MEDIA_002.json`; 13/120 files are complete and 107 remain planned until
 the image generator quota resets. No production activation, staging, commit,
 push, WooCommerce write, or runtime mutation was performed.
+
+## SHOP_AI_001C-C5-C3B Milestone
+
+Status: COMPLETE.
+
+Delivered:
+- offline Twilio secret-delivery contract
+- reuse of platform secret-reference and ephemeral-lease contracts
+- authorization-first boundary preservation
+- provider transport kept offline
+- file-isolated regression validation
+
+Next: `SHOP_AI_001C-C5-C3C`.
+
+C5-C3C remains separately approval-gated. Live credential resolution, Keychain access, and authenticated Twilio GET requests are not authorized by completion of C5-C3B.
