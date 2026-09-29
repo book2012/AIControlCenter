@@ -1,5 +1,46 @@
 # MASTER
 
+<!-- SHOP_AI_001C-C5-C2_CLOSEOUT -->
+## Current authoritative SHOP_AI_001C-C5-C2 milestone
+
+`SHOP_AI_001C-C5-C2` provider-specific Twilio Verify v2 read-only foundation is
+**COMPLETE for the offline C5-C2 scope only**.
+
+Canonical implementation evidence:
+
+- code commit: `7928456fa25ab70f6fa87badd2cc035743d9dd37`
+- parent documentation baseline: `6b355a9d3bfc726242c71545102f635ce2f98675`
+- reviewed implementation patch SHA256:
+  `4284206189afb8a611af2404e145bfb5692e584e2954688b184e5771a6f6f344`
+- focused C5-C validation: **4/4 files, 43 passed**
+- full SHOP_AI file-isolated gate: **45/45 files, 867 passed, 1 deselected**
+- final deterministic architecture/security review: **PASS**
+
+Architecture remains fail-closed. AIControlCenter on the Mac mini is the sole
+Control Plane. The C5-B generic authorization boundary remains
+`OFFLINE_DENY_ONLY`.
+
+C5-C2 selects `twilio.verify.v2` only for a provider-specific offline read
+contract. The implementation exposes bounded GET-only request specifications
+for one Verify Service and one Verification resource and normalizes provider
+responses into bounded evidence. Provider status is evidence and is not
+automatically converted into C4 terminal truth.
+
+No provider network transport was constructed or called. No credentials were
+resolved, no Keychain access occurred, no SMS was sent, no Twilio SDK was
+activated, no schema or production migration was executed, no production
+route or deployment was activated, and Ubuntu was untouched.
+
+`VerificationReconciliationService` remains the sole durable C4 reconciliation
+writer. `UNKNOWN_OUTCOME` remains blocked from terminal C4 admission.
+
+C5 as a whole is not complete and this is not a production-readiness claim.
+The next milestone is `SHOP_AI_001C-C5-C3` for explicitly approval-gated,
+provider-specific authenticated read activation. Real credentials, Keychain
+resolution, and authenticated provider network calls require separate explicit
+authorization.
+
+
 ## Current authoritative platform state — 2026-09-29
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.
