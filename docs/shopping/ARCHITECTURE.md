@@ -875,3 +875,20 @@ Rules:
 - Canonical SHOP_AI regression execution is file-isolated; monolithic single-process pytest is not a production gate because existing test modules have shared-process isolation interference.
 
 Live authenticated provider reads belong exclusively to separately approval-gated C5-C3C.
+
+<!-- SHOP_AI_001C-C5-C3C0_CLOSEOUT -->
+### C5-C3C0 offline authenticated-read runtime boundary
+
+C5-C3C0 preserves the Mac AIControlCenter as the sole control-plane authority.
+
+The authenticated-read sequence is authorization-first:
+
+`TwilioAuthenticatedReadAuthority -> bounded request -> SecretReference boundary -> resolver/lease seam -> Twilio-specific GET transport seam -> bounded provider normalization`
+
+C5-C3C0 permits only `READ_HEALTH` and `READ_EVIDENCE`. Request specifications are GET only. A capability is consumed on the first trusted authorization attempt. Transport execution is limited to one attempt with no retry and no fallback.
+
+`SecretReference`, `SecretResolverPort`, and `EphemeralSecretLease` remain the credential-delivery contracts. C5-B `OFFLINE_DENY_ONLY` remains unchanged and C5-C3A remains the trusted Twilio read authority.
+
+C5-C3C0 is offline validation only. It does not perform real macOS Keychain resolution, credential access, provider network access, SMS delivery, deployment, database authority changes, or Ubuntu mutation.
+
+Canonical SHOP_AI regression is file-isolated. C5-C3C0 closed with 53 test files passing, 928 tests passed, and 1 known baseline deselection.

@@ -6343,3 +6343,19 @@ evidence locator.
 - Canonical SHOP_AI regression mode is file-isolated: 51/51 files passed, 913 tests passed, 1 known test deselected.
 - Monolithic single-process pytest is non-canonical because existing test modules exhibit shared-process isolation interference.
 - Code commit: `cd9a171579c45c5881a2fb9a20b40a7b1b412a03`.
+
+<!-- SHOP_AI_001C-C5-C3C0_CLOSEOUT -->
+### SHOP_AI_001C-C5-C3C0 — Offline authenticated-read runtime
+
+- Completed the offline Twilio authenticated-read runtime foundation.
+- Authorization remains AIControlCenter-owned and authorization-first.
+- Provider contract remains `twilio.verify.v2` with `READ_HEALTH` and `READ_EVIDENCE` only.
+- HTTP method is GET only; maximum attempts is one; retry and fallback remain disabled.
+- `SecretReference`, `SecretResolverPort`, and `EphemeralSecretLease` remain the credential-delivery contracts.
+- C5-B `OFFLINE_DENY_ONLY` and C5-C3A trusted authority remain preserved.
+- Focused validation: 15 passed.
+- Canonical SHOP_AI gate uses file-isolated pytest execution: 53 files passed, 928 tests passed, 1 known baseline test deselected.
+- Known baseline deselection: `tests/test_shop_ai_01b3_api_runtime.py::test_app_creation_does_not_create_product_draft_database`.
+- Provider network, real credential resolution, Keychain access, SMS, deployment, and Ubuntu mutation were not performed.
+- Code commit: `7f45f144d7d69722536e079292eb3b3513691824`.
+- Next milestone: C5-C3 authenticated live-read hardening and separately approved non-production validation.

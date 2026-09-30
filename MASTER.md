@@ -6923,3 +6923,18 @@ Validation:
 - canonical regression execution: file-isolated
 
 Next milestone: `SHOP_AI_001C-C5-C3C`, separately approval-gated for live authenticated read validation.
+
+<!-- SHOP_AI_001C-C5-C3C0_CLOSEOUT -->
+### SHOP_AI_001C-C5-C3C0 status
+
+C5-C3C0 is complete as an offline authenticated-read runtime foundation.
+
+The AIControlCenter Mac remains the sole control-plane authority. The Twilio provider boundary is GET-only and restricted to `READ_HEALTH` and `READ_EVIDENCE`. Authorization occurs before any future secret-resolution or transport activity. Retry and fallback are disabled and each authorized transport attempt is bounded to one attempt.
+
+Validation evidence: 15 focused tests passed. The canonical file-isolated SHOP_AI gate passed all 53 test files with 928 tests passed and 1 known baseline deselection.
+
+No real provider network access, credential resolution, Keychain access, SMS delivery, deployment, or Ubuntu mutation occurred.
+
+Code commit: `7f45f144d7d69722536e079292eb3b3513691824`.
+
+The next milestone is C5-C3 live-read hardening followed by a separately explicit approval gate for non-production Twilio authenticated GET validation.

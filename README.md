@@ -5669,3 +5669,14 @@ The implemented boundary reuses the platform secret contracts:
 C5-C3B does not resolve credentials or construct a live provider transport. Network access, Keychain access, SMS, deployment, and Ubuntu changes remain outside this phase.
 
 The canonical SHOP_AI regression gate is file-isolated and currently passes 51 test files with 913 passing tests and 1 known deselection.
+
+<!-- SHOP_AI_001C-C5-C3C0_CLOSEOUT -->
+### SHOP_AI_001C-C5-C3C0 offline authenticated read
+
+The shopping provider integration now includes the C5-C3C0 offline authenticated-read runtime foundation.
+
+The runtime preserves authorization-first execution, Twilio-specific GET-only request construction, one-attempt execution, no retry or fallback, bounded provider normalization, and the existing secret-delivery contracts.
+
+Canonical regression is file-isolated: 53 SHOP_AI test files passed with 928 tests passed and 1 known baseline deselection.
+
+This stage does not activate live provider access. Real credentials, macOS Keychain resolution, Twilio network calls, SMS delivery, deployment, and Ubuntu mutation remain outside C5-C3C0.
