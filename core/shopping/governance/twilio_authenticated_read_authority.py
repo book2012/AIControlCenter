@@ -20,6 +20,7 @@ from core.shopping.ports.provider_activation import (
 
 
 MAX_CAPABILITY_TTL_SECONDS = 60
+AUTHORITY_RECORD_RETENTION_SECONDS = MAX_CAPABILITY_TTL_SECONDS
 
 _PROVIDER_RE = re.compile(r"[A-Za-z0-9._-]{1,64}\Z")
 _OPAQUE_ID_RE = re.compile(r"[A-Za-z0-9._-]{16,64}\Z")
@@ -257,6 +258,29 @@ class TwilioAuthenticatedReadAuthority:
 
         return value
 
+    def _prune_retired(
+        self,
+        observed_at: datetime,
+    ) -> None:
+        retired = [
+            capability
+            for capability, record in self._issued.items()
+            if observed_at
+            >= record.expires_at
+            + timedelta(
+                seconds=AUTHORITY_RECORD_RETENTION_SECONDS
+            )
+        ]
+
+        for capability in retired:
+            self._issued.pop(
+                capability,
+                None,
+            )
+            self._used.discard(
+                capability
+            )
+
     def issue(
         self,
         request: TwilioAuthenticatedReadRequest,
@@ -279,6 +303,9 @@ class TwilioAuthenticatedReadAuthority:
             raise TwilioAuthenticatedReadAuthorizationError()
 
         issued_at = self._now()
+        self._prune_retired(
+            issued_at
+        )
         expires_at = issued_at + timedelta(
             seconds=ttl_seconds
         )
@@ -286,6 +313,12 @@ class TwilioAuthenticatedReadAuthority:
         issuance_id = self._validate_issuance_id(
             self._id_factory()
         )
+
+        if any(
+            record.issuance_id == issuance_id
+            for record in self._issued.values()
+        ):
+            raise TwilioAuthenticatedReadAuthorizationError()
 
         capability = object.__new__(
             TwilioAuthenticatedReadCapability
@@ -339,6 +372,9 @@ class TwilioAuthenticatedReadAuthority:
             raise TwilioAuthenticatedReadAuthorizationError()
 
         observed_at = self._now()
+        self._prune_retired(
+            observed_at
+        )
 
         if capability is None:
             return self._decision(
