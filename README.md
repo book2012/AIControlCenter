@@ -5727,3 +5727,43 @@ normalized `HEALTHY`.
 
 This milestone does not declare the platform production-ready.
 <!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+
+<!-- SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
+## Commerce Order Core v1
+
+AIControlCenter now owns the first bounded read-only order domain
+boundary for the Shopping Platform.
+
+Delivered:
+
+- `OrderSnapshot` and bounded line-item contracts
+- `OrderListQuery`
+- `OrderReadPort`
+- `OrderService`
+- WooCommerce order-response normalization
+- privacy-minimized customer references
+- Decimal-based money normalization
+- read-only fake adapter test path
+
+Current authority boundary:
+
+- AIControlCenter owns order business logic
+- WooCommerce remains the Commerce Engine
+- WordPress remains the CMS
+- Ubuntu owns no order business logic or application state
+
+Not enabled:
+
+- WooCommerce network access
+- WooCommerce credential access
+- order creation/update/delete
+- payment mutation
+- refund or fulfillment mutation
+
+Focused tests: 9 passed.
+
+SHOP_AI file-isolated regression:
+951 passed with 1 known baseline test deselected.
+
+This milestone does not declare the platform production-ready.
+<!-- /SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->

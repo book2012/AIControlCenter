@@ -6988,3 +6988,35 @@ Not enabled:
 The next shopping milestone proceeds without expanding provider
 authority beyond this boundary.
 <!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+
+<!-- SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
+## Commerce Order Core v1
+
+Status: COMPLETE after canonical documentation and normal push.
+
+Control-plane contract:
+
+`Customer / Agent`
+→ `AIControlCenter`
+→ `OrderService`
+→ `OrderReadPort`
+→ provider adapter.
+
+AIControlCenter remains authoritative for:
+
+- order-domain contracts
+- business orchestration
+- policy
+- future authorization
+- future audit
+
+WooCommerce is a replaceable Commerce Engine adapter target and
+does not own platform-wide business logic.
+
+Current milestone remains offline/read-only.
+
+WooCommerce networking, credentials, writes and payment mutations
+are not active.
+
+Next milestone: controlled WooCommerce real read-only integration.
+<!-- /SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->

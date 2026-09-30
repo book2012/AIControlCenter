@@ -965,3 +965,51 @@ Security properties:
 The non-production live validation returned HTTP 200 and normalized
 `HEALTHY`. This evidence does not constitute production activation.
 <!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+
+<!-- SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
+## Commerce Order Core v1 boundary
+
+AIControlCenter owns the commerce order business boundary.
+
+Architecture:
+
+`Customer / AI Agent`
+→ `AIControlCenter`
+→ `OrderService`
+→ `OrderReadPort`
+→ WooCommerce adapter.
+
+Domain-facing code receives bounded `OrderSnapshot` objects only.
+
+WooCommerce raw JSON, billing payloads, shipping payloads,
+arbitrary metadata and provider implementation details do not
+cross the domain boundary.
+
+Current order projection includes:
+
+- provider order ID
+- opaque provider reference
+- order number
+- status
+- currency
+- opaque customer reference
+- bounded line items
+- monetary totals
+- created/updated timestamps
+- provider version
+
+Security and architecture policy:
+
+- read-only first
+- WooCommerce network access disabled
+- WooCommerce credential access disabled
+- create/update/delete disabled
+- payment mutation disabled
+- business logic remains in AIControlCenter
+- WordPress remains CMS-only
+- WooCommerce remains Commerce Engine-only
+- Ubuntu remains a stateless infrastructure worker
+
+The next provider milestone may introduce real authenticated
+WooCommerce reads but must preserve these boundaries.
+<!-- /SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->

@@ -5905,3 +5905,37 @@ Deferred:
 
 Next major shopping milestone: Commerce Order Core.
 <!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+
+<!-- SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
+## Commerce Order Core v1
+
+Milestone status: COMPLETE after documentation closeout and push.
+
+Delivered:
+
+- order domain contracts
+- order read port
+- AIControlCenter OrderService
+- WooCommerce bounded normalizer
+- fake/offline read adapter path
+- privacy-minimized projection
+- full SHOP_AI regression gate
+
+Next milestone:
+
+### WooCommerce Real Read-Only Integration
+
+Planned scope:
+
+- Mac-side secret references
+- read-only WooCommerce REST credentials
+- authenticated GET transport
+- `LIST_ORDERS`
+- `READ_ORDER`
+- bounded normalization
+- no provider writes
+- no payment mutations
+
+Controlled order writes remain deferred until read-only monitoring
+and validation are stable.
+<!-- /SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->

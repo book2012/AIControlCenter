@@ -6396,3 +6396,24 @@ Code commit: `ce29a16bb06c21eed92c515d909ee3afbf3ae067`.
 - Existing 31-path working tree state remained preserved.
 - Deployment was not performed and Ubuntu remained untouched.
 <!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+
+<!-- SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
+## Commerce Order Core v1
+
+- Added the AIControlCenter-owned order domain boundary.
+- Added bounded `OrderSnapshot` and `OrderLineItem` contracts.
+- Added bounded order-list queries.
+- Added `OrderReadPort`.
+- Added `OrderService`.
+- Added WooCommerce order normalization without provider raw payload
+  leakage into the business layer.
+- Monetary values normalize to `Decimal`.
+- Customer data remains minimized to an opaque provider reference.
+- WooCommerce network and credentials remain disabled.
+- Order and payment writes remain disabled.
+- Focused tests: 9 passed.
+- SHOP_AI file-isolated regression: 951 passed,
+  1 known baseline test deselected.
+- Existing 31-path worktree state remained byte-preserved.
+- Ubuntu remained untouched.
+<!-- /SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
