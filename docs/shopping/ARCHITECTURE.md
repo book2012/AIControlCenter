@@ -892,3 +892,36 @@ C5-C3C0 permits only `READ_HEALTH` and `READ_EVIDENCE`. Request specifications a
 C5-C3C0 is offline validation only. It does not perform real macOS Keychain resolution, credential access, provider network access, SMS delivery, deployment, database authority changes, or Ubuntu mutation.
 
 Canonical SHOP_AI regression is file-isolated. C5-C3C0 closed with 53 test files passing, 928 tests passed, and 1 known baseline deselection.
+
+<!-- SHOP_AI_001C-C5-C3C-H1 -->
+## C5-C3C-H1 Authenticated Read Authority Hardening
+
+AIControlCenter remains the sole authority for provider-specific
+authenticated-read capabilities.
+
+The Twilio authority now maintains only bounded in-memory capability
+state. Retired records are pruned after their bounded retention
+window. An issuance ID that collides with any still-retained record
+fails closed; it is never silently reused.
+
+The following invariants remain unchanged:
+
+- Twilio provider source must match exactly.
+- READ_HEALTH and READ_EVIDENCE remain the only admitted C5-C3C reads.
+- Capability binding covers provider, operation, request identity,
+  correlation identity, service SID, and verification SID where applicable.
+- The first trusted authorization attempt consumes the capability.
+- C5-B generic network authorization remains OFFLINE_DENY_ONLY.
+- Provider transport is GET-only with one attempt, zero retry, and
+  zero fallback.
+- Provider observations are evidence only; C4 remains the sole durable
+  lifecycle/reconciliation writer.
+- UNKNOWN_OUTCOME cannot become terminal C4 truth automatically.
+- No provider credential, raw response, phone number, or secret becomes
+  durable application state.
+
+H1 itself performs no provider network, credential resolution,
+Keychain access, SMS operation, deployment, or Ubuntu mutation.
+
+Validation evidence: 936 SHOP_AI tests passed with the single known
+baseline deselection. Code commit `ce29a16bb06c21eed92c515d909ee3afbf3ae067`.

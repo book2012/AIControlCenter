@@ -5863,3 +5863,21 @@ Validated boundaries:
 - No real provider network, Keychain, credential resolution, SMS, deployment, or Ubuntu mutation.
 
 Next milestone: C5-C3 live-read hardening and explicit approval-gated non-production authenticated GET validation.
+
+<!-- SHOP_AI_001C-C5-C3C-H1 -->
+## SHOP_AI_001C-C5-C3C-H1 Milestone
+
+Completed:
+
+- bounded in-memory authenticated-read authority registry
+- expired-record pruning
+- retained issuance-ID collision fail-closed behavior
+- offline regression and full SHOP_AI validation
+
+Next milestone:
+
+C5-C3C live authenticated-read readiness. Before any provider
+request, re-verify current official Twilio Verify v2 documentation
+and require explicit approval for a bounded non-production GET.
+
+No production activation is implied by H1 completion.

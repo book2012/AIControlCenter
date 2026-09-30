@@ -6359,3 +6359,19 @@ evidence locator.
 - Provider network, real credential resolution, Keychain access, SMS, deployment, and Ubuntu mutation were not performed.
 - Code commit: `7f45f144d7d69722536e079292eb3b3513691824`.
 - Next milestone: C5-C3 authenticated live-read hardening and separately approved non-production validation.
+
+<!-- SHOP_AI_001C-C5-C3C-H1 -->
+## SHOP_AI_001C-C5-C3C-H1
+
+### Security
+
+- Added bounded retirement/pruning for Twilio authenticated-read
+  capability records.
+- Added fail-closed detection for retained issuance-ID collisions.
+- Preserved default opaque ID generation and one-shot authorization.
+- Preserved offline-only C5-C3C0 transport boundaries.
+
+Validation: 54 SHOP_AI test files, 936 passed, 1 known baseline
+deselected.
+
+Code commit: `ce29a16bb06c21eed92c515d909ee3afbf3ae067`.

@@ -5680,3 +5680,23 @@ The runtime preserves authorization-first execution, Twilio-specific GET-only re
 Canonical regression is file-isolated: 53 SHOP_AI test files passed with 928 tests passed and 1 known baseline deselection.
 
 This stage does not activate live provider access. Real credentials, macOS Keychain resolution, Twilio network calls, SMS delivery, deployment, and Ubuntu mutation remain outside C5-C3C0.
+
+<!-- SHOP_AI_001C-C5-C3C-H1 -->
+## SHOP_AI_001C-C5-C3C-H1
+
+C5-C3C authenticated-read authority hardening is complete
+offline.
+
+- bounded capability-registry retention and pruning
+- retained issuance-ID collisions fail closed
+- default opaque issuance-ID factory preserved
+- authorization-first and one-shot capability semantics preserved
+- C5-B generic authorization remains OFFLINE_DENY_ONLY
+- provider access remains GET-only, one attempt, no retry or fallback
+- full SHOP_AI file-isolated gate: 936 passed, 1 known baseline deselected
+- code commit: `ce29a16bb06c21eed92c515d909ee3afbf3ae067`
+- reviewed patch SHA-256: `3f19df00384df56e54a4eae8753edb3418a70286c225725e72810d53e6fb36d8`
+
+No provider network, real credential resolution, Keychain access,
+SMS send, deployment, production activation, or Ubuntu mutation
+was performed. C5-C3C live authorization has not been granted.
