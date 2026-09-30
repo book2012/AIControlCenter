@@ -6375,3 +6375,24 @@ Validation: 54 SHOP_AI test files, 936 passed, 1 known baseline
 deselected.
 
 Code commit: `ce29a16bb06c21eed92c515d909ee3afbf3ae067`.
+
+<!-- SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+## SHOP_AI_001C-C5-C3C Live authenticated READ_HEALTH
+
+- Added the permanent macOS Keychain generic-password reader.
+- Added the permanent Twilio authenticated live health runtime.
+- Preserved authorization-first secret resolution.
+- Preserved one-shot capability authorization.
+- Restricted the live provider boundary to `READ_HEALTH`.
+- Restricted HTTP execution to one GET request.
+- Retry and fallback remain disabled.
+- `READ_EVIDENCE` remains live-disabled.
+- SMS and provider write operations remain disabled.
+- Non-production live evidence returned HTTP 200 and normalized
+  `HEALTHY`.
+- Focused live-runtime tests: 6 passed.
+- SHOP_AI file-isolated regression: 942 passed,
+  1 known baseline test deselected.
+- Existing 31-path working tree state remained preserved.
+- Deployment was not performed and Ubuntu remained untouched.
+<!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->

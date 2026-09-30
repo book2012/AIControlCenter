@@ -5881,3 +5881,27 @@ request, re-verify current official Twilio Verify v2 documentation
 and require explicit approval for a bounded non-production GET.
 
 No production activation is implied by H1 completion.
+
+<!-- SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+## SHOP_AI_001C-C5-C3C Live READ_HEALTH
+
+Milestone status: COMPLETE after documentation closeout and push.
+
+Delivered:
+
+- non-production authenticated Twilio `READ_HEALTH`
+- AIControlCenter-owned one-shot authorization
+- Mac Keychain credential boundary
+- ephemeral secret leases
+- exact GET-only provider transport
+- one-attempt / no-retry / no-fallback policy
+- normalized provider health evidence
+
+Deferred:
+
+- live `READ_EVIDENCE`
+- controlled non-production SMS write
+- production provider activation
+
+Next major shopping milestone: Commerce Order Core.
+<!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->

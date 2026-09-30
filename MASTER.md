@@ -6957,3 +6957,34 @@ Evidence:
 - code commit: `ce29a16bb06c21eed92c515d909ee3afbf3ae067`
 
 Live Twilio authenticated reads remain separately approval-gated.
+
+<!-- SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+## SHOP_AI_001C-C5-C3C Live READ_HEALTH milestone
+
+Status: COMPLETE after canonical documentation and normal
+fast-forward push.
+
+Validated control-plane path:
+
+`TwilioAuthenticatedReadAuthority`
+→ one-shot capability
+→ Mac Keychain `SecretReference`
+→ `SecretResolverPort`
+→ `EphemeralSecretLease`
+→ Twilio-specific HTTPS GET
+→ bounded provider normalization.
+
+Live scope is intentionally limited to `READ_HEALTH`.
+
+Not enabled:
+
+- `READ_EVIDENCE` live execution
+- SMS verification writes
+- retry/fallback
+- production activation
+- deployment
+- Ubuntu mutation
+
+The next shopping milestone proceeds without expanding provider
+authority beyond this boundary.
+<!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->

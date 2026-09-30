@@ -925,3 +925,43 @@ Keychain access, SMS operation, deployment, or Ubuntu mutation.
 
 Validation evidence: 936 SHOP_AI tests passed with the single known
 baseline deselection. Code commit `ce29a16bb06c21eed92c515d909ee3afbf3ae067`.
+
+<!-- SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+## C5-C3C Live authenticated READ_HEALTH boundary
+
+AIControlCenter remains the sole control-plane authority for
+provider access.
+
+The validated non-production Twilio path is:
+
+`TwilioAuthenticatedReadAuthority`
+→ exact request-bound one-shot capability
+→ `SecretReference`
+→ macOS Keychain resolver
+→ `EphemeralSecretLease`
+→ Twilio-specific live health runtime
+→ HTTPS GET `/v2/Services/{ServiceSid}`
+→ bounded normalization.
+
+Security properties:
+
+- provider source is fixed to `twilio.verify.v2`
+- live operation is limited to `READ_HEALTH`
+- `READ_EVIDENCE` is not live-enabled
+- HTTP method is GET only
+- maximum provider attempts: 1
+- retry: disabled
+- fallback: disabled
+- redirect following: disabled
+- provider response size is bounded
+- authorization precedes credential resolution
+- denied authorization performs zero secret resolution
+- secret values are not durable application state
+- SMS/provider writes remain disabled
+- C4 remains the durable verification-state authority
+- Ubuntu remains a stateless infrastructure worker and is not
+  involved in this provider control path
+
+The non-production live validation returned HTTP 200 and normalized
+`HEALTHY`. This evidence does not constitute production activation.
+<!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->

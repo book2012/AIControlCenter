@@ -5700,3 +5700,30 @@ offline.
 No provider network, real credential resolution, Keychain access,
 SMS send, deployment, production activation, or Ubuntu mutation
 was performed. C5-C3C live authorization has not been granted.
+
+<!-- SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
+## SHOP_AI_001C-C5-C3C Live READ_HEALTH
+
+The AIControlCenter non-production Twilio authenticated
+`READ_HEALTH` boundary has been validated through the control plane.
+
+Current contract:
+
+- provider: `twilio.verify.v2`
+- activation: `AUTHENTICATED_READ_ONLY`
+- live operation: `READ_HEALTH`
+- HTTP method: `GET`
+- provider request attempts: `1`
+- retry: disabled
+- fallback: disabled
+- SMS/write operations: disabled
+- `READ_EVIDENCE` live activation: disabled
+- credentials: Mac Keychain → `SecretReference` →
+  `SecretResolverPort` → `EphemeralSecretLease`
+- Ubuntu: untouched
+
+The verified non-production observation returned HTTP 200 and
+normalized `HEALTHY`.
+
+This milestone does not declare the platform production-ready.
+<!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
