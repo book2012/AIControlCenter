@@ -26,6 +26,7 @@ class BrainAgent:
         knowledge: KnowledgeSearch | None = None,
         provider_router: ProviderRouter | None = None,
         settings: Settings | None = None,
+        shopping_tools=None,
     ):
         self.providers = providers
         selected_settings = settings or load_settings()
@@ -35,9 +36,16 @@ class BrainAgent:
         )
         self.provider_router = provider_router or self._default_provider_router()
         self.memory = memory or ConversationMemory()
-        self.router = router or AgentActionRouter()
+        self.router = router or AgentActionRouter(
+            shopping_tools=shopping_tools,
+        )
         self.memory_manager = memory_manager or MemoryManager()
         self.knowledge = knowledge or KnowledgeSearch()
+
+    def invoke_shopping_tool(self, name: str, arguments: dict):
+        """Invoke an exact structured read tool through the existing router."""
+
+        return self.router.route_tool(name, arguments)
 
     def _default_provider_router(self) -> ProviderRouter:
         router = ProviderRouter()
