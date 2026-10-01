@@ -18,7 +18,23 @@ from typing import Any
 from core.deployment.contracts import load_schema_registry, validate_contract_payload
 
 _LIMIT = 32768
-_MATCHERS = ("@shopping_namespace", "@shopping_rest_route", "@shopping_rest_route_ambiguous")
+_PRIVATE_MATCHERS = ("@shopping_namespace", "@shopping_rest_route", "@shopping_rest_route_ambiguous")
+_PUBLIC_READ_PATHS = (
+    "/shopping/categories", "/shopping/search", "/shopping/featured-products",
+    "/shopping/products", "/shopping/products/*",
+)
+_PUBLIC_MANAGEMENT_PATHS = (
+    "/admin", "/admin/*", "/management", "/management/*", "/api", "/api/*",
+    "/deployment", "/deployment/*", "/runtime", "/runtime/*", "/governance",
+    "/governance/*", "/providers", "/providers/*", "/tasks", "/tasks/*",
+    "/woocommerce", "/woocommerce/*", "/cart", "/cart/*", "/checkout",
+    "/checkout/*", "/my-account", "/my-account/*", "/order-pay", "/order-pay/*",
+    "/add-to-cart", "/add-to-cart/*", "/wc-api", "/wc-api/*",
+)
+_WORDPRESS_PATHS = (
+    "/wp-admin", "/wp-admin/*", "/wp-login.php", "/xmlrpc.php", "/wp-cron.php",
+    "/wp-json", "/wp-json/*",
+)
 _BCRYPT = re.compile(r"\$2[aby]\$(?:0[4-9]|[12][0-9]|3[01])\$[./A-Za-z0-9]{53}\Z")
 _USER = re.compile(r"[A-Za-z0-9_-]{1,64}\Z")
 
@@ -114,8 +130,8 @@ def _tokens(line: str) -> tuple[str, ...]:
                 _fail("UNSUPPORTED_CADDY_SYNTAX")
             # Do not erase quoting around structural tokens. Only these literal
             # response/header values and the exact raw guard expression are used.
-            if ((quote == '"' and token not in {"Forbidden", "ok", "noindex, nofollow, noarchive"})
-                    or (quote == '`' and token != _private_query_pattern())):
+            if ((quote == '"' and token not in {"Forbidden", "Not Found", "ok", "noindex, nofollow, noarchive"})
+                    or (quote == '`' and token not in {_private_query_pattern(), _rest_route_query_pattern()})):
                 _fail("UNSUPPORTED_CADDY_SYNTAX")
             index = end + 1
         else:
@@ -190,6 +206,21 @@ def _private_query_pattern() -> str:
     return "(?i)(^|[&;])" + key + "=" + slash + "*" + namespace + "(" + slash + "|[&;]|$)"
 
 
+def _rest_route_query_pattern() -> str:
+    """Match every normalized spelling of the reserved WordPress query route key."""
+    def spelling(word: str) -> str:
+        return "".join(
+            "(?:" + re.escape(char) + "|%(?:25)*(?:"
+            + "|".join(sorted({format(ord(c), "02x") for c in (char.lower(), char.upper())}))
+            + "))" for char in word
+        )
+
+    key = spelling("rest") + "(?:_|[.+]|%(?:25)*(?:2b|2e|5f|20))" + spelling("route")
+    boundary = "(^|[&;]|%(?:25)*(?:26|3b))"
+    delimiter = "(?:=|%(?:25)*(?:3d)|[&;]|%(?:25)*(?:26|3b)|$)"
+    return "(?i)" + boundary + key + delimiter
+
+
 def _auth(node: _Directive) -> None:
     if node.words not in (("basic_auth",), ("basic_auth", "bcrypt")):
         _fail("PREVIEW_AUTH_ORDER_OR_BYPASS")
@@ -212,10 +243,6 @@ def _site(node: _Directive, role: str, identity: dict[str, Any]) -> ClassifiedSi
         if not child.words or child.words[0] in parts:
             _fail("UNSUPPORTED_SITE_STRUCTURE")
         parts[child.words[0]] = child
-    if not set(_MATCHERS).issubset(parts):
-        _fail("PRIVATE_GUARDS_REQUIRED")
-    if set(parts) != {"log", "header", "route", *_MATCHERS}:
-        _fail("UNSUPPORTED_SITE_STRUCTURE")
     if parts["log"] != _discard("log"):
         _fail("UNSAFE_LOGGING")
     header = (
@@ -227,27 +254,69 @@ def _site(node: _Directive, role: str, identity: dict[str, Any]) -> ClassifiedSi
     if parts["header"] != _Directive(("header",), header):
         _fail("UNSAFE_HEADER_POLICY")
     guards = (
-        _leaf(_MATCHERS[0], "path", "/wp-json/aicontrolcenter/v1/shopping", "/wp-json/aicontrolcenter/v1/shopping/*"),
-        _leaf(_MATCHERS[1], "query", "rest_route=/aicontrolcenter/v1/shopping", "rest_route=/aicontrolcenter/v1/shopping/*"),
-        _leaf(_MATCHERS[2], "vars_regexp", "{http.request.uri.query}", _private_query_pattern()),
+        _leaf(_PRIVATE_MATCHERS[0], "path", "/wp-json/aicontrolcenter/v1/shopping", "/wp-json/aicontrolcenter/v1/shopping/*"),
+        _leaf(_PRIVATE_MATCHERS[1], "query", "rest_route=/aicontrolcenter/v1/shopping", "rest_route=/aicontrolcenter/v1/shopping/*"),
+        _leaf(_PRIVATE_MATCHERS[2], "vars_regexp", "{http.request.uri.query}", _rest_route_query_pattern()),
     )
+    if not set(_PRIVATE_MATCHERS).issubset(parts):
+        _fail("PRIVATE_GUARDS_REQUIRED")
     if any(parts[guard.words[0]] != guard for guard in guards):
         _fail("PRIVATE_GUARD_MISMATCH")
     route = parts["route"]
-    denies = tuple(_leaf("respond", name, "Forbidden", "403") for name in _MATCHERS)
+    denies = tuple(_leaf("respond", name, "Forbidden", "403") for name in _PRIVATE_MATCHERS)
     if route.words != ("route",) or route.children is None or route.children[:3] != denies:
         _fail("PRIVATE_GUARD_ORDER_OR_BYPASS")
     tail = route.children[3:]
     if role == "preview":
+        if set(parts) != {"log", "header", "route", *_PRIVATE_MATCHERS}:
+            _fail("UNSUPPORTED_SITE_STRUCTURE")
         if len(tail) != 2:
+            if not any(child.words and child.words[0] == "basic_auth" for child in tail):
+                _fail("PRIVATE_GUARDS_REQUIRED")
             _fail("PREVIEW_AUTH_ORDER_OR_BYPASS")
         _auth(tail[0])
     else:
-        if len(tail) != 3 or tail[:2] != (
+        public_api = identity.get("public_shopping_api")
+        if not isinstance(public_api, dict):
+            _fail("PUBLIC_READ_POLICY_REQUIRED")
+        expected_parts = {
+            "log", "header", "route", *_PRIVATE_MATCHERS,
+            "@public_shopping_read", "@public_shopping_namespace",
+            "@management_namespace", "@wordpress_namespace", "@legacy_storefront",
+        }
+        if set(parts) != expected_parts:
+            _fail("UNSUPPORTED_SITE_STRUCTURE")
+        expected_matchers = (
+            _Directive(("@public_shopping_read",), (
+                _leaf("method", "GET"), _leaf("path", *_PUBLIC_READ_PATHS),
+            )),
+            _leaf("@public_shopping_namespace", "path", "/shopping", "/shopping/*"),
+            _leaf("@management_namespace", "path", *_PUBLIC_MANAGEMENT_PATHS),
+            _leaf("@wordpress_namespace", "path", *_WORDPRESS_PATHS),
+            _leaf("@legacy_storefront", "path", "/homepage/storefront"),
+        )
+        if any(parts[item.words[0]] != item for item in expected_matchers):
+            _fail("PUBLIC_READ_POLICY_MISMATCH")
+        public_endpoint = public_api["upstream"]
+        public_handle = _Directive(
+            ("handle", "@public_shopping_read"),
+            (_leaf("reverse_proxy", f"{public_endpoint['host']}:{public_endpoint['port']}"),),
+        )
+        endpoint = identity["upstream"]
+        expected_route = (
+            *denies,
+            _leaf("redir", "@legacy_storefront", "/", "301"),
+            _leaf("respond", "@management_namespace", "Not Found", "404"),
+            _leaf("respond", "@wordpress_namespace", "Not Found", "404"),
+            public_handle,
+            _leaf("respond", "@public_shopping_namespace", "Not Found", "404"),
             _leaf("respond", "/__aicontrolcenter_ingress_health", "ok", "200"),
             _leaf("respond", "/healthz", "ok", "200"),
-        ):
+            _leaf("reverse_proxy", f"{endpoint['host']}:{endpoint['port']}"),
+        )
+        if route.children != expected_route:
             _fail("UNSUPPORTED_PRODUCTION_ROUTE")
+        tail = expected_route
     endpoint = identity["upstream"]
     if tail[-1] != _leaf("reverse_proxy", f"{endpoint['host']}:{endpoint['port']}"):
         _fail("UNAPPROVED_UPSTREAM_OR_PROXY")
@@ -289,7 +358,10 @@ def classify_caddy_sites(
         role = identities[node.words[0]]
         if role in sites:
             _fail("DUPLICATE_SITE")
-        sites[role] = _site(node, role, policy[role])
+        identity = dict(policy[role])
+        if role == "production":
+            identity["public_shopping_api"] = policy["public_shopping_api"]
+        sites[role] = _site(node, role, identity)
     if "production" not in sites:
         _fail("PRODUCTION_SITE_REQUIRED")
     return CaddySiteClassification(sites["production"], sites.get("preview"))

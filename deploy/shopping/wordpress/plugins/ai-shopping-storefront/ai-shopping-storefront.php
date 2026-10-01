@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AI Shopping Storefront
  * Description: Presentation adapter for the AIControlCenter Shopping API.
- * Version: 0.16.0
+ * Version: 0.17.0
  * Requires PHP: 8.1
  */
 
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 define(
     'AI_SHOPPING_STOREFRONT_VERSION',
-    '0.16.0'
+    '0.17.0'
 );
 
 define(
@@ -52,8 +52,10 @@ final class AI_Shopping_Storefront_Plugin
     private const API_BASE_OPTION =
         'ai_shopping_api_base_url';
 
+    // Server-side only: the Mac canonical API listens on 127.0.0.1:58081;
+    // host.docker.internal is the explicit Compose host-gateway identity.
     private const DEFAULT_API_BASE =
-        'http://host.docker.internal:8000';
+        'http://host.docker.internal:58081';
 
     public static function boot(): void
     {
@@ -111,10 +113,9 @@ final class AI_Shopping_Storefront_Plugin
 
     public static function initialize(): void
     {
-        $api_base = get_option(
-            self::API_BASE_OPTION,
-            self::DEFAULT_API_BASE
-        );
+        // Never accept a public edge URL or a caller-controlled option as the
+        // server-side AIControlCenter destination.
+        $api_base = self::DEFAULT_API_BASE;
 
         $cache = new AI_Shopping_Cache(
             30

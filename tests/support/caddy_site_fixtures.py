@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import re
 
 from core.deployment.adapters.macos.repository import RepositoryFileReader
 
@@ -10,9 +11,12 @@ ROOT = Path(__file__).resolve().parents[2]
 CADDY_PATH = "ops/macos/caddy/Caddyfile"
 POLICY_PATH = "config/deployment/caddy-site-policy.json"
 INGRESS_PATH = "config/deployment/ingress.json"
-PRODUCTION = (ROOT / "tests/fixtures/deployment/dev-ingress-production.Caddyfile").read_text()
-GLOBALS, PRODUCTION_SITE = PRODUCTION.split("bokstory.duckdns.org", 1)
-PRODUCTION_SITE = "bokstory.duckdns.org" + PRODUCTION_SITE
+CADDY_SOURCE = (ROOT / CADDY_PATH).read_text()
+GLOBALS, remainder = CADDY_SOURCE.split("bokstory.duckdns.org", 1)
+production_body, preview_body = remainder.split("\ndev.bokstory.duckdns.org", 1)
+PRODUCTION = GLOBALS + "bokstory.duckdns.org" + production_body
+PRODUCTION_SITE = "bokstory.duckdns.org" + production_body
+PREVIEW_SOURCE = "dev.bokstory.duckdns.org" + preview_body
 POLICY_TEXT = (ROOT / POLICY_PATH).read_text()
 INGRESS_TEXT = (ROOT / "tests/fixtures/deployment/ingress-contract.json").read_text()
 INGRESS = json.loads(INGRESS_TEXT)
@@ -23,18 +27,12 @@ PROXY = "        reverse_proxy 127.0.0.1:18080\n"
 
 
 def preview_site():
-    site = PRODUCTION_SITE.replace("bokstory.duckdns.org", "dev.bokstory.duckdns.org", 1)
-    site = site.replace("strict-origin-when-cross-origin", "no-referrer")
-    site = site.replace("        -Server", '        X-Robots-Tag "noindex, nofollow, noarchive"\n        -Server')
-    site = site.replace('        respond /__aicontrolcenter_ingress_health "ok" 200\n', "")
-    site = site.replace('        respond /healthz "ok" 200\n', "")
-    return site.replace("        reverse_proxy 127.0.0.1:58082\n", AUTH + PROXY)
+    return re.sub(r"        basic_auth \{\n.*?\n        \}\n", AUTH, PREVIEW_SOURCE, count=1, flags=re.DOTALL)
 
 
 PREVIEW = preview_site()
 GUARDED = PRODUCTION + "\n" + PREVIEW
-UNGUARDED = (PRODUCTION + PREVIEW[:PREVIEW.index("    # Private Control Plane")]
-             + AUTH + "    reverse_proxy 127.0.0.1:18080\n}\n")
+UNGUARDED = GLOBALS + "\n" + PREVIEW.replace(AUTH, "")
 
 
 class CaddyFixtureFiles(RepositoryFileReader):

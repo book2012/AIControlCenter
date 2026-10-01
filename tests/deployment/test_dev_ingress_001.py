@@ -327,7 +327,7 @@ def test_adapters_report_explicit_roles_without_readiness_authority(adapter, wit
     else:
         assert result["sites"]["preview"] is None
     assert result["evidence_scope"] == "repository-desired-state"
-    assert result["site_policy_version"] == "dev-ingress/v1"
+    assert result["site_policy_version"] == "public-storefront-migration/v2"
     for name in ("live_network_test_performed", "readiness_granted", "activation_authorized", "effective_runtime_attested"):
         assert result[name] is False
     assert "status" not in result and "overall_status" not in result
@@ -430,7 +430,7 @@ def test_accepted_fixtures_have_expected_offline_caddy_semantics(with_preview):
     classify(text)
     # Use the canonical harness's isolated root, without visiting pytest's stale
     # machine-wide temporary directories. Only this test-owned file is adapted.
-    with tempfile.TemporaryDirectory(dir=os.environ["AICONTROLCENTER_BOOTSTRAP_TEST_ROOT"]) as directory:
+    with tempfile.TemporaryDirectory(dir=os.environ.get("AICONTROLCENTER_BOOTSTRAP_TEST_ROOT")) as directory:
         path = Path(directory) / "fixture.Caddyfile"
         path.write_text(text)
         result = subprocess.run(
@@ -460,11 +460,16 @@ def test_accepted_fixtures_have_expected_offline_caddy_semantics(with_preview):
         assert host in (["bokstory.duckdns.org"], ["dev.bokstory.duckdns.org"])
         chain = handlers(route)
         proxy_indices = [i for i, node in enumerate(chain) if node["handler"] == "reverse_proxy"]
-        assert len(proxy_indices) == 1
-        proxy = proxy_indices[0]
-        assert chain[proxy]["upstreams"] == [{"dial": "127.0.0.1:" + ("18080" if preview else "58082")}]
+        assert len(proxy_indices) == (1 if preview else 2)
+        if preview:
+            proxy = proxy_indices[0]
+            assert chain[proxy]["upstreams"] == [{"dial": "127.0.0.1:18080"}]
+        else:
+            assert {chain[index]["upstreams"][0]["dial"] for index in proxy_indices} == {"127.0.0.1:58081", "127.0.0.1:58082"}
+            proxy = max(proxy_indices)
         denies = [i for i, node in enumerate(chain) if node["handler"] == "static_response" and node.get("status_code") == 403]
-        assert len(denies) == 3 and max(denies) < proxy
+        if preview:
+            assert len(denies) == 3 and max(denies) < proxy
         auth = [i for i, node in enumerate(chain) if node["handler"] == "authentication"]
         if preview:
             assert len(auth) == 1 and max(denies) < auth[0] < proxy

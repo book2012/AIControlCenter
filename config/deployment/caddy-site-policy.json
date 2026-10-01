@@ -1,12 +1,25 @@
 {
   "schema_version": "dpl/v1",
-  "policy_version": "dev-ingress/v1",
+  "policy_version": "public-storefront-migration/v2",
   "entrypoint": "ops/macos/caddy/Caddyfile",
   "public_edge_owner": "host-caddy",
   "listeners": {"http_port": 58080, "https_port": 58443},
   "production": {
     "hostname": "bokstory.duckdns.org",
     "upstream": {"host": "127.0.0.1", "port": 58082},
+    "required": true
+  },
+  "public_shopping_api": {
+    "upstream": {"host": "127.0.0.1", "port": 58081},
+    "authentication": "none",
+    "methods": ["GET"],
+    "paths": [
+      "/shopping/categories",
+      "/shopping/search",
+      "/shopping/featured-products",
+      "/shopping/products",
+      "/shopping/products/*"
+    ],
     "required": true
   },
   "preview": {

@@ -34,7 +34,7 @@
       },
       {
         "identifier": "ai-shopping-storefront",
-        "version": "0.16.0",
+        "version": "0.17.0",
         "artifact_digest_or_immutable_identity": null,
         "identity_status": "UNRESOLVED",
         "role": "presentation_adapter",
