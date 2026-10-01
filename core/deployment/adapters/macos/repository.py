@@ -10,10 +10,13 @@ from typing import Any, Protocol
 
 import yaml
 
+from . import caddy_sites
+
 _COMMIT = re.compile(r"^(?:[0-9a-fA-F]{40}|[0-9a-fA-F]{64})$")
 _BRANCH = re.compile(r"^[A-Za-z0-9._/-]+$")
-_LOOPBACK = re.compile(r"^(?:127\.0\.0\.1|localhost):")
 _MAX_SYMBOLIC_REF_DEPTH = 16
+_CADDY_SITE_POLICY = "config/deployment/caddy-site-policy.json"
+_CADDY_INGRESS_CONTRACT = "config/deployment/ingress.json"
 
 
 def _single_git_line(text: str) -> str:
@@ -315,22 +318,77 @@ class LaunchdDesiredStateAdapter:
         }
 
 
+def _caddy_contract_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    """Reject ambiguous canonical-contract JSON without projecting its keys."""
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise caddy_sites.CaddySitePolicyError("PRODUCTION_CONTRACT_MISMATCH")
+        value[key] = item
+    return value
+
+
+def _caddy_site_identity(site: caddy_sites.ClassifiedSite | None) -> dict[str, Any] | None:
+    if site is None:
+        return None
+    return {
+        "role": site.role, "hostname": site.hostname,
+        "host": site.host, "port": site.port,
+        "authentication_required": site.authentication_required,
+    }
+
+
 class CaddyFileAdapter:
+    """Repository-only observation shared by inventory and ingress adapters.
+
+    The classifier owns all Caddy syntax/security decisions. This adapter only
+    loads its inputs and projects approved identities, never raw configuration.
+    """
+
     def __init__(self, files: RepositoryFileReader, path: str) -> None:
         self._files, self._path = files, path
 
     def observe_caddy_desired_state(self) -> dict[str, Any]:
-        text = self._files.read_text(self._path)
-        upstreams = re.findall(r"\breverse_proxy\s+([^\s{]+)", text)
-        if not upstreams:
-            raise ValueError("Caddy upstream missing")
-        loopback = all(_LOOPBACK.match(value) for value in upstreams)
+        try:
+            policy = caddy_sites.load_site_policy(self._files.read_text(_CADDY_SITE_POLICY))
+            if self._path != policy["entrypoint"]:
+                raise caddy_sites.CaddySitePolicyError("CADDY_ENTRYPOINT_MISMATCH")
+            ingress = json.loads(
+                self._files.read_text(_CADDY_INGRESS_CONTRACT),
+                object_pairs_hook=_caddy_contract_object,
+            )
+            classified = caddy_sites.classify_caddy_sites(
+                self._files.read_text(self._path), policy=policy, ingress_contract=ingress,
+            )
+        except caddy_sites.CaddySitePolicyError:
+            raise
+        except Exception:
+            raise caddy_sites.CaddySitePolicyError("CADDY_EVIDENCE_UNAVAILABLE") from None
+        production = classified.production
         return {
             "owner": "host-caddy",
-            "sole_public_edge": loopback,
-            "upstreams": sorted(upstreams),
-            "application_exposure": "loopback-only" if loopback else "public-prohibited",
-            "evidence": [{"kind": "caddy-desired-state", "reference": self._path}],
+            "sole_public_edge": True,
+            "upstreams": sorted(
+                f"{site.host}:{site.port}" for site in (production, classified.preview)
+                if site is not None
+            ),
+            "canonical_production_upstream": f"{production.host}:{production.port}",
+            "sites": {
+                "production": _caddy_site_identity(production),
+                "preview": _caddy_site_identity(classified.preview),
+            },
+            "site_policy_version": policy["policy_version"],
+            "application_exposure": "loopback-only",
+            "evidence_scope": "repository-desired-state",
+            "live_network_test_performed": False,
+            "readiness_granted": False,
+            "activation_authorized": False,
+            "effective_runtime_attested": False,
+            "evidence": [
+                {"kind": "caddy-desired-state", "reference": self._path},
+                {"kind": "caddy-site-policy", "reference": _CADDY_SITE_POLICY},
+                {"kind": "ingress-contract", "reference": _CADDY_INGRESS_CONTRACT},
+            ],
         }
 
 

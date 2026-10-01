@@ -8,9 +8,8 @@ from typing import Any
 
 import yaml
 
-from .repository import RepositoryFileReader
+from .repository import CaddyFileAdapter, RepositoryFileReader
 
-_ENDPOINT = re.compile(r"^(127\.0\.0\.1|localhost|\[?::1\]?):([1-9][0-9]{0,4})$")
 _BINDING = re.compile(
     r"^(127\.0\.0\.1|localhost|\[?::1\]?):(?:\$\{([A-Z][A-Z0-9_]*)\}|([1-9][0-9]{0,4})):([1-9][0-9]{0,4})$"
 )
@@ -32,23 +31,19 @@ class IngressContractFileAdapter:
 
 
 class CaddyIngressAdapter:
+    """Canonical production endpoint view of the shared Caddy observation."""
+
     def __init__(self, files: RepositoryFileReader, path: str) -> None:
-        self._files, self._path = files, path
+        self._caddy = CaddyFileAdapter(files, path)
 
     def observe(self) -> dict[str, Any]:
-        text = re.sub(r"#[^\n]*", "", self._files.read_text(self._path))
-        upstreams = re.findall(r"(?m)^\s*reverse_proxy\s+([^\s{]+)", text)
-        if len(upstreams) != 1:
-            raise ValueError("Caddy desired state must define exactly one upstream")
-        match = _ENDPOINT.fullmatch(upstreams[0])
-        if not match or int(match.group(2)) > 65535:
-            raise ValueError("Caddy upstream is malformed or non-loopback")
+        observation = self._caddy.observe_caddy_desired_state()
+        production = observation["sites"]["production"]
         return {
-            "owner": "host-caddy",
-            "host": match.group(1).strip("[]"),
-            "port": int(match.group(2)),
-            "endpoint": f"{match.group(1).strip('[]')}:{int(match.group(2))}",
-            "evidence": _evidence("caddy-desired-state", self._path),
+            **observation,
+            "host": production["host"],
+            "port": production["port"],
+            "endpoint": observation["canonical_production_upstream"],
         }
 
 

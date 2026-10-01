@@ -1,0 +1,38 @@
+{
+  "$id": "urn:aicontrolcenter:dpl:contract:v1:caddy-site-policy",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CaddySitePolicy",
+  "description": "Closed DEV_INGRESS_001 desired-state policy; no runtime or activation authority.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "dpl/v1"},
+    "policy_version": {"const": "dev-ingress/v1"},
+    "entrypoint": {"const": "ops/macos/caddy/Caddyfile"},
+    "public_edge_owner": {"const": "host-caddy"},
+    "listeners": {"const": {"http_port": 58080, "https_port": 58443}},
+    "production": {
+      "const": {
+        "hostname": "bokstory.duckdns.org",
+        "upstream": {"host": "127.0.0.1", "port": 58082},
+        "required": true
+      }
+    },
+    "preview": {
+      "const": {
+        "hostname": "dev.bokstory.duckdns.org",
+        "upstream": {"host": "127.0.0.1", "port": 18080},
+        "required": false,
+        "authentication": "basic_auth_bcrypt"
+      }
+    },
+    "private_route_boundary": {"const": "shopping-private-v1"},
+    "logging": {"const": "discard_only"},
+    "activation_allowed": {"const": false}
+  },
+  "required": [
+    "schema_version", "policy_version", "entrypoint", "public_edge_owner",
+    "listeners", "production", "preview", "private_route_boundary", "logging",
+    "activation_allowed"
+  ]
+}

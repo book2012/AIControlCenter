@@ -7,6 +7,8 @@ from pathlib import Path
 import pytest
 
 from core.deployment.application import MacInventoryService
+from core.deployment.adapters.macos.repository import CaddyFileAdapter
+from tests.support.caddy_site_fixtures import CaddyFixtureFiles, GUARDED
 from core.deployment.contracts import (
     canonical_json_bytes,
     load_schema_registry,
@@ -151,6 +153,27 @@ def test_degraded_edge_when_direct_public_ports_are_declared() -> None:
     edge = result["items"][-1]
     assert edge["state"] == "degraded"
     assert edge["details"]["sole_public_edge"] is False
+
+
+def test_inventory_reports_classified_production_and_preview_roles() -> None:
+    service = _service()
+    service._sources["host-caddy"] = (
+        "public-edge",
+        CaddyFileAdapter(CaddyFixtureFiles(GUARDED), "ops/macos/caddy/Caddyfile")
+        .observe_caddy_desired_state,
+    )
+    items = {item["component_id"]: item for item in service.collect()["items"]}
+    caddy = items["host-caddy"]
+    assert caddy["state"] == "present"
+    assert caddy["details"]["canonical_production_upstream"] == "127.0.0.1:58082"
+    assert caddy["details"]["sites"]["production"]["role"] == "production"
+    assert caddy["details"]["sites"]["preview"] == {
+        "role": "preview", "hostname": "dev.bokstory.duckdns.org",
+        "host": "127.0.0.1", "port": 18080, "authentication_required": True,
+    }
+    assert items["public-edge-policy"]["details"]["sole_public_edge"] is True
+    assert items["public-edge-policy"]["details"]["direct_public_service_ports"] is False
+    assert items["public-edge-policy"]["details"]["live_network_test_performed"] is False
 
 
 @pytest.mark.parametrize("name", ["subprocess", "socket", "requests", "paramiko"])

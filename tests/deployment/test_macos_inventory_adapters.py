@@ -15,6 +15,7 @@ from core.deployment.adapters.macos import (
     RuntimeMetadataFileAdapter,
 )
 from core.deployment.application import MacInventoryService
+from tests.support.caddy_site_fixtures import CaddyFixtureFiles, PRODUCTION
 
 ROOT = Path(__file__).parents[2]
 
@@ -307,10 +308,13 @@ def test_launchd_unavailable_is_degraded() -> None:
 
 def test_caddy_sole_edge_mapping() -> None:
     result = CaddyFileAdapter(
-        RepositoryFileReader(ROOT), "ops/macos/caddy/Caddyfile"
+        CaddyFixtureFiles(PRODUCTION), "ops/macos/caddy/Caddyfile"
     ).observe_caddy_desired_state()
     assert result["owner"] == "host-caddy"
     assert result["sole_public_edge"] is True
+    assert result["canonical_production_upstream"] == "127.0.0.1:58082"
+    assert result["sites"]["production"]["role"] == "production"
+    assert result["sites"]["preview"] is None
     ingress = json.loads((ROOT / "config/deployment/ingress.json").read_text())
     upstream = ingress["upstream"]
     assert result["upstreams"] == [f"{upstream['host']}:{upstream['port']}"]
@@ -354,7 +358,7 @@ def test_repository_backed_adapters_compose_schema_valid_inventory() -> None:
                 "com.aicontrolcenter.api.shadow": "state = running",
             }),
         ),
-        caddy=CaddyFileAdapter(files, "ops/macos/caddy/Caddyfile"),
+        caddy=CaddyFileAdapter(CaddyFixtureFiles(PRODUCTION), "ops/macos/caddy/Caddyfile"),
         colima=ColimaContractAdapter(
             files, "ops/macos/colima/commerce-runtime.json"
         ),

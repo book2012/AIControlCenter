@@ -30,6 +30,11 @@
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:authorization-validation-report",
       "schema_version": "dpl/v1"
     },
+    "CaddySitePolicy": {
+      "path": "caddy-site-policy.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:caddy-site-policy",
+      "schema_version": "dpl/v1"
+    },
     "DependencyBoundaryPolicy": {
       "path": "dependency-boundary-policy.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:dependency-boundary-policy",
@@ -220,6 +225,12 @@
       "name": "SimulationExecutionReport",
       "path": "simulation-execution-report.schema.json",
       "schema_id": "urn:aicontrolcenter:dpl:contract:v1:simulation-execution-report"
+    },
+    {
+      "kind": "contract",
+      "name": "CaddySitePolicy",
+      "path": "caddy-site-policy.schema.json",
+      "schema_id": "urn:aicontrolcenter:dpl:contract:v1:caddy-site-policy"
     },
     {
       "kind": "contract",

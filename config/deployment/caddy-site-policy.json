@@ -1,0 +1,21 @@
+{
+  "schema_version": "dpl/v1",
+  "policy_version": "dev-ingress/v1",
+  "entrypoint": "ops/macos/caddy/Caddyfile",
+  "public_edge_owner": "host-caddy",
+  "listeners": {"http_port": 58080, "https_port": 58443},
+  "production": {
+    "hostname": "bokstory.duckdns.org",
+    "upstream": {"host": "127.0.0.1", "port": 58082},
+    "required": true
+  },
+  "preview": {
+    "hostname": "dev.bokstory.duckdns.org",
+    "upstream": {"host": "127.0.0.1", "port": 18080},
+    "required": false,
+    "authentication": "basic_auth_bcrypt"
+  },
+  "private_route_boundary": "shopping-private-v1",
+  "logging": "discard_only",
+  "activation_allowed": false
+}

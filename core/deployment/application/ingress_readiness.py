@@ -94,8 +94,18 @@ class IngressReadinessService:
             "evidence_references": evidence,
         } for check_id, passed in sorted(definitions)]
         reasons = sorted(check["check_id"] for check in checks if check["status"] == "FAIL")
+        repository_only_caddy = (
+            caddy.get("evidence_scope") == "repository-desired-state"
+            or caddy.get("live_network_test_performed") is not True
+        )
+        warnings = []
+        if repository_only_caddy:
+            warnings.append(
+                "caddy: Repository desired-state evidence cannot establish live ingress readiness."
+            )
         return self._report(
-            "READY" if not reasons else "NOT_READY", observed, checks, reasons, [], [],
+            "DEGRADED" if not reasons and repository_only_caddy else ("READY" if not reasons else "NOT_READY"),
+            observed, checks, reasons, [], warnings,
             normalized=normalized, evidence=evidence
         )
 

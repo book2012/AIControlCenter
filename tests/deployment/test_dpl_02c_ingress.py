@@ -16,6 +16,8 @@ from core.deployment.adapters.macos import (
 )
 from core.deployment.application import IngressReadinessService
 from core.deployment.contracts import canonical_json_bytes, load_schema_registry, validate_contract_payload
+from core.deployment.adapters.macos.caddy_sites import CaddySitePolicyError
+from tests.support.caddy_site_fixtures import CaddyFixtureFiles, PRODUCTION, UNGUARDED
 
 ROOT = Path(__file__).parents[2]
 
@@ -31,11 +33,12 @@ def _contract():
 
 
 def _observations():
-    files = RepositoryFileReader(ROOT)
+    files = CaddyFixtureFiles(PRODUCTION)
+    source_files = RepositoryFileReader(ROOT)
     return {
         "caddy": CaddyIngressAdapter(files, "ops/macos/caddy/Caddyfile").observe(),
-        "colima": ColimaIngressAdapter(files, "ops/macos/colima/commerce-runtime.json").observe(),
-        "compose": ComposeIngressAdapter(files, "deploy/shopping/compose.yaml").observe(),
+        "colima": ColimaIngressAdapter(source_files, "ops/macos/colima/commerce-runtime.json").observe(),
+        "compose": ComposeIngressAdapter(source_files, "deploy/shopping/compose.yaml").observe(),
     }
 
 
@@ -47,7 +50,7 @@ def _service(values=None, contract=None):
     )
 
 
-def test_canonical_contract_and_ready_repository_configuration():
+def test_repository_configuration_cannot_claim_live_readiness():
     contract = IngressContractFileAdapter(
         RepositoryFileReader(ROOT), "config/deployment/ingress.json"
     ).read_ingress_contract()
@@ -55,7 +58,11 @@ def test_canonical_contract_and_ready_repository_configuration():
         registry=load_schema_registry(), contract_name="IngressContract", payload=contract
     )
     result = _service().evaluate()
-    assert result["overall_status"] == "READY"
+    assert result["overall_status"] == "DEGRADED"
+    assert result["normalized_endpoint_identities"]["caddy"] == "127.0.0.1:58082"
+    assert result["warnings"] == [
+        "caddy: Repository desired-state evidence cannot establish live ingress readiness."
+    ]
     assert result["production_writes"] == result["ubuntu_changes"] == 0
     validate_contract_payload(
         registry=load_schema_registry(), contract_name="IngressReadinessReport", payload=result
@@ -115,6 +122,46 @@ def test_missing_evidence_is_degraded_and_all_missing_is_unavailable():
         contract=Value(_contract()), caddy=Missing(), colima=Missing(), compose=Missing()
     ).evaluate()
     assert total["overall_status"] == "UNAVAILABLE"
+
+
+def test_current_repository_caddy_is_guarded_but_not_live_ready():
+    files = RepositoryFileReader(ROOT)
+    values = _observations()
+    values["caddy"] = CaddyIngressAdapter(
+        files, "ops/macos/caddy/Caddyfile"
+    ).observe()
+    caddy = values["caddy"]
+    assert caddy["canonical_production_upstream"] == "127.0.0.1:58082"
+    assert caddy["sites"]["production"]["role"] == "production"
+    assert caddy["sites"]["preview"]["role"] == "preview"
+    assert caddy["readiness_granted"] is False
+    result = _service(values).evaluate()
+    assert result["overall_status"] == "DEGRADED"
+    assert result["normalized_endpoint_identities"]["caddy"] == "127.0.0.1:58082"
+    rendered = json.dumps(result)
+    assert "PRIVATE_GUARDS_REQUIRED" not in rendered
+    assert "basic_auth" not in rendered
+
+
+def test_unguarded_preview_fixture_fails_closed_with_sanitized_reporting():
+    files = CaddyFixtureFiles(UNGUARDED)
+    with pytest.raises(CaddySitePolicyError, match="^PRIVATE_GUARDS_REQUIRED$"):
+        CaddyIngressAdapter(files, "ops/macos/caddy/Caddyfile").observe()
+    values = _observations()
+    values["caddy"] = CaddyIngressAdapter(
+        files, "ops/macos/caddy/Caddyfile"
+    ).observe
+    result = IngressReadinessService(
+        contract=IngressContractFileAdapter(files, "config/deployment/ingress.json"),
+        caddy=type("Source", (), {"observe": values["caddy"]})(),
+        colima=Value(values["colima"]),
+        compose=Value(values["compose"]),
+    ).evaluate()
+    assert result["overall_status"] == "DEGRADED"
+    assert result["overall_status"] != "READY"
+    rendered = json.dumps(result)
+    assert "PRIVATE_GUARDS_REQUIRED" not in rendered
+    assert "basic_auth" not in rendered
 
 
 def test_invalid_contract_determinism_and_input_immutability():
