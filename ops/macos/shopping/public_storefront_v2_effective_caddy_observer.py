@@ -9,7 +9,10 @@ activation boundary.
 from __future__ import annotations
 
 import json
+import os
+import pwd
 from pathlib import Path
+import stat
 import subprocess
 from typing import Any
 
@@ -21,6 +24,7 @@ from core.shopping.public_storefront_v2_activation_03_final_reconciliation impor
 
 
 CADDY = "/opt/homebrew/bin/caddy"
+_TRUSTED_HOMEBREW_ROOT = Path("/opt/homebrew")
 _LIMIT = 262144
 _CADDY_LISTENERS = ("127.0.0.1:2019", "*:58080", "*:58443")
 _PROOF_KEYS = (
@@ -71,6 +75,55 @@ def _admin_json(raw: bytes) -> dict[str, Any]:
     return _json(body)
 
 
+def _trusted_caddy_executable() -> str:
+    """Resolve and validate the fixed Homebrew Caddy entrypoint."""
+    entrypoint = Path(CADDY)
+    root = _TRUSTED_HOMEBREW_ROOT
+    try:
+        resolved = entrypoint.resolve(strict=True)
+        metadata = resolved.stat()
+        trusted_uid = pwd.getpwuid(os.getuid()).pw_uid
+    except (KeyError, OSError, RuntimeError) as error:
+        raise RuntimeError("CADDY_TRUSTED_EXECUTABLE_UNAVAILABLE") from error
+    try:
+        parts = resolved.relative_to(root).parts
+    except ValueError as error:
+        raise RuntimeError("CADDY_TRUSTED_EXECUTABLE_UNPROVEN") from error
+    if (entrypoint != root / "bin" / "caddy" or len(parts) != 5
+            or parts[:2] != ("Cellar", "caddy") or not parts[2]
+            or parts[3:] != ("bin", "caddy")):
+        raise RuntimeError("CADDY_TRUSTED_EXECUTABLE_UNPROVEN")
+    if (not stat.S_ISREG(metadata.st_mode)
+            or metadata.st_uid not in (0, trusted_uid)
+            or metadata.st_mode & 0o022
+            or not metadata.st_mode & 0o111):
+        raise RuntimeError("CADDY_TRUSTED_EXECUTABLE_UNSAFE")
+
+    shared = {root, root / "bin", root / "Cellar"}
+    parents = {root, entrypoint.parent}
+    current = root
+    for component in parts[:-1]:
+        current = current / component
+        parents.add(current)
+    try:
+        for parent in parents:
+            parent_metadata = parent.stat()
+            shared_admin_write = (
+                parent in shared
+                and parent_metadata.st_uid == trusted_uid
+                and parent_metadata.st_gid == 80
+            )
+            if (parent.is_symlink()
+                    or not stat.S_ISDIR(parent_metadata.st_mode)
+                    or parent_metadata.st_uid not in (0, trusted_uid)
+                    or parent_metadata.st_mode & 0o002
+                    or (parent_metadata.st_mode & 0o020 and not shared_admin_write)):
+                raise RuntimeError("CADDY_TRUSTED_EXECUTABLE_UNSAFE")
+    except OSError as error:
+        raise RuntimeError("CADDY_TRUSTED_EXECUTABLE_UNAVAILABLE") from error
+    return str(resolved)
+
+
 def _prove_caddy_process(runtime_root: Path) -> None:
     raw = _run([
         "/usr/sbin/lsof", "-nP", "-Fpcn", "-a", "-iTCP:2019", "-iTCP:58080",
@@ -83,8 +136,11 @@ def _prove_caddy_process(runtime_root: Path) -> None:
     if (len(pids) != 1 or commands != ["caddy"] or sorted(names) != sorted(_CADDY_LISTENERS)
             or any(line[:1] not in {"p", "c", "n", "f"} for line in lines)):
         raise RuntimeError("CADDY_PROCESS_IDENTITY_UNPROVEN")
+    trusted_executable = _trusted_caddy_executable()
     executable = _run(["/usr/sbin/lsof", "-a", "-p", pids[0], "-d", "txt", "-Fn"], cwd=runtime_root)
-    if "n" + CADDY not in executable.decode("utf-8", errors="strict").splitlines():
+    executable_lines = executable.decode("utf-8", errors="strict").splitlines()
+    if (len(executable_lines) != 1 or not executable_lines[0].startswith("n")
+            or executable_lines[0][1:] != trusted_executable):
         raise RuntimeError("CADDY_PROCESS_IDENTITY_UNPROVEN")
 
 
