@@ -22,8 +22,9 @@ def _adapted():
 
 
 def _source():
-    return ("@public_shopping_read @management_namespace @wordpress_namespace "
-            "@shopping_rest_route_ambiguous 127.0.0.1:58081")
+    return ("@public_shopping_read @public_shopping_namespace @management_namespace "
+            "@wordpress_namespace @shopping_rest_route_ambiguous handle @public_shopping_read "
+            "@legacy_storefront redir @legacy_storefront / 301 127.0.0.1:58081")
 
 
 def _trusted_caddy_fixture(tmp_path, monkeypatch, version="future"):
@@ -43,7 +44,7 @@ def _trusted_caddy_fixture(tmp_path, monkeypatch, version="future"):
 def _process_lsof(target):
     return (
         b"p123\nccaddy\nn127.0.0.1:2019\nn*:58080\nn*:58443\n",
-        f"n{target}\n".encode(),
+        f"p123\nftxt\nn{target}\n".encode(),
     )
 
 
@@ -60,6 +61,29 @@ def test_matching_resolved_lsof_executable_passes(tmp_path, monkeypatch):
     observer._prove_caddy_process(tmp_path)
 
 
+def test_matching_resolved_lsof_executable_among_normal_txt_mappings_passes(tmp_path, monkeypatch):
+    _, _, target = _trusted_caddy_fixture(tmp_path, monkeypatch)
+    outputs = [
+        b"p123\nccaddy\nn127.0.0.1:2019\nn*:58080\nn*:58443\n",
+        f"p123\nftxt\nn{tmp_path / 'Cellar' / 'caddy' / 'future' / 'lib' / 'caddy.so'}\n"
+        f"ftxt\nn{target}\n".encode(),
+    ]
+    monkeypatch.setattr(observer, "_run", lambda *args, **kwargs: outputs.pop(0))
+    observer._prove_caddy_process(tmp_path)
+
+
+@pytest.mark.parametrize("raw", [b"", b"n\n", b"xnot-a-mapping\n"])
+def test_malformed_txt_mappings_fail_closed(tmp_path, monkeypatch, raw):
+    _, _, target = _trusted_caddy_fixture(tmp_path, monkeypatch)
+    outputs = [
+        b"p123\nccaddy\nn127.0.0.1:2019\nn*:58080\nn*:58443\n",
+        b"p123\nftxt\n" + raw,
+    ]
+    monkeypatch.setattr(observer, "_run", lambda *args, **kwargs: outputs.pop(0))
+    with pytest.raises(RuntimeError, match="CADDY_PROCESS_IDENTITY_UNPROVEN"):
+        observer._prove_caddy_process(tmp_path)
+
+
 @pytest.mark.parametrize("observed", [
     "/opt/homebrew/Cellar/caddy/other-version/bin/caddy",
     "/tmp/attacker/caddy",
@@ -68,7 +92,7 @@ def test_nonmatching_or_basename_spoof_lsof_executable_fails(tmp_path, monkeypat
     _trusted_caddy_fixture(tmp_path, monkeypatch)
     outputs = [
         b"p123\nccaddy\nn127.0.0.1:2019\nn*:58080\nn*:58443\n",
-        f"n{observed}\n".encode(),
+        f"p123\nftxt\nn{observed}\n".encode(),
     ]
     monkeypatch.setattr(observer, "_run", lambda *args, **kwargs: outputs.pop(0))
     with pytest.raises(RuntimeError, match="CADDY_PROCESS_IDENTITY_UNPROVEN"):

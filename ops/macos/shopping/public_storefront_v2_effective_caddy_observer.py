@@ -30,9 +30,10 @@ _CADDY_LISTENERS = ("127.0.0.1:2019", "*:58080", "*:58443")
 _PROOF_KEYS = (
     "loaded_config_matches_reviewed_adaptation", "production_host", "public_root_upstream",
     "shopping_read_upstream", "public_get_allowlist_matcher_loaded",
+    "shopping_writes_not_proxied",
     "private_management_matcher_loaded", "wordpress_rest_matcher_loaded",
     "raw_query_rest_route_ambiguity_guard_loaded", "dev_host", "dev_basic_auth_loaded",
-    "public_has_no_basic_auth",
+    "public_has_no_basic_auth", "legacy_redirect_loaded",
 )
 
 
@@ -137,10 +138,23 @@ def _prove_caddy_process(runtime_root: Path) -> None:
             or any(line[:1] not in {"p", "c", "n", "f"} for line in lines)):
         raise RuntimeError("CADDY_PROCESS_IDENTITY_UNPROVEN")
     trusted_executable = _trusted_caddy_executable()
-    executable = _run(["/usr/sbin/lsof", "-a", "-p", pids[0], "-d", "txt", "-Fn"], cwd=runtime_root)
+    executable = _run(["/usr/sbin/lsof", "-a", "-p", pids[0], "-d", "txt", "-F", "pfn"], cwd=runtime_root)
     executable_lines = executable.decode("utf-8", errors="strict").splitlines()
-    if (len(executable_lines) != 1 or not executable_lines[0].startswith("n")
-            or executable_lines[0][1:] != trusted_executable):
+    index = 0
+    if executable_lines and executable_lines[0].startswith("p"):
+        if executable_lines[0][1:] != pids[0] or not executable_lines[0][1:].isdigit():
+            raise RuntimeError("CADDY_PROCESS_IDENTITY_UNPROVEN")
+        index = 1
+    mappings = []
+    while index < len(executable_lines):
+        if executable_lines[index] != "ftxt" or index + 1 >= len(executable_lines):
+            raise RuntimeError("CADDY_PROCESS_IDENTITY_UNPROVEN")
+        name = executable_lines[index + 1]
+        if not name.startswith("n") or not name[1:]:
+            raise RuntimeError("CADDY_PROCESS_IDENTITY_UNPROVEN")
+        mappings.append(name[1:])
+        index += 2
+    if (not mappings or trusted_executable not in set(mappings)):
         raise RuntimeError("CADDY_PROCESS_IDENTITY_UNPROVEN")
 
 
@@ -207,12 +221,16 @@ def observe_caddy_effective_v2(*, reviewed_root: Path, runtime_root: Path) -> di
             "public_root_upstream": exact and production.port == PUBLIC_PORT and "127.0.0.1:58082" in adapted_text,
             "shopping_read_upstream": exact and "127.0.0.1:58081" in adapted_text,
             "public_get_allowlist_matcher_loaded": exact and "@public_shopping_read" in source_text,
+            "shopping_writes_not_proxied": exact and "@public_shopping_namespace" in source_text and
+            "handle @public_shopping_read" in source_text,
             "private_management_matcher_loaded": exact and "@management_namespace" in source_text,
             "wordpress_rest_matcher_loaded": exact and "@wordpress_namespace" in source_text,
             "raw_query_rest_route_ambiguity_guard_loaded": exact and "@shopping_rest_route_ambiguous" in source_text,
             "dev_host": exact and preview is not None and preview.hostname == DEV_HOST and preview.port == DEV_PORT,
             "dev_basic_auth_loaded": exact and preview is not None and preview.authentication_required is True,
             "public_has_no_basic_auth": exact and production.authentication_required is False,
+            "legacy_redirect_loaded": exact and "@legacy_storefront" in source_text and
+            "redir @legacy_storefront / 301" in source_text,
         }
         return {"status": "PASS" if all(flags.values()) else "BLOCKED",
                 "failure_code": "NONE" if all(flags.values()) else "CADDY_V2_SEMANTICS_MISMATCH",
