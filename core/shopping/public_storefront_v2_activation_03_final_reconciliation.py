@@ -14,6 +14,9 @@ import re
 from pathlib import Path
 from typing import Any
 
+import yaml
+from yaml.nodes import MappingNode, ScalarNode, SequenceNode
+
 
 AUTHORITY_ID = "PUBLIC-STOREFRONT-V2-ACTIVATION-01"
 AUTHORITATIVE_WORK_ITEM = AUTHORITY_ID
@@ -97,6 +100,47 @@ EXPECTED_VOLUME_NAMES = {
 MAXIMUM_USES = 1
 MAXIMUM_LIFETIME_SECONDS = 600
 
+_RUNTIME_CONTRACT_KEYS = (
+    "ai_workloads_allowed", "allowed_workloads", "architecture", "auto_activate",
+    "cpus", "disk_gib", "docker_context", "kubernetes", "memory_gib",
+    "mount_policy", "mount_type", "mounts", "network_address", "network_mode",
+    "port_forwarder", "profile", "public_ingress_owner", "purpose", "runtime",
+    "schema_version", "ssh_agent", "ubuntu_runtime_allowed", "vm_type",
+    "wordpress_host_binding",
+)
+_COLIMA_ROOT_KEYS = frozenset({
+    "arch", "autoActivate", "binfmt", "cpu", "cpuType", "disk", "diskImage", "memory",
+    "docker", "env", "forceDiskImage", "forwardAgent", "hostname", "kubernetes",
+    "mountInotify", "mountType", "mounts", "nestedVirtualization", "network",
+    "portForwarder", "provision", "rosetta", "rootDisk", "runtime", "sshConfig",
+    "sshPort", "vmType", "modelRunner",
+})
+_NETWORK_KEYS = frozenset({
+    "address", "dns", "dnsHosts", "gatewayAddress", "hostAddresses", "interface",
+    "mode", "preferredRoute",
+})
+_KUBERNETES_KEYS = frozenset({"enabled", "k3sArgs", "port", "version"})
+_SEMANTIC_REQUIRED_ROOT_KEYS = frozenset({
+    "arch", "autoActivate", "cpu", "disk", "forwardAgent", "kubernetes", "memory",
+    "mountType", "mounts", "network", "portForwarder", "runtime", "vmType",
+})
+_SECURITY_DEFAULTS = {
+    "binfmt": True,
+    "cpuType": "",
+    "diskImage": "",
+    "docker": {},
+    "env": {},
+    "forceDiskImage": False,
+    "mountInotify": False,
+    "modelRunner": "docker",
+    "nestedVirtualization": False,
+    "provision": None,
+    "rosetta": False,
+    "rootDisk": 20,
+    "sshConfig": True,
+    "sshPort": 0,
+}
+
 
 class ContractError(ValueError):
     """The value-free contract failure crossing this boundary."""
@@ -118,6 +162,217 @@ def canonical_json(value: Any) -> str:
 def digest_bytes(raw: bytes) -> str:
     require(type(raw) is bytes and len(raw) <= 262144)
     return hashlib.sha256(raw).hexdigest()
+
+
+def _strict_yaml(raw: bytes) -> dict[str, Any]:
+    """Parse Colima YAML without allowing syntax to hide semantic drift."""
+    require(type(raw) is bytes and 0 < len(raw) <= 262144)
+    try:
+        text = raw.decode("utf-8")
+        for token in yaml.scan(text):
+            require(not isinstance(token, (yaml.tokens.AliasToken,
+                                           yaml.tokens.AnchorToken,
+                                           yaml.tokens.TagToken)))
+        node = yaml.compose(text, Loader=yaml.SafeLoader)
+
+        def unique(value: Any) -> None:
+            if isinstance(value, MappingNode):
+                seen: set[str] = set()
+                for key, child in value.value:
+                    require(isinstance(key, ScalarNode) and
+                            key.tag == "tag:yaml.org,2002:str" and
+                            key.value not in seen and key.value != "<<")
+                    seen.add(key.value)
+                    unique(child)
+            elif isinstance(value, SequenceNode):
+                for child in value.value:
+                    unique(child)
+
+        require(isinstance(node, MappingNode))
+        unique(node)
+        value = yaml.safe_load(text)
+    except Exception:
+        raise ContractError("PUBLIC_STOREFRONT_V2_PROFILE_REJECTED") from None
+    require(type(value) is dict and all(type(key) is str for key in value))
+    return value
+
+
+def _require_exact_mapping(value: Any, keys: frozenset[str]) -> dict[str, Any]:
+    require(type(value) is dict and set(value) == keys)
+    return value
+
+
+def _require_mapping_subset(value: Any, allowed: frozenset[str], required: frozenset[str]) -> dict[str, Any]:
+    require(type(value) is dict and set(value) <= allowed and required <= set(value))
+    return value
+
+
+def _canonical_mount_location(value: Any) -> str:
+    require(type(value) is str and value and "\\" not in value)
+    path = Path(value)
+    require(path.is_absolute() and not any(part in ("", ".", "..") for part in path.parts))
+    return str(path)
+
+
+def _trusted_deployment_root(value: Any) -> Path:
+    """Validate the explicit root used to interpret live absolute mounts."""
+    require(isinstance(value, Path))
+    root = Path(_canonical_mount_location(str(value)))
+    require(root != Path("/"))
+    return root
+
+
+def _project_live_mount_location(value: Any, *, trusted_deployment_root: Path) -> str:
+    location = Path(_canonical_mount_location(value))
+    root = _trusted_deployment_root(trusted_deployment_root)
+    try:
+        logical = location.relative_to(root)
+    except ValueError:
+        raise ContractError("PUBLIC_STOREFRONT_V2_MOUNT_ROOT_REJECTED") from None
+    require(logical != Path("."))
+    require(not any(part in ("", ".", "..") for part in logical.parts))
+    return logical.as_posix()
+
+
+def _contract_mounts(contract: dict[str, Any]) -> list[dict[str, Any]]:
+    mounts = contract["mounts"]
+    require(type(mounts) is list and mounts)
+    result: list[dict[str, Any]] = []
+    for mount in mounts:
+        mount_value = _require_exact_mapping(mount, frozenset({"path", "writable"}))
+        path = mount_value["path"]
+        require(type(path) is str and path and "\\" not in path and not Path(path).is_absolute())
+        require(not any(part in ("", ".", "..") for part in Path(path).parts))
+        require(type(mount_value["writable"]) is bool and mount_value["writable"] is False)
+        result.append({
+            # Durable semantic identity is contract-relative.  A checkout or
+            # deployment root is bound only while interpreting live YAML.
+            "location": Path(path).as_posix(),
+            "writable": False,
+        })
+    require(len({mount["location"] for mount in result}) == len(result))
+    return result
+
+
+def desired_runtime_projection(contract: Any) -> dict[str, Any]:
+    """Project the JSON-first runtime contract into activation semantics."""
+    contract = _require_exact_mapping(contract, frozenset(_RUNTIME_CONTRACT_KEYS))
+    require(contract["schema_version"] == 1)
+    require(contract["profile"] == PROFILE and contract["runtime"] == "docker")
+    require(contract["architecture"] == "aarch64" and contract["vm_type"] == "vz")
+    require(contract["mount_type"] == "virtiofs" and
+            contract["mount_policy"] == "explicit-compose-bind-allowlist")
+    require(contract["cpus"] == 4 and contract["memory_gib"] == 6 and contract["disk_gib"] == 80)
+    require(contract["network_address"] is False and contract["network_mode"] == "shared")
+    require(contract["port_forwarder"] == "ssh" and contract["auto_activate"] is False)
+    require(contract["kubernetes"] is False and contract["ssh_agent"] is False)
+    require(contract["ai_workloads_allowed"] is False and contract["ubuntu_runtime_allowed"] is False)
+    require(contract["public_ingress_owner"] == "host-caddy")
+    require(contract["allowed_workloads"] == ["wordpress", "woocommerce", "database", "wordpress-cli"])
+    require(contract["wordpress_host_binding"] == "127.0.0.1:58082:80")
+    return {
+        "cpus": contract["cpus"],
+        "memory_gib": contract["memory_gib"],
+        "disk_gib": contract["disk_gib"],
+        "architecture": contract["architecture"],
+        "runtime": contract["runtime"],
+        "vm_type": contract["vm_type"],
+        "mount_type": contract["mount_type"],
+        "network_address": contract["network_address"],
+        "network_mode": contract["network_mode"],
+        "network_host_addresses": False,
+        "network_preferred_route": False,
+        # The JSON contract has no custom DNS fields.  The safe semantic value
+        # is therefore Colima's explicit no-custom-DNS form, not an omitted
+        # comparison against arbitrary live resolver settings.
+        "dns": None,
+        "dns_hosts": {},
+        "port_forwarder": contract["port_forwarder"],
+        "auto_activate": contract["auto_activate"],
+        "kubernetes": contract["kubernetes"],
+        "ssh_agent": contract["ssh_agent"],
+        "mounts": _contract_mounts(contract),
+    }
+
+
+def observed_runtime_projection(raw: bytes, *, trusted_deployment_root: Path) -> dict[str, Any]:
+    """Project live semantics, binding absolute mounts to the trusted root."""
+    value = _strict_yaml(raw)
+    require(set(value) <= _COLIMA_ROOT_KEYS and _SEMANTIC_REQUIRED_ROOT_KEYS <= set(value))
+    for name, expected in _SECURITY_DEFAULTS.items():
+        if name in value:
+            require(value[name] == expected)
+
+    network = _require_mapping_subset(
+        value["network"], _NETWORK_KEYS,
+        frozenset({"address", "dns", "dnsHosts", "hostAddresses", "mode"}),
+    )
+    require(type(network["address"]) is bool and type(network["hostAddresses"]) is bool)
+    require(type(network["mode"]) is str)
+    require(type(network.get("preferredRoute", False)) is bool and
+            network.get("preferredRoute", False) is False)
+    require(network["dns"] is None or (type(network["dns"]) is list and
+                                        all(type(item) is str for item in network["dns"])))
+    require(type(network["dnsHosts"]) is dict and
+            all(type(key) is str and type(item) is str for key, item in network["dnsHosts"].items()))
+    kubernetes = _require_mapping_subset(value["kubernetes"], _KUBERNETES_KEYS,
+                                         frozenset({"enabled"}))
+    require(type(kubernetes["enabled"]) is bool)
+    mounts = value["mounts"]
+    require(type(mounts) is list)
+    observed_mounts: list[dict[str, Any]] = []
+    for mount in mounts:
+        mount_value = _require_exact_mapping(mount, frozenset({"location", "writable"}))
+        require(type(mount_value["writable"]) is bool)
+        observed_mounts.append({
+            "location": _project_live_mount_location(
+                mount_value["location"], trusted_deployment_root=trusted_deployment_root,
+            ),
+            "writable": mount_value["writable"],
+        })
+    require(len({mount["location"] for mount in observed_mounts}) == len(observed_mounts))
+    require(type(value["cpu"]) is int and type(value["memory"]) is int and type(value["disk"]) is int)
+    require(type(value["arch"]) is str and type(value["runtime"]) is str and
+            type(value["vmType"]) is str and type(value["mountType"]) is str and
+            type(value["portForwarder"]) is str)
+    for name in ("autoActivate", "forwardAgent"):
+        require(type(value[name]) is bool)
+    return {
+        "cpus": value["cpu"],
+        "memory_gib": value["memory"],
+        "disk_gib": value["disk"],
+        "architecture": value["arch"],
+        "runtime": value["runtime"],
+        "vm_type": value["vmType"],
+        "mount_type": value["mountType"],
+        "network_address": network["address"],
+        "network_mode": network["mode"],
+        "network_host_addresses": network["hostAddresses"],
+        "network_preferred_route": network.get("preferredRoute", False),
+        "dns": network["dns"],
+        "dns_hosts": network["dnsHosts"],
+        "port_forwarder": value["portForwarder"],
+        "auto_activate": value["autoActivate"],
+        "kubernetes": kubernetes["enabled"],
+        "ssh_agent": value["forwardAgent"],
+        "mounts": observed_mounts,
+    }
+
+
+def attest_runtime_profile(raw: bytes, *, contract: Any,
+                           trusted_deployment_root: Path) -> dict[str, Any]:
+    """Return the observed projection only when it exactly matches desired semantics."""
+    desired = desired_runtime_projection(contract)
+    observed = observed_runtime_projection(raw, trusted_deployment_root=trusted_deployment_root)
+    require(observed == desired)
+    return observed
+
+
+_CONTRACT_ROOT = Path(__file__).resolve().parents[2]
+_CONTRACT_DATA = json.loads((_CONTRACT_ROOT / PROFILE_ARTIFACT).read_text(encoding="utf-8"))
+EXPECTED_RUNTIME_SEMANTIC_PROJECTION = desired_runtime_projection(
+    _CONTRACT_DATA,
+)
 
 
 def validate_source_identity(value: Any, *, clean_required: bool = True) -> None:
@@ -179,10 +434,10 @@ def validate_preconditions(value: Any) -> None:
     })
     _keys(value["effective"], ("caddy_state",))
     require(value["effective"]["caddy_state"] == EFFECTIVE_CADDY_STATE)
-    _keys(value["colima"], ("profile", "profile_file", "profile_sha256", "status"))
+    _keys(value["colima"], ("profile", "profile_file", "semantic_projection", "status"))
     require(value["colima"] == {
         "profile": PROFILE, "profile_file": PROFILE_FILE,
-        "profile_sha256": PROFILE_SHA256, "status": "Broken",
+        "semantic_projection": EXPECTED_RUNTIME_SEMANTIC_PROJECTION, "status": "Broken",
     })
     _keys(value["forwarding"], ("owner", "profile", "host", "port", "required_for_lifecycle"))
     require(value["forwarding"] == {

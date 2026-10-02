@@ -1,16 +1,22 @@
 """Focused offline tests for PUBLIC-STOREFRONT-V2-ACTIVATION-01."""
 
 from datetime import datetime, timezone
+import copy
 import inspect
 import json
 import os
+from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
+import yaml
 
 from core.shopping.public_storefront_v2_activation_03_final_authorization import validate_authorization
 from core.shopping.public_storefront_v2_activation_03_final_reconciliation import (
     ARTIFACTS, AUTHORITY_ID, CADDYFILE_SHA256, ContractError,
-    EXPECTED_PORTS, MUTATION_ID, POLICY_VERSION, PROFILE, PROFILE_FILE,
+    EXPECTED_PORTS, EXPECTED_RUNTIME_SEMANTIC_PROJECTION, MUTATION_ID,
+    POLICY_VERSION, PROFILE, PROFILE_FILE,
+    attest_runtime_profile, desired_runtime_projection, observed_runtime_projection,
     precondition_template, projection, validate_post_activation, validate_preconditions,
 )
 from ops.macos.shopping.issue_public_storefront_v2_activation_03_final_authorization import _authorization
@@ -20,6 +26,11 @@ from ops.macos.shopping.public_storefront_v2_activation_03_final_authorization_s
 from ops.macos.shopping.public_storefront_v2_activation_03_final_operator import (
     ActivationRunner, MacActivationPort,
 )
+from ops.macos.shopping import issue_public_storefront_v2_activation_03_final_authorization as issuer
+
+
+ROOT = Path(__file__).resolve().parents[1]
+TRUSTED_DEPLOYMENT_ROOT = Path("/Users/kyouhan/AIControlCenter")
 
 
 def source():
@@ -31,7 +42,7 @@ def preconditions():
     return precondition_template(
         source=source(),
         colima={"profile": PROFILE, "profile_file": PROFILE_FILE,
-                "profile_sha256": "61a9194ab22dfff9515d44d3d41af9eafdf3647e8ee5d6f0cb6fe92f77f473ea",
+                "semantic_projection": EXPECTED_RUNTIME_SEMANTIC_PROJECTION,
                 "status": "Broken"},
         forwarding={"owner": "colima", "profile": PROFILE, "host": "127.0.0.1",
                      "port": 58082, "required_for_lifecycle": True},
@@ -194,6 +205,68 @@ def test_phase_b_identity_failure_never_starts_wordpress(tmp_path):
     assert "caddy_reload" not in port.calls
 
 
+def test_semantic_profile_drift_after_claim_stops_before_mutation(tmp_path):
+    before = preconditions()
+    drifted = copy.deepcopy(before)
+    drifted["colima"]["semantic_projection"]["cpus"] = 8
+    store = PublicStorefrontV2ActivationAuthorizationStore._for_test(
+        tmp_path / "semantic-drift.sqlite3", uid=os.getuid(), gid=os.getgid(),
+    )
+    store._issue(auth(before))
+
+    class DriftPort(FakePort):
+        def observe_preconditions(self):
+            self.calls.append("phase_a")
+            return before if self.calls.count("phase_a") == 1 else drifted
+
+    port = DriftPort(before)
+    result = ActivationRunner(store, port, os.getuid(), os.getgid()).run()
+    assert result["status"] == "UNCERTAIN"
+    assert result["authorization_consumed"] is True
+    assert port.calls == ["phase_a", "phase_a"]
+
+
+def test_issuance_denied_on_semantic_profile_drift(monkeypatch):
+    before = preconditions()
+    drifted = copy.deepcopy(before)
+    drifted["colima"]["semantic_projection"]["network_address"] = True
+
+    class TTY:
+        def isatty(self):
+            return True
+
+        def write(self, value):
+            return len(value)
+
+        def flush(self):
+            pass
+
+    monkeypatch.setattr(issuer, "sys", SimpleNamespace(stdin=TTY(), stdout=TTY()))
+    monkeypatch.setattr(issuer, "source_identity", lambda *args, **kwargs: source())
+    monkeypatch.setattr(
+        issuer, "resolve_trusted_mac_account_home",
+        lambda: SimpleNamespace(passwd_home=str(ROOT)),
+    )
+    monkeypatch.setattr(
+        issuer, "issue_trusted_ownership_expectation",
+        lambda home: SimpleNamespace(expected_uid=os.getuid(), expected_gid=os.getgid()),
+    )
+
+    class DriftPort:
+        def __init__(self, **kwargs):
+            self.calls = 0
+
+        def observe_preconditions(self):
+            self.calls += 1
+            return before if self.calls == 1 else drifted
+
+    monkeypatch.setattr(issuer, "MacActivationPort", DriftPort)
+    responses = iter([source()["head"], source()["activation_bundle_sha256"], issuer.ACKNOWLEDGEMENT])
+    monkeypatch.setattr("builtins.input", lambda *args: next(responses))
+    result = issuer.issue_and_run(candidate_root=ROOT, runtime_root=ROOT)
+    assert result["status"] == "PRECONDITION_DRIFT"
+
+
 def test_static_mutation_surface_is_closed():
     source_text = inspect.getsource(MacActivationPort)
     for forbidden in ("[\"compose\"", " compose up", "container create", "container rm", "volume create", "volume rm"):
@@ -206,3 +279,185 @@ def test_static_mutation_surface_is_closed():
 def test_post_result_is_value_free():
     result = projection("BLOCKED", authorization_consumed=False)
     assert "secret" not in json.dumps(result)
+
+
+def _profile_yaml(*, mounts=None):
+    return {
+        "cpu": 4,
+        "disk": 80,
+        "memory": 6,
+        "arch": "aarch64",
+        "runtime": "docker",
+        "kubernetes": {"enabled": False},
+        "autoActivate": False,
+        "network": {
+            "address": False,
+            "mode": "shared",
+            "dns": None,
+            "dnsHosts": {},
+            "hostAddresses": False,
+        },
+        "forwardAgent": False,
+        "vmType": "vz",
+        "portForwarder": "ssh",
+        "mountType": "virtiofs",
+        "mounts": copy.deepcopy(
+            _absolute_mounts(TRUSTED_DEPLOYMENT_ROOT)
+            if mounts is None else mounts
+        ),
+    }
+
+
+def _absolute_mounts(root):
+    return [
+        {"location": str(root / mount["location"]), "writable": mount["writable"]}
+        for mount in EXPECTED_RUNTIME_SEMANTIC_PROJECTION["mounts"]
+    ]
+
+
+def _valid_profile_bytes():
+    return yaml.safe_dump(_profile_yaml(), sort_keys=True).encode()
+
+
+def _assert_rejected(raw):
+    with pytest.raises(ContractError):
+        attest_runtime_profile(
+            raw, contract=json.loads((ROOT / "ops/macos/colima/commerce-runtime.json").read_text()),
+            trusted_deployment_root=TRUSTED_DEPLOYMENT_ROOT,
+        )
+
+
+def test_semantically_equivalent_yaml_formatting_and_order_passes():
+    first = yaml.safe_dump(_profile_yaml(), sort_keys=True).encode()
+    value = _profile_yaml()
+    reordered = {key: value[key] for key in reversed(list(value))}
+    second = ("# formatting and order are not semantics\n" +
+              yaml.safe_dump(reordered, sort_keys=False)).encode()
+    contract = json.loads((ROOT / "ops/macos/colima/commerce-runtime.json").read_text())
+    assert attest_runtime_profile(first, contract=contract,
+                                  trusted_deployment_root=TRUSTED_DEPLOYMENT_ROOT) == \
+        attest_runtime_profile(second, contract=contract,
+                               trusted_deployment_root=TRUSTED_DEPLOYMENT_ROOT)
+
+
+@pytest.mark.parametrize(("field", "value"), [("cpu", 8), ("memory", 8)])
+def test_cpu_and_memory_drift_fail(field, value):
+    profile = _profile_yaml()
+    profile[field] = value
+    _assert_rejected(yaml.safe_dump(profile).encode())
+
+
+@pytest.mark.parametrize(("field", "value"), [("arch", "x86_64"), ("runtime", "containerd")])
+def test_architecture_and_runtime_drift_fail(field, value):
+    profile = _profile_yaml()
+    profile[field] = value
+    _assert_rejected(yaml.safe_dump(profile).encode())
+
+
+@pytest.mark.parametrize(("field", "value"), [
+    (("network", "address"), True),
+    (("network", "mode"), "bridged"),
+    (("network", "dns"), ["1.1.1.1"]),
+    (("network", "hostAddresses"), True),
+    (("portForwarder",), "none"),
+    (("autoActivate",), True),
+    (("kubernetes", "enabled"), True),
+    (("forwardAgent",), True),
+])
+def test_network_and_security_drift_fail(field, value):
+    profile = _profile_yaml()
+    target = profile
+    for part in field[:-1]:
+        target = target[part]
+    target[field[-1]] = value
+    _assert_rejected(yaml.safe_dump(profile).encode())
+
+
+def test_missing_required_mount_fails():
+    mounts = _absolute_mounts(TRUSTED_DEPLOYMENT_ROOT)[:-1]
+    _assert_rejected(yaml.safe_dump(_profile_yaml(mounts=mounts)).encode())
+
+
+def test_writable_required_mount_fails():
+    mounts = _absolute_mounts(TRUSTED_DEPLOYMENT_ROOT)
+    mounts[1]["writable"] = True
+    _assert_rejected(yaml.safe_dump(_profile_yaml(mounts=mounts)).encode())
+
+
+def test_extra_mount_fails():
+    mounts = _absolute_mounts(TRUSTED_DEPLOYMENT_ROOT)
+    mounts.append({"location": "/Users/kyouhan/AIControlCenter/deploy/shopping", "writable": False})
+    _assert_rejected(yaml.safe_dump(_profile_yaml(mounts=mounts)).encode())
+
+
+def test_broad_config_directory_mount_fails():
+    mounts = [_absolute_mounts(TRUSTED_DEPLOYMENT_ROOT)[0], {
+        "location": "/Users/kyouhan/AIControlCenter/deploy/shopping/config", "writable": False,
+    }]
+    _assert_rejected(yaml.safe_dump(_profile_yaml(mounts=mounts)).encode())
+
+
+def test_exact_required_three_entry_mount_contract_passes():
+    contract = json.loads((ROOT / "ops/macos/colima/commerce-runtime.json").read_text())
+    assert attest_runtime_profile(
+        _valid_profile_bytes(), contract=contract,
+        trusted_deployment_root=TRUSTED_DEPLOYMENT_ROOT,
+    )
+
+
+def test_desired_projection_is_root_independent(tmp_path):
+    contract_text = (ROOT / "ops/macos/colima/commerce-runtime.json").read_text()
+    contracts = []
+    for name in ("candidate-a", "candidate-b"):
+        path = tmp_path / name / "ops/macos/colima/commerce-runtime.json"
+        path.parent.mkdir(parents=True)
+        path.write_text(contract_text)
+        contracts.append(json.loads(path.read_text()))
+    assert desired_runtime_projection(contracts[0]) == desired_runtime_projection(contracts[1])
+    assert desired_runtime_projection(contracts[0]) == EXPECTED_RUNTIME_SEMANTIC_PROJECTION
+    assert all(not mount["location"].startswith("/")
+               for mount in EXPECTED_RUNTIME_SEMANTIC_PROJECTION["mounts"])
+
+
+def test_candidate_checkout_mounts_are_rejected_by_production_root():
+    contract = json.loads((ROOT / "ops/macos/colima/commerce-runtime.json").read_text())
+    raw = yaml.safe_dump(_profile_yaml(mounts=_absolute_mounts(ROOT))).encode()
+    with pytest.raises(ContractError):
+        attest_runtime_profile(
+            raw, contract=contract,
+            trusted_deployment_root=TRUSTED_DEPLOYMENT_ROOT,
+        )
+
+
+def test_raw_live_yaml_sha_is_not_compared_to_json_contract_sha():
+    source = inspect.getsource(MacActivationPort._observe_profile_config)
+    assert "digest_bytes" not in source
+    assert "PROFILE_SHA256" not in source
+    assert "attest_runtime_profile" in source
+
+
+def test_live_broad_mount_profile_is_rejected_read_only():
+    raw = Path("/Users/kyouhan/.colima/aicontrolcenter-commerce/colima.yaml")
+    if raw.is_file():
+        contract = json.loads((ROOT / "ops/macos/colima/commerce-runtime.json").read_text())
+        observed = observed_runtime_projection(
+            raw.read_bytes(), trusted_deployment_root=TRUSTED_DEPLOYMENT_ROOT,
+        )
+        assert observed["mounts"] != desired_runtime_projection(contract)["mounts"]
+        _assert_rejected(raw.read_bytes())
+
+
+def test_tilde_mounts_fail_closed_without_trusted_home_abstraction():
+    contract = json.loads((ROOT / "ops/macos/colima/commerce-runtime.json").read_text())
+    profile = _profile_yaml()
+    profile["mounts"][0]["location"] = "~/deploy/shopping/wordpress/plugins/ai-shopping-storefront"
+    with pytest.raises(ContractError):
+        attest_runtime_profile(
+            yaml.safe_dump(profile).encode(), contract=contract,
+            trusted_deployment_root=TRUSTED_DEPLOYMENT_ROOT,
+        )
+
+
+def test_mount_normalization_has_no_hardcoded_user_home():
+    from core.shopping import public_storefront_v2_activation_03_final_reconciliation as reconciliation
+    assert "/Users/kyouhan/" not in inspect.getsource(reconciliation._canonical_mount_location)

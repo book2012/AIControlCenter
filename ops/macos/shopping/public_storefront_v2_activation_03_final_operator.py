@@ -29,10 +29,11 @@ from core.shopping.public_storefront_v2_activation_03_final_reconciliation impor
     ACTIVATION_BUNDLE_FILES, API_CLIENT, ARTIFACTS, AUTHORITY_ID, BROWSER_STOREFRONT, CADDYFILE, CADDYFILE_SHA256,
     CADDY_POLICY, COMPOSE, COMPOSE_SHA256, CONTEXT, CONTROL_PLANE_PORT, DATABASE_CONTAINER_ID,
     DATABASE_VOLUME, DEV_HOST, DEV_PORT, EFFECTIVE_CADDY_STATE, EXPECTED_PORTS,
-    INGRESS, INGRESS_SHA256, MUTATION_ID, POLICY_VERSION, PROFILE, PROFILE_FILE,
-    PROFILE_SHA256, PUBLIC_HOST, PUBLIC_PORT, STOREFRONT_PLUGIN, WORDPRESS_CONTAINER_ID,
+    INGRESS, INGRESS_SHA256, MUTATION_ID, POLICY_VERSION, PROFILE, PROFILE_ARTIFACT,
+    PROFILE_FILE, PUBLIC_HOST, PUBLIC_PORT, STOREFRONT_PLUGIN, WORDPRESS_CONTAINER_ID,
     WORDPRESS_STOREFRONT_UI, WORDPRESS_VOLUME, canonical_json, digest_bytes, parse_preconditions,
-    projection, validate_post_activation, validate_preconditions, validate_source_identity,
+    attest_runtime_profile, projection, validate_post_activation, validate_preconditions,
+    validate_source_identity,
 )
 from ops.macos.shopping.public_storefront_v2_activation_03_final_authorization_store import (
     PublicStorefrontV2ActivationAuthorizationStore,
@@ -248,16 +249,26 @@ class MacActivationPort:
         source_identity(self.source_root, clean_required=True)
         runtime_artifact_identity(self.runtime_root)
 
-    def _observe_profile_config(self) -> str:
-        """Read only the fixed host profile bytes; Docker is not involved."""
+    def _observe_profile_config(self) -> dict[str, Any]:
+        """Read and semantically attest the fixed host profile; Docker is not involved."""
         path = Path(PROFILE_FILE)
         if (path.is_symlink() or not path.is_file() or
                 path.resolve(strict=True) != path or len(path.read_bytes()) > _HTTP_LIMIT):
             raise RuntimeError("COLIMA_PROFILE_CONFIG_UNAVAILABLE")
-        digest = digest_bytes(path.read_bytes())
-        if digest != PROFILE_SHA256:
-            raise RuntimeError("COLIMA_PROFILE_CONFIG_DRIFT")
-        return digest
+        contract_path = self.runtime_root / PROFILE_ARTIFACT
+        if (contract_path.is_symlink() or not contract_path.is_file() or
+                contract_path.resolve(strict=True) != contract_path):
+            raise RuntimeError("COLIMA_RUNTIME_CONTRACT_UNAVAILABLE")
+        try:
+            contract = json.loads(contract_path.read_text(encoding="utf-8"))
+            return attest_runtime_profile(
+                path.read_bytes(), contract=contract,
+                trusted_deployment_root=self.runtime_root,
+            )
+        except Exception as error:
+            if isinstance(error, RuntimeError):
+                raise
+            raise RuntimeError("COLIMA_PROFILE_SEMANTIC_DRIFT") from None
 
     def _run(self, argv: list[str], *, cwd: Path, timeout: int = 30) -> subprocess.CompletedProcess:
         return subprocess.run(
@@ -297,7 +308,7 @@ class MacActivationPort:
         status = rows[0].get("status")
         if status != "Broken":
             raise RuntimeError("COLIMA_PRECONDITION_DRIFT")
-        profile_sha256 = self._observe_profile_config()
+        semantic_projection = self._observe_profile_config()
         source = source_identity(self.source_root, clean_required=True)
         # The forwarding owner is intentionally supplied only by a fixed,
         # read-only Colima inspection seam.  An unproven listener is a block;
@@ -310,7 +321,7 @@ class MacActivationPort:
                          "shopping_api_upstream": "127.0.0.1:58081", "dev_upstream": "127.0.0.1:18080"},
             "effective": {"caddy_state": self._observe_effective_caddy_state()},
             "colima": {"profile": PROFILE, "profile_file": PROFILE_FILE,
-                        "profile_sha256": profile_sha256, "status": status},
+                        "semantic_projection": semantic_projection, "status": status},
             "forwarding": forwarding,
             # Durable reviewed expectations, not live Docker observations.
             "wordpress": {"container_id": WORDPRESS_CONTAINER_ID, "state": "created",
