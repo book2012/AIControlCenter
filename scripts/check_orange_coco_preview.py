@@ -55,7 +55,8 @@ def check(origin: str) -> list[dict]:
                     # Home intentionally renders only the bounded first feed page;
                     # the feed count/load-more affordance proves the full catalog remains available.
                     assert len(re.findall(r'data-product-id="[^"]+"', text)) == 24
-                    assert 'id="feed-load-more"' in text and 'data-page="2"' in text
+                    load_more = re.search(r'<a[^>]+id="feed-load-more"[^>]+href="([^"]+)"', text)
+                    assert load_more and "page=2" in load_more.group(1)
                     assert 'id="feed-count">상품 120개' in text
                     assert all(f'data-feed-filter="{filter_name}"' in text
                                for filter_name in ("all", "hot", "sale", "update", "top", "bottom", "outer", "dress", "bag", "acc"))
