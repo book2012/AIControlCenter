@@ -1,98 +1,6 @@
 # AIControlCenter
 
-<!-- SHOP_AI_001C-C5-C3A_CLOSEOUT -->
-## Current SHOP_AI_001C-C5-C3A status
-
-`SHOP_AI_001C-C5-C3A` trusted authenticated-read authorization foundation is
-**COMPLETE for the offline authorization scope only**.
-
-Canonical evidence:
-
-- implementation commit: `e30ca8dd4b289ba57aa0e3106d5d50eb0b72ff6e`
-- parent: `7e61ee54fccbd871c0162bc726063982fad233a7`
-- reviewed implementation patch SHA256:
-  `5586b5c52de1a0f200753b3280676c8511a57a6df0b9e29142ecab605581b335`
-- focused authorization tests: **31 passed**
-- SHOP_AI file-isolated regression: **49/49 files, 898 passed, 1 deselected**
-- deterministic static/security review: **PASS**
-
-C5-C3A establishes an AIControlCenter-owned, Twilio-specific trusted
-authenticated-read authorization authority.
-
-The trust model is authority-registry based. A capability-shaped object is not
-trusted merely because a caller possesses it. The issuing AIControlCenter
-authority must have the authoritative issuance record.
-
-Authorization is bound exactly to provider, read operation, request identity,
-correlation identity, Verify Service SID, and Verification SID where required.
-
-Capabilities are opaque, short-lived, limited to a maximum lifetime of
-60 seconds, and one-shot. A first trusted authorization attempt consumes the
-capability. Forged, expired, reused, cross-authority, or binding-mismatched
-capabilities fail closed.
-
-The generic C5-B `ProviderNetworkAuthorizationGate` remains
-`OFFLINE_DENY_ONLY` and has not gained an allow path.
-
-C5-C3A performed no provider network call, credential resolution, Keychain
-access, Twilio SDK activation, SMS send, deployment, production activation,
-schema migration, or Ubuntu mutation.
-
-This milestone does not grant live authenticated provider authorization and
-is not a production-readiness claim.
-
-Next milestone:
-
-`SHOP_AI_001C-C5-C3B` — offline SecretReference / Mac Secret Resolver /
-EphemeralSecretLease and Twilio authenticated-read transport composition
-contract.
-
-C5-C3C remains separately approval-gated for any real Keychain resolution or
-authenticated Twilio GET network call.
-
-
-<!-- SHOP_AI_001C-C5-C2_CLOSEOUT -->
-## Current SHOP_AI_001C-C5-C2 status
-
-`SHOP_AI_001C-C5-C2` provider-specific Twilio Verify v2 read-only foundation is
-**COMPLETE for the offline C5-C2 scope only**.
-
-Canonical implementation evidence:
-
-- code commit: `7928456fa25ab70f6fa87badd2cc035743d9dd37`
-- parent documentation baseline: `6b355a9d3bfc726242c71545102f635ce2f98675`
-- reviewed implementation patch SHA256:
-  `4284206189afb8a611af2404e145bfb5692e584e2954688b184e5771a6f6f344`
-- focused C5-C validation: **4/4 files, 43 passed**
-- full SHOP_AI file-isolated gate: **45/45 files, 867 passed, 1 deselected**
-- final deterministic architecture/security review: **PASS**
-
-Architecture remains fail-closed. AIControlCenter on the Mac mini is the sole
-Control Plane. The C5-B generic authorization boundary remains
-`OFFLINE_DENY_ONLY`.
-
-C5-C2 selects `twilio.verify.v2` only for a provider-specific offline read
-contract. The implementation exposes bounded GET-only request specifications
-for one Verify Service and one Verification resource and normalizes provider
-responses into bounded evidence. Provider status is evidence and is not
-automatically converted into C4 terminal truth.
-
-No provider network transport was constructed or called. No credentials were
-resolved, no Keychain access occurred, no SMS was sent, no Twilio SDK was
-activated, no schema or production migration was executed, no production
-route or deployment was activated, and Ubuntu was untouched.
-
-`VerificationReconciliationService` remains the sole durable C4 reconciliation
-writer. `UNKNOWN_OUTCOME` remains blocked from terminal C4 admission.
-
-C5 as a whole is not complete and this is not a production-readiness claim.
-The next milestone is `SHOP_AI_001C-C5-C3` for explicitly approval-gated,
-provider-specific authenticated read activation. Real credentials, Keychain
-resolution, and authenticated provider network calls require separate explicit
-authorization.
-
-
-## Current authoritative platform state — 2026-09-29
+## Current authoritative platform state — 2026-09-27
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.
 AIControlCenter owns governance, policy, orchestration, authorization, audit,
@@ -119,23 +27,7 @@ policy/router/adapters and is not hardcoded in Shopping business logic.
 
 ### SHOP_AI repository state
 
-`SHOP_AI_001C-C5-B — Provider-Neutral Offline Provider Integration Foundation`
-is **COMPLETE for C5-B offline foundation scope only** at canonical code
-commit `c4bcd6a8cbe0c2d36afe282f4e561559dbbb2885`. The Mac mini M4 remains the
-sole Control Plane. C5-B is `OFFLINE_DENY_ONLY`: generic authorization cannot
-permit an authenticated provider request, and the `DISABLED` and
-`CONTRACT_ONLY` compositions remain inert.
-
-Validation evidence is **8/8 focused files, 39 passed, 0 deselected** and the
-full SHOP_AI file-isolated gate is **41/41 files, 824 passed, 1 deselected**;
-the final adversarial architecture/security review was **PASS**. No provider
-was selected, no credentials or Keychain were accessed, no provider SDK or
-network request was made, and no SMS was sent.
-
-No production activation is introduced. The overall Shopping platform is not
-production-ready. Next is **`SHOP_AI_001C-C5-C — Provider-Specific
-Authenticated Read-Only Integration`**; C5-C must establish a provider-
-specific authenticated-read boundary under separate approval gates.
+The current repository/security scope is complete.
 
 History:
 
@@ -160,10 +52,21 @@ absent by default.
 Repository/security completion does not mean production readiness. No
 production migration, deployment, push, or activation is claimed here.
 
-Provider credentials, Keychain access, provider selection, network calls, SMS,
-deployment, migration, and production activation remain separately
-approval-gated and are not authorized by C5-B.
+The next milestone is the **SHOP_AI Production Readiness Evidence Gate**:
+`SHOP_AI_001C` trusted production phone verifier, production DB
+inventory/evidence, backup/hash verification, isolated restore validation,
+migration dry-run, runtime composition QA, authenticated E2E QA, rollback
+drill, and controlled production activation.
 
+
+## DEV_INGRESS_001 — Phase A
+
+A versioned site policy and standalone strict classifier distinguish the single
+production upstream from an optional, fully guarded authenticated preview.
+Existing readiness/attestation integrations remain unchanged. The current dev
+site is rejected because its private-route edge guards are missing; Phase A
+does not approve Dev ingress or Production readiness. See the
+[policy, focused tests and Phase B boundaries](docs/architecture/DEV-INGRESS-001.md).
 
 ## 2026-09-15 — SHOP_UI_003 unified agachichi feed
 
@@ -5658,112 +5561,35 @@ demo records each. See
 [SHOP_MEDIA_002 architecture](docs/architecture/SHOP-MEDIA-002-CATEGORY-LOOKBOOK.md)
 for the deterministic media manifest, generation status, and validation.
 
-## SHOP_AI_001C-C5-C3B
+## Current authoritative status — Public Storefront V2
 
-The Shopping provider integration now includes an offline Twilio secret-delivery foundation.
+Public Storefront V2 is **ACTIVATED and externally validated** under
+`PUBLIC-STOREFRONT-V2-ACTIVATION-02` at source HEAD
+`8f1298e6856c4b3df7c8c73be5b3d347841f3ef7`.
 
-The implemented boundary reuses the platform secret contracts:
+The production public host is `https://bokstory.duckdns.org/` and the dev host
+is `https://dev.bokstory.duckdns.org/`. Host Caddy is the only public edge:
+the public root falls back to WordPress at `127.0.0.1:58082`, while the exact
+GET-only Shopping API allowlist is routed to AIControlCenter at
+`127.0.0.1:58081`. Public Basic Auth is absent; dev Basic Auth remains
+preserved.
 
-`SecretReference -> SecretResolverPort -> EphemeralSecretLease -> provider-specific transport`
+Live validation passed for the public root, Shopping GET allowlist, private and
+Control Plane path denial, `rest_route` ambiguity protection, the legacy
+`/homepage/storefront` HTTP 301 redirect, and dev HTTP 401 authentication.
+WordPress remains the CMS, WooCommerce remains the Commerce Engine, and
+AIControlCenter remains the Control Plane and owner of Shopping business logic
+and orchestration. WordPress admin/login/XMLRPC/wp-json and public Control
+Plane namespaces are not exposed, and Shopping writes are not publicly proxied.
 
-C5-C3B does not resolve credentials or construct a live provider transport. Network access, Keychain access, SMS, deployment, and Ubuntu changes remain outside this phase.
+Activation-02 consumed its authorization exactly once, passed fresh
+pre-reload observation, attempted one Caddy reload (`count=1`), and loaded V2.
+WordPress and database generations were unchanged. No automatic retry or
+rollback, WooCommerce write authority/use, Ubuntu touch, or Docker/Colima/
+WordPress lifecycle mutation occurred. Activation-03 is superseded historical
+evidence, not the current authority.
 
-The canonical SHOP_AI regression gate is file-isolated and currently passes 51 test files with 913 passing tests and 1 known deselection.
-
-<!-- SHOP_AI_001C-C5-C3C0_CLOSEOUT -->
-### SHOP_AI_001C-C5-C3C0 offline authenticated read
-
-The shopping provider integration now includes the C5-C3C0 offline authenticated-read runtime foundation.
-
-The runtime preserves authorization-first execution, Twilio-specific GET-only request construction, one-attempt execution, no retry or fallback, bounded provider normalization, and the existing secret-delivery contracts.
-
-Canonical regression is file-isolated: 53 SHOP_AI test files passed with 928 tests passed and 1 known baseline deselection.
-
-This stage does not activate live provider access. Real credentials, macOS Keychain resolution, Twilio network calls, SMS delivery, deployment, and Ubuntu mutation remain outside C5-C3C0.
-
-<!-- SHOP_AI_001C-C5-C3C-H1 -->
-## SHOP_AI_001C-C5-C3C-H1
-
-C5-C3C authenticated-read authority hardening is complete
-offline.
-
-- bounded capability-registry retention and pruning
-- retained issuance-ID collisions fail closed
-- default opaque issuance-ID factory preserved
-- authorization-first and one-shot capability semantics preserved
-- C5-B generic authorization remains OFFLINE_DENY_ONLY
-- provider access remains GET-only, one attempt, no retry or fallback
-- full SHOP_AI file-isolated gate: 936 passed, 1 known baseline deselected
-- code commit: `ce29a16bb06c21eed92c515d909ee3afbf3ae067`
-- reviewed patch SHA-256: `3f19df00384df56e54a4eae8753edb3418a70286c225725e72810d53e6fb36d8`
-
-No provider network, real credential resolution, Keychain access,
-SMS send, deployment, production activation, or Ubuntu mutation
-was performed. C5-C3C live authorization has not been granted.
-
-<!-- SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
-## SHOP_AI_001C-C5-C3C Live READ_HEALTH
-
-The AIControlCenter non-production Twilio authenticated
-`READ_HEALTH` boundary has been validated through the control plane.
-
-Current contract:
-
-- provider: `twilio.verify.v2`
-- activation: `AUTHENTICATED_READ_ONLY`
-- live operation: `READ_HEALTH`
-- HTTP method: `GET`
-- provider request attempts: `1`
-- retry: disabled
-- fallback: disabled
-- SMS/write operations: disabled
-- `READ_EVIDENCE` live activation: disabled
-- credentials: Mac Keychain → `SecretReference` →
-  `SecretResolverPort` → `EphemeralSecretLease`
-- Ubuntu: untouched
-
-The verified non-production observation returned HTTP 200 and
-normalized `HEALTHY`.
-
-This milestone does not declare the platform production-ready.
-<!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
-
-<!-- SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
-## Commerce Order Core v1
-
-AIControlCenter now owns the first bounded read-only order domain
-boundary for the Shopping Platform.
-
-Delivered:
-
-- `OrderSnapshot` and bounded line-item contracts
-- `OrderListQuery`
-- `OrderReadPort`
-- `OrderService`
-- WooCommerce order-response normalization
-- privacy-minimized customer references
-- Decimal-based money normalization
-- read-only fake adapter test path
-
-Current authority boundary:
-
-- AIControlCenter owns order business logic
-- WooCommerce remains the Commerce Engine
-- WordPress remains the CMS
-- Ubuntu owns no order business logic or application state
-
-Not enabled:
-
-- WooCommerce network access
-- WooCommerce credential access
-- order creation/update/delete
-- payment mutation
-- refund or fulfillment mutation
-
-Focused tests: 9 passed.
-
-SHOP_AI file-isolated regression:
-951 passed with 1 known baseline test deselected.
-
-This milestone does not declare the platform production-ready.
-<!-- /SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
+The next Shopping milestone is the read-only-first WooCommerce order data
+integration: `READ_ORDER` (monitoring, then validation, with write operations
+deferred to a separately governed phase). This closeout does not claim that the
+entire platform is production-ready.

@@ -1,98 +1,6 @@
 # MASTER
 
-<!-- SHOP_AI_001C-C5-C3A_CLOSEOUT -->
-## Current authoritative SHOP_AI_001C-C5-C3A milestone
-
-`SHOP_AI_001C-C5-C3A` trusted authenticated-read authorization foundation is
-**COMPLETE for the offline authorization scope only**.
-
-Canonical evidence:
-
-- implementation commit: `e30ca8dd4b289ba57aa0e3106d5d50eb0b72ff6e`
-- parent: `7e61ee54fccbd871c0162bc726063982fad233a7`
-- reviewed implementation patch SHA256:
-  `5586b5c52de1a0f200753b3280676c8511a57a6df0b9e29142ecab605581b335`
-- focused authorization tests: **31 passed**
-- SHOP_AI file-isolated regression: **49/49 files, 898 passed, 1 deselected**
-- deterministic static/security review: **PASS**
-
-C5-C3A establishes an AIControlCenter-owned, Twilio-specific trusted
-authenticated-read authorization authority.
-
-The trust model is authority-registry based. A capability-shaped object is not
-trusted merely because a caller possesses it. The issuing AIControlCenter
-authority must have the authoritative issuance record.
-
-Authorization is bound exactly to provider, read operation, request identity,
-correlation identity, Verify Service SID, and Verification SID where required.
-
-Capabilities are opaque, short-lived, limited to a maximum lifetime of
-60 seconds, and one-shot. A first trusted authorization attempt consumes the
-capability. Forged, expired, reused, cross-authority, or binding-mismatched
-capabilities fail closed.
-
-The generic C5-B `ProviderNetworkAuthorizationGate` remains
-`OFFLINE_DENY_ONLY` and has not gained an allow path.
-
-C5-C3A performed no provider network call, credential resolution, Keychain
-access, Twilio SDK activation, SMS send, deployment, production activation,
-schema migration, or Ubuntu mutation.
-
-This milestone does not grant live authenticated provider authorization and
-is not a production-readiness claim.
-
-Next milestone:
-
-`SHOP_AI_001C-C5-C3B` — offline SecretReference / Mac Secret Resolver /
-EphemeralSecretLease and Twilio authenticated-read transport composition
-contract.
-
-C5-C3C remains separately approval-gated for any real Keychain resolution or
-authenticated Twilio GET network call.
-
-
-<!-- SHOP_AI_001C-C5-C2_CLOSEOUT -->
-## Current authoritative SHOP_AI_001C-C5-C2 milestone
-
-`SHOP_AI_001C-C5-C2` provider-specific Twilio Verify v2 read-only foundation is
-**COMPLETE for the offline C5-C2 scope only**.
-
-Canonical implementation evidence:
-
-- code commit: `7928456fa25ab70f6fa87badd2cc035743d9dd37`
-- parent documentation baseline: `6b355a9d3bfc726242c71545102f635ce2f98675`
-- reviewed implementation patch SHA256:
-  `4284206189afb8a611af2404e145bfb5692e584e2954688b184e5771a6f6f344`
-- focused C5-C validation: **4/4 files, 43 passed**
-- full SHOP_AI file-isolated gate: **45/45 files, 867 passed, 1 deselected**
-- final deterministic architecture/security review: **PASS**
-
-Architecture remains fail-closed. AIControlCenter on the Mac mini is the sole
-Control Plane. The C5-B generic authorization boundary remains
-`OFFLINE_DENY_ONLY`.
-
-C5-C2 selects `twilio.verify.v2` only for a provider-specific offline read
-contract. The implementation exposes bounded GET-only request specifications
-for one Verify Service and one Verification resource and normalizes provider
-responses into bounded evidence. Provider status is evidence and is not
-automatically converted into C4 terminal truth.
-
-No provider network transport was constructed or called. No credentials were
-resolved, no Keychain access occurred, no SMS was sent, no Twilio SDK was
-activated, no schema or production migration was executed, no production
-route or deployment was activated, and Ubuntu was untouched.
-
-`VerificationReconciliationService` remains the sole durable C4 reconciliation
-writer. `UNKNOWN_OUTCOME` remains blocked from terminal C4 admission.
-
-C5 as a whole is not complete and this is not a production-readiness claim.
-The next milestone is `SHOP_AI_001C-C5-C3` for explicitly approval-gated,
-provider-specific authenticated read activation. Real credentials, Keychain
-resolution, and authenticated provider network calls require separate explicit
-authorization.
-
-
-## Current authoritative platform state — 2026-09-29
+## Current authoritative platform state — 2026-09-27
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.
 AIControlCenter owns governance, policy, orchestration, authorization, audit,
@@ -114,313 +22,6 @@ Inventory, operations, and internal automation use Mac-local Ollama/Local AI.
 Product photos, image analysis, and advanced product analysis use GPT API
 Product Intelligence. Provider selection remains behind AIControlCenter
 policy/router/adapters.
-
-## SHOP_AI_001C-C5-B — Provider-Neutral Offline Provider Integration Foundation — COMPLETE for C5-B offline foundation scope only
-
-The authoritative current C5-B state is **COMPLETE for C5-B offline
-foundation scope only** at canonical code commit
-`c4bcd6a8cbe0c2d36afe282f4e561559dbbb2885`, with parent C4 documentation
-commit `37fb765142de909ce62bd42f3ad428dec3b3481d`. The reviewed
-implementation patch SHA256 is
-`ddc26b31978eb226df3f326540657b80bc74102a34365d50c63a402a29fd8d2f`.
-
-Validation evidence:
-
-- C5 focused: **8/8 files, 39 passed, 0 deselected**.
-- Full SHOP_AI file-isolated gate: **41/41 files, 824 passed, 1 deselected**.
-- Final adversarial architecture/security review: **PASS**.
-
-### C5-B offline authority boundary
-
-- AIControlCenter on the Mac mini remains the sole Control Plane.
-- C5-B is provider-neutral and `OFFLINE_DENY_ONLY`. Generic provider
-  authorization cannot permit an authenticated provider request.
-- No generic capability issuer or caller-injected trusted capability authority
-  exists. Configuration, activation state, allowlists, environment, and a
-  capability object are insufficient to authorize provider I/O.
-- Trusted capability issuance and verification are explicitly deferred to the
-  future AIControlCenter Control Plane/provider-specific C5-C boundary.
-- `DISABLED` and `CONTRACT_ONLY` runtime compositions remain inert. No
-  provider-specific transport is constructed and credentials are not resolved.
-- `SecretReference` remains metadata only. No Keychain access, provider
-  selection, provider SDK, network request, SMS, retry, or provider fallback
-  exists.
-- No route/dashboard activation, schema or production migration, deployment,
-  production activation, or Ubuntu mutation occurred. C5-B has no SQLite
-  persistence authority.
-
-### C5-B and C4 integration
-
-`UNKNOWN_OUTCOME` may exist only as bounded unresolved provider evidence and is
-blocked from C4 reconciliation admission. The normalized provider
-verification identifier accepts only the exact bounded contract or `None`, and
-provider identifier presence/value binding is exact and fail-closed.
-`VerificationReconciliationService` remains the sole durable reconciliation
-writer.
-
-### Next milestone
-
-`SHOP_AI_001C-C5-C — Provider-Specific Authenticated Read-Only Integration`.
-C5 as a whole is not complete. C5-C should select or formally defer the
-provider and introduce a provider-specific authenticated-read adapter/transport
-boundary under separate approval gates.
-
-## Historical SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation — COMPLETE
-
-The historical C4 state is **COMPLETE** at code, test, and
-architecture level. The initial local code commit is
-`50bd8d9203dfa977f257d8fa48186460c894244c`; a post-commit read-only review
-discovered blockers before that commit was pushed. Corrective safety commit
-`ea8878c0606c2a63c9cf858fff0f7218d12066bd` closes the blockers without
-rewriting Git history. The initial commit was not pushed before corrective
-validation.
-
-Validation evidence:
-
-- Final read-only architecture review: **PASS**.
-- Focused corrective gate: **6/6 test files, 112 passed**.
-- Full SHOP_AI file-isolated gate: **33/33 files passed, 785 passed,
-  1 deselected**.
-- Pytest cleanup/deprecation warnings were non-failing.
-
-### Durable C4 authority and state
-
-- The durable model is the lifecycle projection plus
-  `shopping_verification_unknown_outcomes` plus append-only
-  `shopping_verification_reconciliation_events`.
-- `START_UNKNOWN` terminal reconciliation requires validated bounded provider
-  evidence. Operator-selected terminal truth alone is forbidden.
-- `VERIFY_UNKNOWN` remains durable and fail-closed until explicit
-  reconciliation. Reconciliation requires explicit Control Plane capability
-  authority.
-- CAS/version checks and append-only event history are preserved.
-- C1 durable replay and `_replay_result` remain preserved.
-- Provider rejection publication rechecks local expiry.
-- v3 persistence structurally validates required C4 tables/triggers and
-  rejects forbidden `shopping_verification_quarantines`.
-- Domain `VerificationStatus.UNKNOWN` is forbidden. Provider-transport
-  `ProviderTransportVerificationStatus.UNKNOWN` is transport-only and may
-  exist only as transport ambiguity input.
-
-### C4 activation boundary and next milestone
-
-No provider SDK activation, live provider call, credentials, Keychain,
-production migration, deployment, route activation, or Ubuntu mutation
-occurred. C4 introduces no production activation. The overall Shopping
-platform is not production-ready.
-
-Next: **`SHOP_AI_001C-C5 — Provider-Specific Authenticated Non-Production
-Integration`**. C5 provider credentials, authenticated calls, and Keychain
-remain separately approval-gated.
-
-## Historical SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Foundation — COMPLETE for foundation scope only
-
-`SHOP_AI_001C-C3` is **COMPLETE for foundation scope only** at canonical code
-commit `72310b63710d6fc13eb14e85ad133318454bb430`, parent
-`0de8b7ef0522b53f2089c1c302075f5d6264400c`, with an exact code scope of
-**15 paths**. The reviewed implementation patch SHA256 is
-`e6a07f0e2f60c7e13a33a15edfa06eb33b2bcc286bb4bebf2fc1cd4055452f45`.
-
-Validation evidence:
-
-- C3 focused regression: **22 passed**.
-- Canonical SHOP_AI validation was file-isolated: **29/29 test files passed**.
-- Aggregate evidence across those isolated processes: **747 passed, 1
-  deselected, 16 warnings**.
-- The existing API runtime baseline defect
-  `tests/test_shop_ai_01b3_api_runtime.py::test_app_creation_does_not_create_product_draft_database`
-  remains explicitly excluded and was not fixed by C3.
-- A monolithic multi-file SHOP_AI pytest invocation is not the canonical gate.
-  API-oriented collection/import can leave `core.api.app` in `sys.modules`,
-  violating the isolation precondition of persistence/security tests.
-  File-per-process validation removes this harness contamination; the
-  monolithic harness collision is not an application regression.
-
-C3 architecture and preserved authority:
-
-- `CanonicalPhone` diagnostics redact raw phone representation.
-- `DestinationHandle` is opaque, immutable, transient, request-scoped, and
-  one-shot. Scope validation binds trusted provider, purpose, challenge,
-  replay, customer, browser, and binding dimensions.
-- The Mac `ProviderDestinationResolver` is process-local and in-memory only.
-  Raw destination is not persisted in SQLite, receipts, audit, JSON, or
-  provider-neutral application results.
-- `ChallengeStartRequest` and `ProviderTransportStartRequest` carry only an
-  opaque destination capability. Existing C1 verification persistence, result,
-  and session authority remains intact.
-- Generic `ProviderPhoneVerificationAdapter` forwards the capability but does
-  not resolve the destination.
-- `SecretReference` remains value-free metadata. `SecretResolverPort` returns
-  a redacted, one-shot `EphemeralSecretLease`. `Mac ProviderSecretResolver`
-  uses only an explicitly injected reader foundation.
-- Default runtime performs zero Keychain reads, zero credential reads, zero
-  provider-network calls, and no provider-specific SDK construction. Default
-  runtime remains inert/disabled.
-- Mac mini remains the sole Control Plane. Ubuntu receives no raw phone,
-  provider credentials, verification authority, application state, or business
-  logic.
-
-Explicit C3 exclusions:
-
-- No commercial SMS provider selection, provider SDK, authenticated provider
-  call, Keychain access, environment credential materialization, production
-  credential, route/API activation, schema/migration change, deployment,
-  production activation, Ubuntu mutation, Telegram implementation, or durable
-  `UNKNOWN_OUTCOME` lifecycle/schema change.
-
-Known unresolved architecture:
-
-`UNKNOWN_OUTCOME` is still not durably quarantined/reconciled. C1 persistence
-is not reopened in this C3 closeout. This must be resolved before authenticated
-provider integration.
-
-README review requires no change because C3 introduces no customer-facing
-route, real provider capability, production activation, deployment procedure,
-or operator workflow; `README.md` remains unchanged.
-
-Next engineering milestone exactly:
-`SHOP_AI_001C-C4 — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation`
-
-After C4, provider-specific authenticated non-production integration remains a
-separately gated milestone.
-
-## Historical SHOP_AI_001C-C2 — Provider Adapter Foundation — COMPLETE
-
-`SHOP_AI_001C-C2` is **COMPLETE** at canonical code commit
-`4c9f8851f39b944f0d875694c44f998ae5ad1000`, parent
-`fd64c2395778c69ecad0a3e1f662e1fe88444d97`, with a validated code scope of
-**12 paths**.
-
-Validation evidence:
-
-- C2/C1 regression: **74 passed, pytest exit 0**.
-- Broader SHOP_AI regression: **506 passed, 1 warning, pytest exit 0**.
-- API runtime, excluding one proven pre-existing baseline defect: **6 passed,
-  1 deselected, 11 warnings, pytest exit 0**.
-- Excluded baseline test:
-  `tests/test_shop_ai_01b3_api_runtime.py::test_app_creation_does_not_create_product_draft_database`.
-  It fails on untouched parent `fd64c2395778c69ecad0a3e1f662e1fe88444d97`
-  because the configured `inquiries.db` parent directory is absent. This is
-  pre-existing technical debt, not a C2 blocker; C2 did not fix it.
-
-C2 architecture and preserved authority:
-
-- Existing `PhoneVerificationPort`, C1 persistence, verification service,
-  session service, normalization, and customer authentication remain
-  unchanged.
-- `ProviderPhoneVerificationAdapter` is provider-neutral. Typed closed
-  START/VERIFY contracts are supplied by `ProviderTransportPort`.
-- The inert transport is unavailable, zero-network, and has no automatic
-  retry. The bounded failure taxonomy is `PROVIDER_UNAVAILABLE`, `TIMEOUT`,
-  `MALFORMED_RESPONSE`, `REJECTED`, `AMBIGUOUS_PROVIDER_IDENTIFIER`, and
-  `UNKNOWN_OUTCOME`. Timeout defaults to 10 seconds and is capped at 30.
-- `SecretReference` is value-free backend/key-name metadata only; C2 does not
-  resolve or materialize secret values. `ProviderTransportVerifyRequest` is
-  the OTP serialization/privacy boundary, while the existing
-  `ChallengeVerificationRequest` application contract is unchanged.
-- Provider timestamps are evidence only. AIControlCenter remains authorization,
-  time, and policy authority. Trusted application requests own customer,
-  challenge, replay, and phone-binding authority; provider payload does not.
-- Default runtime provider verification remains disabled. There are no new
-  routes/API activation, schema or migration, provider SDK, real network or
-  provider call, credentials, production provider selection, production
-  activation, or Ubuntu authority/state/business logic.
-
-Explicitly deferred to C3 or later: destination-phone resolution trust for
-real SMS delivery; Mac secret resolver and real provider-specific transport;
-authenticated non-production provider integration; durable `UNKNOWN_OUTCOME`
-quarantine/recovery policy; production credentials; production migration; and
-customer-facing E2E/runtime activation.
-
-README review requires no change because C2 adds no customer-facing route,
-real provider capability, production activation, or operational procedure;
-`README.md` remains unchanged.
-
-Next milestone exactly:
-`SHOP_AI_001C-C3 — Destination Resolution + Mac Secret Resolver Architecture`
-
-Downstream sequence:
-`SHOP_ORDER_001 → SHOP_AI_002 → SHOP_AI_003 → TG_SALES_001 → SHOP_E2E_001`
-
-## Historical SHOP_AI_001C-A / SHOP_AI_001C-B / SHOP_AI_001C-C0 / SHOP_AI_001C-C1 — phone verification foundation and durable persistence
-
-- `SHOP_AI_001C-A` architecture review: **COMPLETE**.
-- `SHOP_AI_001C-B` provider-neutral phone verification foundation:
-  **COMPLETE**.
-- `SHOP_AI_001C-C0` Durable Challenge / Attempt Persistence Design:
-  **COMPLETE**.
-- `SHOP_AI_001C-C1` Durable verification persistence: **COMPLETE**.
-- `SHOP_AI_001C-B` code commit exactly:
-  `60a3ca0ec547fa793916702577ae8ac3650137f1`.
-- `SHOP_AI_001C-C1` exact code commit:
-  `57c6c4e96ff13ea3ce727dd1910c276c08e62eee`.
-- Exact code scope: **7 files**.
-- Strict phone normalization implemented.
-- Opaque keyed phone binding implemented.
-- Provider-neutral `PhoneVerificationPort` implemented.
-- Fail-closed application/mock verification foundation implemented.
-- Existing B3-A trusted receipt/session authority preserved.
-- `SHOP_AI_001C-B` real repository regression: **178 passed, 289 warnings,
-  pytest exit 0**.
-- Targeted regression: **148 passed, 1 warning, pytest exit 0**.
-- SHOP_AI regression: **473 passed, 1 warning, pytest exit 0**.
-
-Durable verification authority and persistence:
-
-- Mac AIControlCenter is the sole verification authority. Ubuntu has zero
-  verification, business-logic, or application-state authority.
-- Durable `START_CLAIMED` occurs before provider-start invocation, and provider
-  invocation occurs outside the SQLite transaction. Concurrent exact starts
-  permit one provider invocation. An uncertain provider-start outcome fails
-  closed and cannot auto-reinvoke.
-- Immutable provider-start evidence is stored separately from lifecycle state.
-  SQLite is the sole durable replay authority; no process-local authorization
-  or replay authority exists.
-- OTP is provider transport input only. OTP, OTP digest, and OTP HMAC are not
-  durable replay state or identity. Raw phone, OTP, raw provider payload, and
-  credentials are excluded from durable verification state, audit, and trusted
-  receipt.
-- Opaque phone binding is durable, as is
-  `provider_source + provider_verification_id` uniqueness.
-- TX1 atomically covers attempt, challenge, trusted-receipt provenance, and
-  audit, and validates the returned trusted object before commit. TX2
-  atomically validates durable provenance, consumes the receipt, creates the
-  session, records B3 consumption/audit, and validates the projection before
-  commit.
-- The injected AIControlCenter UTC clock remains authorization time authority;
-  provider timestamps are evidence only. B3-A receipt/session security
-  semantics remain preserved.
-
-Schema and production boundary:
-
-- Fresh/current customer persistence foundation is schema v2.
-- Historical v1 is not silently upgraded or reinterpreted. Existing v1
-  requires separately authorized explicit migration.
-- C1 did not execute production migration or backfill.
-
-Production phone provider **NOT IMPLEMENTED**. Provider credentials **NOT
-MATERIALIZED**. Production DB migration **NOT STARTED**. Production provider
-runtime activation **NOT AUTHORIZED**. No production/provider/network access or
-deployment occurred.
-
-Architecture:
-
-- AIControlCenter = authority/control plane
-- Telegram = channel
-- AI = interpretation/recommendation, not order authority
-- OrderService = deterministic commerce operations
-- WooCommerce = commerce engine
-- Ubuntu = stateless infrastructure worker
-
-Next engineering milestone exactly:
-`SHOP_AI_001C-C2 — Provider Adapter Foundation`
-
-C2 is provider-neutral adapter work with inert/fake transport first,
-timeout/malformed-response mapping, a Mac-only secret-reference boundary, and
-disabled-by-default composition.
-
-ROADMAP downstream sequence:
-`SHOP_AI_001C → SHOP_ORDER_001 → SHOP_AI_002 / SHOP_AI_003 → TG_SALES_001 → Telegram Customer Order E2E`
 
 ## SHOP_AI repository/security milestone — complete
 
@@ -445,17 +46,32 @@ absent by default.
 
 ## Production readiness — incomplete
 
-Repository/security and the durable provider-neutral verification foundation do
-not mean production readiness. The production phone provider remains
-**NOT IMPLEMENTED**, production credentials remain **NOT MATERIALIZED**, and
-no production migration, deployment, push, or production activation is
-claimed. The production readiness evidence gate remains downstream and
-separately gated. The next engineering milestone is now
-`SHOP_AI_001C-C4` — Durable UNKNOWN_OUTCOME Quarantine / Reconciliation.
+Repository/security completion does not mean production readiness. No
+production migration, deployment, push, or production activation is claimed.
+
+The next milestone is the **SHOP_AI Production Readiness Evidence Gate**:
+
+- `SHOP_AI_001C` trusted production phone verifier.
+- Production DB inventory/evidence.
+- Backup/hash verification.
+- Isolated restore validation.
+- Migration dry-run.
+- Runtime composition QA.
+- Authenticated E2E QA.
+- Rollback drill.
+- Controlled production activation.
 
 Older conflicting architecture or readiness statements below remain historical
 and are superseded by this section.
 
+
+## DEV_INGRESS_001 — Phase A
+
+Repository-only site-policy classification is implemented independently of live
+readiness and runtime attestation. Production-only and fully guarded preview
+fixtures are supported; the existing unguarded dev site is not approved.
+The live-referenced Caddyfile, integrity metadata and existing Shopping changes
+remain preserved. [Contract and exact Phase B integration points](docs/architecture/DEV-INGRESS-001.md).
 
 ## 2026-09-15 — SHOP_UI_003_UNIFIED_FEED
 
@@ -6908,115 +6524,34 @@ continues to supply identity, name, price, availability, and description.
 Media assets are repository-owned and checksum tracked; unfinished generation
 is represented as `PLANNED` rather than fabricated.
 
-## SHOP_AI_001C-C5-C3B Status
+## Current authoritative storefront state — Public Storefront V2
 
-C5-C3B is complete at the offline secret-delivery contract layer.
+Public Storefront V2 is **ACTIVATED and externally validated** under the
+consumed authority `PUBLIC-STOREFRONT-V2-ACTIVATION-02`, installed at source
+HEAD `8f1298e6856c4b3df7c8c73be5b3d347841f3ef7`.
 
-The Mac AIControlCenter remains the sole Control Plane. C5-B remains `OFFLINE_DENY_ONLY`, and C5-C3A trusted read authorization remains authoritative. C5-C3B adds only bounded provider-specific secret-delivery metadata and composition seams.
+- Effective public host: `https://bokstory.duckdns.org/`.
+- Dev host: `https://dev.bokstory.duckdns.org/`.
+- Host Caddy is the only public edge.
+- Public root and WordPress fallback route to `127.0.0.1:58082`.
+- The exact GET-only Shopping API allowlist routes to AIControlCenter at
+  `127.0.0.1:58081`.
+- Public Basic Auth is absent; dev Basic Auth remains enforced.
+- Public root HTTP 200, Shopping allowlist, private/control-plane denial,
+  `rest_route` ambiguity protection, legacy HTTP 301 redirect, and dev HTTP
+  401 validation all passed.
 
-No provider credential was resolved. No Keychain access or provider network request occurred.
+Activation-02 authorization was consumed exactly once after fresh pre-reload
+re-observation; one Caddy reload was attempted and `loaded_v2=true` with reload
+count `1`. WordPress and database generations remained unchanged. There was no
+automatic retry or rollback, WooCommerce write authority/use, Ubuntu touch, or
+Docker/Colima/WordPress lifecycle mutation. WordPress remains CMS, WooCommerce
+remains Commerce Engine, and AIControlCenter owns business logic and
+orchestration. Public admin/login/XMLRPC/wp-json and Control Plane namespaces
+remain denied, and Shopping writes are not publicly proxied.
 
-Validation:
-- focused C5-C3B tests: 15 pass
-- canonical SHOP_AI gate: 51/51 files pass
-- SHOP_AI tests: 913 pass, 1 known deselection
-- canonical regression execution: file-isolated
-
-Next milestone: `SHOP_AI_001C-C5-C3C`, separately approval-gated for live authenticated read validation.
-
-<!-- SHOP_AI_001C-C5-C3C0_CLOSEOUT -->
-### SHOP_AI_001C-C5-C3C0 status
-
-C5-C3C0 is complete as an offline authenticated-read runtime foundation.
-
-The AIControlCenter Mac remains the sole control-plane authority. The Twilio provider boundary is GET-only and restricted to `READ_HEALTH` and `READ_EVIDENCE`. Authorization occurs before any future secret-resolution or transport activity. Retry and fallback are disabled and each authorized transport attempt is bounded to one attempt.
-
-Validation evidence: 15 focused tests passed. The canonical file-isolated SHOP_AI gate passed all 53 test files with 928 tests passed and 1 known baseline deselection.
-
-No real provider network access, credential resolution, Keychain access, SMS delivery, deployment, or Ubuntu mutation occurred.
-
-Code commit: `7f45f144d7d69722536e079292eb3b3513691824`.
-
-The next milestone is C5-C3 live-read hardening followed by a separately explicit approval gate for non-production Twilio authenticated GET validation.
-
-<!-- SHOP_AI_001C-C5-C3C-H1 -->
-## SHOP_AI_001C-C5-C3C-H1 Status
-
-Status: COMPLETE / OFFLINE HARDENING.
-
-Evidence:
-
-- architecture review PASS
-- static/security review PASS
-- focused H1/C3C regression: 54 PASS
-- full SHOP_AI file-isolated gate: 936 PASS / 1 known baseline deselected
-- registry pruning: BOUNDED
-- issuance collision handling: FAIL_CLOSED
-- authorization-first: PRESERVED
-- one-shot capability: PRESERVED
-- code commit: `ce29a16bb06c21eed92c515d909ee3afbf3ae067`
-
-Live Twilio authenticated reads remain separately approval-gated.
-
-<!-- SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
-## SHOP_AI_001C-C5-C3C Live READ_HEALTH milestone
-
-Status: COMPLETE after canonical documentation and normal
-fast-forward push.
-
-Validated control-plane path:
-
-`TwilioAuthenticatedReadAuthority`
-→ one-shot capability
-→ Mac Keychain `SecretReference`
-→ `SecretResolverPort`
-→ `EphemeralSecretLease`
-→ Twilio-specific HTTPS GET
-→ bounded provider normalization.
-
-Live scope is intentionally limited to `READ_HEALTH`.
-
-Not enabled:
-
-- `READ_EVIDENCE` live execution
-- SMS verification writes
-- retry/fallback
-- production activation
-- deployment
-- Ubuntu mutation
-
-The next shopping milestone proceeds without expanding provider
-authority beyond this boundary.
-<!-- /SHOP_AI_001C-C5-C3C_LIVE_CLOSEOUT -->
-
-<!-- SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
-## Commerce Order Core v1
-
-Status: COMPLETE after canonical documentation and normal push.
-
-Control-plane contract:
-
-`Customer / Agent`
-→ `AIControlCenter`
-→ `OrderService`
-→ `OrderReadPort`
-→ provider adapter.
-
-AIControlCenter remains authoritative for:
-
-- order-domain contracts
-- business orchestration
-- policy
-- future authorization
-- future audit
-
-WooCommerce is a replaceable Commerce Engine adapter target and
-does not own platform-wide business logic.
-
-Current milestone remains offline/read-only.
-
-WooCommerce networking, credentials, writes and payment mutations
-are not active.
-
-Next milestone: controlled WooCommerce real read-only integration.
-<!-- /SHOP_AI_COMMERCE_ORDER_CORE_V1_CLOSEOUT -->
+Activation-03 is superseded historical evidence and is not current authority.
+The next Shopping milestone is read-only-first WooCommerce order data
+integration: `READ_ORDER` (monitoring, then validation, with writes only later
+under separate governance). This storefront closeout is not a claim that the
+entire platform is production-ready.
