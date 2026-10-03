@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
+
+- Added the `SHOP_MEDIA_003_AGACHICHI` WordPress presentation candidate at
+  plugin version `0.18.0`.
+- Added a deterministic, SHA-256 verified plugin-local agachichi media
+  manifest and retained the prior Orange Coco assets for rollback.
+- Recorded that this is a candidate build only; no production activation,
+  WordPress write, WooCommerce write, Caddy reload, Ubuntu access, or push
+  occurred.
+
+See [STOREFRONT-PROMOTION-01](docs/architecture/STOREFRONT-PROMOTION-01.md).
+
 ## 2026-09-27 — SHOP_AI repository/security closeout
 
 - Recorded Group D

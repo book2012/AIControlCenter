@@ -14,69 +14,64 @@ final class AI_Shopping_Renderer
         ?array $search_result = null,
         array $homepage_sections = []
     ): string {
+        $hero_url = AI_Shopping_Agachichi_Presentation_Adapter::hero_url();
+
         ob_start();
         ?>
         <section class="ai-shopping-storefront">
-            <header class="ai-shopping-storefront__header">
-                <div class="ai-shopping-storefront__hero-copy">
-                    <p class="ai-shopping-storefront__eyebrow">
-                        NEW SEASON
+            <header class="agachichi-hero" aria-labelledby="agachichi-hero-title">
+                <div class="agachichi-hero__copy">
+                    <p class="agachichi-eyebrow">agachichi</p>
+                    <h1 id="agachichi-hero-title">
+                        매일 편하게,<br><em>조금 더 사랑스럽게.</em>
+                    </h1>
+                    <p class="agachichi-hero__description">
+                        Everyday Comfort, Playful Touch
                     </p>
-                    <h2>
-                        Everyday pieces.<br>
-                        Made for your moment.
-                    </h2>
-                    <p>
-                        가볍게 입고 오래 좋아할 수 있는,
-                        지금의 무드를 위한 에디트.
-                    </p>
-                    <div class="ai-shopping-storefront__hero-actions">
-                        <a
-                            class="ai-shopping-storefront__hero-link"
-                            href="<?php echo esc_url(
-                                add_query_arg(
-                                    [
-                                        'ai_shop_search' => '1',
-                                        'ai_shop_category' => 'new',
-                                        'ai_shop_page' => '1',
-                                    ],
-                                    home_url('/')
-                                )
-                            ); ?>"
-                        >
-                            SHOP THE EDIT
-                        </a>
-                    </div>
+                    <a
+                        class="agachichi-text-link"
+                        href="<?php echo esc_url(add_query_arg(
+                            [
+                                'ai_shop_search' => '1',
+                                'ai_shop_category' => 'new',
+                                'ai_shop_page' => '1',
+                            ],
+                            home_url('/')
+                        )); ?>"
+                    >
+                        NEW EDIT <span aria-hidden="true">↗</span>
+                    </a>
                 </div>
+                <?php if ($hero_url !== null) : ?>
+                    <figure class="agachichi-hero__photo">
+                        <img
+                            src="<?php echo esc_url($hero_url); ?>"
+                            alt="따뜻한 부티크에서 agachichi 스타일을 둘러보는 여성 모델"
+                            width="1536"
+                            height="1024"
+                            fetchpriority="high"
+                        >
+                    </figure>
+                <?php endif; ?>
             </header>
 
             <?php
-            if ($search_result === null) {
-                echo $this->ai_style_preview();
-            }
             if (
                 empty($featured['success'])
                 || empty($categories['success'])
             ) {
-                echo $this->notice(
-                    '쇼핑 데이터를 불러오지 못했습니다.'
-                );
+                echo $this->notice('쇼핑 데이터를 불러오지 못했습니다.');
             } else {
-
-
-                echo $this->categories(
-                    $categories['data']['items'] ?? []
-                );
-
+                echo $this->categories($categories['data']['items'] ?? []);
 
                 if ($search_result !== null) {
-                    echo $this->search_results(
-                        $search_result
+                    echo $this->search_form(
+                        $categories['data']['items'] ?? [],
+                        $search_filters
                     );
+                    echo $this->search_results($search_result);
                 } elseif (!empty($homepage_sections)) {
-                    echo $this->homepage_sections(
-                        $homepage_sections
-                    );
+                    echo $this->homepage_sections($homepage_sections);
                 } else {
                     echo $this->featured_section(
                         $featured['data']['items'] ?? []
@@ -90,312 +85,114 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
-    public function categories(
-        array $categories
-    ): string {
+    private function categories(array $categories): string
+    {
         if (!$categories) {
             return '';
         }
 
-        $active_category = isset(
-            $_GET['ai_shop_category']
-        )
-            ? sanitize_text_field(
-                wp_unslash(
-                    $_GET['ai_shop_category']
-                )
-            )
+        $active_category = isset($_GET['ai_shop_category'])
+            ? sanitize_text_field(wp_unslash($_GET['ai_shop_category']))
             : '';
 
         ob_start();
         ?>
-        <section class="ai-shopping-category-section">
-            <p class="ai-shopping-category-section__title">
-                SHOP BY CATEGORY
-            </p>
-
-            <nav
-                class="ai-shopping-storefront__categories ai-shopping-category-buttons"
-                aria-label="상품 카테고리"
-            >
+        <nav class="agachichi-filter-rail" aria-label="상품 카테고리">
+            <a
+                href="<?php echo esc_url(add_query_arg(
+                    ['ai_shop_search' => '1', 'ai_shop_page' => '1'],
+                    home_url('/')
+                )); ?>"
+                <?php if ($active_category === '') : ?>aria-current="page"<?php endif; ?>
+            >ALL</a>
             <?php foreach ($categories as $category) : ?>
                 <?php
-                $category_id = (string) (
-                    $category['id'] ?? ''
-                );
-
+                $category_id = (string) ($category['id'] ?? '');
                 $url = add_query_arg(
                     [
                         'ai_shop_search' => '1',
                         'ai_shop_category' => $category_id,
-                    ]
+                        'ai_shop_page' => '1',
+                    ],
+                    home_url('/')
                 );
                 ?>
-
                 <a
-                    class="<?php
-                    echo esc_attr(
-                        'ai-shopping-storefront__category'
-                        . (
-                            $category_id === $active_category
-                            ? ' is-active'
-                            : ''
-                        )
-                    );
-                    ?>"
-                    <?php if (
-                        $category_id === $active_category
-                    ) : ?>
-                        aria-current="page"
-                    <?php endif; ?>
                     href="<?php echo esc_url($url); ?>"
+                    <?php if ($category_id === $active_category) : ?>aria-current="page"<?php endif; ?>
                 >
-                    <?php
-                    echo esc_html(
-                        (string) (
-                            $category['name'] ?? ''
-                        )
-                    );
-                    ?>
-
-                    <small>
-                        <?php
-                        echo esc_html(
-                            (string) (
-                                $category['count'] ?? 0
-                            )
-                        );
-                        ?>
-                    </small>
+                    <?php echo esc_html((string) ($category['name'] ?? '')); ?>
                 </a>
             <?php endforeach; ?>
-            </nav>
-        </section>
+        </nav>
         <?php
 
         return (string) ob_get_clean();
     }
 
-    private function search_form(
-        array $categories,
-        array $filters
-    ): string {
-        $selected_category = (string) (
-            $filters['category'] ?? ''
-        );
-
-        $selected_stock = '';
-
-        if (
-            array_key_exists('in_stock', $filters)
-            && $filters['in_stock'] === true
-        ) {
-            $selected_stock = 'true';
-        } elseif (
-            array_key_exists('in_stock', $filters)
-            && $filters['in_stock'] === false
-        ) {
-            $selected_stock = 'false';
-        }
-
+    private function search_form(array $categories, array $filters): string
+    {
         ob_start();
         ?>
         <form
-            id="ai-shopping-search" class="ai-shopping-search"
+            id="ai-shopping-search"
+            class="agachichi-search-panel"
             method="get"
-            action=""
+            action="<?php echo esc_url(home_url('/')); ?>"
+            role="search"
         >
-            <input
-                type="hidden"
-                name="ai_shop_search"
-                value="1"
-            >
-
-            <div class="ai-shopping-search__field ai-shopping-search__field--wide">
-                <label for="ai-shop-q">
-                    상품 검색
-                </label>
-
+            <input type="hidden" name="ai_shop_search" value="1">
+            <label for="ai-shop-q">상품 검색</label>
+            <div class="agachichi-search-panel__fields">
                 <input
                     id="ai-shop-q"
                     type="search"
                     name="ai_shop_q"
-                    value="<?php
-                    echo esc_attr(
-                        (string) (
-                            $filters['q'] ?? ''
-                        )
-                    );
-                    ?>"
-                    placeholder="상품명 또는 설명"
+                    value="<?php echo esc_attr((string) ($filters['q'] ?? '')); ?>"
+                    maxlength="200"
+                    placeholder="상품명이나 떠오르는 단어를 입력하세요"
                 >
+                <button type="submit">검색</button>
             </div>
-
-            <div class="ai-shopping-search__field">
-                <label for="ai-shop-category">
-                    카테고리
-                </label>
-
-                <select
-                    id="ai-shop-category"
-                    name="ai_shop_category"
-                >
-                    <option value="">
-                        전체
-                    </option>
-
-                    <?php foreach ($categories as $category) : ?>
-                        <?php
-                        $category_id = (string) (
-                            $category['id'] ?? ''
-                        );
-                        ?>
-
-                        <option
-                            value="<?php echo esc_attr($category_id); ?>"
-                            <?php
-                            selected(
-                                $selected_category,
-                                $category_id
-                            );
-                            ?>
-                        >
-                            <?php
-                            echo esc_html(
-                                (string) (
-                                    $category['name'] ?? ''
-                                )
-                            );
-                            ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            <div class="ai-shopping-search__field">
-                <label for="ai-shop-min-price">
-                    최소 가격
-                </label>
-
-                <input
-                    id="ai-shop-min-price"
-                    type="number"
-                    min="0"
-                    step="1"
-                    name="ai_shop_min_price"
-                    value="<?php
-                    echo esc_attr(
-                        $filters['minimum_price'] ?? ''
-                    );
-                    ?>"
-                >
-            </div>
-
-            <div class="ai-shopping-search__field">
-                <label for="ai-shop-max-price">
-                    최대 가격
-                </label>
-
-                <input
-                    id="ai-shop-max-price"
-                    type="number"
-                    min="0"
-                    step="1"
-                    name="ai_shop_max_price"
-                    value="<?php
-                    echo esc_attr(
-                        $filters['maximum_price'] ?? ''
-                    );
-                    ?>"
-                >
-            </div>
-
-            <div class="ai-shopping-search__field">
-                <label for="ai-shop-stock">
-                    재고
-                </label>
-
-                <select
-                    id="ai-shop-stock"
-                    name="ai_shop_in_stock"
-                >
+            <select name="ai_shop_category" aria-label="카테고리">
+                <option value="">전체 카테고리</option>
+                <?php foreach ($categories as $category) : ?>
+                    <?php $category_id = (string) ($category['id'] ?? ''); ?>
                     <option
-                        value=""
-                        <?php selected($selected_stock, ''); ?>
+                        value="<?php echo esc_attr($category_id); ?>"
+                        <?php selected((string) ($filters['category'] ?? ''), $category_id); ?>
                     >
-                        전체
+                        <?php echo esc_html((string) ($category['name'] ?? '')); ?>
                     </option>
-
-                    <option
-                        value="true"
-                        <?php selected($selected_stock, 'true'); ?>
-                    >
-                        재고 있음
-                    </option>
-
-                    <option
-                        value="false"
-                        <?php selected($selected_stock, 'false'); ?>
-                    >
-                        품절
-                    </option>
-                </select>
-            </div>
-
-            <div class="ai-shopping-search__actions">
-                <button type="submit">
-                    검색
-                </button>
-
-                <a href="<?php
-                echo esc_url(
-                    remove_query_arg(
-                        [
-                            'ai_shop_search',
-                            'ai_shop_q',
-                            'ai_shop_category',
-                            'ai_shop_min_price',
-                            'ai_shop_max_price',
-                            'ai_shop_in_stock',
-                            'ai_shop_page',
-                        ]
-                    )
-                );
-                ?>">
-                    초기화
-                </a>
-            </div>
+                <?php endforeach; ?>
+            </select>
         </form>
         <?php
 
         return (string) ob_get_clean();
     }
 
-    private function search_results(
-        array $result
-    ): string {
+    private function search_results(array $result): string
+    {
         if (empty($result['success'])) {
-            return $this->notice(
-                '검색 결과를 불러오지 못했습니다.'
-            );
+            return $this->notice('검색 결과를 불러오지 못했습니다.');
         }
 
         $data = $result['data'] ?? [];
-        $items = $data['items'] ?? [];
-        $total = (int) ($data['total'] ?? 0);
 
         ob_start();
         ?>
-        <section class="ai-shopping-search-results">
-
-
-            <?php echo $this->products($items); ?>
-
+        <section class="agachichi-collection" aria-labelledby="search-title">
+            <header class="agachichi-collection__heading">
+                <h2 id="search-title">상품 둘러보기</h2>
+                <p><?php echo esc_html((string) ($data['total'] ?? 0)); ?>개</p>
+            </header>
+            <?php echo $this->products($data['items'] ?? []); ?>
             <?php
             echo $this->pagination(
                 (int) ($data['page'] ?? 1),
                 (int) ($data['page_size'] ?? 12),
-                $total
+                (int) ($data['total'] ?? 0)
             );
             ?>
         </section>
@@ -404,132 +201,17 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
-    private function ai_style_preview(): string
+    private function featured_section(array $products): string
     {
-        $groups = [
-            [
-                'id' => 'women-dresses',
-                'title' => 'DRESSES',
-                'subtitle' => 'Soft silhouettes for everyday moments.',
-                'images' => ['demo-001.jpg', 'demo-002.jpg', 'demo-003.jpg'],
-            ],
-            [
-                'id' => 'women-tops',
-                'title' => 'TOPS',
-                'subtitle' => 'Easy layers, clean lines.',
-                'images' => ['demo-004.jpg', 'demo-005.jpg', 'demo-006.jpg'],
-            ],
-            [
-                'id' => 'women-bottoms',
-                'title' => 'BOTTOMS',
-                'subtitle' => 'Relaxed proportions for daily styling.',
-                'images' => ['demo-007.jpg', 'demo-008.jpg', 'demo-009.jpg'],
-            ],
-            [
-                'id' => 'women-outer',
-                'title' => 'OUTERWEAR',
-                'subtitle' => 'The layer that completes the look.',
-                'images' => ['demo-010.jpg', 'demo-011.jpg', 'demo-012.jpg'],
-            ],
-            [
-                'id' => 'women-accessories',
-                'title' => 'ACCESSORIES',
-                'subtitle' => 'Small details, distinct mood.',
-                'images' => [
-                    'products/demo-036.jpg',
-                    'products/demo-037.jpg',
-                    'products/demo-038.jpg',
-                ],
-            ],
-            [
-                'id' => 'men',
-                'title' => 'MEN',
-                'subtitle' => 'A single edit of essential menswear.',
-                'images' => [
-                    'products/demo-039.jpg',
-                    'products/demo-040.jpg',
-                    'products/demo-041.jpg',
-                ],
-            ],
-        ];
-
         ob_start();
         ?>
-        <section
-            class="orange-coco-ai-preview"
-            aria-labelledby="orange-coco-ai-preview-title"
-        >
-            <header class="orange-coco-ai-preview__header">
-                <p>AI STYLE PREVIEW</p>
-                <h2 id="orange-coco-ai-preview-title">
-                    Find your next mood.
-                </h2>
-                <span>
-                    Women-first style inspiration curated for Orange Coco.
-                </span>
+        <section class="agachichi-collection" aria-labelledby="featured-title">
+            <header class="agachichi-collection__heading">
+                <div>
+                    <p class="agachichi-eyebrow">agachichi</p>
+                    <h2 id="featured-title">피드</h2>
+                </div>
             </header>
-
-            <div class="orange-coco-ai-preview__groups">
-                <?php foreach ($groups as $group) : ?>
-                    <?php
-                    $url = add_query_arg(
-                        [
-                            'ai_shop_search' => '1',
-                            'ai_shop_category' => $group['id'],
-                            'ai_shop_page' => '1',
-                        ],
-                        home_url('/')
-                    );
-                    ?>
-                    <article class="orange-coco-ai-preview__group">
-                        <div class="orange-coco-ai-preview__group-copy">
-                            <h3>
-                                <?php echo esc_html($group['title']); ?>
-                            </h3>
-                            <p>
-                                <?php echo esc_html($group['subtitle']); ?>
-                            </p>
-                            <a href="<?php echo esc_url($url); ?>">
-                                SHOP EDIT
-                            </a>
-                        </div>
-
-                        <div class="orange-coco-ai-preview__images">
-                            <?php foreach ($group['images'] as $image) : ?>
-                                <img
-                                    src="<?php echo esc_url(
-                                        AI_SHOPPING_STOREFRONT_URL
-                                        . 'assets/demo/'
-                                        . $image
-                                    ); ?>"
-                                    alt=""
-                                    loading="lazy"
-                                    decoding="async"
-                                >
-                            <?php endforeach; ?>
-                        </div>
-                    </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
-        <?php
-
-        return (string) ob_get_clean();
-    }
-
-    private function featured_section(
-        array $products
-    ): string {
-        ob_start();
-        ?>
-        <section id="ai-shopping-products" class="ai-shopping-featured">
-            <header class="ai-shopping-section-header">
-                <p class="ai-shopping-section-header__eyebrow">
-                    ORANGE COCO PICK
-                </p>
-                <h2>RECOMMEND</h2>
-            </header>
-
             <?php echo $this->products($products); ?>
         </section>
         <?php
@@ -537,50 +219,45 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
-    private function homepage_sections(
-        array $sections
-    ): string {
+    private function homepage_sections(array $sections): string
+    {
         ob_start();
 
         foreach ($sections as $section) {
             $payload = $section['payload'] ?? [];
             $items = $payload['data']['items'] ?? [];
 
-            if (
-                empty($payload['success'])
-                || empty($items)
-            ) {
+            if (empty($payload['success']) || empty($items)) {
                 continue;
             }
 
             $section_id = sanitize_html_class(
-                (string) (
-                    $section['id'] ?? 'section'
-                )
+                (string) ($section['id'] ?? 'section')
             );
-
-            $title = (string) (
-                $section['title'] ?? ''
+            $section_category = sanitize_text_field(
+                (string) ($section['category'] ?? $section_id)
             );
             ?>
             <section
-                id="orange-coco-<?php
-                echo esc_attr($section_id);
-                ?>"
-                class="orange-coco-home-section"
-                data-home-section="<?php
-                echo esc_attr($section_id);
-                ?>"
+                id="agachichi-<?php echo esc_attr($section_id); ?>"
+                class="agachichi-collection"
+                data-home-section="<?php echo esc_attr($section_id); ?>"
             >
-                <header
-                    class="orange-coco-home-section__header"
-                >
-                    <h2>
-                        <?php echo esc_html($title); ?>
-                    </h2>
-                    <span aria-hidden="true"></span>
+                <header class="agachichi-collection__heading">
+                    <h2><?php echo esc_html((string) ($section['title'] ?? '')); ?></h2>
+                    <a
+                        class="agachichi-text-link"
+                        href="<?php echo esc_url(add_query_arg(
+                            [
+                                'ai_shop_search' => '1',
+                                'ai_shop_category' => $section_category,
+                            ],
+                            home_url('/')
+                        )); ?>"
+                    >
+                        모두 보기 <span aria-hidden="true">↗</span>
+                    </a>
                 </header>
-
                 <?php echo $this->products($items); ?>
             </section>
             <?php
@@ -589,22 +266,17 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
-    public function products(
-        array $products
-    ): string {
+    private function products(array $products): string
+    {
         if (!$products) {
             return $this->empty_products();
         }
 
         ob_start();
         ?>
-        <div class="ai-shopping-storefront__grid">
+        <div class="agachichi-product-grid">
             <?php foreach ($products as $product) : ?>
-                <?php
-                echo $this->product_card(
-                    $product
-                );
-                ?>
+                <?php echo $this->product_card($product); ?>
             <?php endforeach; ?>
         </div>
         <?php
@@ -612,17 +284,9 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
-    private function pagination(
-        int $page,
-        int $page_size,
-        int $total
-    ): string {
-        $total_pages = max(
-            1,
-            (int) ceil(
-                $total / max(1, $page_size)
-            )
-        );
+    private function pagination(int $page, int $page_size, int $total): string
+    {
+        $total_pages = max(1, (int) ceil($total / max(1, $page_size)));
 
         if ($total_pages <= 1) {
             return '';
@@ -630,42 +294,13 @@ final class AI_Shopping_Renderer
 
         ob_start();
         ?>
-        <nav
-            class="ai-shopping-pagination"
-            aria-label="검색 결과 페이지"
-        >
+        <nav class="agachichi-pagination" aria-label="검색 결과 페이지">
             <?php if ($page > 1) : ?>
-                <a href="<?php
-                echo esc_url(
-                    add_query_arg(
-                        'ai_shop_page',
-                        $page - 1
-                    )
-                );
-                ?>">
-                    이전
-                </a>
+                <a href="<?php echo esc_url(add_query_arg('ai_shop_page', $page - 1)); ?>">← 이전</a>
             <?php endif; ?>
-
-            <span>
-                <?php
-                echo esc_html(
-                    $page . ' / ' . $total_pages
-                );
-                ?>
-            </span>
-
+            <span><?php echo esc_html($page . ' / ' . $total_pages); ?></span>
             <?php if ($page < $total_pages) : ?>
-                <a href="<?php
-                echo esc_url(
-                    add_query_arg(
-                        'ai_shop_page',
-                        $page + 1
-                    )
-                );
-                ?>">
-                    다음
-                </a>
+                <a href="<?php echo esc_url(add_query_arg('ai_shop_page', $page + 1)); ?>">다음 →</a>
             <?php endif; ?>
         </nav>
         <?php
@@ -673,111 +308,48 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
-    private function product_card(
-        array $product
-    ): string {
-        $slug = sanitize_title(
-            (string) (
-                $product['slug'] ?? ''
-            )
-        );
-
-        $url = home_url(
-            '/product/' . $slug . '/'
-        );
-
-        $description = wp_trim_words(
-            wp_strip_all_tags(
-                (string) (
-                    $product['description'] ?? ''
-                )
-            ),
-            22
-        );
-
-        $price = number_format_i18n(
-            (float) (
-                $product['price'] ?? 0
-            )
+    private function product_card(array $product): string
+    {
+        $product_id = (string) ($product['id'] ?? '');
+        $slug = sanitize_title((string) ($product['slug'] ?? $product_id));
+        $url = home_url('/product/' . rawurlencode($slug) . '/');
+        $image_url = AI_Shopping_Agachichi_Presentation_Adapter::image_url($product);
+        $tags = implode(
+            ' ',
+            AI_Shopping_Agachichi_Presentation_Adapter::tags($product)
         );
 
         ob_start();
         ?>
-        <?php
-        $image_url = esc_url(
-            (string) (
-                $product['image_url'] ?? ''
-            )
-        );
-        ?>
-
-        <article class="ai-shopping-product-card">
+        <article
+            class="agachichi-product-card"
+            data-product-id="<?php echo esc_attr($product_id); ?>"
+        >
             <a
+                class="agachichi-product-card__link"
                 href="<?php echo esc_url($url); ?>"
-                class="ai-shopping-product-card__image-link"
+                aria-label="상품 이미지와 해시태그 미리보기"
             >
-                <div class="ai-shopping-product-card__media">
-                <?php if ($image_url !== '') : ?>
-                    <img
-                        src="<?php echo $image_url; ?>"
-                        alt="<?php
-                        echo esc_attr(
-                            (string) (
-                                $product['name'] ?? ''
-                            )
-                        );
-                        ?>"
-                        loading="lazy"
-                        decoding="async"
-                    >
-                <?php else : ?>
-                    <span class="ai-shopping-product-card__placeholder">
-                        orange coco
-                    </span>
-                <?php endif; ?>
-            </div>
+                <div class="agachichi-product-card__photo">
+                    <?php if ($image_url !== null) : ?>
+                        <img
+                            src="<?php echo esc_url($image_url); ?>"
+                            alt="<?php echo esc_attr((string) ($product['name'] ?? '')); ?>"
+                            width="800"
+                            height="1200"
+                            loading="lazy"
+                            decoding="async"
+                        >
+                    <?php else : ?>
+                        <span class="agachichi-product-card__fallback">
+                            이미지 준비 중입니다.
+                        </span>
+                    <?php endif; ?>
+                </div>
+                <div class="agachichi-product-card__caption">
+                    <p><?php echo esc_html($tags); ?></p>
+                </div>
             </a>
-
-            <p class="ai-shopping-product-card__category">
-                <?php
-                echo esc_html(
-                    (string) (
-                        $product['category']
-                        ?? 'Uncategorized'
-                    )
-                );
-                ?>
-            </p>
-
-            <h3>
-                <a href="<?php echo esc_url($url); ?>">
-                    <?php
-                    echo esc_html(
-                        (string) (
-                            $product['name'] ?? ''
-                        )
-                    );
-                    ?>
-                </a>
-            </h3>
-
-            <p class="ai-shopping-product-card__description">
-                <?php echo esc_html($description); ?>
-            </p>
-
-            <footer class="ai-shopping-product-card__footer">
-                <strong>
-                    <?php echo esc_html($price); ?>원
-                </strong>
-
-                <span>
-                    <?php
-                    echo !empty($product['in_stock'])
-                        ? '재고 있음'
-                        : '품절';
-                    ?>
-                </span>
-            </footer>
         </article>
         <?php
 
@@ -786,30 +358,13 @@ final class AI_Shopping_Renderer
 
     private function empty_products(): string
     {
-        return '
-            <div class="ai-shopping-empty">
-                <div class="ai-shopping-empty__icon" aria-hidden="true">
-                    ✦
-                </div>
-                <p class="ai-shopping-empty__eyebrow">
-                    COMING SOON
-                </p>
-                <h3>새로운 상품을 준비하고 있어요</h3>
-                <p>
-                    곧 감각적인 여성 패션 상품을 만나볼 수 있습니다.
-                </p>
-                <a href="#ai-shopping-search">
-                    스타일 검색하기
-                </a>
-            </div>
-        ';
+        return '<div class="agachichi-empty"><p>조건에 맞는 상품이 없습니다.</p></div>';
     }
 
-    private function notice(
-        string $message
-    ): string {
+    private function notice(string $message): string
+    {
         return sprintf(
-            '<div class="ai-shopping-storefront__notice">%s</div>',
+            '<div class="agachichi-notice">%s</div>',
             esc_html($message)
         );
     }

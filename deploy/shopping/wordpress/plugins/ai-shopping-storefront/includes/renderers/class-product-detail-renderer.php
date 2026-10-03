@@ -26,10 +26,8 @@ final class AI_Shopping_Product_Detail_Renderer
             $product['description'] ?? ''
         );
 
-        $image_url = esc_url(
-            (string) (
-                $product['image_url'] ?? ''
-            )
+        $image_url = AI_Shopping_Agachichi_Presentation_Adapter::image_url(
+            $product
         );
 
         $price = number_format_i18n(
@@ -61,16 +59,16 @@ final class AI_Shopping_Product_Detail_Renderer
         ob_start();
         ?>
         <main
-            class="orange-coco-product-page"
+            class="agachichi-product-page"
             data-product-id="<?php
             echo esc_attr($product_id);
             ?>"
         >
-            <section class="orange-coco-product-detail">
-                <div class="orange-coco-product-detail__gallery">
-                    <?php if ($image_url !== '') : ?>
+            <section class="agachichi-product-detail">
+                <div class="agachichi-product-detail__gallery">
+                    <?php if ($image_url !== null) : ?>
                         <figure
-                            class="orange-coco-product-detail__main-image"
+                            class="agachichi-product-detail__main-image"
                         >
                             <img
                                 src="<?php echo $image_url; ?>"
@@ -81,17 +79,17 @@ final class AI_Shopping_Product_Detail_Renderer
                         </figure>
                     <?php else : ?>
                         <div
-                            class="orange-coco-product-detail__placeholder"
+                            class="agachichi-product-detail__placeholder"
                         >
-                            orange coco
+                            이미지 준비 중입니다.
                         </div>
                     <?php endif; ?>
                 </div>
 
-                <div class="orange-coco-product-detail__summary">
+                <div class="agachichi-product-detail__summary">
                     <?php if ($category !== '') : ?>
                         <p
-                            class="orange-coco-product-detail__category"
+                            class="agachichi-product-detail__category"
                         >
                             <?php echo esc_html($category); ?>
                         </p>
@@ -102,13 +100,13 @@ final class AI_Shopping_Product_Detail_Renderer
                     </h1>
 
                     <p
-                        class="orange-coco-product-detail__price"
+                        class="agachichi-product-detail__price"
                     >
                         <?php echo esc_html($price); ?>원
                     </p>
 
                     <p
-                        class="orange-coco-product-detail__stock <?php
+                        class="agachichi-product-detail__stock <?php
                         echo $in_stock
                             ? 'is-in-stock'
                             : 'is-out-of-stock';
@@ -123,10 +121,10 @@ final class AI_Shopping_Product_Detail_Renderer
 
                     <?php if ($description !== '') : ?>
                         <div
-                            class="orange-coco-product-detail__story"
+                            class="agachichi-product-detail__story"
                         >
                             <p
-                                class="orange-coco-product-detail__eyebrow"
+                                class="agachichi-product-detail__eyebrow"
                             >
                                 STYLE STORY
                             </p>
@@ -142,7 +140,7 @@ final class AI_Shopping_Product_Detail_Renderer
                     <?php endif; ?>
 
                     <div
-                        class="orange-coco-product-detail__options"
+                        class="agachichi-product-detail__options"
                     >
                         <fieldset>
                             <legend>COLOR</legend>
@@ -198,11 +196,11 @@ final class AI_Shopping_Product_Detail_Renderer
                     </div>
 
                     <div
-                        class="orange-coco-product-detail__actions"
+                        class="agachichi-product-detail__actions"
                     >
                         <button
                             type="button"
-                            class="orange-coco-product-detail__wishlist"
+                            class="agachichi-product-detail__wishlist"
                             data-product-id="<?php
                             echo esc_attr($product_id);
                             ?>"
@@ -211,7 +209,7 @@ final class AI_Shopping_Product_Detail_Renderer
                         </button>
 
                         <a
-                            class="orange-coco-product-detail__inquiry"
+                            class="agachichi-product-detail__inquiry"
                             href="<?php
                             echo esc_url($kakao_url);
                             ?>"
@@ -223,7 +221,7 @@ final class AI_Shopping_Product_Detail_Renderer
                         </a>
 
                         <a
-                            class="orange-coco-product-detail__instagram"
+                            class="agachichi-product-detail__instagram"
                             href="<?php
                             echo esc_url($instagram_url);
                             ?>"
@@ -236,7 +234,7 @@ final class AI_Shopping_Product_Detail_Renderer
                     </div>
 
                     <dl
-                        class="orange-coco-product-detail__meta"
+                        class="agachichi-product-detail__meta"
                     >
                         <div>
                             <dt>상품번호</dt>
@@ -261,14 +259,14 @@ final class AI_Shopping_Product_Detail_Renderer
 
             <?php if ($related_products) : ?>
                 <section
-                    class="orange-coco-related-products"
+                    class="agachichi-related-products"
                 >
                     <header>
                         <h2>You May Also Like</h2>
                     </header>
 
                     <div
-                        class="orange-coco-related-products__grid"
+                        class="agachichi-related-products__grid"
                     >
                         <?php
                         foreach (
@@ -291,15 +289,13 @@ final class AI_Shopping_Product_Detail_Renderer
                                 . '/'
                             );
 
-                            $related_image = esc_url(
-                                (string) (
-                                    $related['image_url']
-                                    ?? ''
-                                )
-                            );
+                            $related_image =
+                                AI_Shopping_Agachichi_Presentation_Adapter::image_url(
+                                    $related
+                                );
                             ?>
                             <article
-                                class="orange-coco-related-card"
+                                class="agachichi-related-card"
                             >
                                 <a
                                     href="<?php
@@ -309,9 +305,7 @@ final class AI_Shopping_Product_Detail_Renderer
                                     ?>"
                                 >
                                     <?php
-                                    if (
-                                        $related_image !== ''
-                                    ) :
+                                    if ($related_image !== null) :
                                         ?>
                                         <img
                                             src="<?php
@@ -370,9 +364,9 @@ final class AI_Shopping_Product_Detail_Renderer
     ): string {
         ob_start();
         ?>
-        <main class="orange-coco-product-page">
+        <main class="agachichi-product-page">
             <section
-                class="orange-coco-product-not-found"
+                class="agachichi-product-not-found"
             >
                 <p>PRODUCT NOT FOUND</p>
 

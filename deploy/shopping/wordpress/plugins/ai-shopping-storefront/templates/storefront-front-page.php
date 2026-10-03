@@ -4,9 +4,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-$category_url = static function (
-    string $category = ''
-): string {
+$category_url = static function (string $category = ''): string {
     $args = [
         'ai_shop_search' => '1',
         'ai_shop_page' => '1',
@@ -16,19 +14,17 @@ $category_url = static function (
         $args['ai_shop_category'] = $category;
     }
 
-    return add_query_arg(
-        $args,
-        home_url('/')
-    );
+    return add_query_arg($args, home_url('/'));
 };
+
+$search_url = add_query_arg(
+    ['ai_shop_search' => '1'],
+    home_url('/')
+);
 
 $cart_url = function_exists('wc_get_cart_url')
     ? wc_get_cart_url()
     : home_url('/cart/');
-
-$checkout_url = function_exists('wc_get_checkout_url')
-    ? wc_get_checkout_url()
-    : home_url('/checkout/');
 
 $account_url = function_exists('wc_get_page_permalink')
     ? wc_get_page_permalink('myaccount')
@@ -38,140 +34,94 @@ $account_url = function_exists('wc_get_page_permalink')
 <html <?php language_attributes(); ?>>
 <head>
     <meta charset="<?php bloginfo('charset'); ?>">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light">
+    <meta name="description" content="agachichi — Everyday Comfort, Playful Touch.">
+    <title>agachichi | Everyday Comfort, Playful Touch</title>
     <?php wp_head(); ?>
 </head>
 
-<body <?php body_class('orange-coco-front-page'); ?>>
+<body <?php body_class('agachichi-front-page'); ?>>
 <?php wp_body_open(); ?>
 
-<header class="orange-coco-header">
-    <div class="orange-coco-header__inner">
+<a class="agachichi-skip-link" href="#agachichi-main">본문 바로가기</a>
+
+<header class="agachichi-header">
+    <div class="agachichi-header__inner">
         <button
-            class="orange-coco-header__mobile-button"
+            class="agachichi-menu-button"
             type="button"
             aria-label="메뉴 열기"
             aria-expanded="false"
+            aria-controls="agachichi-navigation"
         >
-            <span></span>
-            <span></span>
-            <span></span>
+            <span></span><span></span><span></span>
         </button>
 
         <nav
-            class="orange-coco-nav"
+            id="agachichi-navigation"
+            class="agachichi-navigation"
             aria-label="상품 카테고리"
         >
-            <a href="<?php echo esc_url($category_url('new')); ?>">
-                NEW
-            </a>
-            <a href="<?php echo esc_url($category_url('women-tops')); ?>">
-                TOPS
-            </a>
-            <a href="<?php echo esc_url($category_url('women-bottoms')); ?>">
-                BOTTOMS
-            </a>
-            <a href="<?php echo esc_url($category_url('women-dresses')); ?>">
-                DRESSES
-            </a>
-            <a href="<?php echo esc_url($category_url('women-outer')); ?>">
-                OUTERWEAR
-            </a>
-            <a href="<?php echo esc_url($category_url('men')); ?>">
-                MEN
-            </a>
-            <a href="<?php echo esc_url($category_url('women-accessories')); ?>">
-                ACCESSORIES
-            </a>
+            <a href="<?php echo esc_url($category_url('new')); ?>">NEW</a>
+            <a href="<?php echo esc_url($category_url('women-tops')); ?>">TOPS</a>
+            <a href="<?php echo esc_url($category_url('women-bottoms')); ?>">BOTTOMS</a>
+            <a href="<?php echo esc_url($category_url('women-dresses')); ?>">DRESSES</a>
+            <a href="<?php echo esc_url($category_url('women-outer')); ?>">OUTERWEAR</a>
+            <a href="<?php echo esc_url($category_url('women-bags')); ?>">BAGS</a>
+            <a href="<?php echo esc_url($category_url('women-accessories')); ?>">ACCESSORIES</a>
         </nav>
 
         <a
-            class="orange-coco-logo"
+            class="agachichi-wordmark"
             href="<?php echo esc_url(home_url('/')); ?>"
-            aria-label="Orange Coco 홈"
+            aria-label="agachichi 홈"
         >
-            orange coco
+            agachichi
+            <span>Everyday Comfort, Playful Touch</span>
         </a>
 
-        <div class="orange-coco-header__actions">
-            <button
-                class="orange-coco-icon-button"
-                id="orange-coco-search-open"
-                type="button"
-                aria-label="검색 열기"
-            >
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="11" cy="11" r="6"></circle>
-                    <path d="m16 16 4 4"></path>
-                </svg>
-            </button>
-            <a
-                class="orange-coco-header-action-link"
-                href="<?php echo esc_url($account_url); ?>"
-            >
+        <div class="agachichi-header__actions">
+            <a class="agachichi-header-link" href="<?php echo esc_url($search_url); ?>">
+                SEARCH <span aria-hidden="true">↗</span>
+            </a>
+            <a class="agachichi-header-link" href="<?php echo esc_url($account_url); ?>">
                 ACCOUNT
             </a>
-            <a
-                class="orange-coco-header-action-link"
-                href="<?php echo esc_url($cart_url); ?>"
-            >
+            <a class="agachichi-header-link" href="<?php echo esc_url($cart_url); ?>">
                 BAG
             </a>
         </div>
     </div>
+    <p class="agachichi-preview-notice">
+        상품 미리보기 · 현재 구매는 지원하지 않습니다.
+    </p>
 </header>
 
-<main
-    id="orange-coco-main"
-    class="orange-coco-main"
->
-    <?php
-    echo do_shortcode(
-        '[ai_shopping_storefront limit="10" title=""]'
-    );
-    ?>
+<main id="agachichi-main" class="agachichi-main" tabindex="-1">
+    <?php echo do_shortcode('[ai_shopping_storefront limit="10" title=""]'); ?>
 </main>
 
-<footer
-    class="orange-coco-footer"
-    aria-label="Orange Coco 고객 안내"
->
-    <div class="orange-coco-footer__inner">
-        <div class="orange-coco-footer__brand">
+<footer class="agachichi-footer" aria-label="agachichi 고객 안내">
+    <div class="agachichi-footer__inner">
+        <div>
             <a
-                class="orange-coco-footer__brand-link"
+                class="agachichi-footer__brand"
                 href="<?php echo esc_url(home_url('/')); ?>"
             >
-                Orange Coco
+                agachichi
             </a>
-            <p>
-                Everyday pieces for your moment.
-            </p>
+            <p>Everyday Comfort, Playful Touch</p>
         </div>
 
-        <nav
-            class="orange-coco-footer__links"
-            aria-label="Footer navigation"
-        >
-            <a href="<?php echo esc_url(home_url('/')); ?>">
-                SHOP
-            </a>
-            <a href="<?php echo esc_url($account_url); ?>">
-                ACCOUNT
-            </a>
-            <a href="<?php echo esc_url($cart_url); ?>">
-                BAG
-            </a>
+        <nav class="agachichi-footer__links" aria-label="Footer navigation">
+            <a href="<?php echo esc_url(home_url('/')); ?>">SHOP</a>
+            <a href="<?php echo esc_url($account_url); ?>">ACCOUNT</a>
+            <a href="<?php echo esc_url($cart_url); ?>">BAG</a>
         </nav>
 
-        <p class="orange-coco-footer__copyright">
-            &copy; <?php echo esc_html(wp_date('Y')); ?>
-            Orange Coco
+        <p class="agachichi-footer__copyright">
+            &copy; <?php echo esc_html(wp_date('Y')); ?> agachichi
         </p>
     </div>
 </footer>

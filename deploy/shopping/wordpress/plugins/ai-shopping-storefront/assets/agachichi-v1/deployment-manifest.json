@@ -1,0 +1,856 @@
+{
+  "schema_version": 1,
+  "presentation_identifier": "SHOP_MEDIA_003_AGACHICHI",
+  "source_manifest": "brands/agachichi/assets/media/SHOP_MEDIA_003.json",
+  "media_count": 121,
+  "product_media_count": 120,
+  "assets": [
+    {
+      "asset_type": "hero",
+      "media_id": "hero-agachichi",
+      "source_relative_path": "brands/agachichi/assets/media/storefront/hero-agachichi.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/hero-agachichi.jpg",
+      "sha256": "3ef0642fcc0f278354952a09b25e0343b43487b83e3d36eed763432690b517be"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0001",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0001.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0001.jpg",
+      "sha256": "56413167e01226913da6593e980eec384245576c55b72dc1de23d65c0bc71873"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0002",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0002.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0002.jpg",
+      "sha256": "1313ebc1e576321bfaeaf6d4766148edf4c75f7853389562a31cbe15e7172f14"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0003",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0003.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0003.jpg",
+      "sha256": "a95270aa77d5d019ce7e397784d56fc83d46c5adfaa835047ae783020168c031"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0004",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0004.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0004.jpg",
+      "sha256": "083dbbb83e1fad4f31215e3d1887a04a45f206555142aadbe2c5f0268f076d21"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0005",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0005.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0005.jpg",
+      "sha256": "c0352b8095076f67c477e3baddd5b9a9639055552ee0ed17186320e9c764757c"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0006",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0006.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0006.jpg",
+      "sha256": "691ee6450438ad9d9bd6ecfbed66fb9ab85028af09eebe3c2f8fb3c756b96cf7"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0007",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0007.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0007.jpg",
+      "sha256": "443ff2f95270d2cb5fdadba14a9cfaef2f2aed842f49b113de9c2144cc7c6b96"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0008",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0008.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0008.jpg",
+      "sha256": "5221d4fc044b2ada7fc75d082f26d0c7b84204314858d6da65a6df54bdd10132"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0009",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0009.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0009.jpg",
+      "sha256": "f1672a0185570067308a56ce8f1ed1c9dad9e11113256d9d6685bd5c65d11365"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0010",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0010.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0010.jpg",
+      "sha256": "49f04dadcdf953807a9b1c0f87ff8a42491c0496ac74cdeecbab8116da8e3202"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0011",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0011.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0011.jpg",
+      "sha256": "74379f44a6f5fe0f146c10252c835c1a3b41951efa954d82bdac873fbbc162cc"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0012",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0012.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0012.jpg",
+      "sha256": "d9399321fe1dac56c3fe6bb2980008cd92d3b671a5eaf5b3d6fee2460a75e012"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0013",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0013.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0013.jpg",
+      "sha256": "1fc254b965b11218b016ae66e2794274b4a8bb00a02d1fbfcc2acbf7603cb5b6"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0014",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0014.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0014.jpg",
+      "sha256": "ec988ba5f5f728f74667eed5623e7c2b55b91e429524fe5dd22063b18028d4c8"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0015",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0015.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0015.jpg",
+      "sha256": "f83444c29f2c8c3c2d02ac0b1dcabb35dc34dd361ee15b940a5c6a03c930b744"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0016",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0016.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0016.jpg",
+      "sha256": "bdc9c519e03e5096953cc3469bb311c1bd3819ea5a7d07ae4658867a94b95049"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0017",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0017.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0017.jpg",
+      "sha256": "bf7c70eb83b33658c947512aee35915a30620c5b649198dccd68e5732484386c"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0018",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0018.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0018.jpg",
+      "sha256": "0276c7b2dfde2884272b0ff4bb35cd4eb523ae4fcdc02a46f07acb17bb3998e6"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0019",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0019.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0019.jpg",
+      "sha256": "b9ea6e89e97802dd21ae79a026e663753f5e8b9051b3575e978bcbb8a566fe4e"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-acc-0020",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/acc/oc-demo-acc-0020.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/acc/oc-demo-acc-0020.jpg",
+      "sha256": "0760cb48e1f8fe9d6864a420a8ed0213980a6ce886235f13c3bde91d56a531af"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0001",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0001.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0001.jpg",
+      "sha256": "4b65b24ea4ee37c1f059a9529d9735cfe0bd3c7746916757f7bf3e23d7e4b396"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0002",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0002.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0002.jpg",
+      "sha256": "5a9f279d89b329824dd069620efff9d9313a3dbf3b2876c5dde407a0fbf93ffa"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0003",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0003.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0003.jpg",
+      "sha256": "33f831b1aeb9c21166e7427dd73214454e204f4d06712d6faf541d286dc9aa21"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0004",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0004.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0004.jpg",
+      "sha256": "d5ac7bcbbac18ee3538a48106ef2b09ab1ee60d0014b60d083d7d5d201f71f20"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0005",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0005.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0005.jpg",
+      "sha256": "7509e7efa270fc9b63d2e5452cbe2672ec67cbff1da543ebddaf4f96c3fa1656"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0006",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0006.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0006.jpg",
+      "sha256": "5f77d666376ce77d04487bab4979030228798146191bc735ebc126fb809149be"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0007",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0007.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0007.jpg",
+      "sha256": "7b0219ceb63bbfb9b0b69f4ee992df58558c7aeef28f587c02d7832e46868c36"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0008",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0008.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0008.jpg",
+      "sha256": "a339af56edbd4ade81336e8aaba151b9c45c717f9cc9ef20f50f91f4fb726326"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0009",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0009.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0009.jpg",
+      "sha256": "57d6d302921a24c5bb0e0bc63ddfaf5835d7b29e27e563595ef795d0e9eabcad"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0010",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0010.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0010.jpg",
+      "sha256": "6896a18121e757281c66f885c60f86974e680f35ad3d494dfd128fe3c3939631"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0011",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0011.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0011.jpg",
+      "sha256": "f5dec0d047077db9622b3fcf8361f10dc669b942897fa2846a10921f7104ac7b"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0012",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0012.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0012.jpg",
+      "sha256": "89aae1bd1b16729e6a046098d1641f26178f238d066e530f56ba2c67021a44c0"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0013",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0013.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0013.jpg",
+      "sha256": "de4738ab3601f3b6926c563c1c71511d993c3a355a2dffc987c4fd9fc4e73875"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0014",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0014.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0014.jpg",
+      "sha256": "4db711245d99cbf7cfdb83031d1d7fbea1e487fc831cc851fbdb6cd570a87c2d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0015",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0015.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0015.jpg",
+      "sha256": "7ee978a671519a8ab21e3010bed797fb1d7cf43736771b9016264167ecb5fe8f"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0016",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0016.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0016.jpg",
+      "sha256": "8217e48629073d5fec79b4bbeadf2cc0bc01c8832bba40647376d8c65580ddd6"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0017",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0017.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0017.jpg",
+      "sha256": "68ad1b202b5f05069f91adf601c84ba9c121638f3bdfdb1187b369e7b700e72e"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0018",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0018.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0018.jpg",
+      "sha256": "78be44589f167cf906504fd2cdd718512eed58a0fedad4fe180bbf37b3daab3c"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0019",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0019.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0019.jpg",
+      "sha256": "2d7b162423fb8eea101e74e2a5b8a6301b2b228846943637a83186a7dcb207c7"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bag-0020",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bag/oc-demo-bag-0020.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bag/oc-demo-bag-0020.jpg",
+      "sha256": "9519f6418700d7ffe8fdab92d557a09c25f937d9f9a7695243d1d261ebdf253d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0001",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0001.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0001.jpg",
+      "sha256": "dc2e8b6445ee0813b74e0414f3d5b5e0ddec4606c15d1b66d253549909757c01"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0002",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0002.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0002.jpg",
+      "sha256": "eabe750ae596207a87f18c8eaddae17ed8ae9c5ebe5cf19eb6c3fb16771e2136"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0003",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0003.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0003.jpg",
+      "sha256": "439a113ad9ebacd9b75248d4a8929500afb4395e738a0b7f798764a66ca1066a"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0004",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0004.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0004.jpg",
+      "sha256": "36feffe8e7c5c88a3525247133f212eb8b899bb4a6c072214043b125da33adb1"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0005",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0005.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0005.jpg",
+      "sha256": "dcffa8604b9f29ab8c8da4972b777aa90bcde750e32bea8d16bf1abc6dd8f248"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0006",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0006.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0006.jpg",
+      "sha256": "dd10be8e5b15b2fdd7fe69f5806b5fe25cc8ffd6f1509f47c028a76f32513dd8"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0007",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0007.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0007.jpg",
+      "sha256": "ea256d995559073d1736c180082538a4eef85484ccf6c73233955a4c6ffd67db"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0008",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0008.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0008.jpg",
+      "sha256": "b0acc8be89a40d36ac8d4b78f83daa008e1124d86543761ec37631753506a4a7"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0009",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0009.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0009.jpg",
+      "sha256": "0c51e493781b5c06a4c3f1c0f323cce680edc8c58a48f244c413f98a935df618"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0010",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0010.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0010.jpg",
+      "sha256": "0116f1bf7c05e74836241966c79fa3d3e919389bbd54dbf0eedba5c99f314765"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0011",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0011.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0011.jpg",
+      "sha256": "5e67023d9f192c1ba72456154e349fb148485597ed583083b9de20147611c441"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0012",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0012.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0012.jpg",
+      "sha256": "35a6b1b1058153b3550ca7dc5cac01e7ad3746fb8a47eed53aaf78bc66f2866e"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0013",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0013.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0013.jpg",
+      "sha256": "93718768eb55fd5c5a225763112000eabe78003596baf1043339e90b1cd3ac2d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0014",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0014.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0014.jpg",
+      "sha256": "31eff58b94a6b9266bf5b5d280a1cbd813c98c0f651f826b939b1eb59041e432"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0015",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0015.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0015.jpg",
+      "sha256": "b00f73468a6e5c4b8cf33c6e45a9d539c13781c3bd845c5f003be274625c1d9a"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0016",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0016.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0016.jpg",
+      "sha256": "f60581c5c86a750fde10094c7266f1253fd9fdfc7d37418ed93a99a851a4338b"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0017",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0017.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0017.jpg",
+      "sha256": "d53ff8c46dd76681638bb578ba1374403c8fd1fbff753203ebf32ec4ec11adcf"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0018",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0018.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0018.jpg",
+      "sha256": "1d532b089ee52bfda49df27a46a52e0e34cbb35f77029418a99b54bcbc0c3548"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0019",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0019.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0019.jpg",
+      "sha256": "c7d619ecba8a544be9025e6a47ded88d7b1f1b9d6499acc1ae126e71d75b4f9c"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-bottom-0020",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/bottom/oc-demo-bottom-0020.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/bottom/oc-demo-bottom-0020.jpg",
+      "sha256": "6edb42152e83b0c2815fde1a18839f1a2836ea92edbeff595328585f28a488d4"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0001",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0001.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0001.jpg",
+      "sha256": "11695b9e451252695b1dfc0a6774ab31be650b6800b0f5ba40da1272eab32ab6"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0002",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0002.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0002.jpg",
+      "sha256": "102f83403c17dce0b7ca2993d961445132576b3a7d5e4da0d9bd5c1517fd22b0"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0003",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0003.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0003.jpg",
+      "sha256": "65360574fa62e73727ed358956cfc70a88985085556acd467a9b16f1e6dcdace"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0004",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0004.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0004.jpg",
+      "sha256": "22107283938613d6e8cbf1a2c5dcb389eb603df7bb94c7167c402cc616787036"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0005",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0005.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0005.jpg",
+      "sha256": "b456bc723b669046898e81a6970721d02f1a95bc7e821a2e47a5f7149bea901e"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0006",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0006.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0006.jpg",
+      "sha256": "26236e6b9057b5413e112ee4ee5c2e7bafdc5eeef086ed67259582aa341fe9b2"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0007",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0007.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0007.jpg",
+      "sha256": "c175a7af3b0bd5ca44cafb9cd162d4ecefb2fde011f9fa7e9de827bc5bd4f87f"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0008",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0008.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0008.jpg",
+      "sha256": "955e954c6a021fd9d62e74e0320ac85610c0bf856dadb8ad5b38bac98003d36c"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0009",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0009.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0009.jpg",
+      "sha256": "0978a79b58ed8efc42ec1726edd0bd96df48f3fdf35248cda81c1a178eadecec"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0010",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0010.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0010.jpg",
+      "sha256": "e7e98b44dcc811794497f1f537fc203ed27b74ea514828d44646fe0ce54451c5"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0011",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0011.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0011.jpg",
+      "sha256": "408b61ec5190b8684fda83a4614ffc36d413fd592ffa42426221c191253248b9"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0012",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0012.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0012.jpg",
+      "sha256": "b8da54161f134ec62f5d37237a8bffbeab5d79d415bd0f8ad02ee8bcefc7b240"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0013",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0013.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0013.jpg",
+      "sha256": "935117bcdb8e8719e53e52496f717b19eda3e81a1742ef23461623b3f3c0b035"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0014",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0014.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0014.jpg",
+      "sha256": "ecfedb8827dfd18b81b5924516582e160f1f0519a256c4b18ff7fb86eb252bd2"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0015",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0015.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0015.jpg",
+      "sha256": "bfb4edcffca303dd12ef140ee4d636264bc5a84c3b501d146dc0ad77dbc85b95"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0016",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0016.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0016.jpg",
+      "sha256": "ae88c79f8aa88deae9953c842d851cfbff5bcc7c4b58e75b095aa718159a35ad"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0017",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0017.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0017.jpg",
+      "sha256": "a405e4324f214a6b391d4cd0d03f1e253c120443f76eaacf1415c9169640681d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0018",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0018.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0018.jpg",
+      "sha256": "6242e2ea1d3fa65e780b3a471086a4efa77e2d2e3107ae7b03dc95b061aee35b"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0019",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0019.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0019.jpg",
+      "sha256": "6dc03ec7ffe57444b203a7a2f362d7fb5a299c60fd90dac3974b65321bd0a46a"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-dress-0020",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/dress/oc-demo-dress-0020.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/dress/oc-demo-dress-0020.jpg",
+      "sha256": "370aa3ae887103fc8db115883b713cc742880a38e06d2abba4065535f253dbc1"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0001",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0001.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0001.jpg",
+      "sha256": "fdd9475e7cc8d52dbd1ba8cf5ba0ccbc808e7cde0396a0b635486044d8ab9849"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0002",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0002.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0002.jpg",
+      "sha256": "26e2d19324c9dbfa7cb7f7db266a77f4591290e5cb91bd55e008180f30506408"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0003",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0003.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0003.jpg",
+      "sha256": "093f7ed9916edc9b8fcc423f874ae0f64ab128dfed04d12e727aec54138a35c1"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0004",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0004.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0004.jpg",
+      "sha256": "3e7b486462fad5ad130e9a996991254ae1665808ca004868ba4bc45f62eab581"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0005",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0005.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0005.jpg",
+      "sha256": "c94ae8e623c287485f9750e7cb08c49a26002cb2a8381ea9a4e462915807df43"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0006",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0006.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0006.jpg",
+      "sha256": "9334927ed21605563c808788fd0c645369b653436d6a3a9379279c999b08c65f"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0007",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0007.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0007.jpg",
+      "sha256": "0c9b90ab0121640e5874258a01306a510213a29a06ec2811d047fd5f82c80b3a"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0008",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0008.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0008.jpg",
+      "sha256": "b5805294447974d1c7c86e30e338f4d3db2af720b6ba8347c1aac97608c7f032"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0009",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0009.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0009.jpg",
+      "sha256": "1497e28eadb268154d10fa2502a78646b5db6e4579f41bd21fbdbcc09be4c30c"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0010",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0010.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0010.jpg",
+      "sha256": "5055f3505a5a31684e6304e0d2cec4b86f4d47a8353ab801235cedd0f18c39f4"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0011",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0011.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0011.jpg",
+      "sha256": "efa9a562550639af509a7bffdfa3314a79fdebf91a8a49ed911c102482b9373a"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0012",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0012.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0012.jpg",
+      "sha256": "e925bd18c7506b6898466cc193a68fc7bd39c60373595f214833ffe096bcf505"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0013",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0013.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0013.jpg",
+      "sha256": "6e2a7db660379db23cd5595348d7252d13c04fc2d0fd47e127da87ee271beab1"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0014",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0014.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0014.jpg",
+      "sha256": "bab151d7e94dd779c885d1dce573afd4f7c8896833bb85fe99b061683f22e0f8"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0015",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0015.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0015.jpg",
+      "sha256": "0df2118668fb511fbde98ca7431ba49fd18faa5432ebfae908505c13c504b70d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0016",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0016.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0016.jpg",
+      "sha256": "b192cb40b8992095d59a3b8f2a2efee0829aa9336cf72c6a380ea1263e82f309"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0017",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0017.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0017.jpg",
+      "sha256": "fb4b0fb70b41294cfdb1e368dfae86d9a28a8a249b239befdf44fa78e606b4a6"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0018",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0018.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0018.jpg",
+      "sha256": "46f30a8ea764d641f5814f4397472d920b77642bbc9de3502728ef67a962a58d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0019",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0019.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0019.jpg",
+      "sha256": "485d67c1725548f5350645ed3cfb8d54a5818553129ae413d85cb609e7674153"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-outer-0020",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/outer/oc-demo-outer-0020.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/outer/oc-demo-outer-0020.jpg",
+      "sha256": "b841f35bb36b1400adbbaaf0511dd1c1da6a6da0c4130f3046f6da4e495b0dc4"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0001",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0001.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0001.jpg",
+      "sha256": "39a8a9b05c6f7bf6573d0a09a33ace9fc805b3bae7e57043b314c9b8548d7f42"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0002",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0002.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0002.jpg",
+      "sha256": "baab6e197af9677ce1f7606bd3167de876085e78cf17c814750754926e8daaf7"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0003",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0003.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0003.jpg",
+      "sha256": "e5752cf71d4e0c8eda14f385702612ac8fb6b3434b8eef7da51459db1e030f5e"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0004",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0004.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0004.jpg",
+      "sha256": "80e0ef6c928e7dd5a948193d8edb9bf96c4eea7b0105e07a3a8336b341f9b20c"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0005",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0005.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0005.jpg",
+      "sha256": "3cab471f6178c364e265f6a2f29fc7f8075c912236f2b9213d6f983698dc7555"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0006",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0006.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0006.jpg",
+      "sha256": "6577579237d2ebdccd12de20799aad4c8002f34d9c5f4bb0ab9d86bee8d85d56"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0007",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0007.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0007.jpg",
+      "sha256": "26c42ba3350f31b66c5959ad2002ce0c8e503f942e5d180f78a549cff69c1163"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0008",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0008.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0008.jpg",
+      "sha256": "e04baa84bd8e2a514cb477e1d6f29ff9aa7ea3d1020f706715e41e97be1455b8"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0009",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0009.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0009.jpg",
+      "sha256": "78fe31af93e13602fa90b89c4b201fd1f74d1f1e682f5cc93b762d2ba67b28b1"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0010",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0010.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0010.jpg",
+      "sha256": "52f1a64cccab1b1947f29c69ba76b25892f78b446cded6439aeff8b280019030"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0011",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0011.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0011.jpg",
+      "sha256": "b14e0c09e15c7c423aad16f02b9519996996d41a1fc471ebcb66c6a2f80797f2"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0012",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0012.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0012.jpg",
+      "sha256": "25ae58d58b79826752d808cfd559d4dfcc0f0fbeb747eb89a203aebf674b4c04"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0013",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0013.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0013.jpg",
+      "sha256": "51e40c6a128a18c8dbd7e468fdec375571e42b23f36a183dafc93c79a1cf0658"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0014",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0014.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0014.jpg",
+      "sha256": "feb4b402b0fe24829e02ca9bc1e688709a5c4555380bc9c66e357d318495ada4"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0015",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0015.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0015.jpg",
+      "sha256": "45db9024501607d2377b81dd431508825553031fc7bcbc849c419fe228d73484"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0016",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0016.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0016.jpg",
+      "sha256": "bc150fc4eac5af06c0332df823bc9126d73ec2d306aa9a0b1506288000fbdb7d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0017",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0017.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0017.jpg",
+      "sha256": "0a8ce2b207059445876aad4ed11dc82046d398f4963c723af8291cb4a9272e9d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0018",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0018.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0018.jpg",
+      "sha256": "01b0563a66f364e5ed1d70fa7c283a743f7ec93860bec094b43d0bd6189f9d41"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0019",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0019.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0019.jpg",
+      "sha256": "e4390da12a33d073fdeee6e773c4ea55322b590856dd886de67bf3da2faf067d"
+    },
+    {
+      "asset_type": "product",
+      "product_id": "oc-demo-top-0020",
+      "source_relative_path": "brands/agachichi/assets/media/catalog/top/oc-demo-top-0020.jpg",
+      "deployed_relative_path": "assets/agachichi-v1/products/top/oc-demo-top-0020.jpg",
+      "sha256": "69642bc8891515ec3ad203ec791f3f4f0af2b11028cb665a50dd1565090d891e"
+    }
+  ]
+}

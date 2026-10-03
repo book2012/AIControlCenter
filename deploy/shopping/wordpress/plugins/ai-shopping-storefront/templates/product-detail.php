@@ -10,7 +10,7 @@ $product_page =
 get_header();
 ?>
 
-<div class="orange-coco-product-shell">
+<div class="agachichi-product-shell">
     <?php
     echo wp_kses_post($product_page);
     ?>

@@ -1,5 +1,14 @@
 # AIControlCenter
 
+## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
+
+The repository contains a reviewable agachichi WordPress presentation
+candidate derived from `SHOP_MEDIA_003_AGACHICHI`. The candidate is
+manifest-driven, uses plugin-local approved media, preserves the server-side
+Shopping API boundary, and retains legacy rollback assets. It is not a
+production activation or deployment claim. See
+[the architecture record](docs/architecture/STOREFRONT-PROMOTION-01.md).
+
 ## Current authoritative platform state — 2026-09-27
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.

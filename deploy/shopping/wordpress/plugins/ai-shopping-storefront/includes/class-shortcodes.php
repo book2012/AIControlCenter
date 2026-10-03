@@ -121,6 +121,7 @@ final class AI_Shopping_Shortcodes
             $sections[] = [
                 'id' => $definition['id'],
                 'title' => $definition['title'],
+                'category' => $definition['category'],
                 'payload' => $this->client->search(
                     [
                         'category' => $definition['category'],

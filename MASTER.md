@@ -1,5 +1,15 @@
 # MASTER
 
+## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
+
+Added a candidate-only agachichi presentation adapter for the existing
+WordPress storefront. The candidate uses `SHOP_MEDIA_003_AGACHICHI`, a
+deterministic SHA-256 media manifest, and plugin-local assets while retaining
+the server-side Shopping boundary and legacy rollback assets. No production
+activation, WordPress/WooCommerce/database write, Caddy reload, Ubuntu access,
+or push is claimed. See
+`docs/architecture/STOREFRONT-PROMOTION-01.md`.
+
 ## Current authoritative platform state — 2026-09-27
 
 The Mac mini M4 is the always-on Brain and sole AIControlCenter Control Plane.

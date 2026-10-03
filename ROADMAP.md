@@ -1,5 +1,15 @@
 # Roadmap
 
+## STOREFRONT-PROMOTION-01 — candidate review
+
+- [x] Port the accepted `SHOP_MEDIA_003_AGACHICHI` presentation into the
+  existing WordPress adapter as version `0.18.0` candidate code.
+- [x] Add deterministic manifest-driven plugin-local media and retain rollback
+  assets.
+- [x] Add focused offline promotion and media-integrity tests.
+- [ ] Review and separately authorize any production activation; this
+  candidate does not activate production.
+
 ## Current authoritative roadmap — 2026-09-27
 
 The roadmap is re-baselined around the Mac mini M4 as the always-on Brain and

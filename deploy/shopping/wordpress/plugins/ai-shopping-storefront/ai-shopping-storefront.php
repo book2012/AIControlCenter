@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AI Shopping Storefront
  * Description: Presentation adapter for the AIControlCenter Shopping API.
- * Version: 0.17.0
+ * Version: 0.18.0
  * Requires PHP: 8.1
  */
 
@@ -12,7 +12,12 @@ if (!defined('ABSPATH')) {
 
 define(
     'AI_SHOPPING_STOREFRONT_VERSION',
-    '0.17.0'
+    '0.18.0'
+);
+
+define(
+    'AI_SHOPPING_STOREFRONT_PRESENTATION',
+    'SHOP_MEDIA_003_AGACHICHI'
 );
 
 define(
@@ -35,6 +40,9 @@ require_once AI_SHOPPING_STOREFRONT_DIR
 
 require_once AI_SHOPPING_STOREFRONT_DIR
     . 'includes/class-api-client.php';
+
+require_once AI_SHOPPING_STOREFRONT_DIR
+    . 'includes/class-presentation-adapter.php';
 
 require_once AI_SHOPPING_STOREFRONT_DIR
     . 'includes/class-renderer.php';
@@ -271,7 +279,7 @@ final class AI_Shopping_Storefront_Plugin
         array $classes
     ): array {
         if (is_front_page()) {
-            $classes[] = 'orange-coco-front-page';
+            $classes[] = 'agachichi-front-page';
         }
 
         return $classes;
@@ -303,9 +311,9 @@ final class AI_Shopping_Storefront_Plugin
         );
 
         wp_enqueue_style(
-            'orange-coco-v6',
+            'ai-shopping-agachichi-v1',
             AI_SHOPPING_STOREFRONT_URL
-                . 'assets/orange-coco-v6.css',
+                . 'assets/agachichi-v1.css',
             ['ai-shopping-storefront'],
             AI_SHOPPING_STOREFRONT_VERSION
         );
