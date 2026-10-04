@@ -9,130 +9,70 @@ final class AI_Shopping_Shortcodes
     private AI_Shopping_API_Client $client;
     private AI_Shopping_Renderer $renderer;
 
-    public function __construct(
-        AI_Shopping_API_Client $client,
-        AI_Shopping_Renderer $renderer
-    ) {
+    public function __construct(AI_Shopping_API_Client $client, AI_Shopping_Renderer $renderer)
+    {
         $this->client = $client;
         $this->renderer = $renderer;
     }
 
     public function register(): void
     {
-        add_shortcode(
-            'ai_shopping_storefront',
-            [$this, 'storefront']
-        );
+        add_shortcode('ai_shopping_storefront', [$this, 'storefront']);
     }
 
-    public function storefront(
-        array $attributes = []
-    ): string {
-        $attributes = shortcode_atts(
-            [
-                'limit' => 8,
-                'title' => '추천 상품',
-            ],
-            $attributes,
-            'ai_shopping_storefront'
-        );
-
-        $limit = min(
-            20,
-            max(
-                1,
-                absint($attributes['limit'])
-            )
-        );
-
+    public function storefront(array $attributes = []): string
+    {
+        $attributes = shortcode_atts(['limit' => 24, 'title' => ''], $attributes, 'ai_shopping_storefront');
         $categories = $this->client->categories();
-        $search_filters = $this->search_filters();
+        $search_filters = $this->search_filters($categories);
         $search_result = null;
-        $homepage_sections = [];
+        $home_result = $this->has_search_request()
+            ? ['success' => true, 'data' => ['items' => [], 'total' => 0]]
+            : $this->home_result($categories, $search_filters, min(24, max(1, absint($attributes['limit']))));
 
         if ($this->has_search_request()) {
-            $search_result = $this->client->search(
-                $search_filters
-            );
-        } else {
-            $homepage_sections = $this->homepage_sections(
-                min(8, $limit)
-            );
+            $search_result = $this->client->search([
+                'q' => $search_filters['q'],
+                'category' => $search_filters['category'],
+                'page' => $search_filters['page'],
+                'page_size' => 12,
+            ]);
         }
 
         return $this->renderer->storefront(
-            $this->client->featured_products(
-                $limit
-            ),
+            $home_result,
             $categories,
-            sanitize_text_field(
-                $attributes['title']
-            ),
+            sanitize_text_field($attributes['title']),
             $search_filters,
-            $search_result,
-            $homepage_sections
+            $search_result
         );
     }
 
-    private function homepage_sections(
-        int $limit
-    ): array {
-        $definitions = [
-            [
-                'id' => 'new',
-                'title' => 'NEW ARRIVALS',
-                'category' => 'new',
-            ],
-            [
-                'id' => 'best',
-                'title' => 'BEST SELLERS',
-                'category' => 'best',
-            ],
-            [
-                'id' => 'top',
-                'title' => 'TOP',
-                'category' => 'women-tops',
-            ],
-            [
-                'id' => 'dress',
-                'title' => 'DRESS',
-                'category' => 'women-dresses',
-            ],
-            [
-                'id' => 'outer',
-                'title' => 'OUTER',
-                'category' => 'women-outer',
-            ],
-            [
-                'id' => 'bag',
-                'title' => 'BAG',
-                'category' => 'women-bags',
-            ],
-            [
-                'id' => 'sale',
-                'title' => 'SALE',
-                'category' => 'sale',
-            ],
-        ];
-
-        $sections = [];
-
-        foreach ($definitions as $definition) {
-            $sections[] = [
-                'id' => $definition['id'],
-                'title' => $definition['title'],
-                'category' => $definition['category'],
-                'payload' => $this->client->search(
-                    [
-                        'category' => $definition['category'],
-                        'page' => 1,
-                        'page_size' => $limit,
-                    ]
-                ),
-            ];
+    private function home_result(array $categories, array $filters, int $page_size): array
+    {
+        $collection = $filters['collection'];
+        if (in_array($collection, ['hot', 'sale'], true)) {
+            return ['success' => true, 'data' => ['items' => [], 'total' => 0, 'page' => $filters['page'], 'page_size' => $page_size]];
         }
-
-        return $sections;
+        $category = '';
+        if ($collection === 'update') {
+            $category = 'new';
+        } elseif ($filters['category'] !== '') {
+            $category = $filters['category'];
+        }
+        if ($category !== '') {
+            foreach (($categories['data']['items'] ?? []) as $item) {
+                if (is_array($item) && (($item['slug'] ?? '') === $category || ($item['id'] ?? '') === $category)) {
+                    $category = (string) ($item['id'] ?? $category);
+                    break;
+                }
+            }
+        }
+        return $this->client->search([
+            'category' => $category,
+            'page' => $filters['page'],
+            'page_size' => $page_size,
+        ]);
     }
 
     private function has_search_request(): bool
@@ -140,85 +80,24 @@ final class AI_Shopping_Shortcodes
         return isset($_GET['ai_shop_search']);
     }
 
-    private function search_filters(): array
+    private function search_filters(array $categories): array
     {
-        $query = isset($_GET['ai_shop_q'])
-            ? sanitize_text_field(
-                wp_unslash($_GET['ai_shop_q'])
-            )
-            : '';
-
-        $category = isset($_GET['ai_shop_category'])
-            ? sanitize_text_field(
-                wp_unslash(
-                    $_GET['ai_shop_category']
-                )
-            )
-            : '';
-
-        $minimum_price = $this->optional_float(
-            'ai_shop_min_price'
-        );
-
-        $maximum_price = $this->optional_float(
-            'ai_shop_max_price'
-        );
-
-        $in_stock = null;
-
-        if (isset($_GET['ai_shop_in_stock'])) {
-            $raw_stock = sanitize_text_field(
-                wp_unslash(
-                    $_GET['ai_shop_in_stock']
-                )
-            );
-
-            if ($raw_stock === 'true') {
-                $in_stock = true;
-            } elseif ($raw_stock === 'false') {
-                $in_stock = false;
+        $query = isset($_GET['ai_shop_q']) ? sanitize_text_field(wp_unslash($_GET['ai_shop_q'])) : '';
+        $category_slug = isset($_GET['ai_shop_category']) ? sanitize_title(wp_unslash($_GET['ai_shop_category'])) : '';
+        $category_id = '';
+        foreach (($categories['data']['items'] ?? []) as $item) {
+            if (is_array($item) && (($item['slug'] ?? '') === $category_slug || ($item['id'] ?? '') === $category_slug)) {
+                $category_id = (string) ($item['id'] ?? '');
+                break;
             }
         }
-
-        $page = isset($_GET['ai_shop_page'])
-            ? max(
-                1,
-                absint($_GET['ai_shop_page'])
-            )
-            : 1;
-
+        $page = isset($_GET['ai_shop_page']) ? max(1, absint($_GET['ai_shop_page'])) : 1;
         return [
             'q' => $query,
-            'category' => $category,
-            'minimum_price' => $minimum_price,
-            'maximum_price' => $maximum_price,
-            'in_stock' => $in_stock,
+            'category' => $category_id,
+            'category_slug' => $category_slug,
+            'collection' => isset($_GET['ai_shop_collection']) ? sanitize_key(wp_unslash($_GET['ai_shop_collection'])) : '',
             'page' => $page,
-            'page_size' => 12,
         ];
-    }
-
-    private function optional_float(
-        string $key
-    ): ?float {
-        if (
-            !isset($_GET[$key])
-            || $_GET[$key] === ''
-        ) {
-            return null;
-        }
-
-        $value = sanitize_text_field(
-            wp_unslash($_GET[$key])
-        );
-
-        if (!is_numeric($value)) {
-            return null;
-        }
-
-        return max(
-            0,
-            (float) $value
-        );
     }
 }

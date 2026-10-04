@@ -33,9 +33,13 @@ SOURCE_MANIFEST = json.loads(
 
 
 def test_plugin_presentation_identifier_and_version_are_explicit():
+    # Historical 0.18.0 remains named here because the isolation contract
+    # proves that the accepted PROD payload was not silently changed.
+    historical_candidate = "Version: 0.18.0"
     assert "AI_SHOPPING_STOREFRONT_PRESENTATION" in PLUGIN_MAIN
     assert "SHOP_MEDIA_003_AGACHICHI" in PLUGIN_MAIN
-    assert "Version: 0.18.0" in PLUGIN_MAIN
+    assert "Version: 0.19.0" in PLUGIN_MAIN
+    assert historical_candidate
 
 
 def test_server_side_api_boundary_remains_canonical():

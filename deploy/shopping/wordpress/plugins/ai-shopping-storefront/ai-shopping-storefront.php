@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AI Shopping Storefront
  * Description: Presentation adapter for the AIControlCenter Shopping API.
- * Version: 0.18.0
+ * Version: 0.19.0
  * Requires PHP: 8.1
  */
 
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 define(
     'AI_SHOPPING_STOREFRONT_VERSION',
-    '0.18.0'
+    '0.19.0'
 );
 
 define(
@@ -197,6 +197,8 @@ final class AI_Shopping_Storefront_Plugin
 
     public static function render_product_page(): string
     {
+        // Product search remains a server-side adapter operation in the
+        // shortcode renderer; this route only performs the bounded detail read.
         $product_id = sanitize_text_field(
             (string) get_query_var(
                 'ai_shopping_product_id'
@@ -236,42 +238,8 @@ final class AI_Shopping_Storefront_Plugin
 
         $product = $response['data'];
 
-        $related_response = self::$client->search(
-            [
-                'category' => (
-                    $product['category'] ?? ''
-                ),
-                'page' => 1,
-                'page_size' => 8,
-            ]
-        );
-
-        $related = [];
-
-        if (
-            !empty($related_response['success'])
-            && !empty(
-                $related_response['data']['items']
-            )
-        ) {
-            foreach (
-                $related_response['data']['items']
-                as $candidate
-            ) {
-                if (
-                    ($candidate['id'] ?? '')
-                    === $product_id
-                ) {
-                    continue;
-                }
-
-                $related[] = $candidate;
-            }
-        }
-
         return self::$product_renderer->render(
-            $product,
-            array_slice($related, 0, 4)
+            $product
         );
     }
 
