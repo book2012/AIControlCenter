@@ -6,8 +6,10 @@ This commit is a source foundation only. It does not claim that runtime
 remediation is complete, and it does not apply a release, restart WordPress,
 reload Caddy, mutate a database, or access Ubuntu.
 
-The accepted migration candidate is Git commit
-`567cb90ee7fdec0fa82f39c3ad6ce28d46381479`, plugin version `0.18.0`, and
+The repository `HEAD` is the AIControlCenter Control Plane source revision.
+It is independent from the accepted storefront payload. The accepted
+production storefront payload revision is `ACCEPTED_GIT_COMMIT`:
+`567cb90ee7fdec0fa82f39c3ad6ce28d46381479`, with plugin version `0.18.0` and
 presentation identifier `SHOP_MEDIA_003_AGACHICHI`.
 
 ## Failure being isolated
@@ -18,7 +20,7 @@ As a result, a Git fast-forward implicitly promoted the candidate to PROD.
 The current 0.18.0 runtime is an exact candidate match, but its provenance
 path is unsafe because it is still backed by the repository working tree.
 
-The Git working tree must never be a production artifact. Repository source is
+The Git working tree is never the production artifact. Repository source is
 not an immutable PROD release. DEV deployment is not PROD promotion.
 
 ## Contract
@@ -32,8 +34,11 @@ The compose bind is therefore parameterized by
 remains read-only at the existing WordPress plugin destination. The
 AIControlCenter-owned read-only module and CLI inspect the release identity,
 the commit-addressed path, the provenance marker, and the plugin entrypoint.
-Their plan contract is JSON-compatible and always has `execute=false`; it
-does not materialize, copy, deploy, recreate, reload, or mutate anything.
+When `--commit` is omitted, the plan contract selects `ACCEPTED_GIT_COMMIT`,
+never the repository `HEAD`. An explicit non-accepted commit is rejected
+fail-closed. The plan contract is JSON-compatible and always has
+`execute=false`; it does not materialize, copy, deploy, recreate, reload, or
+mutate anything.
 
 ## Boundaries
 

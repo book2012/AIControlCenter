@@ -281,7 +281,7 @@ def plan_contract(
     repository = _absolute(repo)
     root = _absolute(release_root)
     head = _git(repository, "rev-parse", "HEAD")
-    requested = commit or head
+    requested = commit or ACCEPTED_GIT_COMMIT
     if not COMMIT_PATTERN.fullmatch(requested):
         raise ReleaseManifestError("plan commit must be a full lowercase Git commit")
     if requested != ACCEPTED_GIT_COMMIT:

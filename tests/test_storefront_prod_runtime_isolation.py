@@ -138,6 +138,29 @@ def test_missing_plugin_entrypoint_fails_closed(tmp_path):
         validate_release(root)
 
 
+def test_plan_defaults_to_accepted_payload_when_control_plane_head_differs():
+    head = subprocess.run(
+        ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout.strip()
+    assert head != ACCEPTED_GIT_COMMIT
+
+    result = plan_contract(ROOT, Path("/tmp/aicontrolcenter-storefront-prod-releases"))
+    assert result["git_commit"] == ACCEPTED_GIT_COMMIT
+    assert result["release"]["source_provenance"]["archived_revision"] == ACCEPTED_GIT_COMMIT
+
+
+def test_plan_rejects_explicit_non_accepted_commit():
+    with pytest.raises(ReleaseManifestError):
+        plan_contract(
+            ROOT,
+            Path("/tmp/aicontrolcenter-storefront-prod-releases"),
+            commit="ec08846631288c614c2ebf35521e6c0d820a9225",
+        )
+
+
 def test_plan_is_read_only_execute_false_and_has_no_lifecycle_operation():
     result = plan_contract(ROOT, Path("/tmp/aicontrolcenter-storefront-prod-releases"))
     assert result["mode"] == "plan_only"
