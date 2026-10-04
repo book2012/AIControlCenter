@@ -20,9 +20,9 @@ from typing import Any, Mapping
 SCHEMA_VERSION = 1
 ENVIRONMENT = "prod"
 SERVICE = "storefront"
-PLUGIN_VERSION = "0.18.0"
+PLUGIN_VERSION = "0.19.0"
 PRESENTATION_IDENTIFIER = "SHOP_MEDIA_003_AGACHICHI"
-ACCEPTED_GIT_COMMIT = "567cb90ee7fdec0fa82f39c3ad6ce28d46381479"
+ACCEPTED_GIT_COMMIT = "6eaaaef4aa4ec0fa57d5e3d21bad056aeb9a59e7"
 PLUGIN_DIRECTORY_NAME = "ai-shopping-storefront"
 PLUGIN_MAIN_FILE = "ai-shopping-storefront.php"
 CURRENT_MANIFEST_NAME = "current.json"
@@ -296,8 +296,9 @@ def plan_contract(
         "service": SERVICE,
         "mode": "plan_only",
         "execute": False,
-        "approved": source_clean and requested == head,
+        "approved": source_clean,
         "repo_path": str(repository),
+        "control_plane_head": head,
         "git_commit": requested,
         "plugin_version": PLUGIN_VERSION,
         "presentation_identifier": PRESENTATION_IDENTIFIER,

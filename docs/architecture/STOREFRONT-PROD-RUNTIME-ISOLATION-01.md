@@ -9,7 +9,7 @@ reload Caddy, mutate a database, or access Ubuntu.
 The repository `HEAD` is the AIControlCenter Control Plane source revision.
 It is independent from the accepted storefront payload. The accepted
 production storefront payload revision is `ACCEPTED_GIT_COMMIT`:
-`567cb90ee7fdec0fa82f39c3ad6ce28d46381479`, with plugin version `0.18.0` and
+`6eaaaef4aa4ec0fa57d5e3d21bad056aeb9a59e7`, with plugin version `0.19.0` and
 presentation identifier `SHOP_MEDIA_003_AGACHICHI`.
 
 ## Failure being isolated
@@ -17,7 +17,7 @@ presentation identifier `SHOP_MEDIA_003_AGACHICHI`.
 Implicit promotion was caused by a repository-backed Docker bind mount:
 `shopping-wordpress` consumed the Git working-tree plugin directory directly.
 As a result, a Git fast-forward implicitly promoted the candidate to PROD.
-The current 0.18.0 runtime is an exact candidate match, but its provenance
+The current 0.19.0 runtime is an exact candidate match, but its provenance
 path is unsafe because it is still backed by the repository working tree.
 
 The Git working tree is never the production artifact. Repository source is
@@ -52,3 +52,16 @@ remediation.
 Any future production release write or runtime cutover requires separate,
 one-shot explicit authorization. This candidate introduces no apply command,
 no lifecycle operation, and no authorization consumption.
+
+## Control-plane HEAD and accepted payload identity
+
+The current control-plane Git HEAD and the accepted storefront payload commit
+are intentionally separate identities.
+
+`git_commit` remains the immutable storefront payload revision selected for
+`git archive`. `control_plane_head` records the current governance/control-plane
+revision. A clean control-plane repository may therefore approve an earlier
+exact accepted payload commit.
+
+Plan approval does not authorize a release write or PROD activation. Those
+remain separate explicit authorization gates.

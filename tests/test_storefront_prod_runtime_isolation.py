@@ -138,18 +138,32 @@ def test_missing_plugin_entrypoint_fails_closed(tmp_path):
         validate_release(root)
 
 
-def test_plan_defaults_to_accepted_payload_when_control_plane_head_differs():
-    head = subprocess.run(
-        ["git", "-C", str(ROOT), "rev-parse", "HEAD"],
-        check=True,
-        capture_output=True,
-        text=True,
-    ).stdout.strip()
-    assert head != ACCEPTED_GIT_COMMIT
+def test_plan_defaults_to_accepted_payload_when_control_plane_head_differs(monkeypatch):
+    from core.shopping import storefront_prod_runtime as runtime_module
 
-    result = plan_contract(ROOT, Path("/tmp/aicontrolcenter-storefront-prod-releases"))
+    original_git = runtime_module._git
+    simulated_head = "29a40dc6f22b2b436a91c08532cb61387dc6d634"
+
+    def simulated_git(repo: Path, *args: str) -> str:
+        if args == ("rev-parse", "HEAD"):
+            return simulated_head
+        if args == ("status", "--porcelain=v1", "--untracked-files=all"):
+            return ""
+        return original_git(repo, *args)
+
+    monkeypatch.setattr(runtime_module, "_git", simulated_git)
+
+    result = runtime_module.plan_contract(
+        ROOT,
+        Path("/tmp/aicontrolcenter-storefront-prod-releases"),
+    )
+
+    assert result["control_plane_head"] == simulated_head
+    assert result["control_plane_head"] != ACCEPTED_GIT_COMMIT
     assert result["git_commit"] == ACCEPTED_GIT_COMMIT
     assert result["release"]["source_provenance"]["archived_revision"] == ACCEPTED_GIT_COMMIT
+    assert result["source_clean"] is True
+    assert result["approved"] is True
 
 
 def test_plan_rejects_explicit_non_accepted_commit():
@@ -168,7 +182,7 @@ def test_plan_is_read_only_execute_false_and_has_no_lifecycle_operation():
     assert result["release_path"].endswith(
         f"releases/{ACCEPTED_GIT_COMMIT}/ai-shopping-storefront"
     )
-    assert result["plugin_version"] == "0.18.0"
+    assert result["plugin_version"] == "0.19.0"
     assert result["presentation_identifier"] == "SHOP_MEDIA_003_AGACHICHI"
     source = CLI.read_text() + "\n" + (ROOT / "core/shopping/storefront_prod_runtime.py").read_text()
     assert 'add_parser("apply"' not in source
@@ -193,7 +207,7 @@ def test_presentation_security_and_caddy_topology_contracts_remain_untouched():
     promotion = (ROOT / "tests/test_storefront_promotion_01.py").read_text()
     migration = (ROOT / "tests/test_public_storefront_migration_02.py").read_text()
     assert "SHOP_MEDIA_003_AGACHICHI" in promotion
-    assert "Version: 0.18.0" in promotion
+    assert "Version: 0.19.0" in promotion
     assert "reverse_proxy 127.0.0.1:58082" in migration
     assert "reverse_proxy 127.0.0.1:18080" in migration
     assert not re.search(r"caddy.*(reload|stop|restart)", CLI.read_text(), re.I)
