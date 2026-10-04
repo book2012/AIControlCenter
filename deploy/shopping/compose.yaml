@@ -55,7 +55,7 @@ services:
       - shopping_wordpress:/var/www/html
       - ./config/shopping-apache-safety.conf:/etc/apache2/sites-available/000-default.conf:ro
       - ./config/shopping-php-safety.ini:/usr/local/etc/php/conf.d/zz-shopping-safety.ini:ro
-      - ./wordpress/plugins/ai-shopping-storefront:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
+      - ${AICONTROLCENTER_STOREFRONT_PROD_PLUGIN_PATH:?AICONTROLCENTER_STOREFRONT_PROD_PLUGIN_PATH must point to an immutable PROD release}:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
     networks:
       - shopping_internal
       - shopping_external
@@ -99,7 +99,7 @@ services:
       SHOPPING_ADMIN_EMAIL: "${SHOPPING_ADMIN_EMAIL}"
     volumes:
       - shopping_wordpress:/var/www/html
-      - ./wordpress/plugins/ai-shopping-storefront:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
+      - ${AICONTROLCENTER_STOREFRONT_PROD_PLUGIN_PATH:?AICONTROLCENTER_STOREFRONT_PROD_PLUGIN_PATH must point to an immutable PROD release}:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
     networks:
       - shopping_external
       - shopping_internal
