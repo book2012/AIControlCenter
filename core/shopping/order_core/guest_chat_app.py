@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse,JSONResponse,FileResponse
 from core.shopping.order_core.guest_chat import GuestShoppingChat,GuestQuestion,GuestCart
 
 ASSET=Path(__file__).resolve().parents[3]/"deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/storefront-guest-chat.js"
-def mount_guest_chat(app,*,catalog,session_boundary):
+def mount_guest_chat(app,*,catalog,session_boundary,phone_available=False):
     chat=GuestShoppingChat(catalog)
     @app.get("/__order-dev/guest-chat.js",include_in_schema=False)
     def asset():return FileResponse(ASSET,media_type="text/javascript",headers={"Cache-Control":"no-store"})
@@ -23,7 +23,7 @@ def mount_guest_chat(app,*,catalog,session_boundary):
 <div><button id="stock">재고 문의</button><button id="add">장바구니 담기</button><button id="single">이 상품 주문하기</button></div>
 <section><h2>상품 상담</h2><div id="messages" role="log" aria-live="polite"></div><form id="ask"><label for="question">질문</label><input id="question" maxlength="500" placeholder="S 사이즈 재고가 있나요?" required><button>문의하기</button></form></section>
 <section><h2>장바구니</h2><div id="cart"></div><button id="checkout">장바구니 주문하기</button><button id="clear">비우기</button></section>
-<section id="order" hidden><h2>주문 대화</h2><div id="summary"></div><p id="auth-note" role="status"></p><button id="phone" disabled>휴대폰 인증 후 계속</button><p>인증 후 수령인과 배송지를 입력하고 최종 주문 내용을 확인합니다.</p><button id="confirm" disabled>주문 확정</button></section>
+<section id="order" hidden><h2>주문 대화</h2><div id="summary"></div><p id="auth-note" role="status"></p><div id="phone-form" hidden><label>휴대폰 번호<input id="phone-number" type="tel" autocomplete="tel" maxlength="32" placeholder="01012345678"></label><label><input id="phone-consent" type="checkbox">주문 진행을 위한 인증 문자 수신 동의</label><button id="phone" disabled>인증 문자 받기</button><label>인증번호<input id="phone-code" inputmode="numeric" autocomplete="one-time-code" maxlength="10"></label><button id="phone-check" disabled>휴대폰 인증 확인</button></div><p>인증 후 수령인과 배송지를 입력하고 최종 주문 내용을 확인합니다.</p><button id="confirm" disabled>주문 확정</button></section>
 <p id="error" role="alert"></p><script src="/__order-dev/guest-chat.js"></script></main></html>"""
         for key,value in {"PRODUCT":escape(p.id,quote=True),"IMAGE":image,"NAME":escape(p.name),"PRICE":escape(str(p.price)),"CURRENCY":escape(p.currency),"OPTIONS":options or '<option value="">기본 옵션</option>'}.items():html=html.replace(key,value)
         return HTMLResponse(html,headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
@@ -48,6 +48,6 @@ def mount_guest_chat(app,*,catalog,session_boundary):
         return JSONResponse(result,headers={"Cache-Control":"no-store"})
     @app.get("/__order-dev/chat/capabilities",include_in_schema=False)
     def capabilities():
-        return JSONResponse({"guest_inquiry":True,"cart_quote":True,"phone_verification":False,
+        return JSONResponse({"guest_inquiry":True,"cart_quote":True,"phone_verification":phone_available,
             "delivery_capture":False,"order_confirmation":False,
-            "message":"휴대폰 인증 서비스를 연결 중입니다. 현재 문의와 장바구니 금액 확인이 가능하며 주문은 접수되지 않습니다."},headers={"Cache-Control":"no-store"})
+            "message":("휴대폰 인증을 진행해 주세요. DEV에서는 등록된 테스트 번호만 사용할 수 있습니다. 배송정보와 주문 확정은 연결 중입니다." if phone_available else "휴대폰 인증 서비스를 연결 중입니다. 현재 문의와 장바구니 금액 확인이 가능하며 주문은 접수되지 않습니다.")},headers={"Cache-Control":"no-store"})

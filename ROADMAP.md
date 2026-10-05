@@ -5603,3 +5603,7 @@ Real DEV WooCommerce order #14 and Telegram notification #6 succeeded; replay an
 ## Guest chat shopping foundation (2026-10-06)
 
 DEV now supports customer-account-free grounded product inquiries, single-item/cart quotes and a shared chat checkout entry. Real phone verification, shipping capture and final confirmation remain disabled pending governed Twilio composition. No guest orders or production writes were performed. Validation: 674 Python tests and isolated Chrome. See [guest chat architecture and runbook](docs/shopping/SHOP_GUEST_CHAT_DEV.md).
+
+## DEV guest phone verification (2026-10-06)
+
+Twilio Verify is connected for the explicitly configured DEV test phone; browser-bound durable dispatch and existing trusted session issuance are implemented. Actual SMS start returned HTTP 200 / PENDING; human OTP confirmation is pending. Shipping capture and guest order confirmation remain disabled. Prior confirmed order #14 and PROD were preserved. See [guest phone architecture](docs/shopping/SHOP_GUEST_PHONE_DEV.md).

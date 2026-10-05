@@ -115,7 +115,19 @@ def create_app():
     catalog=DevCatalog(commerce,cfg)
     app=create_order_dev_app(session_boundary=boundary,catalog=catalog,ledger=ledger,writer=writer,telegram_integration=telegram)
     from core.shopping.order_core.guest_chat_app import mount_guest_chat
-    mount_guest_chat(app,catalog=catalog,session_boundary=boundary)
+    phone=None
+    phone_cfg=private_config('phone-verification.private.json')
+    if phone_cfg.get('enabled') is True:
+        from ops.macos.shopping.dev_guest_phone import DevPhoneBridge,mount_phone_routes
+        phone=DevPhoneBridge(cfg=phone_cfg,binding_key=bytes.fromhex(phone_cfg['binding_key']),
+            customer_path=customer_path,bridge_path=DATA/'guest-phone.sqlite3')
+        def register_phone_evidence(value):
+            with lock:
+                public_receipt=public_reference("VRF");public_challenge=public_reference("CHL")
+                evidence[public_receipt,public_challenge]=value
+            return {'receipt_id':public_receipt,'browser_challenge':public_challenge}
+        mount_phone_routes(app,bridge=phone,boundary=boundary,register_evidence=register_phone_evidence)
+    mount_guest_chat(app,catalog=catalog,session_boundary=boundary,phone_available=phone is not None)
     stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'test-account; not phone verified'}
     def worker():
         while not stop.is_set():

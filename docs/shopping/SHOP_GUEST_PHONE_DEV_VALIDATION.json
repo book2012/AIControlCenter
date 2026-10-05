@@ -1,0 +1,13 @@
+{
+  "environment": "DEV",
+  "regression_passed": 687,
+  "existing_warnings": 20,
+  "isolated_real_chrome_phone_session_passed": true,
+  "browser_external_provider_requests": 0,
+  "actual_twilio_start_http": 200,
+  "actual_phone_state": "PENDING",
+  "human_otp_check_complete": false,
+  "guest_order_created": false,
+  "prior_order_review": "CONFIRMED",
+  "prod_mutation": false
+}
