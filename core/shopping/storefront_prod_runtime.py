@@ -20,9 +20,9 @@ from typing import Any, Mapping
 SCHEMA_VERSION = 1
 ENVIRONMENT = "prod"
 SERVICE = "storefront"
-PLUGIN_VERSION = "0.19.0"
+PLUGIN_VERSION = "0.19.1"
 PRESENTATION_IDENTIFIER = "SHOP_MEDIA_003_AGACHICHI"
-ACCEPTED_GIT_COMMIT = "6eaaaef4aa4ec0fa57d5e3d21bad056aeb9a59e7"
+ACCEPTED_GIT_COMMIT = "ee229261459e24d1a2d73b39bbbb8e2fa4042ba9"
 PLUGIN_DIRECTORY_NAME = "ai-shopping-storefront"
 PLUGIN_MAIN_FILE = "ai-shopping-storefront.php"
 CURRENT_MANIFEST_NAME = "current.json"

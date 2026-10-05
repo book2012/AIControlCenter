@@ -9,7 +9,7 @@ their status, validate, and plan-only contract; they do not gain a materialize
 or apply command.
 
 The only accepted payload is the exact Git archive of commit
-`6eaaaef4aa4ec0fa57d5e3d21bad056aeb9a59e7` for
+`ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` for
 `deploy/shopping/wordpress/plugins/ai-shopping-storefront`. The operator never
 reads the repository working-tree plugin directory. It rejects archive
 symlinks, traversal paths, unexpected file types, identity drift, and any
@@ -24,11 +24,11 @@ The release root is:
 
 The payload is written only at:
 
-`releases/6eaaaef4aa4ec0fa57d5e3d21bad056aeb9a59e7/ai-shopping-storefront`
+`releases/ee229261459e24d1a2d73b39bbbb8e2fa4042ba9/ai-shopping-storefront`
 
 The operator writes `current.json` at the root and the existing
 `.aicontrolcenter-release.json` marker inside the plugin directory. Both carry
-the accepted commit, plugin version `0.19.0`, presentation identifier
+the accepted commit, plugin version `0.19.1`, presentation identifier
 `SHOP_MEDIA_003_AGACHICHI`, `git_archive` provenance, and a deterministic
 relative-file SHA-256 manifest. The existing runtime validate/status contract
 is used for the final read-back check.

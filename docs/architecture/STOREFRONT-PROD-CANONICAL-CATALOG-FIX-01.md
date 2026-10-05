@@ -11,3 +11,7 @@ The production promotion contract preserves canonical Shopping data. The present
 ## Versioning and boundaries
 
 This is a patch candidate version `0.19.1`. The immutable 0.19.0 release remains unchanged for audit and rollback. This source change does not alter the canonical API, database, Caddy, Colima, WordPress runtime, or production release by itself. A new exact candidate commit, acceptance update, immutable materialization, and explicit production activation are required before 0.19.1 can reach PROD.
+
+## Accepted payload identity
+
+The exact 0.19.1 payload candidate is `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9`. Acceptance binds this exact commit while preserving the previous immutable 0.19.0 release as rollback evidence.

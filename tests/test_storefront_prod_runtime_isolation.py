@@ -190,7 +190,7 @@ def test_plan_is_read_only_execute_false_and_has_no_lifecycle_operation():
     assert result["release_path"].endswith(
         f"releases/{ACCEPTED_GIT_COMMIT}/ai-shopping-storefront"
     )
-    assert result["plugin_version"] == "0.19.0"
+    assert result["plugin_version"] == "0.19.1"
     assert result["presentation_identifier"] == "SHOP_MEDIA_003_AGACHICHI"
     source = CLI.read_text() + "\n" + (ROOT / "core/shopping/storefront_prod_runtime.py").read_text()
     assert 'add_parser("apply"' not in source
@@ -215,7 +215,7 @@ def test_presentation_security_and_caddy_topology_contracts_remain_untouched():
     promotion = (ROOT / "tests/test_storefront_promotion_01.py").read_text()
     migration = (ROOT / "tests/test_public_storefront_migration_02.py").read_text()
     assert "SHOP_MEDIA_003_AGACHICHI" in promotion
-    assert "Version: 0.19.0" in promotion
+    assert "Version: 0.19.1" in promotion
     assert "reverse_proxy 127.0.0.1:58082" in migration
     assert "reverse_proxy 127.0.0.1:18080" in migration
     assert not re.search(r"caddy.*(reload|stop|restart)", CLI.read_text(), re.I)

@@ -9,7 +9,7 @@ reload Caddy, mutate a database, or access Ubuntu.
 The repository `HEAD` is the AIControlCenter Control Plane source revision.
 It is independent from the accepted storefront payload. The accepted
 production storefront payload revision is `ACCEPTED_GIT_COMMIT`:
-`6eaaaef4aa4ec0fa57d5e3d21bad056aeb9a59e7`, with plugin version `0.19.0` and
+`ee229261459e24d1a2d73b39bbbb8e2fa4042ba9`, with plugin version `0.19.1` and
 presentation identifier `SHOP_MEDIA_003_AGACHICHI`.
 
 ## Failure being isolated
@@ -17,8 +17,7 @@ presentation identifier `SHOP_MEDIA_003_AGACHICHI`.
 Implicit promotion was caused by a repository-backed Docker bind mount:
 `shopping-wordpress` consumed the Git working-tree plugin directory directly.
 As a result, a Git fast-forward implicitly promoted the candidate to PROD.
-The current 0.19.0 runtime is an exact candidate match, but its provenance
-path is unsafe because it is still backed by the repository working tree.
+The previous 0.19.0 runtime proved the immutable mount path, but external verification exposed a canonical-catalog compatibility defect. The accepted 0.19.1 payload keeps canonical Shopping items instead of filtering them by demo media eligibility.
 
 The Git working tree is never the production artifact. Repository source is
 not an immutable PROD release. DEV deployment is not PROD promotion.
