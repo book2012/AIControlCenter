@@ -11,7 +11,7 @@
 - Verified identical host/VM/container SHA-256 for the 0.19.1 plugin entrypoint.
 - Verified public homepage, product detail, category, search, CSS, and JS as HTTP 2xx; the homepage exposes five canonical product links (`mock-001` through `mock-005`).
 - Preserved immutable 0.19.0 as rollback/audit evidence.
-- Browser live-session visual QA is `NOT_RUN` because the browser connector is not connected.
+- Browser visual QA passed with Chrome 154 desktop/mobile rendering and a DevTools click-through covering Home → PDP → Back → Category → Search; mobile document width matched viewport width with no horizontal document overflow.
 
 
 ## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate

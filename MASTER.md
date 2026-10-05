@@ -4,7 +4,7 @@
 
 PROD storefront runtime is now the exact accepted payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` at plugin version `0.19.1`. The release is materialized outside Git under `~/AIControlCenterRuntime/releases/storefront-prod`, exposed to the commerce Colima VM read-only, and mounted read-only into `shopping-wordpress`. The host, VM, and container entrypoint hashes match.
 
-The 0.19.1 canonical-catalog patch restores all five canonical public product links and passes public homepage, PDP, category, search, CSS, and JS HTTP checks. `shopping-db` identity and health are unchanged, Caddy PID is unchanged, and WordPress DB environment parity is exact. The previous immutable 0.19.0 release is preserved. Browser live-session visual QA remains `NOT_RUN` until the browser connector is connected.
+The 0.19.1 canonical-catalog patch restores all five canonical public product links and passes public homepage, PDP, category, search, CSS, and JS HTTP checks. `shopping-db` identity and health are unchanged, Caddy PID is unchanged, and WordPress DB environment parity is exact. The previous immutable 0.19.0 release is preserved. Browser visual QA is PASS using Chrome 154 with rendered desktop/mobile captures and a DevTools click-through covering Home → PDP → Back → Category → Search. Mobile document width matched viewport width, so no horizontal document overflow was observed. Storefront 0.19.1 is operationally closed.
 
 
 ## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate

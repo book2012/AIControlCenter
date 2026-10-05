@@ -11,8 +11,9 @@
 - [x] Verify DB, Caddy, and preview runtime identities remain unchanged.
 - [x] Verify public homepage, product detail, category, search, CSS, and JS HTTP 2xx.
 - [x] Verify all five canonical public product links are present.
-- [ ] Browser live-session visual QA — pending browser connector connection.
-- [ ] Final storefront sprint closure after browser live QA; Order work remains HOLD until then.
+- [x] Browser visual QA with Chrome 154 desktop/mobile rendering and live DevTools click-through.
+- [x] Final Storefront 0.19.1 sprint closure.
+- [x] Release the Order HOLD; Order/checkout work is the next separately scoped sprint.
 
 
 ## STOREFRONT-PROMOTION-01 — candidate review
