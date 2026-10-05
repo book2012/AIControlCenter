@@ -258,6 +258,9 @@ class ResolvedOrderCreateLineProtocol(Protocol):
 class ResolvedOrderCreateCommandProtocol(Protocol):
     customer_id: str
     line_items: tuple[ResolvedOrderCreateLineProtocol, ...]
+    command_digest: str
+    correlation_id: str
+    audit_reference: str
 
 
 class OrderCreateCatalogResolver(Protocol):

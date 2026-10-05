@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import re
 from typing import Protocol
 
 from core.shopping.order_core.create import (
@@ -45,6 +46,9 @@ class ResolvedOrderCreateLine:
 class ResolvedOrderCreateCommand:
     customer_id: str
     line_items: tuple[ResolvedOrderCreateLine, ...]
+    command_digest: str
+    correlation_id: str
+    audit_reference: str
 
     def __post_init__(self) -> None:
         if type(self.customer_id) is not str or not self.customer_id:
@@ -53,6 +57,12 @@ class ResolvedOrderCreateCommand:
             raise OrderCreateCatalogResolutionError("line_items:INVALID")
         if any(type(item) is not ResolvedOrderCreateLine for item in self.line_items):
             raise OrderCreateCatalogResolutionError("line_items:MEMBER_TYPE")
+        if type(self.command_digest) is not str or not re.fullmatch(r"[0-9a-f]{64}", self.command_digest):
+            raise OrderCreateCatalogResolutionError("command_digest:INVALID")
+        for name in ("correlation_id", "audit_reference"):
+            value=getattr(self,name)
+            if type(value) is not str or not value:
+                raise OrderCreateCatalogResolutionError(f"{name}:INVALID")
 
 
 def _provider_identifier(value: str, field: str) -> int:
@@ -124,7 +134,10 @@ class ShoppingServiceOrderCatalogResolver:
                 provider_product_id=provider_product_id,
                 provider_variation_id=provider_variation_id, quantity=line.quantity,
             ))
-        return ResolvedOrderCreateCommand(command.customer_id,tuple(resolved))
+        return ResolvedOrderCreateCommand(
+            command.customer_id, tuple(resolved), command.command_digest,
+            command.correlation_id, command.audit_reference,
+        )
 
 
 __all__=("OrderCreateCatalogRead","OrderCreateCatalogResolutionError",
