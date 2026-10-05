@@ -1,5 +1,15 @@
 # Roadmap
 
+## 2026-10-05 — SHOP_ORDER_001C-C HTTP contract closeout
+
+- [x] Add an isolated unregistered create-order POST contract with fail-closed default composition.
+- [x] Bound public input/output/errors and actual request bytes; retain authentication and durable idempotency boundaries.
+- [x] Verify 201 completion, 200 replay, auth denial, conflicts, in-flight/unknown/terminal outcomes and storage failures with fake writers.
+- [x] Add 41 HTTP cases; combined regression **557 passed, 1 existing dependency warning**.
+- [x] Preserve no-store, secure invalid-cookie clearing and no production mounting/runtime mutation.
+- [ ] Review live provider adapter and reconciliation evidence contracts.
+- [ ] Resolve production session composition and separately authorize provider credentials/write transport before activation.
+
 ## 2026-10-05 — SHOP_ORDER_001C-B isolated composition closeout
 
 - [x] Reuse canonical product resolution foundation at `caa2ca8`.

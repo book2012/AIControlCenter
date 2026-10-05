@@ -1,5 +1,9 @@
 # MASTER
 
+## 2026-10-05 — SHOP_ORDER_001C-C HTTP candidate state
+
+The session-bound Order foundation now has an unregistered isolated HTTP contract with explicit fail-closed dependency injection. The request accepts bounded canonical line intent and an idempotency key; the public result excludes internal identity/audit and raw provider data. Authentication and ledger safety remain in existing boundaries, with 201 completion / 200 replay, bounded redacted errors, actual 32768-byte request limit and no-store responses. Combined regression: **557 passed, 1 existing dependency warning**. This is fake-writer ASGI validation, not production activation. Next: provider adapter/reconciliation contract review before any live transport.
+
 ## 2026-10-05 — SHOP_ORDER_001C-B authoritative candidate state
 
 The canonical product resolution foundation (`caa2ca8`) now has an isolated session-bound order application. CustomerSessionBoundary verifies credential, current durable session/customer validity, origin and CSRF before any ledger claim or completed replay. Identity and short-lived authority are derived server-side; stable command identity retains immutable first-operation audit evidence. Different-session/intent reuse conflicts and UNKNOWN_OUTCOME remains blocked. Validation: **516 passed, 1 existing dependency warning**. Existing process-local browser binding limitations remain; this is not a production session/API composition. Next: isolated HTTP contract/error mapping with a fake writer. No provider or PROD write is activated.

@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-10-05 — SHOP_ORDER_001C-C isolated HTTP contract
+
+- Added an unregistered POST /shopping/orders router with an unavailable-by-default dependency, using the 001C-B authenticated application only via explicit isolated injection.
+- Added bounded public completion projection, 201 first completion / 200 replay, and redacted allowlist errors for authentication, conflict, in-flight, unknown/terminal outcomes and storage failures.
+- Bound actual streamed body bytes to 32768; preserve no-store on success, validation, dependency and method errors; handle slash variants without redirects and clear invalid session cookies securely.
+- Added 41 fake-writer isolated HTTP cases. Combined regression: **557 passed, 1 existing dependency deprecation warning**.
+- Production app/runtime, live transport, credentials and databases remain untouched.
+
 ## 2026-10-05 — SHOP_ORDER_001C-B session-bound composition
 
 - Added a closed browser order intent and explicitly injected internal SessionBoundOrderCreateApplication, using CustomerSessionBoundary for credential/current validity/origin/CSRF checks before durable claims and replay.
