@@ -38,7 +38,7 @@ def test_plugin_presentation_identifier_and_version_are_explicit():
     historical_candidate = "Version: 0.18.0"
     assert "AI_SHOPPING_STOREFRONT_PRESENTATION" in PLUGIN_MAIN
     assert "SHOP_MEDIA_003_AGACHICHI" in PLUGIN_MAIN
-    assert "Version: 0.19.0" in PLUGIN_MAIN
+    assert "Version: 0.19.1" in PLUGIN_MAIN
     assert historical_candidate
 
 
@@ -130,6 +130,14 @@ def test_product_media_mapping_is_server_side_and_fail_safe():
     assert "$product['image_url']" not in detail
     assert "return null;" in adapter
 
+
+def test_canonical_catalog_items_are_not_dropped_by_demo_media_policy():
+    renderer = (PLUGIN / "includes/class-renderer.php").read_text()
+    assert "demo_items" not in renderer
+    assert "catalog_items" in renderer
+    assert "($item['source'] ?? '') === 'demo'" not in renderer
+    assert "photo-fallback" in renderer
+    assert "AI_Shopping_Agachichi_Presentation_Adapter::image_url" in renderer
 
 def test_existing_public_storefront_security_boundary_is_not_replaced():
     migration = (ROOT / "tests/test_public_storefront_migration_02.py").read_text()

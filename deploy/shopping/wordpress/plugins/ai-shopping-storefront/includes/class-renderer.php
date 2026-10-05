@@ -51,7 +51,7 @@ final class AI_Shopping_Renderer
         $page = max(1, (int) ($state['page'] ?? 1));
         $success = !empty($result['success']);
         $data = $success && is_array($result['data'] ?? null) ? $result['data'] : [];
-        $items = $this->demo_items($data['items'] ?? []);
+        $items = $this->catalog_items($data['items'] ?? []);
         $total = (int) ($data['total'] ?? 0);
         ob_start();
         ?>
@@ -94,7 +94,7 @@ final class AI_Shopping_Renderer
     {
         $success = !empty($result['success']);
         $data = $success && is_array($result['data'] ?? null) ? $result['data'] : [];
-        $items = $this->demo_items($data['items'] ?? []);
+        $items = $this->catalog_items($data['items'] ?? []);
         $total = (int) ($data['total'] ?? 0);
         $page = max(1, (int) ($filters['page'] ?? 1));
         $page_size = max(1, (int) ($data['page_size'] ?? 12));
@@ -219,10 +219,10 @@ final class AI_Shopping_Renderer
         return (string) ob_get_clean();
     }
 
-    private function demo_items($items): array
+    private function catalog_items($items): array
     {
         if (!is_array($items)) { return []; }
-        return array_values(array_filter($items, static fn($item): bool => is_array($item) && ($item['source'] ?? '') === 'demo'));
+        return array_values(array_filter($items, static fn($item): bool => is_array($item)));
     }
 
     private function home_url(array $state): string

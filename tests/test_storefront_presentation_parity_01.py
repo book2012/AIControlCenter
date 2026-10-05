@@ -18,8 +18,8 @@ MEDIA = json.loads((PLUGIN / "assets/agachichi-v1/deployment-manifest.json").rea
 
 
 def test_candidate_identity_and_dev_reference_contract():
-    assert "Version: 0.19.0" in MAIN
-    assert "'0.19.0'" in MAIN
+    assert "Version: 0.19.1" in MAIN
+    assert "'0.19.1'" in MAIN
     assert "SHOP_MEDIA_003_AGACHICHI" in MAIN
     assert "core/homepage" not in FRONT + PRODUCT
     assert "dev.bokstory.duckdns.org" not in MAIN + RENDERER + SHORTCODES + DETAIL + JS

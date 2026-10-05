@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AI Shopping Storefront
  * Description: Presentation adapter for the AIControlCenter Shopping API.
- * Version: 0.19.0
+ * Version: 0.19.1
  * Requires PHP: 8.1
  */
 
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 define(
     'AI_SHOPPING_STOREFRONT_VERSION',
-    '0.19.0'
+    '0.19.1'
 );
 
 define(
