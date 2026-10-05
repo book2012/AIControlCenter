@@ -1,5 +1,14 @@
 # MASTER
 
+## 2026-10-05 — SHOP_ORDER_001C repository state
+
+`SHOP_ORDER_001C-A` (`caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`) and `SHOP_ORDER_001C-B` (`9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`) complete the repository-only identity and session composition layer. Public Shopping IDs remain canonical bounded strings. A trusted read-only catalog resolver produces provider numeric IDs only after durable order claim; the future writer never accepts browser-supplied provider identity.
+
+The isolated owned-order API candidate reuses the existing CustomerSessionBoundary rather than inventing authentication: exact Origin, session cookie credential, current durable customer/session validation, revocation/expiry, then CSRF. The body contains only canonical line intent and idempotency key. Customer/session authority and correlation/audit/time evidence are server-owned. The idempotency digest excludes per-request observability evidence so a same-session retry can replay the durable result without another provider write.
+
+The default application does not register this router and the service dependency fails closed unless explicitly overridden. Validation is **103 passed, 1 warning** for Order/API focused coverage and **244 passed, 1 warning** for the existing customer/session security suite. No real WooCommerce write transport, credential, live request, Production database mutation, runtime activation, or deployment exists. Next: `SHOP_ORDER_001D` provider write-adapter foundation using inert/fake transport only.
+
+
 ## 2026-10-05 — SHOP_ORDER create foundation state
 
 `SHOP_ORDER_001A` (`65f39d299e53a9be1687bfe46c71fe8c4787b4e4`) and `SHOP_ORDER_001B` (`c6b3e3b1578501d4a9845cf00a5895e29e6da065`) establish the current Order write-safety foundation without enabling a provider write. AIControlCenter owns the create command, authority binding, idempotency, durable operation state, audit, and ambiguity policy; WooCommerce remains only the future commerce engine adapter.

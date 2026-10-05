@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-10-05 — SHOP_ORDER_001C canonical identity + isolated session API
+
+- Added `SHOP_ORDER_001C-A` (`caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`) to keep customer-facing canonical product IDs as bounded strings and resolve WooCommerce numeric product/variation IDs only through a trusted read-only server-side catalog resolver. The future writer receives a resolved command; browser/provider identity is not conflated.
+- Refined the order idempotency digest to represent immutable customer order intent only (customer + canonical lines + idempotency key). Fresh server correlation/audit/time evidence no longer causes a false conflict on same-session retries; the first claim still preserves that evidence immutably.
+- Added `SHOP_ORDER_001C-B` (`9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`) as an isolated opt-in Order create API candidate. It reuses the existing customer-session boundary for Origin, credential validation, current durable session/revocation checks and CSRF. No new authentication mechanism was introduced.
+- Closed the request schema so customer/session identity, prices/totals/tax/currency, discounts, addresses/contact data, payment state, provider IDs and server observability references cannot be supplied as caller authority.
+- Verified same-session idempotent HTTP replay without a second writer call and different-session same-key conflict.
+- Verified actual `ShoppingService.get_product()` JSON variation shape (`list[dict]`) at the resolver boundary.
+- Validation: **103 Order/API tests passed, 1 warning**; **244 existing customer/session tests passed, 1 warning**; compile and static write/secret isolation passed.
+- The default app still does not register the Order create router. No WooCommerce write endpoint/credential, runtime wiring, WordPress change, Production DB change, deployment or Production activation occurred.
+
+
 ## 2026-10-05 — SHOP_ORDER_001A/001B create foundation
 
 - Added `SHOP_ORDER_001A` at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`, defining a closed customer order-create intent with product/variation/quantity only, existing opaque `CustomerId`, idempotency/correlation/audit references, and UTC request time. Client-supplied price, totals, tax, currency, discounts, billing/shipping/contact data, payment state and provider metadata remain prohibited.

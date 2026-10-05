@@ -48,3 +48,11 @@ with an inert/fake writer only.
 ## Idempotency digest
 
 The command digest represents only immutable customer order intent: customer ID, canonical product/variation/quantity lines, and the idempotency key. Server observability evidence (`correlation_id`, `audit_reference`, and request timestamp) is deliberately excluded from the digest so a same-session retry of the same order intent can replay even when a new request receives fresh server-side observability references. The original evidence remains immutable in the durable ledger row created by the first claim.
+## Canonical implementation evidence
+
+- 001C-A: `caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`.
+- 001C-B: `9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`.
+- Order/API focused validation: **103 passed, 1 warning**.
+- Existing customer/session security validation: **244 passed, 1 warning**.
+- Python compile and default-app/write-secret isolation checks: PASS.
+- No default route activation or provider write occurred.

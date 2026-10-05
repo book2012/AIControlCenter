@@ -54,3 +54,11 @@ catalog resolver and fake writer.
 No WooCommerce write endpoint, write credential, runtime wiring, WordPress
 change, Production database mutation, deployment or Production activation is
 part of 001C-B.
+## Canonical implementation evidence
+
+- 001C-A: `caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`.
+- 001C-B: `9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`.
+- Order/API focused validation: **103 passed, 1 warning**.
+- Existing customer/session security validation: **244 passed, 1 warning**.
+- Python compile and default-app/write-secret isolation checks: PASS.
+- No default route activation or provider write occurred.

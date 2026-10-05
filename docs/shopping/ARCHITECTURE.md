@@ -1,5 +1,36 @@
 # AI Shopping Platform Architecture
 
+## Current SHOP_ORDER authority — 001C COMPLETE for isolated repository composition
+
+The current Order foundation extends 001A/001B with `SHOP_ORDER_001C-A` at `caa2ca8f2815fb6e408c5e67552b9004bbad6ec8` and `SHOP_ORDER_001C-B` at `9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`. No provider writer or default runtime route is active.
+
+### Canonical-to-provider identity boundary
+
+The customer/browser contract carries canonical bounded string product/variation IDs. `ShoppingServiceOrderCatalogResolver` reuses the existing read-only catalog and requires exact identity, in-stock status, WooCommerce source, available variation, and valid decimal provider IDs before it emits a server-owned resolved command. The future write adapter receives only this resolved form. Provider numeric IDs are never client authority.
+
+### Session-bound isolated API
+
+The opt-in candidate path is:
+
+`canonical HTTPS Origin`
+→ existing `CustomerSessionBoundary` cookie credential validation
+→ durable current customer/session/revocation/expiry checks
+→ existing CSRF verification
+→ internal `OrderCreateAuthority`
+→ server-built `OrderCreateCommand`
+→ durable order ledger
+→ trusted catalog resolution
+→ injected writer.
+
+The request body permits only canonical product/variation/quantity and an idempotency key. Customer/session identity, price/total/tax/currency, discount, contact/address, payment state, provider IDs, correlation IDs, audit IDs and timestamps are excluded. The command digest represents customer order intent rather than per-request observability evidence.
+
+### Activation boundary
+
+`core.api.app` does not import/register the owned-order router. `get_order_create_service()` is fail-closed and requires explicit injection. Tests use an isolated FastAPI app, temporary SQLite ledger and fake writer. Order/API regression is **103 passed, 1 warning** and existing session/auth regression is **244 passed, 1 warning**. No WooCommerce write credential/transport, live provider request, Production DB mutation, runtime restart, deployment or Production activation occurred.
+
+Next: `SHOP_ORDER_001D` defines a provider write-adapter contract and inert/fake transport. Authenticated non-PROD provider writes and Production activation remain later explicit gates.
+
+
 ## Current SHOP_ORDER authority — 001A/001B COMPLETE for repository foundation
 
 `SHOP_ORDER_001A` is complete at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`. `SHOP_ORDER_001B` is complete at `c6b3e3b1578501d4a9845cf00a5895e29e6da065`. These milestones define the AIControlCenter-owned order-create contract and durable operation ledger only; they do not enable a WooCommerce writer or runtime mutation.

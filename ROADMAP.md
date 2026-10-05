@@ -1,5 +1,17 @@
 # Roadmap
 
+## 2026-10-05 — SHOP_ORDER_001C isolated session composition closeout
+
+- [x] `SHOP_ORDER_001C-A` at `caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`: separate public canonical product/variation references from trusted WooCommerce numeric provider identity through a read-only server-side catalog resolver.
+- [x] `SHOP_ORDER_001C-B` at `9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`: isolated `POST /shopping/owned-orders` candidate using the existing trusted `CustomerSessionBoundary` sequence (Origin → cookie credential → durable session validation → CSRF) and explicit dependency injection only.
+- [x] Close the public request body to product/variation/quantity plus idempotency key; customer/session, price/total/tax/currency, discounts, contact/address, payment, provider IDs and observability evidence are not client authority.
+- [x] Keep the default FastAPI app unmodified; Order create router is not registered and `get_order_create_service()` fails closed without explicit composition.
+- [x] Order/API focused regression: **103 passed, 1 warning**.
+- [x] Existing customer/session security regression: **244 passed, 1 warning**.
+- [ ] `SHOP_ORDER_001D`: provider write-adapter foundation with inert/fake transport and closed WooCommerce create payload; no live provider call.
+- [ ] Any authenticated non-PROD WooCommerce write and all Production order creation remain separately gated.
+
+
 ## 2026-10-05 — SHOP_ORDER_001A/001B foundation closeout
 
 - [x] `SHOP_ORDER_001A` closed at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`: provider-neutral create command, claim-before-write orchestration, bounded product/variation/quantity intent, and no client authority over price/payment/contact commerce truth.
