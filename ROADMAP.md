@@ -5606,4 +5606,4 @@ DEV now supports customer-account-free grounded product inquiries, single-item/c
 
 ## DEV guest phone verification (2026-10-06)
 
-Twilio Verify is connected for the explicitly configured DEV test phone; browser-bound durable dispatch and existing trusted session issuance are implemented. Actual SMS start returned HTTP 200 / PENDING; human OTP confirmation is pending. Shipping capture and guest order confirmation remain disabled. Prior confirmed order #14 and PROD were preserved. See [guest phone architecture](docs/shopping/SHOP_GUEST_PHONE_DEV.md).
+Twilio Verify is connected for the explicitly configured DEV test phone; browser-bound durable dispatch and existing trusted session issuance are implemented. Actual SMS start returned HTTP 200; human OTP check succeeded with HTTP 201 and the issued customer session validated with HTTP 200. Stored OTP was cleared. Shipping capture and guest order confirmation remain disabled. Prior confirmed order #14 and PROD were preserved. See [guest phone architecture](docs/shopping/SHOP_GUEST_PHONE_DEV.md).

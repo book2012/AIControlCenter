@@ -5,9 +5,12 @@
   "isolated_real_chrome_phone_session_passed": true,
   "browser_external_provider_requests": 0,
   "actual_twilio_start_http": 200,
-  "actual_phone_state": "PENDING",
-  "human_otp_check_complete": false,
+  "actual_phone_state": "VERIFIED",
+  "human_otp_check_complete": true,
   "guest_order_created": false,
   "prior_order_review": "CONFIRMED",
-  "prod_mutation": false
+  "prod_mutation": false,
+  "actual_twilio_check_http": 201,
+  "actual_customer_session_http": 200,
+  "stored_otp_cleared": true
 }
