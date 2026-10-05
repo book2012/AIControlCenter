@@ -32,7 +32,7 @@ NOW = datetime(2026, 10, 5, 6, 0, tzinfo=timezone.utc)
 def command(*, quantity: int = 1, key: str = "order-create-001") -> OrderCreateCommand:
     return OrderCreateCommand(
         customer_id=CUSTOMER,
-        line_items=(OrderCreateLine(product_id=901, quantity=quantity),),
+        line_items=(OrderCreateLine(product_id="mock-001", quantity=quantity),),
         idempotency_key=key,
         correlation_id="corr-order-001",
         audit_reference="audit-order-001",
@@ -75,6 +75,22 @@ def snapshot(order_id: int = 101, *, product_id: int = 901, quantity: int = 1) -
         updated_at=NOW,
         provider_version="test",
     )
+
+
+class FakeResolved:
+    def __init__(self, quantity=1):
+        self.customer_id=CUSTOMER
+        self.line_items=(type("Line",(),{
+            "product_id":"mock-001","variation_id":None,
+            "provider_product_id":901,"provider_variation_id":0,"quantity":quantity,
+        })(),)
+
+
+class FakeResolver:
+    def __init__(self): self.calls=[]
+    def resolve(self,value):
+        self.calls.append(value)
+        return FakeResolved(value.line_items[0].quantity)
 
 
 class FakeCreator:
@@ -137,15 +153,15 @@ def test_create_command_rejects_duplicate_product_identity_and_bad_keys():
         OrderCreateCommand(
             customer_id=CUSTOMER,
             line_items=(
-                OrderCreateLine(901, 0, 1),
-                OrderCreateLine(901, 0, 2),
+                OrderCreateLine("mock-001", None, 1),
+                OrderCreateLine("mock-001", None, 2),
             ),
             idempotency_key="key", correlation_id="corr",
             audit_reference="audit", requested_at=NOW,
         )
     with pytest.raises(OrderCreateContractError, match="idempotency_key:FORMAT"):
         OrderCreateCommand(
-            customer_id=CUSTOMER, line_items=(OrderCreateLine(901),),
+            customer_id=CUSTOMER, line_items=(OrderCreateLine("mock-001"),),
             idempotency_key="bad key", correlation_id="corr",
             audit_reference="audit", requested_at=NOW,
         )
@@ -154,13 +170,13 @@ def test_create_command_rejects_duplicate_product_identity_and_bad_keys():
 @pytest.mark.parametrize("value", [0, -1, 1001, True])
 def test_create_line_rejects_invalid_quantity(value):
     with pytest.raises(OrderCreateContractError, match="quantity:INVALID"):
-        OrderCreateLine(product_id=901, quantity=value)
+        OrderCreateLine(product_id="mock-001", quantity=value)
 
 
 def test_service_claims_before_writer_and_replays_without_second_write():
     creator = FakeCreator()
     coordinator = InMemoryOrderCreateOperationCoordinator()
-    service = OrderCreateService(order_creator=creator, coordinator=coordinator)
+    service = OrderCreateService(catalog_resolver=FakeResolver(), order_creator=creator, coordinator=coordinator)
     first = service.execute(command(), authority())
     second = service.execute(command(), authority())
     assert len(creator.calls) == 1
@@ -173,7 +189,7 @@ def test_service_claims_before_writer_and_replays_without_second_write():
 def test_same_idempotency_key_with_different_command_fails_before_writer():
     creator = FakeCreator()
     service = OrderCreateService(
-        order_creator=creator,
+        catalog_resolver=FakeResolver(), order_creator=creator,
         coordinator=InMemoryOrderCreateOperationCoordinator(),
     )
     service.execute(command(quantity=1, key="same-key"), authority())
@@ -185,7 +201,7 @@ def test_same_idempotency_key_with_different_command_fails_before_writer():
 def test_definitive_provider_failure_is_terminal_and_never_auto_retried():
     creator = FakeCreator(error=OrderCreateDefinitiveFailure("PROVIDER_REJECTED"))
     service = OrderCreateService(
-        order_creator=creator, coordinator=InMemoryOrderCreateOperationCoordinator(),
+        catalog_resolver=FakeResolver(), order_creator=creator, coordinator=InMemoryOrderCreateOperationCoordinator(),
     )
     with pytest.raises(OrderCreateDefinitiveFailure, match="PROVIDER_REJECTED"):
         service.execute(command(), authority())
@@ -197,7 +213,7 @@ def test_definitive_provider_failure_is_terminal_and_never_auto_retried():
 def test_ambiguous_provider_failure_is_quarantined_and_never_auto_retried():
     creator = FakeCreator(error=OrderCreateAmbiguousFailure("TIMEOUT_UNKNOWN"))
     service = OrderCreateService(
-        order_creator=creator, coordinator=InMemoryOrderCreateOperationCoordinator(),
+        catalog_resolver=FakeResolver(), order_creator=creator, coordinator=InMemoryOrderCreateOperationCoordinator(),
     )
     with pytest.raises(OrderCreateAmbiguousFailure, match="TIMEOUT_UNKNOWN"):
         service.execute(command(), authority())
@@ -213,7 +229,7 @@ def test_provider_snapshot_must_match_requested_line_identity_and_quantity():
     ):
         creator = FakeCreator(result=returned)
         service = OrderCreateService(
-            order_creator=creator,
+            catalog_resolver=FakeResolver(), order_creator=creator,
             coordinator=InMemoryOrderCreateOperationCoordinator(),
         )
         with pytest.raises(OrderCreateContractError, match="order_creator:LINE_ITEMS_MISMATCH"):
@@ -225,7 +241,7 @@ def test_provider_snapshot_must_match_requested_line_identity_and_quantity():
 def test_invalid_provider_result_fails_terminally():
     creator = FakeCreator(result={"id": 101})
     service = OrderCreateService(
-        order_creator=creator,
+        catalog_resolver=FakeResolver(), order_creator=creator,
         coordinator=InMemoryOrderCreateOperationCoordinator(),
     )
     with pytest.raises(OrderCreateContractError, match="order_creator:INVALID_RESULT"):

@@ -1,4 +1,7 @@
 from .create import (
+    ResolvedOrderCreateLineProtocol,
+    ResolvedOrderCreateCommandProtocol,
+    OrderCreateCatalogResolver,
     OrderCreateOperationUnknownOutcome,
     OrderCreateDefinitiveFailure,
     OrderCreateAuthority,
@@ -30,6 +33,9 @@ from .service import (
 )
 
 __all__ = [
+    "ResolvedOrderCreateLineProtocol",
+    "ResolvedOrderCreateCommandProtocol",
+    "OrderCreateCatalogResolver",
     "OrderCreateOperationUnknownOutcome",
     "OrderCreateDefinitiveFailure",
     "OrderCreateAuthority",
@@ -56,6 +62,19 @@ __all__ = [
     "OrderSnapshot",
     "OrderLedgerError",
     "SQLiteOrderCreateLedger",
+    "OrderCreateCatalogRead",
+    "OrderCreateCatalogResolutionError",
+    "ResolvedOrderCreateCommand",
+    "ResolvedOrderCreateLine",
+    "ShoppingServiceOrderCatalogResolver",
 ]
 
 from .ledger import OrderLedgerError, SQLiteOrderCreateLedger
+
+from .catalog import (
+    OrderCreateCatalogRead,
+    OrderCreateCatalogResolutionError,
+    ResolvedOrderCreateCommand,
+    ResolvedOrderCreateLine,
+    ShoppingServiceOrderCatalogResolver,
+)

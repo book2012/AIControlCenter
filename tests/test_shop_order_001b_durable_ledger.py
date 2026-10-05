@@ -36,7 +36,7 @@ def authority(*,session=SESSION):
 
 def command(*,key="order-001",quantity=1):
     return OrderCreateCommand(
-        customer_id=CUSTOMER,line_items=(OrderCreateLine(901,0,quantity),),
+        customer_id=CUSTOMER,line_items=(OrderCreateLine("mock-001",None,quantity),),
         idempotency_key=key,correlation_id="corr-001",audit_reference="audit-001",
         requested_at=NOW,
     )
@@ -52,6 +52,19 @@ def snapshot(order_id=501,*,quantity=1):
         total=Decimal("10000"),total_tax=Decimal("0"),created_at=NOW,updated_at=NOW,
         provider_version="test",
     )
+
+
+class FakeResolved:
+    def __init__(self, quantity=1):
+        self.customer_id=CUSTOMER
+        self.line_items=(type("Line",(),{
+            "product_id":"mock-001","variation_id":None,
+            "provider_product_id":901,"provider_variation_id":0,"quantity":quantity,
+        })(),)
+
+
+class FakeResolver:
+    def resolve(self,value): return FakeResolved(value.line_items[0].quantity)
 
 
 class FakeWriter:
@@ -73,20 +86,20 @@ def ledger(tmp_path,clock):
 
 def test_claim_is_durable_and_completed_replay_survives_new_instance(tmp_path):
     clock=Clock(); first=ledger(tmp_path,clock); writer=FakeWriter()
-    service=OrderCreateService(order_creator=writer,coordinator=first)
+    service=OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=first)
     result=service.execute(command(),authority())
     assert result.snapshot.provider_order_id==501 and len(writer.calls)==1
     clock.tick()
     second=SQLiteOrderCreateLedger(tmp_path/"orders.sqlite3",clock=clock,
         path_policy=IsolatedTestDatabasePathPolicy(tmp_path))
-    replay=OrderCreateService(order_creator=writer,coordinator=second).execute(command(),authority())
+    replay=OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=second).execute(command(),authority())
     assert replay.idempotent_replay is True and replay.snapshot==result.snapshot
     assert len(writer.calls)==1
 
 
 def test_same_key_different_command_or_session_conflicts_before_writer(tmp_path):
     clock=Clock(); store=ledger(tmp_path,clock); writer=FakeWriter()
-    service=OrderCreateService(order_creator=writer,coordinator=store)
+    service=OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=store)
     service.execute(command(key="same"),authority())
     with pytest.raises(OrderCreateOperationConflict):
         service.execute(command(key="same",quantity=2),authority())
@@ -98,7 +111,7 @@ def test_same_key_different_command_or_session_conflicts_before_writer(tmp_path)
 
 def test_same_session_can_replay_with_refreshed_authority_evidence(tmp_path):
     clock=Clock();store=ledger(tmp_path,clock);writer=FakeWriter()
-    service=OrderCreateService(order_creator=writer,coordinator=store)
+    service=OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=store)
     first=service.execute(command(),authority())
     refreshed=OrderCreateAuthority(
         customer_id=CUSTOMER,session_id=SESSION,authorization_reference="auth-002",
@@ -124,19 +137,19 @@ def test_concurrent_exact_claims_allow_one_claim_and_one_inflight(tmp_path):
 def test_ambiguous_failure_persists_unknown_outcome_across_restart(tmp_path):
     clock=Clock(); store=ledger(tmp_path,clock)
     writer=FakeWriter(error=OrderCreateAmbiguousFailure("TIMEOUT_UNKNOWN"))
-    service=OrderCreateService(order_creator=writer,coordinator=store)
+    service=OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=store)
     with pytest.raises(OrderCreateAmbiguousFailure): service.execute(command(),authority())
     assert store.inspect_operation("order-001")["state"]=="UNKNOWN_OUTCOME"
     second=SQLiteOrderCreateLedger(tmp_path/"orders.sqlite3",clock=clock,
         path_policy=IsolatedTestDatabasePathPolicy(tmp_path))
     with pytest.raises(OrderCreateOperationUnknownOutcome):
-        OrderCreateService(order_creator=writer,coordinator=second).execute(command(),authority())
+        OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=second).execute(command(),authority())
     assert len(writer.calls)==1
 
 
 def test_unclassified_postwrite_contract_failure_is_unknown_not_terminal(tmp_path):
     clock=Clock();store=ledger(tmp_path,clock);writer=FakeWriter(result=snapshot(quantity=2))
-    service=OrderCreateService(order_creator=writer,coordinator=store)
+    service=OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=store)
     with pytest.raises(Exception,match="LINE_ITEMS_MISMATCH"): service.execute(command(),authority())
     assert store.inspect_operation("order-001")["state"]=="UNKNOWN_OUTCOME"
     assert len(writer.calls)==1
@@ -145,7 +158,7 @@ def test_unclassified_postwrite_contract_failure_is_unknown_not_terminal(tmp_pat
 def test_definitive_no_write_failure_is_terminal_and_durable(tmp_path):
     clock=Clock();store=ledger(tmp_path,clock)
     writer=FakeWriter(error=OrderCreateDefinitiveFailure("PROVIDER_REJECTED"))
-    service=OrderCreateService(order_creator=writer,coordinator=store)
+    service=OrderCreateService(catalog_resolver=FakeResolver(),order_creator=writer,coordinator=store)
     with pytest.raises(OrderCreateDefinitiveFailure): service.execute(command(),authority())
     assert store.inspect_operation("order-001")["state"]=="TERMINAL_FAILED"
     with pytest.raises(OrderCreateOperationTerminalFailure): service.execute(command(),authority())
@@ -205,7 +218,7 @@ def test_completion_persistence_failure_quarantines_provider_success(tmp_path):
     def fail_completion(*args):
         raise sqlite3.OperationalError("injected completion persistence failure")
     store.complete = fail_completion
-    service = OrderCreateService(order_creator=writer, coordinator=store)
+    service = OrderCreateService(catalog_resolver=FakeResolver(), order_creator=writer, coordinator=store)
     with pytest.raises(sqlite3.OperationalError):
         service.execute(command(), authority())
     assert store.inspect_operation("order-001")["state"] == "UNKNOWN_OUTCOME"
@@ -220,7 +233,7 @@ def test_claim_rejects_authority_not_current_at_ledger_clock(tmp_path, seconds):
     store = ledger(tmp_path, clock)
     clock.tick(seconds)
     writer = FakeWriter()
-    service = OrderCreateService(order_creator=writer, coordinator=store)
+    service = OrderCreateService(catalog_resolver=FakeResolver(), order_creator=writer, coordinator=store)
     with pytest.raises(Exception, match="authority:NOT_CURRENT"):
         service.execute(command(), authority())
     assert store.inspect_operation("order-001") is None
@@ -237,7 +250,7 @@ def test_completion_committed_then_error_preserves_completed_replay(tmp_path):
         complete(*args)
         raise sqlite3.OperationalError("injected post-commit error")
     store.complete = commit_then_error
-    service = OrderCreateService(order_creator=writer, coordinator=store)
+    service = OrderCreateService(catalog_resolver=FakeResolver(), order_creator=writer, coordinator=store)
     with pytest.raises(sqlite3.OperationalError):
         service.execute(command(), authority())
     assert store.inspect_operation("order-001")["state"] == "COMPLETED"
@@ -256,7 +269,7 @@ def test_completion_and_quarantine_failure_keep_claim_blocked(tmp_path):
         raise sqlite3.OperationalError("quarantine failure")
     store.complete = fail_completion
     store.unknown = fail_quarantine
-    service = OrderCreateService(order_creator=writer, coordinator=store)
+    service = OrderCreateService(catalog_resolver=FakeResolver(), order_creator=writer, coordinator=store)
     with pytest.raises(sqlite3.OperationalError, match="completion failure"):
         service.execute(command(), authority())
     assert store.inspect_operation("order-001")["state"] == "CLAIMED"

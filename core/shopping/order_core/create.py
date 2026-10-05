@@ -31,6 +31,7 @@ _REASON_RE = re.compile(r"[A-Z][A-Z0-9_]{0,63}\Z")
 _DIGEST_RE = re.compile(r"[0-9a-f]{64}\Z")
 _MAX_LINES = 100
 _MAX_QUANTITY = 1000
+_CATALOG_REFERENCE_RE = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,127}\Z")
 
 
 class OrderCreateContractError(OrderContractError):
@@ -106,6 +107,15 @@ def _customer_id(value: object) -> str:
         raise OrderCreateContractError("customer_id:INVALID") from exc
 
 
+def _catalog_reference(value: object, field: str) -> str:
+    if type(value) is not str:
+        raise OrderCreateContractError(f"{field}:TYPE")
+    normalized = value.strip()
+    if _CATALOG_REFERENCE_RE.fullmatch(normalized) is None:
+        raise OrderCreateContractError(f"{field}:FORMAT")
+    return normalized
+
+
 def _session_id(value: object) -> str:
     try:
         return _SESSION_ID.validate_python(value)
@@ -117,15 +127,16 @@ def _session_id(value: object) -> str:
 class OrderCreateLine:
     """Customer intent for one canonical catalog item; no client price authority."""
 
-    product_id: int
-    variation_id: int = 0
+    product_id: str
+    variation_id: str | None = None
     quantity: int = 1
 
     def __post_init__(self) -> None:
-        if type(self.product_id) is not int or self.product_id <= 0:
-            raise OrderCreateContractError("product_id:INVALID")
-        if type(self.variation_id) is not int or self.variation_id < 0:
-            raise OrderCreateContractError("variation_id:INVALID")
+        object.__setattr__(self, "product_id", _catalog_reference(self.product_id, "product_id"))
+        if self.variation_id is not None:
+            object.__setattr__(
+                self, "variation_id", _catalog_reference(self.variation_id, "variation_id")
+            )
         if type(self.quantity) is not int or not 1 <= self.quantity <= _MAX_QUANTITY:
             raise OrderCreateContractError("quantity:INVALID")
 
@@ -239,8 +250,26 @@ class OrderCreateResult:
         return replace(self, idempotent_replay=True)
 
 
+class ResolvedOrderCreateLineProtocol(Protocol):
+    product_id: str
+    variation_id: str | None
+    provider_product_id: int
+    provider_variation_id: int
+    quantity: int
+
+
+class ResolvedOrderCreateCommandProtocol(Protocol):
+    customer_id: str
+    line_items: tuple[ResolvedOrderCreateLineProtocol, ...]
+
+
+class OrderCreateCatalogResolver(Protocol):
+    def resolve(self, command: OrderCreateCommand) -> ResolvedOrderCreateCommandProtocol:
+        ...
+
+
 class OrderCreatePort(Protocol):
-    def create_order(self, command: OrderCreateCommand) -> OrderSnapshot:
+    def create_order(self, command: ResolvedOrderCreateCommandProtocol) -> OrderSnapshot:
         ...
 
 
@@ -365,8 +394,14 @@ class InMemoryOrderCreateOperationCoordinator:
             record.state = "UNKNOWN_OUTCOME"
 
 
-def _line_quantities_from_command(command: OrderCreateCommand) -> dict[tuple[int, int], int]:
-    return {(item.product_id, item.variation_id): item.quantity for item in command.line_items}
+def _line_quantities_from_resolved(
+    command: ResolvedOrderCreateCommandProtocol,
+) -> dict[tuple[int, int], int]:
+    result: dict[tuple[int, int], int] = {}
+    for item in command.line_items:
+        identity = (item.provider_product_id, item.provider_variation_id)
+        result[identity] = result.get(identity, 0) + item.quantity
+    return result
 
 
 def _line_quantities_from_snapshot(snapshot: OrderSnapshot) -> dict[tuple[int, int], int]:
@@ -377,16 +412,20 @@ def _line_quantities_from_snapshot(snapshot: OrderSnapshot) -> dict[tuple[int, i
     return result
 
 
-def _validate_created_snapshot(command: OrderCreateCommand, snapshot: OrderSnapshot) -> None:
-    if _line_quantities_from_snapshot(snapshot) != _line_quantities_from_command(command):
+def _validate_created_snapshot(
+    resolved: ResolvedOrderCreateCommandProtocol, snapshot: OrderSnapshot
+) -> None:
+    if _line_quantities_from_snapshot(snapshot) != _line_quantities_from_resolved(resolved):
         raise OrderCreateContractError("order_creator:LINE_ITEMS_MISMATCH")
 
 
 class OrderCreateService:
     """Authority-bound orchestration with claim-before-write semantics."""
 
-    def __init__(self, *, order_creator: OrderCreatePort,
+    def __init__(self, *, catalog_resolver: OrderCreateCatalogResolver,
+                 order_creator: OrderCreatePort,
                  coordinator: OrderCreateOperationCoordinator) -> None:
+        self._catalog_resolver = catalog_resolver
         self._order_creator = order_creator
         self._coordinator = coordinator
 
@@ -401,10 +440,15 @@ class OrderCreateService:
                 raise RuntimeError("completed operation has no result")
             return claim.result.as_replay()
         try:
-            snapshot = self._order_creator.create_order(command)
+            resolved = self._catalog_resolver.resolve(command)
+        except Exception:
+            self._coordinator.fail(command.idempotency_key, digest, "CATALOG_RESOLUTION_FAILED")
+            raise
+        try:
+            snapshot = self._order_creator.create_order(resolved)
             if type(snapshot) is not OrderSnapshot:
                 raise OrderCreateContractError("order_creator:INVALID_RESULT")
-            _validate_created_snapshot(command, snapshot)
+            _validate_created_snapshot(resolved, snapshot)
             result = OrderCreateResult(
                 customer_id=command.customer_id, snapshot=snapshot,
                 idempotency_key=command.idempotency_key, command_digest=digest,
@@ -441,6 +485,7 @@ __all__ = (
     "OrderCreateCommand", "OrderCreateContractError", "OrderCreateDefinitiveFailure",
     "OrderCreateLine", "OrderCreateOperationConflict", "OrderCreateOperationCoordinator",
     "OrderCreateOperationInFlight", "OrderCreateOperationTerminalFailure",
-    "OrderCreateOperationUnknownOutcome", "OrderCreatePort", "OrderCreateResult",
+    "OrderCreateOperationUnknownOutcome", "OrderCreateCatalogResolver", "OrderCreatePort",
+    "OrderCreateResult", "ResolvedOrderCreateCommandProtocol", "ResolvedOrderCreateLineProtocol",
     "OrderCreateService",
 )
