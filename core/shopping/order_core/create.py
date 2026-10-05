@@ -161,7 +161,7 @@ class OrderCreateCommand:
             raise OrderCreateContractError("line_items:TYPE")
         if not 1 <= len(self.line_items) <= _MAX_LINES:
             raise OrderCreateContractError("line_items:BOUNDS")
-        identities: set[tuple[int, int]] = set()
+        identities: set[tuple[str, str | None]] = set()
         for item in self.line_items:
             if type(item) is not OrderCreateLine:
                 raise OrderCreateContractError("line_items:MEMBER_TYPE")
@@ -185,9 +185,6 @@ class OrderCreateCommand:
                     for item in self.line_items
                 ],
                 "idempotency_key": self.idempotency_key,
-                "correlation_id": self.correlation_id,
-                "audit_reference": self.audit_reference,
-                "requested_at": self.requested_at.isoformat(),
             },
             sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False,
         ).encode("utf-8")

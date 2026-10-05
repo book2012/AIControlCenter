@@ -1,5 +1,9 @@
 # MASTER
 
+## 2026-10-05 — SHOP_ORDER_001C-B authoritative candidate state
+
+The canonical product resolution foundation (`caa2ca8`) now has an isolated session-bound order application. CustomerSessionBoundary verifies credential, current durable session/customer validity, origin and CSRF before any ledger claim or completed replay. Identity and short-lived authority are derived server-side; stable command identity retains immutable first-operation audit evidence. Different-session/intent reuse conflicts and UNKNOWN_OUTCOME remains blocked. Validation: **516 passed, 1 existing dependency warning**. Existing process-local browser binding limitations remain; this is not a production session/API composition. Next: isolated HTTP contract/error mapping with a fake writer. No provider or PROD write is activated.
+
 ## 2026-10-05 — SHOP_ORDER create foundation state
 
 `SHOP_ORDER_001A` (`65f39d299e53a9be1687bfe46c71fe8c4787b4e4`) and `SHOP_ORDER_001B` (`c6b3e3b1578501d4a9845cf00a5895e29e6da065`) establish the current Order write-safety foundation without enabling a provider write. AIControlCenter owns the create command, authority binding, idempotency, durable operation state, audit, and ambiguity policy; WooCommerce remains only the future commerce engine adapter.

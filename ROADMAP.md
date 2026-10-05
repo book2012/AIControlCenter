@@ -1,5 +1,16 @@
 # Roadmap
 
+## 2026-10-05 — SHOP_ORDER_001C-B isolated composition closeout
+
+- [x] Reuse canonical product resolution foundation at `caa2ca8`.
+- [x] Bind internal order execution to the existing authenticated session/origin/CSRF boundary.
+- [x] Derive server authority and audit evidence; reject caller authority and commerce truth.
+- [x] Preserve stable same-session replay with immutable original audit evidence.
+- [x] Verify 26 composition cases and combined regression **516 passed, 1 existing dependency warning**.
+- [x] Keep runtime/HTTP route/provider/PROD activation absent.
+- [ ] Design isolated create-order HTTP contracts and bounded public error/result mapping with an inert writer.
+- [ ] Separately review live WooCommerce write transport and production session composition before activation.
+
 ## 2026-10-05 — SHOP_ORDER_001A/001B foundation closeout
 
 - [x] `SHOP_ORDER_001A` closed at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`: provider-neutral create command, claim-before-write orchestration, bounded product/variation/quantity intent, and no client authority over price/payment/contact commerce truth.

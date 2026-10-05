@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-10-05 — SHOP_ORDER_001C-B session-bound composition
+
+- Added a closed browser order intent and explicitly injected internal SessionBoundOrderCreateApplication, using CustomerSessionBoundary for credential/current validity/origin/CSRF checks before durable claims and replay.
+- Derive customer/session identity and bounded authorization evidence on the server; browser authority, commerce truth and audit fields are forbidden.
+- Corrected command digest identity to exclude per-request audit references/time while preserving the original durable audit evidence; earlier candidate digests remain blocked rather than silently migrated.
+- Added 26 isolated composition tests. Combined Order/catalog/read/customer/session regression: **516 passed, 1 existing dependency deprecation warning**.
+- No live writer, credential, HTTP route, production registration, database migration, runtime or PROD mutation.
+
 ## 2026-10-05 — SHOP_ORDER_001A/001B create foundation
 
 - Added `SHOP_ORDER_001A` at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`, defining a closed customer order-create intent with product/variation/quantity only, existing opaque `CustomerId`, idempotency/correlation/audit references, and UTC request time. Client-supplied price, totals, tax, currency, discounts, billing/shipping/contact data, payment state and provider metadata remain prohibited.

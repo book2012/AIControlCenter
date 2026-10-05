@@ -1,5 +1,9 @@
 # AIControlCenter
 
+## 2026-10-05 — SHOP_ORDER_001C session-bound application
+
+Added repository-only internal order composition using the existing trusted customer-session boundary, a durable ledger, canonical catalog resolution and an inert writer. Browser intent cannot supply customer/session authority, prices or audit timestamps. Authentication, current validity, origin and CSRF checks precede every claim and replay. Operation identity is stable across refreshed server audit references. Validation: **516 passed, 1 existing dependency warning**. No route/runtime/PROD activation is added. See `docs/shopping/SHOP_ORDER_001C_SESSION_BOUNDARY.md`.
+
 ## 2026-10-05 — storefront 0.19.1 PROD operational closeout
 
 The accepted storefront payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` is active in PROD as plugin version `0.19.1`. PROD now consumes a commit-addressed immutable release under `~/AIControlCenterRuntime/releases/storefront-prod` through a read-only Colima virtiofs mount and a read-only WordPress bind. Host, Colima VM, and container SHA-256 for the plugin entrypoint match.
