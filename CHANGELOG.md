@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## 2026-10-05 — SHOP_ORDER_001D intercepted Woo order-create adapter
+
+- Added `WooCommerceOrderCreateAdapter` at `d419eb932917c18a2dbd60acdb98e6b8847242e6`. The adapter has no network implementation and uses injected credential/transport ports with unavailable defaults.
+- Added canonical request preparation for WooCommerce order creation: `POST /wp-json/wc/v3/orders`, `pending` status, trusted numeric product/variation/quantity, and an `aicc_order_command_digest` metadata marker.
+- Kept prices, totals, taxes, currency overrides, billing/shipping/contact data, payment/transaction fields, coupons, `set_paid`, and provider customer identity out of the write body.
+- Added explicit write dispositions: `NOT_APPLIED` is a definitive no-write failure, `UNKNOWN` is ambiguous, and `APPLIED` must pass strict HTTP/status/metadata/order normalization checks. Unexpected transport exceptions are ambiguous.
+- Applied responses must be HTTP 201, remain pending, bind the exact command digest, and normalize through the existing bounded `OrderSnapshot`; malformed responses enter `UNKNOWN_OUTCOME` because the provider may already have created an order.
+- End-to-end fake chain (`OrderCreateService → durable ledger → catalog resolver → intercepted Woo adapter`) verifies completed replay, terminal no-write failures, unknown transport quarantine, and malformed applied-response quarantine.
+- Validation: **146 passed, 1 warning** for Order/write coverage and **244 passed, 1 warning** for the existing customer/session security suite. Compile, zero-network, no-secret-loader and default-app isolation checks passed.
+- No live WooCommerce credential, HTTP transport, provider call, default runtime wiring, Production DB/runtime mutation, deployment or Production activation occurred.
+
+
 ## 2026-10-05 — SHOP_ORDER_001C canonical identity + isolated session API
 
 - Added `SHOP_ORDER_001C-A` (`caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`) to keep customer-facing canonical product IDs as bounded strings and resolve WooCommerce numeric product/variation IDs only through a trusted read-only server-side catalog resolver. The future writer receives a resolved command; browser/provider identity is not conflated.

@@ -61,3 +61,10 @@ change, deployment or Production activation is part of 001D.
 Next: validate this adapter through the existing OrderCreateService and durable
 UNKNOWN_OUTCOME ledger using only intercepted fake transport. A real HTTP
 transport and authenticated non-PROD write remain separately gated.
+## Canonical implementation evidence
+
+- Implementation: `d419eb932917c18a2dbd60acdb98e6b8847242e6`.
+- Order/write focused regression: **146 passed, 1 warning**.
+- Existing customer/session security regression: **244 passed, 1 warning**.
+- Python compile, zero-network, no-secret-loader and default-app isolation: PASS.
+- No credential materialization or provider network invocation occurred.

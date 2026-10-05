@@ -1,5 +1,14 @@
 # MASTER
 
+## 2026-10-05 — SHOP_ORDER_001D provider-adapter foundation state
+
+`SHOP_ORDER_001D` is complete at `d419eb932917c18a2dbd60acdb98e6b8847242e6`. AIControlCenter now has a zero-network WooCommerce order-create adapter that accepts only the trusted resolved order command produced after durable claim and catalog resolution. It prepares a closed WooCommerce create request and contains no HTTP client, secret-file loader or default runtime activation.
+
+The request permits only `pending` status, trusted numeric product/variation/quantity lines and one non-secret command-digest metadata marker. Client/provider price authority, totals/taxes/currency overrides, billing/shipping/contact details, payment/transaction state, coupons, `set_paid` and Woo customer ID are excluded. Credential and transport are injected separately and unavailable by default. Transport ambiguity and malformed applied responses map to the existing durable `UNKNOWN_OUTCOME` quarantine so automatic second-order creation remains prohibited.
+
+Validation is **146 passed, 1 warning** for Order/write coverage plus **244 passed, 1 warning** for customer/session security. No real provider transport, write credential, live order, default route activation, Production database change, runtime mutation or deployment exists. Next: `SHOP_ORDER_001E` secret-safe write credential + HTTP transport implementation under intercepted/fake HTTP tests only.
+
+
 ## 2026-10-05 — SHOP_ORDER_001C repository state
 
 `SHOP_ORDER_001C-A` (`caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`) and `SHOP_ORDER_001C-B` (`9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`) complete the repository-only identity and session composition layer. Public Shopping IDs remain canonical bounded strings. A trusted read-only catalog resolver produces provider numeric IDs only after durable order claim; the future writer never accepts browser-supplied provider identity.

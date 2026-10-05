@@ -1,5 +1,33 @@
 # AI Shopping Platform Architecture
 
+## Current SHOP_ORDER authority — 001D intercepted provider adapter COMPLETE
+
+`SHOP_ORDER_001D` is complete at `d419eb932917c18a2dbd60acdb98e6b8847242e6`. The current provider path remains intercepted and zero-network by default:
+
+`trusted session`
+→ `OrderCreateAuthority`
+→ `OrderCreateCommand`
+→ durable order ledger claim
+→ trusted canonical catalog resolution
+→ `ResolvedOrderCreateCommand`
+→ `WooCommerceOrderCreateAdapter`
+→ injected credential/transport ports.
+
+### Closed Woo request
+
+The adapter prepares `POST /wp-json/wc/v3/orders` with `pending` status, trusted numeric line identity/quantity and one AIControlCenter command-digest metadata marker. It does not accept or serialize caller price/totals/tax/currency, billing/shipping/contact, payment/transaction fields, coupons, `set_paid`, or provider customer ID.
+
+### Ambiguity boundary
+
+Transport must explicitly distinguish applied, definitely-not-applied and unknown outcomes. Only definitely-not-applied maps to terminal failure. Unknown transport state, unexpected transport exceptions, malformed/unbound applied responses, unexpected provider status/customer assignment and invalid normalized order responses are ambiguous and therefore feed the durable `UNKNOWN_OUTCOME` quarantine.
+
+### Activation boundary
+
+The adapter owns no HTTP/network implementation and no credential-file loader. Defaults cannot write. It is not registered by the default app. Validation: **146 passed, 1 warning** for Order/write coverage and **244 passed, 1 warning** for existing session/auth coverage. No live provider request or Production mutation occurred.
+
+Next: `SHOP_ORDER_001E` may implement a write-only credential boundary and HTTP transport using intercepted HTTP sessions for tests only. Authenticated non-PROD and Production writes remain separate explicit gates.
+
+
 ## Current SHOP_ORDER authority — 001C COMPLETE for isolated repository composition
 
 The current Order foundation extends 001A/001B with `SHOP_ORDER_001C-A` at `caa2ca8f2815fb6e408c5e67552b9004bbad6ec8` and `SHOP_ORDER_001C-B` at `9bd5e61a4cc25b53303b1e588bccede4a2ebcb16`. No provider writer or default runtime route is active.

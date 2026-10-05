@@ -1,5 +1,18 @@
 # Roadmap
 
+## 2026-10-05 — SHOP_ORDER_001D intercepted Woo write-adapter closeout
+
+- [x] `SHOP_ORDER_001D` at `d419eb932917c18a2dbd60acdb98e6b8847242e6`: add a zero-network WooCommerce order-create adapter over server-resolved provider line identities.
+- [x] Prepare only `POST /wp-json/wc/v3/orders` with explicit `pending` status, trusted product/variation/quantity lines, and one non-secret AIControlCenter command-digest metadata marker.
+- [x] Exclude caller price/subtotal/total/tax/currency, billing/shipping/contact, payment/transaction data, coupons, `set_paid`, and provider customer ID from the prepared body.
+- [x] Separate credential provider and transport ports; defaults are unavailable and construction performs zero network access.
+- [x] Require explicit transport disposition (`APPLIED`, `NOT_APPLIED`, `UNKNOWN`) and map ambiguity to the durable `UNKNOWN_OUTCOME` safety path.
+- [x] Reuse the existing bounded WooCommerce order normalizer; applied-but-malformed/unbound responses remain ambiguous rather than retryable.
+- [x] Order/adapter regression: **146 passed, 1 warning**; existing customer/session security regression: **244 passed, 1 warning**.
+- [ ] `SHOP_ORDER_001E`: secret-safe write credential file boundary + HTTP transport implementation validated only with intercepted/fake HTTP sessions; no provider call.
+- [ ] One authenticated non-PROD real WooCommerce order write requires a separate explicit authorization gate after 001E.
+
+
 ## 2026-10-05 — SHOP_ORDER_001C isolated session composition closeout
 
 - [x] `SHOP_ORDER_001C-A` at `caa2ca8f2815fb6e408c5e67552b9004bbad6ec8`: separate public canonical product/variation references from trusted WooCommerce numeric provider identity through a read-only server-side catalog resolver.
