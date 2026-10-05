@@ -33,7 +33,7 @@ class GuestShoppingChat:
         p=self.product(question.product_id); text=question.message.strip().lower();engine="RULES"
         if self.classifier is not None:
             try:
-                intent=self.classifier(question.message,p)
+                intent=("OPERATOR" if any(v in question.message for v in ("배송","교환","반품","불량","환불","맞춤","수선")) else self.classifier(question.message,p))
                 text={"STOCK":"재고","PRICE":"가격","DESCRIPTION":"설명","PURCHASE":"주문","OPERATOR":""}[intent]
                 engine="LOCAL_AI"
             except Exception:
@@ -47,6 +47,7 @@ class GuestShoppingChat:
             message=("현재 구매 가능한 옵션: "+", ".join(available) if p.in_stock and available else
                      "현재 재고가 있습니다." if p.in_stock else "현재 품절입니다.")
             if unavailable:message+=" / 품절 옵션: "+", ".join(unavailable)
+            if callable(getattr(self.catalog,"stock_summary",None)):message+=" / "+self.catalog.stock_summary(p.id)
             message+=" 주문 확정 전에 재고를 다시 확인합니다.";action="ANSWER"
         elif any(v in text for v in ("가격","얼마","price")):
             message=f"현재 상품 가격은 {Decimal(p.price):,} {p.currency}입니다. 배송비와 최종 금액은 주문 확인 단계에서 안내합니다.";action="ANSWER"

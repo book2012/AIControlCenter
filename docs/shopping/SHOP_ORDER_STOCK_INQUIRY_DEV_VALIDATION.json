@@ -1,0 +1,20 @@
+{
+  "environment": "DEV",
+  "scoped_regression_passed": 862,
+  "focused_passed": 62,
+  "real_dev_order_id": 15,
+  "variation_id": 11,
+  "stock_before": 20,
+  "stock_after": 19,
+  "replay_stock_after": 19,
+  "real_local_ai_stock_counts_verified": true,
+  "real_telegram_inquiry_id": "3eddd1bb",
+  "real_telegram_inquiry_message_id": 12,
+  "real_telegram_delivery": "SENT",
+  "real_human_inquiry_answer_approved": false,
+  "approved_FAQ_loop_integration_test_passed": true,
+  "learning_mode": "operator-approved exact-question FAQ and private JSONL; not model fine tuning",
+  "legacy_baseline_failures_reproduced": true,
+  "prod_mutation": false,
+  "production_ready": false
+}

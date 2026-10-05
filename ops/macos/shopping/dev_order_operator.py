@@ -1,0 +1,117 @@
+"""Private DEV operator UX and atomic Woo stock confirmation. No PROD composition."""
+import base64, hashlib, json, re, sqlite3, subprocess
+from pathlib import Path
+from core.shopping.order_core.guest_checkout import fingerprint
+from core.shopping.order_core.telegram import OrderTelegramIntegration
+
+def local_phone(value):
+    value=re.sub(r"[^0-9+]","",value)
+    if value.startswith("+82"):value="0"+value[3:]
+    if not re.fullmatch(r"010[0-9]{8}",value):raise ValueError("PHONE_INVALID")
+    return value
+
+class DevOperatorAdapter:
+    def __init__(self,*,ledger,store,inquiry_queue=None):self.ledger=ledger;self.store=store;self.inquiry_queue=inquiry_queue
+    def rows(self):
+        with sqlite3.connect("file:"+str(self.store.path.resolve())+"?mode=ro",uri=True) as c:
+            drafts={r[0]: (r[1],r[2]) for r in c.execute("SELECT operation_key,body,digest FROM checkout_delivery WHERE state='CONFIRMED'")}
+        result=[]
+        for row in self.ledger.operator_orders():
+            raw=drafts.get(row["operation_key"])
+            if raw is None:continue
+            body=json.loads(raw[0])
+            if fingerprint(body)!=raw[1]:raise ValueError("PRIVATE_DRAFT_CORRUPT")
+            result.append({**row,"phone":local_phone(body["billing"]["phone"]),"quote":body["quote"]})
+        return result
+    def message(self,payload):
+        matches=[r for r in self.rows() if r["reference"]==payload["reference"] and r["provider_order_id"]==payload["provider_order_id"]]
+        if len(matches)!=1:return OrderTelegramIntegration._message(payload)
+        r=matches[0];phone=r["phone"];state=payload["review_state"]
+        title={"PENDING_REVIEW":" 고객님 주문","CONFIRMED":" 고객님 주문확인 완료 · 재고 차감 완료",
+               "REJECTED":" 고객님 주문 거절","STOCK_BLOCKED":" 고객님 주문확정 보류 · 재고 확인 필요"}.get(state," 고객님 주문 상태")
+        items="\n".join(v["name"]+" / "+v["option"]+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
+        text=phone+title+"\n주문 #"+str(r["provider_order_id"])+"\n"+items+"\n"+payload["total"]+" "+payload["currency"]
+        if state in ("PENDING_REVIEW","STOCK_BLOCKED"):
+            text+="\n답장: "+phone+" 고객 주문확인\n여러 주문은: "+phone+" 고객 주문확인 #"+str(r["provider_order_id"])
+        return text
+    def resolve(self,text,update_id=None):
+        if self.inquiry_queue is not None and update_id is not None:
+            reply=self.inquiry_queue.command(text,update_id)
+            if reply is not None:
+                self.inquiry_queue.export(self.inquiry_queue.path.with_name("inquiry-learning.jsonl"))
+                return None,None,reply
+        match=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*주문\s*(확인|확정|거절|상태)(?:\s*#([1-9][0-9]*))?\s*",text)
+        if not match:return None,None,None
+        phone=local_phone(match[1]);decision={"확인":"CONFIRMED","확정":"CONFIRMED","거절":"REJECTED","상태":"STATUS"}[match[2]]
+        rows=[r for r in self.rows() if r["phone"]==phone]
+        if match[3]:rows=[r for r in rows if r["provider_order_id"]==int(match[3])]
+        elif decision!="STATUS":
+            pending=[r for r in rows if r["state"]=="PENDING_REVIEW"]
+            if pending:rows=pending
+        if len(rows)!=1:
+            choices=", ".join("#"+str(r["provider_order_id"]) for r in rows)
+            return None,None,("주문을 구분해 주세요: "+choices+"\n전화번호 고객 주문확인 #주문번호" if rows else "해당 고객 주문을 찾지 못했습니다.")
+        return rows[0]["reference"],decision,None
+
+class DevStockConfirmation:
+    def __init__(self,*,store):self.store=store
+    def __call__(self,key,result):
+        # Caller is the ledger's serialized authorized confirmation transaction.
+        try:
+            tag=hashlib.sha256(("aicc-order:"+key).encode()).hexdigest()
+            draft=self.store.by_provider_tag(tag,allow_expired=True)
+            if draft["state"]!="CONFIRMED":return False
+            expected={"order_id":result.snapshot.provider_order_id,"tag":tag,"digest":draft["digest"],
+                "items":[{"product":int(v["product_id"]),"variation":int(v["variation_id"]),"quantity":v["quantity"]} for v in draft["body"]["line_items"]]}
+            return self.apply(expected)["outcome"]=="STOCK_CONFIRMED"
+        except Exception:return False
+    def apply(self,expected):
+        from ops.macos.shopping.dev_order_runtime import assert_isolation
+        assert_isolation()
+        encoded=base64.b64encode(json.dumps(expected).encode()).decode()
+        script=STOCK_PHP.replace("__PAYLOAD__",encoded)
+        r=subprocess.run(["docker","--context","colima-aicontrolcenter-commerce","exec","-i","aicc-order-dev-wordpress-1","php"],
+            input=script,capture_output=True,text=True,timeout=25)
+        if r.returncode:raise RuntimeError("DEV_STOCK_CONFIRMATION_BLOCKED")
+        value=json.loads(r.stdout)
+        if value.get("outcome")!="STOCK_CONFIRMED":raise RuntimeError("DEV_STOCK_RECEIPT_INVALID")
+        return value
+
+STOCK_PHP="""<?php
+if(getenv('WORDPRESS_DB_NAME')!=='aicc_order_dev'){exit(2);}
+require '/var/www/html/wp-load.php';
+add_filter('pre_wp_mail',fn()=>false);
+$cfg=json_decode(base64_decode('__PAYLOAD__'),true);
+global $wpdb;
+if($wpdb->get_var("SELECT GET_LOCK('aicc_dev_stock_confirmation',5)")!=='1'){exit(3);}
+try {
+ $bad=$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=%s AND engine IS NOT NULL AND engine<>'InnoDB'",DB_NAME));
+ if((int)$bad!==0){throw new Exception('ENGINE');}
+ $wpdb->query('START TRANSACTION');
+ $order=wc_get_order($cfg['order_id']);
+ if(!$order || $order->get_meta('_aicc_order_operation')!==$cfg['tag'] || $order->get_meta('_aicc_delivery_digest')!==$cfg['digest']){throw new Exception('BINDING');}
+ if(!in_array($order->get_status(),['pending','on-hold'],true)){throw new Exception('STATUS');}
+ $items=array_values($order->get_items());$actual=[];$needs=[];
+ foreach($items as $item){
+  $actual[]=['product'=>$item->get_product_id(),'variation'=>$item->get_variation_id(),'quantity'=>$item->get_quantity()];
+  $p=$item->get_product();$qty=$item->get_quantity();$reduced=$item->get_meta('_reduced_stock',true);
+  if(!$p || !$p->managing_stock() || $p->backorders_allowed()){throw new Exception('STOCK_POLICY');}
+  if($reduced!=='' && (int)$reduced!==$qty){throw new Exception('REDUCED_BINDING');}
+  if($reduced===''){
+   $id=$p->get_stock_managed_by_id();$needs[$id]=($needs[$id]??0)+$qty;
+  }
+ }
+ if($actual!=$cfg['items']){throw new Exception('ITEM_BINDING');}
+ foreach($needs as $id=>$qty){$p=wc_get_product($id);if(!$p || $p->get_stock_quantity()<$qty){throw new Exception('INSUFFICIENT');}}
+ if(get_option('woocommerce_manage_stock')!=='yes'){throw new Exception('MANAGEMENT_DISABLED');}
+ wc_reduce_stock_levels($order);
+ foreach($items as $item){$item->read_meta_data(true);if((int)$item->get_meta('_reduced_stock',true)!==$item->get_quantity()){throw new Exception('REDUCTION_UNVERIFIED');}}
+ $order->get_data_store()->set_stock_reduced($order->get_id(),true);
+ if($order->get_status()==='pending'){$order->update_status('on-hold','DEV operator confirmed; stock accounted; no payment or shipment.');}
+ $order->update_meta_data('_aicc_stock_confirmation',$cfg['tag']);$order->save();
+ $wpdb->query('COMMIT');
+ $stocks=[];foreach($items as $item){$p=wc_get_product($item->get_variation_id()?:$item->get_product_id());$stocks[]=['variation'=>$item->get_variation_id(),'quantity'=>$p->get_stock_quantity(),'stock_status'=>$p->get_stock_status()];}
+ echo json_encode(['outcome'=>'STOCK_CONFIRMED','order_id'=>$order->get_id(),'stocks'=>$stocks]);
+} catch(Throwable $e) {$wpdb->query('ROLLBACK');exit(4);}
+finally {$wpdb->get_var("SELECT RELEASE_LOCK('aicc_dev_stock_confirmation')");}
+"""

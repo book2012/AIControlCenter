@@ -54,6 +54,10 @@ class DevCatalog:
             timeout=15,allow_redirects=False,stream=True)
         if response.status_code!=200:response.close();raise ValueError('DEV_CATALOG_UNAVAILABLE')
         return WooCommerceOrderWriter._document(response)
+    def stock_summary(self,product_id):
+        self.get_product(product_id)
+        rows=self.read('products/'+product_id+'/variations?per_page=100')
+        return '현재 재고: '+', '.join(str(v['attributes'][0]['option'])+': '+str(v['stock_quantity'])+'개' for v in rows if v.get('manage_stock') is True and type(v.get('stock_quantity')) is int)
     def get_product(self,product_id):
         if product_id!=str(self.cfg['provider_product_id']):raise ValueError('DEV_PRODUCT_NOT_ALLOWED')
         raw=self.read('products/'+product_id)
@@ -127,8 +131,13 @@ def create_app():
         consumer_secret=SecretStr(commerce['consumer_secret']),ledger=ledger,clock=now,authorize_once=authorize,
         resolve_customer=customer,session=(GuestCheckoutWooSession(PRIVATE/'dev-woo-cert.pem',store=checkout,provider_customer_id=phone_cfg['provider_customer_id']) if checkout is not None else PinnedDevWooOrderSession(PRIVATE/'dev-woo-cert.pem')))
     transport=OrderTelegramTransport(token=SecretStr(tg['bot_token']),chat_id=tg['operator_chat_id'])
+    from ops.macos.shopping.dev_inquiry_queue import DevInquiryQueue,mount_inquiry_status
+    inquiry_queue=DevInquiryQueue(DATA/'inquiries.sqlite3',transport)
+    from ops.macos.shopping.dev_order_operator import DevOperatorAdapter,DevStockConfirmation
     telegram=OrderTelegramIntegration(ledger=ledger,transport=transport,operator_chat_id=tg['operator_chat_id'],
-                                    operator_user_ids=frozenset(tg['operator_user_ids']))
+                                    operator_user_ids=frozenset(tg['operator_user_ids']),
+                                    operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue) if checkout else None,
+                                    confirmation_guard=DevStockConfirmation(store=checkout) if checkout else None)
     catalog=DevCatalog(commerce,cfg)
     app=create_order_dev_app(session_boundary=boundary,catalog=catalog,ledger=ledger,writer=writer,telegram_integration=telegram)
     from core.shopping.order_core.guest_chat_app import mount_guest_chat
@@ -151,12 +160,13 @@ def create_app():
             application=app.dependency_overrides[get_order_create_application](),catalog=catalog,ledger=ledger)
     from ops.macos.shopping.dev_local_inquiry import LocalInquiryJudge
     mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(),phone_available=phone is not None,
-        checkout_available=phone is not None and checkout is not None)
+        checkout_available=phone is not None and checkout is not None,inquiry_queue=inquiry_queue)
+    mount_inquiry_status(app,inquiry_queue)
     stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         while not stop.is_set():
             try:
-                telegram.poll_once();telegram.dispatch_one();health['poller']='RUNNING'
+                telegram.poll_once();telegram.dispatch_one();inquiry_queue.dispatch_one();health['poller']='RUNNING'
             except Exception:health['poller']='UNAVAILABLE'
             stop.wait(2)
     from contextlib import asynccontextmanager

@@ -676,7 +676,18 @@ class SQLiteOrderCreateLedger:
             return row[0] if row else 0
         finally: connection.close()
 
-    def process_operator_update(self, update_id, *, reference=None, decision=None, actor_reference=None):
+
+    def operator_orders(self):
+        """Private-adapter lookup projection. Never expose through public routes."""
+        connection = self._connect(read_only=True)
+        try:
+            self._validate(connection)
+            return [dict(row) for row in connection.execute(
+                "SELECT r.operation_key,r.reference,r.state,o.provider_order_id FROM shopping_order_operator_review r "
+                "JOIN shopping_order_create_operations o ON o.operation_key=r.operation_key ORDER BY o.requested_at")]
+        finally: connection.close()
+
+    def process_operator_update(self, update_id, *, reference=None, decision=None, actor_reference=None, confirmation_guard=None):
         """Called only by the authenticated Telegram transport with an allowlisted operator.
 
         An ignored update advances the cursor without recording raw text or sender data.
@@ -714,6 +725,15 @@ class SQLiteOrderCreateLedger:
                     outcome = {"outcome":"ALREADY_"+decision,"reference":reference}
                 elif row['state'] != "PENDING_REVIEW":
                     outcome = {"outcome":"CONFLICT","reference":reference}
+                elif decision == "CONFIRMED" and confirmation_guard is not None and not confirmation_guard(
+                    row['operation_key'], _decode_result(connection.execute(
+                        "SELECT result_json FROM shopping_order_create_operations WHERE operation_key=?",
+                        (row['operation_key'],)).fetchone()['result_json'])):
+                    operation = connection.execute("SELECT result_json FROM shopping_order_create_operations WHERE operation_key=?",
+                        (row['operation_key'],)).fetchone()
+                    self._enqueue_notification(connection,row['operation_key'],"STATUS_"+str(update_id),self._now(),
+                        _decode_result(operation['result_json']),reference,review_state="STOCK_BLOCKED")
+                    outcome = {"outcome":"STOCK_BLOCKED","reference":reference}
                 else:
                     now = self._now()
                     connection.execute("UPDATE shopping_order_operator_review SET state=?,actor_reference=?,decision_at=? "

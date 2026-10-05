@@ -6615,3 +6615,7 @@ Twilio Verify is connected for the explicitly configured DEV test phone; browser
 ## DEV guest checkout + Local AI + Telegram (2026-10-06)
 
 Account-free inquiry now uses Mac Local AI judgment with authoritative Woo facts. Phone-verified guests can enter delivery, review and explicitly confirm. Real DEV order #15 (KRW 29,000), Telegram #9/#11 and human CONFIRMED review passed; replay created no duplicate. Validation: 700 Python tests and isolated real Chrome. The full catalog and production deployment remain gated. See [checkout architecture/runbook](docs/shopping/SHOP_GUEST_CHECKOUT_DEV.md).
+
+
+### 2026-10-06 — DEV stock confirmation and inquiry learning loop
+DEV operator confirmation now gates on idempotent Woo stock accounting; actual order #15 changed S20→19 with replay unchanged. Private phone-based Telegram commands disambiguate multiple orders. Complex inquiries escalate to Telegram; operator replies reach guests, and explicit approval enables 30-day exact-question FAQ reuse plus private sanitized JSONL. 862 scoped tests and isolated Chrome pass; broad legacy inquiry bootstrap failures reproduced at baseline. Human policy approval, semantic learning, cancellation/restock, supervision and PROD activation remain pending. See [architecture and evidence](docs/shopping/SHOP_ORDER_STOCK_INQUIRY_DEV.md).

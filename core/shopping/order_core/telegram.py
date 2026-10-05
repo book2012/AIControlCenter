@@ -79,10 +79,11 @@ class OrderTelegramIntegration:
     """Explicit trusted bot transport + fixed operator chat/user allowlist.
 
     Operator decisions confirm/reject local review only. They never charge,
-    change WooCommerce, refund, fulfill, or run generic Control Plane commands.
+    refund, fulfill, or run generic Control Plane commands. An explicit private
+    confirmation guard may enforce stock reduction before confirmation commits.
     """
     def __init__(self, *, ledger: SQLiteOrderCreateLedger, transport,
-                 operator_chat_id: int, operator_user_ids: frozenset[int]):
+                 operator_chat_id: int, operator_user_ids: frozenset[int], operator_adapter=None, confirmation_guard=None):
         if type(ledger) is not SQLiteOrderCreateLedger:
             raise TypeError("durable order ledger required")
         if type(operator_chat_id) is not int or operator_chat_id == 0:
@@ -96,6 +97,8 @@ class OrderTelegramIntegration:
         self._transport = transport
         self._chat = operator_chat_id
         self._users = operator_user_ids
+        self._operator_adapter = operator_adapter
+        self._confirmation_guard = confirmation_guard
 
     @staticmethod
     def _message(payload):
@@ -123,7 +126,7 @@ class OrderTelegramIntegration:
         try:
             if self._transport.chat_id != self._chat:
                 raise TelegramDeliveryRejected("RECIPIENT_MISMATCH")
-            receipt = self._transport.send_message(self._message(event['payload']))
+            receipt = self._transport.send_message(self._operator_adapter.message(event['payload']) if self._operator_adapter else self._message(event['payload']))
             self._ledger.finish_notification(key,message_id=receipt)
             return {"outcome":"SENT","event_key":key}
         except TelegramDeliveryRejected:
@@ -143,8 +146,11 @@ class OrderTelegramIntegration:
                  and 0 <= item['update_id'] < 2**63-1]
         outcomes = []
         for update in sorted(valid,key=lambda v:v['update_id']):
+            if update['update_id'] < self._ledger.telegram_offset():
+                outcomes.append({'outcome':'DUPLICATE'});continue
             message = update.get('message')
             decision = reference = actor = None
+            reply = None
             if type(message) is dict:
                 chat, sender = message.get('chat'), message.get('from')
                 if (type(chat) is dict and type(sender) is dict and type(chat.get('id')) is int
@@ -155,6 +161,13 @@ class OrderTelegramIntegration:
                         decision = {"status":"STATUS","confirm":"CONFIRMED","reject":"REJECTED"}[match[1]]
                         reference = match[2]
                         actor = "telegram-user-"+str(sender['id'])
+                    elif self._operator_adapter is not None:
+                        reference, decision, reply = self._operator_adapter.resolve(message['text'],update_id=update['update_id'])
+                        if decision is not None: actor = "telegram-user-"+str(sender['id'])
+
             outcomes.append(self._ledger.process_operator_update(update['update_id'],reference=reference,
-                            decision=decision,actor_reference=actor))
+                            decision=decision,actor_reference=actor,confirmation_guard=self._confirmation_guard))
+            if reply:
+                try: self._transport.send_message(reply)
+                except Exception: pass  # Informational ambiguity reply is never auto-retried.
         return {"outcome":"PROCESSED","updates":len(outcomes),"results":outcomes}
