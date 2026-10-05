@@ -196,3 +196,70 @@ def test_schema_contains_no_contact_payment_or_secret_fields(tmp_path):
 def test_default_path_policy_rejects_temporary_order_ledger():
     with pytest.raises(ValueError, match="outside the Mac Control Plane policy|cannot traverse symlinks"):
         SQLiteOrderCreateLedger("/tmp/orders.sqlite3",clock=Clock())
+
+
+def test_completion_persistence_failure_quarantines_provider_success(tmp_path):
+    clock = Clock()
+    store = ledger(tmp_path, clock)
+    writer = FakeWriter()
+    def fail_completion(*args):
+        raise sqlite3.OperationalError("injected completion persistence failure")
+    store.complete = fail_completion
+    service = OrderCreateService(order_creator=writer, coordinator=store)
+    with pytest.raises(sqlite3.OperationalError):
+        service.execute(command(), authority())
+    assert store.inspect_operation("order-001")["state"] == "UNKNOWN_OUTCOME"
+    with pytest.raises(OrderCreateOperationUnknownOutcome):
+        service.execute(command(), authority())
+    assert len(writer.calls) == 1
+
+
+@pytest.mark.parametrize("seconds", [-1, 600])
+def test_claim_rejects_authority_not_current_at_ledger_clock(tmp_path, seconds):
+    clock = Clock()
+    store = ledger(tmp_path, clock)
+    clock.tick(seconds)
+    writer = FakeWriter()
+    service = OrderCreateService(order_creator=writer, coordinator=store)
+    with pytest.raises(Exception, match="authority:NOT_CURRENT"):
+        service.execute(command(), authority())
+    assert store.inspect_operation("order-001") is None
+    assert writer.calls == []
+
+
+
+def test_completion_committed_then_error_preserves_completed_replay(tmp_path):
+    clock = Clock()
+    store = ledger(tmp_path, clock)
+    complete = store.complete
+    writer = FakeWriter()
+    def commit_then_error(*args):
+        complete(*args)
+        raise sqlite3.OperationalError("injected post-commit error")
+    store.complete = commit_then_error
+    service = OrderCreateService(order_creator=writer, coordinator=store)
+    with pytest.raises(sqlite3.OperationalError):
+        service.execute(command(), authority())
+    assert store.inspect_operation("order-001")["state"] == "COMPLETED"
+    assert service.execute(command(), authority()).idempotent_replay
+    assert len(writer.calls) == 1
+
+
+def test_completion_and_quarantine_failure_keep_claim_blocked(tmp_path):
+    from core.shopping.order_core import OrderCreateOperationInFlight
+    clock = Clock()
+    store = ledger(tmp_path, clock)
+    writer = FakeWriter()
+    def fail_completion(*args):
+        raise sqlite3.OperationalError("completion failure")
+    def fail_quarantine(*args):
+        raise sqlite3.OperationalError("quarantine failure")
+    store.complete = fail_completion
+    store.unknown = fail_quarantine
+    service = OrderCreateService(order_creator=writer, coordinator=store)
+    with pytest.raises(sqlite3.OperationalError, match="completion failure"):
+        service.execute(command(), authority())
+    assert store.inspect_operation("order-001")["state"] == "CLAIMED"
+    with pytest.raises(OrderCreateOperationInFlight):
+        service.execute(command(), authority())
+    assert len(writer.calls) == 1

@@ -419,7 +419,19 @@ class OrderCreateService:
         except Exception:
             self._coordinator.unknown(command.idempotency_key, digest, "PROVIDER_OR_POSTWRITE_UNKNOWN")
             raise
-        self._coordinator.complete(command.idempotency_key, digest, result)
+        try:
+            self._coordinator.complete(command.idempotency_key, digest, result)
+        except Exception:
+            # The provider succeeded, but persistence may have committed or failed.
+            # Best-effort quarantine must never trigger a second provider write.
+            try:
+                self._coordinator.unknown(command.idempotency_key, digest,
+                                          "COMPLETION_PERSISTENCE_UNKNOWN")
+            except Exception:
+                # A committed COMPLETED row or an unresolved CLAIMED row remains
+                # replay-safe; preserve the original persistence error.
+                pass
+            raise
         return result
 
 

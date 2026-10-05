@@ -318,7 +318,11 @@ class SQLiteOrderCreateLedger:
     def claim(self, command: OrderCreateCommand, authority: OrderCreateAuthority) -> OrderCreateClaim:
         if type(command) is not OrderCreateCommand: raise OrderCreateContractError("command:TYPE")
         _validate_authority(command, authority)
-        now=self._now(); key=command.idempotency_key; digest=command.command_digest
+        now = self._now()
+        if not authority.authorized_at <= now < authority.expires_at:
+            raise OrderCreateContractError("authority:NOT_CURRENT")
+        key = command.idempotency_key
+        digest = command.command_digest
         connection=self._connect()
         try:
             self._validate(connection); connection.execute("BEGIN IMMEDIATE")
