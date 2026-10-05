@@ -1,5 +1,9 @@
 # Roadmap
 
+## 2026-10-06 — effective DEV / PROD commerce audit
+
+DEV and PROD application routes and preview/PROD database volumes are separate. DEV points to AIControlCenter, not WordPress; its selected blouse is demo data and order/auth routes are absent. PROD WooCommerce has zero product rows; visual preview has no WooCommerce. Real Telegram connection test passed, while actual DEV commerce provisioning and order integration remain pending. See `docs/shopping/SHOP_ORDER_001D_RUNTIME_AUDIT.md` and the JSON evidence. No runtime or PROD mutation.
+
 ## 2026-10-06 — SHOP_ORDER_001D DEV candidate
 
 - [x] Durable one-shot provider dispatch and atomic completion/review/notification.

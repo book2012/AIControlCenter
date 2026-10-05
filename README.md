@@ -1,5 +1,9 @@
 # AIControlCenter
 
+## 2026-10-06 — effective DEV / PROD commerce audit
+
+DEV and PROD application routes and preview/PROD database volumes are separate. DEV points to AIControlCenter, not WordPress; its selected blouse is demo data and order/auth routes are absent. PROD WooCommerce has zero product rows; visual preview has no WooCommerce. Real Telegram connection test passed, while actual DEV commerce provisioning and order integration remain pending. See `docs/shopping/SHOP_ORDER_001D_RUNTIME_AUDIT.md` and the JSON evidence. No runtime or PROD mutation.
+
 ## 2026-10-06 — SHOP_ORDER_001D DEV order and Telegram candidate
 
 Added durable provider dispatch, atomic operator-review/notification outbox, fixed-recipient Telegram transport and allowlisted operator commands, governed WooCommerce pending-order adapter with exact GET reconciliation, owner-only status and DEV order UI. Real Chrome isolated E2E passed with one fake provider create and two fake Telegram messages; 12 Node UI tests and PHP lint passed. Schema v2 migration is explicit and validates preserved completed-result binding. No real provider request, live DEV deployment or PROD mutation. Public photo audit found deployed assets intact but the public mock catalog incompatible with the demo media mapping. See `docs/shopping/SHOP_ORDER_001D_DEV_ORDER_TELEGRAM.md` and its evidence JSON.

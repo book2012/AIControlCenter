@@ -1,0 +1,67 @@
+{
+  "audit_date_kst": "2026-10-06",
+  "scope": "effective host Caddy, Mac loopback APIs, colima-aicontrolcenter-commerce containers and read-only WordPress SQL inventory",
+  "dev": {
+    "domain": "dev.bokstory.duckdns.org",
+    "upstream": "127.0.0.1:18080",
+    "application": "AIControlCenter",
+    "storefront_get": 200,
+    "wp_admin_get": 404,
+    "product": {
+      "id": "oc-demo-top-0001",
+      "name": "소프트 린넨 블라우스",
+      "source": "demo",
+      "in_stock": true
+    },
+    "order_get": 404,
+    "customer_session_get": 404,
+    "openapi_order_auth_routes": []
+  },
+  "prod": {
+    "domain": "bokstory.duckdns.org",
+    "wordpress_upstream": "127.0.0.1:58082",
+    "catalog_upstream": "127.0.0.1:58081",
+    "catalog_source": "mock",
+    "catalog_products_observed": 5,
+    "active_plugins": [
+      "ai-shopping-storefront",
+      "woocommerce"
+    ],
+    "wordpress_product_rows": 0,
+    "woocommerce_table_count": 16,
+    "db_volume": "ai-shopping-database",
+    "db_name": "aicc_shopping",
+    "public_wp_admin": "blocked by edge policy",
+    "order_get": 404,
+    "customer_session_get": 404
+  },
+  "isolated_visual_preview": {
+    "wordpress_upstream": "127.0.0.1:55273",
+    "db_volume": "storefront-preview-6eaaaef4-database",
+    "db_name": "storefront_preview",
+    "active_plugins": [
+      "ai-shopping-storefront"
+    ],
+    "woocommerce_installed": false,
+    "woocommerce_table_count": 0,
+    "wordpress_product_rows": 0,
+    "api": "mock-api.py"
+  },
+  "conclusions": {
+    "dev_prod_app_routes_separate": true,
+    "preview_prod_database_volumes_separate": true,
+    "dev_domain_is_wordpress": false,
+    "target_demo_product_is_live_woocommerce_product": false,
+    "real_dev_commerce_runtime_identified": false,
+    "catalog_to_woocommerce_migration_complete": false
+  },
+  "telegram": {
+    "bot": "mommychichi_bot",
+    "resolved_private_recipient_display_name": "Damian",
+    "real_connection_test_sent": true,
+    "order_polling_runtime_active": false
+  },
+  "no_production_mutation": true,
+  "no_database_mutation": true,
+  "secrets_printed": false
+}

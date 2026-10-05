@@ -1,5 +1,9 @@
 # MASTER
 
+## 2026-10-06 — effective DEV / PROD commerce audit
+
+DEV and PROD application routes and preview/PROD database volumes are separate. DEV points to AIControlCenter, not WordPress; its selected blouse is demo data and order/auth routes are absent. PROD WooCommerce has zero product rows; visual preview has no WooCommerce. Real Telegram connection test passed, while actual DEV commerce provisioning and order integration remain pending. See `docs/shopping/SHOP_ORDER_001D_RUNTIME_AUDIT.md` and the JSON evidence. No runtime or PROD mutation.
+
 ## 2026-10-06 — SHOP_ORDER_001D repository candidate state
 
 DEV order, durable provider dispatch, Telegram outbox/operator review and customer status are implemented and isolated browser E2E passed. The Core ledger remains the business-state owner; WooCommerce and Telegram are replaceable explicit adapters. Real credentials, trusted DEV runtime composition, supervised bot polling and controlled live E2E remain incomplete. Public media files are intact, but the mock catalog is incompatible with the demo product-image mapping. No PROD activation or DB migration occurred. See `docs/shopping/SHOP_ORDER_001D_DEV_ORDER_TELEGRAM.md`.
