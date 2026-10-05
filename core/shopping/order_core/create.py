@@ -185,9 +185,6 @@ class OrderCreateCommand:
                     for item in self.line_items
                 ],
                 "idempotency_key": self.idempotency_key,
-                "correlation_id": self.correlation_id,
-                "audit_reference": self.audit_reference,
-                "requested_at": self.requested_at.isoformat(),
             },
             sort_keys=True, separators=(",", ":"), ensure_ascii=False, allow_nan=False,
         ).encode("utf-8")

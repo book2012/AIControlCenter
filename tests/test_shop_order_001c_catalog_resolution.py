@@ -21,7 +21,12 @@ class Catalog:
     def get_product(self,product_id):
         self.calls.append(product_id)
         if self.product is None: raise LookupError(product_id)
-        return self.product.__dict__
+        value=dict(self.product.__dict__)
+        value["variants"]=[
+            {"id":item.id,"label":item.label,"option_type":item.option_type,"available":item.available}
+            for item in self.product.variants
+        ]
+        return value
 
 class Writer:
     def __init__(self): self.calls=[]
@@ -62,6 +67,15 @@ def test_woocommerce_catalog_resolves_numeric_string_provider_identity():
     assert resolved.line_items[0].provider_product_id==123
     assert resolved.line_items[0].provider_variation_id==0
     assert catalog.calls==["123"]
+
+
+def test_resolver_accepts_actual_shopping_service_json_variant_shape():
+    catalog=Catalog(product(variants=(ProductVariant("456","M","size",True),)))
+    payload=catalog.get_product("123")
+    assert isinstance(payload["variants"],list) and isinstance(payload["variants"][0],dict)
+    resolved=ShoppingServiceOrderCatalogResolver(catalog).resolve(command("123","456"))
+    assert resolved.line_items[0].provider_product_id==123
+    assert resolved.line_items[0].provider_variation_id==456
 
 def test_variant_must_exist_be_available_and_provider_numeric():
     ok=ProductVariant("456","M","size",True)

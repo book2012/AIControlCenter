@@ -4,7 +4,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Protocol
 
-from core.shopping.models import Product
 from core.shopping.order_core.create import (
     OrderCreateCommand, OrderCreateContractError, OrderCreateLine,
 )
@@ -79,25 +78,47 @@ class ShoppingServiceOrderCatalogResolver:
             product_data=self._catalog.get_product(line.product_id)
             if not isinstance(product_data, dict):
                 raise OrderCreateCatalogResolutionError("catalog:INVALID_PRODUCT")
-            try:
-                product=Product(**product_data)
-            except (TypeError, ValueError) as exc:
-                raise OrderCreateCatalogResolutionError("catalog:INVALID_PRODUCT") from exc
-            if product.id != line.product_id:
+            product_id=product_data.get("id")
+            in_stock=product_data.get("in_stock")
+            source=product_data.get("source")
+            variants=product_data.get("variants", [])
+            if type(product_id) is not str or type(in_stock) is not bool or type(source) is not str:
+                raise OrderCreateCatalogResolutionError("catalog:INVALID_PRODUCT")
+            if not isinstance(variants, (list, tuple)):
+                raise OrderCreateCatalogResolutionError("catalog:INVALID_VARIANTS")
+            if product_id != line.product_id:
                 raise OrderCreateCatalogResolutionError("catalog:PRODUCT_ID_MISMATCH")
-            if not product.in_stock:
+            if not in_stock:
                 raise OrderCreateCatalogResolutionError("catalog:OUT_OF_STOCK")
-            if product.source != "woocommerce":
+            if source != "woocommerce":
                 raise OrderCreateCatalogResolutionError("catalog:WRITE_SOURCE_UNAVAILABLE")
-            provider_product_id=_provider_identifier(product.id,"product_id")
+            provider_product_id=_provider_identifier(product_id,"product_id")
             provider_variation_id=0
             if line.variation_id is not None:
-                variant=next((item for item in product.variants if item.id==line.variation_id),None)
+                variant=None
+                for item in variants:
+                    if isinstance(item, dict) and item.get("id")==line.variation_id:
+                        variant=item
+                        break
+                    if (
+                        not isinstance(item, dict)
+                        and getattr(item, "id", None)==line.variation_id
+                    ):
+                        variant={
+                            "id": getattr(item, "id", None),
+                            "available": getattr(item, "available", None),
+                        }
+                        break
                 if variant is None:
                     raise OrderCreateCatalogResolutionError("catalog:VARIATION_NOT_FOUND")
-                if not variant.available:
+                if type(variant.get("available")) is not bool:
+                    raise OrderCreateCatalogResolutionError("catalog:INVALID_VARIANT")
+                if not variant["available"]:
                     raise OrderCreateCatalogResolutionError("catalog:VARIATION_UNAVAILABLE")
-                provider_variation_id=_provider_identifier(variant.id,"variation_id")
+                variant_id=variant.get("id")
+                if type(variant_id) is not str:
+                    raise OrderCreateCatalogResolutionError("catalog:INVALID_VARIANT")
+                provider_variation_id=_provider_identifier(variant_id,"variation_id")
             resolved.append(ResolvedOrderCreateLine(
                 product_id=line.product_id, variation_id=line.variation_id,
                 provider_product_id=provider_product_id,

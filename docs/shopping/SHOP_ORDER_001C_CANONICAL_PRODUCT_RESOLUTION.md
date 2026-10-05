@@ -44,3 +44,7 @@ part of 001C-A.
 Next: 001C-B binds the existing trusted CustomerSessionBoundary to internal
 OrderCreateAuthority and exercises an isolated route/application composition
 with an inert/fake writer only.
+
+## Idempotency digest
+
+The command digest represents only immutable customer order intent: customer ID, canonical product/variation/quantity lines, and the idempotency key. Server observability evidence (`correlation_id`, `audit_reference`, and request timestamp) is deliberately excluded from the digest so a same-session retry of the same order intent can replay even when a new request receives fresh server-side observability references. The original evidence remains immutable in the durable ledger row created by the first claim.

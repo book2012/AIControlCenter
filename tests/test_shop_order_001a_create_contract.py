@@ -47,6 +47,16 @@ def authority() -> OrderCreateAuthority:
     )
 
 
+
+def test_command_digest_is_customer_intent_not_server_observability_evidence():
+    first=command(key="stable-key")
+    second=OrderCreateCommand(
+        customer_id=CUSTOMER,line_items=first.line_items,idempotency_key="stable-key",
+        correlation_id="corr-order-002",audit_reference="audit-order-002",
+        requested_at=NOW.replace(minute=1),
+    )
+    assert first.command_digest==second.command_digest
+
 def snapshot(order_id: int = 101, *, product_id: int = 901, quantity: int = 1) -> OrderSnapshot:
     return OrderSnapshot(
         provider="woocommerce",
