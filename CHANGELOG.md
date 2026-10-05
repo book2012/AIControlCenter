@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## 2026-10-05 — STOREFRONT 0.19.1 PROD activation
+
+- Accepted exact payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` as storefront plugin version `0.19.1`.
+- Corrected canonical catalog rendering so valid Shopping API items are preserved instead of being filtered by presentation-media eligibility.
+- Moved the PROD release root to the Colima-visible, no-space path `~/AIControlCenterRuntime/releases/storefront-prod`.
+- Added successive immutable promotion support: prior releases remain untouched, `current.json` switches atomically, and failed validation restores the prior current marker while removing only the failed new release.
+- Validated the materializer/runtime/promotion suite: **48 passed**.
+- Activated `shopping-wordpress` only; image identity and WordPress DB environment remained unchanged. `shopping-db`, Caddy, and preview container identities remained unchanged.
+- Verified identical host/VM/container SHA-256 for the 0.19.1 plugin entrypoint.
+- Verified public homepage, product detail, category, search, CSS, and JS as HTTP 2xx; the homepage exposes five canonical product links (`mock-001` through `mock-005`).
+- Preserved immutable 0.19.0 as rollback/audit evidence.
+- Browser live-session visual QA is `NOT_RUN` because the browser connector is not connected.
+
+
 ## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
 
 - Added the `SHOP_MEDIA_003_AGACHICHI` WordPress presentation candidate at

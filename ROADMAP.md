@@ -1,5 +1,20 @@
 # Roadmap
 
+## 2026-10-05 — STOREFRONT 0.19.1 PROD operational closeout
+
+- [x] Accept exact canonical-catalog payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` (`0.19.1`).
+- [x] Use `~/AIControlCenterRuntime/releases/storefront-prod` as the immutable Colima-visible release root.
+- [x] Preserve prior immutable releases and support atomic successive promotion.
+- [x] Materialize 0.19.1 and prove host/VM visibility.
+- [x] Recreate `shopping-wordpress` only with exact DB environment parity.
+- [x] Prove host → VM → container entrypoint SHA-256 equality.
+- [x] Verify DB, Caddy, and preview runtime identities remain unchanged.
+- [x] Verify public homepage, product detail, category, search, CSS, and JS HTTP 2xx.
+- [x] Verify all five canonical public product links are present.
+- [ ] Browser live-session visual QA — pending browser connector connection.
+- [ ] Final storefront sprint closure after browser live QA; Order work remains HOLD until then.
+
+
 ## STOREFRONT-PROMOTION-01 — candidate review
 
 - [x] Port the accepted `SHOP_MEDIA_003_AGACHICHI` presentation into the

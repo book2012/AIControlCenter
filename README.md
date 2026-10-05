@@ -1,5 +1,14 @@
 # AIControlCenter
 
+## 2026-10-05 — storefront 0.19.1 PROD operational closeout
+
+The accepted storefront payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` is active in PROD as plugin version `0.19.1`. PROD now consumes a commit-addressed immutable release under `~/AIControlCenterRuntime/releases/storefront-prod` through a read-only Colima virtiofs mount and a read-only WordPress bind. Host, Colima VM, and container SHA-256 for the plugin entrypoint match.
+
+The canonical catalog regression is corrected: the public homepage exposes five canonical product links (`mock-001` through `mock-005`), and homepage, product detail, category, search, CSS, and JavaScript HTTP checks all returned 2xx. The WordPress DB environment was preserved, `shopping-db` remained the same healthy container, Caddy PID remained unchanged, and preview containers remained healthy. The prior immutable `0.19.0` release remains present for audit/rollback. Browser live-session visual QA is still `NOT_RUN` because the browser connector is not connected; this does not change the successful runtime and HTTP attestation.
+
+See `docs/architecture/STOREFRONT-PROD-CANONICAL-CATALOG-FIX-01.md`.
+
+
 ## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
 
 The repository contains a reviewable agachichi WordPress presentation

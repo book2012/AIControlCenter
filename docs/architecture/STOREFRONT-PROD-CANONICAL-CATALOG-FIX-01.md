@@ -15,3 +15,12 @@ This is a patch candidate version `0.19.1`. The immutable 0.19.0 release remains
 ## Accepted payload identity
 
 The exact 0.19.1 payload candidate is `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9`. Acceptance binds this exact commit while preserving the previous immutable 0.19.0 release as rollback evidence.
+## Production activation evidence
+
+The accepted `0.19.1` payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` was materialized under `~/AIControlCenterRuntime/releases/storefront-prod` while preserving the prior immutable `0.19.0` release. The materializer was hardened to support successive immutable promotions: an existing current release is verified and preserved, a new commit-addressed release is added, `current.json` is switched atomically, and a failed post-write validation restores the prior current marker and removes only the failed new release. Focused materialization/runtime/promotion validation passed with 48 tests.
+
+PROD activation recreated only `shopping-wordpress`. The container remained on the same image digest, its complete environment matched the pre-activation environment, and the storefront bind is read-only at the exact 0.19.1 release path. `shopping-db` remained the same healthy container, Caddy PID remained unchanged, and all three preview containers retained their identities and healthy state.
+
+Host, Colima VM, and WordPress container SHA-256 values for `ai-shopping-storefront.php` are identical. The runtime reports plugin version `0.19.1`, recent WordPress logs contain no fatal-error signal, and the public homepage exposes exactly five unique canonical product links (`mock-001` through `mock-005`). Homepage, product detail, category, search, storefront CSS, and storefront JavaScript checks all returned HTTP 2xx; the CSS and JS asset URLs are versioned `0.19.1`.
+
+Browser live-session visual QA remains `NOT_RUN` because the browser connector is not connected. Runtime, provenance, and HTTP activation evidence are complete; final storefront sprint closure waits only for that visual click-through.
