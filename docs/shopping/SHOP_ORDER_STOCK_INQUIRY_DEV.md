@@ -24,7 +24,7 @@ Confirmed order cancellation/restocking is a separate future authorized workflow
 ## Inquiry escalation and approved learning loop
 Local AI continues to judge basic inquiry intent; trusted catalog facts provide current stock/count/price/description. Shipping, exchange, returns, refunds, defects, customization or mixed policy questions conservatively require operator review. AI failure also escalates.
 
-Unanswered inquiries enter private `inquiries.sqlite3` and a claimed-before-send Telegram delivery state. Delivery uncertainty is blocked, never automatically re-sent. Public responses carry an unpredictable one-day inquiry status capability; raw question/identity is not returned by the status route. The browser polls for up to ten minutes and shows the operator answer without HTML execution. Global DEV admission limits are 10/minute and 100/day.
+Unanswered inquiries enter private `inquiries.sqlite3` and a claimed-before-send Telegram delivery state. Delivery uncertainty is blocked, never automatically re-sent. Public responses carry an unpredictable one-day inquiry status capability; raw question/identity is not returned by the status route. The browser polls for up to ten minutes and retains a manual 답변 확인 button on the open page for delayed replies within the one-day capability lifetime; it shows the operator answer without HTML execution. Global DEV admission limits are 10/minute and 100/day.
 
 Telegram:
 - `문의 #3eddd1bb 답변 검토한 답변내용` delivers the answer to the waiting customer's page.
