@@ -1,5 +1,35 @@
 # AI Shopping Platform Architecture
 
+## Current SHOP_ORDER authority — 001A/001B COMPLETE for repository foundation
+
+`SHOP_ORDER_001A` is complete at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`. `SHOP_ORDER_001B` is complete at `c6b3e3b1578501d4a9845cf00a5895e29e6da065`. These milestones define the AIControlCenter-owned order-create contract and durable operation ledger only; they do not enable a WooCommerce writer or runtime mutation.
+
+### Create boundary
+
+`trusted customer/session boundary`
+→ `OrderCreateAuthority`
+→ `OrderCreateCommand`
+→ `SQLiteOrderCreateLedger`
+→ `OrderCreateService`
+→ future `OrderCreatePort` implementation.
+
+The customer intent carries only an existing opaque CustomerId, canonical product/variation/quantity, idempotency key, correlation/audit references and UTC request time. Price, totals, currency, tax, discounts, billing/shipping/contact data, payment state and raw provider metadata are not caller authority.
+
+### Durable ambiguity policy
+
+The Mac Control Plane ledger claims before any future provider invocation. Durable states are `CLAIMED`, `COMPLETED`, `TERMINAL_FAILED`, and `UNKNOWN_OUTCOME`. An ambiguous external or post-write failure enters `UNKNOWN_OUTCOME`, where automatic retry is prohibited. Only explicit reconciliation may resolve that quarantine. Operation identity and audit rows are immutable/delete-denied. Same-session refreshed authorization may replay an already completed operation without a second provider write, while another command or session conflicts.
+
+### Validation and activation boundary
+
+- Order/read regression: **83 passed**.
+- Existing customer/session security regression: **244 passed, 1 warning**.
+- New Order core/ledger contains no HTTP client, Woo credential, Woo write endpoint or non-GET provider transport.
+- README requires no change because there is still no customer-facing create route, operator workflow, runtime activation or deployment procedure.
+- No Production DB was created or migrated and no Production runtime was changed.
+
+Next: `SHOP_ORDER_001C` must bind the existing trusted CustomerSessionBoundary to OrderCreateAuthority and exercise the service through an inert/fake writer. A real WooCommerce write adapter is a later, separately reviewed milestone.
+
+
 ## Current authoritative SHOP_AI_001C-C3 closeout — COMPLETE for foundation scope only
 
 `SHOP_AI_001C-C3` Destination Resolution + Mac Secret Resolver Foundation is

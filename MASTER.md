@@ -1,5 +1,14 @@
 # MASTER
 
+## 2026-10-05 — SHOP_ORDER create foundation state
+
+`SHOP_ORDER_001A` (`65f39d299e53a9be1687bfe46c71fe8c4787b4e4`) and `SHOP_ORDER_001B` (`c6b3e3b1578501d4a9845cf00a5895e29e6da065`) establish the current Order write-safety foundation without enabling a provider write. AIControlCenter owns the create command, authority binding, idempotency, durable operation state, audit, and ambiguity policy; WooCommerce remains only the future commerce engine adapter.
+
+The create command accepts only the existing opaque customer identity plus canonical product/variation/quantity intent and server-owned idempotency/correlation/audit/time evidence. Browser/client price, total, tax, currency, discount, billing/shipping/contact, payment and raw provider authority are absent. The durable Mac SQLite ledger consumes the operation before any future external write, binds it to command/customer/session identity, survives restart, provides exact replay, rejects same-key reuse by another command/session, and durably quarantines ambiguous outcomes. `UNKNOWN_OUTCOME` cannot auto-retry and requires explicit reconciliation.
+
+Validation is **83 passed** for the Order/read regression plus **244 passed, 1 warning** for the existing customer/session security regression. No WooCommerce write transport or credential, create-order route/tool, cart/checkout activation, WordPress change, runtime mutation, Production database change, deployment, or Production order creation exists. The next milestone is `SHOP_ORDER_001C`: existing trusted customer-session boundary → internal Order authority → durable ledger/service → inert/fake writer.
+
+
 ## 2026-10-05 — storefront 0.19.1 PROD operational state
 
 PROD storefront runtime is now the exact accepted payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` at plugin version `0.19.1`. The release is materialized outside Git under `~/AIControlCenterRuntime/releases/storefront-prod`, exposed to the commerce Colima VM read-only, and mounted read-only into `shopping-wordpress`. The host, VM, and container entrypoint hashes match.

@@ -1,5 +1,16 @@
 # Roadmap
 
+## 2026-10-05 — SHOP_ORDER_001A/001B foundation closeout
+
+- [x] `SHOP_ORDER_001A` closed at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`: provider-neutral create command, claim-before-write orchestration, bounded product/variation/quantity intent, and no client authority over price/payment/contact commerce truth.
+- [x] `SHOP_ORDER_001B` closed at `c6b3e3b1578501d4a9845cf00a5895e29e6da065`: durable SQLite order-operation ledger, customer/session binding, same-key conflict protection, durable replay, immutable audit, and explicit `UNKNOWN_OUTCOME` quarantine/reconciliation.
+- [x] Focused Order/read regression: **83 passed**.
+- [x] Existing customer/session security regression: **244 passed, 1 warning**.
+- [x] No WooCommerce write transport, write credential, create-order API/tool, WordPress change, database migration, runtime restart, deployment, or PROD mutation.
+- [ ] `SHOP_ORDER_001C`: compose the existing trusted customer-session boundary with the Order create service and an inert/fake writer first.
+- [ ] Separately review a WooCommerce write adapter only after 001C passes; live/non-PROD and PROD writes remain separately gated.
+
+
 ## 2026-10-05 — STOREFRONT 0.19.1 PROD operational closeout
 
 - [x] Accept exact canonical-catalog payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` (`0.19.1`).

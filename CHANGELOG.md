@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 2026-10-05 — SHOP_ORDER_001A/001B create foundation
+
+- Added `SHOP_ORDER_001A` at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`, defining a closed customer order-create intent with product/variation/quantity only, existing opaque `CustomerId`, idempotency/correlation/audit references, and UTC request time. Client-supplied price, totals, tax, currency, discounts, billing/shipping/contact data, payment state and provider metadata remain prohibited.
+- Added `SHOP_ORDER_001B` at `c6b3e3b1578501d4a9845cf00a5895e29e6da065`, introducing a durable Mac Control Plane SQLite operation ledger. Claims are persisted before any future provider write and are bound to immutable command digest plus customer/session identity. Original authorization evidence is retained immutably.
+- Added durable states `CLAIMED`, `COMPLETED`, `TERMINAL_FAILED`, and `UNKNOWN_OUTCOME`. Ambiguous provider/network or post-write validation failures quarantine the operation and prohibit automatic retry. Explicit reconciliation is required before an unknown outcome can become completed or terminally failed.
+- Preserved idempotent replay across process restart and allowed refreshed authorization evidence from the same authenticated session to replay without another provider write; a different command or session conflicts.
+- Added immutable SQLite operation/audit triggers, WAL + synchronous FULL, `BEGIN IMMEDIATE` claims/transitions, schema validation, and existing Mac durable path-policy reuse.
+- Validation: **83 Order/read tests passed** and **244 existing customer/session security tests passed with 1 warning**.
+- No WooCommerce POST/PUT/PATCH/DELETE, write credential, create-order route/tool, checkout activation, WordPress/runtime change, PROD DB creation/migration, deployment, or Production activation occurred.
+
+
 ## 2026-10-05 — STOREFRONT 0.19.1 PROD activation
 
 - Accepted exact payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` as storefront plugin version `0.19.1`.

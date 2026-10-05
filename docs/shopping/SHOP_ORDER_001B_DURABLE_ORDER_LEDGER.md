@@ -77,3 +77,13 @@ migration, runtime restart, deployment or Production activation.
 001C should add a session-bound API/application composition using the existing
 CustomerSessionBoundary plus a fake/inert writer first. Only after that should
 a separately reviewed WooCommerce write adapter be designed.
+## Canonical implementation evidence
+
+- Parent / 001A: `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`.
+- 001B implementation: `c6b3e3b1578501d4a9845cf00a5895e29e6da065`.
+- Order/read focused regression: **83 passed**.
+- Existing customer/session security regression: **244 passed, 1 warning**.
+- Python compile check: PASS.
+- New create/ledger modules contain no provider HTTP client, WooCommerce write credential, or WooCommerce write endpoint.
+
+README review: no change required because 001B adds no customer-facing route, runtime activation, deployment procedure, or operator workflow.
