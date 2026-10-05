@@ -426,6 +426,9 @@ class OrderCreateService:
         self._order_creator = order_creator
         self._coordinator = coordinator
 
+    def operation_status(self, key: str, authority: OrderCreateAuthority):
+        return self._coordinator.customer_operation_status(key, authority)
+
     def execute(self, command: OrderCreateCommand, authority: OrderCreateAuthority) -> OrderCreateResult:
         if type(command) is not OrderCreateCommand:
             raise OrderCreateContractError("command:TYPE")

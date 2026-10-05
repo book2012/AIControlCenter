@@ -1,3 +1,4 @@
+import ast
 import json
 from pathlib import Path
 
@@ -69,9 +70,21 @@ def test_contracts_exclude_credentials_and_ubuntu_ownership():
         assert forbidden not in text
 
 
-def test_no_runtime_mutation_route_or_woocommerce_write_was_added():
-    route = (ROOT / "core/api/routes/shopping.py").read_text(encoding="utf-8")
-    assert all(token not in route for token in ("@router.post", "@router.put", "@router.patch", "@router.delete"))
+def test_product_draft_runtime_routes_remain_read_only():
+    # SHOP-02A's invariant concerns product drafts. Inquiry mutations were added
+    # later; a blanket ban on every Shopping POST no longer describes the API.
+    tree = ast.parse((ROOT / "core/api/routes/shopping.py").read_text(encoding="utf-8"))
+    methods = []
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+            continue
+        if not isinstance(node.func.value, ast.Name) or node.func.value.id != "router":
+            continue
+        if node.args and isinstance(node.args[0], ast.Constant):
+            path = node.args[0].value
+            if isinstance(path, str) and path.startswith("/product-drafts"):
+                methods.append(node.func.attr)
+    assert methods and set(methods) == {"get"}
     assert "NOT_IMPLEMENTED" in json.dumps(load("product-draft-manifest.json"))
 
 

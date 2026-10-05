@@ -1,5 +1,11 @@
 # MASTER
 
+## 2026-10-06 — SHOP_ORDER_001D repository candidate state
+
+DEV order, durable provider dispatch, Telegram outbox/operator review and customer status are implemented and isolated browser E2E passed. The Core ledger remains the business-state owner; WooCommerce and Telegram are replaceable explicit adapters. Real credentials, trusted DEV runtime composition, supervised bot polling and controlled live E2E remain incomplete. Public media files are intact, but the mock catalog is incompatible with the demo product-image mapping. No PROD activation or DB migration occurred. See `docs/shopping/SHOP_ORDER_001D_DEV_ORDER_TELEGRAM.md`.
+Final current-scope regression: **645 passed, 20 existing warnings** (25 test files; exact selection in `docs/shopping/SHOP_ORDER_001D_VALIDATION.json`).
+
+
 ## 2026-10-05 — SHOP_ORDER_001C-C HTTP candidate state
 
 The session-bound Order foundation now has an unregistered isolated HTTP contract with explicit fail-closed dependency injection. The request accepts bounded canonical line intent and an idempotency key; the public result excludes internal identity/audit and raw provider data. Authentication and ledger safety remain in existing boundaries, with 201 completion / 200 replay, bounded redacted errors, actual 32768-byte request limit and no-store responses. Combined regression: **557 passed, 1 existing dependency warning**. This is fake-writer ASGI validation, not production activation. Next: provider adapter/reconciliation contract review before any live transport.

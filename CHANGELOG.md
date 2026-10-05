@@ -1,5 +1,18 @@
 # CHANGELOG
 
+## 2026-10-06 — SHOP_ORDER_001D DEV order/Telegram candidate
+
+- Add immutable one-shot provider dispatch, atomic completion/review/outbox and monotonic Telegram update processing to ledger schema 2; reject automatic v1 upgrade and validate explicit migration digest/binding transactionally.
+- Add explicitly governed WooCommerce pending/unpaid create and exact-order GET reconciliation. Unknown write or delivery outcomes block automatic retries.
+- Add fixed chat/allowlisted operator Telegram adapter and customer-owned status route; no generic command execution, payment or fulfillment mutation.
+- Add DEV-first 주문하기 UI and isolated injected app factory; preserve inquiry, disable runtime ordering by default, persist nonsecret intent before POST and prohibit ambiguous automatic replay.
+- Verify isolated real Chrome order/operator/status flow, 12 Node UI cases and PHP lint. Record exact final Python regression in evidence JSON.
+- Correct the historical SHOP-02A guard to validate actual GET-only product-draft routes; preserve its historical inventory.
+- Move unchanged Twilio secret composition into Core with an ops compatibility re-export to satisfy architecture boundaries.
+- Record public photo/catalog mismatch and incomplete live migration; no PROD mutation or actual Telegram/WooCommerce call.
+Final current-scope regression: **645 passed, 20 existing warnings** (25 test files; exact selection in `docs/shopping/SHOP_ORDER_001D_VALIDATION.json`).
+
+
 ## 2026-10-05 — SHOP_ORDER_001C-C isolated HTTP contract
 
 - Added an unregistered POST /shopping/orders router with an unavailable-by-default dependency, using the 001C-B authenticated application only via explicit isolated injection.

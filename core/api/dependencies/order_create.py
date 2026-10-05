@@ -39,7 +39,7 @@ class OrderCreateIntent(BaseModel):
 class SessionBoundOrderCreateApplication:
     """Internal isolated composition, never mounted by the production app.
 
-    The injected order service must use an inert/fake writer in this milestone.
+    The injected order service requires an explicit governed writer composition.
     Passing a public SafeSessionProjection or internal authority is not an API.
     """
     def __init__(self, *, session_boundary: CustomerSessionBoundary,
@@ -56,8 +56,24 @@ class SessionBoundOrderCreateApplication:
             raise TypeError("an OrderCreateIntent is required")
         # Revalidation also closes model_construct/model_copy bypasses.
         intent = OrderCreateIntent.model_validate(intent)
+        authority = self._authenticate(request, write=True)
+        command = OrderCreateCommand(
+            customer_id=authority.customer_id,
+            line_items=tuple(OrderCreateLine(line.product_id, line.variation_id, line.quantity)
+                             for line in intent.line_items),
+            idempotency_key=intent.idempotency_key,
+            correlation_id="order-corr-" + uuid.uuid4().hex,
+            audit_reference="order-audit-" + uuid.uuid4().hex,
+            requested_at=authority.authorized_at,
+        )
+        return self._orders.execute(command, authority)
+
+    def operation_status(self, request: Request, key: str):
+        return self._orders.operation_status(key, self._authenticate(request, write=False))
+
+    def _authenticate(self, request: Request, *, write: bool):
         boundary = self._boundary
-        boundary.check_origin(request, required=True)
+        boundary.check_origin(request, required=write)
         now = boundary.now()
         secret = boundary.cookie_secret(request)
         authenticated = boundary.authenticate(secret, now=now)
@@ -70,13 +86,4 @@ class SessionBoundOrderCreateApplication:
             expires_at=min(authenticated.idle_expires_at,
                            authenticated.absolute_expires_at, now + timedelta(seconds=30)),
         )
-        command = OrderCreateCommand(
-            customer_id=authenticated.customer_id,
-            line_items=tuple(OrderCreateLine(line.product_id, line.variation_id, line.quantity)
-                             for line in intent.line_items),
-            idempotency_key=intent.idempotency_key,
-            correlation_id="order-corr-" + uuid.uuid4().hex,
-            audit_reference="order-audit-" + uuid.uuid4().hex,
-            requested_at=now,
-        )
-        return self._orders.execute(command, authority)
+        return authority

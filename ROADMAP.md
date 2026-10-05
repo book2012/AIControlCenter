@@ -1,5 +1,20 @@
 # Roadmap
 
+## 2026-10-06 — SHOP_ORDER_001D DEV candidate
+
+- [x] Durable one-shot provider dispatch and atomic completion/review/notification.
+- [x] Fixed-recipient Telegram adapter, allowlisted operator review and durable cursor.
+- [x] Owner-only status and DEV-first order UI; preserve uncertain intent across reload.
+- [x] Governed WooCommerce adapter and exact-order GET reconciliation.
+- [x] Explicit schema-v2 migration with digest/binding rollback validation.
+- [x] Isolated real Chrome E2E, Node UI tests, PHP lint and documented regression.
+- [x] Read-only public image/catalog/runtime diagnosis.
+- [ ] Supply trusted isolated DEV auth/catalog/customer/write-policy composition and scoped credentials.
+- [ ] Verify bot/chat/operator identity and sole poller ownership; run controlled real DEV Telegram/order E2E.
+- [ ] Complete notification uncertainty recovery/runbook and supervised DEV runtime activation.
+- [ ] Correct DEV catalog/media mapping and prepare immutable promotion/rollback evidence.
+- [ ] Obtain separate production activation authorization after DEV evidence passes.
+
 ## 2026-10-05 — SHOP_ORDER_001C-C HTTP contract closeout
 
 - [x] Add an isolated unregistered create-order POST contract with fail-closed default composition.

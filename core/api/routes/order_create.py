@@ -1,4 +1,4 @@
-"""Unregistered order-create HTTP contract for isolated fake-writer tests only.
+"""Order-create HTTP contract with explicit isolated DEV composition only.
 
 Importing this module provides no runtime, database, credential or write adapter.
 The production app does not include this router; injection is fail-closed.
@@ -14,7 +14,7 @@ from fastapi.routing import APIRoute
 from core.api.dependencies.customer_session import COOKIE_NAME, SessionAPIDenied
 from core.api.dependencies.order_create import OrderCreateIntent, SessionBoundOrderCreateApplication
 from core.api.schemas.customer_sessions import SessionAPIError
-from core.api.schemas.order_create import OrderCreateResponse
+from core.api.schemas.order_create import OrderCreateResponse, OrderOperationStatus
 from core.shopping.order_core import (
     OrderCreateAmbiguousFailure, OrderCreateCatalogResolutionError,
     OrderCreateContractError, OrderCreateDefinitiveFailure, OrderCreateOperationConflict,
@@ -27,6 +27,7 @@ from core.shopping.customer_session_service import SessionServiceError
 
 MAX_REQUEST_BYTES = 32768
 _ERRORS = {
+    "not_found": (404, "Order operation not found."),
     "invalid_request": (422, "Invalid order request."),
     "denied": (401, "Customer session denied."),
     "origin_denied": (403, "Request origin denied."),
@@ -76,7 +77,9 @@ class OrderCreateRoute(APIRoute):
 
     async def handle(self, scope, receive, send):
         if self.methods and scope["method"] not in self.methods:
-            await _error("method_denied")(scope, receive, send)
+            response = _error("method_denied")
+            response.headers["Allow"] = ", ".join(sorted(self.methods))
+            await response(scope, receive, send)
             return
         await super().handle(scope, receive, send)
 
@@ -136,3 +139,11 @@ def create_order(payload: OrderCreateIntent, request: Request, application: Appl
     )
     return JSONResponse(status_code=200 if result.idempotent_replay else 201,
                         content=response.model_dump(mode="json"))
+
+
+@router.get("/orders/operations/{idempotency_key}", response_model=OrderOperationStatus)
+def operation_status(idempotency_key: str, request: Request, application: Application):
+    status = application.operation_status(request, idempotency_key)
+    if status is None:
+        return _error("not_found")
+    return OrderOperationStatus.model_validate(status)

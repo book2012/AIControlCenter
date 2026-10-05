@@ -46,6 +46,8 @@ class ResolvedOrderCreateLine:
 class ResolvedOrderCreateCommand:
     customer_id: str
     line_items: tuple[ResolvedOrderCreateLine, ...]
+    idempotency_key: str | None = None
+    command_digest: str | None = None
 
     def __post_init__(self) -> None:
         if type(self.customer_id) is not str or not self.customer_id:
@@ -103,7 +105,7 @@ class ShoppingServiceOrderCatalogResolver:
                 provider_product_id=provider_product_id,
                 provider_variation_id=provider_variation_id, quantity=line.quantity,
             ))
-        return ResolvedOrderCreateCommand(command.customer_id,tuple(resolved))
+        return ResolvedOrderCreateCommand(command.customer_id,tuple(resolved),command.idempotency_key,command.command_digest)
 
 
 __all__=("OrderCreateCatalogRead","OrderCreateCatalogResolutionError",

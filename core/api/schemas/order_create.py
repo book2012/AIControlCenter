@@ -12,3 +12,10 @@ class OrderCreateResponse(BaseModel):
     total: str = Field(min_length=1, max_length=128, pattern=r"^[0-9]+(?:\.[0-9]+)?$")
     total_tax: str = Field(min_length=1, max_length=128, pattern=r"^[0-9]+(?:\.[0-9]+)?$")
     idempotent_replay: bool
+
+
+class OrderOperationStatus(BaseModel):
+    model_config = ConfigDict(extra="forbid", frozen=True, strict=True)
+    state: Literal["CLAIMED", "COMPLETED", "TERMINAL_FAILED", "UNKNOWN_OUTCOME"]
+    review_state: Literal["PENDING_REVIEW", "CONFIRMED", "REJECTED"] | None
+    provider_order_id: int | None = Field(ge=1)

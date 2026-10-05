@@ -13,7 +13,7 @@ final class AI_Shopping_Product_Detail_Renderer
         'women-bags' => '가방', 'women-accessories' => '액세서리',
     ];
 
-    public function render(array $product, array $related_products = []): string
+    public function render(array $product, array $related_products = [], bool $order_preview_enabled = false): string
     {
         unset($related_products);
         $product_id = (string) ($product['id'] ?? '');
@@ -23,6 +23,7 @@ final class AI_Shopping_Product_Detail_Renderer
         $image_url = AI_Shopping_Agachichi_Presentation_Adapter::image_url($product);
         $price = $this->price_label($product);
         $in_stock = !empty($product['in_stock']);
+        $order_enabled = $order_preview_enabled && $in_stock;
         ob_start();
         ?>
         <section id="detail-view" class="product-detail" aria-labelledby="detail-name">
@@ -39,11 +40,17 @@ final class AI_Shopping_Product_Detail_Renderer
                     <p id="detail-price" class="detail-price"><?php echo esc_html($price); ?></p>
                     <p id="detail-availability" class="availability"><?php echo esc_html($in_stock ? '재고 있음' : '품절'); ?></p>
                     <section id="variant-section" class="variant-section" aria-labelledby="variant-title"><h2 id="variant-title">SIZE</h2><div id="detail-variants"><?php echo $this->variants($product['variants'] ?? []); ?></div></section>
+                    <section id="order-section" aria-labelledby="order-title">
+                        <h2 id="order-title">주문 요청</h2><label for="order-quantity">수량</label><input id="order-quantity" type="number" min="1" max="1000" value="1">
+                        <button id="order-submit" class="inquiry-primary" type="button" aria-describedby="order-status"<?php echo $order_enabled ? '' : ' disabled'; ?>>주문하기</button>
+                        <p id="order-status" role="status" aria-live="polite"><?php echo esc_html($order_enabled ? '주문 후 운영자가 확인합니다. 결제·배송 확정은 별도입니다.' : '주문 기능 준비 중입니다.'); ?></p>
+                        <button id="order-check" type="button" disabled>주문 상태 확인</button><button id="order-new" type="button" disabled>새 주문 요청</button>
+                    </section>
                     <section id="inquiry-section" class="inquiry-section" aria-labelledby="inquiry-title">
                         <h2 id="inquiry-title">상품 문의</h2><label for="inquiry-message">문의내용</label><textarea id="inquiry-message" maxlength="1000" rows="4" placeholder="궁금한 내용을 남겨주세요."></textarea><button id="inquiry-submit" class="inquiry-primary" type="button">상품 문의하기</button><p id="inquiry-status" role="status" aria-live="polite"></p>
                         <div id="inquiry-result" hidden><p>문의가 생성되었습니다.</p><p>문의번호: <strong id="inquiry-id"></strong></p><button id="inquiry-copy" type="button">문의내용 복사</button><button id="inquiry-kakao" type="button" hidden>카카오 오픈채팅</button><button id="inquiry-instagram" type="button" hidden>인스타그램</button></div>
                     </section>
-                    <p class="detail-notice">상품 미리보기 · 현재 구매는 지원하지 않습니다.</p>
+                    <p class="detail-notice"><?php echo esc_html($order_enabled ? 'DEV 주문 요청 · 결제·배송 확정은 별도입니다.' : '상품 미리보기 · 현재 구매는 지원하지 않습니다.'); ?></p>
                     <section id="description-section" class="description-section" aria-labelledby="description-title"><h2 id="description-title">상품 설명</h2><p id="detail-description"><?php echo esc_html($description !== '' ? $description : '등록된 상품 설명이 없습니다.'); ?></p></section>
                 </div>
             </div>

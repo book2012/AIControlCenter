@@ -287,6 +287,13 @@ final class AI_Shopping_Storefront_Plugin
         );
 
         wp_enqueue_script(
+            'ai-shopping-storefront-order',
+            AI_SHOPPING_STOREFRONT_URL . 'assets/storefront-order.js',
+            [],
+            '0.19.1',
+            true
+        );
+        wp_enqueue_script(
             'ai-shopping-storefront-ui',
             AI_SHOPPING_STOREFRONT_URL
                 . 'assets/storefront-ui.js',
