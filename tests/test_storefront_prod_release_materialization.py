@@ -219,6 +219,69 @@ def test_conflicting_release_rejection(tmp_path):
     assert (target / "conflict.txt").read_text() == "user content"
 
 
+
+def _write_prior_release(root: Path) -> tuple[Path, str]:
+    commit = "1" * 40
+    release = root / "releases" / commit / "ai-shopping-storefront"
+    release.mkdir(parents=True)
+    (release / "ai-shopping-storefront.php").write_text("<?php // prior release\n")
+    manifest = {
+        "schema_version": 1,
+        "environment": "prod",
+        "service": "storefront",
+        "git_commit": commit,
+        "plugin_version": "0.19.0",
+        "presentation_identifier": "SHOP_MEDIA_003_AGACHICHI",
+        "release_path": str(release),
+        "created_at": "2026-10-04T00:00:00Z",
+        "source_clean": True,
+        "source_provenance": {
+            "method": "git_archive",
+            "archived_revision": commit,
+            "working_tree_clean": True,
+        },
+    }
+    raw = json.dumps(manifest, sort_keys=True, indent=2) + "\n"
+    (root / "current.json").write_text(raw)
+    (release / ".aicontrolcenter-release.json").write_text(raw)
+    return release, raw
+
+
+def test_existing_prior_release_is_preserved_during_promotion(tmp_path):
+    root = tmp_path / "root"
+    prior_release, _ = _write_prior_release(root)
+    authorization = issue_authorization(root)
+
+    manifest = materialize_release(ROOT, root, authorization=authorization)
+
+    current = json.loads((root / "current.json").read_text())
+    assert current["git_commit"] == ACCEPTED_GIT_COMMIT
+    assert manifest["git_commit"] == ACCEPTED_GIT_COMMIT
+    assert prior_release.is_dir()
+    assert (prior_release / "ai-shopping-storefront.php").is_file()
+    assert validate_contract(root)["valid"] is True
+
+
+def test_failed_promotion_restores_previous_current_and_removes_new_release(tmp_path, monkeypatch):
+    from core.shopping import storefront_prod_release_materialization as module
+    from core.shopping.storefront_prod_runtime import ReleaseManifestError
+
+    root = tmp_path / "root"
+    prior_release, prior_current = _write_prior_release(root)
+    authorization = issue_authorization(root)
+
+    def reject_new_release(_root: Path):
+        raise ReleaseManifestError("simulated validation failure")
+
+    monkeypatch.setattr(module, "validate_release", reject_new_release)
+
+    with pytest.raises(ReleaseMaterializationError, match="failed runtime validation"):
+        materialize_release(ROOT, root, authorization=authorization)
+
+    assert (root / "current.json").read_text() == prior_current
+    assert prior_release.is_dir()
+    assert not (root / "releases" / ACCEPTED_GIT_COMMIT).exists()
+
 def test_authorization_is_required_and_single_use(tmp_path):
     root = tmp_path / "root"
     with pytest.raises(AuthorizationRequiredError):

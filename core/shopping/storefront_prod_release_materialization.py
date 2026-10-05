@@ -360,20 +360,55 @@ def _write_text(path: Path, value: str) -> None:
     path.write_text(value, encoding="utf-8", newline="\n")
 
 
+def _read_existing_current(root: Path) -> str | None:
+    current = root / CURRENT_MANIFEST_NAME
+    if current.is_symlink():
+        raise ReleaseMaterializationError("current release marker symlink is rejected")
+    if not current.exists():
+        return None
+    if not current.is_file():
+        raise ReleaseMaterializationError("current release marker is not a regular file")
+    try:
+        raw = current.read_text(encoding="utf-8")
+        value = json.loads(raw)
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ReleaseMaterializationError("current release marker is invalid") from exc
+    if not isinstance(value, dict):
+        raise ReleaseMaterializationError("current release marker is invalid")
+    commit = value.get("git_commit")
+    release_path = value.get("release_path")
+    if not isinstance(commit, str) or not _COMMIT_PATTERN.fullmatch(commit):
+        raise ReleaseMaterializationError("current release marker commit is invalid")
+    expected = root / "releases" / commit / PLUGIN_DIRECTORY_NAME
+    if release_path != str(expected):
+        raise ReleaseMaterializationError("current release marker path is invalid")
+    if expected.is_symlink() or not expected.is_dir():
+        raise ReleaseMaterializationError("current immutable release is unavailable")
+    marker = expected / PROVENANCE_MARKER_NAME
+    if marker.is_symlink() or not marker.is_file():
+        raise ReleaseMaterializationError("current release provenance marker is unavailable")
+    try:
+        marker_value = json.loads(marker.read_text(encoding="utf-8"))
+    except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ReleaseMaterializationError("current release provenance marker is invalid") from exc
+    if marker_value != value:
+        raise ReleaseMaterializationError("current release marker and provenance marker differ")
+    entrypoint = expected / PLUGIN_MAIN_FILE
+    if entrypoint.is_symlink() or not entrypoint.is_file():
+        raise ReleaseMaterializationError("current release plugin entrypoint is unavailable")
+    return raw
+
+
 def _check_existing_components(root: Path, target: Path) -> None:
     if root.exists() and (root.is_symlink() or not root.is_dir()):
         raise ReleaseMaterializationError("release root is not a real directory")
     releases = root / "releases"
-    commit_dir = releases / ACCEPTED_GIT_COMMIT
+    commit_dir = target.parent
     if releases.exists() and (releases.is_symlink() or not releases.is_dir()):
         raise ReleaseMaterializationError("release directory is not a real directory")
     if commit_dir.exists():
         raise ReleaseMaterializationError("accepted commit release destination already exists")
-    current = root / CURRENT_MANIFEST_NAME
-    if current.is_symlink():
-        raise ReleaseMaterializationError("current release marker symlink is rejected")
-    if current.exists():
-        raise ReleaseMaterializationError("current release marker already exists")
+    _read_existing_current(root)
     if target.exists():
         raise ReleaseMaterializationError("release destination already exists")
     for path in (root, releases, commit_dir, target):
@@ -459,6 +494,7 @@ def materialize_release(
     _validate_identity(files)
     manifest = _manifest(repository, target, files, commit)
     _check_existing_components(root, target)
+    previous_current = _read_existing_current(root)
 
     authorization.consume(git_commit=commit, release_root=root)
     if authorization_file is not None:
@@ -467,6 +503,7 @@ def materialize_release(
 
     stage: Path | None = None
     moved = False
+    current_swapped = False
     root_created = False
     try:
         root.parent.mkdir(parents=True, exist_ok=True)
@@ -487,14 +524,28 @@ def materialize_release(
         os.replace(stage / PLUGIN_DIRECTORY_NAME, target)
         moved = True
         _write_atomic_text(root / CURRENT_MANIFEST_NAME, _canonical_json(manifest))
+        current_swapped = True
         try:
             validate_release(root)
         except ReleaseManifestError as exc:
             raise ReleaseMaterializationError("materialized release failed runtime validation") from exc
         return manifest
     except Exception:
+        if current_swapped and root.exists() and not root.is_symlink():
+            current = root / CURRENT_MANIFEST_NAME
+            if previous_current is None:
+                if current.exists() and not current.is_symlink():
+                    current.unlink()
+            else:
+                _write_atomic_text(current, previous_current)
         if moved and target.exists() and not target.is_symlink():
             shutil.rmtree(target)
+        commit_dir = target.parent
+        if commit_dir.exists() and not commit_dir.is_symlink():
+            try:
+                commit_dir.rmdir()
+            except OSError:
+                pass
         if root_created and root.exists() and not root.is_symlink():
             shutil.rmtree(root)
         raise

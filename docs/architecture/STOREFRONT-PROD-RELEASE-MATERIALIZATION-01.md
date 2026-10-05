@@ -63,3 +63,7 @@ the same commit as the accepted storefront payload.
 ## VM visibility requirement
 
 The release root uses ~/AIControlCenterRuntime/releases/storefront-prod because the commerce Colima profile must mount it read-only into the VM. Materialization does not itself modify Colima configuration or restart the VM. A later, separately authorized infrastructure step must establish that mount before runtime activation. Post-activation proof must compare host, VM, and container payload identity.
+
+## Successive promotion contract
+
+A release root may already contain an older immutable storefront release and `current.json`. A later accepted payload is added under its own commit-addressed directory; the previous release directory is preserved. Before the write, the operator verifies that the existing current manifest, provenance marker, release path, and plugin entrypoint agree. After staging the new payload, `current.json` is replaced atomically. If final runtime validation fails, the previous `current.json` is restored atomically and the new failed release directory is removed.
