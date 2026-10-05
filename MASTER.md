@@ -1,5 +1,9 @@
 # MASTER
 
+## 2026-10-05 — SHOP_ORDER_001B hardening validation
+
+The durable ledger now checks current authority at its injected UTC clock. After provider success, completion-persistence errors attempt explicit UNKNOWN_OUTCOME quarantine while retaining the original error. If completion already committed, exact replay survives; if both persistence operations fail, the durable CLAIM remains blocked against another writer invocation. Order/read/customer/session regression: **483 passed, 1 existing dependency deprecation warning**. Scope remains repository-only with fake writers and isolated test databases. SHOP_ORDER_001C remains the next session-bound composition milestone.
+
 ## 2026-10-05 — SHOP_ORDER create foundation state
 
 `SHOP_ORDER_001A` (`65f39d299e53a9be1687bfe46c71fe8c4787b4e4`) and `SHOP_ORDER_001B` (`c6b3e3b1578501d4a9845cf00a5895e29e6da065`) establish the current Order write-safety foundation without enabling a provider write. AIControlCenter owns the create command, authority binding, idempotency, durable operation state, audit, and ambiguity policy; WooCommerce remains only the future commerce engine adapter.

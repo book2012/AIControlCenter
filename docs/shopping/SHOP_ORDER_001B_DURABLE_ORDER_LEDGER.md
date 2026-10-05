@@ -87,3 +87,11 @@ a separately reviewed WooCommerce write adapter be designed.
 - New create/ledger modules contain no provider HTTP client, WooCommerce write credential, or WooCommerce write endpoint.
 
 README review: no change required because 001B adds no customer-facing route, runtime activation, deployment procedure, or operator workflow.
+
+## Completion persistence and current authority gate
+
+Before a durable claim, the ledger requires `authorized_at <= ledger_clock < expires_at` in addition to the command/authority binding checks. This rejects stale evidence even when the original command timestamp was valid. The later session boundary must still authenticate the caller and check current revocation, origin and CSRF; the internal authority object does not replace those checks.
+
+After a successful provider response, failure to persist COMPLETED is ambiguous. The service attempts UNKNOWN_OUTCOME quarantine and re-raises the original persistence error. If the completion committed before the error, the immutable COMPLETED row remains replayable. If quarantine also fails, the durable CLAIMED row remains blocked; operational reconciliation must establish the outcome before any future write. No automatic provider retry is introduced.
+
+Validation: the initial focused suite passed 25 tests. Three added failure cases were reproduced before correction. The final combined Order/read/customer/session regression passed 483 tests with one existing Starlette/httpx deprecation warning. Five additional tests cover current authority bounds, quarantine after completion failure, post-commit replay, and failure of both completion and quarantine persistence. All writers were fake and ledger databases isolated; no Production mutation occurred.

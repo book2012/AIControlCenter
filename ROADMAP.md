@@ -1,5 +1,13 @@
 # Roadmap
 
+## 2026-10-05 — SHOP_ORDER_001B hardening closeout
+
+- [x] Reject authority before issuance or at/after expiry using the durable ledger clock.
+- [x] Cover provider-success/completion-persistence ambiguity, committed-result replay, and failed-quarantine blocked claims.
+- [x] Combined Order/read/customer/session regression: **483 passed, 1 existing dependency warning**.
+- [x] Keep provider and PROD writes disabled.
+- [ ] SHOP_ORDER_001C trusted session-bound composition with an inert writer.
+
 ## 2026-10-05 — SHOP_ORDER_001A/001B foundation closeout
 
 - [x] `SHOP_ORDER_001A` closed at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`: provider-neutral create command, claim-before-write orchestration, bounded product/variation/quantity intent, and no client authority over price/payment/contact commerce truth.

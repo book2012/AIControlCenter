@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-10-05 — SHOP_ORDER_001B persistence and authority hardening
+
+- Reproduced three failing cases before fixes: completion persistence failure and authority before issuance/at expiry.
+- Validate authority against the injected durable ledger clock before claim or writer invocation.
+- Quarantine completion-persistence ambiguity without retrying the provider; preserve committed-result replay and blocked CLAIMED state when quarantine itself fails.
+- Added five regression cases. Combined Order/read/customer/session validation: **483 passed, 1 existing Starlette/httpx deprecation warning**.
+- Repository-only changes; no PROD mutation or live provider transport.
+
 ## 2026-10-05 — SHOP_ORDER_001A/001B create foundation
 
 - Added `SHOP_ORDER_001A` at `65f39d299e53a9be1687bfe46c71fe8c4787b4e4`, defining a closed customer order-create intent with product/variation/quantity only, existing opaque `CustomerId`, idempotency/correlation/audit references, and UTC request time. Client-supplied price, totals, tax, currency, discounts, billing/shipping/contact data, payment state and provider metadata remain prohibited.

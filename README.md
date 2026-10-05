@@ -1,5 +1,9 @@
 # AIControlCenter
 
+## 2026-10-05 — SHOP_ORDER_001B durable ledger hardening
+
+The repository-only Order create foundation rejects authority that is not current at the durable ledger clock before claiming or invoking the writer. Provider success followed by completion-persistence failure triggers best-effort UNKNOWN_OUTCOME quarantine. An already committed result remains replayable; an unresolved CLAIMED operation remains blocked if quarantine persistence also fails. Validation: **483 passed, 1 existing dependency deprecation warning** across Order/read and customer/session regressions. No provider or PROD writes were performed. See `docs/shopping/SHOP_ORDER_001B_DURABLE_ORDER_LEDGER.md`.
+
 ## 2026-10-05 — storefront 0.19.1 PROD operational closeout
 
 The accepted storefront payload `ee229261459e24d1a2d73b39bbbb8e2fa4042ba9` is active in PROD as plugin version `0.19.1`. PROD now consumes a commit-addressed immutable release under `~/AIControlCenterRuntime/releases/storefront-prod` through a read-only Colima virtiofs mount and a read-only WordPress bind. Host, Colima VM, and container SHA-256 for the plugin entrypoint match.
