@@ -93,6 +93,8 @@ class ShoppingServiceOrderCatalogResolver:
                 raise OrderCreateCatalogResolutionError("catalog:WRITE_SOURCE_UNAVAILABLE")
             provider_product_id=_provider_identifier(product.id,"product_id")
             provider_variation_id=0
+            if product.variants and line.variation_id is None:
+                raise OrderCreateCatalogResolutionError("catalog:VARIATION_REQUIRED")
             if line.variation_id is not None:
                 variant=next((item for item in product.variants if item.id==line.variation_id),None)
                 if variant is None:

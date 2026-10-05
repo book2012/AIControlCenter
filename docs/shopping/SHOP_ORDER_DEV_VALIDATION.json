@@ -1,0 +1,30 @@
+{
+  "environment": "DEV",
+  "python_tests_passed": 662,
+  "python_existing_warnings": 20,
+  "node_tests_passed": 12,
+  "isolated_chrome_passed": true,
+  "chrome_external_provider_requests": 0,
+  "actual_woo_order_id": 14,
+  "actual_order_total": "29000.00",
+  "currency": "KRW",
+  "actual_telegram_message_id": 6,
+  "operator_review": "PENDING_REVIEW",
+  "restart_owner_status_http": 200,
+  "idempotent_replay_http": 200,
+  "phone_verification_tested": false,
+  "public_authenticated_browser_tested": false,
+  "prod_mutation": false,
+  "production_gate": "BLOCKED",
+  "blockers": [
+    "actual human Telegram confirmation",
+    "production phone authentication validation",
+    "approved full catalog and photo mapping",
+    "supervised runtime and persistent edge deployment",
+    "production backup and rollback validation"
+  ],
+  "dev_sqlite_backup_sha256": {
+    "customers": "07057212094834e36dc51c10487fcd3ae6feb0f1ae3053cac9cc004b6dbf255c",
+    "orders": "18858b0ac0b3b9efef1462c4ce2a1486a760ab52330cd0d0535d29e7d8a882a6"
+  }
+}

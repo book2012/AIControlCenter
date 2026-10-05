@@ -5595,3 +5595,7 @@ The next Shopping Platform milestone is `READ_ORDER`. Keep the path
 read-only-first: monitoring, then validation, followed by write operations only
 if separately governed. Unrelated future milestones remain open, and this
 closeout does not claim that the entire platform is production-ready.
+
+## Isolated DEV order validation (2026-10-06)
+
+Real DEV WooCommerce order #14 and Telegram notification #6 succeeded; replay and restart recovery passed. Validation: 662 Python tests, 12 Node tests and isolated Chrome. Human review remains pending. Production migration is blocked on phone authentication, approved catalog/photo mapping, supervised persistent deployment and backup/rollback validation. See [DEV validation](docs/shopping/SHOP_ORDER_DEV_VALIDATION.md) and its JSON evidence. No production mutation or full catalog migration is claimed.

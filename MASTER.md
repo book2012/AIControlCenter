@@ -6599,3 +6599,7 @@ The next Shopping milestone is read-only-first WooCommerce order data
 integration: `READ_ORDER` (monitoring, then validation, with writes only later
 under separate governance). This storefront closeout is not a claim that the
 entire platform is production-ready.
+
+## Isolated DEV order validation (2026-10-06)
+
+Real DEV WooCommerce order #14 and Telegram notification #6 succeeded; replay and restart recovery passed. Validation: 662 Python tests, 12 Node tests and isolated Chrome. Human review remains pending. Production migration is blocked on phone authentication, approved catalog/photo mapping, supervised persistent deployment and backup/rollback validation. See [DEV validation](docs/shopping/SHOP_ORDER_DEV_VALIDATION.md) and its JSON evidence. No production mutation or full catalog migration is claimed.

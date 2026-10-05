@@ -99,3 +99,13 @@ def test_resolved_provider_identity_drives_snapshot_match():
     result=service.execute(command(),authority())
     assert result.snapshot.line_items[0].product_id==123
     assert writer.calls[0].line_items[0].product_id=="123"
+
+
+def test_variable_product_requires_option_before_provider_write():
+    writer=Writer()
+    catalog=Catalog(product(variants=(ProductVariant("456","M","size",True),)))
+    service=OrderCreateService(catalog_resolver=ShoppingServiceOrderCatalogResolver(catalog),
+        order_creator=writer,coordinator=InMemoryOrderCreateOperationCoordinator())
+    with pytest.raises(OrderCreateCatalogResolutionError,match="VARIATION_REQUIRED"):
+        service.execute(command(),authority())
+    assert writer.calls==[]

@@ -16,6 +16,7 @@ import hmac
 import secrets
 import sqlite3
 from typing import Callable
+from pathlib import Path
 import uuid
 
 from pydantic import SecretStr
@@ -361,6 +362,36 @@ class CustomerSessionService:
         finally:
             if connection is not None:
                 connection.close()
+
+    def validate_credential_session(self, session_secret: str, *, now: datetime) -> SessionValidation:
+        """Explicit durable recovery: derive identity only from a unique bound DB credential.
+
+        A missing database is never created. The existing schema and current
+        customer/session/credential/contact policy still validate every recovery.
+        """
+        try:require_utc(now)
+        except (TypeError, ValueError, AttributeError, OverflowError):
+            return SessionValidation(SessionValidationCode.INVALID_INPUT)
+        if not _bounded(session_secret,max_length=256):
+            return SessionValidation(SessionValidationCode.INVALID_INPUT)
+        path=Path(self.database_path)
+        if not path.is_file() or path.is_symlink():return SessionValidation(SessionValidationCode.MISSING)
+        connection=None
+        try:
+            from core.shopping.customer_persistence import _validate_schema
+            connection=sqlite3.connect(path.resolve().as_uri()+'?mode=ro',uri=True,
+                timeout=self.busy_timeout_ms/1000,isolation_level=None)
+            connection.row_factory=sqlite3.Row
+            _validate_schema(connection);_required_auth_tables(connection)
+            rows=connection.execute('SELECT session_id,customer_id FROM shopping_sessions WHERE secret_hash=? LIMIT 2',
+                                    (_hash_secret(session_secret),)).fetchall()
+            if len(rows)!=1:return SessionValidation(SessionValidationCode.MISSING)
+            session_id,customer_id=rows[0]['session_id'],rows[0]['customer_id']
+        except (PersistenceError, sqlite3.Error, OSError):
+            return SessionValidation(SessionValidationCode.STORAGE_UNAVAILABLE)
+        finally:
+            if connection is not None:connection.close()
+        return self.validate_session(session_id,session_secret,customer_id,now=now)
 
     def validate_session(
         self, session_id: str, session_secret: str, customer_id: str, *, now: datetime,

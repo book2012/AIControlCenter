@@ -1,0 +1,75 @@
+{
+  "name": "aicc-order-dev",
+  "services": {
+    "database": {
+      "image": "mariadb:11.4.12@sha256:a794d9eb009e20de605858a11f32f63b4075cbd197c650436f0e3b457e4caed7",
+      "restart": "unless-stopped",
+      "environment": {
+        "MARIADB_DATABASE": "aicc_order_dev",
+        "MARIADB_USER": "aicc_order_dev",
+        "MARIADB_PASSWORD": "${DEV_ORDER_DB_PASSWORD:?required}",
+        "MARIADB_ROOT_PASSWORD": "${DEV_ORDER_DB_ROOT_PASSWORD:?required}"
+      },
+      "volumes": [
+        "dev_database:/var/lib/mysql"
+      ],
+      "networks": [
+        "internal"
+      ],
+      "healthcheck": {
+        "test": [
+          "CMD",
+          "healthcheck.sh",
+          "--connect",
+          "--innodb_initialized"
+        ],
+        "interval": "5s",
+        "timeout": "5s",
+        "retries": 20
+      }
+    },
+    "wordpress": {
+      "image": "wordpress:php8.3-apache@sha256:9fac4d47b61186131ffefb5d966f0045d0eea94bfd7bd40cafae29b78a709d1b",
+      "restart": "unless-stopped",
+      "depends_on": {
+        "database": {
+          "condition": "service_healthy"
+        }
+      },
+      "ports": [
+        "127.0.0.1:55274:80"
+      ],
+      "environment": {
+        "WORDPRESS_DB_HOST": "database:3306",
+        "WORDPRESS_DB_NAME": "aicc_order_dev",
+        "WORDPRESS_DB_USER": "aicc_order_dev",
+        "WORDPRESS_DB_PASSWORD": "${DEV_ORDER_DB_PASSWORD:?required}",
+        "WORDPRESS_CONFIG_EXTRA": "define('DISALLOW_FILE_EDIT',true); if (!defined('WP_DEBUG')) { define('WP_DEBUG',false); } if (isset($$_SERVER['HTTP_X_FORWARDED_PROTO']) && $$_SERVER['HTTP_X_FORWARDED_PROTO']==='https') { $$_SERVER['HTTPS']='on'; } define('WP_HTTP_BLOCK_EXTERNAL',true); define('DISABLE_WP_CRON',true); define('WP_MEMORY_LIMIT','256M'); define('WP_MAX_MEMORY_LIMIT','512M'); define('DISALLOW_FILE_MODS',true);"
+      },
+      "volumes": [
+        "dev_wordpress:/var/www/html"
+      ],
+      "networks": [
+        "internal",
+        "edge"
+      ]
+    }
+  },
+  "networks": {
+    "internal": {
+      "name": "aicc-order-dev-internal",
+      "internal": true
+    },
+    "edge": {
+      "name": "aicc-order-dev-edge"
+    }
+  },
+  "volumes": {
+    "dev_database": {
+      "name": "aicc-order-dev-database"
+    },
+    "dev_wordpress": {
+      "name": "aicc-order-dev-wordpress"
+    }
+  }
+}

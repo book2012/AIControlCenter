@@ -51,10 +51,12 @@ def create_order_dev_app(*, session_boundary, catalog, ledger, writer, telegram_
         options = "".join('<button class="variant-option" type="button" data-variant-id="'+escape(v.id,quote=True)
             +'" aria-pressed="false"'+('' if v.available else ' disabled')+'>'+escape(v.label)+'</button>'
             for v in product.variants)
+        image = ('<img alt="'+escape(product.name,quote=True)+'" src="'+escape(product.image_url,quote=True)+'" style="max-width:100%;max-height:420px;object-fit:contain">'
+                 if product.image_url and product.image_url.startswith("/__order-dev/") else "")
         # All HTML content escaped; no caller supplied authority or executable handlers.
         html = ('<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
             +'<title>DEV 주문 요청</title><main id="detail-content" data-product-id="'+escape(product.id,quote=True)+'">'
-            +'<h1>'+escape(product.name)+'</h1><p>DEV 검증용 · 결제·배송 확정은 별도입니다.</p>'
+            +image+'<h1>'+escape(product.name)+'</h1><p>'+escape(str(product.price))+' '+escape(product.currency)+'</p><p>DEV 검증용 · 결제·배송 확정은 별도입니다.</p>'
             +'<div class="variant-options">'+options+'</div><label for="order-quantity">수량</label>'
             +'<input id="order-quantity" type="number" min="1" max="1000" value="1">'
             +'<button id="order-submit" type="button"'+disabled+'>주문하기</button>'

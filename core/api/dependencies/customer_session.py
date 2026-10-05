@@ -74,6 +74,7 @@ class CustomerSessionBoundary:
         csrf_key: SecretBytes, clock: Callable[[], datetime],
         resolve_evidence: Callable[[VerificationReceiptConsumeRequest], TrustedSessionEvidence] | None = None,
         max_bindings: int = 1024,
+        recover_durable_bindings: bool = False,
     ):
         # Exact canonical HTTPS origin only; never infer it from Host/Forwarded.
         parsed = urlsplit(trusted_origin)
@@ -84,6 +85,9 @@ class CustomerSessionBoundary:
             raise ValueError("an explicit server CSRF key is required")
         if type(max_bindings) is not int or not 1 <= max_bindings <= 10000:
             raise ValueError("a bounded session index is required")
+        if type(recover_durable_bindings) is not bool:
+            raise ValueError("explicit durable recovery mode required")
+        self._recover_durable_bindings = recover_durable_bindings
         self.service = service
         self.trusted_origin = trusted_origin
         self._csrf_key = csrf_key
@@ -145,6 +149,19 @@ class CustomerSessionBoundary:
     def authenticate(self, secret: str, *, now: datetime) -> SafeSessionProjection:
         with self._lock:
             binding = self._bindings.get(_digest(secret))
+        if binding is None and self._recover_durable_bindings:
+            checked=self.service.validate_credential_session(secret,now=now)
+            if checked.code==SessionValidationCode.STORAGE_UNAVAILABLE:
+                raise SessionAPIDenied(SessionAPIError.UNAVAILABLE)
+            if checked.code!=SessionValidationCode.VALID:
+                raise SessionAPIDenied(SessionAPIError.DENIED,clear_cookie=True)
+            projection=self._projection(checked.projection,now)
+            binding=_Binding(projection.id,projection.customer_id,min(projection.idle_expires_at,projection.absolute_expires_at))
+            with self._lock:
+                self._bindings={key:value for key,value in self._bindings.items() if now<value.expires_at}
+                if len(self._bindings)>=self._max_bindings:
+                    raise SessionAPIDenied(SessionAPIError.UNAVAILABLE)
+                self._bindings[_digest(secret)]=binding
         if binding is None:
             raise SessionAPIDenied(SessionAPIError.DENIED, clear_cookie=True)
         # Always ask B3-B about current customer state, credential and revocation.
