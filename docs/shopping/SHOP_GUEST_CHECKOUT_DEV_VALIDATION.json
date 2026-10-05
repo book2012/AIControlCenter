@@ -1,0 +1,34 @@
+{
+  "environment": "DEV",
+  "python_regression_passed": 700,
+  "existing_warnings": 20,
+  "isolated_real_chrome_full_guest_flow_passed": true,
+  "actual_phone_verified_session_used": true,
+  "actual_provider_order_id": 15,
+  "total": "29000.00",
+  "currency": "KRW",
+  "delivery": "synthetic DEV test only",
+  "actual_replay_http": 200,
+  "actual_customer_status_http": 200,
+  "operator_review": "CONFIRMED",
+  "telegram_events": [
+    {
+      "event": "ORDER_CREATED",
+      "state": "SENT",
+      "message_id": 9
+    },
+    {
+      "event": "OPERATOR_CONFIRMED",
+      "state": "SENT",
+      "message_id": 11
+    }
+  ],
+  "local_ai_model": "qwen3:4b",
+  "local_ai_model_digest": "359d7dd4bcdab3d86b87d73ac27966f4dbb9f5efdfcc75d34a8764a09474fae7",
+  "local_ai_endpoint": "http://127.0.0.1:11434",
+  "local_ai_stock_price_operator_judgment_verified": true,
+  "inquiry_answer_mode": "local model intent judgment; authoritative catalog facts rendered by Core",
+  "prod_mutation": false,
+  "full_catalog_migrated": false,
+  "production_ready": false
+}

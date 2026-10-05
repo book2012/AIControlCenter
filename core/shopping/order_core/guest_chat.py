@@ -21,7 +21,7 @@ class GuestCart(BaseModel):
     line_items:tuple[GuestCartLine,...]=Field(min_length=1,max_length=20)
 
 class GuestShoppingChat:
-    def __init__(self,catalog):self.catalog=catalog
+    def __init__(self,catalog,intent_classifier=None):self.catalog=catalog;self.classifier=intent_classifier
     def product(self,key):
         p=Product(**self.catalog.get_product(key))
         if p.id!=key or p.source!="woocommerce":raise ValueError("CATALOG_NOT_VERIFIED")
@@ -30,7 +30,14 @@ class GuestShoppingChat:
         return p
     def answer(self,question):
         question=GuestQuestion.model_validate(question)
-        p=self.product(question.product_id); text=question.message.strip().lower()
+        p=self.product(question.product_id); text=question.message.strip().lower();engine="RULES"
+        if self.classifier is not None:
+            try:
+                intent=self.classifier(question.message,p)
+                text={"STOCK":"재고","PRICE":"가격","DESCRIPTION":"설명","PURCHASE":"주문","OPERATOR":""}[intent]
+                engine="LOCAL_AI"
+            except Exception:
+                return {"message":"현재 내부 AI가 질문을 확인할 수 없습니다. 운영자 확인이 필요합니다.","action":"OPERATOR_REQUIRED","product_id":p.id,"source":"woocommerce","answer_engine":"LOCAL_AI_UNAVAILABLE"}
         available=[v.label for v in p.variants if v.available]
         unavailable=[v.label for v in p.variants if not v.available]
         if any(v in text for v in ("주문","살게","구매","담아")):
@@ -50,7 +57,7 @@ class GuestShoppingChat:
         else:
             message="등록된 상품 정보에서 답을 확인할 수 없습니다. 재고·옵션·가격·상품 설명을 물어보실 수 있습니다. 그 외 질문은 운영자 확인이 필요합니다."
             action="OPERATOR_REQUIRED"
-        return {"message":message,"action":action,"product_id":p.id,"source":"woocommerce"}
+        return {"message":message,"action":action,"product_id":p.id,"source":"woocommerce","answer_engine":engine}
     def quote(self,cart):
         cart=GuestCart.model_validate(cart)
         identities=set();items=[];total=Decimal("0");currency=None

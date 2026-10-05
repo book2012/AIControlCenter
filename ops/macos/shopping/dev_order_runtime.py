@@ -1,4 +1,4 @@
-"""Explicit DEV test-account order runtime; no production or phone-auth composition."""
+"""Explicit isolated DEV phone checkout and synthetic fixture runtime; no production composition."""
 from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[3]))
@@ -89,10 +89,26 @@ def create_app():
         return value
     boundary=CustomerSessionBoundary(service=CustomerSessionService(str(customer_path)),trusted_origin=ORIGIN,
         csrf_key=SecretBytes(bytes.fromhex(cfg['csrf_key'])),clock=now,resolve_evidence=resolve,recover_durable_bindings=True)
+    phone_cfg=private_config('phone-verification.private.json')
+    from core.shopping.order_core.guest_checkout import PrivateCheckoutStore,fingerprint
+    from ops.macos.shopping.dev_guest_checkout import GuestCheckoutWooSession,authoritative_quote
+    checkout=PrivateCheckoutStore(DATA/'guest-checkout.sqlite3') if phone_cfg.get('provider_customer_id') else None
     ledger=SQLiteOrderCreateLedger(DATA/'orders.sqlite3',clock=now);ledger.initialize()
     for file in [customer_path,DATA/'orders.sqlite3']:__import__('os').chmod(file,0o600)
     def authorize(command,stamp):
         operation=ledger.inspect_operation(command.idempotency_key)
+        if checkout is not None and command.customer_id==phone_cfg['guest_customer_id']:
+            if operation is None or operation['state']!='CLAIMED' or operation['customer_id']!=command.customer_id or operation['command_digest']!=command.command_digest:
+                raise ValueError('GUEST_OPERATION_DENIED')
+            draft=checkout.operation(command.idempotency_key,command.customer_id,operation['session_id'])
+            expected=[(v['product_id'],v['variation_id'],v['quantity']) for v in draft['body']['line_items']]
+            if [(v.product_id,v.variation_id,v.quantity) for v in command.line_items]!=expected:raise ValueError('GUEST_LINE_BINDING_DENIED')
+            current=authoritative_quote(catalog,__import__('core.shopping.order_core.guest_chat',fromlist=['GuestCart']).GuestCart.model_validate({'line_items':draft['body']['line_items']}))
+            if fingerprint(current)!=fingerprint(draft['body']['quote']):raise ValueError('GUEST_QUOTE_CHANGED')
+            expires=datetime.fromisoformat(operation['authority_expires_at'].replace('Z','+00:00'))
+            if now()>=expires:raise ValueError('GUEST_AUTHORITY_EXPIRED')
+            return ProviderOrderWritePermit(command.customer_id,operation['session_id'],command.idempotency_key,
+                command.command_digest,'isolated-dev-phone-checkout',stamp,min(expires,stamp+timedelta(seconds=30)))
         allowed={v['id'] for v in cfg['variants'] if v['available']}
         if (operation is None or operation['state']!='CLAIMED' or operation['customer_id']!=cfg['customer_id']
             or command.customer_id!=cfg['customer_id'] or operation['command_digest']!=command.command_digest
@@ -104,11 +120,12 @@ def create_app():
         return ProviderOrderWritePermit(command.customer_id,operation['session_id'],command.idempotency_key,
             command.command_digest,'isolated-dev-one-item-policy',stamp,min(expires,stamp+timedelta(seconds=30)))
     def customer(value):
+        if checkout is not None and value==phone_cfg['guest_customer_id']:return phone_cfg['provider_customer_id']
         if value!=cfg['customer_id']:raise ValueError('DEV_CUSTOMER_MAPPING_DENIED')
         return cfg['provider_customer_id']
     writer=WooCommerceOrderWriter(base_url='https://localhost',consumer_key=SecretStr(commerce['consumer_key']),
         consumer_secret=SecretStr(commerce['consumer_secret']),ledger=ledger,clock=now,authorize_once=authorize,
-        resolve_customer=customer,session=PinnedDevWooOrderSession(PRIVATE/'dev-woo-cert.pem'))
+        resolve_customer=customer,session=(GuestCheckoutWooSession(PRIVATE/'dev-woo-cert.pem',store=checkout,provider_customer_id=phone_cfg['provider_customer_id']) if checkout is not None else PinnedDevWooOrderSession(PRIVATE/'dev-woo-cert.pem')))
     transport=OrderTelegramTransport(token=SecretStr(tg['bot_token']),chat_id=tg['operator_chat_id'])
     telegram=OrderTelegramIntegration(ledger=ledger,transport=transport,operator_chat_id=tg['operator_chat_id'],
                                     operator_user_ids=frozenset(tg['operator_user_ids']))
@@ -127,8 +144,15 @@ def create_app():
                 evidence[public_receipt,public_challenge]=value
             return {'receipt_id':public_receipt,'browser_challenge':public_challenge}
         mount_phone_routes(app,bridge=phone,boundary=boundary,register_evidence=register_phone_evidence)
-    mount_guest_chat(app,catalog=catalog,session_boundary=boundary,phone_available=phone is not None)
-    stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'test-account; not phone verified'}
+    if phone is not None and checkout is not None:
+        from ops.macos.shopping.dev_guest_checkout import mount_checkout_routes
+        from core.api.routes.order_create import get_order_create_application
+        mount_checkout_routes(app,store=checkout,phone_cfg=phone_cfg,boundary=boundary,
+            application=app.dependency_overrides[get_order_create_application](),catalog=catalog,ledger=ledger)
+    from ops.macos.shopping.dev_local_inquiry import LocalInquiryJudge
+    mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(),phone_available=phone is not None,
+        checkout_available=phone is not None and checkout is not None)
+    stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         while not stop.is_set():
             try:

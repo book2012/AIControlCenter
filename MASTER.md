@@ -6611,3 +6611,7 @@ DEV now supports customer-account-free grounded product inquiries, single-item/c
 ## DEV guest phone verification (2026-10-06)
 
 Twilio Verify is connected for the explicitly configured DEV test phone; browser-bound durable dispatch and existing trusted session issuance are implemented. Actual SMS start returned HTTP 200; human OTP check succeeded with HTTP 201 and the issued customer session validated with HTTP 200. Stored OTP was cleared. Shipping capture and guest order confirmation remain disabled. Prior confirmed order #14 and PROD were preserved. See [guest phone architecture](docs/shopping/SHOP_GUEST_PHONE_DEV.md).
+
+## DEV guest checkout + Local AI + Telegram (2026-10-06)
+
+Account-free inquiry now uses Mac Local AI judgment with authoritative Woo facts. Phone-verified guests can enter delivery, review and explicitly confirm. Real DEV order #15 (KRW 29,000), Telegram #9/#11 and human CONFIRMED review passed; replay created no duplicate. Validation: 700 Python tests and isolated real Chrome. The full catalog and production deployment remain gated. See [checkout architecture/runbook](docs/shopping/SHOP_GUEST_CHECKOUT_DEV.md).
