@@ -9,11 +9,15 @@ import pytest
 
 from core.shopping.order_core import (
     InMemoryOrderCreateOperationCoordinator,
+    OrderCreateAuthority,
+    OrderCreateAmbiguousFailure,
     OrderCreateCommand,
+    OrderCreateDefinitiveFailure,
     OrderCreateContractError,
     OrderCreateLine,
     OrderCreateOperationConflict,
     OrderCreateOperationTerminalFailure,
+    OrderCreateOperationUnknownOutcome,
     OrderCreateService,
     OrderLineItem,
     OrderSnapshot,
@@ -21,6 +25,7 @@ from core.shopping.order_core import (
 
 
 CUSTOMER = "AG-CUS-" + "1" * 12 + "4" + "1" * 3 + "8" + "1" * 15
+SESSION = "AG-SES-" + "2" * 12 + "4" + "2" * 3 + "8" + "2" * 15
 NOW = datetime(2026, 10, 5, 6, 0, tzinfo=timezone.utc)
 
 
@@ -32,6 +37,13 @@ def command(*, quantity: int = 1, key: str = "order-create-001") -> OrderCreateC
         correlation_id="corr-order-001",
         audit_reference="audit-order-001",
         requested_at=NOW,
+    )
+
+
+def authority() -> OrderCreateAuthority:
+    return OrderCreateAuthority(
+        customer_id=CUSTOMER, session_id=SESSION, authorization_reference="auth-order-001",
+        authorized_at=NOW, expires_at=NOW.replace(hour=7),
     )
 
 
@@ -149,8 +161,8 @@ def test_service_claims_before_writer_and_replays_without_second_write():
     creator = FakeCreator()
     coordinator = InMemoryOrderCreateOperationCoordinator()
     service = OrderCreateService(order_creator=creator, coordinator=coordinator)
-    first = service.execute(command())
-    second = service.execute(command())
+    first = service.execute(command(), authority())
+    second = service.execute(command(), authority())
     assert len(creator.calls) == 1
     assert first.snapshot.provider_order_id == 101
     assert first.idempotent_replay is False
@@ -164,24 +176,34 @@ def test_same_idempotency_key_with_different_command_fails_before_writer():
         order_creator=creator,
         coordinator=InMemoryOrderCreateOperationCoordinator(),
     )
-    service.execute(command(quantity=1, key="same-key"))
+    service.execute(command(quantity=1, key="same-key"), authority())
     with pytest.raises(OrderCreateOperationConflict):
-        service.execute(command(quantity=2, key="same-key"))
+        service.execute(command(quantity=2, key="same-key"), authority())
     assert len(creator.calls) == 1
 
 
-def test_provider_failure_is_terminal_and_never_auto_retried():
-    creator = FakeCreator(error=RuntimeError("provider failed"))
+def test_definitive_provider_failure_is_terminal_and_never_auto_retried():
+    creator = FakeCreator(error=OrderCreateDefinitiveFailure("PROVIDER_REJECTED"))
     service = OrderCreateService(
-        order_creator=creator,
-        coordinator=InMemoryOrderCreateOperationCoordinator(),
+        order_creator=creator, coordinator=InMemoryOrderCreateOperationCoordinator(),
     )
-    with pytest.raises(RuntimeError, match="provider failed"):
-        service.execute(command())
+    with pytest.raises(OrderCreateDefinitiveFailure, match="PROVIDER_REJECTED"):
+        service.execute(command(), authority())
     with pytest.raises(OrderCreateOperationTerminalFailure):
-        service.execute(command())
+        service.execute(command(), authority())
     assert len(creator.calls) == 1
 
+
+def test_ambiguous_provider_failure_is_quarantined_and_never_auto_retried():
+    creator = FakeCreator(error=OrderCreateAmbiguousFailure("TIMEOUT_UNKNOWN"))
+    service = OrderCreateService(
+        order_creator=creator, coordinator=InMemoryOrderCreateOperationCoordinator(),
+    )
+    with pytest.raises(OrderCreateAmbiguousFailure, match="TIMEOUT_UNKNOWN"):
+        service.execute(command(), authority())
+    with pytest.raises(OrderCreateOperationUnknownOutcome):
+        service.execute(command(), authority())
+    assert len(creator.calls) == 1
 
 
 def test_provider_snapshot_must_match_requested_line_identity_and_quantity():
@@ -195,9 +217,9 @@ def test_provider_snapshot_must_match_requested_line_identity_and_quantity():
             coordinator=InMemoryOrderCreateOperationCoordinator(),
         )
         with pytest.raises(OrderCreateContractError, match="order_creator:LINE_ITEMS_MISMATCH"):
-            service.execute(command())
-        with pytest.raises(OrderCreateOperationTerminalFailure):
-            service.execute(command())
+            service.execute(command(), authority())
+        with pytest.raises(OrderCreateOperationUnknownOutcome):
+            service.execute(command(), authority())
         assert len(creator.calls) == 1
 
 def test_invalid_provider_result_fails_terminally():
@@ -207,9 +229,9 @@ def test_invalid_provider_result_fails_terminally():
         coordinator=InMemoryOrderCreateOperationCoordinator(),
     )
     with pytest.raises(OrderCreateContractError, match="order_creator:INVALID_RESULT"):
-        service.execute(command())
-    with pytest.raises(OrderCreateOperationTerminalFailure):
-        service.execute(command())
+        service.execute(command(), authority())
+    with pytest.raises(OrderCreateOperationUnknownOutcome):
+        service.execute(command(), authority())
     assert len(creator.calls) == 1
 
 
