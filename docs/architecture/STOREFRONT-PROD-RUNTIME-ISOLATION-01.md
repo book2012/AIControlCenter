@@ -27,7 +27,7 @@ not an immutable PROD release. DEV deployment is not PROD promotion.
 
 PROD must consume only an immutable, commit-addressed release directory:
 
-`~/Library/Application Support/AIControlCenter/releases/storefront-prod/releases/<40-character-git-commit>/ai-shopping-storefront`
+`~/AIControlCenterRuntime/releases/storefront-prod/releases/<40-character-git-commit>/ai-shopping-storefront`
 
 The compose bind is therefore parameterized by
 `AICONTROLCENTER_STOREFRONT_PROD_PLUGIN_PATH`, fails closed when unset, and
@@ -65,3 +65,11 @@ exact accepted payload commit.
 
 Plan approval does not authorize a release write or PROD activation. Those
 remain separate explicit authorization gates.
+
+## Colima-visible release boundary
+
+The default PROD storefront release root is intentionally outside the Git repository and uses a no-space host path:
+
+~/AIControlCenterRuntime/releases/storefront-prod
+
+The commerce Colima profile must expose this root read-only through virtiofs before Docker activation. Host-side release validation alone is insufficient: promotion proof requires the same accepted payload to be visible from the host, the Colima VM, and the WordPress container.

@@ -29,7 +29,7 @@ CURRENT_MANIFEST_NAME = "current.json"
 PROVENANCE_MARKER_NAME = ".aicontrolcenter-release.json"
 COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 DEFAULT_RELEASE_ROOT = (
-    Path.home() / "Library" / "Application Support" / "AIControlCenter" / "releases" / "storefront-prod"
+    Path.home() / "AIControlCenterRuntime" / "releases" / "storefront-prod"
 )
 
 

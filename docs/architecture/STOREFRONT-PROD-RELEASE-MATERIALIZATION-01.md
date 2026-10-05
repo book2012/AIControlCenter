@@ -20,7 +20,7 @@ files.
 
 The release root is:
 
-`~/Library/Application Support/AIControlCenter/releases/storefront-prod`
+`~/AIControlCenterRuntime/releases/storefront-prod`
 
 The payload is written only at:
 
@@ -59,3 +59,7 @@ This makes `source_clean=true` and
 an assumed value. The release payload still comes only from `git archive` of
 the exact accepted payload commit; the control-plane HEAD does not need to be
 the same commit as the accepted storefront payload.
+
+## VM visibility requirement
+
+The release root uses ~/AIControlCenterRuntime/releases/storefront-prod because the commerce Colima profile must mount it read-only into the VM. Materialization does not itself modify Colima configuration or restart the VM. A later, separately authorized infrastructure step must establish that mount before runtime activation. Post-activation proof must compare host, VM, and container payload identity.

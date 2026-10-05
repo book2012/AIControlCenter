@@ -66,6 +66,14 @@ def test_compose_uses_required_external_read_only_release_path():
     assert compose.count("/var/www/html/wp-content/plugins/ai-shopping-storefront:ro") == 2
 
 
+def test_default_release_root_is_colima_mount_friendly():
+    from core.shopping import storefront_prod_runtime as runtime_module
+
+    root = runtime_module.DEFAULT_RELEASE_ROOT
+    assert root == Path.home() / "AIControlCenterRuntime" / "releases" / "storefront-prod"
+    assert " " not in str(root)
+
+
 def test_release_is_commit_addressed_and_validates(tmp_path):
     root = tmp_path / "storefront-prod"
     release = _write_release(root)
