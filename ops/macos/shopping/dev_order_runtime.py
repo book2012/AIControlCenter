@@ -114,6 +114,8 @@ def create_app():
                                     operator_user_ids=frozenset(tg['operator_user_ids']))
     catalog=DevCatalog(commerce,cfg)
     app=create_order_dev_app(session_boundary=boundary,catalog=catalog,ledger=ledger,writer=writer,telegram_integration=telegram)
+    from core.shopping.order_core.guest_chat_app import mount_guest_chat
+    mount_guest_chat(app,catalog=catalog,session_boundary=boundary)
     stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'test-account; not phone verified'}
     def worker():
         while not stop.is_set():
@@ -181,7 +183,7 @@ def create_app():
     @app.get('/__order-dev/product-image',include_in_schema=False)
     def product_image():return FileResponse(image,media_type='image/jpeg',headers={'Cache-Control':'no-store'})
     @app.get('/dev-order',include_in_schema=False)
-    def entry():return RedirectResponse('/dev-order/login',status_code=302)
+    def entry():return RedirectResponse('/__order-dev/chat/product/'+str(cfg['provider_product_id']),status_code=302)
     return app
 
 if __name__=='__main__':

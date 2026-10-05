@@ -1,0 +1,19 @@
+{
+  "component": "guest-chat-shopping",
+  "environment": "DEV",
+  "python_tests_passed": 674,
+  "existing_warnings": 20,
+  "isolated_chrome_passed": true,
+  "browser_provider_writes": 0,
+  "live_anonymous_inquiry_http": 200,
+  "live_cart_quote_http": 200,
+  "guest_order_created": false,
+  "phone_provider_selected": "twilio_verify",
+  "phone_provider_configured": false,
+  "phone_verification_enabled": false,
+  "delivery_capture_enabled": false,
+  "final_confirmation_enabled": false,
+  "prod_mutation": false,
+  "prior_order_review_preserved": "CONFIRMED",
+  "scope": "isolated single mapped product; provisional cart foundation"
+}

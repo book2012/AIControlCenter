@@ -6097,3 +6097,7 @@ evidence locator.
 ## Isolated DEV order validation (2026-10-06)
 
 Real DEV WooCommerce order #14 and Telegram notification #6 succeeded; replay and restart recovery passed. Validation: 662 Python tests, 12 Node tests and isolated Chrome. Actual human Telegram review is CONFIRMED; confirmation notification #8 and customer status HTTP 200 were verified. Production migration is blocked on phone authentication, approved catalog/photo mapping, supervised persistent deployment and backup/rollback validation. See [DEV validation](docs/shopping/SHOP_ORDER_DEV_VALIDATION.md) and its JSON evidence. No production mutation or full catalog migration is claimed.
+
+## Guest chat shopping foundation (2026-10-06)
+
+DEV now supports customer-account-free grounded product inquiries, single-item/cart quotes and a shared chat checkout entry. Real phone verification, shipping capture and final confirmation remain disabled pending governed Twilio composition. No guest orders or production writes were performed. Validation: 674 Python tests and isolated Chrome. See [guest chat architecture and runbook](docs/shopping/SHOP_GUEST_CHAT_DEV.md).
