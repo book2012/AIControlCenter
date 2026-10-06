@@ -4,7 +4,7 @@
   const root=document.querySelector("main[data-product]"); if(!root)return;
   const by=id=>document.getElementById(id);
   const product=root.dataset.product;
-  let cart=[], busy=false,inquiryBusy=false,selectedCart=[],prepared=null,checkoutAvailable=false,pending=null;
+  let cart=[], busy=false,inquiryBusy=false,postcodeLoader=null,selectedCart=[],prepared=null,checkoutAvailable=false,pending=null;
   try{pending=JSON.parse(sessionStorage.getItem("aicc-guest-operation-v1")||"null");if(pending&&(!/^[a-f0-9]{48}$/.test(pending.draft_id)||!/^guest-order-[a-f0-9]{48}$/.test(pending.operation_key)))throw new Error();}catch(_){pending={blocked:true};}
   const authHeaders=async()=>{const r=await fetch("/shopping/auth/session",{credentials:"same-origin"});if(!r.ok)throw new Error("휴대폰 인증이 필요합니다.");const token=r.headers.get("X-CSRF-Token");if(!token)throw new Error("인증 상태를 확인할 수 없습니다.");return {"Content-Type":"application/json","X-CSRF-Token":token};};
   const showDelivery=async()=>{if(!checkoutAvailable)return;try{const headers=await authHeaders();const r=await fetch("/__order-dev/checkout/session",{credentials:"same-origin",headers});if(r.ok){by("delivery-form").hidden=false;by("phone-form").hidden=true;by("auth-note").textContent="인증된 연락처로 주문합니다. 배송정보를 입력해 주세요.";}}catch(_){}};
@@ -20,8 +20,11 @@
   const selected=()=>{const line={product_id:product,variation_id:by("variation").value||null,quantity:Number(by("quantity").value)};if(!valid(line)||by("variation").selectedOptions[0]?.disabled)throw new Error("상품 옵션과 수량을 선택해 주세요.");return line;};
   const run=async work=>{if(busy)return;busy=true;by("error").textContent="";try{await work();}catch(error){by("error").textContent=error.message||"요청에 실패했습니다.";}finally{busy=false;}};
   const runInquiry=async work=>{if(inquiryBusy)return;inquiryBusy=true;by("error").textContent="";try{await work();}catch(error){by("error").textContent=error.message||"요청에 실패했습니다.";}finally{inquiryBusy=false;}};
+  const invalidatePrepared=()=>{prepared=null;by("confirm").disabled=true;by("final-review").replaceChildren();};
+  const loadPostcode=()=>{if(window.kakao?.Postcode)return Promise.resolve();if(postcodeLoader)return postcodeLoader;postcodeLoader=new Promise((resolve,reject)=>{const script=document.createElement("script");script.src="https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";script.async=true;script.onload=()=>window.kakao?.Postcode?resolve():reject(new Error("주소 검색 서비스를 불러오지 못했습니다."));script.onerror=()=>reject(new Error("주소 검색 서비스를 불러오지 못했습니다."));document.head.appendChild(script);});return postcodeLoader;};
+  const openPostcode=async()=>{by("error").textContent="";try{await loadPostcode();const layer=by("address-search-layer"),frame=by("address-search-frame");frame.replaceChildren();layer.hidden=false;new window.kakao.Postcode({oncomplete:data=>{const address=data.userSelectedType==="J"?data.jibunAddress:data.roadAddress;if(!/^[0-9]{5}$/.test(data.zonecode||"")||!address){by("error").textContent="선택한 주소를 사용할 수 없습니다. 다른 주소를 선택해 주세요.";return;}by("postcode").value=data.zonecode;by("address1").value=address;invalidatePrepared();layer.hidden=true;frame.replaceChildren();by("address2").focus();},width:"100%",height:"100%"}).embed(frame);}catch(error){by("error").textContent=error.message||"주소 검색 서비스를 열지 못했습니다.";}};
   const watchInquiry=data=>{let attempts=0,delivered=false,checking=false;const button=document.createElement("button");button.textContent="운영자 답변 확인";by("messages").appendChild(button);const check=async manual=>{if(delivered||checking)return;checking=true;try{const r=await fetch("/__order-dev/chat/inquiries/"+data.inquiry_token,{credentials:"same-origin"});if(!r.ok){if(manual)say("문의 확인 기간이 지났습니다. 다시 문의해 주세요.");return;}const status=await r.json();if(status.answer){say(status.answer);delivered=true;button.disabled=true;button.textContent="운영자 답변 도착";}else if(manual)say("운영자가 답변을 확인 중입니다.");}catch(_){if(manual)say("문의 상태를 확인하지 못했습니다. 다시 확인해 주세요.");}finally{checking=false;}};button.onclick=()=>check(true);const poll=async()=>{if(++attempts>120||delivered)return;await check(false);if(!delivered)setTimeout(poll,5000);};setTimeout(poll,5000);};
-  const ask=message=>runInquiry(async()=>{say(message,true);const data=await request("inquiry",{product_id:product,message});say(data.message);if(data.inquiry_token)watchInquiry(data);if(data.action==="START_ORDER")by("single").focus();});
+  const ask=message=>runInquiry(async()=>{say(message,true);const data=await request("inquiry",{product_id:product,message});const route=data.inquiry_token?"운영자에게 전달됨 · ":data.answer_engine==="OPERATOR_APPROVED_FAQ"?"승인된 답변 · ":"자동 답변 · ";say(route+data.message);if(data.inquiry_token)watchInquiry(data);if(data.action==="START_ORDER")by("single").focus();});
   by("ask").onsubmit=event=>{event.preventDefault();const text=by("question").value.trim();if(!text)return;by("question").value="";ask(text);};
   by("stock").onclick=()=>ask("재고와 사이즈 옵션 알려주세요");
   by("add").onclick=()=>run(async()=>{const line=selected();await request("quote",{line_items:[line]});const existing=cart.find(v=>v.product_id===line.product_id&&v.variation_id===line.variation_id);if(existing){if(existing.quantity+line.quantity>10)throw new Error("옵션당 최대 10개입니다.");existing.quantity+=line.quantity;}else{if(cart.length>=20)throw new Error("장바구니는 최대 20개 옵션입니다.");cart.push(line);}save();say("장바구니에 담았습니다. 계속 문의하거나 장바구니 주문하기를 누르세요.");});
@@ -45,7 +48,8 @@
     if(!r.ok)throw new Error("인증을 완료하지 못했습니다. 요청 상태를 확인해 주세요.");
     by("phone-number").value="";by("auth-note").textContent="휴대폰 인증이 완료됐습니다.";await showDelivery();
   });
-  for(const id of ["recipient","postcode","address1","address2"])by(id).oninput=()=>{prepared=null;by("confirm").disabled=true;by("final-review").replaceChildren();};
+  by("address-search").onclick=openPostcode;by("address-search-close").onclick=()=>{by("address-search-layer").hidden=true;by("address-search-frame").replaceChildren();};
+  for(const id of ["recipient","postcode","address1","address2"])by(id).oninput=invalidatePrepared;
   by("prepare").onclick=()=>run(async()=>{
     if(pending)throw new Error("진행 중인 주문을 먼저 확인해 주세요.");
     const headers=await authHeaders();const delivery={recipient:by("recipient").value,postcode:by("postcode").value,address1:by("address1").value,address2:by("address2").value};

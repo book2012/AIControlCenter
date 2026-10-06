@@ -124,8 +124,11 @@ def main():
  const session=await fetch('/shopping/auth/session');if(!session.ok)throw new Error('session');
  if(document.querySelector('#phone-code').value||!document.querySelector('#confirm').disabled)throw new Error('otp or premature order');
  await wait(()=>!document.querySelector('#delivery-form').hidden);
- document.querySelector('#recipient').value='DEV 수령인';document.querySelector('#postcode').value='12345';
- document.querySelector('#address1').value='DEV 테스트 배송 주소';document.querySelector('#prepare').click();
+ document.querySelector('#recipient').value='DEV 수령인';
+ window.kakao={Postcode:function(options){this.embed=()=>options.oncomplete({zonecode:'12345',userSelectedType:'R',roadAddress:'서울특별시 테스트구 테스트로 1',jibunAddress:''});}};
+ document.querySelector('#address-search').click();await wait(()=>document.querySelector('#postcode').value==='12345'&&document.querySelector('#address1').value.includes('테스트로'));
+ if(!document.querySelector('#address-search-layer').hidden)throw new Error('address search layer');
+ document.querySelector('#address2').value='테스트 전용';document.querySelector('#prepare').click();
  await wait(()=>!document.querySelector('#confirm').disabled);
  document.querySelector('#confirm').click();document.querySelector('#confirm').click();
  await wait(()=>document.querySelector('#auth-note').textContent.includes('접수 완료'));

@@ -28,6 +28,10 @@
   "local_ai_endpoint": "http://127.0.0.1:11434",
   "local_ai_stock_price_operator_judgment_verified": true,
   "inquiry_answer_mode": "local model intent judgment; authoritative catalog facts rendered by Core",
+  "inquiry_route_labeling_enabled": true,
+  "korean_address_search": "Kakao Postcode loaded on explicit user action; selected postcode/base address only",
+  "kakao_postcode_embed_browser_passed": true,
+  "live_dev_runtime_restarted_and_running": true,
   "prod_mutation": false,
   "full_catalog_migrated": false,
   "production_ready": false
