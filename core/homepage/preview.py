@@ -18,13 +18,14 @@ from core.shopping.inquiries import InMemoryInquiryRepository
 PRESENTATION_VERSION = "SHOP_MEDIA_003_AGACHICHI"
 
 
-def create_app(*, lookbook: bool = True) -> FastAPI:
+def create_app(*, lookbook: bool = True, include_samples: bool = False) -> FastAPI:
     catalog = DemoCommerceCatalogAdapter(
         catalog_root=(
             Path(__file__).resolve().parents[2] / "brands/orange-coco/catalog" / "lookbook-preview"
             if lookbook else Path(__file__).resolve().parents[2] / "brands/orange-coco/catalog"),
         upload_overlay=(Path(__file__).resolve().parents[2] / "brands/agachichi/catalog/dev-upload-products.json")
         if lookbook else None,
+        include_samples=include_samples or not lookbook,
     )
     service = ShoppingService(settings=ShoppingSettings(
         enabled=True, environment="test", runtime="virtual", deployment_target="mac-mini-m4",
@@ -32,10 +33,11 @@ def create_app(*, lookbook: bool = True) -> FastAPI:
         ai_enabled=False, catalog_adapter="demo",
     ), catalog=catalog)
     service._lookbook_enabled = lookbook
+    service._dev_uploaded_only = lookbook and not include_samples
     service._dev_hot_product_ids = catalog.dev_upload_collection_ids("hot") if lookbook else ()
     service._dev_featured_home = lookbook
     base_orderable = frozenset({"oc-demo-top-0001","oc-demo-bottom-0001","oc-demo-outer-0001","oc-demo-dress-0001","oc-demo-bag-0001"})
-    service._dev_orderable_products = base_orderable | frozenset(catalog.dev_upload_orderable_ids())
+    service._dev_orderable_products = frozenset(pid for pid in base_orderable if catalog.get_product(pid) is not None) | frozenset(catalog.dev_upload_orderable_ids())
     app = FastAPI(title="agachichi local read-only preview", docs_url=None, redoc_url=None)
     app.state.inquiry_repository = InMemoryInquiryRepository()
     app.include_router(homepage.router)

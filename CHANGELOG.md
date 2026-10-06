@@ -6152,3 +6152,6 @@ Removed the separate chatbot button below SIZE. Detailed explanation and the mes
 
 ## DEV front model thumbnails and clean garment detail
 The two uploaded coats use a single front-facing model portrait in HOT, UPDATE, search cards and PDP hero. Detail order is hero → 상세설명 → background-removed garment retouch → other model angles → order controls. Raw upload screenshots are retained for provenance but are not rendered. Transparent WebP cutouts preserve alpha; model shots share the same neutral studio tone. 158 focused regressions and seven isolated Chrome chatbot checks passed. No commerce stock or PROD mutation.
+
+### DEV storefront uploaded products only
+Default DEV storefront hides legacy sample products across home, search, category counts, direct PDP and chatbot selection. Original JSON/media and commerce order history remain intact; explicit include_samples=True is reserved for legacy fixture regression. New enabled uploads are included automatically. No PROD or Woo stock mutation.

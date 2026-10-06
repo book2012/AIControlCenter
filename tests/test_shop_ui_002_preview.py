@@ -190,7 +190,7 @@ def test_lookbook_plan_is_deterministic_and_completed_assets_have_matching_check
 
 def test_all_agachichi_media_routes_and_raw_rendered_tags_match_local_records():
     manifest = json.loads((ROOT / "brands/agachichi/assets/media/SHOP_MEDIA_003.json").read_text())
-    with TestClient(create_app()) as lookbook:
+    with TestClient(create_app(include_samples=True)) as lookbook:
         for item in manifest["assets"]:
             response = lookbook.get(item["photo_route"])
             if item["status"] == "GENERATED":
@@ -204,7 +204,7 @@ def test_all_agachichi_media_routes_and_raw_rendered_tags_match_local_records():
 
 
 def test_real_lookbook_composition_prioritizes_editorial_hot_and_update():
-    with TestClient(create_app()) as lookbook:
+    with TestClient(create_app(include_samples=True)) as lookbook:
         html = lookbook.get("/homepage/storefront").text
         assert len(rendered_cards(html)) == 26
         assert 'id="featured-hot-title">HOT' in html and 'id="feed-title">UPDATE' in html
@@ -218,7 +218,7 @@ def test_real_lookbook_composition_prioritizes_editorial_hot_and_update():
 
 def test_dev_upload_product_is_classified_priced_and_orderable():
     expected_id = "ag-upload-outer-0001"
-    with TestClient(create_app()) as lookbook:
+    with TestClient(create_app(include_samples=True)) as lookbook:
         service = lookbook.app.dependency_overrides[get_shopping_service]()
         assert expected_id in storefront.dev_orderable(service)
         assert len(storefront.dev_orderable(service)) == 7
@@ -252,7 +252,7 @@ def test_media_policy_r1_uses_hashtags_and_disables_legacy_fallback():
     manifest = json.loads((ROOT / "brands/agachichi/assets/media/SHOP_MEDIA_003.json").read_text())
     assert manifest["legacy_fallback_active"] is False
     assert manifest["brand_id"] == "agachichi" and manifest["legacy_fallback_active"] is False
-    with TestClient(create_app()) as lookbook:
+    with TestClient(create_app(include_samples=True)) as lookbook:
         home = lookbook.get("/homepage/storefront").text
         search = lookbook.get("/homepage/storefront/search?category=women-tops").text
         assert home.count("#") >= 72 and search.count("#") >= 3
@@ -269,7 +269,7 @@ def test_media_policy_r1_uses_hashtags_and_disables_legacy_fallback():
       for page in (1, 2)],
 ])
 def test_r1_cards_are_image_then_hashtag_only(path):
-    with TestClient(create_app()) as lookbook:
+    with TestClient(create_app(include_samples=True)) as lookbook:
         response = lookbook.get(path)
         assert response.status_code == 200
         assert re.search(r'class="wordmark"[^>]*>agachichi</a>', response.text)
@@ -299,7 +299,7 @@ def test_r1_cards_are_image_then_hashtag_only(path):
 
 
 def test_r1_pdp_keeps_all_canonical_fields_and_unknown_is_404():
-    with TestClient(create_app()) as lookbook:
+    with TestClient(create_app(include_samples=True)) as lookbook:
         response = lookbook.get("/homepage/storefront/product/oc-demo-top-0001")
         assert response.status_code == 200
         pdp = response.text

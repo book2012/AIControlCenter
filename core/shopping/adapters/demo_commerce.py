@@ -88,6 +88,7 @@ class DemoCommerceCatalogAdapter:
         self,
         catalog_root: Path | str = DEFAULT_CATALOG_ROOT,
         upload_overlay: Path | str | None = None,
+        include_samples: bool = True,
     ) -> None:
         self._bundle = OrangeCocoCatalogLoader(
             catalog_root
@@ -106,7 +107,7 @@ class DemoCommerceCatalogAdapter:
         ] + [
             self._map_product(product)
             for product in self._bundle.products
-            if product.get("enabled", True)
+            if include_samples and product.get("enabled", True)
         ]
 
         self._products_by_id = {
@@ -117,6 +118,7 @@ class DemoCommerceCatalogAdapter:
         self._catalog_by_id = {
             str(product["id"]): product
             for product in (*self._upload_records, *self._bundle.products)
+            if str(product["id"]) in self._products_by_id
         }
 
     def dev_upload_collection_ids(self, collection: str) -> tuple[str, ...]:

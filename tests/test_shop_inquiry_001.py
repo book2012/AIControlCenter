@@ -1,6 +1,17 @@
-from core.homepage.preview import create_app
+from core.homepage.preview import create_app as create_preview_app
+from fastapi import FastAPI
+from core.api.routes.shopping import router
 from fastapi.testclient import TestClient
 
+
+def create_app():
+    # Exercise the legacy router contract in isolation; customer preview deliberately excludes it.
+    preview = create_preview_app(include_samples=True)
+    app = FastAPI()
+    app.include_router(router)
+    app.state.inquiry_repository = preview.state.inquiry_repository
+    app.dependency_overrides = preview.dependency_overrides.copy()
+    return app
 
 def test_inquiry_contract_resolves_canonical_product_variant_and_kakao():
     with TestClient(create_app()) as client:
@@ -15,7 +26,8 @@ def test_inquiry_contract_resolves_canonical_product_variant_and_kakao():
         assert payload["id"].startswith("AG-INQ-") and payload["product"] == {"id": "oc-demo-top-0001", "name": "소프트 린넨 블라우스"}
         assert payload["variant"] == {"id": "oc-demo-top-0001-m", "label": "M"}
         assert "<script>" not in payload["formatted_message"] and payload["id"] in payload["formatted_message"] and "선택 사이즈: M" in payload["formatted_message"]
-        fetched = client.get(f"/shopping/inquiries/{payload['id']}").json()
+        assert client.get(f"/shopping/inquiries/{payload['id']}").status_code == 401
+        fetched = client.get(f"/shopping/inquiries/{payload['id']}", headers={"X-Inquiry-Access-Token": payload["public_access_token"]}).json()
         assert fetched == {**payload, "public_access_token": None}
         assert payload["public_access_token"] and client.post(f"/shopping/inquiries/{payload['id']}/messages", headers={"X-Inquiry-Access-Token": payload["public_access_token"]}, json={"body": "추가 문의"}).status_code == 200
 

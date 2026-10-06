@@ -55,6 +55,8 @@ def template(filename: str, **values: str) -> str:
 
 def rendered(filename: str, values: dict, code: int, retry_id: str, service=None) -> tuple[str, int]:
     values["media"] = storefront_media.browser_mapping()
+    if service is not None and getattr(service, "_dev_uploaded_only", False) is True:
+        values["media"] = json.dumps({key: value for key, value in json.loads(values["media"]).items() if key.startswith("ag-upload-")}, ensure_ascii=False)
     html = template(filename, **values)
     if service is not None:
         from core.homepage.storefront_chat import widget
