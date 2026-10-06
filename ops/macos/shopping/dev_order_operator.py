@@ -35,35 +35,41 @@ class DevOperatorAdapter:
             text+="\n답장: "+phone+" 고객 주문확인\n여러 주문은: "+phone+" 고객 주문확인 #"+str(r["provider_order_id"])
         text+="\n상세: 주문상세 #"+str(r["provider_order_id"])+" · 전체: 주문목록"
         return text
+    def display_state(self,row):
+        if row["state"]!="CONFIRMED" or self.aftersales is None:return row["state"]
+        fulfillment=self.aftersales.admin_fulfillment(row["provider_order_id"])
+        return "COMPLETED" if fulfillment["state"]=="DELIVERED" else "SHIPPED" if fulfillment["state"]=="SHIPPED" else "READY_TO_SHIP"
     def admin_orders(self,limit=50):
         rows=self.rows()[:max(1,min(int(limit),100))]
-        return [{"order_id":r["provider_order_id"],"phone":r["phone"],"state":r["state"],"requested_at":r.get("requested_at"),
+        return [{"order_id":r["provider_order_id"],"phone":r["phone"],"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]]} for r in rows]
     def admin_detail(self,order_id):
         rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id)]
         if len(rows)!=1:return None
         r=rows[0];d=r["delivery"]
-        return {"order_id":r["provider_order_id"],"phone":r["phone"],"state":r["state"],"requested_at":r.get("requested_at"),
+        return {"order_id":r["provider_order_id"],"phone":r["phone"],"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]],
             "delivery":{"recipient":d.get("first_name",""),"postcode":d.get("postcode",""),"address1":d.get("address_1",""),"address2":d.get("address_2","")}}
     def list_message(self,limit=10):
         rows=self.rows()[:max(1,min(int(limit),20))]
         if not rows:return "현재 확인 가능한 주문이 없습니다."
-        labels={"PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        labels={"PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"발송대기","SHIPPED":"배송중","COMPLETED":"처리완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         lines=["최근 주문 "+str(len(rows))+"건"]
         for r in rows:
             item=r["quote"]["line_items"][0] if r["quote"]["line_items"] else {"name":"상품","option":"","quantity":0}
             more=" +"+str(len(r["quote"]["line_items"])-1) if len(r["quote"]["line_items"])>1 else ""
-            lines.append("#"+str(r["provider_order_id"])+" · "+r["phone"]+" · "+labels.get(r["state"],r["state"])+" · "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"])+"\n"+item["name"]+" / "+str(item.get("option") or "기본")+" / "+str(item["quantity"])+"개"+more)
+            display=self.display_state(r)
+            lines.append("#"+str(r["provider_order_id"])+" · "+r["phone"]+" · "+labels.get(display,display)+" · "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"])+"\n"+item["name"]+" / "+str(item.get("option") or "기본")+" / "+str(item["quantity"])+"개"+more)
         lines.append("상세보기: 주문상세 #주문번호")
         return "\n\n".join(lines)
     def detail_message(self,order_id,phone=None):
         rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id) and (phone is None or r["phone"]==phone)]
         if len(rows)!=1:return "해당 주문을 찾지 못했습니다." if not rows else "주문을 구분할 수 없습니다."
-        r=rows[0];d=r["delivery"];labels={"PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        r=rows[0];d=r["delivery"];labels={"PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"발송대기","SHIPPED":"배송중","COMPLETED":"처리완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         items="\n".join("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
         address=" ".join(v for v in (d.get("address_1",""),d.get("address_2","")) if v).strip()
-        return ("주문 #"+str(r["provider_order_id"])+" 상세\n상태: "+labels.get(r["state"],r["state"])+"\n고객: "+r["phone"]+"\n수령인: "+str(d.get("first_name",""))+"\n우편번호: "+str(d.get("postcode",""))+"\n주소: "+address+"\n\n"+items+"\n총액: "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
+        display=self.display_state(r)
+        return ("주문 #"+str(r["provider_order_id"])+" 상세\n상태: "+labels.get(display,display)+"\n고객: "+r["phone"]+"\n수령인: "+str(d.get("first_name",""))+"\n우편번호: "+str(d.get("postcode",""))+"\n주소: "+address+"\n\n"+items+"\n총액: "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
     def resolve(self,text,update_id=None):
         if self.inquiry_queue is not None and update_id is not None:
             reply=self.inquiry_queue.command(text,update_id)

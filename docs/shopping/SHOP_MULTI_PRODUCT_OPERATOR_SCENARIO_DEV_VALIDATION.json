@@ -1,0 +1,38 @@
+{
+  "environment": "DEV",
+  "active_demo_products": [
+    "oc-demo-top-0001",
+    "oc-demo-bottom-0001",
+    "oc-demo-outer-0001",
+    "oc-demo-dress-0001",
+    "oc-demo-bag-0001"
+  ],
+  "provider_product_ids": [
+    10,
+    17,
+    21,
+    25,
+    29
+  ],
+  "synthetic_phone": "01000000000",
+  "real_sms": false,
+  "scenario_orders": {
+    "31": "PENDING_REVIEW",
+    "32": "READY_TO_SHIP",
+    "33": "SHIPPED",
+    "34": "COMPLETED",
+    "35": "REJECTED"
+  },
+  "synthetic_return_case": true,
+  "synthetic_inquiries": {
+    "pending": 2,
+    "approved": 1
+  },
+  "telegram_pending_after_dispatch": 0,
+  "storefront_focused_tests": 51,
+  "storefront_combined_tests": 150,
+  "operator_focused_tests": 29,
+  "payment": false,
+  "carrier_api": false,
+  "prod_mutation": false
+}

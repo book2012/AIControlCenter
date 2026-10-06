@@ -47,27 +47,37 @@ def assert_isolation():
         if any(name.startswith('ai-shopping') for name in item['NetworkSettings']['Networks']):raise RuntimeError('PROD_NETWORK_DENIED')
 
 class DevCatalog:
-    def __init__(self,commerce,cfg):self.commerce=commerce;self.cfg=cfg
+    def __init__(self,commerce,cfg):
+        self.commerce=commerce;self.cfg=cfg
+        products=cfg.get('active_products')
+        if isinstance(products,list) and products:
+            self.products={str(v['product_id']):v for v in products if isinstance(v,dict) and isinstance(v.get('product_id'),int)}
+        else:
+            self.products={str(cfg['provider_product_id']):{'product_id':cfg['provider_product_id'],'demo_id':'oc-demo-top-0001',
+                'image_demo_id':'oc-demo-top-0001','sku':'aicc-dev-oc-demo-top-0001','category':'TOP'}}
     def read(self,path):
         response=requests.get('https://localhost:18446/wp-json/wc/v3/'+path,
             auth=(self.commerce['consumer_key'],self.commerce['consumer_secret']),verify=str(PRIVATE/'dev-woo-cert.pem'),
             timeout=15,allow_redirects=False,stream=True)
         if response.status_code!=200:response.close();raise ValueError('DEV_CATALOG_UNAVAILABLE')
         return WooCommerceOrderWriter._document(response)
+    def binding(self,product_id):
+        value=self.products.get(str(product_id))
+        if value is None:raise ValueError('DEV_PRODUCT_NOT_ALLOWED')
+        return value
     def stock_summary(self,product_id):
         self.get_product(product_id)
-        rows=self.read('products/'+product_id+'/variations?per_page=100')
+        rows=self.read('products/'+str(product_id)+'/variations?per_page=100')
         return '현재 재고: '+', '.join(str(v['attributes'][0]['option'])+': '+str(v['stock_quantity'])+'개' for v in rows if v.get('manage_stock') is True and type(v.get('stock_quantity')) is int)
     def get_product(self,product_id):
-        if product_id!=str(self.cfg['provider_product_id']):raise ValueError('DEV_PRODUCT_NOT_ALLOWED')
-        raw=self.read('products/'+product_id)
-        if raw['id']!=self.cfg['provider_product_id'] or raw['sku']!='aicc-dev-oc-demo-top-0001':raise ValueError('DEV_PRODUCT_BINDING')
-        variants=self.read('products/'+product_id+'/variations?per_page=100')
+        binding=self.binding(product_id);raw=self.read('products/'+str(product_id))
+        if raw['id']!=binding['product_id'] or raw['sku']!=binding['sku']:raise ValueError('DEV_PRODUCT_BINDING')
+        variants=self.read('products/'+str(product_id)+'/variations?per_page=100')
         options=tuple(ProductVariant(str(v['id']),str(v['attributes'][0]['option']),'size',
             v['status']=='publish' and v['stock_status']=='instock' and (not v['manage_stock'] or v['stock_quantity']>0)) for v in variants)
         return {'id':str(raw['id']),'name':raw['name'],'slug':raw['slug'],'description':raw['description'],
-            'price':raw['price'],'currency':'KRW','category':'TOP','in_stock':raw['stock_status']=='instock',
-            'source':'woocommerce','image_url':'/__order-dev/product-image','variants':options}
+            'price':raw['price'],'currency':'KRW','category':binding['category'],'in_stock':raw['stock_status']=='instock',
+            'source':'woocommerce','image_url':'/__order-dev/product-image/'+binding.get('image_demo_id',binding['demo_id']),'variants':options}
 
 def create_app():
     assert_isolation();cfg=private_config('runtime.private.json');commerce=private_config('commerce.private.json')['woocommerce']
@@ -234,13 +244,30 @@ def create_app():
         return JSONResponse({'receipt_id':public_receipt,'browser_challenge':public_challenge},headers={'Cache-Control':'no-store'})
     asset_root=REPO/'deploy/shopping/wordpress/plugins/ai-shopping-storefront'
     manifest=json.loads((asset_root/'assets/agachichi-v1/deployment-manifest.json').read_text())
-    media=next(v for v in manifest['assets'] if v.get('product_id')=='oc-demo-top-0001')
-    image=asset_root/media['deployed_relative_path']
-    if hashlib.sha256(image.read_bytes()).hexdigest()!=media['sha256']:raise RuntimeError('DEV_MEDIA_HASH_INVALID')
+    media_by_demo={}
+    for binding in catalog.products.values():
+        demo=binding.get('image_demo_id',binding.get('demo_id'))
+        matches=[v for v in manifest['assets'] if v.get('product_id')==demo]
+        if len(matches)!=1:raise RuntimeError('DEV_MEDIA_BINDING_INVALID')
+        media=matches[0];image=asset_root/media['deployed_relative_path']
+        if hashlib.sha256(image.read_bytes()).hexdigest()!=media['sha256']:raise RuntimeError('DEV_MEDIA_HASH_INVALID')
+        media_by_demo[demo]=image
+    @app.get('/__order-dev/product-image/{demo_id}',include_in_schema=False)
+    def product_image(demo_id:str):
+        image=media_by_demo.get(demo_id)
+        if image is None:return JSONResponse({'detail':'not found'},status_code=404,headers={'Cache-Control':'no-store'})
+        return FileResponse(image,media_type='image/jpeg',headers={'Cache-Control':'no-store'})
     @app.get('/__order-dev/product-image',include_in_schema=False)
-    def product_image():return FileResponse(image,media_type='image/jpeg',headers={'Cache-Control':'no-store'})
+    def legacy_product_image():
+        demo=catalog.binding(cfg['provider_product_id']).get('image_demo_id','oc-demo-top-0001')
+        return FileResponse(media_by_demo[demo],media_type='image/jpeg',headers={'Cache-Control':'no-store'})
+    @app.get('/dev-order/product/{demo_id}',include_in_schema=False)
+    def storefront_order_entry(demo_id:str):
+        rows=[v for v in catalog.products.values() if v.get('demo_id')==demo_id]
+        if len(rows)!=1:return JSONResponse({'detail':'not found'},status_code=404,headers={'Cache-Control':'no-store'})
+        return RedirectResponse('/__order-dev/chat/product/'+str(rows[0]['product_id']),status_code=302)
     @app.get('/dev-order',include_in_schema=False)
-    def entry():return RedirectResponse('/__order-dev/chat/product/'+str(cfg['provider_product_id']),status_code=302)
+    def entry():return RedirectResponse('/homepage/storefront',status_code=302)
     return app
 
 if __name__=='__main__':

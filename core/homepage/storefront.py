@@ -263,6 +263,12 @@ def _interleave_products(products: list[dict]) -> list[dict]:
     return mixed
 
 
+def dev_orderable(service: ShoppingService) -> frozenset[str]:
+    value=getattr(service,"_dev_orderable_products",frozenset())
+    if type(value) is not frozenset or any(type(v) is not str or re.fullmatch(r"[A-Za-z0-9_-]{1,128}",v) is None for v in value):return frozenset()
+    return value
+
+
 def cards(items: list[dict], back: str, badge: str = "") -> str:
     result = []
     for product in items:
@@ -359,7 +365,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
               "name": "상품을 찾을 수 없습니다", "category": "", "price": "", "availability": "", "description": "",
               "variants": '<p class="variant-empty">판매 옵션 준비 중입니다.</p>', "inquiry_hidden": "hidden", "product_id": "",
               "photo_hidden": "hidden", "image_attrs": "hidden", "fallback_hidden": "",
-              "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다."}
+              "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_cta": ""}
     code = 200
     try:
         product = product_data(service.get_product(product_id))
@@ -372,7 +378,8 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
                       variants=variant_controls(product),
                       inquiry_hidden="", product_id=escape(product["id"]),
                       photo_hidden="", image_attrs=f'src="{escape(photo)}"' if photo else "hidden",
-                      fallback_hidden="hidden" if photo else "", description_hidden="", status="")
+                      fallback_hidden="hidden" if photo else "", description_hidden="", status="",
+                      dev_order_cta=('<a id="dev-order-cta" class="dev-order-cta" href="/dev-order/product/'+escape(product["id"])+'">DEV 문의·주문하기</a>' if product["id"] in dev_orderable(service) else ""))
     except (ProductNotFoundError, CatalogReadQueryError):
         code = 404
     except Exception:

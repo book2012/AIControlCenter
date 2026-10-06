@@ -17,6 +17,7 @@ def test_admin_console_lists_orders_without_address_and_detail_on_demand():
     with TestClient(app) as client:
         page=client.get("/dev-order/admin")
         assert page.status_code==200 and "DEV 주문 관리자" in page.text and "상세·주소" in page.text
+        assert 'lines.join("\\n")' in page.text and '.join("\\n")' in page.text
         orders=client.get("/__order-dev/admin/orders")
         assert orders.status_code==200 and "delivery" not in orders.text and "테스트로" not in orders.text
         assert orders.json()["orders"][0]["fulfillment"]["state"]=="DELIVERED"

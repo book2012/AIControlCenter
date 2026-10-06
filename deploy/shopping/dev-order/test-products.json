@@ -1,0 +1,7 @@
+[
+  {"demo_id":"oc-demo-top-0001","name":"소프트 린넨 블라우스","category":"TOP","price":"29000","description":"부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.","options":[{"label":"S","stock":20},{"label":"M","stock":20},{"label":"L","stock":0}]},
+  {"demo_id":"oc-demo-bottom-0001","name":"내추럴 와이드 팬츠","category":"BOTTOM","price":"39000","description":"부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.","options":[{"label":"S","stock":8},{"label":"M","stock":10},{"label":"L","stock":6}]},
+  {"demo_id":"oc-demo-outer-0001","name":"소프트 니트 가디건","category":"OUTER","price":"59000","description":"따뜻한 뉴트럴 컬러와 편안한 핏으로 매일 부담 없이 입기 좋습니다.","options":[{"label":"S","stock":5},{"label":"M","stock":7},{"label":"L","stock":4}]},
+  {"demo_id":"oc-demo-dress-0001","name":"내추럴 린넨 원피스","category":"DRESS","price":"49000","description":"부드러운 색감과 자연스러운 실루엣이 일상에 편안하게 어울리는 아이템입니다.","options":[{"label":"S","stock":6},{"label":"M","stock":8},{"label":"L","stock":3}]},
+  {"demo_id":"oc-demo-bag-0001","name":"미니멀 숄더백","category":"BAG","price":"39000","description":"가볍고 자연스러운 무드로 단독 또는 레이어드 스타일에 활용하기 좋습니다.","options":[{"label":"FREE","stock":12}]}
+]

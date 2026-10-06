@@ -6118,3 +6118,7 @@ Delayed operator replies remain manually checkable on the open guest page after 
 ## DEV customer after-sales portal (2026-10-06)
 
 Phone-authenticated customers can now open `/dev-order/my-orders`, see their own completed orders, and request return or size exchange only after an operator-recorded delivery completion and within the 14-day window. Requests support up to five private JPEG/PNG/WebP attachments. Telegram can record internal DEV shipment/delivery state and approve/reject return or exchange cases; `/dev-order/admin` now shows delivery state and after-sales cases. No payment refund, carrier API call, replacement shipment or PROD mutation is claimed. Validation: 54 combined focused tests plus isolated Chrome order E2E. See [after-sales architecture](docs/shopping/SHOP_AFTERSALES_DEV.md).
+
+## DEV multi-product storefront/operator scenario (2026-10-06)
+
+Five demo storefront products are now backed by isolated DEV Woo products and route from their DEV homepage detail pages to the inquiry/order flow. Synthetic operator acceptance data uses phone `01000000000` without SMS and provides mixed order states (#31-#35), a return request, and inquiry states for Telegram/admin testing. Confirmed fulfillment is presented as 발송대기 / 배송중 / 처리완료. The admin loading incident caused by JS newline escaping was fixed and regression-covered. See [multi-product/operator scenario](docs/shopping/SHOP_MULTI_PRODUCT_OPERATOR_SCENARIO_DEV.md).
