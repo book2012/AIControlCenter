@@ -89,9 +89,9 @@ def test_sale_hide_restore_and_stock_reflect_without_app_restart(tmp_path):
         assert 'href="/homepage/storefront/product/'+KNIT not in client.get("/homepage/storefront?collection=sale").text
         op.command("베이직 하이넥 니트 50000으로 할인",1)
         sale=client.get("/homepage/storefront?collection=sale").text
-        assert KNIT in sale and "#SALE" in sale
+        assert KNIT in sale and 'class="sale-label">SALE' in sale
         detail=client.get("/homepage/storefront/product/"+KNIT).text
-        assert "SALE · 정상가 69,000원" in detail
+        assert 'class="price-regular" aria-label="정상가 69,000원"' in detail and 'class="sale-label">SALE' in detail
         op.command("브라운 싱글 롱 코트 가격 200000원으로 변경",2)
         assert "200,000원" in client.get("/homepage/storefront/product/"+BROWN).text
         op.command("카멜 벨티드 롱 코트 L 재고 없음",3)

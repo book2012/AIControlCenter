@@ -1,5 +1,9 @@
 # Roadmap
 
+## 2026-10-06 — SALE price presentation
+
+Discounted web cards and details now show a smaller struck-through regular price first, sale price second, and a red SALE label last. Semantic del/strong markup and explicit price labels preserve accessibility; validated live Woo sale projection remains the authority. Ordinary prices and Telegram text commands remain unchanged. No commerce or PROD mutation.
+
 ## 2026-10-06 — Telegram category lists and product-name search
 
 All storefront category lists now share live price, SALE regular-to-discount comparison, color/size stock, sold-out and hidden markers. Commands support 상의/하의/아우터/원피스/가방/액세서리/남성/전체 plus TOP/BOTTOM/OUTER/DRESS/BAG/ACC/MEN/ALL aliases. Append a product-name keyword, e.g. 상의 리스트 니트. Unknown categories and empty results reply truthfully; all queries are read-only and private-operator-only. PROD and user-modified commerce state remain preserved.

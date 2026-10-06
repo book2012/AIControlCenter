@@ -130,6 +130,18 @@ def price_label(product: dict) -> str:
     return amount + "원" if product["currency"] == "KRW" else product["currency"] + " " + amount
 
 
+def sale_price_html(product: dict, catalog=None) -> str:
+    from decimal import Decimal
+    regular = getattr(catalog, "dev_upload_sale_regular_price", lambda _: None)(product["id"])
+    if type(regular) is not int or not 0 < Decimal(product["price"]) < regular:
+        return ""
+    before = escape(price_label({**product, "price": str(regular)}))
+    current = escape(price_label(product))
+    return ('<span class="sale-prices"><del class="price-regular" aria-label="정상가 '+before+'">'+before+
+            '</del><strong class="price-current" aria-label="할인가 '+current+'">'+current+
+            '</strong><span class="sale-label">SALE</span></span>')
+
+
 def photo_url(product: dict) -> str | None:
     mapped = storefront_media.photo(product)
     if mapped:
@@ -298,7 +310,7 @@ def cards(items: list[dict], back: str, badge: str = "", catalog=None) -> str:
         photo = photo_url(product)
         href = HOME + "/product/" + product["id"] + "?" + urlencode({"return_to": back})
         result.append(template("storefront-card.html", id=escape(product["id"]), href=escape(href),
-                               name=escape(product["name"]), price=escape(price_label(product)), tags=escape(presentation_tags(product)+(" #SALE" if sale_note else "")),
+                               name=escape(product["name"]), price=escape(price_label(product)), tags=escape(presentation_tags(product)), sale_price=sale_price_html(product,catalog),
                                category="", availability="",
                                image_attrs=f'src="{escape(photo)}"' if photo else "hidden",
                                fallback_hidden="hidden" if photo else "", badge=card_badge,
@@ -444,7 +456,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
         model = front(product_id) if product["source"] == "dev_upload" else None
         if model:photo = model["url"]
         gallery = '<section class="detail-gallery" aria-label="상품 사진"><h2>상품 사진</h2>' + "".join('<figure><img loading="lazy" src="'+escape(row["url"])+'" alt="'+escape(product["name"]+" · "+row["label"])+'"><figcaption>'+escape(row["label"])+ (" · 원본을 바탕으로 AI 보정한 이미지" if row["kind"] == "garment-cutout" else " · 실제 착용·보이지 않는 각도와 다를 수 있는 AI 예상 이미지")+'</figcaption></figure>' for row in for_product(product_id)) + '</section>' if product["source"] == "dev_upload" else ""
-        values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)+(" · "+price_note if price_note else " · 임시 가격" if pending_stock or test_stock else "")),
+        values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=(sale_price_html(product,getattr(service,"catalog",None)) or escape(price_label(product)+(" · 임시 가격" if pending_stock or test_stock else ""))),
                       availability=("DEV 테스트 재고 · 재고 있음" if product["in_stock"] else "DEV 테스트 재고 · 품절") if test_stock else "사이즈·재고 확인 중" if pending_stock else "재고 있음" if product["in_stock"] else "품절",
                       variant_title="COLOR" if color_options else "SIZE",
                       dimension_id="purchase-color" if color_options else "purchase-size", other_dimension=other_dimension,

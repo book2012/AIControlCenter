@@ -4,7 +4,7 @@ from core.homepage.preview import create_app
 
 @pytest.mark.parametrize("path",["/homepage/storefront","/homepage/storefront?collection=hot","/homepage/storefront?collection=update","/homepage/storefront/search","/homepage/storefront/search?category=women-outer"])
 def test_customer_pages_have_uploads_and_no_sample_selection(path):
-    with TestClient(create_app()) as c:
+    with TestClient(create_app(managed_projection=False)) as c:
         r=c.get(path)
         assert r.status_code==200
         assert "ag-upload-outer-0001" in r.text and "ag-upload-outer-0002" in r.text
@@ -12,7 +12,7 @@ def test_customer_pages_have_uploads_and_no_sample_selection(path):
 
 
 def test_upload_catalog_counts_pagination_and_direct_sample_lookup():
-    with TestClient(create_app()) as c:
+    with TestClient(create_app(managed_projection=False)) as c:
         rows=c.get("/shopping/products?page_size=1").json()
         assert rows["total"]==19 and len(rows["items"])==1
         assert c.get("/shopping/products?page=20&page_size=1").json()["items"]==[]
@@ -26,6 +26,6 @@ def test_upload_catalog_counts_pagination_and_direct_sample_lookup():
 
 
 def test_explicit_sample_fixture_remains_available():
-    with TestClient(create_app(include_samples=True)) as c:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as c:
         assert c.get("/shopping/products").json()["total"]==139
         assert c.get("/homepage/storefront/product/oc-demo-top-0001").status_code==200

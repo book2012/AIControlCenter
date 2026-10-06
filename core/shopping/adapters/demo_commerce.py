@@ -159,6 +159,11 @@ class DemoCommerceCatalogAdapter:
             self._catalog_by_id = {str(r["id"]): r for r in (*rows, *self._bundle.products) if str(r["id"]) in self._products_by_id}
             self._projection_stamp = stamp
 
+    def dev_upload_sale_regular_price(self, product_id):
+        self._refresh_managed()
+        r = self._catalog_by_id.get(product_id, {})
+        return r.get("regular_price") if r.get("sale_price") is not None else None
+
     def dev_upload_price_note(self, product_id):
         self._refresh_managed()
         r = self._catalog_by_id.get(product_id, {})

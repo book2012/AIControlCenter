@@ -263,3 +263,10 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 .cart-added-actions a,.cart-added-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px;text-decoration:none;cursor:pointer}
 .cart-added-actions a{background:#352b26;color:#fff}.cart-added-actions button{background:var(--paper);color:inherit}
 .cart-added-actions :focus-visible{outline:2px solid #8f6f59;outline-offset:3px}
+
+/* Sale order: smaller struck-through regular price, sale price, red label. */
+.sale-prices { display: inline-flex; align-items: baseline; flex-wrap: wrap; gap: 8px; max-width: 100%; }
+.price-regular { font-size: .68em; font-weight: 400; color: #71665e; text-decoration: line-through; }
+.price-current { font-size: 1em; font-weight: 700; }
+.sale-label { display: inline-block; background: #b42318; color: #fff; font-size: 11px; font-weight: 700; line-height: 1.5; padding: 2px 6px; border-radius: 4px; }
+.product-caption > .sale-prices { margin-top: 6px; font-size: 16px; }

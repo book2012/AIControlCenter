@@ -59,9 +59,10 @@ try{
  await call('Page.enable');await nav('/homepage/storefront');
  await command(1,'베이직 하이넥 니트 50000으로 할인');
  await nav('/homepage/storefront?collection=sale');
- if(!await js('!!document.querySelector(".product-card[data-product-id=ag-upload-top-0006]")&&document.getElementById("home-feed").textContent.includes("#SALE")'))throw Error('SALE feed');
+ if(!await js('!!document.querySelector(".product-card[data-product-id=ag-upload-top-0006]")&&!!document.querySelector("#home-feed .sale-label")'))throw Error('SALE feed');
  await nav('/homepage/storefront/product/ag-upload-top-0006');
- if(!await js('document.body.textContent.includes("50,000원")&&document.body.textContent.includes("정상가 69,000원")'))throw Error('SALE price');
+ if(!await js('document.body.textContent.includes("50,000원")&&document.querySelector(".price-regular")?.textContent==="69,000원"'))throw Error('SALE price');
+ if(!await js('document.querySelector(".price-regular").compareDocumentPosition(document.querySelector(".price-current"))&Node.DOCUMENT_POSITION_FOLLOWING && document.querySelector(".price-current").compareDocumentPosition(document.querySelector(".sale-label"))&Node.DOCUMENT_POSITION_FOLLOWING && parseFloat(getComputedStyle(document.querySelector(".price-regular")).fontSize)<parseFloat(getComputedStyle(document.querySelector(".price-current")).fontSize) && getComputedStyle(document.querySelector(".price-regular")).textDecorationLine.includes("line-through") && getComputedStyle(document.querySelector(".sale-label")).backgroundColor==="rgb(180, 35, 24)"'))throw Error('SALE layout');
  await command(2,'브라운 싱글 롱 코트 가격 200000원으로 변경');
  await nav('/homepage/storefront/product/ag-upload-outer-0004');
  if(!await js('document.body.textContent.includes("200,000원")'))throw Error('regular price');

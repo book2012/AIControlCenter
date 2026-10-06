@@ -28,7 +28,7 @@ def ids(html):
 
 
 def test_default_home_hot_update_feed_and_filters_are_shareable():
-    with TestClient(create_app(include_samples=True)) as client:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as client:
         response = client.get("/homepage/storefront")
         assert response.status_code == 200
         html = response.text
@@ -52,7 +52,7 @@ def test_default_home_hot_update_feed_and_filters_are_shareable():
 
 
 def test_collection_filters_stay_separate_and_use_truthful_empty_states():
-    with TestClient(create_app(include_samples=True)) as client:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as client:
         for collection in ("sale",):
             response = client.get("/homepage/storefront", params={"collection": collection})
             assert response.status_code == 200
@@ -71,7 +71,7 @@ def test_collection_filters_stay_separate_and_use_truthful_empty_states():
 
 
 def test_men_is_forward_compatible_and_has_a_valid_empty_state():
-    with TestClient(create_app(include_samples=True)) as client:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as client:
         response = client.get("/homepage/storefront?category=men")
         assert response.status_code == 200
         assert 'data-feed-filter="men"' in response.text
@@ -81,7 +81,7 @@ def test_men_is_forward_compatible_and_has_a_valid_empty_state():
 
 
 def test_cards_are_image_and_hashtags_only_and_search_remains_dedicated():
-    with TestClient(create_app(include_samples=True)) as client:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as client:
         home = client.get("/homepage/storefront").text
         rendered = re.sub(r"<template\b[^>]*>.*?</template>", "", home, flags=re.S)
         assert "product-name" not in rendered and "product-price" not in rendered and "product-category" not in rendered
@@ -95,7 +95,7 @@ def test_cards_are_image_and_hashtags_only_and_search_remains_dedicated():
 
 
 def test_filter_hrefs_encode_distinct_semantics_and_back_urls():
-    with TestClient(create_app(include_samples=True)) as client:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as client:
         html = client.get("/homepage/storefront").text
         elements = Elements(html).elements
         links = {a[1]["data-feed-filter"]: a[1]["href"] for a in elements if a[0] == "a" and "data-feed-filter" in a[1]}
@@ -111,7 +111,7 @@ def test_filter_hrefs_encode_distinct_semantics_and_back_urls():
 
 
 def test_pdp_variants_are_read_model_data_with_disabled_and_free_options():
-    with TestClient(create_app(include_samples=True)) as client:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as client:
         sized = client.get("/homepage/storefront/product/oc-demo-top-0001")
         assert sized.status_code == 200
         assert '<h2 id="variant-title">SIZE</h2>' in sized.text
@@ -125,7 +125,7 @@ def test_pdp_variants_are_read_model_data_with_disabled_and_free_options():
 
 
 def test_variant_payload_is_canonical_and_not_hardcoded_in_pdp_template():
-    with TestClient(create_app(include_samples=True)) as client:
+    with TestClient(create_app(include_samples=True,managed_projection=False)) as client:
         payload = client.get("/shopping/products/oc-demo-top-0001").json()
         assert [(item["label"], item["available"]) for item in payload["variants"]] == [("S", True), ("M", True), ("L", False)]
         template = open("core/homepage/ui/storefront-product.html", encoding="utf-8").read()

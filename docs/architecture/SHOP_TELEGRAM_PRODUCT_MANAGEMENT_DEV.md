@@ -56,3 +56,7 @@ Each outer block includes price and sale status above the existing variation sto
 ## Category list and search extension
 
 Read-only list grammar supports the six canonical categories, the forward-compatible empty MEN category and ALL. Korean and existing storefront English labels resolve to explicit category keys; unrecognized labels return supported categories. A trailing keyword filters exact product names by case-insensitive substring inside the selected category. Stock, price and sale values still come from one fresh scoped Woo snapshot; query text never becomes a mutation. Empty categories/results are explicit, and existing private operator routing retains priority. The current full-catalog response remains under Telegram's character limit.
+
+## Web SALE visual presentation
+
+Validated sale projection supplies a numeric regular-price accessor. Storefront cards/details render semantic del (smaller, struck-through regular price), strong (sale price), then a red SALE label. All text is escaped and an active lower sale price is required. Normal product cards retain their established layout. Telegram plain text price comparisons remain unchanged. Real Chrome verifies order, relative font size, strike-through and red background using fake sale commands; no live discount is created for visual testing.
