@@ -194,7 +194,7 @@ def test_outer_list_trusted_telegram_reply_and_duplicate(api,composed,tmp_path):
 def test_outer_list_empty_category_is_truthful(tmp_path):
     op=operator(tmp_path);op.records=[r for r in RECORDS if r["category"]!="outer"]
     op.provider.data={r["id"]:op.provider.data[r["id"]] for r in op.records}
-    assert op.command("아우터 리스트",1)=="[DEV] 등록된 아우터가 없습니다."
+    assert op.command("아우터 리스트",1)=="[DEV] 등록된 아우터 상품이 없습니다."
 
 def test_outer_list_displays_regular_price_and_sale_before_after(tmp_path):
     op=operator(tmp_path)
@@ -216,4 +216,28 @@ def test_outer_list_uses_latest_price_after_sale_cancellation(tmp_path):
     reply=op.command("아우터 리스트",2)
     block=next(b for b in reply.split("\n\n") if b.startswith("브라운 싱글 롱 코트"))
     assert "가격 200,000원 · 세일 아님" in block and "할인가" not in block
+    assert not op.provider.calls
+
+@pytest.mark.parametrize("name,category,count",[("상의","top",6),("TOP","top",6),("하의","bottom",1),("BOTTOM","bottom",1),("아우터","outer",5),("OUTER","outer",5),("원피스","dress",4),("DRESS","dress",4),("가방","bag",2),("BAG","bag",2),("액세서리","acc",1),("악세사리","acc",1),("ACC","acc",1),("전체","all",19)])
+def test_each_category_lists_only_its_products_with_price_and_stock(tmp_path,name,category,count):
+    op=operator(tmp_path);reply=op.command(name+" 리스트",1)
+    selected=[r for r in RECORDS if category=="all" or r["category"]==category]
+    assert len(selected)==count and str(count)+"개 상품" in reply
+    assert all(r["name"] in reply for r in selected)
+    assert all(r["name"] not in reply for r in RECORDS if r not in selected)
+    assert "원 · 세일 아님" in reply and "개" in reply
+    assert len(reply)<4096 and not op.provider.calls
+
+def test_category_name_search_and_no_match_are_read_only(tmp_path):
+    op=operator(tmp_path)
+    reply=op.command("상의 리스트 니트",1)
+    assert "베이직 하이넥 니트" in reply and "네이비 / M" in reply and "3개 상품" in reply
+    assert "블라우스" not in reply
+    assert "맞는 상품이 없습니다" in op.command("가방 목록 없는상품",2)
+    assert not op.provider.calls
+
+def test_empty_and_unknown_category_are_truthful(tmp_path):
+    op=operator(tmp_path)
+    assert op.command("남성 리스트",1)=="[DEV] 등록된 남성 상품이 없습니다."
+    assert op.command("없는카테고리 리스트",2).startswith("카테고리:")
     assert not op.provider.calls

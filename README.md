@@ -1,5 +1,9 @@
 # AIControlCenter
 
+## 2026-10-06 — Telegram category lists and product-name search
+
+All storefront category lists now share live price, SALE regular-to-discount comparison, color/size stock, sold-out and hidden markers. Commands support 상의/하의/아우터/원피스/가방/액세서리/남성/전체 plus TOP/BOTTOM/OUTER/DRESS/BAG/ACC/MEN/ALL aliases. Append a product-name keyword, e.g. 상의 리스트 니트. Unknown categories and empty results reply truthfully; all queries are read-only and private-operator-only. PROD and user-modified commerce state remain preserved.
+
 ## 2026-10-06 — Telegram list prices and discounts
 
 아우터 리스트 now includes current regular price and explicit sale status for each product. Active sales display 정상가 X원 → 할인가 Y원 with SALE; non-sale products display 가격 X원 · 세일 아님. Values come from the same fresh authoritative Woo snapshot as stock. No product price, stock or publication mutation occurs. Two regressions verify discount before/after formatting and fresh prices after discount cancellation.

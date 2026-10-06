@@ -2,7 +2,13 @@
 from pathlib import Path
 import base64, hashlib, json, os, re, sqlite3, subprocess, threading
 
+CATEGORY_LABELS={"outer":"아우터","top":"상의","bottom":"하의","dress":"원피스","bag":"가방","acc":"액세서리","men":"남성","all":"전체"}
+CATEGORY_ALIASES={"아우터":"outer","상의":"top","탑":"top","하의":"bottom","바텀":"bottom","원피스":"dress","드레스":"dress","가방":"bag","백":"bag","액세서리":"acc","악세사리":"acc","잡화":"acc","남성":"men","전체":"all",
+                  **{key:key for key in CATEGORY_LABELS}}
+
 HELP="""DEV 상품관리
+상의 / 하의 / 아우터 / 원피스 / 가방 / 액세서리 / 남성 / 전체 리스트
+예: 상의 리스트 니트 · 상품명으로 목록 안에서 검색
 아우터 리스트 · 가격·세일 여부와 사이즈별 현재 재고
 카멜 벨티드 롱 코트 L 재고 없음으로 변경
 베이직 하이넥 니트 네이비 M 재고 3개로 변경
@@ -22,9 +28,12 @@ def parse_command(text, records):
     clean=text.strip()
     if clean in {"상품관리","상품관리 도움말","재고관리","/products"}:
         return {"action":"help"}
-    if re.fullmatch(r"아우터\s*(?:리스트|목록)",clean):
-        return {"action":"list","category":"outer"}
     if len(clean)>300:return None
+    listing=re.fullmatch(r"(.+?)\s*(?:리스트|목록)(?:\s+([^\n\r]{1,80}))?",clean)
+    if listing:
+        category=CATEGORY_ALIASES.get(listing[1].strip().casefold())
+        if category is None:raise CommandDenied("카테고리: 상의 · 하의 · 아우터 · 원피스 · 가방 · 액세서리 · 남성 · 전체")
+        return {"action":"list","category":category,"query":(listing[2] or "").strip()}
     candidates=[]
     for r in records:
         name=r["name"]
@@ -113,9 +122,11 @@ class DevProductOperator:
         with self.lock:
             if cmd["action"]=="list":
                 snap=self.provider.snapshot();self.publish(snap)
-                records=[r for r in self.records if r["category"]==cmd["category"]]
-                if not records:return "[DEV] 등록된 아우터가 없습니다."
-                blocks=["[DEV] 아우터 재고 · "+str(len(records))+"개 상품"]
+                records=[r for r in self.records if cmd["category"]=="all" or r["category"]==cmd["category"]]
+                label=CATEGORY_LABELS[cmd["category"]];query=cmd.get("query","")
+                if query:records=[r for r in records if query.casefold() in r["name"].casefold()]
+                if not records:return ("[DEV] "+label+"에서 ‘"+query+"’에 맞는 상품이 없습니다." if query else "[DEV] 등록된 "+label+" 상품이 없습니다.")
+                blocks=["[DEV] "+label+" 재고 · "+str(len(records))+"개 상품"+(" · 검색: "+query if query else "")]
                 for r in records:
                     row=snap[r["id"]]
                     title=r["name"]+(" [숨김]" if not row["enabled"] else "")

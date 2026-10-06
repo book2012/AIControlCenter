@@ -52,3 +52,7 @@ The extension changes only the operator runtime; its immutable DEV API release c
 ## List price extension
 
 Each outer block includes price and sale status above the existing variation stock rows. A non-null validated sale price displays SALE · 정상가 X원 → 할인가 Y원; otherwise 가격 X원 · 세일 아님. 정상가 denotes the regular selling price, not purchase cost, which this catalog does not contain. A fresh Woo snapshot ensures price changes and cancelled discounts are visible on the next list request. This remains a read-only operator query and preserves the private-chat, no-PROD and API-only immutable-release activation boundaries.
+
+## Category list and search extension
+
+Read-only list grammar supports the six canonical categories, the forward-compatible empty MEN category and ALL. Korean and existing storefront English labels resolve to explicit category keys; unrecognized labels return supported categories. A trailing keyword filters exact product names by case-insensitive substring inside the selected category. Stock, price and sale values still come from one fresh scoped Woo snapshot; query text never becomes a mutation. Empty categories/results are explicit, and existing private operator routing retains priority. The current full-catalog response remains under Telegram's character limit.
