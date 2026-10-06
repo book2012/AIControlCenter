@@ -168,3 +168,30 @@ def test_existing_inquiry_reply_with_price_words_precedes_product_parser(api,com
     tg=OrderTelegramIntegration(ledger=ledger,transport=t,operator_chat_id=CHAT,operator_user_ids=frozenset({OPERATOR}),operator_adapter=existing,product_operator=product_op)
     tg.poll_once();product_op.command.assert_not_called()
     assert t.messages==["문의 답변 저장"]
+
+@pytest.mark.parametrize("text",["아우터 리스트","아우터 목록","아우터리스트","  아우터   리스트  "])
+def test_outer_list_reads_current_stock_and_hidden_state_without_mutation(tmp_path,text):
+    op=operator(tmp_path)
+    op.provider.data[CAMEL]["inventory"]["L"]=0
+    op.provider.data[BROWN]["enabled"]=False
+    reply=op.command(text,99)
+    assert "[DEV] 아우터 재고 · 5개 상품" in reply
+    assert "카멜 벨티드 롱 코트" in reply and "L: 품절 (0개)" in reply
+    assert "브라운 싱글 롱 코트 [숨김]" in reply
+    assert "브라운 / M: 3개" in reply
+    assert "베이직 하이넥 니트" not in reply
+    assert len(reply)<4096 and not op.provider.calls
+    with sqlite3.connect(op.path) as c:assert c.execute("SELECT COUNT(*) FROM product_commands").fetchone()[0]==0
+
+def test_outer_list_trusted_telegram_reply_and_duplicate(api,composed,tmp_path):
+    _,ledger,_=composed;t=Transport();op=operator(tmp_path)
+    t.updates=[{"update_id":1,"message":{"chat":{"id":CHAT,"type":"private"},"from":{"id":OPERATOR,"is_bot":False},"text":"아우터 리스트"}}]
+    tg=OrderTelegramIntegration(ledger=ledger,transport=t,operator_chat_id=CHAT,operator_user_ids=frozenset({OPERATOR}),product_operator=op)
+    tg.poll_once();tg.poll_once()
+    assert len(t.messages)==1 and "카멜 벨티드 롱 코트" in t.messages[0]
+    assert not op.provider.calls
+
+def test_outer_list_empty_category_is_truthful(tmp_path):
+    op=operator(tmp_path);op.records=[r for r in RECORDS if r["category"]!="outer"]
+    op.provider.data={r["id"]:op.provider.data[r["id"]] for r in op.records}
+    assert op.command("아우터 리스트",1)=="[DEV] 등록된 아우터가 없습니다."

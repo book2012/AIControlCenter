@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-06 — Telegram outer stock list
+
+Private DEV operators can send 아우터 리스트 (or 아우터 목록) to receive every uploaded outer's name and current size/color stock, including sold-out and hidden markers. This reads a fresh isolated Woo snapshot, never mutates provider products or adds a mutation-journal entry, and retains existing private-chat authorization and duplicate-update handling. Product additions remain via GPT; PROD and unrelated dirty work are unchanged.
+
 ## 2026-10-06 — DEV Telegram product management
 
 The existing private operator bot can set exact color/size stock, change a product's regular price, set/cancel a sale, and hide/restore uploaded products without deletion. Discounted products receive SALE tagging and feed membership; prices, publication and current Woo stock flow into a validated local storefront projection without another release. Product additions remain through GPT. Existing order/inquiry/aftersales commands and phone-only guest checkout remain intact. Duplicate updates and unknown provider results use a durable Mac journal plus atomic Woo receipts; stock edits share the order-confirmation lock.

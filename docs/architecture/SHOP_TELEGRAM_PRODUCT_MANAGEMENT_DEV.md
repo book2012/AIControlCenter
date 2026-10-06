@@ -42,3 +42,9 @@ A disposable real Chrome harness runs six trusted fake Telegram commands and ver
 ## Activation
 
 Commit/push and clean/upstream verification precede activation. Both homepage and order API use the same immutable commit-addressed DEV release. Preserve the old current manifest and configs, verify listener ownership/cwd, stop only owned DEV processes, release the old poller lease and require DEV/RUNNING poller plus product_management health. The first sync is read-only and publishes actual current Woo state. Rollback restores the old manifest and restarts the owned previous API; the new command journal and Woo receipts remain durable for later reconciliation. PROD, Caddy, Ubuntu and unrelated dirty work are outside scope.
+
+## Outer inventory list extension
+
+아우터 리스트 / 아우터 목록 resolve to a read-only category query before exact product-name parsing. One fresh validated Woo snapshot supplies all five uploaded outers, including exact size/color quantities, 품절 (0개), and [숨김] markers. No provider apply call or mutation-journal entry occurs. The complete current response fits Telegram's 4096-character bound. Private operator auth and durable cursor still apply. Six new regressions exercise grammar, current quantities, hidden markers, category exclusion, empty category, trusted delivery and duplicate suppression.
+
+The extension changes only the operator runtime; its immutable DEV API release can advance independently while the existing homepage reads the unchanged projection schema. Preserve existing live command history and user-modified prices/stock/publication state during activation.

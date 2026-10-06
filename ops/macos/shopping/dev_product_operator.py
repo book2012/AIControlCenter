@@ -3,6 +3,7 @@ from pathlib import Path
 import base64, hashlib, json, os, re, sqlite3, subprocess, threading
 
 HELP="""DEV 상품관리
+아우터 리스트 · 상품명과 사이즈별 현재 재고
 카멜 벨티드 롱 코트 L 재고 없음으로 변경
 베이직 하이넥 니트 네이비 M 재고 3개로 변경
 브라운 싱글 롱 코트 가격 200000원으로 변경
@@ -21,6 +22,8 @@ def parse_command(text, records):
     clean=text.strip()
     if clean in {"상품관리","상품관리 도움말","재고관리","/products"}:
         return {"action":"help"}
+    if re.fullmatch(r"아우터\s*(?:리스트|목록)",clean):
+        return {"action":"list","category":"outer"}
     if len(clean)>300:return None
     candidates=[]
     for r in records:
@@ -108,6 +111,17 @@ class DevProductOperator:
         if cmd is None:return None
         if cmd["action"]=="help":return HELP
         with self.lock:
+            if cmd["action"]=="list":
+                snap=self.provider.snapshot();self.publish(snap)
+                records=[r for r in self.records if r["category"]==cmd["category"]]
+                if not records:return "[DEV] 등록된 아우터가 없습니다."
+                blocks=["[DEV] 아우터 재고 · "+str(len(records))+"개 상품"]
+                for r in records:
+                    row=snap[r["id"]]
+                    title=r["name"]+(" [숨김]" if not row["enabled"] else "")
+                    sizes=["  "+option_label(r,k)+": "+("품절 (0개)" if v==0 else str(v)+"개") for k,v in row["inventory"].items()]
+                    blocks.append(title+"\n"+"\n".join(sizes))
+                return "\n\n".join(blocks)
             if cmd["action"]=="status":
                 snap=self.provider.snapshot();self.publish(snap)
                 row=snap[cmd["id"]];r=next(r for r in self.records if r["id"]==cmd["id"])
