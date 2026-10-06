@@ -12,5 +12,12 @@
   "prod_mutation": false,
   "payment_refund_execution": false,
   "carrier_api_execution": false,
-  "live_activation": false
+  "live_activation": true,
+  "homepage_release_commit": "a21b58c538b029ca7f4379937b1d859e25e34b12",
+  "order_runtime_health": "RUNNING",
+  "product_panel_headless_chrome_passed": true,
+  "product_panel_loading_stuck": false,
+  "my_orders_headless_chrome_passed": true,
+  "legacy_customer_routes_redirected": true,
+  "admin_api_http_200": true
 }

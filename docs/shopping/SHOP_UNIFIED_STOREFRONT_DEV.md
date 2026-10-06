@@ -31,3 +31,10 @@ Return and size-exchange eligibility remains server-authoritative: operator-conf
 - My orders / return / exchange: `/homepage/storefront/my-orders`
 
 Legacy customer-facing DEV order routes remain compatibility redirects only; internal `__order-dev` APIs remain private implementation boundaries.
+
+## Live DEV activation
+Homepage release a21b58c538b029ca7f4379937b1d859e25e34b12 is active on port 18080 and the order runtime is RUNNING on port 18445.
+
+Headless Chrome verified that the allowlisted product detail dynamically replaces the loading placeholder with the real governed order panel, including the order button and same-site 내 주문 link. The page did not remain in the loading state and no commerce-load error was rendered. A second browser pass verified /homepage/storefront/my-orders renders with the same agachichi header, exposes the phone-authentication panel to an unauthenticated customer, and navigates back within the same storefront.
+
+Legacy /dev-order/my-orders and /dev-order/product/{demo_id} now redirect into the storefront presentation. Internal order APIs remain under __order-dev.
