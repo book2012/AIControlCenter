@@ -39,6 +39,7 @@ Approved, sanitized examples are exported privately as `inquiry-learning.jsonl` 
 - 862 scoped order/identity/session/provider/guest regression tests passed.
 - 62 focused stock/Telegram/escalation/approval/FAQ tests passed.
 - Isolated real Chrome guest phone/shipping/order/operator flow passed, exactly one fake writer and two fake messages, no external provider calls.
+- A delayed inquiry concurrency regression proved that Local AI/operator inquiry work no longer suppresses phone verification: inquiry uses an independent read-only UI lock while phone/checkout writes retain the existing serialized write lock. Isolated Chrome observed phone `start` and `verify`, one writer call and two Telegram messages with zero external provider calls.
 - Real DEV Woo order #15 stock decrement and idempotent replay passed; live Local AI reports S19/M20/L0.
 - Actual escalation example #3eddd1bb was delivered to the existing private Telegram operator chat (message #12 SENT). Human policy reply/approval is pending; it is not claimed as a real completed learning approval.
 - A broad legacy suite exposed pre-existing inquiry API directory/bootstrap failures. Representative failures were reproduced unchanged in the prior guest-phone checkout. Those unrelated failures are documented, not counted as current feature passes. Current scoped regression has no failures.

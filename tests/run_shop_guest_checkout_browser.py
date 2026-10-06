@@ -52,7 +52,20 @@ def main():
         from test_shop_guest_chat import Catalog as GuestCatalog
         from test_shop_dev_guest_phone import cfg,Port
         from ops.macos.shopping.dev_guest_phone import DevPhoneBridge,mount_phone_routes
+        inquiry_started=threading.Event();inquiry_release=threading.Event()
         phone_port=Port(lambda:api.time.now)
+        original_start=phone_port.start_challenge
+        def start_and_release(request):
+            value=original_start(request);inquiry_release.set();return value
+        phone_port.start_challenge=start_and_release
+        def delayed_inquiry(message,product):
+            if message=="문의 지연 테스트":
+                inquiry_started.set()
+                if not inquiry_release.wait(20):raise RuntimeError("inquiry release timeout")
+            return "STOCK"
+        @app.get('/__test/inquiry-state')
+        def inquiry_state():return {"started":inquiry_started.is_set()}
+
         bridge=DevPhoneBridge(cfg=cfg(),binding_key=b"test-binding",customer_path=api.path,bridge_path=root/'phone.sqlite3',clock=lambda:api.time.now,port=phone_port)
         def register(value):
             import uuid
@@ -73,7 +86,7 @@ def main():
         store=PrivateCheckoutStore(root/'delivery.sqlite3',clock=lambda:api.time.now.timestamp())
         mount_checkout_routes(app,store=store,phone_cfg=bridge.cfg,boundary=api.boundary,
             application=app.dependency_overrides[get_order_create_application](),catalog=LiveCatalog(),ledger=ledger)
-        mount_guest_chat(app,catalog=GuestCatalog(),session_boundary=api.boundary,phone_available=True,checkout_available=True)
+        mount_guest_chat(app,catalog=GuestCatalog(),session_boundary=api.boundary,phone_available=True,checkout_available=True,intent_classifier=delayed_inquiry)
         @app.post('/__test/operator')
         def operator():
             telegram.dispatch_one()
@@ -101,6 +114,9 @@ def main():
  await wait(()=>!document.querySelector('#order').hidden);
  if(document.querySelector('#phone').disabled||!document.querySelector('#confirm').disabled)throw new Error('unverified order');
  if(!document.querySelector('#summary').textContent.includes('29000'))throw new Error('price');
+ document.querySelector('#question').value='문의 지연 테스트';document.querySelector('#ask').requestSubmit();
+ let inquiryActive=false;for(let i=0;i<50;i++){const state=await (await fetch('/__test/inquiry-state')).json();if(state.started){inquiryActive=true;break;}await pause(50);}
+ if(!inquiryActive)throw new Error('slow inquiry did not start');
  document.querySelector('#phone-number').value='01012345678';document.querySelector('#phone-consent').checked=true;
  document.querySelector('#phone').click();await wait(()=>!document.querySelector('#phone-check').disabled);
  document.querySelector('#phone-code').value='123456';document.querySelector('#phone-check').click();
