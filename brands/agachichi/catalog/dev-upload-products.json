@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "environment": "DEV",
+  "products": [
+    {
+      "id": "ag-upload-outer-0001",
+      "source": "user_upload",
+      "name": "카멜 벨티드 롱 코트",
+      "slug": "camel-belted-long-coat",
+      "category": "outer",
+      "category_label": "OUTER",
+      "description": "허리 벨트로 실루엣을 조절할 수 있는 카멜 브라운 롱 코트입니다. 넓은 라펠과 패치 포켓이 포인트이며 가을·겨울 데일리 아우터로 활용하기 좋습니다.",
+      "style_tip": "니트와 슬랙스, 원피스 위에 매치해 클래식한 데일리 룩으로 활용하기 좋습니다.",
+      "tags": [
+        "벨티드",
+        "롱코트",
+        "카멜",
+        "브라운",
+        "가을",
+        "겨울",
+        "클래식"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-outer-0001",
+      "price_status": "PENDING",
+      "price": 0,
+      "currency": "KRW",
+      "inventory": {
+        "S": 1,
+        "M": 1,
+        "L": 1
+      },
+      "enabled": true,
+      "registered_at": "2026-10-06"
+    }
+  ]
+}

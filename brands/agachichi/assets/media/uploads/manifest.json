@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "environment": "DEV",
+  "assets": [
+    {
+      "id": "ag-upload-outer-0001",
+      "product_id": "ag-upload-outer-0001",
+      "category": "OUTER",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-outer-0001.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/outer/ag-upload-outer-0001.jpg",
+      "sha256": "56d044cf873e0d3c6bd2a21cdd92691791392757c31db0e72799d7c670ede9fc",
+      "source": {
+        "type": "user_upload",
+        "original_file_name": "70603.jpg",
+        "processing": "cropped phone UI only; resized for DEV storefront"
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "environment": "DEV",
+  "catalog_id": "ag-upload-outer-0001",
+  "name": "카멜 벨티드 롱 코트",
+  "category": "OUTER",
+  "tags": [
+    "벨티드",
+    "롱코트",
+    "카멜",
+    "브라운",
+    "가을",
+    "겨울",
+    "클래식"
+  ],
+  "presentation_tags": [
+    "#롱코트",
+    "#벨티드",
+    "#카멜브라운"
+  ],
+  "inventory": {
+    "S": 1,
+    "M": 1,
+    "L": 1
+  },
+  "price_status": "PENDING",
+  "price_supplied": false,
+  "storefront_price_label": "가격 준비 중",
+  "orderable": false,
+  "woo_product_id": 36,
+  "woo_status": "draft",
+  "woo_image_attached": true,
+  "upload_media_sha256": "56d044cf873e0d3c6bd2a21cdd92691791392757c31db0e72799d7c670ede9fc",
+  "relevant_regression_passed": 143,
+  "secret_scan_passed": true,
+  "prod_mutation": false,
+  "live_activation": false
+}

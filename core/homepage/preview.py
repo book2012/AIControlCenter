@@ -23,9 +23,13 @@ def create_app(*, lookbook: bool = True) -> FastAPI:
         enabled=True, environment="test", runtime="virtual", deployment_target="mac-mini-m4",
         write_mode="read_only", approval_required=True, automation_enabled=False,
         ai_enabled=False, catalog_adapter="demo",
-    ), catalog=DemoCommerceCatalogAdapter(catalog_root=(
-        Path(__file__).resolve().parents[2] / "brands/orange-coco/catalog" / "lookbook-preview"
-        if lookbook else Path(__file__).resolve().parents[2] / "brands/orange-coco/catalog")))
+    ), catalog=DemoCommerceCatalogAdapter(
+        catalog_root=(
+            Path(__file__).resolve().parents[2] / "brands/orange-coco/catalog" / "lookbook-preview"
+            if lookbook else Path(__file__).resolve().parents[2] / "brands/orange-coco/catalog"),
+        upload_overlay=(Path(__file__).resolve().parents[2] / "brands/agachichi/catalog/dev-upload-products.json")
+        if lookbook else None,
+    ))
     service._lookbook_enabled = lookbook
     service._dev_orderable_products = frozenset({"oc-demo-top-0001","oc-demo-bottom-0001","oc-demo-outer-0001","oc-demo-dress-0001","oc-demo-bag-0001"})
     app = FastAPI(title="agachichi local read-only preview", docs_url=None, redoc_url=None)

@@ -209,8 +209,36 @@ def test_real_lookbook_composition_is_one_unified_feed():
         assert 'id="new-grid"' not in html and 'id="best-grid"' not in html
         for slug in ("women-tops", "women-bottoms", "women-outer", "women-dresses", "women-bags", "women-accessories"):
             response = lookbook.get("/homepage/storefront/search", params={"category": slug, "page_size": 100})
-            assert response.status_code == 200 and f"상품 20개" in response.text
-        assert lookbook.get("/shopping/products", params={"page_size": 100}).json()["total"] == 120
+            expected = 21 if slug == "women-outer" else 20
+            assert response.status_code == 200 and f"상품 {expected}개" in response.text
+        assert lookbook.get("/shopping/products", params={"page_size": 100}).json()["total"] == 121
+
+
+def test_dev_upload_product_is_classified_stocked_and_price_gated():
+    expected_id = "ag-upload-outer-0001"
+    with TestClient(create_app()) as lookbook:
+        product_response = lookbook.get("/shopping/products/" + expected_id)
+        assert product_response.status_code == 200
+        product = product_response.json()
+        assert product["name"] == "카멜 벨티드 롱 코트"
+        assert product["category"] == "OUTER"
+        assert product["source"] == "dev_upload"
+        assert product["price"] == "0"
+        assert [(v["label"],v["available"]) for v in product["variants"]] == [("S",True),("M",True),("L",True)]
+        detail = lookbook.get("/homepage/storefront/product/" + expected_id)
+        assert detail.status_code == 200
+        assert "가격 준비 중" in detail.text
+        assert "가격 입력 후 주문 가능 · S/M/L 재고 등록 완료" in detail.text
+        assert 'id="commerce-panel"' not in detail.text
+        assert detail.text.count('class="variant-option"') == 3
+        assert detail.text.count("disabled") == 0
+        photo = lookbook.get("/homepage/assets/storefront/catalog/outer/"+expected_id+".jpg")
+        assert photo.status_code == 200 and photo.headers["content-type"] == "image/jpeg"
+        assert hashlib.sha256(photo.content).hexdigest() == "56d044cf873e0d3c6bd2a21cdd92691791392757c31db0e72799d7c670ede9fc"
+        home = lookbook.get("/homepage/storefront")
+        assert "카멜 벨티드 롱 코트" in home.text and "#롱코트 #벨티드 #카멜브라운" in home.text
+        search = lookbook.get("/homepage/storefront/search",params={"q":"벨티드"})
+        assert search.status_code == 200 and expected_id in search.text
 
 
 def test_media_policy_r1_uses_hashtags_and_disables_legacy_fallback():
@@ -242,7 +270,8 @@ def test_r1_cards_are_image_then_hashtag_only(path):
         assert "오렌지 코코" not in response.text
         assert "/homepage/assets/storefront/photos/" not in response.text
         cards = rendered_cards(response.text)
-        assert len(cards) == (24 if path == storefront.HOME else 8 if "page=2" in path else 12)
+        expected = 24 if path == storefront.HOME else 9 if "women-outer" in path and "page=2" in path else 8 if "page=2" in path else 12
+        assert len(cards) == expected
         for card in cards:
             elements = Elements(card).elements
             assert [(tag, attrs.get("class")) for tag, attrs in elements] == [

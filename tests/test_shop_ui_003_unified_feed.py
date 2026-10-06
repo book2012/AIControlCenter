@@ -33,7 +33,7 @@ def test_default_home_is_one_mixed_feed_and_filters_are_shareable():
         assert response.status_code == 200
         html = response.text
         assert len(cards(html)) == 24
-        assert 'id="feed-count">상품 120개<' in html
+        assert 'id="feed-count">상품 121개<' in html
         assert {value.split("-")[2] for value in ids(html)} == {"top", "bottom", "outer", "dress", "bag", "acc"}
         assert [value.split("-")[2] for value in ids(html)[:6]] == ["top", "bottom", "outer", "dress", "bag", "acc"]
         assert 'id="new-grid"' not in html and 'id="best-grid"' not in html

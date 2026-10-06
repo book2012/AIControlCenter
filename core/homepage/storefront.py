@@ -112,8 +112,10 @@ def product_data(raw: dict) -> dict:
 
 
 def price_label(product: dict) -> str:
-    # Decimal fixed notation preserves every fractional digit without float conversion.
+    # Zero is a sentinel only for DEV upload records awaiting operator price input.
     from decimal import Decimal
+    if product.get("source") == "dev_upload" and Decimal(product["price"]) == 0:
+        return "가격 준비 중"
     whole, dot, fraction = format(Decimal(product["price"]), "f").partition(".")
     grouped = re.sub(r"\B(?=(\d{3})+(?!\d))", ",", whole)
     amount = grouped + dot + fraction
@@ -139,6 +141,8 @@ def presentation_tags(product: dict) -> str:
     if any(word in name for word in ("블라우스", "셔츠")): tags[0] = "#블라우스" if "블라우스" in name else "#셔츠"
     if any(word in name for word in ("오버핏", "와이드")): tags[1] = "#오버핏"
     if any(word in name for word in ("니트", "가디건")): tags[1] = "#니트"
+    if product["source"] == "dev_upload" and "코트" in name:
+        tags = ["#롱코트" if "롱" in name else "#코트", "#벨티드" if "벨티드" in name else "#아우터", "#카멜브라운" if "카멜" in name else "#가을무드"]
     return " ".join(tags[:3])
 
 
@@ -307,7 +311,7 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
         values["feed_status"] = "카테고리를 불러오지 못했습니다."
     try:
         products, total = _home_page(service, state, available)
-        products = [product for product in products if product["source"] == "demo"]
+        products = [product for product in products if product["source"] in {"demo", "dev_upload"}]
         values["feed"] = cards(products, home_url(state))
         values["feed_count"] = f"상품 {total}개"
         if len(products) == FEED_PAGE_SIZE and total > state.get("page", 1) * FEED_PAGE_SIZE:
@@ -381,7 +385,9 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
                       inquiry_hidden="hidden" if product["id"] in dev_orderable(service) else "",
                       dev_order_panel=('<section id="commerce-panel" class="commerce-panel" data-demo-product="'+escape(product["id"])+'"><p>주문 기능을 불러오는 중…</p></section>' if product["id"] in dev_orderable(service) else ""),
                       dev_order_assets=('<script src="/homepage/assets/storefront-commerce.js" defer></script>' if product["id"] in dev_orderable(service) else ""),
-                      commerce_notice=("DEV 주문 테스트 · 실제 결제·배송 없음" if product["id"] in dev_orderable(service) else "상품 미리보기 · 현재 구매는 지원하지 않습니다."))
+                      commerce_notice=("DEV 주문 테스트 · 실제 결제·배송 없음" if product["id"] in dev_orderable(service)
+                                       else "가격 입력 후 주문 가능 · S/M/L 재고 등록 완료" if product["source"] == "dev_upload" and str(product["price"]) in {"0", "0.0"}
+                                       else "상품 미리보기 · 현재 구매는 지원하지 않습니다."))
     except (ProductNotFoundError, CatalogReadQueryError):
         code = 404
     except Exception:

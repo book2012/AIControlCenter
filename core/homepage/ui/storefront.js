@@ -90,8 +90,10 @@
 
   function photoURL(product) {
     // Presentation mapping is repository-owned; product data stays canonical.
-    const matchId = /^oc-demo-(top|bottom|outer|dress|bag|acc)-[0-9]{4}$/.exec(product.id);
-    if (product.source === "demo" && matchId && product.category.toLowerCase() === matchId[1] && media.has(product.id)) return media.get(product.id);
+    const demo = /^oc-demo-(top|bottom|outer|dress|bag|acc)-[0-9]{4}$/.exec(product.id);
+    const upload = /^ag-upload-(top|bottom|outer|dress|bag|acc)-[0-9]{4}$/.exec(product.id);
+    if (product.source === "demo" && demo && product.category.toLowerCase() === demo[1] && media.has(product.id)) return media.get(product.id);
+    if (product.source === "dev_upload" && upload && product.category.toLowerCase() === upload[1] && media.has(product.id)) return media.get(product.id);
     return null;
   }
 
@@ -109,7 +111,8 @@
   }
 
   function priceLabel(product) {
-    // Preserve every canonical decimal digit, including trailing zeroes.
+    // Zero is reserved for a DEV upload awaiting operator price input.
+    if (product.source === "dev_upload" && /^0(?:\.0+)?$/.test(product.price)) return "가격 준비 중";
     const [whole, fraction] = product.price.split(".");
     const amount = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (fraction === undefined ? "" : `.${fraction}`);
     return product.currency === "KRW" ? `${amount}원` : `${product.currency} ${amount}`;
