@@ -195,3 +195,25 @@ def test_outer_list_empty_category_is_truthful(tmp_path):
     op=operator(tmp_path);op.records=[r for r in RECORDS if r["category"]!="outer"]
     op.provider.data={r["id"]:op.provider.data[r["id"]] for r in op.records}
     assert op.command("아우터 리스트",1)=="[DEV] 등록된 아우터가 없습니다."
+
+def test_outer_list_displays_regular_price_and_sale_before_after(tmp_path):
+    op=operator(tmp_path)
+    op.provider.data[BROWN]["regular_price"]=200000
+    op.provider.data[BROWN]["sale_price"]=150000
+    reply=op.command("아우터 리스트",1)
+    block=next(b for b in reply.split("\n\n") if b.startswith("브라운 싱글 롱 코트"))
+    assert "SALE · 정상가 200,000원 → 할인가 150,000원" in block
+    assert "브라운 / M: 3개" in block
+    assert "가격 300,000원 · 세일 아님" in reply
+    assert len(reply)<4096 and not op.provider.calls
+
+def test_outer_list_uses_latest_price_after_sale_cancellation(tmp_path):
+    op=operator(tmp_path)
+    op.provider.data[BROWN]["sale_price"]=100000
+    assert "할인가 100,000원" in op.command("아우터 리스트",1)
+    op.provider.data[BROWN]["sale_price"]=None
+    op.provider.data[BROWN]["regular_price"]=200000
+    reply=op.command("아우터 리스트",2)
+    block=next(b for b in reply.split("\n\n") if b.startswith("브라운 싱글 롱 코트"))
+    assert "가격 200,000원 · 세일 아님" in block and "할인가" not in block
+    assert not op.provider.calls

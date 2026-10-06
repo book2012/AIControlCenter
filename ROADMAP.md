@@ -1,5 +1,9 @@
 # Roadmap
 
+## 2026-10-06 — Telegram list prices and discounts
+
+아우터 리스트 now includes current regular price and explicit sale status for each product. Active sales display 정상가 X원 → 할인가 Y원 with SALE; non-sale products display 가격 X원 · 세일 아님. Values come from the same fresh authoritative Woo snapshot as stock. No product price, stock or publication mutation occurs. Two regressions verify discount before/after formatting and fresh prices after discount cancellation.
+
 ## 2026-10-06 — Telegram outer stock list
 
 Private DEV operators can send 아우터 리스트 (or 아우터 목록) to receive every uploaded outer's name and current size/color stock, including sold-out and hidden markers. This reads a fresh isolated Woo snapshot, never mutates provider products or adds a mutation-journal entry, and retains existing private-chat authorization and duplicate-update handling. Product additions remain via GPT; PROD and unrelated dirty work are unchanged.

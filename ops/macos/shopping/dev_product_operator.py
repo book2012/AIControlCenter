@@ -3,7 +3,7 @@ from pathlib import Path
 import base64, hashlib, json, os, re, sqlite3, subprocess, threading
 
 HELP="""DEV 상품관리
-아우터 리스트 · 상품명과 사이즈별 현재 재고
+아우터 리스트 · 가격·세일 여부와 사이즈별 현재 재고
 카멜 벨티드 롱 코트 L 재고 없음으로 변경
 베이직 하이넥 니트 네이비 M 재고 3개로 변경
 브라운 싱글 롱 코트 가격 200000원으로 변경
@@ -120,7 +120,9 @@ class DevProductOperator:
                     row=snap[r["id"]]
                     title=r["name"]+(" [숨김]" if not row["enabled"] else "")
                     sizes=["  "+option_label(r,k)+": "+("품절 (0개)" if v==0 else str(v)+"개") for k,v in row["inventory"].items()]
-                    blocks.append(title+"\n"+"\n".join(sizes))
+                    price=("SALE · 정상가 "+format(row["regular_price"],",")+"원 → 할인가 "+format(row["sale_price"],",")+"원"
+                           if row["sale_price"] is not None else "가격 "+format(row["regular_price"],",")+"원 · 세일 아님")
+                    blocks.append(title+"\n"+price+"\n"+"\n".join(sizes))
                 return "\n\n".join(blocks)
             if cmd["action"]=="status":
                 snap=self.provider.snapshot();self.publish(snap)

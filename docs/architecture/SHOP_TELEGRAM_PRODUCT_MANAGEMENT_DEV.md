@@ -48,3 +48,7 @@ Commit/push and clean/upstream verification precede activation. Both homepage an
 아우터 리스트 / 아우터 목록 resolve to a read-only category query before exact product-name parsing. One fresh validated Woo snapshot supplies all five uploaded outers, including exact size/color quantities, 품절 (0개), and [숨김] markers. No provider apply call or mutation-journal entry occurs. The complete current response fits Telegram's 4096-character bound. Private operator auth and durable cursor still apply. Six new regressions exercise grammar, current quantities, hidden markers, category exclusion, empty category, trusted delivery and duplicate suppression.
 
 The extension changes only the operator runtime; its immutable DEV API release can advance independently while the existing homepage reads the unchanged projection schema. Preserve existing live command history and user-modified prices/stock/publication state during activation.
+
+## List price extension
+
+Each outer block includes price and sale status above the existing variation stock rows. A non-null validated sale price displays SALE · 정상가 X원 → 할인가 Y원; otherwise 가격 X원 · 세일 아님. 정상가 denotes the regular selling price, not purchase cost, which this catalog does not contain. A fresh Woo snapshot ensures price changes and cancelled discounts are visible on the next list request. This remains a read-only operator query and preserves the private-chat, no-PROD and API-only immutable-release activation boundaries.
