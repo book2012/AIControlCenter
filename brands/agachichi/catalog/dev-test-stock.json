@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "environment": "DEV",
+  "status": "USER_AUTHORIZED_TEST_INVENTORY",
+  "catalog_sha256": "1e0d7007a3edf32ace51f6b3609c6b3789af5df9a1ef806d7317a3f87fe9b15d",
+  "products": {
+    "ag-upload-outer-0005": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-outer-0004": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-top-0006": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-bottom-0001": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-outer-0003": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-top-0005": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-dress-0004": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-acc-0001": {
+      "sizes": [
+        "FREE"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-top-0004": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-top-0003": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-dress-0003": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-top-0002": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-dress-0002": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-dress-0001": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-bag-0002": {
+      "sizes": [
+        "FREE"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-bag-0001": {
+      "sizes": [
+        "FREE"
+      ],
+      "quantity_per_combination": 3
+    },
+    "ag-upload-top-0001": {
+      "sizes": [
+        "S",
+        "M",
+        "L"
+      ],
+      "quantity_per_combination": 3
+    }
+  }
+}

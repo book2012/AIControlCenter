@@ -89,11 +89,16 @@ class DemoCommerceCatalogAdapter:
         catalog_root: Path | str = DEFAULT_CATALOG_ROOT,
         upload_overlay: Path | str | None = None,
         include_samples: bool = True,
+        test_inventory: bool = False,
     ) -> None:
         self._bundle = OrangeCocoCatalogLoader(
             catalog_root
         ).load()
         self._upload_records = self._load_upload_overlay(upload_overlay)
+        if test_inventory:
+            from core.homepage.dev_test_stock import overlay
+            self._upload_records = overlay(self._upload_records, upload_overlay)
+
 
         self._site_base_url = os.getenv(
             "SHOPPING_DEMO_SITE_BASE_URL",
@@ -120,6 +125,9 @@ class DemoCommerceCatalogAdapter:
             for product in (*self._upload_records, *self._bundle.products)
             if str(product["id"]) in self._products_by_id
         }
+
+    def dev_upload_test_inventory(self, product_id: str) -> bool:
+        return any(row["id"] == product_id and row.get("inventory_test") is True for row in self._upload_records)
 
     def dev_upload_inventory_pending(self, product_id: str) -> bool:
         return any(row["id"] == product_id and row.get("inventory_pending") is True for row in self._upload_records)
@@ -322,6 +330,9 @@ class DemoCommerceCatalogAdapter:
         variants = tuple(ProductVariant(
             product_id + "-" + str(label).lower(), color_labels.get(label, str(label)), option_type, quantity > 0
         ) for label, quantity in inventory.items())
+        if option_type == "color_size":
+            variants = tuple(ProductVariant(product_id+"-"+key, color_labels[key.split("--")[0]]+" / "+key.split("--")[1].upper(), "color_size", quantity>0) for key,quantity in inventory.items())
+
         return Product(
             id=product_id,
             name=str(product_data["name"]),

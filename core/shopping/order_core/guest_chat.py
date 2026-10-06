@@ -79,6 +79,7 @@ class GuestShoppingChat:
                 if len(matches)!=1 or not matches[0].available:raise ValueError("VARIATION_UNAVAILABLE")
                 variant=matches[0]
             elif line.variation_id is not None:raise ValueError("VARIATION_INVALID")
+            if callable(getattr(self.catalog,"available_quantity",None)) and line.quantity>self.catalog.available_quantity(p.id,line.variation_id):raise ValueError("INSUFFICIENT_STOCK")
             if currency is not None and currency!=p.currency:raise ValueError("MIXED_CURRENCY")
             currency=p.currency
             subtotal=Decimal(p.price)*line.quantity;total+=subtotal

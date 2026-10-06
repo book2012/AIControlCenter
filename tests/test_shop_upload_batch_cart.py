@@ -36,7 +36,7 @@ def test_color_and_unconfirmed_inventory_fail_closed(tmp_path,change):
     with pytest.raises(ValueError):DemoCommerceCatalogAdapter(upload_overlay=path,include_samples=False)
 def test_all_uploaded_media_and_detail_order_are_bound():
     assets=storefront_gallery.assets()
-    with TestClient(create_app()) as c:
+    with TestClient(create_app(test_inventory=False)) as c:
         for row in batch():
             pid=row['id'];html=c.get('/homepage/storefront/product/'+pid).text
             assert 'COLOR' in html and '사이즈·재고 확인 중' in html

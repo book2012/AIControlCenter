@@ -17,7 +17,7 @@ def main():
         body=panel.replace('PRODUCT',pid).replace('OPTIONS','<option value="'+('37' if pid=='36' else '42')+'">M</option>')
         if cart:body=body.replace('data-guest-shop-product=', 'data-cart-page="true" data-guest-shop-product=',1)
         return HTMLResponse(body)
-    preview=TestClient(create_app());app=FastAPI()
+    preview=TestClient(create_app(test_inventory=False));app=FastAPI()
     @app.get('/shopping/auth/session')
     def auth():return JSONResponse({},status_code=200 if state['verified'] else 401,headers={'X-CSRF-Token':'isolated-fake-csrf'} if state['verified'] else {})
     @app.get('/__order-dev/chat/history/session')

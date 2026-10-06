@@ -5712,3 +5712,7 @@ Added selectable presentation-only S/M/L to pending clothing and FREE to bags/ac
 
 ### DEV cart-added popup — 2026-10-06
 Successful add opens an accessible dialog with 장바구니 가기 and 계속 쇼핑하기. Failed adds open no success dialog; closing restores focus. Guest frontend JS is served from the immutable homepage release while order endpoints and the Telegram poller remain unchanged.
+
+
+### DEV test inventory — 2026-10-06
+User-authorized test inventory adds 60 color/size combinations to the 17 new products, 3 units per combination (180 initial units). Existing 7 products and their orders remain unchanged. DEV-only stock/size/price labels remain explicit; replay preserves remaining quantities. Color and size resolve together to provider variation IDs, and quotes reject quantities above current stock. See docs/architecture/SHOP_DEV_TEST_INVENTORY.md.

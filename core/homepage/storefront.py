@@ -307,16 +307,23 @@ def variant_controls(product: dict) -> str:
     variants = product.get("variants") or []
     if not variants:
         return '<p class="variant-empty">판매 옵션 준비 중입니다.</p>'
-    controls = []
+    controls = []; seen_colors=set()
+    combined=all(v["option_type"]=="color_size" for v in variants)
     for index, variant in enumerate(variants):
         disabled = " disabled" if not variant["available"] and variant["option_type"] != "color" else ""
+        if combined:
+            disabled = ""
+            code=variant["id"].removeprefix(product["id"]+"-").split("--")[0]
+            if code in seen_colors:continue
+            seen_colors.add(code)
+            variant={**variant,"id":product["id"]+"-"+code,"label":variant["label"].split(" / ")[0],"option_type":"color"}
         pressed = "false"
         color = variant["id"].removeprefix(product["id"]+"-") if variant["option_type"]=="color" else None
         preview = previews.get(color)
         attrs = (' data-color-id="'+escape(color)+'"'+(' data-color-image="'+escape(preview["url"])+'"' if preview else "")) if color else ""
         controls.append(f'<button type="button" class="variant-option" data-variant-id="{escape(variant["id"])}"{attrs} aria-pressed="{pressed}"{disabled}>{escape(variant["label"])}</button>')
-    title = "색상 선택 · 재고는 주문 시 확인" if all(v["option_type"] == "color" for v in variants) else "사이즈 선택"
-    return '<div class="variant-options" role="group" aria-label="' + title + '">' + "".join(controls) + "</div>"
+    title = "색상 선택 · 재고는 주문 시 확인" if all(v["option_type"] in {"color","color_size"} for v in variants) else "사이즈 선택"
+    return '<div class="variant-options"'+(' data-combined="true"' if combined else "")+' role="group" aria-label="' + title + '">' + "".join(controls) + "</div>"
 
 
 def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]:
@@ -420,16 +427,19 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
         if product["id"] != product_id:
             raise ValueError("Product identity mismatch")
         pending_stock = getattr(service.catalog, "dev_upload_inventory_pending", lambda _: False)(product_id)
-        color_options = bool(product.get("variants")) and all(v["option_type"] == "color" for v in product["variants"])
+        test_stock = getattr(service.catalog, "dev_upload_test_inventory", lambda _: False)(product_id)
+        color_options = bool(product.get("variants")) and all(v["option_type"] in {"color","color_size"} for v in product["variants"])
         other_dimension = '<div id="purchase-size" class="purchase-field"><h2>SIZE · 사이즈</h2>'+temporary_size_controls(product)+'</div>' if color_options else '<div id="purchase-color" class="purchase-field"><h2>COLOR · 컬러</h2><p class="purchase-fixed">'+escape({"ag-upload-outer-0001":"카멜","ag-upload-outer-0002":"오트밀"}.get(product_id,"컬러 확인 중"))+'</p></div>'
+        if test_stock:
+            other_dimension=other_dimension.replace("임시 사이즈 · 실제 사이즈 확인 중 · 재고 확인 후 주문 가능","DEV 테스트 사이즈·재고 · 실제 판매 재고와 다릅니다.")
         photo = photo_url(product)
         from core.homepage.storefront_gallery import for_product, front
         gallery_rows = for_product(product_id) if product["source"] == "dev_upload" else []
         model = front(product_id) if product["source"] == "dev_upload" else None
         if model:photo = model["url"]
         gallery = '<section class="detail-gallery" aria-label="상품 사진"><h2>상품 사진</h2>' + "".join('<figure><img loading="lazy" src="'+escape(row["url"])+'" alt="'+escape(product["name"]+" · "+row["label"])+'"><figcaption>'+escape(row["label"])+ (" · 원본을 바탕으로 AI 보정한 이미지" if row["kind"] == "garment-cutout" else " · 실제 착용·보이지 않는 각도와 다를 수 있는 AI 예상 이미지")+'</figcaption></figure>' for row in for_product(product_id)) + '</section>' if product["source"] == "dev_upload" else ""
-        values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)+(" · 임시 가격" if pending_stock else "")),
-                      availability="사이즈·재고 확인 중" if pending_stock else "재고 있음" if product["in_stock"] else "품절",
+        values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)+(" · 임시 가격" if pending_stock or test_stock else "")),
+                      availability="DEV 테스트 재고 · 옵션별 3개로 시작" if test_stock else "사이즈·재고 확인 중" if pending_stock else "재고 있음" if product["in_stock"] else "품절",
                       variant_title="COLOR" if color_options else "SIZE",
                       dimension_id="purchase-color" if color_options else "purchase-size", other_dimension=other_dimension,
                       description=escape(product["description"] or "등록된 상품 설명이 없습니다."),

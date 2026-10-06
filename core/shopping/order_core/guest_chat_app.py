@@ -56,7 +56,7 @@ def mount_guest_chat(app,*,catalog,session_boundary,phone_available=False,checko
     @app.post("/__order-dev/chat/quote",include_in_schema=False)
     async def quote(request:Request):
         try:payload=await body(request,GuestCart);result=chat.quote(payload)
-        except ValueError:return JSONResponse({"message":"상품·옵션·수량을 확인해 주세요. 품절 또는 잘못된 선택이 포함되어 있습니다."},status_code=422,headers={"Cache-Control":"no-store"})
+        except ValueError as error:return JSONResponse({"message":"선택한 수량이 재고보다 많습니다. 수량을 줄여 주세요." if str(error)=="INSUFFICIENT_STOCK" else "상품·옵션·수량을 확인해 주세요. 품절 또는 잘못된 선택이 포함되어 있습니다."},status_code=422,headers={"Cache-Control":"no-store"})
         except Exception:return JSONResponse({"message":"현재 상품 정보를 확인할 수 없습니다."},status_code=503,headers={"Cache-Control":"no-store"})
         return JSONResponse(result,headers={"Cache-Control":"no-store"})
     @app.get("/__order-dev/chat/capabilities",include_in_schema=False)

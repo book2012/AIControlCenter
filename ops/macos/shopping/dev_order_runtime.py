@@ -67,19 +67,24 @@ class DevCatalog:
         if value is None:raise ValueError('DEV_PRODUCT_NOT_ALLOWED')
         return value
     def inventory_pending(self,product_id):return self.binding(product_id).get("inventory_pending") is True
-    def temporary_price(self,product_id):return self.inventory_pending(product_id)
+    def temporary_price(self,product_id):return self.inventory_pending(product_id) or self.binding(product_id).get("inventory_test") is True
     def stock_summary(self,product_id):
         self.get_product(product_id)
         if self.binding(product_id).get('inventory_pending') is True:return '사이즈와 실물 재고 수량 확인 중입니다. 확인 전에는 주문할 수 없습니다.'
         rows=self.read('products/'+str(product_id)+'/variations?per_page=100')
-        return '현재 재고: '+', '.join(str(v['attributes'][0]['option'])+': '+str(v['stock_quantity'])+'개' for v in rows if v.get('manage_stock') is True and type(v.get('stock_quantity')) is int)
+        return ('DEV 테스트 재고: ' if self.binding(product_id).get('inventory_test') else '현재 재고: ')+', '.join(' / '.join(str(a['option']) for a in v['attributes'])+': '+str(v['stock_quantity'])+'개' for v in rows if v.get('status')=='publish' and v.get('manage_stock') is True and type(v.get('stock_quantity')) is int)
+    def available_quantity(self,product_id,variant_id):
+        rows=self.read('products/'+str(product_id)+'/variations?per_page=100')
+        matches=[v for v in rows if str(v['id'])==variant_id and v.get('status')=='publish' and v.get('manage_stock') is True]
+        if len(matches)!=1 or type(matches[0].get('stock_quantity')) is not int:raise ValueError('DEV_STOCK_BINDING')
+        return matches[0]['stock_quantity']
     def get_product(self,product_id):
         binding=self.binding(product_id);raw=self.read('products/'+str(product_id))
         if raw['id']!=binding['product_id'] or raw['sku']!=binding['sku']:raise ValueError('DEV_PRODUCT_BINDING')
         variants=self.read('products/'+str(product_id)+'/variations?per_page=100')
         pending_stock=self.inventory_pending(product_id)
-        options=tuple(ProductVariant(str(v['id']),str(v['attributes'][0]['option']),binding.get('option_type','size'),
-            not pending_stock and v['status']=='publish' and v['stock_status']=='instock' and (not v['manage_stock'] or v['stock_quantity']>0)) for v in variants)
+        options=tuple(ProductVariant(str(v['id']),(' / '.join(str(next(a['option'] for a in v['attributes'] if a['name'].lower()==name)) for name in ['color','size']) if binding.get('option_type')=='color_size' else str(v['attributes'][0]['option'])),binding.get('option_type','size'),
+            not pending_stock and v['status']=='publish' and v['stock_status']=='instock' and (not v['manage_stock'] or v['stock_quantity']>0)) for v in variants if v['status']=='publish')
         price=raw['price']
         if not price:
             prices={str(v.get('price','')) for v in variants}
@@ -311,6 +316,7 @@ def create_app():
 </div>'''.replace('PRODUCT',html_escape(product['id'],quote=True)).replace('OPTIONS',options or '<option value="">기본 옵션</option>')
         if not any(v.available for v in product['variants']):
             panel=panel.replace('id="add" type="button"','id="add" type="button" disabled').replace('id="single" type="button"','id="single" type="button" disabled')
+        if rows[0].get('inventory_test'):panel=panel.replace('DEV 테스트 주문이며 실제 결제·배송은 진행하지 않습니다.','임시 사이즈·가격·재고로 DEV 주문을 테스트합니다. 실제 판매 재고가 아닙니다.')
         if pending_stock:panel=panel.replace('DEV 테스트 주문이며 실제 결제·배송은 진행하지 않습니다.','사이즈와 실물 재고 확인 전에는 주문할 수 없습니다. 표시 가격은 임시 가격입니다.')
         return HTMLResponse(panel,headers={'Cache-Control':'no-store','X-Robots-Tag':'noindex, nofollow'})
     @app.get('/__order-dev/chat/cart',include_in_schema=False)

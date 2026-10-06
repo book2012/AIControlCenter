@@ -5,7 +5,7 @@ from core.homepage.storefront_gallery import ROOT
 
 def test_all_uploaded_products_show_sizes_without_changing_canonical_variants():
     rows=json.loads((ROOT/'brands/agachichi/catalog/dev-upload-products.json').read_text())['products']
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(test_inventory=False)) as client:
         for row in rows:
             text=client.get('/homepage/storefront/product/'+row['id']).text
             assert 'id="purchase-size"' in text

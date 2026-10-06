@@ -47,7 +47,7 @@ def authoritative_quote(catalog,cart):
         if not price.is_finite() or price<=0:raise ValueError("PRICE_DENIED")
         subtotal=price*line.quantity;total+=subtotal
         items.append({"product_id":line.product_id,"variation_id":line.variation_id,"quantity":line.quantity,
-            "name":product["name"],"option":str(raw["attributes"][0]["option"]),"unit_price":str(price),"subtotal":str(subtotal)})
+            "name":product["name"],"option":next(v.label for v in product["variants"] if v.id==line.variation_id),"unit_price":str(price),"subtotal":str(subtotal)})
     return {"line_items":items,"items_total":str(total),"shipping_fee":"0","total_tax":"0","final_total":str(total),
         "currency":"KRW","shipping_policy":"DEV_FREE_SHIPPING"}
 

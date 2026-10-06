@@ -37,23 +37,40 @@
       }
       const options=document.getElementById("variation");
       if(!cartPage&&options){
+
+        const combined=!!document.querySelector("#detail-variants [data-combined=true]");
+        const buttons=Array.from(document.querySelectorAll("#detail-variants button.variant-option"));
+        const sizes=Array.from(document.querySelectorAll("#purchase-size [data-preview-size]"));
+        if(combined&&sizes[0])sizes[0].setAttribute("aria-pressed","true");
+        const reflect=()=>{
+          const option=options.selectedOptions[0];
+          if(combined){document.getElementById("add").disabled=!option||option.disabled;document.getElementById("single").disabled=!option||option.disabled;}
+          const label=option?.textContent.split(" · ")[0]||"";
+          const parts=combined?label.split(" / "):[label];
+          buttons.forEach(b=>b.setAttribute("aria-pressed",String(b.textContent.trim()===parts[0])));
+          if(combined)sizes.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.previewSize===parts[1])));
+          const button=buttons.find(b=>b.textContent.trim()===parts[0]);
+          if(button)document.getElementById("detail-variants").dispatchEvent(new CustomEvent("shop:variant-selected",{detail:{variantId:button.dataset.variantId}}));
+        };
         const sync=button=>{
-          const option=Array.from(options.options).find(v=>v.textContent.split(" · ")[0]===button.textContent.trim());
-          if(option&&!option.disabled){options.value=option.value;options.dispatchEvent(new Event("change",{bubbles:true}));}
+          const selected=button||buttons.find(b=>b.getAttribute("aria-pressed")==="true")||buttons[0];
+          const size=sizes.find(b=>b.getAttribute("aria-pressed")==="true")?.dataset.previewSize;
+          const label=selected?.textContent.trim()+(combined?" / "+size:"");
+          const option=Array.from(options.options).find(v=>v.textContent.split(" · ")[0]===label&&!v.disabled);
+          if(combined){document.getElementById("add").disabled=!option;document.getElementById("single").disabled=!option;}
+          if(option){options.value=option.value;options.dispatchEvent(new Event("change",{bubbles:true}));}
+          else if(combined)options.value="";
         };
         document.getElementById("detail-variants")?.addEventListener("click",event=>{
-          const button=event.target.closest("button.variant-option");
-          if(button&&!button.disabled)sync(button);
+          const button=event.target.closest("button.variant-option");if(button&&!button.disabled)sync(button);
         });
-        options.addEventListener("change",()=>{
-          const label=options.selectedOptions[0]?.textContent.split(" · ")[0];
-          const buttons=Array.from(document.querySelectorAll("#detail-variants button.variant-option"));
-          buttons.forEach(button=>button.setAttribute("aria-pressed",String(button.textContent.trim()===label)));
-          const button=buttons.find(v=>v.textContent.trim()===label);
-          if(button)document.getElementById("detail-variants").dispatchEvent(new CustomEvent("shop:variant-selected",{detail:{variantId:button.dataset.variantId}}));
+        if(combined)document.getElementById("purchase-size")?.addEventListener("click",event=>{
+          if(event.target.closest("[data-preview-size]"))sync();
         });
+        options.addEventListener("change",reflect);
+        if(combined)sync();else if(options.selectedOptions[0]&&!options.selectedOptions[0].disabled)reflect();
       }
-      if(!cartPage&&options&&options.selectedOptions[0]&&!options.selectedOptions[0].disabled)options.dispatchEvent(new Event("change",{bubbles:true}));
+
       const script=document.createElement("script");
       script.src="/homepage/assets/storefront-guest-chat.js";
       script.defer=true;

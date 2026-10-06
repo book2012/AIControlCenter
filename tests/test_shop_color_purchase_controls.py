@@ -10,7 +10,7 @@ def test_each_color_has_a_manifest_bound_photo(pid,count):
     rows=gallery.color_fronts(pid)
     assert len(rows)==count
     assert len({v["url"] for v in rows.values()})==count
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(test_inventory=False)) as client:
         html=client.get("/homepage/storefront/product/"+pid).text
         assert 'id="purchase-controls"' in html
         assert 'id="purchase-color"' in html and 'id="purchase-size"' in html
@@ -21,7 +21,7 @@ def test_each_color_has_a_manifest_bound_photo(pid,count):
             assert client.get(row["url"]).status_code==200
 
 def test_existing_size_products_also_show_color_and_quantity():
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(test_inventory=False)) as client:
         for pid,label in [("ag-upload-outer-0001","카멜"),("ag-upload-outer-0002","오트밀")]:
             text=client.get("/homepage/storefront/product/"+pid).text
             assert 'id="purchase-color"' in text and label in text
