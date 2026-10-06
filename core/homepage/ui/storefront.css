@@ -255,3 +255,11 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 .size-preview-option[aria-pressed="true"]{background:#352b26;color:#fff;border-color:#352b26}
 .size-preview-option:focus-visible{outline:2px solid #8f6f59;outline-offset:3px}
 .size-preview-note{font-size:12px;color:var(--muted);margin:8px 0}
+
+.cart-added-dialog{width:min(420px,calc(100vw - 32px));padding:24px;border:1px solid var(--line);border-radius:16px;background:var(--paper);color:var(--ink);box-sizing:border-box}
+.cart-added-dialog::backdrop{background:#0006}
+.cart-added-dialog h2{font-size:18px;margin:0 0 20px}
+.cart-added-actions{display:flex;gap:10px;flex-wrap:wrap}
+.cart-added-actions a,.cart-added-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;font-size:14px;text-decoration:none;cursor:pointer}
+.cart-added-actions a{background:#352b26;color:#fff}.cart-added-actions button{background:var(--paper);color:inherit}
+.cart-added-actions :focus-visible{outline:2px solid #8f6f59;outline-offset:3px}

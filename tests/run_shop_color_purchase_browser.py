@@ -105,6 +105,16 @@ try{
  if(!await evalJS('document.getElementById("variation").value==="108"'))throw Error('color checkout mapping');
  await evalJS('document.getElementById("quantity").value="2";document.getElementById("add").click()');
  await wait('JSON.parse(sessionStorage.getItem("aicc-guest-cart-v1")||"[]").some(v=>v.product_id==="105"&&v.variation_id==="108"&&v.quantity===2)');
+ await wait('document.getElementById("cart-added-dialog")?.open');
+ await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
+ if(!await evalJS('document.getElementById("cart-added-dialog").getBoundingClientRect().width<=innerWidth && document.getElementById("cart-added-go").textContent==="장바구니 가기"'))throw Error('cart popup mobile');
+ await evalJS('document.getElementById("cart-added-continue").click()');
+ await wait('!document.getElementById("cart-added-dialog").open && document.activeElement.id==="add"');
+ await call('Emulation.clearDeviceMetricsOverride');
+ await evalJS('document.getElementById("quantity").value="11";document.getElementById("add").click()');
+ await wait('document.getElementById("error").textContent.length>0');
+ if(!await evalJS('!document.getElementById("cart-added-dialog").open && JSON.parse(sessionStorage.getItem("aicc-guest-cart-v1"))[0].quantity===2'))throw Error('failed add opens popup');
+ await evalJS('document.getElementById("quantity").value="2"');
  checks.push('chosen color and quantity quoted into cart');
  await evalJS('document.getElementById("variation").value="107";document.getElementById("variation").dispatchEvent(new Event("change",{bubbles:true}))');
  await wait('document.getElementById("detail-image").src.endsWith("ag-upload-top-0005-model-front.jpg") && !document.getElementById("detail-image").hidden');
@@ -143,6 +153,10 @@ try{
  if(!await evalJS('document.getElementById("variant-section").compareDocumentPosition(document.getElementById("commerce-panel"))&Node.DOCUMENT_POSITION_FOLLOWING'))throw Error('order placement');
  await evalJS('document.getElementById("add").click()');
  await wait('JSON.parse(sessionStorage.getItem("aicc-guest-cart-v1")||"[]").length===1');checks.push('PDP add and order under options');
+ await wait('document.getElementById("cart-added-dialog")?.open');
+ await evalJS('document.getElementById("cart-added-go").click()');
+ await wait('location.pathname==="/homepage/storefront/cart" && document.querySelector("#cart a")?.textContent.includes("카멜")');
+
  await nav('/homepage/storefront/product/ag-upload-outer-0002');
  await wait('typeof document.getElementById("add")?.onclick==="function"');
  await evalJS('document.getElementById("add").click()');await wait('JSON.parse(sessionStorage.getItem("aicc-guest-cart-v1")||"[]").length===2');

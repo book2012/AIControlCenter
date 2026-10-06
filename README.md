@@ -5708,3 +5708,7 @@ Default DEV storefront hides legacy sample products across home, search, categor
 
 ### DEV temporary sizes — 2026-10-06
 Added selectable presentation-only S/M/L to pending clothing and FREE to bags/accessories, through dev-preview-sizes.json. These are user-authorized temporary choices; actual sizing/stock and provider variants are unchanged. Existing confirmed coat sizes stay intact. PROD and order API remain unchanged.
+
+
+### DEV cart-added popup — 2026-10-06
+Successful add opens an accessible dialog with 장바구니 가기 and 계속 쇼핑하기. Failed adds open no success dialog; closing restores focus. Guest frontend JS is served from the immutable homepage release while order endpoints and the Telegram poller remain unchanged.

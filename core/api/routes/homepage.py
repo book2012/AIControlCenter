@@ -127,6 +127,13 @@ def storefront_commerce_script() -> Response:
     return Response(_ui_asset("storefront-commerce.js"), media_type="application/javascript")
 
 
+@router.get("/homepage/assets/storefront-guest-chat.js", include_in_schema=False)
+def storefront_guest_chat_script() -> Response:
+    # Guest UI is versioned with the homepage release; order endpoints stay on the API.
+    path = Path(__file__).resolve().parents[3] / "deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/storefront-guest-chat.js"
+    return Response(path.read_text(encoding="utf-8"), media_type="application/javascript")
+
+
 @router.get("/homepage/assets/storefront-chat.js", include_in_schema=False)
 def storefront_chat_script() -> Response:
     return Response(_ui_asset("storefront-chat.js"), media_type="application/javascript")

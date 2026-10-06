@@ -55,7 +55,7 @@
       }
       if(!cartPage&&options&&options.selectedOptions[0]&&!options.selectedOptions[0].disabled)options.dispatchEvent(new Event("change",{bubbles:true}));
       const script=document.createElement("script");
-      script.src="/__order-dev/guest-chat.js";
+      script.src="/homepage/assets/storefront-guest-chat.js";
       script.defer=true;
       document.body.appendChild(script);
     }catch(error){

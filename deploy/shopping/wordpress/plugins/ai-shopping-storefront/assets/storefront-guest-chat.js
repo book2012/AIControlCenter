@@ -55,7 +55,20 @@
   const ask=message=>runInquiry(async()=>{say(message,true);const data=await request("inquiry",{product_id:product,message});const route=data.inquiry_token?"운영자에게 전달됨 · ":data.answer_engine==="OPERATOR_APPROVED_FAQ"?"승인된 답변 · ":"자동 답변 · ";say(route+data.message);if(data.inquiry_token)watchInquiry(data);if(data.action==="START_ORDER")by("single").focus();});
   if(by("ask"))by("ask").onsubmit=event=>{event.preventDefault();const text=by("question").value.trim();if(!text)return;by("question").value="";ask(text);};
   if(by("stock"))by("stock").onclick=()=>{if(by("ask"))ask("재고와 사이즈 옵션 알려주세요");else{document.querySelector("[data-shop-chat-product]")?.click();const field=by("shop-chat-question");if(field)field.value="재고와 사이즈 옵션 알려주세요";}};
-  by("add").onclick=()=>run(async()=>{if(pending)throw new Error("진행 중인 주문을 먼저 확인해 주세요.");const line=selected();await request("quote",{line_items:[line]});const existing=cart.find(v=>v.product_id===line.product_id&&v.variation_id===line.variation_id);if(existing){if(existing.quantity+line.quantity>10)throw new Error("옵션당 최대 10개입니다.");existing.quantity+=line.quantity;}else{if(cart.length>=20)throw new Error("장바구니는 최대 20개 옵션입니다.");cart.push(line);}save();say("장바구니에 담았습니다. 오른쪽 상단 장바구니에서 확인하세요.");});
+  const showCartAdded=()=>{
+    let dialog=by("cart-added-dialog");
+    if(!dialog){
+      dialog=document.createElement("dialog");dialog.id="cart-added-dialog";dialog.className="cart-added-dialog";dialog.setAttribute("aria-labelledby","cart-added-title");
+      const title=document.createElement("h2");title.id="cart-added-title";title.textContent="장바구니에 담았습니다.";
+      const actions=document.createElement("div");actions.className="cart-added-actions";
+      const link=document.createElement("a");link.id="cart-added-go";link.href="/homepage/storefront/cart";link.textContent="장바구니 가기";
+      const keep=document.createElement("button");keep.id="cart-added-continue";keep.type="button";keep.textContent="계속 쇼핑하기";keep.autofocus=true;keep.onclick=()=>dialog.close();
+      actions.append(link,keep);dialog.append(title,actions);document.body.appendChild(dialog);
+      dialog.addEventListener("close",()=>by("add")?.focus());
+    }
+    if(!dialog.open)dialog.showModal();
+  };
+  by("add").onclick=()=>run(async()=>{if(pending)throw new Error("진행 중인 주문을 먼저 확인해 주세요.");const line=selected();await request("quote",{line_items:[line]});const existing=cart.find(v=>v.product_id===line.product_id&&v.variation_id===line.variation_id);if(existing){if(existing.quantity+line.quantity>10)throw new Error("옵션당 최대 10개입니다.");existing.quantity+=line.quantity;}else{if(cart.length>=20)throw new Error("장바구니는 최대 20개 옵션입니다.");cart.push(line);}save();showCartAdded();say("장바구니에 담았습니다. 오른쪽 상단 장바구니에서 확인하세요.");});
   const checkout=lines=>run(async()=>{if(pending)throw new Error("진행 중인 주문의 상태를 먼저 확인해 주세요.");selectedCart=lines.map(v=>({...v}));prepared=null;const quote=await request("quote",{line_items:lines});const response=await fetch("/__order-dev/chat/capabilities",{credentials:"same-origin"});if(!response.ok)throw new Error("주문 가능 상태를 확인할 수 없습니다.");const capability=await response.json();checkoutAvailable=capability.order_confirmation===true;by("delivery-form").hidden=true;by("final-review").replaceChildren();by("summary").replaceChildren();quote.line_items.forEach(line=>{const p=document.createElement("p");p.textContent=line.name+" / "+(line.option||"기본")+" · "+line.quantity+"개 · "+line.subtotal+" "+quote.currency;by("summary").appendChild(p);});const total=document.createElement("p");total.textContent="상품 합계 "+quote.items_total+" "+quote.currency+" · 배송비 및 최종 금액은 미확정";by("summary").appendChild(total);by("auth-note").textContent=capability.message;by("phone-form").hidden=!capability.phone_verification;by("phone").disabled=!capability.phone_verification;by("confirm").disabled=true;by("order").hidden=false;by("order").scrollIntoView({behavior:"smooth"});await showDelivery();});
   by("single").onclick=()=>{try{checkout([selected()]);}catch(error){by("error").textContent=error.message;}};
   by("checkout").onclick=()=>checkout(cart.map(v=>({...v})));
