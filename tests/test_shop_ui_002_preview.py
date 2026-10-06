@@ -286,7 +286,7 @@ def test_r1_cards_are_image_then_hashtag_only(path):
                 ("img", None), ("span", "photo-fallback"), ("div", "product-caption"), ("p", "product-tags"),
             ]
             photo = next(attrs for tag, attrs in elements if tag == "img")
-            assert photo["src"].startswith("/homepage/assets/storefront/catalog/") and "hidden" not in photo
+            assert photo["src"].startswith(("/homepage/assets/storefront/catalog/", "/homepage/assets/storefront/gallery/")) and "hidden" not in photo
             fallback = next(attrs for tag, attrs in elements if tag == "span")
             assert "hidden" in fallback
             assert not any("data-badge" in attrs for _, attrs in elements)

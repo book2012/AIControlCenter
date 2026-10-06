@@ -80,6 +80,10 @@ def assets() -> dict:
 
 
 def photo(product: dict) -> str | None:
+    if product.get("source") == "dev_upload":
+        from core.homepage.storefront_gallery import front
+        model = front(product["id"])
+        if model is not None:return model["url"]
     asset = assets().get(product["id"])
     allowed_source = product["source"] == "demo" or product["source"] == "dev_upload"
     if allowed_source and asset and product["category"].lower() == asset["category"]:
@@ -89,4 +93,9 @@ def photo(product: dict) -> str | None:
 
 def browser_mapping() -> str:
     # A flat, validated ID-to-local-route map, not product data or model profiles.
-    return json.dumps({identifier: item["url"] for identifier, item in assets().items()}, separators=(",", ":"))
+    mapping={identifier: item["url"] for identifier, item in assets().items()}
+    from core.homepage.storefront_gallery import assets as gallery_assets
+    fronts={row["product_id"]:row["url"] for row in gallery_assets().values() if row["kind"]=="model-front"}
+    for identifier in mapping:
+        if identifier in fronts:mapping[identifier]=fronts[identifier]
+    return json.dumps(mapping, separators=(",", ":"))

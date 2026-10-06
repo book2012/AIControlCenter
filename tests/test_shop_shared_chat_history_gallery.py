@@ -28,11 +28,16 @@ def test_one_shared_chat_on_customer_pages(url):
 @pytest.mark.parametrize("pid",["ag-upload-outer-0001","ag-upload-outer-0002"])
 def test_gallery_preserves_original_and_labels_model_angles(pid):
     rows=storefront_gallery.for_product(pid)
-    assert [r["kind"] for r in rows]==["original","model-angles"]
-    assert not rows[0]["ai_generated"] and rows[1]["ai_generated"]
+    assert [r["kind"] for r in rows]==["garment-cutout","model-other"]
+    assert all(row["ai_generated"] for row in rows)
     with TestClient(create_app()) as c:
         r=c.get("/homepage/storefront/product/"+pid)
-        assert "고객이 올린 실제 사진" in r.text and "AI 예상 이미지" in r.text
+        assert "기존 사진 보정본" in r.text and "AI 예상 이미지" in r.text
+        assert pid+"-original.jpg" not in r.text
+        assert r.text.index("상세설명") < r.text.index(pid+"-garment-cutout.webp") < r.text.index(pid+"-model-other.jpg")
+        assert pid+"-model-front.jpg" in r.text
+        original=storefront_gallery.assets()[pid+"-original.jpg"]
+        assert original["path"].is_file()
         for row in rows:
             response=c.get(row["url"])
             assert response.status_code==200 and response.content==row["path"].read_bytes()
@@ -120,3 +125,23 @@ def test_gallery_directory_symlink_fails_closed(tmp_path,monkeypatch):
     manifest.write_text(json.dumps({"environment":"DEV","schema_version":1,"assets":[{"product_id":"ag-upload-outer-0001","kind":"original","ai_generated":False,"label":"original","path":"brands/agachichi/assets/media/uploads/gallery/"+name,"sha256":hashlib.sha256(data).hexdigest()}]}))
     monkeypatch.setattr(storefront_gallery,"ROOT",root);monkeypatch.setattr(storefront_gallery,"MANIFEST",manifest)
     assert storefront_gallery.assets()=={}
+
+
+@pytest.mark.parametrize("pid",["ag-upload-outer-0001","ag-upload-outer-0002"])
+def test_home_hot_update_and_search_use_same_front_model_as_detail(pid):
+    from html.parser import HTMLParser
+    class Cards(HTMLParser):
+        def __init__(self,html):super().__init__();self.active=False;self.images=[];self.feed(html)
+        def handle_starttag(self,tag,attrs):
+            a=dict(attrs)
+            if tag=="li":self.active=a.get("data-product-id")==pid
+            if tag=="img" and self.active:self.images.append(a.get("src"))
+        def handle_endtag(self,tag):
+            if tag=="li":self.active=False
+    with TestClient(create_app()) as c:
+        for url in ["/homepage/storefront","/homepage/storefront?collection=hot","/homepage/storefront/search?category=women-outer"]:
+            images=Cards(c.get(url).text).images
+            assert images and all(src.endswith(pid+"-model-front.jpg") for src in images)
+        row=storefront_gallery.assets()[pid+"-garment-cutout.webp"]
+        response=c.get(row["url"])
+        assert response.status_code==200 and response.headers["content-type"]=="image/webp"

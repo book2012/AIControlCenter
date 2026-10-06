@@ -5684,3 +5684,7 @@ Stock inquiries are now initiated only from the shared chatbot on the customer s
 
 ## DEV detail explanation and model image visibility
 Removed the separate chatbot button below SIZE. Detailed explanation and the message "제품 문의는 챗봇으로 해주세요." precede the order panel. The two uploaded coats now show their labeled AI model-angle image immediately as the PDP hero; original photos remain in the detail gallery. Home catalog images and commerce/stock records are unchanged. 156 focused regression tests and seven isolated Chrome checks passed. DEV only; existing dirty work and PROD are preserved.
+
+
+## DEV front model thumbnails and clean garment detail
+The two uploaded coats use a single front-facing model portrait in HOT, UPDATE, search cards and PDP hero. Detail order is hero → 상세설명 → background-removed garment retouch → other model angles → order controls. Raw upload screenshots are retained for provenance but are not rendered. Transparent WebP cutouts preserve alpha; model shots share the same neutral studio tone. 158 focused regressions and seven isolated Chrome chatbot checks passed. No commerce stock or PROD mutation.

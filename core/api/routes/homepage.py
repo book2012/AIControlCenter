@@ -137,7 +137,7 @@ def storefront_gallery_photo(filename: str) -> FileResponse:
     from core.homepage.storefront_gallery import assets
     asset=assets().get(filename)
     if asset is None:raise HTTPException(status_code=404, detail="Photo not found")
-    return FileResponse(asset["path"], media_type="image/jpeg")
+    return FileResponse(asset["path"], media_type="image/webp" if asset["path"].suffix == ".webp" else "image/jpeg")
 
 
 @router.get("/homepage/assets/storefront-orders.js", include_in_schema=False)

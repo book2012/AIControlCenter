@@ -37,6 +37,60 @@
       "ai_generated": true,
       "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0002-model-angles.jpg",
       "sha256": "623bd1c20239af7bb086b1ab87add9e5c1fa4b552f93af9b69fc6126c597efff"
+    },
+    {
+      "product_id": "ag-upload-outer-0001",
+      "kind": "model-front",
+      "label": "AI 모델 정면 착용",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0001-model-front.jpg",
+      "sha256": "0fafe62a78d53a314f876019847b768e76e871bb1cb730f0c3997c8da38b28b6",
+      "transparent_background": false
+    },
+    {
+      "product_id": "ag-upload-outer-0001",
+      "kind": "garment-cutout",
+      "label": "기존 사진 보정본 · 배경 제거 / 의류 보정",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0001-garment-cutout.webp",
+      "sha256": "9d22460e585d974f95904992515c921923b4e6f9a5cb17932444851f52f985dc",
+      "transparent_background": true
+    },
+    {
+      "product_id": "ag-upload-outer-0001",
+      "kind": "model-other",
+      "label": "AI 모델 다른 컷 · 측면 / 뒷면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0001-model-other.jpg",
+      "sha256": "2dc858d86599efe43fc7982fd0b8d6ac1634602c63c3b0d60d9a8c795f98a536",
+      "transparent_background": false
+    },
+    {
+      "product_id": "ag-upload-outer-0002",
+      "kind": "model-front",
+      "label": "AI 모델 정면 착용",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0002-model-front.jpg",
+      "sha256": "b9c54bfa89006e15c0304f58ef630f46f4b570ec62e23e7a4246ae5d70fd097e",
+      "transparent_background": false
+    },
+    {
+      "product_id": "ag-upload-outer-0002",
+      "kind": "garment-cutout",
+      "label": "기존 사진 보정본 · 배경 제거 / 의류 보정",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0002-garment-cutout.webp",
+      "sha256": "b92af5e76717a48131e81f25969105aeca3c706b983f718cbb4ec7ad9857e2dd",
+      "transparent_background": true
+    },
+    {
+      "product_id": "ag-upload-outer-0002",
+      "kind": "model-other",
+      "label": "AI 모델 다른 컷 · 측면 / 뒷면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0002-model-other.jpg",
+      "sha256": "6b17f8239d4d0101e50f275c9d380eeafcc6acdec331c5f54a2d3f9fa0b73e0e",
+      "transparent_background": false
     }
   ]
 }
