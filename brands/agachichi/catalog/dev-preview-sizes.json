@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "environment": "DEV",
+  "status": "TEMPORARY_NOT_ORDERABLE",
+  "products": {
+    "ag-upload-outer-0005": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-outer-0004": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-top-0006": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-bottom-0001": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-outer-0003": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-top-0005": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-dress-0004": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-acc-0001": [
+      "FREE"
+    ],
+    "ag-upload-top-0004": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-top-0003": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-dress-0003": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-top-0002": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-dress-0002": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-dress-0001": [
+      "S",
+      "M",
+      "L"
+    ],
+    "ag-upload-bag-0002": [
+      "FREE"
+    ],
+    "ag-upload-bag-0001": [
+      "FREE"
+    ],
+    "ag-upload-top-0001": [
+      "S",
+      "M",
+      "L"
+    ]
+  }
+}

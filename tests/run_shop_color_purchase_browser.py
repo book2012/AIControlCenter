@@ -118,6 +118,8 @@ try{
    if(!await evalJS('document.querySelectorAll("#detail-variants [aria-pressed=true]").length===1 && document.querySelector("[data-color-id='+color+']").getAttribute("aria-pressed")==="true"'))throw Error('color selected state');
  }
  if(!await evalJS('document.getElementById("add").disabled && document.getElementById("single").disabled && document.getElementById("purchase-size").textContent.includes("사이즈 확인 중")'))throw Error('pending stock bypassed');
+ await evalJS('document.querySelector("[data-preview-size=M]").click()');
+ if(!await evalJS('document.querySelector("[data-preview-size=M]").getAttribute("aria-pressed")==="true" && document.querySelectorAll(".size-preview-option[aria-pressed=true]").length===1 && document.querySelector("[data-color-id=black]").getAttribute("aria-pressed")==="true" && document.getElementById("single").disabled && document.getElementById("add").disabled'))throw Error('temporary size bypasses stock or color');
  checks.push('all five knit colors preview while stock-gated');
  await evalJS('window.realImage=window.Image;window.pendingImages=[];window.Image=class {set src(value){this.path=value;window.pendingImages.push(this)}};for(const c of ["gray","navy","black"])document.querySelector("[data-color-id="+c+"]").click();pendingImages[2].onload();pendingImages[0].onload();pendingImages[1].onload()');
  if(!await evalJS('document.getElementById("detail-image").src.endsWith("color-black.jpg") && !document.getElementById("detail-image").hidden'))throw Error('stale image overwrote selection');

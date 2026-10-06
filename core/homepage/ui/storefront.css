@@ -250,3 +250,8 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 @media(max-width:420px){.purchase-controls{grid-template-columns:minmax(0,1fr) 64px;gap:8px}.purchase-actions button{width:auto}}
 
 .detail-photo img[hidden]{display:none!important}
+
+.size-preview-option{min-height:40px;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font:inherit;font-size:14px;cursor:pointer}
+.size-preview-option[aria-pressed="true"]{background:#352b26;color:#fff;border-color:#352b26}
+.size-preview-option:focus-visible{outline:2px solid #8f6f59;outline-offset:3px}
+.size-preview-note{font-size:12px;color:var(--muted);margin:8px 0}

@@ -5704,3 +5704,7 @@ Default DEV storefront hides legacy sample products across home, search, categor
 - COLOR and SIZE stay visible together, quantity sits beside them, and compact cart/order buttons sit directly below. Unknown sizes remain “사이즈 확인 중”; previewing a color never authorizes stock or checkout.
 - Provider variant IDs remain authoritative for quotes and orders; no inventory, WooCommerce, phone, Telegram, payment or PROD mutation is included in this change.
 - Validation and deployment boundaries: [color/purchase DEV record](docs/architecture/SHOP_COLOR_PURCHASE_CONTROLS_DEV.md).
+
+
+### DEV temporary sizes — 2026-10-06
+Added selectable presentation-only S/M/L to pending clothing and FREE to bags/accessories, through dev-preview-sizes.json. These are user-authorized temporary choices; actual sizing/stock and provider variants are unchanged. Existing confirmed coat sizes stay intact. PROD and order API remain unchanged.

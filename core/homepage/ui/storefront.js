@@ -490,6 +490,13 @@
       const button = Array.from(byId("detail-variants").querySelectorAll("button.variant-option")).find(v => v.dataset.variantId === event.detail?.variantId);
       if (button) previewColor(button);
     });
+    // Temporary sizes are presentation-only, never provider variation IDs.
+    byId("purchase-size")?.addEventListener("click", event => {
+      const selected = event.target.closest("button.size-preview-option");
+      if (!selected) return;
+      byId("purchase-size").querySelectorAll("button.size-preview-option").forEach(button =>
+        button.setAttribute("aria-pressed", String(button === selected)));
+    });
     const firstColor = byId("detail-variants")?.querySelector("button[data-color-id]");
     if (firstColor) { firstColor.setAttribute("aria-pressed", "true"); previewColor(firstColor); }
     if (!document.body.dataset.serverRendered) loadProduct();

@@ -389,6 +389,24 @@ def search(service: ShoppingService, state: dict) -> tuple[str, int]:
     return rendered("storefront-search.html", values, code, "retry", service)
 
 
+def temporary_size_controls(product: dict) -> str:
+    fallback = '<p class="purchase-fixed">사이즈 확인 중</p>'
+    try:
+        path = Path(__file__).resolve().parents[2] / "brands/agachichi/catalog/dev-preview-sizes.json"
+        data = json.loads(path.read_text())
+        if data.get("environment") != "DEV" or data.get("schema_version") != 1 or data.get("status") != "TEMPORARY_NOT_ORDERABLE":
+            return fallback
+        options = data["products"].get(product["id"])
+        expected = ["FREE"] if product["category"].lower() in {"bag", "acc"} else ["S", "M", "L"]
+        if product["source"] != "dev_upload" or options != expected:
+            return fallback
+        return '<div class="variant-options temporary-size-options" role="group" aria-label="임시 사이즈 선택">' + "".join(
+            '<button type="button" class="size-preview-option" data-preview-size="'+size+'" aria-pressed="false">'+size+'</button>' for size in options
+        ) + '</div><p class="size-preview-note">임시 사이즈 · 실제 사이즈 확인 중 · 재고 확인 후 주문 가능</p>'
+    except (OSError, ValueError, KeyError, TypeError):
+        return fallback
+
+
 def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, int]:
     back = return_url(back)
     values = {"return_url": escape(back), "return_label": "← 홈으로" if back == HOME else "← 상품 목록으로",
@@ -403,7 +421,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
             raise ValueError("Product identity mismatch")
         pending_stock = getattr(service.catalog, "dev_upload_inventory_pending", lambda _: False)(product_id)
         color_options = bool(product.get("variants")) and all(v["option_type"] == "color" for v in product["variants"])
-        other_dimension = '<div id="purchase-size" class="purchase-field"><h2>SIZE · 사이즈</h2><p class="purchase-fixed">사이즈 확인 중</p></div>' if color_options else '<div id="purchase-color" class="purchase-field"><h2>COLOR · 컬러</h2><p class="purchase-fixed">'+escape({"ag-upload-outer-0001":"카멜","ag-upload-outer-0002":"오트밀"}.get(product_id,"컬러 확인 중"))+'</p></div>'
+        other_dimension = '<div id="purchase-size" class="purchase-field"><h2>SIZE · 사이즈</h2>'+temporary_size_controls(product)+'</div>' if color_options else '<div id="purchase-color" class="purchase-field"><h2>COLOR · 컬러</h2><p class="purchase-fixed">'+escape({"ag-upload-outer-0001":"카멜","ag-upload-outer-0002":"오트밀"}.get(product_id,"컬러 확인 중"))+'</p></div>'
         photo = photo_url(product)
         from core.homepage.storefront_gallery import for_product, front
         gallery_rows = for_product(product_id) if product["source"] == "dev_upload" else []
