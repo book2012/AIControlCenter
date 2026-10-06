@@ -3,6 +3,39 @@
   "environment": "DEV",
   "products": [
     {
+      "id": "ag-upload-outer-0002",
+      "source": "user_upload",
+      "name": "오트밀 미니멀 롱 코트",
+      "slug": "oatmeal-minimal-long-coat",
+      "category": "outer",
+      "category_label": "OUTER",
+      "description": "오트밀 라이트 베이지 톤의 롱 코트입니다. 넓은 라펠과 패치 포켓, 깔끔한 오픈 프런트가 특징입니다. 소재 함량과 상세 치수는 별도 확인이 필요합니다.",
+      "style_tip": "크림색 니트와 슬랙스로 차분한 톤온톤 스타일을 연출해 보세요.",
+      "tags": [
+        "롱코트",
+        "오트밀",
+        "라이트베이지",
+        "미니멀",
+        "패치포켓",
+        "가을",
+        "겨울"
+      ],
+      "collections": [
+        "new",
+        "hot"
+      ],
+      "image_id": "ag-upload-outer-0002",
+      "price_status": "READY",
+      "price": 450000,
+      "currency": "KRW",
+      "inventory": {
+        "M": 1,
+        "L": 1
+      },
+      "enabled": true,
+      "registered_at": "2026-10-06"
+    },
+    {
       "id": "ag-upload-outer-0001",
       "source": "user_upload",
       "name": "카멜 벨티드 롱 코트",
@@ -21,7 +54,8 @@
         "클래식"
       ],
       "collections": [
-        "new"
+        "new",
+        "hot"
       ],
       "image_id": "ag-upload-outer-0001",
       "price_status": "READY",

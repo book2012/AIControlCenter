@@ -119,6 +119,11 @@ class DemoCommerceCatalogAdapter:
             for product in (*self._upload_records, *self._bundle.products)
         }
 
+    def dev_upload_collection_ids(self, collection: str) -> tuple[str, ...]:
+        return tuple(str(p["id"]) for p in self._upload_records
+                     if collection in p.get("collections", []) and p.get("enabled", True)
+                     and p.get("price_status") == "READY" and Decimal(str(p.get("price", 0))) > 0)
+
     def dev_upload_orderable_ids(self) -> tuple[str, ...]:
         return tuple(
             str(product["id"])

@@ -1,0 +1,17 @@
+{
+  "environment": "DEV",
+  "catalog_id": "ag-upload-outer-0002",
+  "product_id": 41,
+  "price": 450000,
+  "stock": {
+    "M": 1,
+    "L": 1
+  },
+  "replay_created": false,
+  "focused_regression_passed": 154,
+  "image_AI_retouched": true,
+  "home": "explicit editorial HOT + UPDATE",
+  "catalog_total": 122,
+  "orderable_products": 7,
+  "prod_mutation": false
+}

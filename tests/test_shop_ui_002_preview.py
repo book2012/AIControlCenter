@@ -202,16 +202,17 @@ def test_all_agachichi_media_routes_and_raw_rendered_tags_match_local_records():
             assert_hashtag_row(storefront.presentation_tags(product))
 
 
-def test_real_lookbook_composition_is_one_unified_feed():
+def test_real_lookbook_composition_prioritizes_editorial_hot_and_update():
     with TestClient(create_app()) as lookbook:
         html = lookbook.get("/homepage/storefront").text
-        assert len(rendered_cards(html)) == 24
+        assert len(rendered_cards(html)) == 26
+        assert 'id="featured-hot-title">HOT' in html and 'id="feed-title">UPDATE' in html
         assert 'id="new-grid"' not in html and 'id="best-grid"' not in html
         for slug in ("women-tops", "women-bottoms", "women-outer", "women-dresses", "women-bags", "women-accessories"):
             response = lookbook.get("/homepage/storefront/search", params={"category": slug, "page_size": 100})
-            expected = 21 if slug == "women-outer" else 20
+            expected = 22 if slug == "women-outer" else 20
             assert response.status_code == 200 and f"상품 {expected}개" in response.text
-        assert lookbook.get("/shopping/products", params={"page_size": 100}).json()["total"] == 121
+        assert lookbook.get("/shopping/products", params={"page_size": 100}).json()["total"] == 122
 
 
 def test_dev_upload_product_is_classified_priced_and_orderable():
@@ -219,7 +220,7 @@ def test_dev_upload_product_is_classified_priced_and_orderable():
     with TestClient(create_app()) as lookbook:
         service = lookbook.app.dependency_overrides[get_shopping_service]()
         assert expected_id in storefront.dev_orderable(service)
-        assert len(storefront.dev_orderable(service)) == 6
+        assert len(storefront.dev_orderable(service)) == 7
         product_response = lookbook.get("/shopping/products/" + expected_id)
         assert product_response.status_code == 200
         product = product_response.json()
@@ -275,7 +276,7 @@ def test_r1_cards_are_image_then_hashtag_only(path):
         assert "오렌지 코코" not in response.text
         assert "/homepage/assets/storefront/photos/" not in response.text
         cards = rendered_cards(response.text)
-        expected = 24 if path == storefront.HOME else 9 if "women-outer" in path and "page=2" in path else 8 if "page=2" in path else 12
+        expected = 26 if path == storefront.HOME else 10 if "women-outer" in path and "page=2" in path else 8 if "page=2" in path else 12
         assert len(cards) == expected
         for card in cards:
             elements = Elements(card).elements

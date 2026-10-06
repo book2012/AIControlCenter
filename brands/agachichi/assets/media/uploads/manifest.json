@@ -15,6 +15,22 @@
         "original_file_name": "70603.jpg",
         "processing": "cropped phone UI only; resized for DEV storefront"
       }
+    },
+    {
+      "id": "ag-upload-outer-0002",
+      "product_id": "ag-upload-outer-0002",
+      "category": "OUTER",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-outer-0002.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/outer/ag-upload-outer-0002.jpg",
+      "sha256": "91f40b1d91daf816cc913c8bb2599a317a8ad0338d6fb4c2e866cd6aaa707be4",
+      "source": {
+        "type": "user_upload",
+        "original_file_name": "70610.jpg",
+        "library_file_id": "libfile_4bc38c5b41b88191a568e31135acffbf",
+        "processing": "AI retouch: remove screen UI, neutralize yellow cast, preserve garment geometry and texture; original retained",
+        "model_edit": true
+      }
     }
   ]
 }

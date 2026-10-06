@@ -6134,3 +6134,7 @@ Customer order and after-sales presentation is unified under the agachichi store
 ## DEV AI product intake pilot (2026-10-06)
 
 The first user-uploaded product promotion is now complete in DEV. `ag-upload-outer-0001` remains classified as an `OUTER` camel/brown belted long coat with S/M/L stock 1 each and validated user media. The operator supplied a 300,000 KRW price, so the overlay is `READY`, Woo product #36 is `publish`, all three variation prices are 300000, and the stable catalog ID is the sixth active DEV orderable product. The storefront renders `300,000원` and its in-page order panel resolves to Woo #36. PROD remains untouched. See [AI product intake pilot](docs/shopping/SHOP_AI_PRODUCT_INTAKE_DEV.md).
+
+
+## DEV second uploaded coat and HOT/UPDATE home (2026-10-06)
+The 450,000 KRW oatmeal coat is registered as Woo #41 with M/L initial stock one each. Original source retained, AI retouch and visual tags recorded; repeat registration preserves stock/product identity. The DEV home prioritizes explicit editorial HOT and UPDATE, with 122 preview records and seven active commerce mappings. 154 relevant tests passed; PROD untouched. See [architecture and evidence](docs/shopping/SHOP_SECOND_COAT_HOME_DEV.md).

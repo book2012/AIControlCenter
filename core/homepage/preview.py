@@ -32,6 +32,8 @@ def create_app(*, lookbook: bool = True) -> FastAPI:
         ai_enabled=False, catalog_adapter="demo",
     ), catalog=catalog)
     service._lookbook_enabled = lookbook
+    service._dev_hot_product_ids = catalog.dev_upload_collection_ids("hot") if lookbook else ()
+    service._dev_featured_home = lookbook
     base_orderable = frozenset({"oc-demo-top-0001","oc-demo-bottom-0001","oc-demo-outer-0001","oc-demo-dress-0001","oc-demo-bag-0001"})
     service._dev_orderable_products = base_orderable | frozenset(catalog.dev_upload_orderable_ids())
     app = FastAPI(title="agachichi local read-only preview", docs_url=None, redoc_url=None)

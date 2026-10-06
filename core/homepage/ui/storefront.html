@@ -28,10 +28,11 @@
           <img src="/homepage/assets/storefront/hero-boutique.jpg" alt="따뜻한 조명의 부티크에서 크림색과 오렌지색 옷을 둘러보는 여성 모델" width="1536" height="1024" fetchpriority="high">
         </figure>
       </section>
+      {{featured}}
       <nav id="home-filter-nav" class="filter-rail" aria-label="피드 필터">
         {{filters}}
       </nav>
-      <div class="feed-heading"><h1 id="feed-title">피드</h1><p id="feed-count">{{feed_count}}</p></div>
+      <div class="feed-heading"><h1 id="feed-title">{{feed_title}}</h1><p id="feed-count">{{feed_count}}</p></div>
       <p id="feed-status" class="home-status" role="status" aria-live="polite">{{feed_status}}</p>
       <ul id="home-feed" class="product-grid unified-feed" aria-label="전체 상품 피드" aria-busy="false">{{feed}}</ul>
       <div class="browse-link-wrap">

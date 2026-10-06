@@ -142,7 +142,7 @@ def presentation_tags(product: dict) -> str:
     if any(word in name for word in ("오버핏", "와이드")): tags[1] = "#오버핏"
     if any(word in name for word in ("니트", "가디건")): tags[1] = "#니트"
     if product["source"] == "dev_upload" and "코트" in name:
-        tags = ["#롱코트" if "롱" in name else "#코트", "#벨티드" if "벨티드" in name else "#아우터", "#카멜브라운" if "카멜" in name else "#가을무드"]
+        tags = ["#롱코트" if "롱" in name else "#코트", "#벨티드" if "벨티드" in name else "#아우터", "#카멜브라운" if "카멜" in name else "#오트밀베이지" if "오트밀" in name else "#가을무드"]
     return " ".join(tags[:3])
 
 
@@ -230,7 +230,13 @@ def _home_page(service: ShoppingService, state: dict, available: list[dict]) -> 
     """Read one bounded Home page through the canonical Shopping pagination model."""
     page = state.get("page", 1)
     primary_collection = state.get("collection") in {"hot", "sale", "update"}
-    if state.get("collection") in {"hot", "sale"}:
+    if state.get("collection") == "hot":
+        ids=getattr(service,"_dev_hot_product_ids",())
+        if type(ids) is not tuple or any(type(v) is not str or re.fullmatch(r"[A-Za-z0-9_-]{1,128}",v) is None for v in ids):raise ValueError("Invalid editorial collection")
+        products=[product_data(service.get_product(v)) for v in ids]
+        start=(page-1)*FEED_PAGE_SIZE
+        return products[start:start+FEED_PAGE_SIZE],len(products)
+    if state.get("collection") == "sale":
         return [], 0
     if state.get("collection") == "update":
         payload = _page(service, {"page": page}, "new", size=FEED_PAGE_SIZE)
@@ -301,7 +307,10 @@ def variant_controls(product: dict) -> str:
 
 def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]:
     state = state or browse_state()
-    values = {"filters": home_filters(state), "feed": "", "feed_status": "", "feed_count": "",
+    featured=getattr(service,"_dev_featured_home",False) is True
+    default_featured=featured and not state.get("category") and not state.get("collection")
+    if default_featured:state={**state,"collection":"update"}
+    values = {"featured":"","feed_title":"UPDATE" if state.get("collection")=="update" else "HOT" if state.get("collection")=="hot" else "피드","filters": home_filters(state), "feed": "", "feed_status": "", "feed_count": "",
               "feed_more": "", "feed_more_hidden": "hidden"}
     code = 200
     try:
@@ -310,6 +319,9 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
         available, code = [], 503
         values["feed_status"] = "카테고리를 불러오지 못했습니다."
     try:
+        if default_featured:
+            hot,_=_home_page(service,{**state,"collection":"hot","page":1},available)
+            if hot:values["featured"]='<section aria-labelledby="featured-hot-title"><div class="feed-heading"><h2 id="featured-hot-title">HOT</h2><p>에디터가 고른 아우터</p></div><ul class="product-grid" aria-label="HOT 추천 상품">'+cards(hot,HOME,badge="HOT")+'</ul></section>'
         products, total = _home_page(service, state, available)
         products = [product for product in products if product["source"] in {"demo", "dev_upload"}]
         values["feed"] = cards(products, home_url(state))
