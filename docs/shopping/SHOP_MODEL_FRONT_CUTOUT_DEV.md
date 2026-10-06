@@ -12,3 +12,6 @@ Front portraits: use only the reference left/front model view as a 2:3 centered 
 
 ## Validation
 158 focused regression tests passed. Existing seven isolated real Chrome chat/context/persistence/history/mobile checks passed with local fake inquiry/auth and zero external provider calls. Exact card/PDP front bindings, garment-before-other layout, original archival preservation and transparent WebP MIME are covered. Live DEV acceptance follows clean immutable Git archive activation.
+
+## DEV activation and acceptance
+Active homepage immutable release: c8f52f29d323023dc51abbdd2985dc917c941d8c. Git archive provenance and clean source were verified before activation. Both coats have front thumbnails in HOT/UPDATE, correct PDP sequence, no rendered raw original, and exact served asset SHA/MIME. Actual isolated Chrome against live DEV services passed 14 image/chat/order-initialization assertions through a GET-only proxy; no SMS, order or payment POST. DEV API remained on 0a95c8db1b96872635bfcbfcc4cdb2e04cb03fd7 and Telegram poller remained RUNNING. PROD and existing dirty work were untouched. Documentation-only closure commit is not a runtime redeployment. Evidence: SHOP_MODEL_FRONT_CUTOUT_DEV_VALIDATION.json.

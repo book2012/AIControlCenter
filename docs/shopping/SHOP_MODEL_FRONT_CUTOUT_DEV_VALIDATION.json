@@ -1,0 +1,37 @@
+{
+  "active_homepage_commit": "c8f52f29d323023dc51abbdd2985dc917c941d8c",
+  "regression_tests": 158,
+  "isolated_chrome_checks": 7,
+  "http_validation": {
+    "ag-upload-outer-0001": {
+      "front_thumbnail_occurrences": 3,
+      "detail_sequence": true,
+      "raw_source_hidden": true,
+      "asset_mime_sha": true
+    },
+    "ag-upload-outer-0002": {
+      "front_thumbnail_occurrences": 3,
+      "detail_sequence": true,
+      "raw_source_hidden": true,
+      "asset_mime_sha": true
+    }
+  },
+  "prod_mutation": false,
+  "order_sms_payment_posts": 0,
+  "live_real_chrome": {
+    "modelHero": true,
+    "detailExplanation": true,
+    "inquiryGuidance": true,
+    "noSeparateChatButton": true,
+    "tag": true,
+    "dialog": true,
+    "asksFirst": true,
+    "cleanGarment": true,
+    "otherAngles": true,
+    "noRawOriginal": true,
+    "correctSequence": true,
+    "singleInquiryForm": true,
+    "orderInitialized": true,
+    "provider41": true
+  }
+}
