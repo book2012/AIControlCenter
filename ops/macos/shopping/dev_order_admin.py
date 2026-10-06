@@ -17,7 +17,7 @@ button{font:inherit;padding:9px 12px;border:1px solid #bbb;border-radius:9px;bac
 <section class="panel" style="margin-top:18px"><h2>환불 / 사이즈교환 요청</h2><div id="cases">불러오는 중…</div></section><section class="panel" style="margin-top:18px"><h2>문의 / 자동학습</h2><div id="inquiries">불러오는 중…</div></section>
 <script>
 const by=id=>document.getElementById(id);
-const stateLabel=v=>({PENDING_REVIEW:"확인대기",CONFIRMED:"확인완료",READY_TO_SHIP:"발송대기",SHIPPED:"배송중",COMPLETED:"처리완료",REJECTED:"거절",STOCK_BLOCKED:"재고확인"}[v]||v);
+const stateLabel=v=>({PENDING_REVIEW:"확인대기",CONFIRMED:"확인완료",READY_TO_SHIP:"배송준비",AWAITING_DEPOSIT:"입금대기",SHIPPED:"배송중",COMPLETED:"배송완료",REJECTED:"거절",STOCK_BLOCKED:"재고확인"}[v]||v);
 const inquiryLabel=v=>({APPROVED:"자동학습",ANSWERED:"학습제외",PENDING:"답변대기"}[v]||v);
 async function detail(id){
  const r=await fetch("/__order-dev/admin/orders/"+id,{credentials:"same-origin"});const d=await r.json();

@@ -54,11 +54,11 @@
     const title=document.createElement("h2");title.textContent="주문 #"+order.order_id;
     const state=document.createElement("strong");state.className="order-state";
     const fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
-    state.textContent=fulfillment==="DELIVERED"?"처리완료":fulfillment==="SHIPPED"?"배송중":order.review_state==="CONFIRMED"?"발송대기":order.review_state==="REJECTED"?"거절":"확인대기";
+    state.textContent=fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.review_state==="CONFIRMED"?(order.payment?.state==="PAID"?"배송준비":"입금대기"):order.review_state==="REJECTED"?"거절":"확인대기";
     head.append(title,state);card.appendChild(head);
     const details=document.createElement("p");
     const labels={CONFIRMED:"주문확인 완료",PENDING_REVIEW:"주문확인 대기",REJECTED:"주문 거절",STOCK_BLOCKED:"재고확인 중"};
-    details.textContent=(labels[order.review_state]||"주문확인 대기")+" · "+(order.payment?.state==="PAID"?"입금완료":"입금대기")+" · "+({NOT_SHIPPED:"발송대기",SHIPPED:"배송중",DELIVERED:"배송완료"}[fulfillment]||"발송대기");
+    details.textContent=(labels[order.review_state]||"주문확인 대기")+" · "+(order.payment?.state==="PAID"?"입금완료":"입금대기")+" · "+({NOT_SHIPPED:order.payment?.state==="PAID"?"배송준비":"입금대기",SHIPPED:"배송중",DELIVERED:"배송완료"}[fulfillment]||"발송대기");
     card.appendChild(details);
     if(order.notification_state){
       const notice=document.createElement("p");notice.className="field-note";

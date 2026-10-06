@@ -27,9 +27,9 @@ def test_lookup_requires_verified_session_origin_csrf_number_and_phone(tmp_path)
     assert order["delivery"]["address_1"]=="DEV 테스트 배송 주소" and order["payment"]["state"]=="AWAITING_DEPOSIT"
     assert client.get("/__order-dev/aftersales/orders").status_code==403
     assert "입금완료" in store.operator_command("입금확인 #15",101)
-    assert store.operator_command("입금확인 #15",101)=="주문 #15 · 입금완료"
+    assert store.operator_command("입금확인 #15",101)=="주문 #15 · 입금완료 · 배송준비"
     assert store.lookup(CUSTOMER,"15",PHONE,PHONE)["payment"]["state"]=="PAID"
-    store.mark_shipped(ORDER,"CJ대한통운","1234567890")
+    store.confirm_payment(ORDER);store.mark_shipped(ORDER,"CJ대한통운","1234567890")
     assert store.lookup(CUSTOMER,"15",PHONE,PHONE)["fulfillment"]["state"]=="SHIPPED"
 def config(tmp_path):
     p=tmp_path/"sms.json";p.write_text(json.dumps({"environment":"DEV","enabled":True,"bank":{"name":"TEST BANK","account":"TEST ACCOUNT","holder":"TEST HOLDER"},"credentials":{"account_sid":"AC"+"a"*32,"auth_token":"TEST","messaging_service_sid":"MG"+"b"*32}}));p.chmod(0o600);return p

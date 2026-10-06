@@ -32,6 +32,11 @@ class DevAftersalesStore:
             c.execute("""CREATE TABLE IF NOT EXISTS attachments(
                 id TEXT PRIMARY KEY,case_id TEXT NOT NULL,media_type TEXT NOT NULL,size INTEGER NOT NULL,sha256 TEXT NOT NULL,
                 stored_name TEXT NOT NULL,created REAL NOT NULL)""")
+            c.execute("CREATE TABLE IF NOT EXISTS shipping_notices(order_id INTEGER PRIMARY KEY,carrier TEXT NOT NULL,tracking TEXT NOT NULL,state TEXT NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS fulfillment_settings(key TEXT PRIMARY KEY,value TEXT NOT NULL)")
+            if not c.execute("SELECT 1 FROM fulfillment_settings WHERE key='shipping_seeded'").fetchone():
+                c.execute("INSERT OR IGNORE INTO shipping_notices SELECT order_id,carrier,tracking,'HISTORICAL' FROM fulfillment WHERE state IN ('SHIPPED','DELIVERED')")
+                c.execute("INSERT INTO fulfillment_settings VALUES('shipping_seeded','1')")
             c.execute("CREATE TABLE IF NOT EXISTS payments(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
@@ -148,8 +153,15 @@ class DevAftersalesStore:
         if not re.fullmatch(r"[가-힣A-Za-z0-9 ._-]{2,40}",carrier) or not re.fullmatch(r"[A-Za-z0-9-]{5,40}",tracking):raise ValueError("TRACKING_INVALID")
         stamp=self.clock()
         with sqlite3.connect(self.path) as c:
-            c.execute("INSERT INTO fulfillment VALUES(?,?,?,?,?,?,?) ON CONFLICT(order_id) DO UPDATE SET state='SHIPPED',carrier=excluded.carrier,tracking=excluded.tracking,shipped=COALESCE(fulfillment.shipped,excluded.shipped),delivered=NULL,updated=excluded.updated",
-                (order_id,"SHIPPED",carrier,tracking,stamp,None,stamp))
+            c.execute("BEGIN IMMEDIATE")
+            current=c.execute("SELECT state,carrier,tracking FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
+            if current and current[0] in ("SHIPPED","DELIVERED"):
+                if (current[1],current[2])!=(carrier,tracking):raise ValueError("SHIPMENT_ALREADY_REGISTERED")
+            else:
+                payment=c.execute("SELECT state FROM payments WHERE order_id=?",(order_id,)).fetchone()
+                if not payment or payment[0]!="PAID":raise ValueError("PAYMENT_REQUIRED")
+                c.execute("INSERT INTO fulfillment VALUES(?,?,?,?,?,?,?)",(order_id,"SHIPPED",carrier,tracking,stamp,None,stamp))
+                c.execute("INSERT OR IGNORE INTO shipping_notices VALUES(?,?,?,'PENDING')",(order_id,carrier,tracking))
         return self._fulfillment(order_id)
     def mark_delivered(self,order_id):
         self._operator_order(order_id);current=self._fulfillment(order_id)
@@ -173,10 +185,13 @@ class DevAftersalesStore:
         return [r for r in self._case_rows(limit=100) if r["id"]==case_id][0]
     def operator_command(self,text,update_id):
         clean=text.strip()
+        if clean in ("배송","배송 완료","배송완료","입금확인","입금 확인"):
+            return "입금확인 #주문번호 / 배송 #주문번호 택배사 운송장번호 / 배송완료 #주문번호 형식으로 입력해 주세요."
+        if re.fullmatch(r"배송\s*#[1-9][0-9]*",clean):return "택배사와 운송장번호를 함께 입력해 주세요. 예: 배송 #15 CJ대한통운 1234567890"
         patterns=[
-            (r"입금(확인|상태)\s*#([1-9][0-9]*)","payment"),
-            (r"주문발송\s*#([1-9][0-9]*)\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40})","ship"),
-            (r"배송완료\s*#([1-9][0-9]*)","delivered"),
+            (r"입금\s*(확인|상태)\s*#([1-9][0-9]*)","payment"),
+            (r"(?:주문발송|배송)\s*#([1-9][0-9]*)\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40})","ship"),
+            (r"배송\s*완료\s*#([1-9][0-9]*)","delivered"),
             (r"배송상태\s*#([1-9][0-9]*)","status"),
             (r"(환불|교환)목록","cases"),
             (r"(환불|교환)(승인|거절)\s*#([a-f0-9]{8})","decision")]
@@ -192,9 +207,10 @@ class DevAftersalesStore:
         try:
             if kind=="payment":
                 value=self.confirm_payment(int(m[2])) if m[1]=="확인" else self.payment(int(m[2]))
-                reply="주문 #"+m[2]+" · "+("입금완료" if value["state"]=="PAID" else "입금대기")
+                shipping_label={"SHIPPED":"배송중","DELIVERED":"배송완료"}.get(self._fulfillment(int(m[2]))["state"],"배송준비")
+                reply="주문 #"+m[2]+" · "+("입금완료 · "+shipping_label if value["state"]=="PAID" else "입금대기")
             elif kind=="ship":
-                v=self.mark_shipped(int(m[1]),m[2],m[3]);reply="주문 #"+m[1]+" 발송 등록 · "+v["carrier"]+" "+v["tracking"]
+                v=self.mark_shipped(int(m[1]),m[2],m[3]);reply="주문 #"+m[1]+" 발송 등록 · "+("배송완료" if v["state"]=="DELIVERED" else "배송중")+" · "+v["carrier"]+" "+v["tracking"]
             elif kind=="delivered":
                 self.mark_delivered(int(m[1]));reply="주문 #"+m[1]+" 배송완료 · 지금부터 14일 환불/사이즈교환 접수 가능"
             elif kind=="status":
@@ -207,6 +223,10 @@ class DevAftersalesStore:
                 if len(rows)!=1:reply="해당 요청을 찾지 못했습니다."
                 else:
                     v=self.decide(m[3],m[2]=="승인");reply=m[1]+" #"+m[3]+" "+("승인" if m[2]=="승인" else "거절")+" · "+v["state"]
+        except ValueError as error:
+            reply={"PAYMENT_REQUIRED":"입금확인 후 배송을 등록해 주세요.",
+                "SHIPMENT_ALREADY_REGISTERED":"기존 배송정보가 있습니다. 이미 배송된 주문은 다시 변경하지 않습니다.",
+                "SHIPMENT_REQUIRED":"배송을 먼저 등록해 주세요."}.get(str(error),"요청을 처리하지 못했습니다. 주문/케이스 상태를 확인해 주세요.")
         except Exception:
             reply="요청을 처리하지 못했습니다. 주문/케이스 상태를 확인해 주세요."
         try:

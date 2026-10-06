@@ -156,7 +156,8 @@ def create_app():
         consumer_secret=SecretStr(commerce['consumer_secret']),ledger=ledger,clock=now,authorize_once=authorize,
         resolve_customer=customer,session=(GuestCheckoutWooSession(PRIVATE/'dev-woo-cert.pem',store=checkout,provider_customer_id=phone_cfg['provider_customer_id']) if checkout is not None else PinnedDevWooOrderSession(PRIVATE/'dev-woo-cert.pem')))
     catalog=DevCatalog(commerce,cfg)
-    transport=OrderTelegramTransport(token=SecretStr(tg['bot_token']),chat_id=tg['operator_chat_id'])
+    from ops.macos.shopping.dev_customer_messages import DevTelegramTransport
+    transport=DevTelegramTransport(token=SecretStr(tg['bot_token']),chat_id=tg['operator_chat_id'])
     from ops.macos.shopping.dev_inquiry_queue import DevInquiryQueue,mount_inquiry_status
     inquiry_queue=DevInquiryQueue(DATA/'inquiries.sqlite3',transport)
     aftersales=None

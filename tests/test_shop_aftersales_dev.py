@@ -45,7 +45,7 @@ def test_delivery_completion_starts_14_day_customer_window(tmp_path):
     first=store.customer_orders(CUSTOMER)[0]
     assert first["fulfillment"]["state"]=="NOT_SHIPPED" and not first["return_available"]
     with pytest.raises(ValueError):store.mark_delivered(ORDER)
-    store.mark_shipped(ORDER,"CJ대한통운","1234567890")
+    store.confirm_payment(ORDER);store.mark_shipped(ORDER,"CJ대한통운","1234567890")
     assert not store.customer_orders(CUSTOMER)[0]["return_available"]
     store.mark_delivered(ORDER)
     current=store.customer_orders(CUSTOMER)[0]
@@ -54,7 +54,7 @@ def test_delivery_completion_starts_14_day_customer_window(tmp_path):
     assert not store.customer_orders(CUSTOMER)[0]["return_available"]
 
 def test_exchange_case_attachment_and_approval(tmp_path):
-    clock=[1000.0];store,_=fixture(tmp_path,clock);store.mark_shipped(ORDER,"한진택배","1234567890");store.mark_delivered(ORDER)
+    clock=[1000.0];store,_=fixture(tmp_path,clock);store.confirm_payment(ORDER);store.mark_shipped(ORDER,"한진택배","1234567890");store.mark_delivered(ORDER)
     assert store.exchange_options(CUSTOMER,ORDER)==[{"variation_id":"12","option":"M"}]
     case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"SIZE_EXCHANGE","reason":"M 사이즈로 교환하고 싶어요","target_variation_id":"12"})
     assert case["state"]=="REQUESTED" and case["target_option"]=="M"
@@ -66,6 +66,7 @@ def test_exchange_case_attachment_and_approval(tmp_path):
 
 def test_return_case_and_operator_commands_are_idempotent(tmp_path):
     clock=[1000.0];store,_=fixture(tmp_path,clock)
+    store.confirm_payment(ORDER)
     reply=store.operator_command("주문발송 #15 CJ대한통운 1234567890",1)
     assert "발송 등록" in reply and store.operator_command("주문발송 #15 CJ대한통운 9999999999",1)==reply
     assert "14일" in store.operator_command("배송완료 #15",2)
@@ -75,7 +76,7 @@ def test_return_case_and_operator_commands_are_idempotent(tmp_path):
     assert store.operator_command("환불승인 #"+case["id"],4)==approved
 
 def test_customer_routes_require_session_csrf_and_keep_attachments_private(tmp_path):
-    clock=[1000.0];store,_=fixture(tmp_path,clock);store.mark_shipped(ORDER,"CJ대한통운","1234567890");store.mark_delivered(ORDER)
+    clock=[1000.0];store,_=fixture(tmp_path,clock);store.confirm_payment(ORDER);store.mark_shipped(ORDER,"CJ대한통운","1234567890");store.mark_delivered(ORDER)
     boundary=Boundary();app=FastAPI();mount_aftersales(app,store=store,boundary=boundary,phone_cfg={"guest_customer_id":CUSTOMER})
     with TestClient(app,base_url="https://dev.bokstory.duckdns.org") as client:
         portal=client.get("/dev-order/my-orders",follow_redirects=False)
