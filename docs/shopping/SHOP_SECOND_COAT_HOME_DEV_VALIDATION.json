@@ -13,5 +13,58 @@
   "home": "explicit editorial HOT + UPDATE",
   "catalog_total": 122,
   "orderable_products": 7,
-  "prod_mutation": false
+  "prod_mutation": false,
+  "active_code_release": "996382f1c6b08d8e2af7609ceda406b31838d5f4",
+  "live_read_only_checks": {
+    "health": true,
+    "home": true,
+    "detail": true,
+    "panel": true
+  },
+  "woo_read_only_products": [
+    {
+      "id": 36,
+      "status": "publish",
+      "variations": [
+        {
+          "id": 37,
+          "size": "S",
+          "price": "300000",
+          "stock": 1
+        },
+        {
+          "id": 38,
+          "size": "M",
+          "price": "300000",
+          "stock": 1
+        },
+        {
+          "id": 39,
+          "size": "L",
+          "price": "300000",
+          "stock": 1
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "status": "publish",
+      "variations": [
+        {
+          "id": 42,
+          "size": "M",
+          "price": "450000",
+          "stock": 1
+        },
+        {
+          "id": 43,
+          "size": "L",
+          "price": "450000",
+          "stock": 1
+        }
+      ]
+    }
+  ],
+  "chrome_acceptance": "INCOMPLETE: isolated headless Chrome exceeded 45-second timeout; HTTP and embed checks passed",
+  "provider_mutations_during_acceptance": false
 }
