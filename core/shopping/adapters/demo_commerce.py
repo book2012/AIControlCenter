@@ -119,6 +119,15 @@ class DemoCommerceCatalogAdapter:
             for product in (*self._upload_records, *self._bundle.products)
         }
 
+    def dev_upload_orderable_ids(self) -> tuple[str, ...]:
+        return tuple(
+            str(product["id"])
+            for product in self._upload_records
+            if product.get("enabled", True)
+            and product.get("price_status") == "READY"
+            and Decimal(str(product.get("price", 0))) > 0
+        )
+
     def list_products(
         self,
         page: int,
@@ -262,8 +271,16 @@ class DemoCommerceCatalogAdapter:
                 raise ValueError("DEV upload product id invalid")
             if identifier in seen or row.get("category") not in CATEGORY_DEFINITIONS:
                 raise ValueError("DEV upload product invalid")
-            if row.get("currency") != "KRW" or row.get("price_status") not in {"PENDING", "READY"}:
+            if row.get("source") != "user_upload" or row.get("currency") != "KRW" or row.get("price_status") not in {"PENDING", "READY"}:
                 raise ValueError("DEV upload product commerce state invalid")
+            try:
+                price = Decimal(str(row.get("price")))
+            except Exception:
+                raise ValueError("DEV upload product price invalid") from None
+            if price < 0 or price != price.to_integral_value():
+                raise ValueError("DEV upload product price invalid")
+            if (row["price_status"] == "PENDING" and price != 0) or (row["price_status"] == "READY" and price <= 0):
+                raise ValueError("DEV upload product price state invalid")
             inventory = row.get("inventory")
             if not isinstance(inventory, dict) or not inventory or any(type(v) is not int or v < 0 for v in inventory.values()):
                 raise ValueError("DEV upload inventory invalid")

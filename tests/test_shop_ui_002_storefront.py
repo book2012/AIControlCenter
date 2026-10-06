@@ -57,7 +57,7 @@ def test_pdp_is_server_rendered_without_listing_and_hero(client):
         assert "상품을 찾을 수 없습니다" in response.text
 
 
-def test_dev_preview_integrates_exactly_five_orderable_products(client):
+def test_legacy_fixture_integrates_existing_five_orderable_products(client):
     home=client.get("/homepage/storefront")
     assert home.status_code==200 and "/homepage/storefront/my-orders" in home.text
     for product_id in ("oc-demo-top-0001","oc-demo-bottom-0001","oc-demo-outer-0001","oc-demo-dress-0001","oc-demo-bag-0001"):

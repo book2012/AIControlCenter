@@ -4,7 +4,7 @@
   const target=document.getElementById("commerce-panel");
   if(!target)return;
   const demo=target.dataset.demoProduct||"";
-  if(!/^oc-demo-(top|bottom|outer|dress|bag)-0001$/.test(demo)){
+  if(!/^(?:oc-demo-(?:top|bottom|outer|dress|bag)-0001|ag-upload-(?:top|bottom|outer|dress|bag|acc)-[0-9]{4})$/.test(demo)){
     target.textContent="주문 기능을 사용할 수 없습니다.";
     return;
   }

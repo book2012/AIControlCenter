@@ -245,13 +245,26 @@ def create_app():
         return JSONResponse({'receipt_id':public_receipt,'browser_challenge':public_challenge},headers={'Cache-Control':'no-store'})
     asset_root=REPO/'deploy/shopping/wordpress/plugins/ai-shopping-storefront'
     manifest=json.loads((asset_root/'assets/agachichi-v1/deployment-manifest.json').read_text())
+    upload_manifest_path=REPO/'brands/agachichi/assets/media/uploads/manifest.json'
+    upload_manifest=json.loads(upload_manifest_path.read_text()) if upload_manifest_path.is_file() else {'assets':[]}
+    upload_root=(REPO/'brands/agachichi/assets/media/uploads').resolve()
     media_by_demo={}
     for binding in catalog.products.values():
         demo=binding.get('image_demo_id',binding.get('demo_id'))
-        matches=[v for v in manifest['assets'] if v.get('product_id')==demo]
-        if len(matches)!=1:raise RuntimeError('DEV_MEDIA_BINDING_INVALID')
-        media=matches[0];image=asset_root/media['deployed_relative_path']
-        if hashlib.sha256(image.read_bytes()).hexdigest()!=media['sha256']:raise RuntimeError('DEV_MEDIA_HASH_INVALID')
+        if str(demo).startswith('ag-upload-'):
+            matches=[v for v in upload_manifest.get('assets',[]) if v.get('product_id')==demo]
+            if len(matches)!=1:raise RuntimeError('DEV_UPLOAD_MEDIA_BINDING_INVALID')
+            media=matches[0]
+            expected=f'brands/agachichi/assets/media/uploads/{demo}.jpg'
+            if media.get('status')!='READY' or media.get('target_path')!=expected:raise RuntimeError('DEV_UPLOAD_MEDIA_BINDING_INVALID')
+            image=(REPO/expected).resolve()
+            if not image.is_relative_to(upload_root) or image.is_symlink():raise RuntimeError('DEV_UPLOAD_MEDIA_PATH_INVALID')
+        else:
+            matches=[v for v in manifest['assets'] if v.get('product_id')==demo]
+            if len(matches)!=1:raise RuntimeError('DEV_MEDIA_BINDING_INVALID')
+            media=matches[0];image=asset_root/media['deployed_relative_path']
+        if not image.is_file() or hashlib.sha256(image.read_bytes()).hexdigest()!=media['sha256']:
+            raise RuntimeError('DEV_MEDIA_HASH_INVALID')
         media_by_demo[demo]=image
     @app.get('/__order-dev/product-image/{demo_id}',include_in_schema=False)
     def product_image(demo_id:str):

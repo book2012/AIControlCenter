@@ -214,22 +214,27 @@ def test_real_lookbook_composition_is_one_unified_feed():
         assert lookbook.get("/shopping/products", params={"page_size": 100}).json()["total"] == 121
 
 
-def test_dev_upload_product_is_classified_stocked_and_price_gated():
+def test_dev_upload_product_is_classified_priced_and_orderable():
     expected_id = "ag-upload-outer-0001"
     with TestClient(create_app()) as lookbook:
+        service = lookbook.app.dependency_overrides[get_shopping_service]()
+        assert expected_id in storefront.dev_orderable(service)
+        assert len(storefront.dev_orderable(service)) == 6
         product_response = lookbook.get("/shopping/products/" + expected_id)
         assert product_response.status_code == 200
         product = product_response.json()
         assert product["name"] == "카멜 벨티드 롱 코트"
         assert product["category"] == "OUTER"
         assert product["source"] == "dev_upload"
-        assert product["price"] == "0"
+        assert product["price"] == "300000"
         assert [(v["label"],v["available"]) for v in product["variants"]] == [("S",True),("M",True),("L",True)]
         detail = lookbook.get("/homepage/storefront/product/" + expected_id)
         assert detail.status_code == 200
-        assert "가격 준비 중" in detail.text
-        assert "가격 입력 후 주문 가능 · S/M/L 재고 등록 완료" in detail.text
-        assert 'id="commerce-panel"' not in detail.text
+        assert "300,000원" in detail.text
+        assert "DEV 주문 테스트 · 실제 결제·배송 없음" in detail.text
+        assert 'id="commerce-panel"' in detail.text
+        assert 'data-demo-product="'+expected_id+'"' in detail.text
+        assert '/homepage/assets/storefront-commerce.js' in detail.text
         assert detail.text.count('class="variant-option"') == 3
         assert detail.text.count("disabled") == 0
         photo = lookbook.get("/homepage/assets/storefront/catalog/outer/"+expected_id+".jpg")

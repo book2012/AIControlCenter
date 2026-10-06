@@ -24,8 +24,8 @@
         "new"
       ],
       "image_id": "ag-upload-outer-0001",
-      "price_status": "PENDING",
-      "price": 0,
+      "price_status": "READY",
+      "price": 300000,
       "currency": "KRW",
       "inventory": {
         "S": 1,
