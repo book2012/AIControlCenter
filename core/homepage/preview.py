@@ -18,7 +18,7 @@ from core.shopping.inquiries import InMemoryInquiryRepository
 PRESENTATION_VERSION = "SHOP_MEDIA_003_AGACHICHI"
 
 
-def create_app(*, lookbook: bool = True, include_samples: bool = False, test_inventory: bool = True) -> FastAPI:
+def create_app(*, lookbook: bool = True, include_samples: bool = False, test_inventory: bool = True, managed_projection: Path | str | None = None) -> FastAPI:
     catalog = DemoCommerceCatalogAdapter(
         catalog_root=(
             Path(__file__).resolve().parents[2] / "brands/orange-coco/catalog" / "lookbook-preview"
@@ -27,6 +27,7 @@ def create_app(*, lookbook: bool = True, include_samples: bool = False, test_inv
         if lookbook else None,
         include_samples=include_samples or not lookbook,
         test_inventory=test_inventory and lookbook,
+        managed_projection=(managed_projection or __import__("core.homepage.dev_product_projection",fromlist=["PATH"]).PATH) if test_inventory and lookbook else None,
     )
     service = ShoppingService(settings=ShoppingSettings(
         enabled=True, environment="test", runtime="virtual", deployment_target="mac-mini-m4",

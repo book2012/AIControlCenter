@@ -68,7 +68,7 @@ def test_dev_provider_color_price_and_pending_boundary():
     class Provider(DevCatalog):
         def read(self,path):
             if "/variations" in path:return [dict(id=2,attributes=[{"option":"그레이"}],price="69000",status="publish",stock_status="instock",manage_stock=True,stock_quantity=99)]
-            return dict(id=1,sku="aicc-dev-test",name="니트",slug="knit",description="",price="",stock_status="instock")
+            return dict(id=1,sku="aicc-dev-test",name="니트",slug="knit",description="",price="",status="publish",stock_status="instock")
     catalog=Provider({},{"active_products":[dict(product_id=1,demo_id="ag-upload-top-0006",sku="aicc-dev-test",category="TOP",option_type="color",inventory_pending=True)]})
     p=catalog.get_product("1")
     assert p["price"]=="69000" and not p["in_stock"]

@@ -83,7 +83,7 @@ class OrderTelegramIntegration:
     confirmation guard may enforce stock reduction before confirmation commits.
     """
     def __init__(self, *, ledger: SQLiteOrderCreateLedger, transport,
-                 operator_chat_id: int, operator_user_ids: frozenset[int], operator_adapter=None, confirmation_guard=None):
+                 operator_chat_id: int, operator_user_ids: frozenset[int], operator_adapter=None, confirmation_guard=None, product_operator=None):
         if type(ledger) is not SQLiteOrderCreateLedger:
             raise TypeError("durable order ledger required")
         if type(operator_chat_id) is not int or operator_chat_id == 0:
@@ -99,6 +99,7 @@ class OrderTelegramIntegration:
         self._users = operator_user_ids
         self._operator_adapter = operator_adapter
         self._confirmation_guard = confirmation_guard
+        self._product_operator = product_operator
 
     @staticmethod
     def _message(payload):
@@ -161,9 +162,13 @@ class OrderTelegramIntegration:
                         decision = {"status":"STATUS","confirm":"CONFIRMED","reject":"REJECTED"}[match[1]]
                         reference = match[2]
                         actor = "telegram-user-"+str(sender['id'])
-                    elif self._operator_adapter is not None:
-                        reference, decision, reply = self._operator_adapter.resolve(message['text'],update_id=update['update_id'])
-                        if decision is not None: actor = "telegram-user-"+str(sender['id'])
+                    else:
+                        if self._operator_adapter is not None:
+                            reference, decision, reply = self._operator_adapter.resolve(message['text'],update_id=update['update_id'])
+                            if decision is not None: actor = "telegram-user-"+str(sender['id'])
+                        if (reply is None and reference is None and decision is None
+                            and self._product_operator is not None and chat.get('type') == 'private'):
+                            reply = self._product_operator.command(message['text'],update['update_id'])
 
             outcomes.append(self._ledger.process_operator_update(update['update_id'],reference=reference,
                             decision=decision,actor_reference=actor,confirmation_guard=self._confirmation_guard))

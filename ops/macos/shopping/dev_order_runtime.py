@@ -80,7 +80,7 @@ class DevCatalog:
         return matches[0]['stock_quantity']
     def get_product(self,product_id):
         binding=self.binding(product_id);raw=self.read('products/'+str(product_id))
-        if raw['id']!=binding['product_id'] or raw['sku']!=binding['sku']:raise ValueError('DEV_PRODUCT_BINDING')
+        if raw['id']!=binding['product_id'] or raw['sku']!=binding['sku'] or raw.get('status')!='publish':raise ValueError('DEV_PRODUCT_BINDING')
         variants=self.read('products/'+str(product_id)+'/variations?per_page=100')
         pending_stock=self.inventory_pending(product_id)
         options=tuple(ProductVariant(str(v['id']),(' / '.join(str(next(a['option'] for a in v['attributes'] if a['name'].lower()==name)) for name in ['color','size']) if binding.get('option_type')=='color_size' else str(v['attributes'][0]['option'])),binding.get('option_type','size'),
@@ -165,7 +165,16 @@ def create_app():
         aftersales=DevAftersalesStore(DATA/'aftersales.sqlite3',DATA/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog)
     from ops.macos.shopping.dev_order_operator import DevOperatorAdapter,DevStockConfirmation
     operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue,aftersales=aftersales) if checkout else None
+    from ops.macos.shopping.dev_product_operator import DevProductOperator,DevWooProductProvider
+    from core.homepage.dev_test_stock import overlay
+    source=REPO/'brands/agachichi/catalog/dev-upload-products.json'
+    managed_records=overlay(json.loads(source.read_text())['products'],source)
+    product_operator=DevProductOperator(records=managed_records,
+        provider=DevWooProductProvider(records=managed_records,bindings=cfg['active_products'],assert_isolation=assert_isolation),
+        path=DATA/'product-commands.sqlite3',projection_path=DATA/'product-projection.json',
+        catalog_hash=hashlib.sha256(source.read_bytes()).hexdigest())
     telegram=OrderTelegramIntegration(ledger=ledger,transport=transport,operator_chat_id=tg['operator_chat_id'],
+                                    product_operator=product_operator,
                                     operator_user_ids=frozenset(tg['operator_user_ids']),
                                     operator_adapter=operator_adapter,
                                     confirmation_guard=DevStockConfirmation(store=checkout) if checkout else None)
@@ -205,9 +214,18 @@ def create_app():
     if operator_adapter is not None:
         from ops.macos.shopping.dev_order_admin import mount_admin
         mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue,aftersales=aftersales)
-    stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
+    stop=threading.Event();health={'poller':'STARTING','product_management':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
+        last_sync=0
         while not stop.is_set():
+            try:
+                if time.monotonic()-last_sync>=30:
+                    for reply in product_operator.recover():
+                        try:transport.send_message(reply)
+                        except Exception:pass
+                    product_operator.sync()
+                    health['product_management']='RUNNING';last_sync=time.monotonic()
+            except Exception:health['product_management']='UNAVAILABLE'
             try:
                 telegram.poll_once();telegram.dispatch_one();inquiry_queue.dispatch_one();health['poller']='RUNNING'
             except Exception:health['poller']='UNAVAILABLE'

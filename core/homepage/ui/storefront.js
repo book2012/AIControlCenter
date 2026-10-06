@@ -271,6 +271,7 @@
   }
 
   async function loadHome() {
+    if (document.body.dataset.serverRendered) { window.location.reload(); return; }
     const { version, controller, timeout } = beginRead();
     byId("home-retry").hidden = true;
     byId("feed-status").textContent = "상품을 불러오는 중…";

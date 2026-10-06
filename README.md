@@ -1,5 +1,11 @@
 # AIControlCenter
 
+## 2026-10-06 — DEV Telegram product management
+
+The existing private operator bot can set exact color/size stock, change a product's regular price, set/cancel a sale, and hide/restore uploaded products without deletion. Discounted products receive SALE tagging and feed membership; prices, publication and current Woo stock flow into a validated local storefront projection without another release. Product additions remain through GPT. Existing order/inquiry/aftersales commands and phone-only guest checkout remain intact. Duplicate updates and unknown provider results use a durable Mac journal plus atomic Woo receipts; stock edits share the order-confirmation lock.
+
+Validation: 306 Python regressions, real Chrome product-management and combined-option cart checks, and the actual isolated Woo handler exercised with rollback-only transactions for stock/price/sale/cancellation/hide/restore. The example values were not committed to the live catalog. Activate only the clean pushed immutable DEV release; require RUNNING bot/product-management health and preserve existing products/orders and unrelated dirty work. No PROD/Caddy/Ubuntu mutation. See [architecture](docs/architecture/SHOP_TELEGRAM_PRODUCT_MANAGEMENT_DEV.md).
+
 ## 2026-10-06 — uploaded photo batch, color options and dedicated DEV cart
 
 Reviewed 18 source photos as 17 new products (the two brown-coat photos are one product). Together with the two existing coats, uploaded-only storefront has 19 products. New prices are user-authorized temporary values; unknown size/physical inventory remains explicitly pending with zero sellable stock. Front model thumbnails, original-based transparent retouches and other model views share the existing manifest/SHA boundary. Order controls sit below SIZE/COLOR with compact buttons; the top-right cart opens a dedicated page with product names/options, quantity edits, removal and session navigation persistence. Server quotes and final checkout revalidate authority; cart edits invalidate prepared review and pending durable operations remain protected. PROD is outside scope.

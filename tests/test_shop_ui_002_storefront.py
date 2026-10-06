@@ -38,7 +38,7 @@ def test_korean_accessible_storefront_with_shared_order_navigation(filename):
         assert not any(key.startswith("on") for key in attrs)
         if tag == "img":
             assert all(key in attrs for key in ("alt", "width", "height"))
-    assert not re.search(r'\b(cart|checkout|account|wishlist)\b', source, re.I)
+    assert not re.search(r'\b(account|wishlist)\b', source, re.I)
     assert '/homepage/storefront/my-orders' in source
     assert "HOT" not in source
 

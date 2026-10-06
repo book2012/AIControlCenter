@@ -239,13 +239,16 @@ def _home_page(service: ShoppingService, state: dict, available: list[dict]) -> 
     page = state.get("page", 1)
     primary_collection = state.get("collection") in {"hot", "sale", "update"}
     if state.get("collection") == "hot":
-        ids=getattr(service,"_dev_hot_product_ids",())
+        ids=getattr(getattr(service,"catalog",None),"dev_upload_collection_ids",lambda _:getattr(service,"_dev_hot_product_ids",()))("hot")
         if type(ids) is not tuple or any(type(v) is not str or re.fullmatch(r"[A-Za-z0-9_-]{1,128}",v) is None for v in ids):raise ValueError("Invalid editorial collection")
-        products=[product_data(service.get_product(v)) for v in ids]
+        products=[product_data(service.get_product(v)) for v in ids if service.catalog.get_product(v) is not None]
         start=(page-1)*FEED_PAGE_SIZE
         return products[start:start+FEED_PAGE_SIZE],len(products)
     if state.get("collection") == "sale":
-        return [], 0
+        ids = getattr(getattr(service, "catalog", None), "dev_upload_collection_ids", lambda _: ())("sale")
+        products = [product_data(service.get_product(v)) for v in ids]
+        start = (page-1)*FEED_PAGE_SIZE
+        return products[start:start+FEED_PAGE_SIZE], len(products)
     if state.get("collection") == "update":
         payload = _page(service, {"page": page}, "new", size=FEED_PAGE_SIZE)
         return payload["items"], payload["total"]
@@ -287,17 +290,19 @@ def dev_orderable(service: ShoppingService) -> frozenset[str]:
     return value
 
 
-def cards(items: list[dict], back: str, badge: str = "") -> str:
+def cards(items: list[dict], back: str, badge: str = "", catalog=None) -> str:
     result = []
     for product in items:
+        sale_note = getattr(catalog, "dev_upload_price_note", lambda _: "")(product["id"])
+        card_badge = "SALE" if sale_note else badge
         photo = photo_url(product)
         href = HOME + "/product/" + product["id"] + "?" + urlencode({"return_to": back})
         result.append(template("storefront-card.html", id=escape(product["id"]), href=escape(href),
-                               name=escape(product["name"]), price=escape(price_label(product)), tags=escape(presentation_tags(product)),
+                               name=escape(product["name"]), price=escape(price_label(product)), tags=escape(presentation_tags(product)+(" #SALE" if sale_note else "")),
                                category="", availability="",
                                image_attrs=f'src="{escape(photo)}"' if photo else "hidden",
-                               fallback_hidden="hidden" if photo else "", badge=badge,
-                               badge_hidden="" if badge else "hidden"))
+                               fallback_hidden="hidden" if photo else "", badge=card_badge,
+                               badge_hidden="" if card_badge else "hidden"))
     return "\n".join(result)
 
 
@@ -331,7 +336,7 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
     featured=getattr(service,"_dev_featured_home",False) is True
     default_featured=featured and not state.get("category") and not state.get("collection")
     if default_featured:state={**state,"collection":"update"}
-    values = {"featured":"","feed_title":"UPDATE" if state.get("collection")=="update" else "HOT" if state.get("collection")=="hot" else "피드","filters": home_filters(state), "feed": "", "feed_status": "", "feed_count": "",
+    values = {"featured":"","feed_title":"UPDATE" if state.get("collection")=="update" else "HOT" if state.get("collection")=="hot" else "SALE" if state.get("collection")=="sale" else "피드","filters": home_filters(state), "feed": "", "feed_status": "", "feed_count": "",
               "feed_more": "", "feed_more_hidden": "hidden"}
     code = 200
     try:
@@ -342,10 +347,10 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
     try:
         if default_featured:
             hot,_=_home_page(service,{**state,"collection":"hot","page":1},available)
-            if hot:values["featured"]='<section aria-labelledby="featured-hot-title"><div class="feed-heading"><h2 id="featured-hot-title">HOT</h2><p>에디터가 고른 아우터</p></div><ul class="product-grid" aria-label="HOT 추천 상품">'+cards(hot,HOME,badge="HOT")+'</ul></section>'
+            if hot:values["featured"]='<section aria-labelledby="featured-hot-title"><div class="feed-heading"><h2 id="featured-hot-title">HOT</h2><p>에디터가 고른 아우터</p></div><ul class="product-grid" aria-label="HOT 추천 상품">'+cards(hot,HOME,badge="HOT",catalog=getattr(service,"catalog",None))+'</ul></section>'
         products, total = _home_page(service, state, available)
         products = [product for product in products if product["source"] in {"demo", "dev_upload"}]
-        values["feed"] = cards(products, home_url(state))
+        values["feed"] = cards(products, home_url(state),catalog=getattr(service,"catalog",None))
         values["feed_count"] = f"상품 {total}개"
         if len(products) == FEED_PAGE_SIZE and total > state.get("page", 1) * FEED_PAGE_SIZE:
             values["feed_more"] = f'<a id="feed-load-more" class="browse-link" href="{escape(home_url({**state, "page": state.get("page", 1) + 1}))}">더 보기 · 다음 피드 ↗</a>'
@@ -385,7 +390,7 @@ def search(service: ShoppingService, state: dict) -> tuple[str, int]:
               "conditions": escape("카테고리: " + label + (" · 검색어: ‘" + state["q"] + "’" if state["q"] else "")),
               "count": f"상품 {total}개" if code == 200 else "상품을 불러오지 못했습니다", "status": status,
               "clear_hidden": "" if state["category"] or state["q"] else "hidden",
-              "cards": cards(payload["items"], listing_url(state)),
+              "cards": cards(payload["items"], listing_url(state),catalog=getattr(service,"catalog",None)),
               "pagination_hidden": "hidden" if code != 200 or (pages <= 1 and page == 1) else "",
               "previous": escape(listing_url({**state, "page": max(1, page - 1)})),
               "next": escape(listing_url({**state, "page": page + 1})),
@@ -426,8 +431,9 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
         product = product_data(service.get_product(product_id))
         if product["id"] != product_id:
             raise ValueError("Product identity mismatch")
-        pending_stock = getattr(service.catalog, "dev_upload_inventory_pending", lambda _: False)(product_id)
-        test_stock = getattr(service.catalog, "dev_upload_test_inventory", lambda _: False)(product_id)
+        pending_stock = getattr(getattr(service,"catalog",None), "dev_upload_inventory_pending", lambda _: False)(product_id)
+        test_stock = getattr(getattr(service,"catalog",None), "dev_upload_test_inventory", lambda _: False)(product_id)
+        price_note = getattr(getattr(service,"catalog",None), "dev_upload_price_note", lambda _: "")(product_id)
         color_options = bool(product.get("variants")) and all(v["option_type"] in {"color","color_size"} for v in product["variants"])
         other_dimension = '<div id="purchase-size" class="purchase-field"><h2>SIZE · 사이즈</h2>'+temporary_size_controls(product)+'</div>' if color_options else '<div id="purchase-color" class="purchase-field"><h2>COLOR · 컬러</h2><p class="purchase-fixed">'+escape({"ag-upload-outer-0001":"카멜","ag-upload-outer-0002":"오트밀"}.get(product_id,"컬러 확인 중"))+'</p></div>'
         if test_stock:
@@ -438,8 +444,8 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
         model = front(product_id) if product["source"] == "dev_upload" else None
         if model:photo = model["url"]
         gallery = '<section class="detail-gallery" aria-label="상품 사진"><h2>상품 사진</h2>' + "".join('<figure><img loading="lazy" src="'+escape(row["url"])+'" alt="'+escape(product["name"]+" · "+row["label"])+'"><figcaption>'+escape(row["label"])+ (" · 원본을 바탕으로 AI 보정한 이미지" if row["kind"] == "garment-cutout" else " · 실제 착용·보이지 않는 각도와 다를 수 있는 AI 예상 이미지")+'</figcaption></figure>' for row in for_product(product_id)) + '</section>' if product["source"] == "dev_upload" else ""
-        values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)+(" · 임시 가격" if pending_stock or test_stock else "")),
-                      availability="DEV 테스트 재고 · 옵션별 3개로 시작" if test_stock else "사이즈·재고 확인 중" if pending_stock else "재고 있음" if product["in_stock"] else "품절",
+        values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)+(" · "+price_note if price_note else " · 임시 가격" if pending_stock or test_stock else "")),
+                      availability=("DEV 테스트 재고 · 재고 있음" if product["in_stock"] else "DEV 테스트 재고 · 품절") if test_stock else "사이즈·재고 확인 중" if pending_stock else "재고 있음" if product["in_stock"] else "품절",
                       variant_title="COLOR" if color_options else "SIZE",
                       dimension_id="purchase-color" if color_options else "purchase-size", other_dimension=other_dimension,
                       description=escape(product["description"] or "등록된 상품 설명이 없습니다."),

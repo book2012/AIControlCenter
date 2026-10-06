@@ -90,6 +90,7 @@ class DemoCommerceCatalogAdapter:
         upload_overlay: Path | str | None = None,
         include_samples: bool = True,
         test_inventory: bool = False,
+        managed_projection: Path | str | None = None,
     ) -> None:
         self._bundle = OrangeCocoCatalogLoader(
             catalog_root
@@ -99,6 +100,12 @@ class DemoCommerceCatalogAdapter:
             from core.homepage.dev_test_stock import overlay
             self._upload_records = overlay(self._upload_records, upload_overlay)
 
+
+        self._projection_path = Path(managed_projection) if managed_projection is not None else None
+        self._projection_stamp = None
+        self._base_upload_records = self._upload_records
+        self._catalog_hash = __import__("hashlib").sha256(Path(upload_overlay).read_bytes()).hexdigest() if upload_overlay else None
+        self._projection_lock = __import__("threading").RLock()
 
         self._site_base_url = os.getenv(
             "SHOPPING_DEMO_SITE_BASE_URL",
@@ -126,18 +133,54 @@ class DemoCommerceCatalogAdapter:
             if str(product["id"]) in self._products_by_id
         }
 
+    def _refresh_managed(self):
+        if self._projection_path is None:
+            return
+        with self._projection_lock:
+            try:
+                stamp = self._projection_path.stat().st_mtime_ns
+            except FileNotFoundError:
+                # If a previously published projection vanishes, fail closed.
+                if self._projection_stamp is None:
+                    return
+                stamp = -1
+            if stamp == self._projection_stamp:
+                return
+            from core.homepage.dev_product_projection import read_projection
+            try:
+                rows = read_projection(self._projection_path, self._base_upload_records, self._catalog_hash)
+            except Exception:
+                rows = tuple({**r, "enabled": False} for r in self._base_upload_records)
+            samples = [p for p in self._products if p.source != "dev_upload"]
+            products = [self._map_upload_product(r) for r in rows if r.get("enabled", True)] + samples
+            self._upload_records = rows
+            self._products = products
+            self._products_by_id = {p.id: p for p in products}
+            self._catalog_by_id = {str(r["id"]): r for r in (*rows, *self._bundle.products) if str(r["id"]) in self._products_by_id}
+            self._projection_stamp = stamp
+
+    def dev_upload_price_note(self, product_id):
+        self._refresh_managed()
+        r = self._catalog_by_id.get(product_id, {})
+        return ("SALE · 정상가 "+format(r["regular_price"],",")+"원") if r.get("sale_price") else ""
+
     def dev_upload_test_inventory(self, product_id: str) -> bool:
+        self._refresh_managed()
         return any(row["id"] == product_id and row.get("inventory_test") is True for row in self._upload_records)
 
     def dev_upload_inventory_pending(self, product_id: str) -> bool:
+        self._refresh_managed()
         return any(row["id"] == product_id and row.get("inventory_pending") is True for row in self._upload_records)
 
     def dev_upload_collection_ids(self, collection: str) -> tuple[str, ...]:
+        self._refresh_managed()
         return tuple(str(p["id"]) for p in self._upload_records
                      if collection in p.get("collections", []) and p.get("enabled", True)
+                     and (collection != "sale" or p.get("sale_price") is not None)
                      and p.get("price_status") == "READY" and Decimal(str(p.get("price", 0))) > 0)
 
     def dev_upload_orderable_ids(self) -> tuple[str, ...]:
+        self._refresh_managed()
         return tuple(
             str(product["id"])
             for product in self._upload_records
@@ -151,6 +194,7 @@ class DemoCommerceCatalogAdapter:
         page: int,
         page_size: int,
     ) -> tuple[list[Product], int]:
+        self._refresh_managed()
         return self._paginate(
             self._products,
             page,
@@ -161,9 +205,11 @@ class DemoCommerceCatalogAdapter:
         self,
         product_id: str,
     ) -> Product | None:
+        self._refresh_managed()
         return self._products_by_id.get(product_id)
 
     def list_categories(self) -> list[dict]:
+        self._refresh_managed()
         category_counts = {
             category_id: sum(
                 1
@@ -221,6 +267,7 @@ class DemoCommerceCatalogAdapter:
         page: int,
         page_size: int,
     ) -> tuple[list[Product], int]:
+        self._refresh_managed()
         products = list(self._products)
 
         if query:
