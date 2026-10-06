@@ -200,6 +200,12 @@ def create_app():
         if aftersales is not None:
             from ops.macos.shopping.dev_aftersales import mount_aftersales
             mount_aftersales(app,store=aftersales,boundary=boundary,phone_cfg=phone_cfg)
+    order_sms=None
+    if phone is not None and aftersales is not None:
+        from ops.macos.shopping.dev_order_sms import DevOrderSMS
+        order_sms=DevOrderSMS(DATA/"order-sms.sqlite3",aftersales=aftersales,phone_cfg=phone_cfg,
+            config_path=Path("/Users/kyouhan/.config/aicontrolcenter-dev-order/order-notification.private.json"))
+    if order_sms is not None:aftersales.sms=order_sms
     history_store=None
     if phone is not None and checkout is not None:
         from ops.macos.shopping.dev_chat_history import DevChatHistory,mount_history
@@ -226,6 +232,9 @@ def create_app():
                     product_operator.sync()
                     health['product_management']='RUNNING';last_sync=time.monotonic()
             except Exception:health['product_management']='UNAVAILABLE'
+            try:
+                if order_sms is not None:health["order_sms"]=order_sms.dispatch_one()
+            except Exception:health["order_sms"]="UNAVAILABLE"
             try:
                 telegram.poll_once();telegram.dispatch_one();inquiry_queue.dispatch_one();health['poller']='RUNNING'
             except Exception:health['poller']='UNAVAILABLE'

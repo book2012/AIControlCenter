@@ -32,6 +32,7 @@ class DevAftersalesStore:
             c.execute("""CREATE TABLE IF NOT EXISTS attachments(
                 id TEXT PRIMARY KEY,case_id TEXT NOT NULL,media_type TEXT NOT NULL,size INTEGER NOT NULL,sha256 TEXT NOT NULL,
                 stored_name TEXT NOT NULL,created REAL NOT NULL)""")
+            c.execute("CREATE TABLE IF NOT EXISTS payments(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
     def _fulfillment(self,order_id):
@@ -56,6 +57,9 @@ class DevAftersalesStore:
         if len(rows)!=1:raise ValueError("ORDER_NOT_OWNED")
         row=rows[0];draft=self.checkout.by_customer_operation(row["operation_key"],customer,allow_expired=True)
         if draft["state"]!="CONFIRMED":raise ValueError("ORDER_NOT_CONFIRMED")
+        if getattr(self,"verified_phone",None):
+            from ops.macos.shopping.dev_order_operator import local_phone
+            if local_phone(draft["body"]["billing"]["phone"])!=local_phone(self.verified_phone):raise ValueError("ORDER_NOT_OWNED")
         return row,draft
     def customer_orders(self,customer):
         result=[]
@@ -71,6 +75,30 @@ class DevAftersalesStore:
                 "fulfillment":f,"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
                 "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active),"cases":cases})
         return result
+    def payment(self,order_id):
+        with sqlite3.connect(self.path) as c:
+            row=c.execute("SELECT state,updated FROM payments WHERE order_id=?",(order_id,)).fetchone()
+        return {"state":row[0] if row else "AWAITING_DEPOSIT","updated":row[1] if row else None}
+    def confirm_payment(self,order_id):
+        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
+        if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
+        with sqlite3.connect(self.path) as c:
+            c.execute("INSERT OR IGNORE INTO payments VALUES(?,?,?)",(order_id,"PAID",self.clock()))
+        return self.payment(order_id)
+    def lookup(self,customer,order_number,phone,verified_phone):
+        from ops.macos.shopping.dev_order_operator import local_phone
+        if type(phone) is not str or not re.fullmatch(r"[+0-9 ()-]{8,32}",phone):raise ValueError("ORDER_NOT_FOUND")
+        if local_phone(phone)!=local_phone(verified_phone):raise ValueError("ORDER_NOT_FOUND")
+        number=str(order_number).strip().removeprefix("#")
+        if not re.fullmatch(r"[1-9][0-9]{0,11}",number):raise ValueError("ORDER_NOT_FOUND")
+        order_id=int(number);row,draft=self._customer_order(customer,order_id)
+        if local_phone(draft["body"]["billing"]["phone"])!=local_phone(verified_phone):raise ValueError("ORDER_NOT_FOUND")
+        order=next(r for r in self.customer_orders(customer) if r["order_id"]==order_id)
+        order["order_number"]=str(order_id)
+        order["delivery"]=draft["body"]["shipping"]
+        order["payment"]=self.payment(order_id)
+        if getattr(self,"sms",None):order["notification_state"]=self.sms.state(order_id)
+        return order
     def exchange_options(self,customer,order_id):
         _,draft=self._customer_order(customer,order_id);body=draft["body"]
         if len(body["line_items"])!=1:raise ValueError("MULTILINE_EXCHANGE_UNSUPPORTED")
@@ -146,6 +174,7 @@ class DevAftersalesStore:
     def operator_command(self,text,update_id):
         clean=text.strip()
         patterns=[
+            (r"입금(확인|상태)\s*#([1-9][0-9]*)","payment"),
             (r"주문발송\s*#([1-9][0-9]*)\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40})","ship"),
             (r"배송완료\s*#([1-9][0-9]*)","delivered"),
             (r"배송상태\s*#([1-9][0-9]*)","status"),
@@ -161,7 +190,10 @@ class DevAftersalesStore:
         if old:return old[0]
         m,kind=matched
         try:
-            if kind=="ship":
+            if kind=="payment":
+                value=self.confirm_payment(int(m[2])) if m[1]=="확인" else self.payment(int(m[2]))
+                reply="주문 #"+m[2]+" · "+("입금완료" if value["state"]=="PAID" else "입금대기")
+            elif kind=="ship":
                 v=self.mark_shipped(int(m[1]),m[2],m[3]);reply="주문 #"+m[1]+" 발송 등록 · "+v["carrier"]+" "+v["tracking"]
             elif kind=="delivered":
                 self.mark_delivered(int(m[1]));reply="주문 #"+m[1]+" 배송완료 · 지금부터 14일 환불/사이즈교환 접수 가능"
@@ -212,16 +244,32 @@ by("check").onclick=async()=>{const r=await fetch("/__order-dev/phone/check",{me
 </script></html>"""
 
 def mount_aftersales(app,*,store,boundary,phone_cfg):
+    store.verified_phone=phone_cfg.get("test_phone")
     def auth(request,write=False):
         if write:boundary.check_origin(request,required=True)
         secret=boundary.cookie_secret(request);projection=boundary.authenticate(secret,now=boundary.now())
         if projection.customer_id!=phone_cfg["guest_customer_id"]:raise ValueError("CUSTOMER_DENIED")
         if write:boundary.check_csrf(request,secret,projection)
         return projection
+    @app.post("/__order-dev/orders/lookup",include_in_schema=False)
+    async def lookup(request:Request):
+        try:
+            projection=auth(request,write=True)
+            raw=bytearray()
+            async for chunk in request.stream():
+                if len(raw)+len(chunk)>1024:raise ValueError("BODY_TOO_LARGE")
+                raw.extend(chunk)
+            data=json.loads(raw)
+            if type(data) is not dict or set(data)!={"order_number","phone"} or any(type(v) is not str for v in data.values()):raise ValueError("INVALID_LOOKUP")
+            order=store.lookup(projection.customer_id,data["order_number"],data["phone"],phone_cfg["test_phone"])
+            return JSONResponse({"order":order},headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
+        except Exception:
+            return JSONResponse({"message":"주문번호와 인증한 휴대폰 번호를 확인해 주세요."},status_code=403,headers={"Cache-Control":"no-store"})
     @app.get("/dev-order/my-orders",include_in_schema=False)
     def portal():return RedirectResponse("/homepage/storefront/my-orders",status_code=302,headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
     @app.get("/__order-dev/aftersales/orders",include_in_schema=False)
     def orders(request:Request):
+        if phone_cfg.get("test_phone"):return JSONResponse({"message":"주문번호로 조회해 주세요."},status_code=403,headers={"Cache-Control":"no-store"})
         try:return JSONResponse({"orders":store.customer_orders(auth(request).customer_id)},headers={"Cache-Control":"no-store"})
         except Exception:return JSONResponse({"message":"휴대폰 인증이 필요합니다."},status_code=401,headers={"Cache-Control":"no-store"})
     @app.get("/__order-dev/aftersales/orders/{order_id}/exchange-options",include_in_schema=False)

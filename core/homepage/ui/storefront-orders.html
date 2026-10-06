@@ -15,13 +15,14 @@
     <a class="wordmark" id="store-home-link" href="/homepage/storefront" aria-label="agachichi 홈">agachichi<span>Everyday Comfort, Playful Touch</span></a>
     <nav class="header-actions" aria-label="쇼핑 메뉴">
       <a class="header-search" href="/homepage/storefront/search">검색 <span aria-hidden="true">↗</span></a>
-      <a class="header-cart" href="/homepage/storefront/cart" aria-label="장바구니">장바구니</a><a class="header-orders" href="/homepage/storefront/my-orders" aria-current="page">내 주문</a>
+      <a class="header-cart" href="/homepage/storefront/cart" aria-label="장바구니">장바구니</a><a class="header-orders" href="/homepage/storefront/my-orders" aria-current="page">ORDER</a>
     </nav>
     <p class="preview-notice">주문 · 환불 · 사이즈교환</p>
   </header>
   <main id="main-content" tabindex="-1" class="orders-page">
     <a class="text-button back-link" href="/homepage/storefront">← 쇼핑 계속하기</a>
-    <div class="orders-heading"><p class="eyebrow">MY ORDERS</p><h1>내 주문</h1><p>휴대폰 인증 후 본인 주문만 확인할 수 있습니다.</p></div>
+    <div class="orders-heading"><p class="eyebrow">MY ORDERS</p><h1>주문 조회</h1><p>주문번호와 주문 시 인증한 휴대폰 번호로 조회하세요.</p></div>
+    <section class="orders-panel"><label>주문번호<input id="orders-number" inputmode="numeric" maxlength="12" placeholder="문자로 받은 주문번호"></label><label>주문 휴대폰 번호<input id="lookup-phone" type="tel" autocomplete="tel" maxlength="32" placeholder="01012345678"></label><button id="orders-lookup" type="button">주문 조회</button></section>
     <section id="orders-auth" class="orders-panel" hidden>
       <h2>휴대폰 인증</h2>
       <label>휴대폰 번호<input id="orders-phone" type="tel" autocomplete="tel" maxlength="32" placeholder="01012345678"></label>

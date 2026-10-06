@@ -139,7 +139,7 @@ def mount_checkout_routes(app,*,store,phone_cfg,boundary,application,catalog,led
             intent=OrderCreateIntent.model_validate({"line_items":draft["body"]["line_items"],"idempotency_key":draft["operation_key"]})
             result=await __import__("asyncio").to_thread(application.execute,request,intent)
             current_status=application.operation_status(request,draft["operation_key"])
-            return JSONResponse({"provider_order_id":result.snapshot.provider_order_id,"total":str(result.snapshot.total),
+            return JSONResponse({"provider_order_id":result.snapshot.provider_order_id,"order_number":str(result.snapshot.provider_order_id),"total":str(result.snapshot.total),
                 "currency":result.snapshot.currency,"idempotent_replay":result.idempotent_replay,"state":"COMPLETED","review_state":current_status["review_state"],
                 "operation_key":draft["operation_key"]},status_code=200 if result.idempotent_replay else 201,headers={"Cache-Control":"no-store"})
         except Exception:

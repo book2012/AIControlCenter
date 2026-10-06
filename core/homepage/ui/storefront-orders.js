@@ -56,6 +56,18 @@
     const fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
     state.textContent=fulfillment==="DELIVERED"?"처리완료":fulfillment==="SHIPPED"?"배송중":order.review_state==="CONFIRMED"?"발송대기":order.review_state==="REJECTED"?"거절":"확인대기";
     head.append(title,state);card.appendChild(head);
+    const details=document.createElement("p");
+    const labels={CONFIRMED:"주문확인 완료",PENDING_REVIEW:"주문확인 대기",REJECTED:"주문 거절",STOCK_BLOCKED:"재고확인 중"};
+    details.textContent=(labels[order.review_state]||"주문확인 대기")+" · "+(order.payment?.state==="PAID"?"입금완료":"입금대기")+" · "+({NOT_SHIPPED:"발송대기",SHIPPED:"배송중",DELIVERED:"배송완료"}[fulfillment]||"발송대기");
+    card.appendChild(details);
+    if(order.notification_state){
+      const notice=document.createElement("p");notice.className="field-note";
+      notice.textContent=order.notification_state==="ACCEPTED"?"주문 안내 문자 발송 접수":order.notification_state==="HISTORICAL"?"기존 주문 · 문자 자동 재발송 없음":order.notification_state==="UNKNOWN"?"문자 발송 결과 확인 중":"주문 안내 문자 발송 대기";
+      card.appendChild(notice);
+    }
+    const address=document.createElement("p");const delivery=order.delivery||{};
+    address.textContent="배송주소: "+[delivery.first_name,delivery.postcode,delivery.address_1,delivery.address_2].filter(Boolean).join(" ");
+    card.appendChild(address);
     const items=document.createElement("div");items.className="order-items";
     for(const item of order.items){const p=document.createElement("p");p.textContent=item.name+" / "+(item.option||"기본")+" / "+item.quantity+"개";items.appendChild(p);}
     card.appendChild(items);
@@ -76,15 +88,15 @@
   };
 
   const load=async()=>{
-    if(!(await session())){by("orders-auth").hidden=false;by("orders-list").replaceChildren();return;}
+    if(!(await session())){by("orders-phone").value=by("lookup-phone").value;by("orders-auth").hidden=false;by("orders-list").replaceChildren();return;}
     by("orders-auth").hidden=true;message("");
-    const response=await fetch("/__order-dev/aftersales/orders",{credentials:"same-origin"});
-    const data=await response.json();
-    if(!response.ok){by("orders-auth").hidden=false;message(data.message||"휴대폰 인증이 필요합니다.");return;}
-    by("orders-list").replaceChildren();
-    for(const order of data.orders)by("orders-list").appendChild(renderOrder(order));
-    if(!data.orders.length){const empty=document.createElement("p");empty.className="empty-state";empty.textContent="확인 가능한 주문이 없습니다.";by("orders-list").appendChild(empty);}
+    const response=await fetch("/__order-dev/orders/lookup",{method:"POST",credentials:"same-origin",headers:headers(),
+      body:JSON.stringify({order_number:by("orders-number").value,phone:by("lookup-phone").value})});
+    const data=await response.json();by("orders-list").replaceChildren();
+    if(!response.ok){message(data.message||"주문을 조회하지 못했습니다.");return;}
+    by("orders-list").appendChild(renderOrder(data.order));
   };
+  by("orders-lookup").onclick=()=>load().catch(()=>message("주문을 조회하지 못했습니다."));
 
   by("orders-send").onclick=async()=>{
     message("");
@@ -102,7 +114,8 @@
       body:JSON.stringify({code:by("orders-code").value})});
     by("orders-code").value="";
     if(!response.ok){message("인증을 완료하지 못했습니다.");return;}
+    if(!by("lookup-phone").value)by("lookup-phone").value=by("orders-phone").value;
     csrf=response.headers.get("X-CSRF-Token")||csrf;message("휴대폰 인증이 완료됐습니다.");await load();
   };
-  load();
+  session().then(verified=>{by("orders-auth").hidden=verified;});
 })();

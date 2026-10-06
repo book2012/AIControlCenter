@@ -139,3 +139,12 @@ Ubuntu remains an optional stateless worker and
 does not own AIControlCenter business logic or
 application state.
 <!-- AICONTROLCENTER:CONTROL_PLANE_BASELINE:END -->
+
+
+### DEV customer order lookup (2026-10-06)
+
+ORDER beside cart opens the existing customer portal. A POST lookup requires an authenticated OTP session, origin/CSRF, order number, and matching verified/draft phone; the former bulk-list endpoint is disabled in live DEV composition. Private delivery, confirmation, manual deposit, and fulfillment status remain separate. Authorized Telegram operators can use `입금확인 #15` / `입금상태 #15`; this records a manual deposit acknowledgment, not bank polling or a Woo payment/refund.
+
+The existing immutable Woo order number is returned as `order_number`. A private SMS outbox watches new confirmed orders, suppresses historical backfill, and claims once before Twilio Messaging. Ambiguous/crashed sends stay UNKNOWN for manual reconciliation; ACCEPTED means provider accepted, not handset delivery. SMS does not block Telegram polling. DEV-only private `order-notification.private.json` needs bank name/account/holder and Twilio account/token/Messaging Service SID; disabled or incomplete configuration queues without sending. Existing one-number DEV verification is retained; no PROD migration or mutation.
+
+Validation: 135 scoped regressions and real Chrome customer lookup/mobile checks passed. Full historical suite has the same 368 failures and 411 errors on unchanged c839a94; this task adds four passing tests. Chat consultation launcher is orange (#c65300) with white text.
