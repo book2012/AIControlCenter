@@ -11,7 +11,7 @@ def local_phone(value):
     return value
 
 class DevOperatorAdapter:
-    def __init__(self,*,ledger,store,inquiry_queue=None):self.ledger=ledger;self.store=store;self.inquiry_queue=inquiry_queue
+    def __init__(self,*,ledger,store,inquiry_queue=None,aftersales=None):self.ledger=ledger;self.store=store;self.inquiry_queue=inquiry_queue;self.aftersales=aftersales
     def rows(self):
         with sqlite3.connect("file:"+str(self.store.path.resolve())+"?mode=ro",uri=True) as c:
             drafts={r[0]: (r[1],r[2]) for r in c.execute("SELECT operation_key,body,digest FROM checkout_delivery WHERE state='CONFIRMED'")}
@@ -70,6 +70,9 @@ class DevOperatorAdapter:
             if reply is not None:
                 self.inquiry_queue.export(self.inquiry_queue.path.with_name("inquiry-learning.jsonl"))
                 return None,None,reply
+        if self.aftersales is not None and update_id is not None:
+            reply=self.aftersales.operator_command(text,update_id)
+            if reply is not None:return None,None,reply
         clean=text.strip()
         mlist=re.fullmatch(r"주문\s*목록(?:\s+([1-9][0-9]?))?",clean)
         if mlist:return None,None,self.list_message(int(mlist[1]) if mlist[1] else 10)

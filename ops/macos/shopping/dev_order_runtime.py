@@ -130,16 +130,20 @@ def create_app():
     writer=WooCommerceOrderWriter(base_url='https://localhost',consumer_key=SecretStr(commerce['consumer_key']),
         consumer_secret=SecretStr(commerce['consumer_secret']),ledger=ledger,clock=now,authorize_once=authorize,
         resolve_customer=customer,session=(GuestCheckoutWooSession(PRIVATE/'dev-woo-cert.pem',store=checkout,provider_customer_id=phone_cfg['provider_customer_id']) if checkout is not None else PinnedDevWooOrderSession(PRIVATE/'dev-woo-cert.pem')))
+    catalog=DevCatalog(commerce,cfg)
     transport=OrderTelegramTransport(token=SecretStr(tg['bot_token']),chat_id=tg['operator_chat_id'])
     from ops.macos.shopping.dev_inquiry_queue import DevInquiryQueue,mount_inquiry_status
     inquiry_queue=DevInquiryQueue(DATA/'inquiries.sqlite3',transport)
+    aftersales=None
+    if checkout is not None:
+        from ops.macos.shopping.dev_aftersales import DevAftersalesStore
+        aftersales=DevAftersalesStore(DATA/'aftersales.sqlite3',DATA/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog)
     from ops.macos.shopping.dev_order_operator import DevOperatorAdapter,DevStockConfirmation
-    operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue) if checkout else None
+    operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue,aftersales=aftersales) if checkout else None
     telegram=OrderTelegramIntegration(ledger=ledger,transport=transport,operator_chat_id=tg['operator_chat_id'],
                                     operator_user_ids=frozenset(tg['operator_user_ids']),
                                     operator_adapter=operator_adapter,
                                     confirmation_guard=DevStockConfirmation(store=checkout) if checkout else None)
-    catalog=DevCatalog(commerce,cfg)
     app=create_order_dev_app(session_boundary=boundary,catalog=catalog,ledger=ledger,writer=writer,telegram_integration=telegram)
     from core.shopping.order_core.guest_chat_app import mount_guest_chat
     phone=None
@@ -159,13 +163,16 @@ def create_app():
         from core.api.routes.order_create import get_order_create_application
         mount_checkout_routes(app,store=checkout,phone_cfg=phone_cfg,boundary=boundary,
             application=app.dependency_overrides[get_order_create_application](),catalog=catalog,ledger=ledger)
+        if aftersales is not None:
+            from ops.macos.shopping.dev_aftersales import mount_aftersales
+            mount_aftersales(app,store=aftersales,boundary=boundary,phone_cfg=phone_cfg)
     from ops.macos.shopping.dev_local_inquiry import LocalInquiryJudge
     mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(),phone_available=phone is not None,
         checkout_available=phone is not None and checkout is not None,inquiry_queue=inquiry_queue)
     mount_inquiry_status(app,inquiry_queue)
     if operator_adapter is not None:
         from ops.macos.shopping.dev_order_admin import mount_admin
-        mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue)
+        mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue,aftersales=aftersales)
     stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         while not stop.is_set():

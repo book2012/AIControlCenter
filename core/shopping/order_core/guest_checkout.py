@@ -60,6 +60,11 @@ class PrivateCheckoutStore:
         value=self.get(row[0],customer,session)
         if value["state"]!="CONFIRMED":raise ValueError("EXPLICIT_CONFIRMATION_REQUIRED")
         return value
+    def by_customer_operation(self,key,customer,*,allow_expired=True):
+        with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+            row=c.execute("SELECT draft_id,session FROM checkout_delivery WHERE operation_key=? AND customer=?",(key,customer)).fetchone()
+        if not row:raise ValueError("CUSTOMER_OPERATION_UNBOUND")
+        return self.get(row[0],customer,row[1],allow_expired=allow_expired)
     def by_provider_tag(self,tag,*,allow_expired=False):
         with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
             rows=c.execute("SELECT draft_id,operation_key,customer,session FROM checkout_delivery").fetchall()

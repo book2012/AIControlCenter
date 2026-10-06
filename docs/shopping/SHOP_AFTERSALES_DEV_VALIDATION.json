@@ -1,0 +1,30 @@
+{
+  "environment": "DEV",
+  "customer_portal": "/dev-order/my-orders",
+  "admin_console": "/dev-order/admin",
+  "existing_orders": [
+    16,
+    15
+  ],
+  "initial_fulfillment_state": "NOT_SHIPPED",
+  "initial_case_count": 0,
+  "return_window_days": 14,
+  "return_window_anchor": "DELIVERED timestamp",
+  "attachment_types": [
+    "image/jpeg",
+    "image/png",
+    "image/webp"
+  ],
+  "attachment_max_bytes": 5242880,
+  "attachment_max_count": 5,
+  "private_database_mode": "0600",
+  "private_attachment_directory_mode": "0700",
+  "focused_aftersales_passed": 4,
+  "combined_focused_passed": 54,
+  "isolated_chrome_order_e2e_passed": true,
+  "telegram_text_fulfillment_commands": true,
+  "payment_refund_execution": false,
+  "carrier_api_execution": false,
+  "prod_mutation": false,
+  "production_ready": false
+}
