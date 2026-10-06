@@ -1,0 +1,38 @@
+{
+  "environment": "DEV",
+  "homepage_code_release": "7e9264798bac63ed5aa1c564b97257acf5933167",
+  "regression_tests_passed": 156,
+  "live_http": {
+    "ag-upload-outer-0001": {
+      "hero_model": true,
+      "image_200": true,
+      "original_preserved": true,
+      "detail_before_order": true,
+      "inquiry_guidance": true,
+      "no_inline_chat_button": true
+    },
+    "ag-upload-outer-0002": {
+      "hero_model": true,
+      "image_200": true,
+      "original_preserved": true,
+      "detail_before_order": true,
+      "inquiry_guidance": true,
+      "no_inline_chat_button": true
+    }
+  },
+  "live_chrome": {
+    "modelHero": true,
+    "detailExplanation": true,
+    "inquiryGuidance": true,
+    "noSeparateChatButton": true,
+    "tag": true,
+    "dialog": true,
+    "asksFirst": true,
+    "original": true,
+    "model": true,
+    "singleInquiryForm": true,
+    "orderInitialized": true,
+    "provider41": true
+  },
+  "prod_mutation": false
+}
