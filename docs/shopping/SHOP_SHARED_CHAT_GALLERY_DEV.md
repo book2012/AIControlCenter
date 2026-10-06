@@ -26,3 +26,5 @@ Built-in imagegen editing/compositing was used; no CLI/API key was used. Camel c
 DEV activation uses a clean task-only immutable Git archive, preserving existing dirty work and PROD. Live activation evidence is recorded separately after deployment. No real SMS/order/payment/carrier event is claimed by these checks.
 
 Stock inquiries are now initiated only from the shared chatbot on the customer storefront; embedded order panels have no separate stock inquiry button.
+
+Final active DEV code release: 0a95c8db1b96872635bfcbfcc4cdb2e04cb03fd7. Live checks confirmed the stock quick action inside the common chatbot, its absence from the order panel, product #41 binding, original/model gallery URLs and poller RUNNING. The prior live real Chrome also confirmed actual order JS initialization and loaded gallery images through a GET-only loopback proxy. Documentation-only closure commits do not retarget runtime.

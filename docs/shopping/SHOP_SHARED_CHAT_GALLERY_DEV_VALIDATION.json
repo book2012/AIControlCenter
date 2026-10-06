@@ -13,7 +13,7 @@
     "ag-upload-outer-0001",
     "ag-upload-outer-0002"
   ],
-  "active_code_release": "4b294f5f13d40fe32cc9f43375191f58efe8e04c",
+  "active_code_release": "0a95c8db1b96872635bfcbfcc4cdb2e04cb03fd7",
   "live_checks": {
     "home": true,
     "orders": true,
@@ -74,5 +74,15 @@
     "singleInquiryForm": true,
     "orderInitialized": true,
     "provider41": true
-  }
+  },
+  "final_live_stock_checks": {
+    "chatbot_stock_button": true,
+    "same_product_tag": true,
+    "ai_and_original": true,
+    "no_order_stock_button": true,
+    "no_inline_inquiry": true,
+    "order_41_preserved": true,
+    "poller_running": true
+  },
+  "runtime_release_identity_confirmed": true
 }
