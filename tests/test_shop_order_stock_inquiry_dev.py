@@ -37,6 +37,23 @@ def test_phone_alias_ambiguity_and_order_selection():
     rows.pop()
     assert adapter.resolve("01012345678고객 주문확인")[:2]==("a"*24,"CONFIRMED")
     assert adapter.resolve("01012345678 주문확인")[1] is None
+def test_operator_order_list_and_detail_separate_address():
+    adapter=DevOperatorAdapter(ledger=None,store=None)
+    rows=[
+      dict(phone="01011112222",state="CONFIRMED",reference="a"*24,provider_order_id=21,requested_at="2026-10-06T01:00:00Z",
+           quote={"final_total":"29000","currency":"KRW","line_items":[{"name":"블라우스","option":"S","quantity":1}]},
+           delivery={"first_name":"김고객","postcode":"12345","address_1":"서울 테스트로 1","address_2":"101호"}),
+      dict(phone="01033334444",state="PENDING_REVIEW",reference="b"*24,provider_order_id=22,requested_at="2026-10-06T02:00:00Z",
+           quote={"final_total":"58000","currency":"KRW","line_items":[{"name":"블라우스","option":"M","quantity":2}]},
+           delivery={"first_name":"이고객","postcode":"54321","address_1":"서울 샘플길 2","address_2":"202호"})]
+    adapter.rows=lambda:rows
+    listing=adapter.resolve("주문목록")[2]
+    assert "#21" in listing and "#22" in listing and "테스트로" not in listing and "샘플길" not in listing
+    detail=adapter.resolve("주문상세 #22")[2]
+    assert "이고객" in detail and "54321" in detail and "서울 샘플길 2 202호" in detail
+    assert adapter.admin_orders()[0]["order_id"]==21 and "delivery" not in adapter.admin_orders()[0]
+    assert adapter.admin_detail(21)["delivery"]["address1"]=="서울 테스트로 1"
+
 def test_inquiry_escalation_answer_approval_expiry_and_exclusion(tmp_path):
     clock=[100.];t=Transport();q=DevInquiryQueue(tmp_path/"inquiries.sqlite3",t,clock=lambda:clock[0])
     ticket=q.submit("10","세탁 방법이 궁금해요")
@@ -44,15 +61,14 @@ def test_inquiry_escalation_answer_approval_expiry_and_exclusion(tmp_path):
     q.dispatch_one();q.dispatch_one()
     assert len(t.messages)==1
     cmd="문의 #"+ticket["inquiry_id"]
-    q.command(cmd+" 답변 찬물로 손세탁해 주세요.",1)
+    reply=q.command(cmd+" 답변 찬물로 손세탁해 주세요.",1)
+    assert "자동 학습" in reply
     assert q.status(ticket["inquiry_token"])["answer"]=="찬물로 손세탁해 주세요."
-    assert q.lookup("10","세탁 방법이 궁금해요") is None
-    q.command(cmd+" 학습승인",2)
     assert q.lookup("10","세탁 방법이 궁금해요")=="찬물로 손세탁해 주세요."
     assert q.lookup("11","세탁 방법이 궁금해요") is None
     assert q.export(tmp_path/"dataset.jsonl")==1
-    q.command(cmd+" 학습제외",3);assert q.lookup("10","세탁 방법이 궁금해요") is None
-    q.command(cmd+" 학습승인",4);clock[0]+=31*86400
+    q.command(cmd+" 학습제외",2);assert q.lookup("10","세탁 방법이 궁금해요") is None
+    q.command(cmd+" 학습승인",3);clock[0]+=31*86400
     assert q.lookup("10","세탁 방법이 궁금해요") is None
 def test_inquiry_redaction_no_contacts_in_messages_dataset_and_private_mode(tmp_path):
     t=Transport();q=DevInquiryQueue(tmp_path/"q.sqlite3",t)
@@ -60,9 +76,17 @@ def test_inquiry_redaction_no_contacts_in_messages_dataset_and_private_mode(tmp_
     q.dispatch_one();message=t.messages[0]
     assert "01012345678" not in message and "test@example.com" not in message and "테스트로" not in message
     reply=q.command("문의 #"+ticket["inquiry_id"]+" 답변 01012345678로 연락",1)
-    assert "저장할 수 없습니다" in reply
+    assert "자동 학습할 수 없습니다" in reply
     assert q.status(ticket["inquiry_token"])["answer"] is None
     assert q.path.stat().st_mode&0o077==0
+def test_inquiry_answer_requesting_personal_data_is_not_auto_learned(tmp_path):
+    t=Transport();q=DevInquiryQueue(tmp_path/"q.sqlite3",t)
+    ticket=q.submit("10","교환하려면 어떻게 하나요?")
+    reply=q.command("문의 #"+ticket["inquiry_id"]+" 답변 성함과 배송지 주소를 알려주세요.",1)
+    assert "자동 학습할 수 없습니다" in reply
+    assert q.status(ticket["inquiry_token"])["answer"] is None
+    assert q.lookup("10","교환하려면 어떻게 하나요?") is None
+
 def test_inquiry_unknown_delivery_never_auto_resends(tmp_path):
     t=Transport();t.error=RuntimeError("unknown");q=DevInquiryQueue(tmp_path/"q.sqlite3",t)
     q.submit("10","배송기간?");q.dispatch_one();q.dispatch_one()

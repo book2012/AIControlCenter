@@ -134,9 +134,10 @@ def create_app():
     from ops.macos.shopping.dev_inquiry_queue import DevInquiryQueue,mount_inquiry_status
     inquiry_queue=DevInquiryQueue(DATA/'inquiries.sqlite3',transport)
     from ops.macos.shopping.dev_order_operator import DevOperatorAdapter,DevStockConfirmation
+    operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue) if checkout else None
     telegram=OrderTelegramIntegration(ledger=ledger,transport=transport,operator_chat_id=tg['operator_chat_id'],
                                     operator_user_ids=frozenset(tg['operator_user_ids']),
-                                    operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue) if checkout else None,
+                                    operator_adapter=operator_adapter,
                                     confirmation_guard=DevStockConfirmation(store=checkout) if checkout else None)
     catalog=DevCatalog(commerce,cfg)
     app=create_order_dev_app(session_boundary=boundary,catalog=catalog,ledger=ledger,writer=writer,telegram_integration=telegram)
@@ -162,6 +163,9 @@ def create_app():
     mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(),phone_available=phone is not None,
         checkout_available=phone is not None and checkout is not None,inquiry_queue=inquiry_queue)
     mount_inquiry_status(app,inquiry_queue)
+    if operator_adapter is not None:
+        from ops.macos.shopping.dev_order_admin import mount_admin
+        mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue)
     stop=threading.Event();health={'poller':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         while not stop.is_set():

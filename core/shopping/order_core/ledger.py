@@ -683,8 +683,8 @@ class SQLiteOrderCreateLedger:
         try:
             self._validate(connection)
             return [dict(row) for row in connection.execute(
-                "SELECT r.operation_key,r.reference,r.state,o.provider_order_id FROM shopping_order_operator_review r "
-                "JOIN shopping_order_create_operations o ON o.operation_key=r.operation_key ORDER BY o.requested_at")]
+                "SELECT r.operation_key,r.reference,r.state,o.provider_order_id,o.requested_at FROM shopping_order_operator_review r "
+                "JOIN shopping_order_create_operations o ON o.operation_key=r.operation_key ORDER BY o.requested_at DESC")]
         finally: connection.close()
 
     def process_operator_update(self, update_id, *, reference=None, decision=None, actor_reference=None, confirmation_guard=None):

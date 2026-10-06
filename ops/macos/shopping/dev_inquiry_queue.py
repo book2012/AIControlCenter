@@ -11,6 +11,14 @@ def sanitize(text):
     text=re.sub(r"[^\n]*(?:주소\s*[:：]|배송지\s*[:：]|수령인\s*[:：]|[가-힣]+(?:로|길)\s*[0-9]+|[0-9]+동\s*[0-9]+호)[^\n]*","[배송정보 제거]",text)
     return text.strip()[:1000]
 def normalized(text):return " ".join(sanitize(text).lower().split())
+def learning_safe(text):
+    value=text.strip()
+    if not value or sanitize(value)!=value:return False
+    pii=r"(?:전화번호|휴대폰(?:\s*번호)?|핸드폰(?:\s*번호)?|연락처|이메일(?:\s*주소)?|주소|배송지|수령인|성함|이름|주민(?:등록)?번호|생년월일|계좌(?:번호)?|카드(?:번호)?|비밀번호|인증번호|OTP)"
+    ask=r"(?:알려|입력|보내|남겨|제공|적어|기재|전달|말해|회신|작성)"
+    if re.search(pii+r".{0,40}"+ask,value,re.I) or re.search(ask+r".{0,40}"+pii,value,re.I):return False
+    if any(v in value for v in ("결제완료","결제 완료","주문확정 요청","주문 확정 요청")):return False
+    return True
 class DevInquiryQueue:
     def __init__(self,path,transport,clock=time.time):
         self.path=Path(path);self.transport=transport;self.clock=clock
@@ -55,12 +63,12 @@ class DevInquiryQueue:
             reply="문의 번호를 찾지 못했습니다."
             if row:
                 if m[3]:
-                    answer=sanitize(m[3])
-                    if answer!=m[3].strip() or any(v in answer for v in ("주문확정","주문 확정","결제완료","결제 완료","인증번호","계좌")):
-                        reply="개인정보·인증·결제·주문확정 내용은 답변 자료에 저장할 수 없습니다."
+                    answer=sanitize(m[3]);stamp=self.clock()
+                    if not learning_safe(m[3]):
+                        reply="개인정보 요청·인증·결제 민감 내용은 자동 학습할 수 없습니다."
                     else:
-                        c.execute("UPDATE inquiries SET answer=?,state='ANSWERED',answered=?,approved=NULL WHERE id=?",(answer,self.clock(),m[1]))
-                        reply="문의 #"+m[1]+" 답변을 고객 화면에 전달했습니다. 재사용하려면 학습승인해 주세요."
+                        c.execute("UPDATE inquiries SET answer=?,state='APPROVED',answered=?,approved=? WHERE id=?",(answer,stamp,stamp,m[1]))
+                        reply="문의 #"+m[1]+" 답변을 고객 화면에 전달했고 30일 자동 학습에 반영했습니다. 필요하면 학습제외해 주세요."
                 elif m[2]=="학습승인":
                     if row[0] and row[1] in ("ANSWERED","APPROVED"):
                         c.execute("UPDATE inquiries SET state='APPROVED',approved=? WHERE id=?",(self.clock(),m[1]))
@@ -71,6 +79,12 @@ class DevInquiryQueue:
                     reply="문의 #"+m[1]+" 자동 응답에서 제외했습니다."
             c.execute("INSERT INTO inquiry_operator_updates VALUES(?,?)",(update_id,reply))
         return reply
+    def admin_rows(self,limit=50):
+        limit=max(1,min(int(limit),100))
+        with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+            c.row_factory=sqlite3.Row
+            rows=c.execute("SELECT id,product,question,answer,state,delivery,created,answered,approved FROM inquiries ORDER BY created DESC LIMIT ?",(limit,)).fetchall()
+        return [dict(r) for r in rows]
     def status(self,token):
         if not re.fullmatch(r"[a-f0-9]{48}",token):return None
         with sqlite3.connect(self.path) as c:r=c.execute("SELECT answer,state FROM inquiries WHERE token=? AND created>?",(token,self.clock()-86400)).fetchone()
