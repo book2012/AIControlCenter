@@ -2,7 +2,7 @@
 from pathlib import Path
 from datetime import datetime,timezone,timedelta
 from email.utils import parsedate_to_datetime
-import hashlib,json,os,re,secrets,sqlite3,threading,uuid
+import hashlib,json,os,re,secrets,sqlite3,threading,uuid,time
 import requests
 from pydantic import BaseModel,ConfigDict,Field
 from fastapi import Request
@@ -41,13 +41,13 @@ def timestamp(value):
     return result.astimezone(timezone.utc)
 
 class FixedDevTwilioPort:
-    def __init__(self,cfg,binding_key,session=None):
+    def __init__(self,cfg,binding_key,session=None,*,clock=utc,sleeper=time.sleep):
         c=cfg["credentials"]
         if cfg.get("environment")!="DEV" or cfg.get("provider")!="twilio_verify" or cfg.get("enabled") is not True:raise ValueError("DEV_PHONE_DISABLED")
         if not re.fullmatch(r"AC[0-9a-fA-F]{32}",c["account_sid"]) or not re.fullmatch(r"VA[0-9a-fA-F]{32}",c["verify_service_sid"]) or not c["auth_token"]:raise ValueError("DEV_PHONE_CONFIGURATION_INVALID")
         self.phone=normalize_phone(cfg["test_phone"]);self.binding=derive_phone_binding(self.phone,binding_key)
         self.credentials=c;self.session=session or requests.Session();self.session.trust_env=False
-        self.last_error_code=None
+        self.last_error_code=None;self.clock=clock;self.sleeper=sleeper
     def invoke(self,path,body):
         if path not in ("Verifications","VerificationCheck"):raise PhoneDenied("REJECTED")
         self.last_error_code=None
@@ -66,13 +66,23 @@ class FixedDevTwilioPort:
             or document.get("to")!=self.phone.value or document.get("channel")!="sms"
             or not re.fullmatch(r"VE[0-9a-fA-F]{32}",document.get("sid",""))):raise PhoneDenied()
         return document
+    def provider_timestamp(self,value):
+        stamp=timestamp(value)
+        delta=(stamp-self.clock()).total_seconds()
+        # Preserve the provider evidence and strict Core no-future checks.
+        # Wait for a small observed provider/local clock skew, never clamp timestamps.
+        if delta>5:raise PhoneDenied("PROVIDER_CLOCK_SKEW")
+        if delta>0:
+            self.sleeper(delta+0.02)
+            if stamp>self.clock():raise PhoneDenied("PROVIDER_CLOCK_SKEW")
+        return stamp
     def start_challenge(self,request):
         if str(request.provider_source)!=SOURCE or request.subject.phone_binding!=self.binding:raise PhoneDenied("REJECTED")
         raw=self.invoke("Verifications",{"To":self.phone.value,"Channel":"sms","Locale":"ko"})
         if raw.get("status")!="pending":raise PhoneDenied()
         return ChallengeStartResult(provider_source=request.provider_source,provider_verification_id=ProviderVerificationIdentifier(value=raw["sid"]),
             purpose=request.purpose,challenge_reference=request.challenge_reference,replay_reference=request.replay_reference,
-            phone_binding=request.subject.phone_binding,status=ChallengeStatus.PENDING,started_at=timestamp(raw["date_created"]))
+            phone_binding=request.subject.phone_binding,status=ChallengeStatus.PENDING,started_at=self.provider_timestamp(raw["date_created"]))
     def verify_challenge(self,request):
         if str(request.provider_source)!=SOURCE or request.phone_binding!=self.binding:raise PhoneDenied("REJECTED")
         raw=self.invoke("VerificationCheck",{"VerificationSid":str(request.provider_verification_id),"Code":request.otp})
@@ -83,7 +93,7 @@ class FixedDevTwilioPort:
         if status is None:raise PhoneDenied()
         return ChallengeVerificationResult(provider_source=request.provider_source,provider_verification_id=request.provider_verification_id,
             purpose=request.purpose,challenge_reference=request.challenge_reference,replay_reference=request.replay_reference,
-            phone_binding=request.phone_binding,status=status,verified_at=timestamp(raw["date_updated"]))
+            phone_binding=request.phone_binding,status=status,verified_at=self.provider_timestamp(raw["date_updated"]))
 
 class DevPhoneBridge:
     def __init__(self,*,cfg,binding_key,customer_path,bridge_path,clock=utc,port=None):
@@ -108,7 +118,7 @@ class DevPhoneBridge:
                 if token:
                     row=c.execute("SELECT state,expires FROM dev_phone_browser WHERE token_hash=?",(digest(token),)).fetchone()
                     if row and row[0]=="PENDING" and stamp<row[1]:return token,False
-                    if row and row[0] in ("START_CLAIMED","UNKNOWN","CHECK_CLAIMED"):raise PhoneDenied("INSPECTION_REQUIRED")
+                    if row and row[0] in ("START_CLAIMED","UNKNOWN","CHECK_CLAIMED") and stamp<row[1]:raise PhoneDenied("INSPECTION_REQUIRED")
                 count=c.execute("SELECT count(*) FROM dev_phone_browser WHERE created>?",(stamp-3600,)).fetchone()[0]
                 recent=c.execute("SELECT 1 FROM dev_phone_browser WHERE created>? OR (state IN ('START_CLAIMED','UNKNOWN','CHECK_CLAIMED','PENDING') AND expires>?)",(stamp-60,stamp)).fetchone()
                 if count>=3 or recent:raise PhoneDenied("RATE_LIMITED")
@@ -159,7 +169,12 @@ def mount_phone_routes(app,*,bridge,boundary,register_evidence):
             token,sent=await __import__("asyncio").to_thread(bridge.start,data.phone,request.cookies.get(COOKIE))
             response=JSONResponse({"state":"PENDING","message":"인증번호를 입력해 주세요.","new_sms_requested":sent},headers={"Cache-Control":"no-store"})
             response.set_cookie(COOKIE,token,max_age=300,path="/",secure=True,httponly=True,samesite="strict");return response
-        except PhoneDenied as error:return JSONResponse({"message":"인증 요청을 완료하지 못했습니다. 반복 발송하지 말고 연결 상태를 확인해 주세요.","code":error.code,"provider_code":error.provider_code},status_code=429 if error.code=="RATE_LIMITED" else 503,headers={"Cache-Control":"no-store"})
+        except PhoneDenied as error:
+            messages={"RATE_LIMITED":"인증 요청이 너무 많습니다. 잠시 후 다시 요청해 주세요.",
+                "PHONE_NOT_ALLOWED":"DEV에서는 등록한 테스트 휴대폰 번호만 인증할 수 있습니다.",
+                "INSPECTION_REQUIRED":"이전 인증 요청 결과를 확인 중입니다. 요청 후 5분이 지나면 다시 시도해 주세요."}
+            return JSONResponse({"message":messages.get(error.code,"인증 요청을 완료하지 못했습니다. 잠시 후 다시 시도해 주세요."),"code":error.code,"provider_code":error.provider_code},
+                status_code=429 if error.code=="RATE_LIMITED" else 503,headers={"Cache-Control":"no-store"})
         except Exception:return JSONResponse({"message":"휴대폰 번호와 인증 동의를 확인해 주세요."},status_code=422,headers={"Cache-Control":"no-store"})
     @app.post("/__order-dev/phone/check",include_in_schema=False)
     async def check(request:Request):

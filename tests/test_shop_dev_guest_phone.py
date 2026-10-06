@@ -98,3 +98,43 @@ def test_twilio_endpoint_cannot_escape_verify_scope():
  c=cfg();s=Session(document(c));p=FixedDevTwilioPort(c,b"binding",session=s)
  with pytest.raises(PhoneDenied):p.invoke("../../Accounts",{})
  assert s.calls==[]
+
+def test_small_twilio_clock_skew_waits_without_rewriting_provider_evidence():
+ c=cfg();now=[datetime.now(timezone.utc)];waits=[];future=now[0]+timedelta(seconds=2)
+ def sleep(seconds):waits.append(seconds);now[0]+=timedelta(seconds=seconds)
+ raw={**document(c),"date_created":future.isoformat()};session=Session(raw)
+ port=FixedDevTwilioPort(c,b"binding",session=session,clock=lambda:now[0],sleeper=sleep)
+ stamp=port.provider_timestamp(raw["date_created"])
+ assert stamp==future and stamp<=now[0] and waits==[2.02]
+ with pytest.raises(PhoneDenied):port.provider_timestamp((now[0]+timedelta(seconds=6)).isoformat())
+ assert len(waits)==1
+
+def test_future_provider_time_without_advancing_local_clock_denies():
+ c=cfg();now=datetime.now(timezone.utc);port=FixedDevTwilioPort(c,b"binding",session=Session(document(c)),clock=lambda:now,sleeper=lambda seconds:None)
+ with pytest.raises(PhoneDenied):port.provider_timestamp((now+timedelta(seconds=2)).isoformat())
+
+def test_actual_adapter_skew_start_and_check_publish_trusted_receipt(setup):
+ bridge,old,now=setup;raw=document(bridge.cfg);raw["date_created"]=(now[0]+timedelta(seconds=2)).isoformat()
+ session=Session(raw);waits=[]
+ def sleep(seconds):waits.append(seconds);now[0]+=timedelta(seconds=seconds)
+ port=FixedDevTwilioPort(bridge.cfg,b"binding-secret",session=session,clock=lambda:now[0],sleeper=sleep)
+ bridge.port=port;bridge.service._port=port
+ token,sent=bridge.start("01012345678")
+ assert sent and len(waits)==1
+ session.document={**raw,"status":"approved","date_updated":(now[0]+timedelta(seconds=2)).isoformat()}
+ outcome=bridge.verify(token,"123456")
+ assert outcome.receipt.customer_id==bridge.customer_id and len(waits)==2
+ with sqlite3.connect(bridge.path) as c:assert c.execute("SELECT state FROM dev_phone_browser").fetchone()[0]=="VERIFIED"
+
+def test_expired_unknown_cookie_allows_explicit_new_request_without_replaying(setup):
+ bridge,port,now=setup;port.fail=True
+ with pytest.raises(PhoneDenied):bridge.start("01012345678")
+ # A cookie retained by a browser must not block a new request forever.
+ old_token="A"*43
+ with sqlite3.connect(bridge.path) as c:c.execute("UPDATE dev_phone_browser SET token_hash=?",(digest(old_token),))
+ with pytest.raises(PhoneDenied):bridge.start("01012345678",old_token)
+ assert port.calls==["start"]
+ now[0]+=timedelta(seconds=301);port.fail=False
+ new_token,sent=bridge.start("01012345678",old_token)
+ assert sent and new_token!=old_token and port.calls==["start","start"]
+ with sqlite3.connect(bridge.path) as c:assert c.execute("SELECT count(*) FROM dev_phone_browser WHERE state='UNKNOWN'").fetchone()[0]==1
