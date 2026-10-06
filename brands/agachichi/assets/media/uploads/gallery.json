@@ -1,0 +1,42 @@
+{
+  "environment": "DEV",
+  "schema_version": 1,
+  "assets": [
+    {
+      "product_id": "ag-upload-outer-0001",
+      "kind": "original",
+      "label": "업로드 사진",
+      "ai_generated": false,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0001-original.jpg",
+      "sha256": "5181d8cedd69a6078e46e0dc319f3345c97cf15cd492c0bc0885577c19a74594",
+      "source_filename": "70603.jpg",
+      "source_library_file_id": "libfile_4bb25da447648191973080c979be23ff"
+    },
+    {
+      "product_id": "ag-upload-outer-0001",
+      "kind": "model-angles",
+      "label": "AI 모델 착용 · 정면 / 측면 / 뒷면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0001-model-angles.jpg",
+      "sha256": "ba22afe684b878e60a1dbbdb7e63c2cc5ccbc4e6d69c79a5b68efd1461aeac1d"
+    },
+    {
+      "product_id": "ag-upload-outer-0002",
+      "kind": "original",
+      "label": "업로드 사진",
+      "ai_generated": false,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0002-original.jpg",
+      "sha256": "524e1749ae441aed7c145aca3e9a982a9e65f50c04f3f0bf03d2f5f04248a153",
+      "source_filename": "70610.jpg",
+      "source_library_file_id": "libfile_4bc38c5b41b88191a568e31135acffbf"
+    },
+    {
+      "product_id": "ag-upload-outer-0002",
+      "kind": "model-angles",
+      "label": "AI 모델 착용 · 정면 / 측면 / 뒷면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0002-model-angles.jpg",
+      "sha256": "623bd1c20239af7bb086b1ab87add9e5c1fa4b552f93af9b69fc6126c597efff"
+    }
+  ]
+}

@@ -6644,3 +6644,7 @@ The first user-uploaded product promotion is now complete in DEV. `ag-upload-out
 
 ## DEV second uploaded coat and HOT/UPDATE home (2026-10-06)
 The 450,000 KRW oatmeal coat is registered as Woo #41 with M/L initial stock one each. Original source retained, AI retouch and visual tags recorded; repeat registration preserves stock/product identity. The DEV home prioritizes explicit editorial HOT and UPDATE, with 122 preview records and seven active commerce mappings. 154 relevant tests passed; PROD untouched. See [architecture and evidence](docs/shopping/SHOP_SECOND_COAT_HOME_DEV.md).
+
+
+## SHOP_SHARED_CHAT_GALLERY_DEV
+DEV uses one product-tagged chatbot with same-tab conversation persistence and phone-authorized recent inquiry history. The two uploaded coats retain original photos and add explicitly labeled AI front/side/rear model lookbooks. 193 focused regression tests and six isolated real Chrome acceptance checks passed; no real SMS/order/payment or PROD activation occurred. See docs/shopping/SHOP_SHARED_CHAT_GALLERY_DEV.md.

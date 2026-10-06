@@ -1,0 +1,16 @@
+{
+  "environment": "DEV",
+  "regression_passed": 193,
+  "browser_checks": 6,
+  "browser_inquiry_auth": "isolated local fakes",
+  "external_provider_requests": 0,
+  "mock_sms_requests": 0,
+  "prod_mutation": false,
+  "chat_persistence": "same-tab sessionStorage, bounded 100 entries",
+  "authenticated_history": "30 recent records / 30 days, phone session and CSRF ownership link",
+  "real_dev_orderable_products": 7,
+  "gallery_products": [
+    "ag-upload-outer-0001",
+    "ag-upload-outer-0002"
+  ]
+}

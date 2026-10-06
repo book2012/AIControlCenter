@@ -53,9 +53,15 @@ def template(filename: str, **values: str) -> str:
     return result
 
 
-def rendered(filename: str, values: dict, code: int, retry_id: str) -> tuple[str, int]:
+def rendered(filename: str, values: dict, code: int, retry_id: str, service=None) -> tuple[str, int]:
     values["media"] = storefront_media.browser_mapping()
     html = template(filename, **values)
+    if service is not None:
+        from core.homepage.storefront_chat import widget
+        chat_html = widget(service, values.get("product_id", ""))
+        if chat_html:
+            html = re.sub(r'<section id="inquiry-section".*?</section>', "", html, flags=re.S)
+        html = html.replace("</body>", chat_html + "</body>")
     if code == 503:
         html = re.sub(rf'(<button id="{retry_id}"[^>]*?) hidden', r"\1", html, count=1)
     return html, code
@@ -335,7 +341,7 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
                                       else "조건에 맞는 상품이 없습니다.")
     except Exception:
         values["feed_status"], code = UNAVAILABLE, 503
-    return rendered("storefront.html", values, code, "home-retry")
+    return rendered("storefront.html", values, code, "home-retry", service)
 
 
 def search(service: ShoppingService, state: dict) -> tuple[str, int]:
@@ -372,7 +378,7 @@ def search(service: ShoppingService, state: dict) -> tuple[str, int]:
               "page_label": f"{page} / {pages} 페이지"}
     for query in ("블라우스", "미니멀", "내추럴", "주말", "출근"):
         values["mood_" + query] = escape(listing_url({**state, "q": query, "page": 1}))
-    return rendered("storefront-search.html", values, code, "retry")
+    return rendered("storefront-search.html", values, code, "retry", service)
 
 
 def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, int]:
@@ -381,14 +387,16 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
               "name": "상품을 찾을 수 없습니다", "category": "", "price": "", "availability": "", "description": "",
               "variants": '<p class="variant-empty">판매 옵션 준비 중입니다.</p>', "inquiry_hidden": "hidden", "product_id": "",
               "photo_hidden": "hidden", "image_attrs": "hidden", "fallback_hidden": "",
-              "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_panel": "", "dev_order_assets": "", "commerce_notice": "상품 미리보기 · 현재 구매는 지원하지 않습니다."}
+              "gallery": "", "chat_button": "", "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_panel": "", "dev_order_assets": "", "commerce_notice": "상품 미리보기 · 현재 구매는 지원하지 않습니다."}
     code = 200
     try:
         product = product_data(service.get_product(product_id))
         if product["id"] != product_id:
             raise ValueError("Product identity mismatch")
         photo = photo_url(product)
-        values.update(name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)),
+        from core.homepage.storefront_gallery import for_product
+        gallery = '<section class="detail-gallery" aria-label="상품 사진"><h2>상품 사진</h2>' + "".join('<figure><img loading="lazy" src="'+escape(row["url"])+'" alt="'+escape(product["name"]+" · "+row["label"])+'"><figcaption>'+escape(row["label"])+ (" · 실제 착용·측면·뒷면과 다를 수 있는 AI 예상 이미지" if row["ai_generated"] else " · 고객이 올린 실제 사진")+'</figcaption></figure>' for row in for_product(product_id)) + '</section>' if product["source"] == "dev_upload" else ""
+        values.update(gallery=gallery, chat_button=('<button type="button" data-shop-chat-product="'+escape(product_id)+'">챗봇에게 물어보기</button>' if product_id in dev_orderable(service) else ""),name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)),
                       availability="재고 있음" if product["in_stock"] else "품절",
                       description=escape(product["description"] or "등록된 상품 설명이 없습니다."),
                       variants=variant_controls(product), product_id=escape(product["id"]),
@@ -405,4 +413,4 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
     except Exception:
         code = 503
         values.update(name="상품을 불러오지 못했습니다", status=UNAVAILABLE)
-    return rendered("storefront-product.html", values, code, "detail-retry")
+    return rendered("storefront-product.html", values, code, "detail-retry", service)

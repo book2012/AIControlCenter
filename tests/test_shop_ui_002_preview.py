@@ -144,7 +144,8 @@ def test_hero_is_a_brand_owned_local_jpeg_and_visible_copy_is_fixed(client):
     assert "agachichi" in html and "Everyday Comfort, Playful Touch" in html
     assert 'data-feed-filter="all"' in html
     assert "HOT" in html and "추천" not in html
-    assert not any(tag in {"form", "input", "select"} for tag, _ in Elements(html).elements)
+    assert html.count('id="shop-chat-form"') == 1
+    assert 'id="shop-chat-product"' in html
     assert len([attrs for _, attrs in Elements(html).elements if attrs.get("class") == "header-search"]) == 1
 
 

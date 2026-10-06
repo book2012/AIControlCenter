@@ -90,6 +90,10 @@ class DevInquiryQueue:
         with sqlite3.connect(self.path) as c:r=c.execute("SELECT answer,state FROM inquiries WHERE token=? AND created>?",(token,self.clock()-86400)).fetchone()
         if not r:return None
         return {"state":r[1],"answer":r[0]}
+    def history_answer(self,token):
+        if not re.fullmatch(r"[a-f0-9]{48}",token):return None
+        with sqlite3.connect(self.path) as c:r=c.execute("SELECT answer FROM inquiries WHERE token=? AND created>?",(token,self.clock()-30*86400)).fetchone()
+        return r[0] if r and r[0] else None
     def export(self,path):
         with sqlite3.connect(self.path) as c:rows=c.execute("SELECT product,question,answer FROM inquiries WHERE state='APPROVED' AND approved>?",(self.clock()-30*86400,)).fetchall()
         p=Path(path);p.write_text("".join(json.dumps({"product_id":r[0],"question":r[1],"answer":r[2]},ensure_ascii=False)+"\n" for r in rows));os.chmod(p,0o600)

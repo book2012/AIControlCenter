@@ -6,7 +6,7 @@ from fastapi.responses import HTMLResponse,JSONResponse,FileResponse
 from core.shopping.order_core.guest_chat import GuestShoppingChat,GuestQuestion,GuestCart
 
 ASSET=Path(__file__).resolve().parents[3]/"deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/storefront-guest-chat.js"
-def mount_guest_chat(app,*,catalog,session_boundary,phone_available=False,checkout_available=False,intent_classifier=None,inquiry_queue=None):
+def mount_guest_chat(app,*,catalog,session_boundary,phone_available=False,checkout_available=False,intent_classifier=None,inquiry_queue=None,history_store=None):
     chat=GuestShoppingChat(catalog,intent_classifier=intent_classifier)
     @app.get("/__order-dev/guest-chat.js",include_in_schema=False)
     def asset():return FileResponse(ASSET,media_type="text/javascript",headers={"Cache-Control":"no-store"})
@@ -49,6 +49,9 @@ def mount_guest_chat(app,*,catalog,session_boundary,phone_available=False,checko
                     result={**result,**ticket,"message":"운영자에게 문의를 접수했습니다. 이 화면에서 답변을 확인할 수 있습니다.","action":"OPERATOR_QUEUED"}
                 except ValueError:
                     result={**result,"message":"현재 문의 접수가 많습니다. 잠시 후 다시 문의해 주세요."}
+        if history_store is not None:
+            try:result={**result,"history_saved":history_store.record(request,payload,result)}
+            except Exception:result={**result,"history_saved":False}
         return JSONResponse(result,headers={"Cache-Control":"no-store"})
     @app.post("/__order-dev/chat/quote",include_in_schema=False)
     async def quote(request:Request):

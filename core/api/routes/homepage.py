@@ -127,14 +127,28 @@ def storefront_commerce_script() -> Response:
     return Response(_ui_asset("storefront-commerce.js"), media_type="application/javascript")
 
 
+@router.get("/homepage/assets/storefront-chat.js", include_in_schema=False)
+def storefront_chat_script() -> Response:
+    return Response(_ui_asset("storefront-chat.js"), media_type="application/javascript")
+
+
+@router.get("/homepage/assets/storefront/gallery/{filename}", include_in_schema=False)
+def storefront_gallery_photo(filename: str) -> FileResponse:
+    from core.homepage.storefront_gallery import assets
+    asset=assets().get(filename)
+    if asset is None:raise HTTPException(status_code=404, detail="Photo not found")
+    return FileResponse(asset["path"], media_type="image/jpeg")
+
+
 @router.get("/homepage/assets/storefront-orders.js", include_in_schema=False)
 def storefront_orders_script() -> Response:
     return Response(_ui_asset("storefront-orders.js"), media_type="application/javascript")
 
 
 @router.get("/homepage/storefront/my-orders", response_class=HTMLResponse, include_in_schema=False)
-def storefront_orders_browser() -> HTMLResponse:
-    return HTMLResponse(storefront.template("storefront-orders.html"))
+def storefront_orders_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
+    from core.homepage.storefront_chat import widget
+    return HTMLResponse(storefront.template("storefront-orders.html").replace("</body>",widget(service)+"</body>"))
 
 
 @router.get("/homepage/assets/storefront/hero-boutique.jpg", include_in_schema=False)

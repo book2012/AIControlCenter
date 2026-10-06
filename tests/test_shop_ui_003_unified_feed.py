@@ -27,15 +27,16 @@ def ids(html):
     return re.findall(r'data-product-id="([^"]+)"', html)
 
 
-def test_default_home_is_one_mixed_feed_and_filters_are_shareable():
+def test_default_home_hot_update_feed_and_filters_are_shareable():
     with TestClient(create_app()) as client:
         response = client.get("/homepage/storefront")
         assert response.status_code == 200
         html = response.text
-        assert len(cards(html)) == 24
-        assert 'id="feed-count">상품 121개<' in html
-        assert {value.split("-")[2] for value in ids(html)} == {"top", "bottom", "outer", "dress", "bag", "acc"}
-        assert [value.split("-")[2] for value in ids(html)[:6]] == ["top", "bottom", "outer", "dress", "bag", "acc"]
+        assert len(cards(html)) == 26
+        assert 'id="feed-count">상품 26개<' in html
+        assert {value.split("-")[2] for value in ids(html)} <= {"top", "bottom", "outer", "dress", "bag", "acc"}
+        assert ids(html)[:2] == ["ag-upload-outer-0002", "ag-upload-outer-0001"]
+        assert 'id="feed-title">UPDATE' in html
         assert 'id="new-grid"' not in html and 'id="best-grid"' not in html
         assert 'category-lookbook' not in html and 'data-lookbook-category' not in html
         assert [a[1]["data-feed-filter"] for a in Elements(html).elements if a[0] == "a" and "data-feed-filter" in a[1]] == [
@@ -52,11 +53,13 @@ def test_default_home_is_one_mixed_feed_and_filters_are_shareable():
 
 def test_collection_filters_stay_separate_and_use_truthful_empty_states():
     with TestClient(create_app()) as client:
-        for collection in ("hot", "sale"):
+        for collection in ("sale",):
             response = client.get("/homepage/storefront", params={"collection": collection})
             assert response.status_code == 200
             assert not ids(response.text)
             assert collection.upper() in response.text
+        hot = client.get("/homepage/storefront?collection=hot")
+        assert ids(hot.text) == ["ag-upload-outer-0002", "ag-upload-outer-0001"]
         update = client.get("/homepage/storefront?collection=update")
         assert update.status_code == 200 and ids(update.text)
         assert {value.split("-")[2] for value in ids(update.text)} <= {"top", "bottom", "outer", "dress", "bag", "acc"}

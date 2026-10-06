@@ -178,7 +178,7 @@ def test_editorial_home_and_search_have_separate_information_architecture(client
     assert {"home-view", "home-filter-nav", "home-feed", "browse-all", "hero-title", "feed-title"} <= home_ids
     assert not {"search-input", "product-count", "category-nav", "active-conditions", "next-page"} & home_ids
     assert "new-grid" not in home and "best-grid" not in home and "category-lookbook" not in home
-    assert not any(tag in {"input", "form", "select"} for tag, _ in home_elements)
+    assert home.count('id="shop-chat-form"') == 1
     assert {"listing-view", "search-input", "category-nav", "active-conditions", "product-count", "next-page"} <= search_ids
     assert "hero-title" not in search_ids
     assert any(tag == "a" and attrs.get("href") == "/homepage/storefront/search" for tag, attrs in home_elements)
@@ -257,7 +257,7 @@ def test_native_search_form_and_pagination_preserve_composed_state(client):
     elements = Elements(html).elements
     form = next(attrs for tag, attrs in elements if tag == "form")
     assert form["method"] == "get" and form["action"] == storefront.LIST
-    values = {attrs.get("name"): attrs.get("value") for tag, attrs in elements if tag == "input"}
+    values = {attrs.get("name"): attrs.get("value") for tag, attrs in elements if tag == "input" and attrs.get("name")}
     assert values == {"category": "women-tops", "q": "블라우스"}
     for anchor in links(html):
         if "data-category" in anchor:
