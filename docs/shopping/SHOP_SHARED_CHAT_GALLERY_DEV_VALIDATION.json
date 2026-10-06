@@ -1,7 +1,7 @@
 {
   "environment": "DEV",
-  "regression_passed": 193,
-  "browser_checks": 6,
+  "regression_passed": 194,
+  "browser_checks": 7,
   "browser_inquiry_auth": "isolated local fakes",
   "external_provider_requests": 0,
   "mock_sms_requests": 0,
@@ -12,5 +12,67 @@
   "gallery_products": [
     "ag-upload-outer-0001",
     "ag-upload-outer-0002"
-  ]
+  ],
+  "active_code_release": "4b294f5f13d40fe32cc9f43375191f58efe8e04c",
+  "live_checks": {
+    "home": true,
+    "orders": true,
+    "coat1": true,
+    "coat2": true,
+    "embed": true,
+    "health": true,
+    "ag-upload-outer-0001-original": true,
+    "ag-upload-outer-0001-model-angles": true,
+    "ag-upload-outer-0002-original": true,
+    "ag-upload-outer-0002-model-angles": true,
+    "anonymous_history_denied": true
+  },
+  "woo_read_only": [
+    {
+      "id": 36,
+      "variations": [
+        {
+          "size": "S",
+          "price": "300000",
+          "stock": 1
+        },
+        {
+          "size": "M",
+          "price": "300000",
+          "stock": 1
+        },
+        {
+          "size": "L",
+          "price": "300000",
+          "stock": 1
+        }
+      ]
+    },
+    {
+      "id": 41,
+      "variations": [
+        {
+          "size": "M",
+          "price": "450000",
+          "stock": 1
+        },
+        {
+          "size": "L",
+          "price": "450000",
+          "stock": 1
+        }
+      ]
+    }
+  ],
+  "stock_inquiry": "shared chatbot quick action; removed from order panel",
+  "live_real_chrome_before_stock_move": {
+    "tag": true,
+    "dialog": true,
+    "asksFirst": true,
+    "original": true,
+    "model": true,
+    "singleInquiryForm": true,
+    "orderInitialized": true,
+    "provider41": true
+  }
 }

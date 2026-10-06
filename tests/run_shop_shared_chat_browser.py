@@ -72,6 +72,7 @@ try{
  if(!await evalJS('document.getElementById("shop-chat-messages").textContent.includes("M 재고 있나요?")'))throw Error('lost navigation history');
  await evalJS('document.getElementById("shop-chat-question").value="L 재고 있나요?";document.getElementById("shop-chat-form").requestSubmit()');
  await wait('document.getElementById("shop-chat-messages").textContent.includes("L 재고 있나요?") && !document.getElementById("shop-chat-send").disabled');checks.push('navigation history and second product binding');
+ await evalJS('document.getElementById("shop-chat-stock").click()');await wait('document.getElementById("shop-chat-messages").textContent.includes("재고와 사이즈 옵션 알려주세요") && !document.getElementById("shop-chat-send").disabled');checks.push('stock inquiry in shared chatbot');
  await nav('/homepage/storefront');
  await evalJS('document.getElementById("shop-chat-launcher").click()');
  if(!await evalJS('document.getElementById("shop-chat-messages").textContent.includes("M 재고 있나요?") && document.getElementById("shop-chat-messages").textContent.includes("L 재고 있나요?")'))throw Error('lost reload history');
@@ -88,9 +89,9 @@ try{
             r=subprocess.run(['/opt/homebrew/bin/node','--input-type=module','-e',driver,target['webSocketDebuggerUrl']],capture_output=True,text=True,timeout=40)
             if r.returncode:raise RuntimeError(r.stderr[-2000:])
             result=json.loads(r.stdout)
-            assert [x['product_id'] for x in state['inquiries']]==['36','41']
+            assert [x['product_id'] for x in state['inquiries']]==['36','41','41']
             assert state['sms']==0
-            result.update(external_provider_requests=0,prod_mutation=False,inquiry_product_ids=['36','41'],mock_sms_requests=state['sms'])
+            result.update(external_provider_requests=0,prod_mutation=False,inquiry_product_ids=['36','41','41'],mock_sms_requests=state['sms'])
             print(json.dumps(result,ensure_ascii=False))
         finally:
             if chrome:

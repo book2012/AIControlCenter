@@ -9,11 +9,12 @@ def assets():
         if payload.get('environment')!='DEV' or payload.get('schema_version')!=1:return {}
         result={}
         base=ROOT/'brands/agachichi/assets/media/uploads/gallery'
+        if base.is_symlink() or base.resolve()!=base.absolute():return {}
         for row in payload['assets']:
             pid=row['product_id'];kind=row['kind']
             if not re.fullmatch(r'ag-upload-outer-[0-9]{4}',pid) or kind not in {'original','model-angles'}:return {}
             name=pid+'-'+kind+'.jpg';path=base/name
-            if row['path']!=str(path.relative_to(ROOT)) or path.is_symlink() or not path.is_file():return {}
+            if row['path']!=str(path.relative_to(ROOT)) or path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(base.resolve()):return {}
             if hashlib.sha256(path.read_bytes()).hexdigest()!=row['sha256']:return {}
             if type(row['ai_generated']) is not bool or row['ai_generated']!=(kind=='model-angles'):return {}
             if name in result:return {}

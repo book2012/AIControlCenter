@@ -16,6 +16,7 @@ def test_one_shared_chat_on_customer_pages(url):
         assert r.text.count('id="shop-chat-form"')==1
         assert 'id="inquiry-section"' not in r.text
         assert 'storefront-chat.js' in r.text
+        assert 'id="shop-chat-stock"' in r.text
         if "/product/" in url:
             pid=url.rsplit("/",1)[1]
             assert f'data-context="{pid}"' in r.text
@@ -103,3 +104,16 @@ def test_operator_answer_in_phone_history_is_server_authoritative(history):
     item=store.recent("phone-customer")[0]
     assert item["answer"]=="운영자가 확인한 답변" and item["action"]=="OPERATOR_ANSWERED"
     assert "ticket" not in item and "token" not in item
+
+
+def test_gallery_directory_symlink_fails_closed(tmp_path,monkeypatch):
+    import hashlib
+    outside=tmp_path/"outside";outside.mkdir()
+    name="ag-upload-outer-0001-original.jpg";data=b"image"
+    (outside/name).write_bytes(data)
+    root=tmp_path/"repo";base=root/"brands/agachichi/assets/media/uploads";base.mkdir(parents=True)
+    (base/"gallery").symlink_to(outside,target_is_directory=True)
+    manifest=base/"gallery.json"
+    manifest.write_text(json.dumps({"environment":"DEV","schema_version":1,"assets":[{"product_id":"ag-upload-outer-0001","kind":"original","ai_generated":False,"label":"original","path":"brands/agachichi/assets/media/uploads/gallery/"+name,"sha256":hashlib.sha256(data).hexdigest()}]}))
+    monkeypatch.setattr(storefront_gallery,"ROOT",root);monkeypatch.setattr(storefront_gallery,"MANIFEST",manifest)
+    assert storefront_gallery.assets()=={}
