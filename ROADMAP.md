@@ -1,5 +1,11 @@
 # Roadmap
 
+## 2026-10-06 — uploaded photo batch, color options and dedicated DEV cart
+
+Reviewed 18 source photos as 17 new products (the two brown-coat photos are one product). Together with the two existing coats, uploaded-only storefront has 19 products. New prices are user-authorized temporary values; unknown size/physical inventory remains explicitly pending with zero sellable stock. Front model thumbnails, original-based transparent retouches and other model views share the existing manifest/SHA boundary. Order controls sit below SIZE/COLOR with compact buttons; the top-right cart opens a dedicated page with product names/options, quantity edits, removal and session navigation persistence. Server quotes and final checkout revalidate authority; cart edits invalidate prepared review and pending durable operations remain protected. PROD is outside scope.
+
+Validation: 190 Python tests; four isolated real Chrome harnesses covering cart, shared inquiry history, anonymous inquiry/quote and phone/address/order/Telegram operator confirmation (fake providers only). Existing seven DEV Woo bindings and eight orders were verified unchanged after registering the 17 new zero-stock products. Registration writes a staged private mapping; activation is restricted to the clean commit-addressed DEV release and requires a live read-only check. See docs/architecture/SHOP_UPLOAD_BATCH_CART_DEV.md.
+
 ## 2026-10-06 — effective DEV / PROD commerce audit
 
 DEV and PROD application routes and preview/PROD database volumes are separate. DEV points to AIControlCenter, not WordPress; its selected blouse is demo data and order/auth routes are absent. PROD WooCommerce has zero product rows; visual preview has no WooCommerce. Real Telegram connection test passed, while actual DEV commerce provisioning and order integration remain pending. See `docs/shopping/SHOP_ORDER_001D_RUNTIME_AUDIT.md` and the JSON evidence. No runtime or PROD mutation.

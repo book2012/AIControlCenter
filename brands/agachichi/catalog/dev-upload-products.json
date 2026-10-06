@@ -3,6 +3,700 @@
   "environment": "DEV",
   "products": [
     {
+      "id": "ag-upload-outer-0005",
+      "source": "user_upload",
+      "name": "카멜 숄카라 벨티드 코트",
+      "slug": "ag-upload-outer-0005",
+      "category": "outer",
+      "category_label": "OUTER",
+      "description": "카멜 톤과 넓은 숄카라, 같은 원단의 벨트가 특징인 롱 코트입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "카멜",
+        "코트",
+        "카멜"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-outer-0005",
+      "price_status": "READY",
+      "price": 229000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "camel",
+          "label": "카멜"
+        }
+      ],
+      "inventory": {
+        "camel": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70622.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-outer-0004",
+      "source": "user_upload",
+      "name": "브라운 싱글 롱 코트",
+      "slug": "ag-upload-outer-0004",
+      "category": "outer",
+      "category_label": "OUTER",
+      "description": "브라운 톤과 노치드 라펠, 앞면 버튼이 특징인 싱글 롱 코트입니다. 같은 코트 사진 두 장을 한 상품으로 묶었습니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "브라운",
+        "코트",
+        "브라운"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-outer-0004",
+      "price_status": "READY",
+      "price": 189000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "brown",
+          "label": "브라운"
+        }
+      ],
+      "inventory": {
+        "brown": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70626.jpg",
+        "70624.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-top-0006",
+      "source": "user_upload",
+      "name": "베이직 하이넥 니트",
+      "slug": "ag-upload-top-0006",
+      "category": "top",
+      "category_label": "TOP",
+      "description": "하이넥과 긴 소매가 특징인 베이직 니트입니다. 사진에서 확인되는 그레이·아이보리·브라운·네이비·블랙을 색상 옵션으로 등록했습니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "베이직",
+        "니트",
+        "그레이",
+        "아이보리",
+        "브라운",
+        "네이비",
+        "블랙"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-top-0006",
+      "price_status": "READY",
+      "price": 69000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "gray",
+          "label": "그레이"
+        },
+        {
+          "id": "ivory",
+          "label": "아이보리"
+        },
+        {
+          "id": "brown",
+          "label": "브라운"
+        },
+        {
+          "id": "navy",
+          "label": "네이비"
+        },
+        {
+          "id": "black",
+          "label": "블랙"
+        }
+      ],
+      "inventory": {
+        "gray": 0,
+        "ivory": 0,
+        "brown": 0,
+        "navy": 0,
+        "black": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70628.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-bottom-0001",
+      "source": "user_upload",
+      "name": "차콜 와이드 슬랙스",
+      "slug": "ag-upload-bottom-0001",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "description": "차콜 그레이 톤과 넉넉한 통이 특징인 슬랙스입니다. 사진 속 벨트와 다른 의류는 코디이며 포함되지 않습니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "차콜",
+        "슬랙스",
+        "차콜"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-bottom-0001",
+      "price_status": "READY",
+      "price": 89000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "charcoal",
+          "label": "차콜"
+        }
+      ],
+      "inventory": {
+        "charcoal": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70630.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-outer-0003",
+      "source": "user_upload",
+      "name": "레드 퀼팅 후드 재킷",
+      "slug": "ag-upload-outer-0003",
+      "category": "outer",
+      "category_label": "OUTER",
+      "description": "레드 가로 퀼팅과 후드, 원형 스냅 버튼이 특징인 짧은 재킷입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "레드",
+        "재킷",
+        "레드"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-outer-0003",
+      "price_status": "READY",
+      "price": 139000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "red",
+          "label": "레드"
+        }
+      ],
+      "inventory": {
+        "red": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70632.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-top-0005",
+      "source": "user_upload",
+      "name": "데일리 스트라이프 셔츠",
+      "slug": "ag-upload-top-0005",
+      "category": "top",
+      "category_label": "TOP",
+      "description": "세로 스트라이프와 칼라, 버튼 여밈이 특징인 셔츠입니다. 사진에 확인되는 스카이블루와 네이비를 색상 옵션으로 등록했습니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "데일리",
+        "셔츠",
+        "스카이블루",
+        "네이비"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-top-0005",
+      "price_status": "READY",
+      "price": 79000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "sky-blue",
+          "label": "스카이블루"
+        },
+        {
+          "id": "navy",
+          "label": "네이비"
+        }
+      ],
+      "inventory": {
+        "sky-blue": 0,
+        "navy": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70634.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-dress-0004",
+      "source": "user_upload",
+      "name": "네이비 스트라이프 롱 원피스",
+      "slug": "ag-upload-dress-0004",
+      "category": "dress",
+      "category_label": "DRESS",
+      "description": "네이비와 화이트 가로 줄무늬, 네이비 넥·암홀 배색과 하단 셔링이 특징인 민소매 롱 원피스입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "네이비",
+        "원피스",
+        "네이비·화이트"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-dress-0004",
+      "price_status": "READY",
+      "price": 99000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "navy-white",
+          "label": "네이비·화이트"
+        }
+      ],
+      "inventory": {
+        "navy-white": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70636.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-acc-0001",
+      "source": "user_upload",
+      "name": "베이지 체크 스퀘어 스카프",
+      "slug": "ag-upload-acc-0001",
+      "category": "acc",
+      "category_label": "ACC",
+      "description": "베이지 체크 바탕과 넓은 블랙 테두리가 특징인 사각 스카프입니다. 사진만으로 브랜드와 소재는 확정하지 않습니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "베이지",
+        "스카프",
+        "베이지"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-acc-0001",
+      "price_status": "READY",
+      "price": 59000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "beige",
+          "label": "베이지"
+        }
+      ],
+      "inventory": {
+        "beige": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70638.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-top-0004",
+      "source": "user_upload",
+      "name": "화이트 그래픽 브이넥 니트",
+      "slug": "ag-upload-top-0004",
+      "category": "top",
+      "category_label": "TOP",
+      "description": "화이트 브이넥 바탕에 하트와 그래픽 자수를 배치한 니트입니다. 옷의 자수 문구는 디자인으로 보존했습니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "화이트",
+        "니트",
+        "화이트"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-top-0004",
+      "price_status": "READY",
+      "price": 99000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "white",
+          "label": "화이트"
+        }
+      ],
+      "inventory": {
+        "white": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70650.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-top-0003",
+      "source": "user_upload",
+      "name": "화이트 핀턱 블라우스",
+      "slug": "ag-upload-top-0003",
+      "category": "top",
+      "category_label": "TOP",
+      "description": "화이트 핀턱과 레이스 패널, 가슴 단추가 특징인 여유 있는 블라우스입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "화이트",
+        "블라우스",
+        "아이보리"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-top-0003",
+      "price_status": "READY",
+      "price": 89000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "ivory",
+          "label": "아이보리"
+        }
+      ],
+      "inventory": {
+        "ivory": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70644.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-dress-0003",
+      "source": "user_upload",
+      "name": "블랙 레이스 롱 원피스",
+      "slug": "ag-upload-dress-0003",
+      "category": "dress",
+      "category_label": "DRESS",
+      "description": "심플한 블랙 실루엣과 레이스 가장자리가 보이는 민소매 롱 원피스입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "블랙",
+        "원피스",
+        "블랙"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-dress-0003",
+      "price_status": "READY",
+      "price": 129000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "black",
+          "label": "블랙"
+        }
+      ],
+      "inventory": {
+        "black": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70640.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-top-0002",
+      "source": "user_upload",
+      "name": "블랙 플라워 자수 블라우스",
+      "slug": "ag-upload-top-0002",
+      "category": "top",
+      "category_label": "TOP",
+      "description": "블랙 플라워 자수와 핀턱, 레이스 라운드넥을 더한 여유 있는 블라우스입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "블랙",
+        "블라우스",
+        "블랙"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-top-0002",
+      "price_status": "READY",
+      "price": 89000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "black",
+          "label": "블랙"
+        }
+      ],
+      "inventory": {
+        "black": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70642.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-dress-0002",
+      "source": "user_upload",
+      "name": "베이지 블랙 패턴 원피스",
+      "slug": "ag-upload-dress-0002",
+      "category": "dress",
+      "category_label": "DRESS",
+      "description": "베이지 바탕의 블랙 패턴과 낮은 허리 셔링이 특징인 민소매 롱 원피스입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "베이지",
+        "원피스",
+        "베이지·블랙"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-dress-0002",
+      "price_status": "READY",
+      "price": 159000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "beige-black",
+          "label": "베이지·블랙"
+        }
+      ],
+      "inventory": {
+        "beige-black": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70646.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-dress-0001",
+      "source": "user_upload",
+      "name": "코랄 페이즐리 롱 원피스",
+      "slug": "ag-upload-dress-0001",
+      "category": "dress",
+      "category_label": "DRESS",
+      "description": "코랄과 크림색 페이즐리 무늬, 가슴 단추와 허리 셔링이 특징인 롱 원피스입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "코랄",
+        "원피스",
+        "코랄"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-dress-0001",
+      "price_status": "READY",
+      "price": 149000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "coral",
+          "label": "코랄"
+        }
+      ],
+      "inventory": {
+        "coral": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70648.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-bag-0002",
+      "source": "user_upload",
+      "name": "브라운 위빙 버킷백",
+      "slug": "ag-upload-bag-0002",
+      "category": "bag",
+      "category_label": "BAG",
+      "description": "브라운 위빙 바디와 긴 꼬임 핸들, 이너 파우치 및 리본 장식이 보이는 버킷백입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "브라운",
+        "버킷백",
+        "브라운"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-bag-0002",
+      "price_status": "READY",
+      "price": 98000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "brown",
+          "label": "브라운"
+        }
+      ],
+      "inventory": {
+        "brown": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70652.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-bag-0001",
+      "source": "user_upload",
+      "name": "블랙 위빙 숄더백",
+      "slug": "ag-upload-bag-0001",
+      "category": "bag",
+      "category_label": "BAG",
+      "description": "블랙 위빙 패턴과 지퍼 여밈, 넓은 스트랩 및 실버 톤 체인이 특징인 숄더백입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "블랙",
+        "숄더백",
+        "블랙"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-bag-0001",
+      "price_status": "READY",
+      "price": 129000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "black",
+          "label": "블랙"
+        }
+      ],
+      "inventory": {
+        "black": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70654.jpg"
+      ]
+    },
+    {
+      "id": "ag-upload-top-0001",
+      "source": "user_upload",
+      "name": "블랙 자수 니트 베스트",
+      "slug": "ag-upload-top-0001",
+      "category": "top",
+      "category_label": "TOP",
+      "description": "블랙 브이넥에 크림색 자수와 패치 포켓을 더한 버튼형 니트 베스트입니다. 업로드 검토용 임시 가격입니다. 소재 함량, 상세 치수와 실물 재고는 확인 중입니다. AI 착용 이미지는 실제와 다를 수 있습니다.",
+      "style_tip": "사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "블랙",
+        "베스트",
+        "블랙"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-top-0001",
+      "price_status": "READY",
+      "price": 79000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "black",
+          "label": "블랙"
+        }
+      ],
+      "inventory": {
+        "black": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-06",
+      "source_files": [
+        "70656.jpg"
+      ]
+    },
+    {
       "id": "ag-upload-outer-0002",
       "source": "user_upload",
       "name": "오트밀 미니멀 롱 코트",

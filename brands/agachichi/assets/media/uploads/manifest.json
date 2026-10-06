@@ -31,6 +31,296 @@
         "processing": "AI retouch: remove screen UI, neutralize yellow cast, preserve garment geometry and texture; original retained",
         "model_edit": true
       }
+    },
+    {
+      "id": "ag-upload-outer-0005",
+      "product_id": "ag-upload-outer-0005",
+      "category": "OUTER",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-outer-0005.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/outer/ag-upload-outer-0005.jpg",
+      "sha256": "bfb3c71baad6f856944d6d21512a72feed4af86f1f77cb96e9c6f69b3a3c64ac",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70622.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-outer-0004",
+      "product_id": "ag-upload-outer-0004",
+      "category": "OUTER",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-outer-0004.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/outer/ag-upload-outer-0004.jpg",
+      "sha256": "4172a649e3c4da5156aef1a5b0457ea3c63a7c4873b33a421e7b5b0b071d1294",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70626.jpg",
+          "70624.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-top-0006",
+      "product_id": "ag-upload-top-0006",
+      "category": "TOP",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-top-0006.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/top/ag-upload-top-0006.jpg",
+      "sha256": "9343e6439d36460e67e46cd4c0c297c2c0f8d05a7bae22bae09d5cc55905c0d4",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70628.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-bottom-0001",
+      "product_id": "ag-upload-bottom-0001",
+      "category": "BOTTOM",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-bottom-0001.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/bottom/ag-upload-bottom-0001.jpg",
+      "sha256": "c7ef2845a08e02daf9e68b3c309567cb350c4d2ade7f6e955ebd793a484d7b3f",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70630.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-outer-0003",
+      "product_id": "ag-upload-outer-0003",
+      "category": "OUTER",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-outer-0003.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/outer/ag-upload-outer-0003.jpg",
+      "sha256": "c6e2e811a0856f5c0b4f87ea9bed1d99e9cb5918fbd2aa9fddbdf084adc189e2",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70632.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-top-0005",
+      "product_id": "ag-upload-top-0005",
+      "category": "TOP",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-top-0005.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/top/ag-upload-top-0005.jpg",
+      "sha256": "a1fb0b7328db3b083bead087058b09d12801953638e29ce485fa95e189c26016",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70634.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-dress-0004",
+      "product_id": "ag-upload-dress-0004",
+      "category": "DRESS",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-dress-0004.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/dress/ag-upload-dress-0004.jpg",
+      "sha256": "c21217757b3125a5d585ac47cd0546acd6dfdf074cf458402ff1f09f75acbf03",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70636.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-acc-0001",
+      "product_id": "ag-upload-acc-0001",
+      "category": "ACC",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-acc-0001.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/acc/ag-upload-acc-0001.jpg",
+      "sha256": "570f87ef14796c811cf31981daf278932bbff9b2d1f78d4dc82d8175cb1d818c",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70638.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-top-0004",
+      "product_id": "ag-upload-top-0004",
+      "category": "TOP",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-top-0004.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/top/ag-upload-top-0004.jpg",
+      "sha256": "a3fe0bc55836d69c50758be8a64342fb170ca53be71a10f99a4e685efe55dbbc",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70650.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-top-0003",
+      "product_id": "ag-upload-top-0003",
+      "category": "TOP",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-top-0003.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/top/ag-upload-top-0003.jpg",
+      "sha256": "0f313aa74c7f56a2eea101a8ac30448f81cae82fcd63932a2ae3919cc891fb2e",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70644.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-dress-0003",
+      "product_id": "ag-upload-dress-0003",
+      "category": "DRESS",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-dress-0003.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/dress/ag-upload-dress-0003.jpg",
+      "sha256": "15c4a7c8f0fc852e04b1c1e7f668985d883a5a9a6926508455fa082d0681794d",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70640.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-top-0002",
+      "product_id": "ag-upload-top-0002",
+      "category": "TOP",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-top-0002.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/top/ag-upload-top-0002.jpg",
+      "sha256": "8f8410403a35a09443a607209e7ce7bfd4f3a4b5ef468c90204223119f2aea7d",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70642.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-dress-0002",
+      "product_id": "ag-upload-dress-0002",
+      "category": "DRESS",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-dress-0002.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/dress/ag-upload-dress-0002.jpg",
+      "sha256": "4c46f15a3cbf0d683dc75c9f225b093ca7635e00a8318bb49a1f5f6f0e1875bf",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70646.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-dress-0001",
+      "product_id": "ag-upload-dress-0001",
+      "category": "DRESS",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-dress-0001.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/dress/ag-upload-dress-0001.jpg",
+      "sha256": "a2a72f8456f708c24de7e24ea531ded94fb9ced74ffba019e573602fbebc912e",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70648.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-bag-0002",
+      "product_id": "ag-upload-bag-0002",
+      "category": "BAG",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-bag-0002.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/bag/ag-upload-bag-0002.jpg",
+      "sha256": "5a104299cb2036b745ffe8328d2cc659f6938fe0a3930f84dfb88f47103c64e3",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70652.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-bag-0001",
+      "product_id": "ag-upload-bag-0001",
+      "category": "BAG",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-bag-0001.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/bag/ag-upload-bag-0001.jpg",
+      "sha256": "b27398789ae8feac383d96e971d138f49f0440a88b1543a08402e6feac1a6e4f",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70654.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
+    },
+    {
+      "id": "ag-upload-top-0001",
+      "product_id": "ag-upload-top-0001",
+      "category": "TOP",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-top-0001.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/top/ag-upload-top-0001.jpg",
+      "sha256": "0ed9ecff0d7ff48ef0ed8323de5a605020a5f71ea5f41d2470786895f2e7084e",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "70656.jpg"
+        ],
+        "processing": "AI front wearing illustration; original files retained under source; temporary price and stock pending",
+        "model_edit": true
+      }
     }
   ]
 }

@@ -38,19 +38,24 @@ class GuestShoppingChat:
                 engine="LOCAL_AI"
             except Exception:
                 return {"message":"현재 내부 AI가 질문을 확인할 수 없습니다. 운영자 확인이 필요합니다.","action":"OPERATOR_REQUIRED","product_id":p.id,"source":"woocommerce","answer_engine":"LOCAL_AI_UNAVAILABLE"}
+        pending_stock=callable(getattr(self.catalog,"inventory_pending",None)) and self.catalog.inventory_pending(p.id) is True
+        temporary_price=callable(getattr(self.catalog,"temporary_price",None)) and self.catalog.temporary_price(p.id) is True
         available=[v.label for v in p.variants if v.available]
         unavailable=[v.label for v in p.variants if not v.available]
         if any(v in text for v in ("주문","살게","구매","담아")):
             message="상품 옵션을 선택하고 주문하기를 눌러 주세요. 휴대폰 인증과 배송정보 입력 후 최종 확인하면 접수됩니다."
             action="START_ORDER"
+            if pending_stock:message="현재 사이즈와 실물 재고를 확인 중입니다. 확인 전에는 주문할 수 없습니다. 문의를 남겨 주세요.";action="ANSWER"
         elif any(v in text for v in ("재고","사이즈","옵션","품절","stock","size")):
             message=("현재 구매 가능한 옵션: "+", ".join(available) if p.in_stock and available else
                      "현재 재고가 있습니다." if p.in_stock else "현재 품절입니다.")
             if unavailable:message+=" / 품절 옵션: "+", ".join(unavailable)
+            if pending_stock:message="등록된 색상: "+", ".join(v.label for v in p.variants)+" / 사이즈와 실물 재고 확인 중입니다. 확인 전에는 주문할 수 없습니다."
             if callable(getattr(self.catalog,"stock_summary",None)):message+=" / "+self.catalog.stock_summary(p.id)
             message+=" 주문 확정 전에 재고를 다시 확인합니다.";action="ANSWER"
         elif any(v in text for v in ("가격","얼마","price")):
             message=f"현재 상품 가격은 {Decimal(p.price):,} {p.currency}입니다. 배송비와 최종 금액은 주문 확인 단계에서 안내합니다.";action="ANSWER"
+            if temporary_price:message=f"업로드 검토용 임시 가격은 {Decimal(p.price):,} {p.currency}입니다. 실제 판매 가격은 운영자 확인이 필요합니다."
         elif any(v in text for v in ("설명","소재","상품정보","material")):
             description=unescape(re.sub(r"<[^>]*>"," ",p.description))
             description=" ".join(description.split())[:1000]
@@ -66,6 +71,7 @@ class GuestShoppingChat:
             identity=(line.product_id,line.variation_id)
             if identity in identities:raise ValueError("DUPLICATE_CART_LINE")
             identities.add(identity);p=self.product(line.product_id)
+            if callable(getattr(self.catalog,"inventory_pending",None)) and self.catalog.inventory_pending(p.id) is True:raise ValueError("INVENTORY_NOT_CONFIRMED")
             if not p.in_stock:raise ValueError("OUT_OF_STOCK")
             variant=None
             if p.variants:

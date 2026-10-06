@@ -66,18 +66,27 @@ class DevCatalog:
         value=self.products.get(str(product_id))
         if value is None:raise ValueError('DEV_PRODUCT_NOT_ALLOWED')
         return value
+    def inventory_pending(self,product_id):return self.binding(product_id).get("inventory_pending") is True
+    def temporary_price(self,product_id):return self.inventory_pending(product_id)
     def stock_summary(self,product_id):
         self.get_product(product_id)
+        if self.binding(product_id).get('inventory_pending') is True:return '사이즈와 실물 재고 수량 확인 중입니다. 확인 전에는 주문할 수 없습니다.'
         rows=self.read('products/'+str(product_id)+'/variations?per_page=100')
         return '현재 재고: '+', '.join(str(v['attributes'][0]['option'])+': '+str(v['stock_quantity'])+'개' for v in rows if v.get('manage_stock') is True and type(v.get('stock_quantity')) is int)
     def get_product(self,product_id):
         binding=self.binding(product_id);raw=self.read('products/'+str(product_id))
         if raw['id']!=binding['product_id'] or raw['sku']!=binding['sku']:raise ValueError('DEV_PRODUCT_BINDING')
         variants=self.read('products/'+str(product_id)+'/variations?per_page=100')
-        options=tuple(ProductVariant(str(v['id']),str(v['attributes'][0]['option']),'size',
-            v['status']=='publish' and v['stock_status']=='instock' and (not v['manage_stock'] or v['stock_quantity']>0)) for v in variants)
+        pending_stock=self.inventory_pending(product_id)
+        options=tuple(ProductVariant(str(v['id']),str(v['attributes'][0]['option']),binding.get('option_type','size'),
+            not pending_stock and v['status']=='publish' and v['stock_status']=='instock' and (not v['manage_stock'] or v['stock_quantity']>0)) for v in variants)
+        price=raw['price']
+        if not price:
+            prices={str(v.get('price','')) for v in variants}
+            if len(prices)!=1 or not next(iter(prices)):raise ValueError('DEV_PRICE_BINDING')
+            price=next(iter(prices))
         return {'id':str(raw['id']),'name':raw['name'],'slug':raw['slug'],'description':raw['description'],
-            'price':raw['price'],'currency':'KRW','category':binding['category'],'in_stock':raw['stock_status']=='instock',
+            'price':price,'currency':'KRW','category':binding['category'],'in_stock':not pending_stock and raw['stock_status']=='instock',
             'source':'woocommerce','image_url':'/__order-dev/product-image/'+binding.get('image_demo_id',binding['demo_id']),'variants':options}
 
 def create_app():
@@ -288,18 +297,41 @@ def create_app():
         if len(rows)!=1:return HTMLResponse('상품 주문 기능을 확인할 수 없습니다.',status_code=404,headers={'Cache-Control':'no-store'})
         try:product=catalog.get_product(str(rows[0]['product_id']))
         except Exception:return HTMLResponse('상품 주문 기능을 확인할 수 없습니다.',status_code=503,headers={'Cache-Control':'no-store'})
-        options=''.join('<option value="'+html_escape(v.id,quote=True)+'"'+('' if v.available else ' disabled')+'>'+html_escape(v.label)+('' if v.available else ' · 품절')+'</option>' for v in product['variants'])
+        pending_stock=rows[0].get('inventory_pending') is True
+        options=''.join('<option value="'+html_escape(v.id,quote=True)+'"'+('' if v.available else ' disabled')+'>'+html_escape(v.label)+('' if v.available else (' · 재고 확인 중' if pending_stock else ' · 품절'))+'</option>' for v in product['variants'])
         panel='''<div class="commerce-panel-content" data-guest-shop-product="PRODUCT">
 <h2>주문하기</h2>
 <p class="commerce-note">궁금한 내용은 챗봇에게 물어보고, 여기에서 주문을 진행하세요. DEV 테스트 주문이며 실제 결제·배송은 진행하지 않습니다.</p>
 <div class="commerce-choice"><label>옵션<select id="variation">OPTIONS</select></label><label>수량<input id="quantity" type="number" min="1" max="10" value="1"></label></div>
 <div class="commerce-actions"><button id="add" type="button">장바구니 담기</button><button id="single" type="button">이 상품 주문하기</button></div>
 
-<section class="commerce-subsection"><h3>장바구니</h3><div id="cart"></div><button id="checkout" type="button">장바구니 주문하기</button><button id="clear" type="button">비우기</button></section>
+<section class="commerce-subsection commerce-cart-section"><h3>장바구니</h3><div id="cart"></div><button id="checkout" type="button">장바구니 주문하기</button><button id="clear" type="button">비우기</button></section>
 <section id="order" class="commerce-subsection" hidden><h3>주문</h3><div id="summary"></div><p id="auth-note" role="status"></p><div id="phone-form" hidden><label>휴대폰 번호<input id="phone-number" type="tel" autocomplete="tel" maxlength="32" placeholder="01012345678"></label><label class="commerce-consent"><input id="phone-consent" type="checkbox">주문 진행을 위한 인증 문자 수신 동의</label><button id="phone" type="button" disabled>인증 문자 받기</button><label>인증번호<input id="phone-code" inputmode="numeric" autocomplete="one-time-code" maxlength="10"></label><button id="phone-check" type="button" disabled>휴대폰 인증 확인</button></div><p>휴대폰 인증 후 배송정보를 확인하고 마지막에 주문을 확정합니다.</p><div id="delivery-form" hidden><h4>배송정보</h4><label>수령인<input id="recipient" maxlength="64" autocomplete="name"></label><div><label>우편번호<input id="postcode" inputmode="numeric" maxlength="5" autocomplete="postal-code" readonly></label><button id="address-search" type="button">한국 주소 검색</button></div><div id="address-search-layer" hidden><div id="address-search-frame"></div><button id="address-search-close" type="button">주소 검색 닫기</button></div><label>주소<input id="address1" maxlength="200" autocomplete="address-line1" readonly></label><label>상세주소<input id="address2" maxlength="100" autocomplete="address-line2" placeholder="동·호수 등 상세주소"></label><button id="prepare" type="button">배송정보와 주문 내용 확인</button></div><div id="final-review"></div><button id="confirm" type="button" disabled>이 내용으로 주문 확정</button><button id="guest-status" type="button" disabled>주문 상태 확인</button><button id="guest-new" type="button" hidden>새 주문 시작</button></section>
-<p id="error" role="alert"></p><p class="commerce-links"><a href="/homepage/storefront/my-orders">내 주문 · 환불 · 사이즈교환 보기</a></p>
+<p class="commerce-links"><a href="/homepage/storefront/cart">장바구니 보기</a></p><p id="error" role="alert"></p><p class="commerce-links"><a href="/homepage/storefront/my-orders">내 주문 · 환불 · 사이즈교환 보기</a></p>
 </div>'''.replace('PRODUCT',html_escape(product['id'],quote=True)).replace('OPTIONS',options or '<option value="">기본 옵션</option>')
+        if not any(v.available for v in product['variants']):
+            panel=panel.replace('id="add" type="button"','id="add" type="button" disabled').replace('id="single" type="button"','id="single" type="button" disabled')
+        if pending_stock:panel=panel.replace('DEV 테스트 주문이며 실제 결제·배송은 진행하지 않습니다.','사이즈와 실물 재고 확인 전에는 주문할 수 없습니다. 표시 가격은 임시 가격입니다.')
         return HTMLResponse(panel,headers={'Cache-Control':'no-store','X-Robots-Tag':'noindex, nofollow'})
+    @app.get('/__order-dev/chat/cart',include_in_schema=False)
+    def storefront_cart_embed():
+        result=storefront_order_embed('ag-upload-outer-0001')
+        if result.status_code!=200:return result
+        panel=result.body.decode().replace('data-guest-shop-product="','data-cart-page="true" data-guest-shop-product="',1)
+        panel=panel.replace('<h2>주문하기</h2>','<h2>담은 상품</h2>',1)
+        panel=panel.replace('궁금한 내용은 챗봇에게 물어보고, 여기에서 주문을 진행하세요.','상품·옵션·수량을 확인한 뒤 주문을 진행하세요.',1)
+        return HTMLResponse(panel,headers={'Cache-Control':'no-store','X-Robots-Tag':'noindex, nofollow'})
+    @app.get('/__order-dev/chat/cart/product/{product_id}',include_in_schema=False)
+    def storefront_cart_product(product_id:str):
+        try:
+            binding=catalog.binding(product_id)
+            if not binding.get('demo_id','').startswith('ag-upload-'):raise ValueError()
+            product=catalog.get_product(product_id)
+            body={key:product[key] for key in ('id','name','price','currency')}
+            body['product_url']='/homepage/storefront/product/'+binding['demo_id']
+            body['variants']=[{'id':v.id,'label':v.label,'available':v.available} for v in product['variants']]
+            return JSONResponse(body,headers={'Cache-Control':'no-store'})
+        except Exception:return JSONResponse({'message':'상품 정보를 확인하지 못했습니다.'},status_code=404,headers={'Cache-Control':'no-store'})
     @app.get('/dev-order/product/{demo_id}',include_in_schema=False)
     def storefront_order_entry(demo_id:str):
         rows=[v for v in catalog.products.values() if v.get('demo_id')==demo_id]

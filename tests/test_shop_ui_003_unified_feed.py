@@ -33,7 +33,7 @@ def test_default_home_hot_update_feed_and_filters_are_shareable():
         assert response.status_code == 200
         html = response.text
         assert len(cards(html)) == 26
-        assert 'id="feed-count">상품 26개<' in html
+        assert 'id="feed-count">상품 43개<' in html
         assert {value.split("-")[2] for value in ids(html)} <= {"top", "bottom", "outer", "dress", "bag", "acc"}
         assert ids(html)[:2] == ["ag-upload-outer-0002", "ag-upload-outer-0001"]
         assert 'id="feed-title">UPDATE' in html

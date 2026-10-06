@@ -12,7 +12,7 @@ def assets():
         if base.is_symlink() or base.resolve()!=base.absolute():return {}
         for row in payload['assets']:
             pid=row['product_id'];kind=row['kind']
-            if not re.fullmatch(r'ag-upload-outer-[0-9]{4}',pid) or kind not in {'original','model-angles','model-front','model-other','garment-cutout'}:return {}
+            if not re.fullmatch(r'ag-upload-(top|bottom|outer|dress|bag|acc)-[0-9]{4}',pid) or kind not in {'original','model-angles','model-front','model-other','garment-cutout'}:return {}
             name=pid+'-'+kind+('.webp' if kind=='garment-cutout' else '.jpg');path=base/name
             if row['path']!=str(path.relative_to(ROOT)) or path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(base.resolve()):return {}
             if hashlib.sha256(path.read_bytes()).hexdigest()!=row['sha256']:return {}

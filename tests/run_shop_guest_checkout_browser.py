@@ -37,7 +37,7 @@ CHROME=Path('/Applications/Google Chrome.app/Contents/MacOS/Google Chrome')
 def main():
     if not CHROME.is_file():raise RuntimeError('isolated Chrome unavailable')
     for port in (PORT,18444):
-        with socket.socket() as probe:probe.bind(('127.0.0.1',port))
+        with socket.socket() as probe:probe.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1);probe.bind(('127.0.0.1',port))
     sessions.NOW=datetime.now(timezone.utc)
     sessions.ORIGIN=ORIGIN
     with tempfile.TemporaryDirectory(prefix='order-dev-browser-') as directory:

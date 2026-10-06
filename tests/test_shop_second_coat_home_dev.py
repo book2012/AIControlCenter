@@ -22,5 +22,5 @@ def test_dev_home_hot_is_explicit_editorial_and_default_update():
         assert hot.status_code==200 and "HOT 상품이 없습니다" not in hot.text
         assert "ag-upload-outer-0002" in hot.text
         search=c.get("/homepage/storefront/search")
-        assert search.status_code==200 and "상품 2개" in search.text
+        assert search.status_code==200 and "상품 19개" in search.text
         assert c.get("/homepage/storefront/product/no-such-product").status_code==404

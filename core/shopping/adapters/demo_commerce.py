@@ -121,6 +121,9 @@ class DemoCommerceCatalogAdapter:
             if str(product["id"]) in self._products_by_id
         }
 
+    def dev_upload_inventory_pending(self, product_id: str) -> bool:
+        return any(row["id"] == product_id and row.get("inventory_pending") is True for row in self._upload_records)
+
     def dev_upload_collection_ids(self, collection: str) -> tuple[str, ...]:
         return tuple(str(p["id"]) for p in self._upload_records
                      if collection in p.get("collections", []) and p.get("enabled", True)
@@ -291,6 +294,22 @@ class DemoCommerceCatalogAdapter:
             inventory = row.get("inventory")
             if not isinstance(inventory, dict) or not inventory or any(type(v) is not int or v < 0 for v in inventory.values()):
                 raise ValueError("DEV upload inventory invalid")
+            option_type = row.get("option_type", "size")
+            if option_type not in {"size", "color"}:
+                raise ValueError("DEV upload option type invalid")
+            if option_type == "color":
+                colors = row.get("color_options")
+                if (not isinstance(colors, list) or not 1 <= len(colors) <= 12
+                        or any(not isinstance(c, dict) or not re.fullmatch(r"[a-z][a-z0-9-]{0,31}", str(c.get("id", "")))
+                               or not isinstance(c.get("label"), str) or not c["label"] or len(c["label"]) > 32
+                               or any(ch.isspace() for ch in c["label"]) for c in colors)
+                        or len({c["id"] for c in colors}) != len(colors)
+                        or set(inventory) != {c["id"] for c in colors}):
+                    raise ValueError("DEV upload color options invalid")
+            if "inventory_pending" in row and type(row["inventory_pending"]) is not bool:
+                raise ValueError("DEV upload pending inventory invalid")
+            if row.get("inventory_pending") is True and any(inventory.values()):
+                raise ValueError("DEV upload unconfirmed stock invalid")
             seen.add(identifier);validated.append(row)
         return tuple(validated)
 
@@ -298,8 +317,10 @@ class DemoCommerceCatalogAdapter:
     def _map_upload_product(product_data: dict[str, Any]) -> Product:
         product_id = str(product_data["id"])
         inventory = product_data["inventory"]
+        option_type = product_data.get("option_type", "size")
+        color_labels = {row["id"]: row["label"] for row in product_data.get("color_options", [])}
         variants = tuple(ProductVariant(
-            product_id + "-" + str(label).lower(), str(label), "size", quantity > 0
+            product_id + "-" + str(label).lower(), color_labels.get(label, str(label)), option_type, quantity > 0
         ) for label, quantity in inventory.items())
         return Product(
             id=product_id,

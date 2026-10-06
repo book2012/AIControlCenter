@@ -7,7 +7,7 @@ from core.homepage.preview import create_app
 from core.homepage import storefront_gallery
 from ops.macos.shopping.dev_chat_history import DevChatHistory,mount_history,COOKIE
 
-@pytest.mark.parametrize("url",["/homepage/storefront","/homepage/storefront/search","/homepage/storefront/my-orders","/homepage/storefront/product/ag-upload-outer-0001","/homepage/storefront/product/ag-upload-outer-0002"])
+@pytest.mark.parametrize("url",["/homepage/storefront","/homepage/storefront/search","/homepage/storefront/my-orders","/homepage/storefront/cart","/homepage/storefront/product/ag-upload-outer-0001","/homepage/storefront/product/ag-upload-outer-0002"])
 def test_one_shared_chat_on_customer_pages(url):
     with TestClient(create_app()) as c:
         r=c.get(url)
@@ -22,7 +22,7 @@ def test_one_shared_chat_on_customer_pages(url):
             assert f'data-context="{pid}"' in r.text
             assert 'data-shop-chat-product=' not in r.text
             assert "제품 문의는 챗봇으로 해주세요." in r.text
-            assert r.text.index('id="description-section"') < r.text.index('id="commerce-panel"')
+            assert r.text.index('id="variant-section"') < r.text.index('id="commerce-panel"') < r.text.index('id="description-section"')
             assert 'id="detail-image"' in r.text and 'model-hero-caption' in r.text
 
 @pytest.mark.parametrize("pid",["ag-upload-outer-0001","ag-upload-outer-0002"])
