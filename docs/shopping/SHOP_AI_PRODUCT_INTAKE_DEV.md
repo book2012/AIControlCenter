@@ -42,3 +42,6 @@ The isolated DEV WooCommerce product is product #36, SKU `aicc-dev-ag-upload-out
 
 ## Promotion rule
 Providing a sale price is a separate explicit action. Promotion must set the price in the upload record and Woo variations, revalidate stock/image/category, then add the stable catalog ID to the DEV orderable mapping. Until that promotion succeeds, the storefront remains browse-only for this product.
+
+## Live DEV activation
+Homepage DEV release `4b961ec05639a9a00828ce681304e967eaa42d97` is active on port 18080. The live catalog total is 121 and `ag-upload-outer-0001` is visible with `가격 준비 중`, three available S/M/L options, the validated uploaded image, and no order commerce panel. Search for `벨티드` returns the product. The order runtime remains RUNNING and the admin API remains healthy.

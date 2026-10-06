@@ -33,5 +33,15 @@
   "relevant_regression_passed": 143,
   "secret_scan_passed": true,
   "prod_mutation": false,
-  "live_activation": false
+  "live_activation": true,
+  "homepage_release_commit": "4b961ec05639a9a00828ce681304e967eaa42d97",
+  "live_catalog_total": 121,
+  "live_product_visible": true,
+  "live_price_pending_label": true,
+  "live_variation_count": 3,
+  "live_order_panel_enabled": false,
+  "live_media_hash_verified": true,
+  "live_search_belted_passed": true,
+  "order_runtime_health": "RUNNING",
+  "admin_api_http_200": true
 }
