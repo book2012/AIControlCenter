@@ -3,12 +3,14 @@
   "use strict";
   const root=document.querySelector("[data-guest-shop-product]")||document.querySelector("main[data-product]"); if(!root)return;
   const by=id=>document.getElementById(id);
+  const checkoutPage=root.dataset.checkoutPage==="true",checkoutKey="aicc-guest-checkout-v1";
   const product=root.dataset.guestShopProduct||root.dataset.product;
   let cart=[], busy=false,inquiryBusy=false,postcodeLoader=null,selectedCart=[],prepared=null,checkoutAvailable=false,pending=null;
   try{pending=JSON.parse(sessionStorage.getItem("aicc-guest-operation-v1")||"null");if(pending&&(!/^[a-f0-9]{48}$/.test(pending.draft_id)||!/^guest-order-[a-f0-9]{48}$/.test(pending.operation_key)))throw new Error();}catch(_){pending={blocked:true};}
   const authHeaders=async()=>{const r=await fetch("/shopping/auth/session",{credentials:"same-origin"});if(!r.ok)throw new Error("휴대폰 인증이 필요합니다.");const token=r.headers.get("X-CSRF-Token");if(!token)throw new Error("인증 상태를 확인할 수 없습니다.");return {"Content-Type":"application/json","X-CSRF-Token":token};};
-  const showDelivery=async()=>{if(!checkoutAvailable)return;try{const headers=await authHeaders();const r=await fetch("/__order-dev/checkout/session",{credentials:"same-origin",headers});if(r.ok){by("delivery-form").hidden=false;by("phone-form").hidden=true;by("auth-note").textContent="인증된 연락처로 주문합니다. 배송정보를 입력해 주세요.";}}catch(_){}};
+  const showDelivery=async()=>{if(!checkoutAvailable)return;try{const headers=await authHeaders();const r=await fetch("/__order-dev/checkout/session",{credentials:"same-origin",headers});if(r.ok){by("delivery-form").hidden=!!pending;by("phone-form").hidden=true;by("auth-note").textContent=pending?"진행 중인 주문의 접수 상태를 확인해 주세요.":"휴대폰 인증 완료. 배송정보를 입력해 주세요.";}}catch(_){}};
 
+  const money=(value,currency)=>currency==="KRW"?Number(value).toLocaleString("ko-KR")+"원":value+" "+currency;
   const key="aicc-guest-cart-v1";
   const valid=line=>line&&typeof line.product_id==="string"&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(line.product_id)&&
     (line.variation_id===null||typeof line.variation_id==="string"&&/^[A-Za-z0-9][A-Za-z0-9_-]{0,127}$/.test(line.variation_id))&&Number.isInteger(line.quantity)&&line.quantity>=1&&line.quantity<=10&&Object.keys(line).sort().join(",")==="product_id,quantity,variation_id";
@@ -68,17 +70,27 @@
     }
     if(!dialog.open)dialog.showModal();
   };
-  by("add").onclick=()=>run(async()=>{if(pending)throw new Error("진행 중인 주문을 먼저 확인해 주세요.");const line=selected();await request("quote",{line_items:[line]});const existing=cart.find(v=>v.product_id===line.product_id&&v.variation_id===line.variation_id);if(existing){if(existing.quantity+line.quantity>10)throw new Error("옵션당 최대 10개입니다.");existing.quantity+=line.quantity;}else{if(cart.length>=20)throw new Error("장바구니는 최대 20개 옵션입니다.");cart.push(line);}save();showCartAdded();say("장바구니에 담았습니다. 오른쪽 상단 장바구니에서 확인하세요.");});
-  const checkout=lines=>run(async()=>{if(pending)throw new Error("진행 중인 주문의 상태를 먼저 확인해 주세요.");selectedCart=lines.map(v=>({...v}));prepared=null;const quote=await request("quote",{line_items:lines});const response=await fetch("/__order-dev/chat/capabilities",{credentials:"same-origin"});if(!response.ok)throw new Error("주문 가능 상태를 확인할 수 없습니다.");const capability=await response.json();checkoutAvailable=capability.order_confirmation===true;by("delivery-form").hidden=true;by("final-review").replaceChildren();by("summary").replaceChildren();quote.line_items.forEach(line=>{const p=document.createElement("p");p.textContent=line.name+" / "+(line.option||"기본")+" · "+line.quantity+"개 · "+line.subtotal+" "+quote.currency;by("summary").appendChild(p);});const total=document.createElement("p");total.textContent="상품 합계 "+quote.items_total+" "+quote.currency+" · 배송비 및 최종 금액은 미확정";by("summary").appendChild(total);by("auth-note").textContent=capability.message;by("phone-form").hidden=!capability.phone_verification;by("phone").disabled=!capability.phone_verification;by("confirm").disabled=true;by("order").hidden=false;by("order").scrollIntoView({behavior:"smooth"});await showDelivery();});
-  by("single").onclick=()=>{try{checkout([selected()]);}catch(error){by("error").textContent=error.message;}};
+  if(by("add"))by("add").onclick=()=>run(async()=>{if(pending)throw new Error("진행 중인 주문을 먼저 확인해 주세요.");const line=selected();await request("quote",{line_items:[line]});const existing=cart.find(v=>v.product_id===line.product_id&&v.variation_id===line.variation_id);if(existing){if(existing.quantity+line.quantity>10)throw new Error("옵션당 최대 10개입니다.");existing.quantity+=line.quantity;}else{if(cart.length>=20)throw new Error("장바구니는 최대 20개 옵션입니다.");cart.push(line);}save();showCartAdded();say("장바구니에 담았습니다. 오른쪽 상단 장바구니에서 확인하세요.");});
+  const checkout=lines=>run(async()=>{
+    if(!checkoutPage&&root.dataset.guestShopProduct){
+      if(pending){location.assign("/homepage/storefront/checkout");return;}
+      if(!Array.isArray(lines)||!lines.length||lines.length>20||!lines.every(valid))throw new Error("주문할 상품을 선택해 주세요.");
+      await request("quote",{line_items:lines});
+      try{sessionStorage.setItem(checkoutKey,JSON.stringify({line_items:lines.map(v=>({...v}))}));}catch(_){throw new Error("주문 상품을 저장하지 못했습니다. 다시 시도해 주세요.");}
+      location.assign("/homepage/storefront/checkout");return;
+    }
+    if(pending)throw new Error("진행 중인 주문의 상태를 먼저 확인해 주세요.");selectedCart=lines.map(v=>({...v}));prepared=null;const quote=await request("quote",{line_items:lines});const response=await fetch("/__order-dev/chat/capabilities",{credentials:"same-origin"});if(!response.ok)throw new Error("주문 가능 상태를 확인할 수 없습니다.");const capability=await response.json();checkoutAvailable=capability.order_confirmation===true;by("delivery-form").hidden=true;by("final-review").replaceChildren();by("summary").replaceChildren();quote.line_items.forEach(line=>{const p=document.createElement("p");p.textContent=line.name+" / "+(line.option||"기본")+" · "+line.quantity+"개 · "+money(line.subtotal,quote.currency);by("summary").appendChild(p);});const total=document.createElement("p");total.dataset.checkoutTotal="";total.textContent="상품 합계 "+money(quote.items_total,quote.currency)+" · 최종 금액은 배송정보 확인 후 안내";by("summary").appendChild(total);by("auth-note").textContent=capability.message;by("phone-form").hidden=!capability.phone_verification;by("phone").disabled=!capability.phone_verification;by("confirm").disabled=true;by("order").hidden=false;by("order").scrollIntoView({behavior:"smooth"});await showDelivery();});
+  if(by("single"))by("single").onclick=()=>{try{checkout([selected()]);}catch(error){by("error").textContent=error.message;}};
   by("checkout").onclick=()=>checkout(cart.map(v=>({...v})));
   by("clear").onclick=()=>{if(busy||pending){by("error").textContent="진행 중인 주문을 먼저 확인해 주세요.";return;}cart=[];save();};
   by("phone").onclick=()=>run(async()=>{
     if(!by("phone-consent").checked)throw new Error("인증 문자 수신에 동의해 주세요.");
     by("phone").disabled=true;
-    const r=await fetch("/__order-dev/phone/start",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:by("phone-number").value,consent:true})});
-    const data=await r.json();by("auth-note").textContent=data.message;
-    if(!r.ok)throw new Error(data.message);by("phone-check").disabled=false;
+    try{
+      const r=await fetch("/__order-dev/phone/start",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},body:JSON.stringify({phone:by("phone-number").value,consent:true})});
+      const data=await r.json();by("auth-note").textContent=data.message;
+      if(!r.ok)throw new Error(data.message);by("phone-check").disabled=false;
+    }finally{by("phone").disabled=false;}
   });
   by("phone-check").onclick=()=>run(async()=>{
     const code=by("phone-code").value;by("phone-code").value="";by("phone-check").disabled=true;
@@ -87,7 +99,7 @@
     if(current.ok){const csrf=current.headers.get("X-CSRF-Token");if(csrf)headers["X-CSRF-Token"]=csrf;}
     const r=await fetch("/__order-dev/phone/check",{method:"POST",credentials:"same-origin",headers,body:JSON.stringify({code})});
     if(!r.ok)throw new Error("인증을 완료하지 못했습니다. 요청 상태를 확인해 주세요.");
-    by("phone-number").value="";by("auth-note").textContent="휴대폰 인증이 완료됐습니다.";await showDelivery();
+    by("phone-number").value="";by("auth-note").textContent="휴대폰 인증이 완료됐습니다.";await showDelivery();if(checkoutPage)by("recipient").focus();
   });
   by("address-search").onclick=openPostcode;by("address-search-close").onclick=()=>{by("address-search-layer").hidden=true;by("address-search-frame").replaceChildren();};
   for(const id of ["recipient","postcode","address1","address2"])by(id).oninput=invalidatePrepared;
@@ -99,6 +111,11 @@
     by("final-review").replaceChildren();const review=document.createElement("p");
     review.textContent=result.delivery.recipient+" / "+result.delivery.postcode+" / "+result.delivery.address1+" "+result.delivery.address2+"\n상품 "+result.quote.items_total+" + DEV 배송비 "+result.quote.shipping_fee+" = 총 "+result.quote.final_total+" "+result.quote.currency+"\n연락처: 인증된 휴대폰 번호. 결제·배송은 별도이며, 주문 접수 후 운영자가 확인합니다.";
     by("final-review").appendChild(review);by("confirm").disabled=false;
+    if(checkoutPage){
+      const total=by("summary").querySelector("[data-checkout-total]");
+      if(total)total.textContent="최종 주문 금액 "+money(result.quote.final_total,result.quote.currency)+" (배송비 "+money(result.quote.shipping_fee,result.quote.currency)+")";
+      by("final-review").scrollIntoView({behavior:"smooth",block:"center"});
+    }
   });
   by("confirm").onclick=()=>run(async()=>{
     if(!prepared||pending)throw new Error("주문 내용을 먼저 확인해 주세요.");
@@ -112,6 +129,15 @@
     by("final-review").replaceChildren();by("delivery-form").hidden=true;
     by("auth-note").textContent="주문 #"+result.provider_order_id+" 접수 완료. 운영자 알림을 준비했으며 확인을 기다립니다.";
     by("guest-new").hidden=false;
+    if(checkoutPage){
+      for(const purchased of selectedCart){
+        const line=cart.find(v=>v.product_id===purchased.product_id&&v.variation_id===purchased.variation_id);
+        if(line)line.quantity-=purchased.quantity;
+      }
+      cart=cart.filter(v=>v.quantity>0);
+      try{sessionStorage.setItem(key,JSON.stringify(cart));sessionStorage.removeItem(checkoutKey);}catch(_){}
+      render();
+    }
   });
   by("guest-status").onclick=()=>run(async()=>{
     if(!pending||pending.blocked)throw new Error("주문 기록 확인이 필요합니다.");
@@ -120,6 +146,31 @@
     by("auth-note").textContent=status.state==="COMPLETED" ? "주문 #"+status.provider_order_id+" / "+({CONFIRMED:"운영자가 주문을 확인했습니다.",REJECTED:"운영자가 주문을 거절했습니다.",PENDING_REVIEW:"운영자 확인 대기 중입니다."}[status.review_state]||status.review_state) : "주문 처리 상태: "+status.state+" · 중복 접수하지 마세요.";
     by("guest-new").hidden=status.state!=="COMPLETED";
   });
-  by("guest-new").onclick=()=>{sessionStorage.removeItem("aicc-guest-operation-v1");pending=null;prepared=null;by("order").hidden=true;by("guest-new").hidden=true;by("guest-status").disabled=true;render();};
-  render();if(pending){by("order").hidden=false;by("guest-status").disabled=!!pending.blocked;by("auth-note").textContent="기존 주문 기록이 있습니다. 상태 확인 후 계속해 주세요.";}if(by("ask"))say("안녕하세요. 무엇이 궁금하세요? 문의에는 회원가입이나 휴대폰 인증이 필요 없습니다.");
+  by("guest-new").onclick=()=>{sessionStorage.removeItem("aicc-guest-operation-v1");if(checkoutPage){sessionStorage.removeItem(checkoutKey);location.assign("/homepage/storefront");return;}pending=null;prepared=null;by("order").hidden=true;by("guest-new").hidden=true;by("guest-status").disabled=true;render();};
+  render();
+  if(checkoutPage){
+    const init=async()=>{
+      if(pending){
+        const response=await fetch("/__order-dev/chat/capabilities",{credentials:"same-origin"});
+        if(!response.ok)throw new Error("주문 상태 연결을 확인하지 못했습니다.");
+        const capability=await response.json();checkoutAvailable=capability.order_confirmation===true;
+        by("order").hidden=false;by("phone-form").hidden=!capability.phone_verification;by("phone").disabled=!capability.phone_verification;
+        by("guest-status").disabled=!!pending.blocked;by("auth-note").textContent="기존 주문 기록이 있습니다. 접수 상태를 먼저 확인해 주세요.";
+        by("summary").textContent="진행 중인 주문은 접수 상태 확인에서 조회할 수 있습니다.";
+        await showDelivery();return;
+      }
+      let selection;
+      try{
+        const raw=sessionStorage.getItem(checkoutKey)||"null";if(raw.length>16384)throw new Error();
+        selection=JSON.parse(raw);
+        if(!selection||Object.keys(selection).join(",")!=="line_items"||!Array.isArray(selection.line_items)||!selection.line_items.length||selection.line_items.length>20||!selection.line_items.every(valid))throw new Error();
+      }catch(_){by("summary").textContent="주문할 상품이 없습니다.";throw new Error("상품을 선택하거나 장바구니에서 주문하기를 눌러 주세요.");}
+      await checkout(selection.line_items);
+    };
+    init().catch(error=>{by("error").textContent=error.message||"주문 페이지를 불러오지 못했습니다.";});
+  }else if(pending&&root.dataset.guestShopProduct){
+    by("order").hidden=true;
+    const link=document.createElement("a");link.href="/homepage/storefront/checkout";link.textContent="진행 중인 주문 확인하기";by("error").appendChild(link);
+  }else if(pending){by("order").hidden=false;by("guest-status").disabled=!!pending.blocked;by("auth-note").textContent="기존 주문 기록이 있습니다. 상태 확인 후 계속해 주세요.";}
+  if(by("ask"))say("안녕하세요. 무엇이 궁금하세요? 문의에는 회원가입이나 휴대폰 인증이 필요 없습니다.");
 })();

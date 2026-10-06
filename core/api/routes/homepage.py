@@ -158,6 +158,12 @@ def storefront_cart_browser(service: ShoppingService = Depends(get_shopping_serv
     return HTMLResponse(storefront.template("storefront-cart.html").replace("</body>", widget(service) + "</body>"))
 
 
+@router.get("/homepage/storefront/checkout", response_class=HTMLResponse, include_in_schema=False)
+def storefront_checkout_browser() -> HTMLResponse:
+    return HTMLResponse(storefront.template("storefront-checkout.html"),
+        headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
+
+
 @router.get("/homepage/storefront/my-orders", response_class=HTMLResponse, include_in_schema=False)
 def storefront_orders_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
     from core.homepage.storefront_chat import widget

@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><meta name="robots" content="noindex,nofollow">
+<title>주문하기 | agachichi</title>
+<link rel="stylesheet" href="/homepage/assets/storefront.css">
+<script src="/homepage/assets/storefront-guest-chat.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main-content">본문 바로가기</a>
+<header class="store-header"><a class="wordmark" href="/homepage/storefront">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="쇼핑 메뉴"><a href="/homepage/storefront/cart">장바구니</a><a href="/homepage/storefront/my-orders">ORDER</a></nav></header>
+<main id="main-content" class="checkout-page" data-checkout-page="true" data-guest-shop-product="">
+<a class="back-link" href="/homepage/storefront/cart">← 장바구니로 돌아가기</a>
+<div class="checkout-heading"><p class="eyebrow">CHECKOUT</p><h1>주문하기</h1><p>회원가입 없이 휴대폰 인증으로 주문하세요.</p></div>
+<ol class="checkout-steps" aria-label="주문 순서"><li>1. 휴대폰 인증</li><li>2. 배송정보</li><li>3. 주문 확인</li></ol>
+<p id="error" role="alert"></p>
+<div class="checkout-layout">
+<section id="order" class="checkout-form" hidden>
+<section class="checkout-card"><h2><span>01</span> 주문자 인증</h2><p id="auth-note" role="status"></p>
+<div id="phone-form" hidden>
+<label>휴대폰 번호<input id="phone-number" type="tel" autocomplete="tel" maxlength="32" placeholder="01012345678"></label>
+<label class="commerce-consent"><input id="phone-consent" type="checkbox">주문 진행을 위한 인증 문자 수신 동의</label>
+<button id="phone" type="button" disabled>인증 문자 받기</button>
+<label>인증번호<input id="phone-code" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="문자로 받은 인증번호"></label>
+<button id="phone-check" type="button" disabled>휴대폰 인증 확인</button>
+</div></section>
+<section id="delivery-form" class="checkout-card" hidden><h2><span>02</span> 배송정보</h2>
+<label>수령인<input id="recipient" maxlength="64" autocomplete="name" placeholder="받으시는 분 이름"></label>
+<div class="checkout-address"><label>우편번호<input id="postcode" inputmode="numeric" maxlength="5" autocomplete="postal-code" readonly placeholder="주소 검색으로 입력"></label><button id="address-search" type="button">주소 검색</button></div>
+<div id="address-search-layer" hidden><div id="address-search-frame"></div><button id="address-search-close" type="button">주소 검색 닫기</button></div>
+<label>주소<input id="address1" maxlength="200" autocomplete="address-line1" readonly placeholder="도로명 또는 지번 주소"></label>
+<label>상세주소<input id="address2" maxlength="100" autocomplete="address-line2" placeholder="동·호수 등 상세주소"></label>
+<p class="field-note">연락처는 인증한 휴대폰 번호를 사용합니다.</p>
+<button id="prepare" type="button">배송정보와 주문 내용 확인</button></section>
+<section class="checkout-card"><h2><span>03</span> 최종 확인</h2><div id="final-review"><p class="field-note">인증과 배송정보 입력 후 최종 주문 내용을 확인하세요.</p></div>
+<button id="confirm" type="button" disabled>이 내용으로 주문 확정</button>
+<p class="field-note">주문 확정을 눌러야 주문이 접수됩니다.</p>
+<div class="checkout-complete-actions"><button id="guest-status" type="button" disabled>접수 상태 확인</button><button id="guest-new" type="button" hidden>계속 쇼핑하기</button><a href="/homepage/storefront/my-orders">주문 조회</a></div>
+</section></section>
+<aside class="checkout-card checkout-summary"><h2>주문 상품</h2><div id="summary"><p>주문 상품을 확인하는 중입니다.</p></div><p class="field-note">최종 금액과 재고는 주문 확정 전에 다시 확인합니다.</p><a href="/homepage/storefront/cart">장바구니에서 상품 수정</a></aside>
+</div>
+<div hidden aria-hidden="true"><div id="cart"></div><button id="checkout" type="button">장바구니 주문하기</button><button id="clear" type="button">비우기</button></div>
+</main><footer class="store-footer"><a class="wordmark" href="/homepage/storefront">agachichi</a><p>Everyday Comfort, Playful Touch</p></footer>
+</body></html>

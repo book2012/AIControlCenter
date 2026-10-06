@@ -270,3 +270,23 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 .price-current { font-size: 1em; font-weight: 700; }
 .sale-label { display: inline-block; background: #b42318; color: #fff; font-size: 11px; font-weight: 700; line-height: 1.5; padding: 2px 6px; border-radius: 4px; }
 .product-caption > .sale-prices { margin-top: 6px; font-size: 16px; }
+
+/* Dedicated guest checkout: full-page form and stable order summary. */
+.checkout-page{max-width:1120px;margin:0 auto;padding:28px 24px 64px}
+.checkout-heading{margin:24px 0}.checkout-heading h1{font-size:32px;margin:8px 0}
+.checkout-steps{display:flex;gap:24px;list-style:none;padding:16px 0;border-block:1px solid #ded5ca;color:#79533a}
+.checkout-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start;margin-top:24px}
+.checkout-form{min-width:0}.checkout-card{padding:28px;background:#fff;border:1px solid #e4dbd1;border-radius:16px;margin-bottom:20px;min-width:0}
+.checkout-card h2{font-size:21px;margin:0 0 20px}.checkout-card h2 span{font-size:15px;color:#8c6950;margin-right:8px}
+.checkout-card label{display:block;margin:18px 0 8px}.checkout-card input:not([type=checkbox]){display:block;width:100%;box-sizing:border-box;padding:13px 14px;margin-top:8px;border:1px solid #c8bcb0;border-radius:8px;font-family:inherit;font-size:16px;min-height:48px}
+.checkout-card button{padding:12px 18px;border:1px solid #b6a89b;border-radius:8px;background:#fff;color:#352b26;font:inherit;min-height:46px;cursor:pointer}
+.checkout-card button:disabled{opacity:.45;cursor:default}
+.checkout-card #confirm,.checkout-card #prepare,.checkout-card #phone-check{background:#79533a;color:#fff;border-color:#79533a}
+.checkout-card #confirm{width:100%;margin-top:18px}
+.checkout-card .commerce-consent{display:flex;gap:10px;align-items:center;font-size:14px}
+.checkout-address{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px}.checkout-address label{margin-bottom:0}
+.checkout-summary{position:sticky;top:24px}.checkout-summary p,#final-review p{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7}
+.checkout-complete-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:20px}
+.checkout-page #error{color:#a33226;overflow-wrap:anywhere}.checkout-page #address-search-frame{width:100%;height:420px}
+#commerce-panel #order{display:none}
+@media(max-width:760px){.checkout-page{padding:20px 16px 40px}.checkout-layout{grid-template-columns:1fr;gap:0}.checkout-summary{position:static;grid-row:1}.checkout-card{padding:22px 18px}.checkout-steps{gap:12px;font-size:13px}.checkout-heading h1{font-size:28px}}

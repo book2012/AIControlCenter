@@ -113,7 +113,7 @@ def main():
  document.querySelector('#checkout').click();
  await wait(()=>!document.querySelector('#order').hidden);
  if(document.querySelector('#phone').disabled||!document.querySelector('#confirm').disabled)throw new Error('unverified order');
- if(!document.querySelector('#summary').textContent.includes('29000'))throw new Error('price');
+ if(!document.querySelector('#summary').textContent.includes('29,000원'))throw new Error('price');
  document.querySelector('#question').value='문의 지연 테스트';document.querySelector('#ask').requestSubmit();
  let inquiryActive=false;for(let i=0;i<50;i++){const state=await (await fetch('/__test/inquiry-state')).json();if(state.started){inquiryActive=true;break;}await pause(50);}
  if(!inquiryActive)throw new Error('slow inquiry did not start');
