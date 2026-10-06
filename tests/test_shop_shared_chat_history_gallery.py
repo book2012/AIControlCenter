@@ -20,7 +20,10 @@ def test_one_shared_chat_on_customer_pages(url):
         if "/product/" in url:
             pid=url.rsplit("/",1)[1]
             assert f'data-context="{pid}"' in r.text
-            assert f'data-shop-chat-product="{pid}"' in r.text
+            assert 'data-shop-chat-product=' not in r.text
+            assert "제품 문의는 챗봇으로 해주세요." in r.text
+            assert r.text.index('id="description-section"') < r.text.index('id="commerce-panel"')
+            assert 'id="detail-image"' in r.text and 'model-hero-caption' in r.text
 
 @pytest.mark.parametrize("pid",["ag-upload-outer-0001","ag-upload-outer-0002"])
 def test_gallery_preserves_original_and_labels_model_angles(pid):

@@ -387,7 +387,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
               "name": "상품을 찾을 수 없습니다", "category": "", "price": "", "availability": "", "description": "",
               "variants": '<p class="variant-empty">판매 옵션 준비 중입니다.</p>', "inquiry_hidden": "hidden", "product_id": "",
               "photo_hidden": "hidden", "image_attrs": "hidden", "fallback_hidden": "",
-              "gallery": "", "chat_button": "", "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_panel": "", "dev_order_assets": "", "commerce_notice": "상품 미리보기 · 현재 구매는 지원하지 않습니다."}
+              "gallery": "", "hero_caption": "", "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_panel": "", "dev_order_assets": "", "commerce_notice": "상품 미리보기 · 현재 구매는 지원하지 않습니다."}
     code = 200
     try:
         product = product_data(service.get_product(product_id))
@@ -395,8 +395,11 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
             raise ValueError("Product identity mismatch")
         photo = photo_url(product)
         from core.homepage.storefront_gallery import for_product
+        gallery_rows = for_product(product_id) if product["source"] == "dev_upload" else []
+        model = next((row for row in gallery_rows if row["kind"] == "model-angles"), None)
+        if model:photo = model["url"]
         gallery = '<section class="detail-gallery" aria-label="상품 사진"><h2>상품 사진</h2>' + "".join('<figure><img loading="lazy" src="'+escape(row["url"])+'" alt="'+escape(product["name"]+" · "+row["label"])+'"><figcaption>'+escape(row["label"])+ (" · 실제 착용·측면·뒷면과 다를 수 있는 AI 예상 이미지" if row["ai_generated"] else " · 고객이 올린 실제 사진")+'</figcaption></figure>' for row in for_product(product_id)) + '</section>' if product["source"] == "dev_upload" else ""
-        values.update(gallery=gallery, chat_button=('<button type="button" data-shop-chat-product="'+escape(product_id)+'">챗봇에게 물어보기</button>' if product_id in dev_orderable(service) else ""),name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)),
+        values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면 / 측면 / 뒷면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)),
                       availability="재고 있음" if product["in_stock"] else "품절",
                       description=escape(product["description"] or "등록된 상품 설명이 없습니다."),
                       variants=variant_controls(product), product_id=escape(product["id"]),

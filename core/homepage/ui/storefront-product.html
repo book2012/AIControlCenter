@@ -27,6 +27,7 @@
       <div id="detail-content" class="detail-layout" data-product-id="{{product_id}}" aria-busy="false">
         <div class="product-photo detail-photo" id="detail-photo" {{photo_hidden}}>
           <img id="detail-image" width="800" height="1200" decoding="async" alt="{{name}}" {{image_attrs}}>
+          {{hero_caption}}
           <span class="photo-fallback" {{fallback_hidden}}>이미지 준비 중입니다.</span>
         </div>
         <div class="detail-copy">
@@ -53,13 +54,13 @@
               <button id="inquiry-instagram" type="button" hidden>인스타그램</button>
             </div>
           </section>
-          {{chat_button}}
+          <section id="description-section" class="description-section" aria-labelledby="description-title" {{description_hidden}}>
+            <h2 id="description-title">상세설명</h2>
+            <p id="detail-description">{{description}}</p>
+            <p class="chat-inquiry-guidance">제품 문의는 챗봇으로 해주세요.</p>
+          </section>
           {{dev_order_panel}}
           <p class="detail-notice">{{commerce_notice}}</p>
-          <section id="description-section" class="description-section" aria-labelledby="description-title" {{description_hidden}}>
-            <h2 id="description-title">상품 설명</h2>
-            <p id="detail-description">{{description}}</p>
-          </section>
         </div>
       </div>
     </section>

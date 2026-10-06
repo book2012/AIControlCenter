@@ -6650,3 +6650,7 @@ The 450,000 KRW oatmeal coat is registered as Woo #41 with M/L initial stock one
 DEV uses one product-tagged chatbot with same-tab conversation persistence and phone-authorized recent inquiry history. The two uploaded coats retain original photos and add explicitly labeled AI front/side/rear model lookbooks. 194 focused regression tests and seven isolated real Chrome acceptance checks passed; no real SMS/order/payment or PROD activation occurred. See docs/shopping/SHOP_SHARED_CHAT_GALLERY_DEV.md.
 
 Stock inquiries are now initiated only from the shared chatbot on the customer storefront; embedded order panels have no separate stock inquiry button.
+
+
+## DEV detail explanation and model image visibility
+Removed the separate chatbot button below SIZE. Detailed explanation and the message "제품 문의는 챗봇으로 해주세요." precede the order panel. The two uploaded coats now show their labeled AI model-angle image immediately as the PDP hero; original photos remain in the detail gallery. Home catalog images and commerce/stock records are unchanged. 156 focused regression tests and seven isolated Chrome checks passed. DEV only; existing dirty work and PROD are preserved.

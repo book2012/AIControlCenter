@@ -67,7 +67,7 @@ try{
  await evalJS('document.getElementById("shop-chat-product").value="ag-upload-outer-0001";document.getElementById("shop-chat-product").dispatchEvent(new Event("change"));document.getElementById("shop-chat-question").value="M 재고 있나요?";document.getElementById("shop-chat-form").requestSubmit()');
  await wait('document.getElementById("shop-chat-messages").textContent.includes("재고 확인 답변")');checks.push('tagged first inquiry');
  await nav('/homepage/storefront/product/ag-upload-outer-0002');
- await evalJS('document.querySelector("[data-shop-chat-product]").click()');
+ await evalJS('document.getElementById("shop-chat-launcher").click()');
  await wait('document.getElementById("shop-chat-product").value==="ag-upload-outer-0002"');
  if(!await evalJS('document.getElementById("shop-chat-messages").textContent.includes("M 재고 있나요?")'))throw Error('lost navigation history');
  await evalJS('document.getElementById("shop-chat-question").value="L 재고 있나요?";document.getElementById("shop-chat-form").requestSubmit()');
