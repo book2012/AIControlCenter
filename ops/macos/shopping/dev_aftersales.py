@@ -5,7 +5,7 @@ No payment refund, carrier API, fulfillment mutation or PROD composition exists 
 from pathlib import Path
 import hashlib,json,os,re,secrets,sqlite3,time
 from fastapi import Request
-from fastapi.responses import HTMLResponse,JSONResponse
+from fastapi.responses import HTMLResponse,JSONResponse,RedirectResponse
 from pydantic import BaseModel,ConfigDict,Field
 
 RETURN_WINDOW=14*86400
@@ -219,7 +219,7 @@ def mount_aftersales(app,*,store,boundary,phone_cfg):
         if write:boundary.check_csrf(request,secret,projection)
         return projection
     @app.get("/dev-order/my-orders",include_in_schema=False)
-    def portal():return HTMLResponse(PORTAL,headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
+    def portal():return RedirectResponse("/homepage/storefront/my-orders",status_code=302,headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
     @app.get("/__order-dev/aftersales/orders",include_in_schema=False)
     def orders(request:Request):
         try:return JSONResponse({"orders":store.customer_orders(auth(request).customer_id)},headers={"Cache-Control":"no-store"})

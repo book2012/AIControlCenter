@@ -25,7 +25,7 @@ def client():
 
 
 @pytest.mark.parametrize("filename", ["storefront.html", "storefront-search.html", "storefront-product.html"])
-def test_korean_accessible_preview_without_commerce_affordances(filename):
+def test_korean_accessible_storefront_with_shared_order_navigation(filename):
     source = (UI / filename).read_text()
     elements = Elements(source).elements
     assert ('html', {'lang': 'ko'}) in elements
@@ -38,7 +38,8 @@ def test_korean_accessible_preview_without_commerce_affordances(filename):
         assert not any(key.startswith("on") for key in attrs)
         if tag == "img":
             assert all(key in attrs for key in ("alt", "width", "height"))
-    assert not re.search(r'\b(cart|checkout|account|orders|wishlist)\b', source, re.I)
+    assert not re.search(r'\b(cart|checkout|account|wishlist)\b', source, re.I)
+    assert '/homepage/storefront/my-orders' in source
     assert "HOT" not in source
 
 
@@ -56,15 +57,19 @@ def test_pdp_is_server_rendered_without_listing_and_hero(client):
         assert "상품을 찾을 수 없습니다" in response.text
 
 
-def test_dev_preview_marks_exactly_five_orderable_products(client):
+def test_dev_preview_integrates_exactly_five_orderable_products(client):
     home=client.get("/homepage/storefront")
-    assert home.status_code==200 and 'id="dev-order-cta"' not in home.text
+    assert home.status_code==200 and "/homepage/storefront/my-orders" in home.text
     for product_id in ("oc-demo-top-0001","oc-demo-bottom-0001","oc-demo-outer-0001","oc-demo-dress-0001","oc-demo-bag-0001"):
         page=client.get("/homepage/storefront/product/"+product_id)
-        assert 'id="dev-order-cta"' in page.text
-        assert 'href="/dev-order/product/'+product_id+'"' in page.text
+        assert 'id="commerce-panel"' in page.text
+        assert 'data-demo-product="'+product_id+'"' in page.text
+        assert '/homepage/assets/storefront-commerce.js' in page.text
+        assert "DEV 주문 테스트" in page.text
     other=client.get("/homepage/storefront/product/oc-demo-acc-0001")
-    assert other.status_code==200 and 'id="dev-order-cta"' not in other.text
+    assert other.status_code==200 and 'id="commerce-panel"' not in other.text
+    orders=client.get("/homepage/storefront/my-orders")
+    assert orders.status_code==200 and "내 주문" in orders.text and "/homepage/assets/storefront-orders.js" in orders.text
 
 def test_pdp_valid_and_not_found_canonical_api(client):
     product = client.get("/shopping/products/oc-demo-top-0001")

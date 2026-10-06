@@ -13,8 +13,8 @@
   <a class="skip-link" href="#main-content">본문 바로가기</a>
   <header class="store-header">
     <a class="wordmark" id="store-home-link" href="/homepage/storefront" aria-label="agachichi 홈">agachichi<span>Everyday Comfort, Playful Touch</span></a>
-    <a class="header-search" href="/homepage/storefront/search" aria-label="상품 검색">검색 <span aria-hidden="true">↗</span></a>
-    <p class="preview-notice">상품 미리보기 · 현재 구매는 지원하지 않습니다.</p>
+    <nav class="header-actions" aria-label="쇼핑 메뉴"><a class="header-search" href="/homepage/storefront/search" aria-label="상품 검색">검색 <span aria-hidden="true">↗</span></a><a class="header-orders" href="/homepage/storefront/my-orders">내 주문</a></nav>
+    <p class="preview-notice">{{commerce_notice}}</p>
   </header>
 
   <main id="main-content" tabindex="-1">
@@ -53,8 +53,8 @@
               <button id="inquiry-instagram" type="button" hidden>인스타그램</button>
             </div>
           </section>
-          {{dev_order_cta}}
-          <p class="detail-notice">상품 미리보기 · 현재 구매는 지원하지 않습니다.</p>
+          {{dev_order_panel}}
+          <p class="detail-notice">{{commerce_notice}}</p>
           <section id="description-section" class="description-section" aria-labelledby="description-title" {{description_hidden}}>
             <h2 id="description-title">상품 설명</h2>
             <p id="detail-description">{{description}}</p>
@@ -67,5 +67,6 @@
   <footer class="store-footer"><a class="wordmark" href="/homepage/storefront">agachichi</a><p>Everyday Comfort, Playful Touch</p><span>상품 미리보기 · 현재 구매는 지원하지 않습니다.</span></footer>
 
   <script id="storefront-media" type="application/json">{{media}}</script>
+  {{dev_order_assets}}
 </body>
 </html>

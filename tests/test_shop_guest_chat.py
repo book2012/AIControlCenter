@@ -57,4 +57,4 @@ def test_origin_large_body_html_and_quote_rejections():
     page=c.get("/__order-dev/chat/product/10")
     assert page.status_code==200 and "<script>unsafe</script>" not in page.text
     assert "&lt;script&gt;unsafe&lt;/script&gt;" in page.text
-    assert "/dev-order/my-orders" in page.text and "내 주문·환불/교환" in page.text
+    assert "/homepage/storefront/my-orders" in page.text and "내 주문·환불/교환" in page.text

@@ -365,7 +365,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
               "name": "상품을 찾을 수 없습니다", "category": "", "price": "", "availability": "", "description": "",
               "variants": '<p class="variant-empty">판매 옵션 준비 중입니다.</p>', "inquiry_hidden": "hidden", "product_id": "",
               "photo_hidden": "hidden", "image_attrs": "hidden", "fallback_hidden": "",
-              "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_cta": ""}
+              "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_panel": "", "dev_order_assets": "", "commerce_notice": "상품 미리보기 · 현재 구매는 지원하지 않습니다."}
     code = 200
     try:
         product = product_data(service.get_product(product_id))
@@ -375,11 +375,13 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
         values.update(name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)),
                       availability="재고 있음" if product["in_stock"] else "품절",
                       description=escape(product["description"] or "등록된 상품 설명이 없습니다."),
-                      variants=variant_controls(product),
-                      inquiry_hidden="", product_id=escape(product["id"]),
+                      variants=variant_controls(product), product_id=escape(product["id"]),
                       photo_hidden="", image_attrs=f'src="{escape(photo)}"' if photo else "hidden",
                       fallback_hidden="hidden" if photo else "", description_hidden="", status="",
-                      dev_order_cta=('<a id="dev-order-cta" class="dev-order-cta" href="/dev-order/product/'+escape(product["id"])+'">DEV 문의·주문하기</a>' if product["id"] in dev_orderable(service) else ""))
+                      inquiry_hidden="hidden" if product["id"] in dev_orderable(service) else "",
+                      dev_order_panel=('<section id="commerce-panel" class="commerce-panel" data-demo-product="'+escape(product["id"])+'"><p>주문 기능을 불러오는 중…</p></section>' if product["id"] in dev_orderable(service) else ""),
+                      dev_order_assets=('<script src="/homepage/assets/storefront-commerce.js" defer></script>' if product["id"] in dev_orderable(service) else ""),
+                      commerce_notice=("DEV 주문 테스트 · 실제 결제·배송 없음" if product["id"] in dev_orderable(service) else "상품 미리보기 · 현재 구매는 지원하지 않습니다."))
     except (ProductNotFoundError, CatalogReadQueryError):
         code = 404
     except Exception:

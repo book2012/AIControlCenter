@@ -1,0 +1,16 @@
+{
+  "environment": "DEV",
+  "customer_storefront": "/homepage/storefront",
+  "unified_product_detail": true,
+  "in_page_order_panel": true,
+  "unified_my_orders_path": "/homepage/storefront/my-orders",
+  "legacy_my_orders_redirect": true,
+  "orderable_demo_product_count": 5,
+  "storefront_regression_passed": 132,
+  "order_aftersales_regression_passed": 41,
+  "isolated_guest_order_chrome_passed": true,
+  "prod_mutation": false,
+  "payment_refund_execution": false,
+  "carrier_api_execution": false,
+  "live_activation": false
+}

@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[3]))
 from datetime import datetime, timedelta, timezone
+from html import escape as html_escape
 import asyncio, hashlib, json, secrets, subprocess, threading, time, uuid
 import requests
 import uvicorn
@@ -261,11 +262,29 @@ def create_app():
     def legacy_product_image():
         demo=catalog.binding(cfg['provider_product_id']).get('image_demo_id','oc-demo-top-0001')
         return FileResponse(media_by_demo[demo],media_type='image/jpeg',headers={'Cache-Control':'no-store'})
+    @app.get('/__order-dev/chat/embed/{demo_id}',include_in_schema=False)
+    def storefront_order_embed(demo_id:str):
+        rows=[v for v in catalog.products.values() if v.get('demo_id')==demo_id]
+        if len(rows)!=1:return HTMLResponse('상품 주문 기능을 확인할 수 없습니다.',status_code=404,headers={'Cache-Control':'no-store'})
+        try:product=catalog.get_product(str(rows[0]['product_id']))
+        except Exception:return HTMLResponse('상품 주문 기능을 확인할 수 없습니다.',status_code=503,headers={'Cache-Control':'no-store'})
+        options=''.join('<option value="'+html_escape(v.id,quote=True)+'"'+('' if v.available else ' disabled')+'>'+html_escape(v.label)+('' if v.available else ' · 품절')+'</option>' for v in product['variants'])
+        panel='''<div class="commerce-panel-content" data-guest-shop-product="PRODUCT">
+<h2>상품 상담 · 주문</h2>
+<p class="commerce-note">이 페이지에서 문의부터 주문확정까지 진행할 수 있습니다. DEV 테스트 주문이며 실제 결제·배송은 진행하지 않습니다.</p>
+<div class="commerce-choice"><label>옵션<select id="variation">OPTIONS</select></label><label>수량<input id="quantity" type="number" min="1" max="10" value="1"></label></div>
+<div class="commerce-actions"><button id="stock" type="button">재고 문의</button><button id="add" type="button">장바구니 담기</button><button id="single" type="button">이 상품 주문하기</button></div>
+<section class="commerce-subsection"><h3>상품 상담</h3><div id="messages" role="log" aria-live="polite"></div><p class="commerce-note">자동 답변이 어려운 문의는 운영자에게 전달됩니다. 전화번호·주소·이름은 질문에 적지 마세요.</p><form id="ask"><label for="question">질문</label><input id="question" maxlength="500" placeholder="S 사이즈 재고가 있나요?" required><button type="submit">문의하기</button></form></section>
+<section class="commerce-subsection"><h3>장바구니</h3><div id="cart"></div><button id="checkout" type="button">장바구니 주문하기</button><button id="clear" type="button">비우기</button></section>
+<section id="order" class="commerce-subsection" hidden><h3>주문</h3><div id="summary"></div><p id="auth-note" role="status"></p><div id="phone-form" hidden><label>휴대폰 번호<input id="phone-number" type="tel" autocomplete="tel" maxlength="32" placeholder="01012345678"></label><label class="commerce-consent"><input id="phone-consent" type="checkbox">주문 진행을 위한 인증 문자 수신 동의</label><button id="phone" type="button" disabled>인증 문자 받기</button><label>인증번호<input id="phone-code" inputmode="numeric" autocomplete="one-time-code" maxlength="10"></label><button id="phone-check" type="button" disabled>휴대폰 인증 확인</button></div><p>휴대폰 인증 후 배송정보를 확인하고 마지막에 주문을 확정합니다.</p><div id="delivery-form" hidden><h4>배송정보</h4><label>수령인<input id="recipient" maxlength="64" autocomplete="name"></label><div><label>우편번호<input id="postcode" inputmode="numeric" maxlength="5" autocomplete="postal-code" readonly></label><button id="address-search" type="button">한국 주소 검색</button></div><div id="address-search-layer" hidden><div id="address-search-frame"></div><button id="address-search-close" type="button">주소 검색 닫기</button></div><label>주소<input id="address1" maxlength="200" autocomplete="address-line1" readonly></label><label>상세주소<input id="address2" maxlength="100" autocomplete="address-line2" placeholder="동·호수 등 상세주소"></label><button id="prepare" type="button">배송정보와 주문 내용 확인</button></div><div id="final-review"></div><button id="confirm" type="button" disabled>이 내용으로 주문 확정</button><button id="guest-status" type="button" disabled>주문 상태 확인</button><button id="guest-new" type="button" hidden>새 주문 시작</button></section>
+<p id="error" role="alert"></p><p class="commerce-links"><a href="/homepage/storefront/my-orders">내 주문 · 환불 · 사이즈교환 보기</a></p>
+</div>'''.replace('PRODUCT',html_escape(product['id'],quote=True)).replace('OPTIONS',options or '<option value="">기본 옵션</option>')
+        return HTMLResponse(panel,headers={'Cache-Control':'no-store','X-Robots-Tag':'noindex, nofollow'})
     @app.get('/dev-order/product/{demo_id}',include_in_schema=False)
     def storefront_order_entry(demo_id:str):
         rows=[v for v in catalog.products.values() if v.get('demo_id')==demo_id]
         if len(rows)!=1:return JSONResponse({'detail':'not found'},status_code=404,headers={'Cache-Control':'no-store'})
-        return RedirectResponse('/__order-dev/chat/product/'+str(rows[0]['product_id']),status_code=302)
+        return RedirectResponse('/homepage/storefront/product/'+demo_id+'#commerce-panel',status_code=302)
     @app.get('/dev-order',include_in_schema=False)
     def entry():return RedirectResponse('/homepage/storefront',status_code=302)
     return app

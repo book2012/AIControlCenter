@@ -78,7 +78,8 @@ def test_customer_routes_require_session_csrf_and_keep_attachments_private(tmp_p
     clock=[1000.0];store,_=fixture(tmp_path,clock);store.mark_shipped(ORDER,"CJ대한통운","1234567890");store.mark_delivered(ORDER)
     boundary=Boundary();app=FastAPI();mount_aftersales(app,store=store,boundary=boundary,phone_cfg={"guest_customer_id":CUSTOMER})
     with TestClient(app,base_url="https://dev.bokstory.duckdns.org") as client:
-        assert client.get("/dev-order/my-orders").status_code==200
+        portal=client.get("/dev-order/my-orders",follow_redirects=False)
+        assert portal.status_code==302 and portal.headers["location"]=="/homepage/storefront/my-orders"
         assert client.get("/__order-dev/aftersales/orders").status_code==401
         client.cookies.set("__Host-aicc_customer","secret")
         orders=client.get("/__order-dev/aftersales/orders").json()["orders"];assert orders[0]["return_available"]

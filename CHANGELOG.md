@@ -6122,3 +6122,11 @@ Phone-authenticated customers can now open `/dev-order/my-orders`, see their own
 ## DEV multi-product storefront/operator scenario (2026-10-06)
 
 Five demo storefront products are now backed by isolated DEV Woo products and route from their DEV homepage detail pages to the inquiry/order flow. Synthetic operator acceptance data uses phone `01000000000` without SMS and provides mixed order states (#31-#35), a return request, and inquiry states for Telegram/admin testing. Confirmed fulfillment is presented as 발송대기 / 배송중 / 처리완료. The admin loading incident caused by JS newline escaping was fixed and regression-covered. See [multi-product/operator scenario](docs/shopping/SHOP_MULTI_PRODUCT_OPERATOR_SCENARIO_DEV.md).
+
+## DEV unified storefront commerce UX (2026-10-06)
+
+Customer order and after-sales presentation is unified under the agachichi storefront. Five allowlisted product detail pages now lazy-load the governed inquiry/cart/phone/address/order-confirmation panel in place, while `/homepage/storefront/my-orders` provides phone-authenticated order history, returns and size exchanges with the same storefront chrome. Legacy `/dev-order/my-orders` now redirects into the storefront; `__order-dev` remains an internal API boundary. Backend authority, Woo stock, Telegram/operator review, the 14-day after-sales rule and private attachments are unchanged. No payment refund, carrier booking or PROD mutation is introduced. See [unified storefront DEV](docs/shopping/SHOP_UNIFIED_STOREFRONT_DEV.md).
+
+## DEV unified storefront commerce UX (2026-10-06)
+
+Customer order and after-sales presentation is unified under the agachichi storefront. Five allowlisted product detail pages now load the governed inquiry, cart, phone verification, address and order-confirmation panel in place. `/homepage/storefront/my-orders` provides phone-authenticated order history, returns and size exchanges with the same storefront presentation. Legacy customer routes redirect into the storefront while internal order APIs remain separate implementation boundaries. Backend authority, Woo stock, Telegram/operator review, the 14-day after-sales rule and private attachments are unchanged. See [unified storefront DEV](docs/shopping/SHOP_UNIFIED_STOREFRONT_DEV.md).

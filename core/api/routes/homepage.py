@@ -122,6 +122,21 @@ def storefront_script() -> Response:
     return Response(_ui_asset("storefront.js"), media_type="application/javascript")
 
 
+@router.get("/homepage/assets/storefront-commerce.js", include_in_schema=False)
+def storefront_commerce_script() -> Response:
+    return Response(_ui_asset("storefront-commerce.js"), media_type="application/javascript")
+
+
+@router.get("/homepage/assets/storefront-orders.js", include_in_schema=False)
+def storefront_orders_script() -> Response:
+    return Response(_ui_asset("storefront-orders.js"), media_type="application/javascript")
+
+
+@router.get("/homepage/storefront/my-orders", response_class=HTMLResponse, include_in_schema=False)
+def storefront_orders_browser() -> HTMLResponse:
+    return HTMLResponse(storefront.template("storefront-orders.html"))
+
+
 @router.get("/homepage/assets/storefront/hero-boutique.jpg", include_in_schema=False)
 def storefront_hero() -> FileResponse:
     """One brand-owned local hero; no plugin deployment dependency or proxy."""

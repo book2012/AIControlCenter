@@ -1,9 +1,9 @@
 /* Guest inquiry/cart only. No identity, PII, credentials or automatic order POST. */
 (() => {
   "use strict";
-  const root=document.querySelector("main[data-product]"); if(!root)return;
+  const root=document.querySelector("[data-guest-shop-product]")||document.querySelector("main[data-product]"); if(!root)return;
   const by=id=>document.getElementById(id);
-  const product=root.dataset.product;
+  const product=root.dataset.guestShopProduct||root.dataset.product;
   let cart=[], busy=false,inquiryBusy=false,postcodeLoader=null,selectedCart=[],prepared=null,checkoutAvailable=false,pending=null;
   try{pending=JSON.parse(sessionStorage.getItem("aicc-guest-operation-v1")||"null");if(pending&&(!/^[a-f0-9]{48}$/.test(pending.draft_id)||!/^guest-order-[a-f0-9]{48}$/.test(pending.operation_key)))throw new Error();}catch(_){pending={blocked:true};}
   const authHeaders=async()=>{const r=await fetch("/shopping/auth/session",{credentials:"same-origin"});if(!r.ok)throw new Error("휴대폰 인증이 필요합니다.");const token=r.headers.get("X-CSRF-Token");if(!token)throw new Error("인증 상태를 확인할 수 없습니다.");return {"Content-Type":"application/json","X-CSRF-Token":token};};
