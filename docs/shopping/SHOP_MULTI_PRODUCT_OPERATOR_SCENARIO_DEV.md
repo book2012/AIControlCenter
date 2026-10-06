@@ -43,4 +43,8 @@ The DEV admin page previously remained at “불러오는 중…” because Pyth
 - Telegram order outbox: pending/claimed 0 after dispatch.
 - Admin API displays #31-#35 with the intended mixed states.
 - PROD mutation: none.
+## Live DEV activation
+The immutable Homepage DEV release sourced from commit `d6a12423230d93c90057ad89dec1d3e6b3598ff4` is active on port 18080. The listener cwd matches that release directory. Live homepage smoke preserved the 24-card feed and showed no order CTA on the feed itself; each of the five allowlisted product detail pages exposes the DEV inquiry/order CTA and redirects to Woo products 10, 17, 21, 25 and 29 respectively.
+
+Headless Chrome rendered the operator admin page with synthetic orders #31 and #34, displayed `처리완료`, and no longer remained on `불러오는 중…`. External DEV remains protected by the existing Basic Auth edge (unauthenticated smoke: HTTP 401).
 

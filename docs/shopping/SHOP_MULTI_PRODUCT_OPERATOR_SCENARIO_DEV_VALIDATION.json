@@ -34,5 +34,12 @@
   "operator_focused_tests": 29,
   "payment": false,
   "carrier_api": false,
-  "prod_mutation": false
+  "prod_mutation": false,
+  "homepage_dev_release_commit": "d6a12423230d93c90057ad89dec1d3e6b3598ff4",
+  "homepage_listener_cwd_verified": true,
+  "homepage_live_card_count": 24,
+  "homepage_live_orderable_detail_cta_count": 5,
+  "admin_headless_chrome_rendered": true,
+  "admin_loading_stuck": false,
+  "external_dev_basic_auth_gate_http": 401
 }
