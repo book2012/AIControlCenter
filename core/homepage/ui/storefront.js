@@ -447,6 +447,36 @@
     return event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
   }
 
+  // Only server manifest-bound, same-product color assets may replace the hero.
+  let colorPreviewVersion = 0;
+  function previewColor(button) {
+    const image = byId("detail-image"), status = byId("color-preview-status");
+    if (!button?.dataset.colorId || !image || !status) return;
+    const version = ++colorPreviewVersion;
+    const pid = byId("detail-content")?.dataset.productId;
+    const path = button.dataset.colorImage || "";
+    const allowed = path === "/homepage/assets/storefront/gallery/"+pid+"-model-front.jpg" ||
+      path === "/homepage/assets/storefront/gallery/"+pid+"-color-"+button.dataset.colorId+".jpg";
+    const label = button.textContent.trim();
+    image.hidden = true;
+    status.textContent = label+" 이미지 불러오는 중…";
+    if (!path || !allowed) { status.textContent = label+" 이미지 준비 중입니다."; return; }
+    const next = new Image();
+    next.onload = () => {
+      if (version !== colorPreviewVersion) return;
+      image.src = path;
+      image.alt = byId("detail-name").textContent+" · "+label+" · AI 착용 참고";
+      image.hidden = false;
+      status.textContent = label+" · AI 색상 참고 이미지";
+    };
+    next.onerror = () => {
+      if (version !== colorPreviewVersion) return;
+      image.hidden = true;
+      status.textContent = label+" 이미지를 불러오지 못했습니다. 다시 선택해 주세요.";
+    };
+    next.src = path;
+  }
+
   if (isDetail) {
     byId("detail-retry").addEventListener("click", loadProduct);
     byId("inquiry-submit")?.addEventListener("click", createInquiry);
@@ -454,7 +484,14 @@
       const selected = event.target.closest("button.variant-option");
       if (!selected || selected.disabled) return;
       byId("detail-variants").querySelectorAll("button.variant-option").forEach((button) => button.setAttribute("aria-pressed", button === selected ? "true" : "false"));
+      previewColor(selected);
     });
+    byId("detail-variants")?.addEventListener("shop:variant-selected", event => {
+      const button = Array.from(byId("detail-variants").querySelectorAll("button.variant-option")).find(v => v.dataset.variantId === event.detail?.variantId);
+      if (button) previewColor(button);
+    });
+    const firstColor = byId("detail-variants")?.querySelector("button[data-color-id]");
+    if (firstColor) { firstColor.setAttribute("aria-pressed", "true"); previewColor(firstColor); }
     if (!document.body.dataset.serverRendered) loadProduct();
   } else if (isHome) {
     Object.assign(state, parseState(window.location.search));

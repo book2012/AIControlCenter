@@ -37,8 +37,15 @@
           <p id="detail-price" class="detail-price">{{price}}</p>
           <p id="detail-availability" class="availability">{{availability}}</p>
           <section id="variant-section" class="variant-section" aria-labelledby="variant-title">
-            <h2 id="variant-title">{{variant_title}}</h2>
-            <div id="detail-variants">{{variants}}</div>
+            <div id="purchase-controls" class="purchase-controls">
+              <div class="purchase-dimensions">
+                <div id="{{dimension_id}}" class="purchase-field"><h2 id="variant-title">{{variant_title}}</h2><div id="detail-variants">{{variants}}</div></div>
+                {{other_dimension}}
+              </div>
+              <div id="purchase-quantity" class="purchase-field"><h2>수량</h2><p class="purchase-fixed">주문 기능 확인 중</p></div>
+            </div>
+            <div id="purchase-actions" class="purchase-actions"></div>
+            <p id="color-preview-status" class="color-preview-status" role="status" aria-live="polite"></p>
           </section>
           <section id="inquiry-section" class="inquiry-section" aria-labelledby="inquiry-title" {{inquiry_hidden}}>
             <h2 id="inquiry-title">상품 문의</h2>

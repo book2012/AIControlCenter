@@ -22,6 +22,19 @@
       const node=template.content.firstElementChild;
       if(!node||!node.matches("[data-guest-shop-product]"))throw new Error("주문 기능을 불러오지 못했습니다.");
       target.replaceChildren(node);
+      // Retain the provider variant ID for checkout, but show one canonical option area.
+      if(!cartPage){
+        const quantity=document.getElementById("quantity"), slot=document.getElementById("purchase-quantity");
+        const actions=document.getElementById("purchase-actions");
+        if(!quantity||!slot||!actions)throw new Error("주문 선택 영역을 확인하지 못했습니다.");
+        const label=quantity.closest("label");quantity.setAttribute("aria-label","주문 수량");
+        slot.replaceChildren(label);
+        actions.replaceChildren(node.querySelector(".commerce-actions"));
+        document.getElementById("add").textContent="장바구니";
+        document.getElementById("single").textContent="주문하기";
+        node.querySelector(".commerce-choice").hidden=true;
+        node.querySelector("h2").hidden=true;
+      }
       const options=document.getElementById("variation");
       if(!cartPage&&options){
         const sync=button=>{
@@ -34,9 +47,13 @@
         });
         options.addEventListener("change",()=>{
           const label=options.selectedOptions[0]?.textContent.split(" · ")[0];
-          document.querySelectorAll("#detail-variants button.variant-option").forEach(button=>button.setAttribute("aria-pressed",String(button.textContent.trim()===label)));
+          const buttons=Array.from(document.querySelectorAll("#detail-variants button.variant-option"));
+          buttons.forEach(button=>button.setAttribute("aria-pressed",String(button.textContent.trim()===label)));
+          const button=buttons.find(v=>v.textContent.trim()===label);
+          if(button)document.getElementById("detail-variants").dispatchEvent(new CustomEvent("shop:variant-selected",{detail:{variantId:button.dataset.variantId}}));
         });
       }
+      if(!cartPage&&options&&options.selectedOptions[0]&&!options.selectedOptions[0].disabled)options.dispatchEvent(new Event("change",{bubbles:true}));
       const script=document.createElement("script");
       script.src="/__order-dev/guest-chat.js";
       script.defer=true;

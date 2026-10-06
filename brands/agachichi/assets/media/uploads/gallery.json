@@ -102,7 +102,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70622.jpg"
-      ]
+      ],
+      "color_id": "camel"
     },
     {
       "product_id": "ag-upload-outer-0005",
@@ -139,7 +140,8 @@
       "source_filenames": [
         "70626.jpg",
         "70624.jpg"
-      ]
+      ],
+      "color_id": "brown"
     },
     {
       "product_id": "ag-upload-outer-0004",
@@ -177,7 +179,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70628.jpg"
-      ]
+      ],
+      "color_id": "gray"
     },
     {
       "product_id": "ag-upload-top-0006",
@@ -213,7 +216,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70630.jpg"
-      ]
+      ],
+      "color_id": "charcoal"
     },
     {
       "product_id": "ag-upload-bottom-0001",
@@ -249,7 +253,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70632.jpg"
-      ]
+      ],
+      "color_id": "red"
     },
     {
       "product_id": "ag-upload-outer-0003",
@@ -285,7 +290,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70634.jpg"
-      ]
+      ],
+      "color_id": "sky-blue"
     },
     {
       "product_id": "ag-upload-top-0005",
@@ -321,7 +327,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70636.jpg"
-      ]
+      ],
+      "color_id": "navy-white"
     },
     {
       "product_id": "ag-upload-dress-0004",
@@ -357,7 +364,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70638.jpg"
-      ]
+      ],
+      "color_id": "beige"
     },
     {
       "product_id": "ag-upload-acc-0001",
@@ -393,7 +401,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70650.jpg"
-      ]
+      ],
+      "color_id": "white"
     },
     {
       "product_id": "ag-upload-top-0004",
@@ -429,7 +438,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70644.jpg"
-      ]
+      ],
+      "color_id": "ivory"
     },
     {
       "product_id": "ag-upload-top-0003",
@@ -465,7 +475,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70640.jpg"
-      ]
+      ],
+      "color_id": "black"
     },
     {
       "product_id": "ag-upload-dress-0003",
@@ -501,7 +512,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70642.jpg"
-      ]
+      ],
+      "color_id": "black"
     },
     {
       "product_id": "ag-upload-top-0002",
@@ -537,7 +549,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70646.jpg"
-      ]
+      ],
+      "color_id": "beige-black"
     },
     {
       "product_id": "ag-upload-dress-0002",
@@ -573,7 +586,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70648.jpg"
-      ]
+      ],
+      "color_id": "coral"
     },
     {
       "product_id": "ag-upload-dress-0001",
@@ -609,7 +623,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70652.jpg"
-      ]
+      ],
+      "color_id": "brown"
     },
     {
       "product_id": "ag-upload-bag-0002",
@@ -645,7 +660,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70654.jpg"
-      ]
+      ],
+      "color_id": "black"
     },
     {
       "product_id": "ag-upload-bag-0001",
@@ -681,7 +697,8 @@
       "transparent_background": false,
       "source_filenames": [
         "70656.jpg"
-      ]
+      ],
+      "color_id": "black"
     },
     {
       "product_id": "ag-upload-top-0001",
@@ -705,6 +722,71 @@
       "transparent_background": false,
       "source_filenames": [
         "70656.jpg"
+      ]
+    },
+    {
+      "product_id": "ag-upload-top-0005",
+      "kind": "color-front",
+      "color_id": "navy",
+      "label": "네이비 모델 정면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-top-0005-color-navy.jpg",
+      "sha256": "c90d235da9e2ebbed90d0e619c13b1321f2a23a61c09248e18da3927a01a353a",
+      "transparent_background": false,
+      "source_filenames": [
+        "70634.jpg"
+      ]
+    },
+    {
+      "product_id": "ag-upload-top-0006",
+      "kind": "color-front",
+      "color_id": "ivory",
+      "label": "아이보리 모델 정면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-top-0006-color-ivory.jpg",
+      "sha256": "9d3373eef9c974ff90447e827209f25698a3bcb3dbb1442f0a17c9813259d045",
+      "transparent_background": false,
+      "source_filenames": [
+        "70628.jpg"
+      ]
+    },
+    {
+      "product_id": "ag-upload-top-0006",
+      "kind": "color-front",
+      "color_id": "brown",
+      "label": "브라운 모델 정면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-top-0006-color-brown.jpg",
+      "sha256": "7a10af8ad39701c9ede82d7a48c1eb98721afdca096056e6d69edbc883eae314",
+      "transparent_background": false,
+      "source_filenames": [
+        "70628.jpg"
+      ]
+    },
+    {
+      "product_id": "ag-upload-top-0006",
+      "kind": "color-front",
+      "color_id": "navy",
+      "label": "네이비 모델 정면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-top-0006-color-navy.jpg",
+      "sha256": "2abde5f6bf0e3146c2d9edfde4f5301f5f4bc3ff6ee25ee457ea1756f8cbfef2",
+      "transparent_background": false,
+      "source_filenames": [
+        "70628.jpg"
+      ]
+    },
+    {
+      "product_id": "ag-upload-top-0006",
+      "kind": "color-front",
+      "color_id": "black",
+      "label": "블랙 모델 정면",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-top-0006-color-black.jpg",
+      "sha256": "a0a39dab0662b3186e83afe9b96e119c28ac11d4f36ae460f450e79a0c3f7724",
+      "transparent_background": false,
+      "source_filenames": [
+        "70628.jpg"
       ]
     }
   ]

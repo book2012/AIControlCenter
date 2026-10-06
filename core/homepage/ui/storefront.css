@@ -230,3 +230,23 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 .commerce-cart-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 0;border-bottom:1px solid var(--line)}
 .commerce-cart-row>span{overflow-wrap:anywhere}
 @media(max-width:600px){.store-header{grid-template-columns:minmax(0,1fr) auto;gap:4px 8px}.store-header .wordmark{grid-column:1;align-items:flex-start}.store-header .wordmark span{font-size:9px;letter-spacing:0}.header-actions{grid-column:2;gap:8px;font-size:11px}.header-cart{font-size:11px}.commerce-actions button{width:auto;flex:0 1 auto}}
+
+/* One color/size/quantity area, followed by compact cart/order actions. */
+.purchase-controls{display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:12px;align-items:start}
+.purchase-dimensions{display:grid;gap:14px;min-width:0}
+.purchase-field h2{margin:0 0 8px;font-size:13px;font-weight:600}
+.purchase-fixed{margin:0;padding:9px 0;color:var(--muted);font-size:14px}
+.purchase-field label{display:grid;gap:8px;font-size:13px}
+.purchase-field input{width:100%;min-height:40px;padding:8px;border:1px solid var(--line);border-radius:10px;font:inherit}
+.purchase-actions{margin-top:16px}
+.purchase-actions .commerce-actions{display:flex;gap:8px;flex-wrap:wrap}
+.purchase-actions button{min-height:40px;padding:8px 14px;border:1px solid var(--line);border-radius:10px;background:var(--paper);font:inherit;font-size:14px;cursor:pointer}
+.purchase-actions #single{background:#352b26;color:white}
+.purchase-actions button:disabled{opacity:.5;cursor:not-allowed}
+.purchase-actions button:focus-visible{outline:2px solid #8f6f59;outline-offset:3px}
+.color-preview-status{font-size:12px;color:var(--muted);margin:10px 0 0}
+.detail-copy .commerce-panel:has(.commerce-choice[hidden]){border-top:0;padding-top:0;margin-top:10px}
+.commerce-choice[hidden],.commerce-panel-content>h2[hidden]{display:none}
+@media(max-width:420px){.purchase-controls{grid-template-columns:minmax(0,1fr) 64px;gap:8px}.purchase-actions button{width:auto}}
+
+.detail-photo img[hidden]{display:none!important}

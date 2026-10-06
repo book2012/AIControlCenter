@@ -302,6 +302,8 @@ def cards(items: list[dict], back: str, badge: str = "") -> str:
 
 
 def variant_controls(product: dict) -> str:
+    from core.homepage.storefront_gallery import color_fronts
+    previews=color_fronts(product["id"]) if product["source"]=="dev_upload" else {}
     variants = product.get("variants") or []
     if not variants:
         return '<p class="variant-empty">판매 옵션 준비 중입니다.</p>'
@@ -309,7 +311,10 @@ def variant_controls(product: dict) -> str:
     for index, variant in enumerate(variants):
         disabled = " disabled" if not variant["available"] and variant["option_type"] != "color" else ""
         pressed = "false"
-        controls.append(f'<button type="button" class="variant-option" data-variant-id="{escape(variant["id"])}" aria-pressed="{pressed}"{disabled}>{escape(variant["label"])}</button>')
+        color = variant["id"].removeprefix(product["id"]+"-") if variant["option_type"]=="color" else None
+        preview = previews.get(color)
+        attrs = (' data-color-id="'+escape(color)+'"'+(' data-color-image="'+escape(preview["url"])+'"' if preview else "")) if color else ""
+        controls.append(f'<button type="button" class="variant-option" data-variant-id="{escape(variant["id"])}"{attrs} aria-pressed="{pressed}"{disabled}>{escape(variant["label"])}</button>')
     title = "색상 선택 · 재고는 주문 시 확인" if all(v["option_type"] == "color" for v in variants) else "사이즈 선택"
     return '<div class="variant-options" role="group" aria-label="' + title + '">' + "".join(controls) + "</div>"
 
@@ -388,7 +393,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
     back = return_url(back)
     values = {"return_url": escape(back), "return_label": "← 홈으로" if back == HOME else "← 상품 목록으로",
               "name": "상품을 찾을 수 없습니다", "category": "", "price": "", "availability": "", "description": "",
-              "variant_title": "SIZE", "variants": '<p class="variant-empty">판매 옵션 준비 중입니다.</p>', "inquiry_hidden": "hidden", "product_id": "",
+              "variant_title": "SIZE", "dimension_id": "purchase-size", "other_dimension": "", "variants": '<p class="variant-empty">판매 옵션 준비 중입니다.</p>', "inquiry_hidden": "hidden", "product_id": "",
               "photo_hidden": "hidden", "image_attrs": "hidden", "fallback_hidden": "",
               "gallery": "", "hero_caption": "", "description_hidden": "hidden", "status": "상품이 없거나 현재 공개되지 않았습니다.", "dev_order_panel": "", "dev_order_assets": "", "commerce_notice": "상품 미리보기 · 현재 구매는 지원하지 않습니다."}
     code = 200
@@ -398,6 +403,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
             raise ValueError("Product identity mismatch")
         pending_stock = getattr(service.catalog, "dev_upload_inventory_pending", lambda _: False)(product_id)
         color_options = bool(product.get("variants")) and all(v["option_type"] == "color" for v in product["variants"])
+        other_dimension = '<div id="purchase-size" class="purchase-field"><h2>SIZE · 사이즈</h2><p class="purchase-fixed">사이즈 확인 중</p></div>' if color_options else '<div id="purchase-color" class="purchase-field"><h2>COLOR · 컬러</h2><p class="purchase-fixed">'+escape({"ag-upload-outer-0001":"카멜","ag-upload-outer-0002":"오트밀"}.get(product_id,"컬러 확인 중"))+'</p></div>'
         photo = photo_url(product)
         from core.homepage.storefront_gallery import for_product, front
         gallery_rows = for_product(product_id) if product["source"] == "dev_upload" else []
@@ -407,6 +413,7 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
         values.update(hero_caption=('<span class="model-hero-caption">AI 모델 착용 참고 · 정면<br>실제 착용·보이지 않는 각도와 다를 수 있습니다.</span>' if model else ""),gallery=gallery,name=escape(product["name"]), category=escape(LABELS.get(product["category"].lower(), product["category"])), price=escape(price_label(product)+(" · 임시 가격" if pending_stock else "")),
                       availability="사이즈·재고 확인 중" if pending_stock else "재고 있음" if product["in_stock"] else "품절",
                       variant_title="COLOR" if color_options else "SIZE",
+                      dimension_id="purchase-color" if color_options else "purchase-size", other_dimension=other_dimension,
                       description=escape(product["description"] or "등록된 상품 설명이 없습니다."),
                       variants=variant_controls(product), product_id=escape(product["id"]),
                       photo_hidden="", image_attrs=f'src="{escape(photo)}"' if photo else "hidden",

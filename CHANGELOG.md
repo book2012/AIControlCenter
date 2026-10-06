@@ -6161,3 +6161,10 @@ The two uploaded coats use a single front-facing model portrait in HOT, UPDATE, 
 
 ### DEV storefront uploaded products only
 Default DEV storefront hides legacy sample products across home, search, category counts, direct PDP and chatbot selection. Original JSON/media and commerce order history remain intact; explicit include_samples=True is reserved for legacy fixture regression. New enabled uploads are included automatically. No PROD or Woo stock mutation.
+
+
+### DEV color previews and unified purchase controls — 2026-10-06
+- Shirt: sky blue/navy; mockneck knit: gray/ivory/brown/navy/black. Canonical color selection changes the main product thumbnail to a manifest-bound AI front image.
+- COLOR and SIZE stay visible together, quantity sits beside them, and compact cart/order buttons sit directly below. Unknown sizes remain “사이즈 확인 중”; previewing a color never authorizes stock or checkout.
+- Provider variant IDs remain authoritative for quotes and orders; no inventory, WooCommerce, phone, Telegram, payment or PROD mutation is included in this change.
+- Validation and deployment boundaries: [color/purchase DEV record](docs/architecture/SHOP_COLOR_PURCHASE_CONTROLS_DEV.md).
