@@ -2,6 +2,7 @@
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import ssl
+import plistlib
 import requests
 
 ROOT=Path('/Users/kyouhan/.config/aicontrolcenter-dev-order')
@@ -31,7 +32,23 @@ class Handler(BaseHTTPRequestHandler):
     do_GET=handle_request
     do_POST=handle_request
 
+def launch_agent(release: Path, python: Path, private: Path = ROOT) -> bytes:
+    """Pin the DEV facade to an immutable release and keep it alive after terminal exit."""
+    release=release.resolve();python=python.resolve();private=private.resolve()
+    script=release/'ops/macos/shopping/dev_order_https_proxy.py'
+    if not script.is_file() or not python.is_file() or not private.is_dir():
+        raise ValueError('DEV_PROXY_LAUNCH_PATH_INVALID')
+    return plistlib.dumps({
+        'Label':'com.aicontrolcenter.dev-order-https-proxy',
+        'ProgramArguments':[str(python),str(script)],'WorkingDirectory':str(release),
+        'EnvironmentVariables':{'PATH':'/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin','PYTHONPATH':str(release)},
+        'RunAtLoad':True,'KeepAlive':True,'ThrottleInterval':10,
+        'StandardOutPath':str(private/'https-proxy.log'),
+        'StandardErrorPath':str(private/'https-proxy.log')})
+
 if __name__=='__main__':
+    from ops.macos.shopping.dev_order_runtime import assert_isolation
+    assert_isolation()
     server=ThreadingHTTPServer(('127.0.0.1',18446),Handler)
     context=ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
     context.load_cert_chain(ROOT/'dev-woo-cert.pem',ROOT/'dev-woo-key.pem')
