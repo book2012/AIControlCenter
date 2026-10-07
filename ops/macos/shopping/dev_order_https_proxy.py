@@ -34,7 +34,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def launch_agent(release: Path, python: Path, private: Path = ROOT) -> bytes:
     """Pin the DEV facade to an immutable release and keep it alive after terminal exit."""
-    release=release.resolve();python=python.resolve();private=private.resolve()
+    release=release.resolve();python=python.absolute();private=private.resolve()
     script=release/'ops/macos/shopping/dev_order_https_proxy.py'
     if not script.is_file() or not python.is_file() or not private.is_dir():
         raise ValueError('DEV_PROXY_LAUNCH_PATH_INVALID')
