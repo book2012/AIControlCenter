@@ -6237,3 +6237,8 @@ Validation: real Chrome verifies single/cart transfer, desktop/mobile form, fail
 ### DEV commerce connection recovery (2026-10-07)
 
 The isolated WooCommerce HTTPS facade on loopback 18446 had stopped while the order API remained running, causing product and cart embeds to return 503. Manage the facade with a per-user launchd agent pinned to an immutable Git release, RunAtLoad and KeepAlive, private logs, and an explicit executable environment. Startup checks the isolated DEV container project, volumes and network before opening the listener. No product/order mutation, credential changes, Twilio activation, PROD/Caddy changes or Ubuntu access. Verify provider-backed product/cart embeds after activation; regression covers release pinning and invalid launch paths.
+
+
+### Current-version PROD promotion assessment (2026-10-07)
+
+The user authorized current-version promotion. Read-only observation found that the live DEV order composition remains fixed-phone/fixed-customer and seeds synthetic evidence; it cannot be wired to PROD. Current PROD routes and data remain unchanged. `docs/shopping-current-prod-promotion.md` records the exact candidate, observed runtime, customer/ledger separation, SKU-based product migration, single Telegram poller requirement, deferred transaction SMS, staging/backup/rollback and required multi-customer tests. This is a technical blocker rather than a renewed permission requirement; production deployment is not complete.
