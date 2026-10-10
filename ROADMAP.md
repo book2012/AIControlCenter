@@ -5797,3 +5797,8 @@ HOT and UPDATE now share the same bounded four-column feed container and photo r
 2026-10-10: DEV campaign copy enlarged to 30–42px desktop and 26–38px mobile/tablet, with accent second phrase and refined supporting typography. Approved wording and top-anchored photo retained.
 
 2026-10-10: DEV unified header removes third notice row, labels order history in Korean and normalizes action typography. Native search dialog renders canonical search results inline, with Escape/close, focus restore, cancellation and retry; fallback search link retained.
+
+
+### 2026-10-10 — Authorized PROD storefront promotion
+
+User authorized promotion of the DEV presentation through f027c897: butter background, selected sunlit hero with visible face and restored copy, bold discovery tags, unified header actions and popup search. Presentation is deployed independently from the existing 63e0f104 commerce API/Telegram runtime. SOLAPI remains on hold and automatic SMS remains disabled after a single DEV test failed with carrier code 3113. No order, customer, inventory or credential migration is included. Validation: 6 order lookup/notice tests passed; dedicated checkout Chrome regression passed with zero external provider requests and no production mutations.
