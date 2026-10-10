@@ -6,6 +6,7 @@ Slots are substituted once; all source/query values are escaped at the boundary.
 from html import escape as html_escape
 from importlib.resources import files
 from functools import lru_cache
+from collections import Counter
 import json
 from pathlib import Path
 import re
@@ -343,12 +344,25 @@ def variant_controls(product: dict) -> str:
     return '<div class="variant-options"'+(' data-combined="true"' if combined else "")+' role="group" aria-label="' + title + '">' + "".join(controls) + "</div>"
 
 
+def recommended_tags(products: list[dict]) -> str:
+    """Common product keywords, not an asserted search-popularity ranking."""
+    counts = Counter()
+    for product in products:
+        counts.update(set(re.findall(r"[가-힣A-Za-z]{2,}", product["name"])))
+    tags = sorted((tag for tag, count in counts.items() if count > 1),
+                  key=lambda tag: (-counts[tag], tag))[:6]
+    if not tags:
+        return ""
+    links = ''.join('<a href="'+escape(listing_url({"q":tag,"page":1,"category":""}))+'">#'+escape(tag)+'</a>' for tag in tags)
+    return '<nav class="recommended-tags" aria-label="추천 상품 태그"><span>추천 태그</span>'+links+'</nav>'
+
+
 def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]:
     state = state or browse_state()
     featured=getattr(service,"_dev_featured_home",False) is True
     default_featured=featured and not state.get("category") and not state.get("collection")
     if default_featured:state={**state,"collection":"update"}
-    values = {"featured":"","feed_title":"UPDATE" if state.get("collection")=="update" else "HOT" if state.get("collection")=="hot" else "SALE" if state.get("collection")=="sale" else "피드","filters": home_filters(state), "feed": "", "feed_status": "", "feed_count": "",
+    values = {"recommended_tags":"","featured":"","feed_title":"UPDATE" if state.get("collection")=="update" else "HOT" if state.get("collection")=="hot" else "SALE" if state.get("collection")=="sale" else "피드","filters": home_filters(state), "feed": "", "feed_status": "", "feed_count": "",
               "feed_more": "", "feed_more_hidden": "hidden"}
     code = 200
     try:
@@ -360,6 +374,8 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
         if default_featured:
             hot,_=_home_page(service,{**state,"collection":"hot","page":1},available)
             if hot:values["featured"]='<section aria-labelledby="featured-hot-title"><div class="feed-heading"><h2 id="featured-hot-title">HOT</h2><p>에디터가 고른 아우터</p></div><ul class="product-grid unified-feed" aria-label="HOT 추천 상품">'+cards(hot,HOME,badge="HOT",catalog=getattr(service,"catalog",None))+'</ul></section>'
+        tag_products = _page(service, {"page": 1}, None, size=FEED_PAGE_SIZE)["items"]
+        values["recommended_tags"] = recommended_tags(tag_products)
         products, total = _home_page(service, state, available)
         products = [product for product in products if product["source"] in {"demo", "dev_upload"}]
         values["feed"] = cards(products, home_url(state),catalog=getattr(service,"catalog",None))

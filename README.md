@@ -5817,3 +5817,5 @@ HOT and UPDATE now share the same bounded four-column feed container and photo r
 2026-10-10: DEV-first presentation preview combines aligned HOT/UPDATE grids, enlarged desktop branding and pale butter-yellow background (#FFFBEF). PROD remains on 927bdfd pending visual acceptance.
 
 2026-10-10: DEV logo/header background now shares the pale butter-yellow page background; production activation remains pending.
+
+2026-10-10: DEV bold product tags and up to six deduplicated common product-name keywords between categories and feed; links use canonical search. No search-frequency analytics are claimed.

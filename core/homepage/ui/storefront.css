@@ -296,3 +296,10 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
   .store-header .wordmark { font-size: 38px; line-height: 1.25; }
   .store-header .wordmark span { font-size: 12px; margin-top: 6px; }
 }
+
+.product-tags, .tags a { font-weight: 700; }
+.recommended-tags { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; max-width: 1440px; margin: 12px auto 0; padding: 0 4.2%; }
+.recommended-tags > span { color: var(--muted); font-size: 12px; }
+.recommended-tags a { display: inline-flex; align-items: center; min-height: 40px; color: var(--accent); font-size: 14px; font-weight: 700; }
+.recommended-tags a:hover { text-decoration: underline; }
+@media (max-width: 600px) { .recommended-tags { padding-inline: 16px; gap: 4px 14px; } }
