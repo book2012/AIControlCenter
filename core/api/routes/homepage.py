@@ -170,6 +170,14 @@ def storefront_orders_browser(service: ShoppingService = Depends(get_shopping_se
     return HTMLResponse(storefront.template("storefront-orders.html").replace("</body>",widget(service)+"</body>"))
 
 
+@router.get("/homepage/assets/storefront/hero-sunlit-home-v1.jpg", include_in_schema=False)
+def storefront_sunlit_hero() -> FileResponse:
+    hero = Path(__file__).resolve().parents[3] / "brands/agachichi/assets/media/storefront/hero-sunlit-home-v1.jpg"
+    if not hero.is_file():
+        raise HTTPException(status_code=404, detail="Hero not found")
+    return FileResponse(hero, media_type="image/jpeg")
+
+
 @router.get("/homepage/assets/storefront/hero-boutique.jpg", include_in_schema=False)
 def storefront_hero() -> FileResponse:
     """One brand-owned local hero; no plugin deployment dependency or proxy."""

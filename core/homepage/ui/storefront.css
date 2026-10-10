@@ -344,3 +344,18 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 
 .hero h1 { white-space: nowrap; }
 @media (max-width: 600px) { .hero h1 { font-size: clamp(18px, 5vw, 28px); letter-spacing: -.055em; } }
+
+/* Selected sunlit-home campaign, DEV preview. */
+.hero-sunlit { display: grid; grid-template-columns: minmax(0, 1fr); }
+.hero-sunlit .hero-photo { grid-area: 1 / 1; height: clamp(380px, 38vw, 520px); }
+.hero-sunlit .hero-photo img { object-position: center 55%; }
+.hero-sunlit .hero-copy { grid-area: 1 / 1; z-index: 1; align-self: center; justify-self: start; align-items: flex-start; text-align: left; width: 45%; padding: 24px clamp(20px, 3vw, 44px); }
+.hero-sunlit h1 { font-size: clamp(22px, 2.1vw, 32px); }
+.hero-sunlit .hero-description { font-size: 12px; }
+.hero-sunlit .hero-link { border-color: var(--ink); }
+@media (max-width: 900px) {
+  .hero-sunlit { gap: 18px; }
+  .hero-sunlit .hero-copy { grid-area: auto; grid-row: 1; width: 100%; padding: 24px 8px 4px; align-items: center; text-align: center; }
+  .hero-sunlit .hero-photo { grid-area: auto; grid-row: 2; height: auto; aspect-ratio: 3 / 2; }
+  .hero-sunlit h1 { font-size: clamp(17px, 4.5vw, 30px); }
+}
