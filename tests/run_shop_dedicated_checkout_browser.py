@@ -13,6 +13,9 @@ from core.shopping.order_core.telegram import OrderTelegramIntegration
 from core.shopping.product_drafts.persistence.path_policy import IsolatedTestDatabasePathPolicy
 
 def main():
+    production="--production-transport" in sys.argv
+    api_prefix="/shopping" if production else "/__order-dev"
+    browser_host="bokstory.duckdns.org" if production else "localhost"
     with tempfile.TemporaryDirectory(prefix="aicc-product-operator-browser-") as d:
         root=Path(d);preview=TestClient(create_app(managed_projection=False));app=FastAPI()
         from core.shopping.order_core.guest_chat_app import mount_guest_chat
@@ -24,43 +27,51 @@ def main():
         @app.get("/__fake_product")
         def fake_product():
             html=guest_client.get("/__order-dev/chat/product/10").text
+            html=html.replace("/__order-dev/guest-chat.js",api_prefix+"/guest-chat.js")
             html=html.replace('data-product="10"','data-guest-shop-product="10"')
             return Response(html,media_type="text/html")
-        @app.get("/__order-dev/guest-chat.js")
+        @app.get(api_prefix+"/guest-chat.js")
         def guest_script():return Response((Path(__file__).resolve().parents[1]/"deploy/shopping/wordpress/plugins/ai-shopping-storefront/assets/storefront-guest-chat.js").read_text(),media_type="application/javascript")
         @app.get("/shopping/auth/session")
         def auth():return JSONResponse({"verified":fixture["verified"]},status_code=200 if fixture["verified"] else 401,headers={"X-CSRF-Token":"fake-csrf"})
-        @app.get("/__order-dev/checkout/session")
+        @app.get(api_prefix+"/checkout/session")
         def verified():return JSONResponse({"verified":fixture["verified"]},status_code=200 if fixture["verified"] else 401)
-        @app.get("/__order-dev/chat/capabilities")
+        @app.get(api_prefix+"/chat/capabilities")
         def capabilities():return {"phone_verification":True,"order_confirmation":True,"message":"휴대폰 인증을 진행해 주세요."}
-        @app.post("/__order-dev/chat/quote")
+        @app.post(api_prefix+"/chat/quote")
         async def price(request:Request):
             data=await request.json();assert data["line_items"]==[{"product_id":"10","variation_id":"11","quantity":2}]
             return quote
-        @app.get("/__order-dev/chat/cart/product/10")
+        @app.get(api_prefix+"/chat/cart/product/10")
         def metadata():return {"id":"10","name":"테스트 블라우스","price":"29000","product_url":"/__fake_product","variants":[{"id":"11","label":"화이트 / M","available":True}]}
-        @app.post("/__order-dev/phone/start")
+        @app.post(api_prefix+"/phone/start")
         async def phone(request:Request):
             data=await request.json();assert data=={"phone":"01012345678","consent":True}
             if fixture["start_failure"]:
                 fixture["start_failure"]=False;return JSONResponse({"message":"잠시 후 다시 요청해 주세요."},status_code=503)
             fixture["sms"]+=1
             return {"message":"인증번호를 입력해 주세요."}
-        @app.post("/__order-dev/phone/check")
+        @app.post(api_prefix+"/phone/check")
         async def check(request:Request):
             data=await request.json();assert data["code"]=="123456";fixture["verified"]=True
             return JSONResponse({"verified":True},status_code=201)
-        @app.post("/__order-dev/checkout/prepare")
+        @app.post(api_prefix+"/checkout/prepare")
         async def prepare(request:Request):
             data=await request.json();assert fixture["verified"] and data["cart"]["line_items"]==[{"product_id":"10","variation_id":"11","quantity":2}]
             return {"draft_id":"a"*48,"operation_key":"guest-order-"+"b"*48,"delivery":data["delivery"],"quote":quote}
-        @app.post("/__order-dev/checkout/confirm")
+        @app.post(api_prefix+"/checkout/confirm")
         async def confirm(request:Request):
             assert fixture["verified"] and (await request.json())=={"draft_id":"a"*48};fixture["writes"]+=1
             return JSONResponse({"provider_order_id":42,"state":"COMPLETED"},status_code=201)
         @app.get("/shopping/orders/operations/{key}")
         def status(key:str):return {"state":"COMPLETED","provider_order_id":42,"review_state":"CONFIRMED"}
+        @app.get(api_prefix+"/chat/history/session")
+        def history_ready():return {"ready":True}
+        @app.post(api_prefix+"/chat/orders/notices")
+        async def notices(request:Request):
+            assert fixture["verified"] and request.headers.get("X-CSRF-Token")=="fake-csrf"
+            assert (await request.json())=={"order_number":"42"}
+            return {"messages":[{"id":"42:SHIPPED","message":"안녕하세요 agachichi 입니다\n주문 #42 배송을 시작했습니다.\n운송장번호: TEST-TRACKING"}],"transaction_sms":False}
         @app.get("/__fake_stats")
         def stats():return fixture
         @app.get("/{path:path}")
@@ -75,7 +86,7 @@ def main():
             for _ in range(100):
                 if server.started:break
                 time.sleep(.05)
-            chrome=subprocess.Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome","--headless","--disable-gpu","--no-first-run","--no-default-browser-check","--disable-background-networking","--ignore-certificate-errors","--host-resolver-rules=MAP * ~NOTFOUND, EXCLUDE localhost","--remote-debugging-address=127.0.0.1","--remote-debugging-port=18444","--user-data-dir="+str(root/"profile"),"about:blank"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
+            chrome=subprocess.Popen(["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome","--headless","--disable-gpu","--no-first-run","--no-default-browser-check","--disable-background-networking","--ignore-certificate-errors","--host-resolver-rules=MAP bokstory.duckdns.org 127.0.0.1, MAP * ~NOTFOUND, EXCLUDE localhost","--remote-debugging-address=127.0.0.1","--remote-debugging-port=18444","--user-data-dir="+str(root/"profile"),"about:blank"],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
             for _ in range(100):
                 try:
                     with urllib.request.urlopen("http://127.0.0.1:18444/json/list",timeout=.3) as r:target=next(v for v in json.load(r) if v["type"]=="page")
@@ -118,9 +129,15 @@ try{
  await js('sessionStorage.removeItem("aicc-guest-checkout-v1")');await nav('/homepage/storefront/checkout');
  await wait('document.getElementById("error").textContent.includes("상품을 선택")');
  if((await js('fetch("/__fake_stats").then(r=>r.json())')).writes!==1)throw Error('automatic mutation');
- console.log(JSON.stringify({passed:true,checks:['single product transfer','cart transfer','full page desktop/mobile','phone and delivery','explicit confirm once','reload recovery','no PII persisted','empty selection safe'],external_provider_requests:0,prod_mutation:false}));
+ await nav('/homepage/storefront');
+ await js('document.getElementById("shop-chat-launcher").click();document.getElementById("shop-chat-question").value="배송 42";document.getElementById("shop-chat-form").requestSubmit()');
+ await wait('document.getElementById("shop-chat-messages").textContent.includes("TEST-TRACKING")');
+ if(!await js('!JSON.stringify(sessionStorage).includes("TEST-TRACKING")'))throw Error('private order notice persisted');
+ if((await js('fetch("/__fake_stats").then(r=>r.json())')).writes!==1)throw Error('notice caused order write');
+ console.log(JSON.stringify({passed:true,checks:['single product transfer','cart transfer','full page desktop/mobile','phone and delivery','explicit confirm once','reload recovery','no PII persisted','empty selection safe','authenticated chat shipping notice','notice not persisted'],external_provider_requests:0,prod_mutation:false}));
 }finally{s.close();}
 """
+            driver=driver.replace("https://localhost:18443", "https://"+browser_host+":18443")
             r=subprocess.run(["/opt/homebrew/bin/node","--input-type=module","-e",driver,target["webSocketDebuggerUrl"]],capture_output=True,text=True,timeout=65)
             if r.returncode:raise RuntimeError(r.stderr[-1500:])
             print(r.stdout.strip())

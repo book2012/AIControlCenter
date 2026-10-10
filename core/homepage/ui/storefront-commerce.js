@@ -1,6 +1,8 @@
 "use strict";
 
 (() => {
+  const commercePath=path=>(window.location.hostname==="bokstory.duckdns.org"?"/shopping":"/__order-dev")+path;
+
   const target=document.getElementById("commerce-panel");
   if(!target)return;
   const cartPage=target.dataset.cartPage==="true";
@@ -11,7 +13,7 @@
   }
   const load=async()=>{
     try{
-      const response=await fetch(cartPage?"/__order-dev/chat/cart":"/__order-dev/chat/embed/"+encodeURIComponent(demo),{credentials:"same-origin",headers:{Accept:"text/html"}});
+      const response=await fetch(cartPage?commercePath('/chat/cart'):commercePath('/chat/embed/')+encodeURIComponent(demo),{credentials:"same-origin",headers:{Accept:"text/html"}});
       if(!response.ok)throw new Error("주문 기능을 불러오지 못했습니다.");
       const type=response.headers.get("content-type")||"";
       if(!type.includes("text/html"))throw new Error("주문 기능 응답이 올바르지 않습니다.");

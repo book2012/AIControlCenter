@@ -22,6 +22,16 @@ def mount_aftersales(app,*,store,boundary,phone_cfg):
         if projection.customer_id!=phone_cfg["guest_customer_id"]:raise ValueError("CUSTOMER_DENIED")
         if write:boundary.check_csrf(request,secret,projection)
         return projection
+    from core.shopping.customer_order_notices import mount_order_notices
+    def bank_provider():
+        try:
+            path=Path('/Users/kyouhan/.config/aicontrolcenter-dev-order/order-notification.private.json')
+            if path.is_symlink() or path.stat().st_mode & 0o077:return None
+            return json.loads(path.read_text()).get('bank')
+        except Exception:return None
+    mount_order_notices(app,path="/__order-dev/chat/orders/notices",store=store,
+        authenticate=lambda request:auth(request,write=True),
+        verified_phone=lambda customer:phone_cfg.get("test_phone"),bank_provider=bank_provider)
     @app.post("/__order-dev/orders/lookup",include_in_schema=False)
     async def lookup(request:Request):
         try:
@@ -33,6 +43,8 @@ def mount_aftersales(app,*,store,boundary,phone_cfg):
             data=json.loads(raw)
             if type(data) is not dict or set(data)!={"order_number","phone"} or any(type(v) is not str for v in data.values()):raise ValueError("INVALID_LOOKUP")
             order=store.lookup(projection.customer_id,data["order_number"],data["phone"],phone_cfg["test_phone"])
+            from core.shopping.customer_order_notices import order_notices
+            order["customer_messages"]=order_notices(order,bank_provider())
             return JSONResponse({"order":order},headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
         except Exception:
             return JSONResponse({"message":"주문번호와 인증한 휴대폰 번호를 확인해 주세요."},status_code=403,headers={"Cache-Control":"no-store"})

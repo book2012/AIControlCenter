@@ -55,7 +55,7 @@ def mount_checkout_routes(app,*,store,verified_phone,application,catalog,ledger,
                 status_code=409,headers={"Cache-Control":"no-store"})
 
 
-def mount_order_lookup(app,*,store,application,verified_phone):
+def mount_order_lookup(app,*,store,application,verified_phone,bank_provider=None):
     @app.post("/shopping/orders/lookup",include_in_schema=False)
     async def lookup(request:Request):
         try:
@@ -70,6 +70,8 @@ def mount_order_lookup(app,*,store,application,verified_phone):
             if type(data) is not dict or set(data)!={"order_number","phone"} or any(type(v) is not str for v in data.values()):
                 raise ValueError("INVALID_LOOKUP")
             order=store.lookup(auth.customer_id,data["order_number"],data["phone"],phone)
+            from core.shopping.customer_order_notices import order_notices
+            order["customer_messages"]=order_notices(order,bank_provider() if bank_provider else None)
             return JSONResponse({"order":order},headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
         except Exception:
             return JSONResponse({"message":"주문번호와 인증한 휴대폰 번호를 확인해 주세요."},status_code=403,headers={"Cache-Control":"no-store"})

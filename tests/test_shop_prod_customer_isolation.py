@@ -112,7 +112,7 @@ def test_lookup_uses_authenticated_customer_phone_and_generic_denial(setup):
     class Store:
         def lookup(self,customer,number,input_phone,phone):
             if customer!=a or number!="42" or phone!="+821012345678" or input_phone!=phone:raise ValueError()
-            return {"order_number":"42"}
+            return {"order_number":"42","order_id":42,"items":[],"total":"0","currency":"KRW","review_state":"PENDING_REVIEW"}
     app=FastAPI();mount_order_lookup(app,store=Store(),application=App(),verified_phone=bridge.verified_phone)
     client=TestClient(app);body={"order_number":"42","phone":"+821012345678"}
     assert client.post("/shopping/orders/lookup",json=body,headers={"X-Test-Customer":a}).status_code==200

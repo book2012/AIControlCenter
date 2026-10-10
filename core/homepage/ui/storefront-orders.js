@@ -1,6 +1,8 @@
 "use strict";
 
 (() => {
+  const commercePath=path=>(window.location.hostname==="bokstory.duckdns.org"?"/shopping":"/__order-dev")+path;
+
   const by=id=>document.getElementById(id);
   let csrf=null;
 
@@ -18,7 +20,7 @@
     const box=document.createElement("div");box.className="orders-request";
     let select=null;
     if(kind==="SIZE_EXCHANGE"){
-      const response=await fetch("/__order-dev/aftersales/orders/"+order.order_id+"/exchange-options",{credentials:"same-origin"});
+      const response=await fetch(commercePath('/aftersales/orders/')+order.order_id+"/exchange-options",{credentials:"same-origin",headers:headers()});
       const data=await response.json();
       if(!response.ok||!Array.isArray(data.options)||!data.options.length){message("현재 교환 가능한 사이즈가 없습니다.");return;}
       const label=document.createElement("label");label.textContent="교환할 사이즈";
@@ -34,10 +36,10 @@
       submit.disabled=true;message("");
       try{
         const payload={order_id:order.order_id,kind,reason:reason.value,target_variation_id:select?select.value:null};
-        const response=await fetch("/__order-dev/aftersales/cases",{method:"POST",credentials:"same-origin",headers:headers(),body:JSON.stringify(payload)});
+        const response=await fetch(commercePath('/aftersales/cases'),{method:"POST",credentials:"same-origin",headers:headers(),body:JSON.stringify(payload)});
         const data=await response.json();if(!response.ok)throw new Error(data.message||"요청을 접수하지 못했습니다.");
         for(const current of Array.from(file.files).slice(0,5)){
-          const uploaded=await fetch("/__order-dev/aftersales/cases/"+data.case.id+"/attachments",{method:"POST",credentials:"same-origin",
+          const uploaded=await fetch(commercePath('/aftersales/cases/')+data.case.id+"/attachments",{method:"POST",credentials:"same-origin",
             headers:{"Content-Type":current.type,"X-CSRF-Token":csrf},body:current});
           if(!uploaded.ok)throw new Error("요청은 접수됐지만 일부 첨부파일을 저장하지 못했습니다.");
         }
@@ -80,6 +82,7 @@
       row.textContent=(current.kind==="RETURN"?"환불":"사이즈교환")+" #"+current.id+" · "+current.state+(current.target_option?" · "+current.target_option:"")+" · 첨부 "+current.attachments+"개";
       card.appendChild(row);
     }
+    for(const notice of order.customer_messages||[]){const p=document.createElement("p");p.className="order-customer-message";p.style.whiteSpace="pre-wrap";p.textContent=notice.message;card.appendChild(p);}
     const actions=document.createElement("div");actions.className="order-actions";
     if(order.return_available){const button=document.createElement("button");button.type="button";button.textContent="환불 요청";button.onclick=()=>requestCaseForm(card,order,"RETURN");actions.appendChild(button);}
     if(order.exchange_available){const button=document.createElement("button");button.type="button";button.textContent="사이즈 교환";button.onclick=()=>requestCaseForm(card,order,"SIZE_EXCHANGE");actions.appendChild(button);}
@@ -90,7 +93,7 @@
   const load=async()=>{
     if(!(await session())){by("orders-phone").value=by("lookup-phone").value;by("orders-auth").hidden=false;by("orders-list").replaceChildren();return;}
     by("orders-auth").hidden=true;message("");
-    const response=await fetch("/__order-dev/orders/lookup",{method:"POST",credentials:"same-origin",headers:headers(),
+    const response=await fetch(commercePath('/orders/lookup'),{method:"POST",credentials:"same-origin",headers:headers(),
       body:JSON.stringify({order_number:by("orders-number").value,phone:by("lookup-phone").value})});
     const data=await response.json();by("orders-list").replaceChildren();
     if(!response.ok){message(data.message||"주문을 조회하지 못했습니다.");return;}
@@ -101,7 +104,7 @@
   by("orders-send").onclick=async()=>{
     message("");
     if(!by("orders-consent").checked){message("인증 문자 수신에 동의해 주세요.");return;}
-    const response=await fetch("/__order-dev/phone/start",{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},
+    const response=await fetch(commercePath('/phone/start'),{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},
       body:JSON.stringify({phone:by("orders-phone").value,consent:true})});
     const data=await response.json();message(data.message||"");
   };
@@ -110,7 +113,7 @@
     const requestHeaders={"Content-Type":"application/json"};
     const current=await fetch("/shopping/auth/session",{credentials:"same-origin"});
     if(current.ok){const token=current.headers.get("X-CSRF-Token");if(token)requestHeaders["X-CSRF-Token"]=token;}
-    const response=await fetch("/__order-dev/phone/check",{method:"POST",credentials:"same-origin",headers:requestHeaders,
+    const response=await fetch(commercePath('/phone/check'),{method:"POST",credentials:"same-origin",headers:requestHeaders,
       body:JSON.stringify({code:by("orders-code").value})});
     by("orders-code").value="";
     if(!response.ok){message("인증을 완료하지 못했습니다.");return;}

@@ -18,7 +18,7 @@ from core.shopping.order_core.guest_chat import GuestShoppingChat,GuestQuestion,
 
 def create_guest_commerce_app(*,private_root,origin,phone_cfg,binding_key,csrf_key,catalog,
                               quote,writer_factory,lookup_store_factory,clock,port_factory=None,
-                              intent_classifier=None,inquiry_queue=None,path_policy=None):
+                              intent_classifier=None,inquiry_queue=None,path_policy=None,storefront_bindings=None,bank_provider=None):
     """Explicit separate storage, per-customer verification, confirmation and inquiry.
     
     Caller must provide production catalog, shipping/tax policy, governed provider
@@ -73,7 +73,13 @@ def create_guest_commerce_app(*,private_root,origin,phone_cfg,binding_key,csrf_k
     mount_phone_routes(app,bridge=bridge,boundary=boundary,register_evidence=register)
     mount_checkout_routes(app,store=checkout,verified_phone=bridge.verified_phone,application=application,
                           catalog=catalog,ledger=ledger,quote=quote)
-    mount_order_lookup(app,store=store,application=application,verified_phone=bridge.verified_phone)
+    mount_order_lookup(app,store=store,application=application,verified_phone=bridge.verified_phone,bank_provider=bank_provider)
+    from core.shopping.customer_order_notices import mount_order_notices
+    mount_order_notices(app,path="/shopping/chat/orders/notices",store=store,authenticate=lambda request:application._authenticate(request,write=True),verified_phone=bridge.verified_phone,bank_provider=bank_provider)
+    from core.shopping.guest_aftersales_routes import mount_customer_aftersales
+    mount_customer_aftersales(app,store=store,application=application,verified_phone=bridge.verified_phone)
+    from core.shopping.guest_storefront import mount_storefront_routes
+    mount_storefront_routes(app,catalog=catalog,bindings=storefront_bindings or {})
     @app.get("/shopping/orders/operations/{key}",include_in_schema=False)
     def status(key:str,request:Request):
         try:
@@ -82,6 +88,23 @@ def create_guest_commerce_app(*,private_root,origin,phone_cfg,binding_key,csrf_k
             if value is None:raise ValueError("ORDER_NOT_FOUND")
             return JSONResponse(OrderOperationStatus.model_validate(value).model_dump(mode="json"),headers={"Cache-Control":"no-store"})
         except Exception:return JSONResponse({"message":"주문 상태를 확인할 수 없습니다."},status_code=403,headers={"Cache-Control":"no-store"})
+    from core.shopping.guest_chat_history import GuestChatHistory,mount_history
+    def history_auth(request,write=False):
+        if write:auth=application._authenticate(request,write=True)
+        else:
+            boundary.check_origin(request,required=False)
+            auth=boundary.authenticate(boundary.cookie_secret(request),now=boundary.now())
+        bridge.verified_phone(auth.customer_id)
+        return auth
+    history=GuestChatHistory(root/"chat-history.sqlite3",authenticate=history_auth,
+        answer_lookup=getattr(inquiry_queue,"history_answer",None))
+    mount_history(app,history,prefix="/shopping")
+    @app.get("/shopping/chat/inquiries/{token}",include_in_schema=False)
+    def inquiry_status(token:str):
+        import re
+        value=None
+        if re.fullmatch(r"[a-f0-9]{48}",token) and inquiry_queue is not None:value=inquiry_queue.status(token)
+        return JSONResponse(value or {"message":"문의 상태를 찾을 수 없습니다."},status_code=200 if value else 404,headers={"Cache-Control":"no-store"})
     chat=GuestShoppingChat(catalog,intent_classifier=intent_classifier)
     async def body(request,model):
         boundary.check_origin(request,required=True);raw=bytearray()
@@ -100,6 +123,7 @@ def create_guest_commerce_app(*,private_root,origin,phone_cfg,binding_key,csrf_k
                 else:
                     ticket=await __import__("asyncio").to_thread(inquiry_queue.submit,question.product_id,question.message)
                     result={**result,**ticket,"message":"운영자에게 문의를 전달했습니다.","action":"OPERATOR_QUEUED"}
+            result={**result,"history_saved":history.record(request,question,result)}
             return JSONResponse(result,headers={"Cache-Control":"no-store"})
         except Exception:return JSONResponse({"message":"문의 내용을 확인해 주세요."},status_code=422,headers={"Cache-Control":"no-store"})
     @app.post("/shopping/chat/quote",include_in_schema=False)
