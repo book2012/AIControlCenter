@@ -6801,3 +6801,5 @@ HOT and UPDATE now share the same bounded four-column feed container and photo r
 2026-10-10: Selected sunlit-home campaign image restored on DEV entrance with motherly-comfort brand copy. Two alternative hero concepts archived in brand assets. Desktop overlay / mobile stacked layout; PROD remains unchanged.
 
 2026-10-10: DEV sunlit hero restores prior slogan and supporting copy; top-anchored image crop preserves the model face at desktop banner heights.
+
+2026-10-10: DEV campaign copy enlarged to 30–42px desktop and 26–38px mobile/tablet, with accent second phrase and refined supporting typography. Approved wording and top-anchored photo retained.

@@ -359,3 +359,18 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
   .hero-sunlit .hero-photo { grid-area: auto; grid-row: 2; height: auto; aspect-ratio: 3 / 2; }
   .hero-sunlit h1 { font-size: clamp(17px, 4.5vw, 30px); }
 }
+
+/* Clearer campaign typography without changing the approved wording. */
+.hero-sunlit .hero-copy { width: 51%; padding: 28px clamp(20px, 3vw, 44px); }
+.hero-sunlit h1 { font-size: clamp(30px, 2.8vw, 42px); font-weight: 600; line-height: 1.4; letter-spacing: -.045em; white-space: normal; }
+.hero-sunlit h1 em { display: block; font-weight: 500; color: var(--accent); }
+.hero-sunlit .hero-copy .eyebrow { font-size: 11px; letter-spacing: .16em; margin-bottom: 22px; }
+.hero-sunlit .hero-description { max-width: 340px; font-size: 14px; line-height: 1.85; margin-top: 20px; }
+.hero-sunlit .hero-link { font-size: 13px; margin-top: 28px; padding-block: 10px; gap: 26px; }
+@media (max-width: 900px) {
+  .hero-sunlit .hero-copy { width: 100%; padding: 28px 8px 8px; }
+  .hero-sunlit h1 { font-size: clamp(26px, 6.5vw, 38px); }
+  .hero-sunlit .hero-copy .eyebrow { font-size: 10px; margin-bottom: 16px; }
+  .hero-sunlit .hero-description { font-size: 13px; margin-top: 14px; }
+  .hero-sunlit .hero-link { margin-top: 18px; }
+}
