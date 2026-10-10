@@ -5815,3 +5815,5 @@ Validation: 96 focused regression/production port tests pass; real Chrome produc
 HOT and UPDATE now share the same bounded four-column feed container and photo ratios. Desktop branding uses a 38px wordmark; existing mobile branding remains responsive. Presentation-only release; commerce data and operator state are unchanged.
 
 2026-10-10: DEV-first presentation preview combines aligned HOT/UPDATE grids, enlarged desktop branding and pale butter-yellow background (#FFFBEF). PROD remains on 927bdfd pending visual acceptance.
+
+2026-10-10: DEV logo/header background now shares the pale butter-yellow page background; production activation remains pending.
