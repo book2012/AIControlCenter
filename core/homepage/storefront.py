@@ -359,7 +359,7 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
     try:
         if default_featured:
             hot,_=_home_page(service,{**state,"collection":"hot","page":1},available)
-            if hot:values["featured"]='<section aria-labelledby="featured-hot-title"><div class="feed-heading"><h2 id="featured-hot-title">HOT</h2><p>에디터가 고른 아우터</p></div><ul class="product-grid" aria-label="HOT 추천 상품">'+cards(hot,HOME,badge="HOT",catalog=getattr(service,"catalog",None))+'</ul></section>'
+            if hot:values["featured"]='<section aria-labelledby="featured-hot-title"><div class="feed-heading"><h2 id="featured-hot-title">HOT</h2><p>에디터가 고른 아우터</p></div><ul class="product-grid unified-feed" aria-label="HOT 추천 상품">'+cards(hot,HOME,badge="HOT",catalog=getattr(service,"catalog",None))+'</ul></section>'
         products, total = _home_page(service, state, available)
         products = [product for product in products if product["source"] in {"demo", "dev_upload"}]
         values["feed"] = cards(products, home_url(state),catalog=getattr(service,"catalog",None))

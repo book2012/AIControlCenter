@@ -5773,3 +5773,7 @@ Production composition provides separate durable state, existing Twilio Verify t
 Validation: 96 focused regression/production port tests pass; real Chrome production transport and guest/Telegram fake harness pass with zero external provider writes. Staged real production catalog, cart panel and homepage/product/checkout/lookup pages respond successfully. Actual customer OTP and live order/shipping remain user smoke tests, never fabricated verification.
 
 PROD activation closure (2026-10-10): release 63e0f10 is live on bokstory.duckdns.org; public storefront, product images, cart/quote, checkout/lookup and health were verified. Production Telegram is the sole consumer (default 운영, prefix 개발 for DEV). Transaction SMS remains off. Next validation is the user's genuine phone OTP and order lifecycle; no fabricated production verification/order.
+
+### 2026-10-10 desktop storefront alignment
+
+HOT and UPDATE now share the same bounded four-column feed container and photo ratios. Desktop branding uses a 38px wordmark; existing mobile branding remains responsive. Presentation-only release; commerce data and operator state are unchanged.
