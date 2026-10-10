@@ -1,4 +1,4 @@
-:root { color-scheme: light; --ivory: #fffcf7; --paper: #fffdf9; --orange: #f5c5a8; --accent: #8b482f; --ink: #4f352b; --muted: #775d50; --line: #e6d7c8; }
+:root { color-scheme: light; --ivory:#fffbef; --paper: #fffdf9; --orange: #f5c5a8; --accent: #8b482f; --ink: #4f352b; --muted: #775d50; --line: #e6d7c8; }
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; scroll-padding-top: 1.5rem; }
