@@ -6803,3 +6803,5 @@ HOT and UPDATE now share the same bounded four-column feed container and photo r
 2026-10-10: DEV sunlit hero restores prior slogan and supporting copy; top-anchored image crop preserves the model face at desktop banner heights.
 
 2026-10-10: DEV campaign copy enlarged to 30–42px desktop and 26–38px mobile/tablet, with accent second phrase and refined supporting typography. Approved wording and top-anchored photo retained.
+
+2026-10-10: DEV unified header removes third notice row, labels order history in Korean and normalizes action typography. Native search dialog renders canonical search results inline, with Escape/close, focus restore, cancellation and retry; fallback search link retained.

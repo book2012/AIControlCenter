@@ -117,6 +117,11 @@ def storefront_styles() -> Response:
     return Response(_ui_asset("storefront.css"), media_type="text/css")
 
 
+@router.get("/homepage/assets/storefront-header.js", include_in_schema=False)
+def storefront_header_script() -> Response:
+    return Response(_ui_asset("storefront-header.js"), media_type="application/javascript")
+
+
 @router.get("/homepage/assets/storefront.js", include_in_schema=False)
 def storefront_script() -> Response:
     return Response(_ui_asset("storefront.js"), media_type="application/javascript")
