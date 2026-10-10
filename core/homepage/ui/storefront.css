@@ -328,3 +328,16 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
   .hero-link { margin-top: 12px; min-height: 44px; }
   .hero-photo { height: auto; aspect-ratio: 4 / 3; }
 }
+
+/* Text-only brand introduction. */
+.hero { grid-template-columns: minmax(0, 1fr); }
+.hero-copy { align-items: center; text-align: center; padding: 48px 20px 52px; }
+.hero-copy .eyebrow { margin-bottom: 18px; }
+.hero-description { margin-top: 18px; }
+.hero-link { margin-top: 22px; }
+@media (max-width: 600px) {
+  .hero { gap: 0; margin-top: 12px; }
+  .hero-copy { padding: 30px 4px 32px; }
+  .hero-description { margin-top: 14px; }
+  .hero-link { margin-top: 14px; }
+}
