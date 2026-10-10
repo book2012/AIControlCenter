@@ -348,7 +348,7 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 /* Selected sunlit-home campaign, DEV preview. */
 .hero-sunlit { display: grid; grid-template-columns: minmax(0, 1fr); }
 .hero-sunlit .hero-photo { grid-area: 1 / 1; height: clamp(380px, 38vw, 520px); }
-.hero-sunlit .hero-photo img { object-position: center 55%; }
+.hero-sunlit .hero-photo img { object-position: center top; }
 .hero-sunlit .hero-copy { grid-area: 1 / 1; z-index: 1; align-self: center; justify-self: start; align-items: flex-start; text-align: left; width: 45%; padding: 24px clamp(20px, 3vw, 44px); }
 .hero-sunlit h1 { font-size: clamp(22px, 2.1vw, 32px); }
 .hero-sunlit .hero-description { font-size: 12px; }
