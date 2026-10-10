@@ -3,8 +3,8 @@ from pathlib import Path
 import json,os
 PATH=Path("/Users/kyouhan/AIControlCenterRuntime/dev-order/data/product-projection.json")
 
-def apply_projection(records,data,catalog_hash):
-    if data.get("schema_version")!=1 or data.get("environment")!="DEV" or data.get("catalog_sha256")!=catalog_hash:
+def apply_projection(records,data,catalog_hash,environment="DEV"):
+    if data.get("schema_version")!=1 or data.get("environment")!=environment or data.get("catalog_sha256")!=catalog_hash:
         raise ValueError("DEV_PRODUCT_PROJECTION_BOUNDARY")
     rows=data.get("products")
     if type(rows) is not dict or set(rows)!={r["id"] for r in records}:raise ValueError("DEV_PRODUCT_PROJECTION_SCOPE")
@@ -25,4 +25,4 @@ def apply_projection(records,data,catalog_hash):
 def read_projection(path,records,catalog_hash):
     path=Path(path);s=path.stat()
     if path.is_symlink() or s.st_uid!=os.getuid() or s.st_mode&0o077 or s.st_size>131072:raise ValueError("DEV_PRODUCT_PROJECTION_FILE")
-    return apply_projection(records,json.loads(path.read_text()),catalog_hash)
+    return apply_projection(records,json.loads(path.read_text()),catalog_hash,environment=os.environ.get("AICC_COMMERCE_ENV","DEV"))

@@ -1,0 +1,53 @@
+"""Atomic production stock accounting after authorized Telegram confirmation."""
+import base64,hashlib,json,subprocess
+from ops.macos.shopping.prod_woo_port import assert_production,DOCKER
+class ProductionStockConfirmation:
+    def __init__(self,store):self.store=store
+    def __call__(self,key,result):
+        try:
+            assert_production();tag=hashlib.sha256(('aicc-order:'+key).encode()).hexdigest()
+            draft=self.store.by_provider_tag(tag,allow_expired=True)
+            if draft['state']!='CONFIRMED':return False
+            payload={'order_id':result.snapshot.provider_order_id,'tag':tag,'digest':draft['digest'],'items':[{'product':int(v['product_id']),'variation':int(v['variation_id']),'quantity':v['quantity']} for v in draft['body']['line_items']]}
+            code=STOCK_PHP.replace('__PAYLOAD__',base64.b64encode(json.dumps(payload).encode()).decode())
+            p=subprocess.run([DOCKER,'--context','colima-aicontrolcenter-commerce','exec','-i','shopping-wordpress','php'],input=code,capture_output=True,text=True,timeout=35)
+            return p.returncode==0 and json.loads(p.stdout).get('outcome')=='STOCK_CONFIRMED'
+        except Exception:return False
+STOCK_PHP="""<?php
+if(getenv('WORDPRESS_DB_NAME')!=='aicc_shopping'){exit(2);}
+require '/var/www/html/wp-load.php';
+add_filter('pre_wp_mail',fn()=>false);
+$cfg=json_decode(base64_decode('__PAYLOAD__'),true);
+global $wpdb;
+if($wpdb->get_var("SELECT GET_LOCK('aicc_prod_stock_confirmation',5)")!=='1'){exit(3);}
+try {
+ $bad=$wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=%s AND engine IS NOT NULL AND engine<>'InnoDB'",DB_NAME));
+ if((int)$bad!==0){throw new Exception('ENGINE');}
+ $wpdb->query('START TRANSACTION');
+ $order=wc_get_order($cfg['order_id']);
+ if(!$order || $order->get_meta('_aicc_order_operation')!==$cfg['tag'] || $order->get_meta('_aicc_delivery_digest')!==$cfg['digest']){throw new Exception('BINDING');}
+ if(!in_array($order->get_status(),['pending','on-hold'],true)){throw new Exception('STATUS');}
+ $items=array_values($order->get_items());$actual=[];$needs=[];
+ foreach($items as $item){
+  $actual[]=['product'=>$item->get_product_id(),'variation'=>$item->get_variation_id(),'quantity'=>$item->get_quantity()];
+  $p=$item->get_product();$qty=$item->get_quantity();$reduced=$item->get_meta('_reduced_stock',true);
+  if(!$p || !$p->managing_stock() || $p->backorders_allowed()){throw new Exception('STOCK_POLICY');}
+  if($reduced!=='' && (int)$reduced!==$qty){throw new Exception('REDUCED_BINDING');}
+  if($reduced===''){
+   $id=$p->get_stock_managed_by_id();$needs[$id]=($needs[$id]??0)+$qty;
+  }
+ }
+ if($actual!=$cfg['items']){throw new Exception('ITEM_BINDING');}
+ foreach($needs as $id=>$qty){$p=wc_get_product($id);if(!$p || $p->get_stock_quantity()<$qty){throw new Exception('INSUFFICIENT');}}
+ if(get_option('woocommerce_manage_stock')!=='yes'){throw new Exception('MANAGEMENT_DISABLED');}
+ wc_reduce_stock_levels($order);
+ foreach($items as $item){$item->read_meta_data(true);if((int)$item->get_meta('_reduced_stock',true)!==$item->get_quantity()){throw new Exception('REDUCTION_UNVERIFIED');}}
+ $order->get_data_store()->set_stock_reduced($order->get_id(),true);
+ if($order->get_status()==='pending'){$order->update_status('on-hold','PROD operator confirmed; stock accounted; no payment or shipment.');}
+ $order->update_meta_data('_aicc_stock_confirmation',$cfg['tag']);$order->save();
+ $wpdb->query('COMMIT');
+ $stocks=[];foreach($items as $item){$p=wc_get_product($item->get_variation_id()?:$item->get_product_id());$stocks[]=['variation'=>$item->get_variation_id(),'quantity'=>$p->get_stock_quantity(),'stock_status'=>$p->get_stock_status()];}
+ echo json_encode(['outcome'=>'STOCK_CONFIRMED','order_id'=>$order->get_id(),'stocks'=>$stocks]);
+} catch(Throwable $e) {$wpdb->query('ROLLBACK');exit(4);}
+finally {$wpdb->get_var("SELECT RELEASE_LOCK('aicc_prod_stock_confirmation')");}
+"""

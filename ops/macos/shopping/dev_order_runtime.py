@@ -237,18 +237,22 @@ def create_app():
                 if order_sms is not None:health["order_sms"]=order_sms.dispatch_one()
             except Exception:health["order_sms"]="UNAVAILABLE"
             try:
-                telegram.poll_once();telegram.dispatch_one();inquiry_queue.dispatch_one();health['poller']='RUNNING'
+                if __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':telegram.poll_once()
+                telegram.dispatch_one();inquiry_queue.dispatch_one();health['poller']='EXTERNAL' if __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')=='1' else 'RUNNING'
             except Exception:health['poller']='UNAVAILABLE'
             stop.wait(2)
     from contextlib import asynccontextmanager
     @asynccontextmanager
     async def lifespan(_):
         import fcntl
-        lease=(DATA/'telegram-poller.lock').open('a')
-        fcntl.flock(lease,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        lease=None
+        if __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':
+            lease=(DATA/'telegram-poller.lock').open('a')
+            fcntl.flock(lease,fcntl.LOCK_EX|fcntl.LOCK_NB)
         thread=threading.Thread(target=worker,daemon=True);thread.start()
         yield
-        stop.set();await asyncio.to_thread(thread.join,20);lease.close()
+        stop.set();await asyncio.to_thread(thread.join,20)
+        if lease is not None:lease.close()
     app.router.lifespan_context=lifespan
     @app.exception_handler(SessionAPIDenied)
     async def session_denied(request,error):
@@ -373,6 +377,8 @@ def create_app():
         return RedirectResponse('/homepage/storefront/product/'+demo_id+'#commerce-panel',status_code=302)
     @app.get('/dev-order',include_in_schema=False)
     def entry():return RedirectResponse('/homepage/storefront',status_code=302)
+    app.state.telegram_integration=telegram;app.state.inquiry_queue=inquiry_queue
+    app.state.product_operator=product_operator;app.state.operator_adapter=operator_adapter
     return app
 
 if __name__=='__main__':
