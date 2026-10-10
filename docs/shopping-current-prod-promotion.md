@@ -1,4 +1,10 @@
-# Current storefront PROD promotion — 2026-10-07
+# Current storefront PROD promotion — activated 2026-10-10
+
+Current status: PROD activated at https://bokstory.duckdns.org on immutable `63e0f104457201bcd9ad8fcce7fdffde9fa2ce37`. Host Caddy now sends `/shopping/*` to loopback 18545 and homepage/root to 18580; other public paths are denied. On-disk Caddyfile is persisted; DEV route is byte-for-byte equivalent in adapted JSON. Earlier sections below are historical readiness checkpoints, superseded by this activation.
+
+Activation verification: public root/storefront/product/cart/checkout/my-orders and shopping health/cart/product panel return 200; real PROD cart quote returns KRW and explicit included-shipping policy. Homepage hero and model thumbnails return 200. Anonymous order notice is denied 403; invalid phone start returns 422 with no OTP sent. PROD poller and product management RUNNING, DEV poller EXTERNAL with product management RUNNING; transaction SMS off. Three per-user launchd services supervise immutable PROD API/homepage and DEV API. No live customer OTP, order, payment or shipping was fabricated.
+
+Rollback: retain old API 58081, WordPress 58082, DB/wp-content backups under `AIControlCenterRuntime/prod-commerce/backups/20261010-112230`, and previous live JSON/Caddyfile under `backups/edge-before-cutover`. API/web release manifest is `prod-commerce/current.json`. Original 25 unrelated main-tree dirty entries are preserved; the authorized persisted Caddyfile adds one scoped runtime change (26 total). Feature tree remains clean after push.
 
 User approved promotion of the current version. Authorization is recorded; no further permission is required for this same scope. This is a technical readiness blocker, not an authorization blocker.
 
