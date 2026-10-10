@@ -6791,3 +6791,5 @@ HOT and UPDATE now share the same bounded four-column feed container and photo r
 2026-10-10: DEV logo/header background now shares the pale butter-yellow page background; production activation remains pending.
 
 2026-10-10: DEV bold product tags and up to six deduplicated common product-name keywords between categories and feed; links use canonical search. No search-frequency analytics are claimed.
+
+2026-10-10: DEV editorial hero uses restrained typography, expanded existing photo, mobile stacked composition and a direct new-product anchor. No commerce behavior changes; PROD awaits acceptance.
