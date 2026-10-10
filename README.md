@@ -5823,3 +5823,5 @@ HOT and UPDATE now share the same bounded four-column feed container and photo r
 2026-10-10: DEV editorial hero uses restrained typography, expanded existing photo, mobile stacked composition and a direct new-product anchor. No commerce behavior changes; PROD awaits acceptance.
 
 2026-10-10: DEV entrance is now centered text only; hero photo removed at user request, product photography unchanged.
+
+2026-10-10: DEV hero slogan now uses one line with viewport-scaled mobile typography.
