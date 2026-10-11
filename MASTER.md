@@ -1,5 +1,10 @@
 # MASTER
 
+## 2026-10-12 — Independently pinned DEV Telegram forwarding
+
+Release based on existing PROD 63e0f104 changes only DEV command forwarding over a private authenticated Unix socket. PROD order handling, storefront presentation and SMS hold are preserved. Existing single-consumer cursor is retained; no retry/fallback on ambiguous DEV outcomes. User authorized shared-consumer transition after DEV preparation. 96 targeted regressions passed. See [relay boundary](docs/architecture/SHOP_TELEGRAM_DEV_RELAY_ACTIVATION.md).
+
+
 ## 2026-10-06 — SALE price presentation
 
 Discounted web cards and details now show a smaller struck-through regular price first, sale price second, and a red SALE label last. Semantic del/strong markup and explicit price labels preserve accessibility; validated live Woo sale projection remains the authority. Ordinary prices and Telegram text commands remain unchanged. No commerce or PROD mutation.
