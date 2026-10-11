@@ -159,10 +159,17 @@ class GuestAftersalesStore:
                 c.execute("INSERT OR IGNORE INTO shipping_notices VALUES(?,?,?,'PENDING')",(order_id,carrier,tracking))
         return self._fulfillment(order_id)
     def mark_delivered(self,order_id):
-        self._operator_order(order_id);current=self._fulfillment(order_id)
-        if current["state"] not in ("SHIPPED","DELIVERED"):raise ValueError("SHIPMENT_REQUIRED")
-        stamp=current["delivered"] if current["state"]=="DELIVERED" and current["delivered"] else self.clock()
-        with sqlite3.connect(self.path) as c:c.execute("UPDATE fulfillment SET state='DELIVERED',delivered=?,updated=? WHERE order_id=?",(stamp,self.clock(),order_id))
+        self._operator_order(order_id)
+        with sqlite3.connect(self.path) as c:
+            # Serialize delivery completion so concurrent commands preserve the
+            # first receipt and the customer return-window start time.
+            c.execute("BEGIN IMMEDIATE")
+            current=c.execute("SELECT state FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
+            if not current or current[0] not in ("SHIPPED","DELIVERED"):
+                raise ValueError("SHIPMENT_REQUIRED")
+            if current[0]=="SHIPPED":
+                stamp=self.clock()
+                c.execute("UPDATE fulfillment SET state='DELIVERED',delivered=?,updated=? WHERE order_id=?",(stamp,stamp,order_id))
         return self._fulfillment(order_id)
     def admin_fulfillment(self,order_id):return self._fulfillment(order_id)
     def admin_cases(self,kind=None):

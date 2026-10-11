@@ -239,3 +239,8 @@ HOT and UPDATE now share the same bounded four-column feed container and photo r
 ### 2026-10-10 — Authorized PROD storefront promotion
 
 User authorized promotion of the DEV presentation through f027c897: butter background, selected sunlit hero with visible face and restored copy, bold discovery tags, unified header actions and popup search. Presentation is deployed independently from the existing 63e0f104 commerce API/Telegram runtime. SOLAPI remains on hold and automatic SMS remains disabled after a single DEV test failed with carrier code 3113. No order, customer, inventory or credential migration is included. Validation: 6 order lookup/notice tests passed; dedicated checkout Chrome regression passed with zero external provider requests and no production mutations.
+
+
+### 2026-10-11 — Non-SMS order reliability verification
+
+Verified 106 ledger, Woo writer, operator, fulfillment, customer ownership, notice and stock tests plus the dedicated checkout Chrome regression (zero external provider requests; no PROD mutations). Delivery completion now uses a serialized SQLite transaction and preserves the first receipt on replay, restart and concurrent duplicate commands. Initial sample stock tests explicitly disable the host-managed projection, so legitimate DEV stock changes cannot invalidate fixture expectations. DEV API promotion only; the existing PROD-hosted Telegram consumer remains pinned to its prior release and must receive this fix in a separately authorized promotion. No real customer order, stock write, external Telegram message or SMS was generated. Cancellation/return inventory restoration and real Woo concurrency validation remain separate outstanding work; return approval is not automatic stock restoration.

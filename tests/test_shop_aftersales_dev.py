@@ -92,3 +92,22 @@ def test_customer_routes_require_session_csrf_and_keep_attachments_private(tmp_p
         attached=client.post("/__order-dev/aftersales/cases/"+case_id+"/attachments",content=png,headers={**h,"Content-Type":"image/png"})
         assert attached.status_code==201 and boundary.csrf_checked>=2
         assert list((tmp_path/"files").iterdir()) and all(p.stat().st_mode&0o077==0 for p in (tmp_path/"files").iterdir())
+
+
+def test_delivery_replay_after_restart_preserves_original_receipt(tmp_path):
+    clock=[1000.0];store,_=fixture(tmp_path,clock)
+    store.confirm_payment(ORDER);store.mark_shipped(ORDER,"CJ대한통운","1234567890")
+    first=store.mark_delivered(ORDER)
+    clock[0]+=300
+    restarted=DevAftersalesStore(store.path,store.attachments,ledger=store.ledger,
+        checkout=store.checkout,catalog=store.catalog,clock=lambda:clock[0])
+    assert restarted.mark_delivered(ORDER)==first
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        receipts=list(pool.map(lambda _:restarted.mark_delivered(ORDER),range(8)))
+    assert all(receipt==first for receipt in receipts)
+    assert restarted.customer_orders("another-customer")==[]
+    assert restarted.payment(ORDER)["state"]=="PAID"
+    from core.shopping.customer_order_notices import order_notices
+    messages=order_notices(restarted.customer_orders(CUSTOMER)[0],None)
+    assert messages[-1]["kind"]=="DELIVERED"

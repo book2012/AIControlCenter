@@ -8,7 +8,7 @@ from core.shopping.order_core.guest_chat import GuestShoppingChat
 from test_shop_guest_chat import Catalog
 
 def test_test_stock_covers_60_combinations_and_preserves_confirmed_coats():
-    with TestClient(create_app()) as client:
+    with TestClient(create_app(managed_projection=False)) as client:
         rows=client.get('/shopping/products?page_size=100').json()['items']
         combined=[r for r in rows if r['variants'][0]['option_type']=='color_size']
         assert len(combined)==17 and sum(len(r['variants']) for r in combined)==60
