@@ -5888,3 +5888,7 @@ Natural operator text is locally classified into bounded order/product actions. 
 ## 2026-10-12 — SOLAPI order SMS prepared; carrier blocker remains
 
 Added pinned SOLAPI order-confirmation and shipping transport, domestic-number normalization, byte-bounded SMS/LMS and bound final delivery-status receipts. Existing Twilio OTP stays unchanged. DEV activation is explicit/future-only, skips other recipients and never replays failed/unknown sends. 225 targeted regressions passed. One real connection test was accepted but finally failed with carrier code 3113; automatic SMS flags stay disabled pending sender-carrier resolution. See [SMS architecture](docs/architecture/SHOP_SOLAPI_ORDER_SMS_DEV.md).
+
+
+### 2026-10-12 Telegram bot separation
+DEV papachichi_bot uses a dedicated cursor and lock, with namespaced update IDs and the authenticated DEV bridge. PROD mommychichi_bot in split_bot_mode never composes or forwards DEV commands. Tokens remain private; SMS remains disabled.
