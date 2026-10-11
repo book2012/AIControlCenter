@@ -5814,3 +5814,7 @@ Explicit Mac production Woo ports validate ai-shopping container identity and ai
 Production composition provides separate durable state, existing Twilio Verify through multi-customer Core verification, bank instructions on owned chat/web lookup, local AI inquiries and private history. One durable Telegram consumer uses default PROD and explicit 개발/DEV prefixes for isolated DEV commands; operator allowlists and update-to-environment pins precede writes. DEV external-consumer mode retains its web API and notification queue without competing getUpdates. Product price/SALE/hide/stock commands maintain separate PROD projection.
 
 Validation: 96 focused regression/production port tests pass; real Chrome production transport and guest/Telegram fake harness pass with zero external provider writes. Staged real production catalog, cart panel and homepage/product/checkout/lookup pages respond successfully. Actual customer OTP and live order/shipping remain user smoke tests, never fabricated verification.
+
+## 2026-10-12 — One Telegram greeting across DEV forwarding
+
+Live operator DEV response confirmed the shared forwarding path but exposed duplicated greeting/environment headers. Environment routers now preserve an existing identical header instead of adding another. Nested-router replay and ordinary PROD/DEV reply regressions pass (97 targeted tests on isolated relay branch). Historical DEV fixtures 33/34 have shipment/delivery rows but no payment row; no payment or shipment state was changed.

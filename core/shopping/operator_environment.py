@@ -2,6 +2,12 @@
 from dataclasses import dataclass
 import re
 
+def format_operator_reply(environment,reply):
+    if type(reply) is not str:raise ValueError("OPERATOR_REPLY_INVALID")
+    prefix="안녕하세요 agachichi 입니다\n["+("운영" if environment=="PROD" else "개발")+"]\n"
+    # An authenticated inner DEV router already returns this exact header.
+    return reply if reply.startswith(prefix) else prefix+reply
+
 @dataclass(frozen=True)
 class OperatorTarget:
     environment: str
@@ -30,7 +36,7 @@ class OperatorEnvironmentRouter:
         environment,text=self.target(text,chat_id=chat_id,user_id=user_id)
         reply=self.handlers[environment](text)
         if type(reply) is not str:raise ValueError("OPERATOR_REPLY_INVALID")
-        return "안녕하세요 agachichi 입니다\n["+("운영" if environment=="PROD" else "개발")+"]\n"+reply
+        return format_operator_reply(environment,reply)
 
 
 class DurableOperatorEnvironmentRouter(OperatorEnvironmentRouter):
@@ -60,6 +66,6 @@ class DurableOperatorEnvironmentRouter(OperatorEnvironmentRouter):
         # No automatic redispatch after a process interruption or ambiguous handler result.
         reply=self.handlers[environment](command,update_id)
         if type(reply) is not str:raise ValueError("OPERATOR_REPLY_INVALID")
-        reply="안녕하세요 agachichi 입니다\n["+("운영" if environment=="PROD" else "개발")+"]\n"+reply
+        reply=format_operator_reply(environment,reply)
         with sqlite3.connect(self.path) as c:c.execute("UPDATE environment_updates SET state='COMPLETED',reply=? WHERE update_id=? AND state='CLAIMED'",(reply,update_id))
         return reply

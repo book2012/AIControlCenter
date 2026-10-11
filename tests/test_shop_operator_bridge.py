@@ -151,3 +151,18 @@ def test_mismatched_authenticated_reply_does_not_pass_client(tmp_path):
         assert len(calls) == 1
     finally:
         server.shutdown();thread.join();server.server_close()
+
+
+def test_shared_router_does_not_repeat_authenticated_dev_header(tmp_path):
+    from core.shopping.operator_environment import DurableOperatorEnvironmentRouter,OperatorEnvironmentRouter
+    service=bridge(tmp_path,lambda *_:"전체 주문 8건")
+    outer=DurableOperatorEnvironmentRouter(database_path=tmp_path/"outer.sqlite3",
+        dev=lambda text,i:service.codec.verify(service.process(envelope(service.codec,text=text,update_id=i)))["reply"],
+        prod=lambda *_:"운영 목록",default="PROD",chat_id=CHAT,user_ids=frozenset({USER}))
+    reply=outer.dispatch("개발 주문목록",chat_id=CHAT,user_id=USER,update_id=10)
+    assert reply=="안녕하세요 agachichi 입니다\n[개발]\n전체 주문 8건"
+    assert outer.dispatch("개발 주문목록",chat_id=CHAT,user_id=USER,update_id=10)==reply
+    plain=OperatorEnvironmentRouter(dev=lambda _:reply,prod=lambda _:"운영 목록",
+        default="PROD",chat_id=CHAT,user_ids=frozenset({USER}))
+    assert plain.dispatch("개발 주문목록",chat_id=CHAT,user_id=USER)==reply
+    assert plain.dispatch("운영 주문목록",chat_id=CHAT,user_id=USER)=="안녕하세요 agachichi 입니다\n[운영]\n운영 목록"

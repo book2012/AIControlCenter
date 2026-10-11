@@ -215,3 +215,7 @@ Validation: 96 focused regression/production port tests pass; real Chrome produc
 ## 2026-10-12 — Independently pinned DEV Telegram forwarding
 
 Release based on existing PROD 63e0f104 changes only DEV command forwarding over a private authenticated Unix socket. PROD order handling, storefront presentation and SMS hold are preserved. Existing single-consumer cursor is retained; no retry/fallback on ambiguous DEV outcomes. User authorized shared-consumer transition after DEV preparation. 96 targeted regressions passed. See [relay boundary](architecture/SHOP_TELEGRAM_DEV_RELAY_ACTIVATION.md).
+
+## 2026-10-12 — One Telegram greeting across DEV forwarding
+
+Live operator DEV response confirmed the shared forwarding path but exposed duplicated greeting/environment headers. Environment routers now preserve an existing identical header instead of adding another. Nested-router replay and ordinary PROD/DEV reply regressions pass (97 targeted tests on isolated relay branch). Historical DEV fixtures 33/34 have shipment/delivery rows but no payment row; no payment or shipment state was changed.
