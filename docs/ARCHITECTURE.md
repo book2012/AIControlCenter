@@ -273,3 +273,7 @@ Added separate approval, physical receipt and explicit resalable inspection tran
 ## 2026-10-11 — Private DEV Telegram bridge preparation
 
 Added an opt-in HMAC-authenticated private Unix-socket DEV command receiver and a single-attempt shared-consumer forwarding adapter. Separately pinned DEV releases can receive commands without a second Bot API poller; actor/allowlist checks, durable claims and signed receipts preserve duplicate and ambiguous-outcome safety. Shared PROD activation remains separately gated; absent configuration preserves existing behavior. SMS is held. See [bridge architecture](architecture/SHOP_DEV_OPERATOR_BRIDGE.md).
+
+## 2026-10-12 — Shared DEV relay activated
+
+Shared consumer active at 0289213a1ae1aff007edcf9972a0ba7c26651a57; independently pinned DEV API ab434b9. Authenticated local read-only 주문목록 roundtrip passed without advancing the existing DEV cursor or sending a diagnostic Telegram message. DEV receiver and PROD poller/product management RUNNING; DEV/PROD API and PROD storefront return HTTP 200. PROD business modules remain based on 63e0f104; presentation stays 8d6f508; SMS disabled. Existing router/cursor preserved. Backup: prod-commerce/backups/dev-relay-20261012-064125. Actual human Telegram command and full order workflow remain to verify.

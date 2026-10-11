@@ -1,6 +1,6 @@
 # Non-SMS order workflow progress
 
-Updated: 2026-10-11 (Asia/Seoul). Current completed stage: 4 (code/tests). Stage-4 DEV API/presentation is active at 4473f1a (verified during this stage-5 preparation). Stage 5-1 private receiver/forwarder preparation is implemented; shared Telegram activation remains separately gated.
+Updated: 2026-10-11 (Asia/Seoul). Current completed stage: 4 (code/tests). Stage-4 DEV API/presentation is active at 4473f1a (verified during this stage-5 preparation). Stage 5-1 shared relay is active at 0289213 (old-PROD-based isolated relay branch); actual human Telegram and stage 5-2 full order workflow remain pending.
 
 | Stage | Scope | Status | Evidence / remaining gate |
 |---|---|---|---|
@@ -45,4 +45,8 @@ Validation: 184 targeted order, Telegram, cancellation, return, guest-runtime an
 
 ### DEV activation checkpoint
 
-DEV API release ab434b9478498180345538d3141ce853048a2757 activated 2026-10-11 22:38:50 KST. operator_bridge=RUNNING, poller=EXTERNAL, product_management=RUNNING. An unsigned socket request was rejected without invoking any command. Private receiver key/config is 0600; no second getUpdates consumer. Homepage remains on 4473f1a because no UI change. Shared PROD bot and SMS remain unchanged. DEV LaunchAgent backup: com.aicontrolcenter.dev-order-api.plist.backup-20261011-223850.
+DEV API release ab434b9478498180345538d3141ce853048a2757 activated 2026-10-11 22:38:50 KST. operator_bridge=RUNNING, poller=EXTERNAL, product_management=RUNNING. An unsigned socket request was rejected without invoking any command. Private receiver key/config is 0600; no second getUpdates consumer. Homepage remains on 4473f1a because no UI change. At this earlier checkpoint shared PROD bot and SMS remained unchanged. DEV LaunchAgent backup: com.aicontrolcenter.dev-order-api.plist.backup-20261011-223850.
+
+## 2026-10-12 — Shared DEV relay activated
+
+Shared consumer active at 0289213a1ae1aff007edcf9972a0ba7c26651a57; independently pinned DEV API ab434b9. Authenticated local read-only 주문목록 roundtrip passed without advancing the existing DEV cursor or sending a diagnostic Telegram message. DEV receiver and PROD poller/product management RUNNING; DEV/PROD API and PROD storefront return HTTP 200. PROD business modules remain based on 63e0f104; presentation stays 8d6f508; SMS disabled. Existing router/cursor preserved. Backup: prod-commerce/backups/dev-relay-20261012-064125. Actual human Telegram command and full order workflow remain to verify.

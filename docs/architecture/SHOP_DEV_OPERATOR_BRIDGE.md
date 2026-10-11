@@ -24,7 +24,7 @@ After an unclean exit a stale socket is deliberately not unlinked automatically.
 
 Disposable Unix sockets/fake handlers cover HMAC/actor/target rejection, bounds, expiry, duplicate and concurrent requests, restart, changed payload, unknown outcomes, signed receipt mismatch, actor/confirmation-guard propagation, disabled startup and no-retry client behavior. No live Telegram/SMS sends or PROD writes.
 
-The DEV receiver is activated on API release ab434b9 with RUNNING health and rejected an unsigned socket probe. Shared bot forwarding composition remains unactivated; no PROD configuration was written. SMS stays held.
+The DEV receiver is activated on API release ab434b9 with RUNNING health and rejected an unsigned socket probe. Shared forwarding was subsequently activated from the isolated old-PROD-based relay release 0289213 on 2026-10-12. Matching private config is active; existing cursor retained and a local authenticated read-only roundtrip passed. Human Telegram verification remains pending. SMS stays held.
 
 ## Personal assistant capacity observation
 
@@ -33,3 +33,7 @@ Mac M4 has 24 GiB unified memory. Existing qwen3:4b Q4_K_M loaded on Ollama 0.32
 The installed model template always opens a think block; think=false and /no_think alone produced truncated reasoning in the initial tests. Personal assistant should use a separately scoped validated template/prefill, serialize inference with shopping use and bound history/context. Do not replace the shopping model or global template silently. Use a different Telegram bot credential, fixed personal-user allowlist and separate conversation storage; personal conversation must not have commerce mutation tools.
 
 Validation: 184 targeted order, Telegram, cancellation, return, guest-runtime and isolation regressions passed; diff whitespace and Python syntax checks passed. Socket probes use disposable fake providers. No external Telegram/SMS sends or PROD writes.
+
+## 2026-10-12 — Shared DEV relay activated
+
+Shared consumer active at 0289213a1ae1aff007edcf9972a0ba7c26651a57; independently pinned DEV API ab434b9. Authenticated local read-only 주문목록 roundtrip passed without advancing the existing DEV cursor or sending a diagnostic Telegram message. DEV receiver and PROD poller/product management RUNNING; DEV/PROD API and PROD storefront return HTTP 200. PROD business modules remain based on 63e0f104; presentation stays 8d6f508; SMS disabled. Existing router/cursor preserved. Backup: prod-commerce/backups/dev-relay-20261012-064125. Actual human Telegram command and full order workflow remain to verify.
