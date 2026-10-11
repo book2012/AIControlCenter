@@ -19,3 +19,7 @@ Shared consumer active at 0289213a1ae1aff007edcf9972a0ba7c26651a57; independentl
 ## 2026-10-12 — One Telegram greeting across DEV forwarding
 
 Live operator DEV response confirmed the shared forwarding path but exposed duplicated greeting/environment headers. Environment routers now preserve an existing identical header instead of adding another. Nested-router replay and ordinary PROD/DEV reply regressions pass (97 targeted tests on isolated relay branch). Historical DEV fixtures 33/34 have shipment/delivery rows but no payment row; no payment or shipment state was changed.
+
+## 2026-10-12 — Actor-scoped DEV conversation routing
+
+The shared consumer remembers each authorized operator conversation environment for 30 minutes. Explicit DEV/PROD prefixes override it; plain replies stay in the chosen environment. Expired conversations request an explicit environment without executing a change. Only forwarding/routing modules are updated on the old-PROD-based branch. DEV Qwen conversation modules remain independently deployed.

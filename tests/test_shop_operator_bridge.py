@@ -166,3 +166,23 @@ def test_shared_router_does_not_repeat_authenticated_dev_header(tmp_path):
         default="PROD",chat_id=CHAT,user_ids=frozenset({USER}))
     assert plain.dispatch("개발 주문목록",chat_id=CHAT,user_id=USER)==reply
     assert plain.dispatch("운영 주문목록",chat_id=CHAT,user_id=USER)=="안녕하세요 agachichi 입니다\n[운영]\n운영 목록"
+
+def test_environment_conversation_scopes_plain_followups_and_expiry(tmp_path,monkeypatch):
+    from core.shopping.operator_environment import DurableOperatorEnvironmentRouter
+    import time
+    now=[1000]
+    monkeypatch.setattr(time,"time",lambda:now[0])
+    calls=[]
+    router=DurableOperatorEnvironmentRouter(database_path=tmp_path/"scope.sqlite3",
+        dev=lambda t,i:(calls.append(("DEV",t,i)) or "개발 결과"),
+        prod=lambda t,i:(calls.append(("PROD",t,i)) or "운영 결과"),
+        default="PROD",chat_id=CHAT,user_ids=frozenset({USER,999}),conversation_seconds=1800)
+    router.dispatch("개발 입금 확인",chat_id=CHAT,user_id=USER,update_id=1)
+    assert "[개발]" in router.dispatch("응",chat_id=CHAT,user_id=USER,update_id=2)
+    assert calls[-1]==("DEV","응",2)
+    assert "[운영]" in router.dispatch("주문목록",chat_id=CHAT,user_id=999,update_id=3)
+    now[0]+=1801
+    assert "대화 시간이 지났" in router.dispatch("입금확인 #15",chat_id=CHAT,user_id=USER,update_id=4)
+    assert len(calls)==3
+    router.dispatch("운영 주문목록",chat_id=CHAT,user_id=USER,update_id=5)
+    assert "[운영]" in router.dispatch("주문목록",chat_id=CHAT,user_id=USER,update_id=6)

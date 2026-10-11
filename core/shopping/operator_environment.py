@@ -41,18 +41,25 @@ class OperatorEnvironmentRouter:
 
 class DurableOperatorEnvironmentRouter(OperatorEnvironmentRouter):
     """Pin each Telegram update to one environment before invoking a state-changing handler."""
-    def __init__(self,*,database_path,**kwargs):
+    def __init__(self,*,database_path,conversation_seconds=0,**kwargs):
         super().__init__(**kwargs)
+        if type(conversation_seconds) is not int or not 0<=conversation_seconds<=3600:raise ValueError("ENVIRONMENT_CONVERSATION_TTL")
+        self.conversation_seconds=conversation_seconds
         from pathlib import Path
         import sqlite3,os
         self.path=Path(database_path)
         if self.path.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
         with sqlite3.connect(self.path) as c:
             c.execute("CREATE TABLE IF NOT EXISTS environment_updates(update_id INTEGER PRIMARY KEY,digest TEXT NOT NULL,environment TEXT NOT NULL,state TEXT NOT NULL,reply TEXT)")
+        if conversation_seconds:
+            with sqlite3.connect(self.path) as c:c.execute("CREATE TABLE IF NOT EXISTS operator_environment_sessions(chat_id INTEGER,user_id INTEGER,environment TEXT,expires REAL,PRIMARY KEY(chat_id,user_id))")
         os.chmod(self.path,0o600)
     def dispatch(self,text,*,chat_id,user_id,update_id):
         import sqlite3,hashlib,json
+        import time
         environment,command=self.target(text,chat_id=chat_id,user_id=user_id)
+        explicit=re.match(r"^(DEV|PROD|개발|운영)(?:\s+|:)",text.strip()) is not None
+        expired=False
         if type(update_id) is not int or update_id<0:raise ValueError("UPDATE_ID_REQUIRED")
         fingerprint=hashlib.sha256(json.dumps([chat_id,user_id,text],ensure_ascii=False).encode()).hexdigest()
         with sqlite3.connect(self.path) as c:
@@ -62,9 +69,15 @@ class DurableOperatorEnvironmentRouter(OperatorEnvironmentRouter):
                 if row[0]!=fingerprint:raise ValueError("UPDATE_CONFLICT")
                 if row[2]=="COMPLETED":return row[3]
                 raise ValueError("UPDATE_REQUIRES_INSPECTION")
+            if self.conversation_seconds:
+                scope=c.execute("SELECT environment,expires FROM operator_environment_sessions WHERE chat_id=? AND user_id=?",(chat_id,user_id)).fetchone()
+                if scope and not explicit:
+                    environment=scope[0];expired=scope[1]<time.time()
+                if not expired:
+                    c.execute("INSERT INTO operator_environment_sessions VALUES(?,?,?,?) ON CONFLICT(chat_id,user_id) DO UPDATE SET environment=excluded.environment,expires=excluded.expires",(chat_id,user_id,environment,time.time()+self.conversation_seconds))
             c.execute("INSERT INTO environment_updates VALUES(?,?,?,'CLAIMED',NULL)",(update_id,fingerprint,environment))
         # No automatic redispatch after a process interruption or ambiguous handler result.
-        reply=self.handlers[environment](command,update_id)
+        reply=("대화 시간이 지났습니다. ‘개발’ 또는 ‘운영’을 붙여 새 대화를 시작해 주세요. 변경은 실행하지 않았습니다." if expired else self.handlers[environment](command,update_id))
         if type(reply) is not str:raise ValueError("OPERATOR_REPLY_INVALID")
         reply=format_operator_reply(environment,reply)
         with sqlite3.connect(self.path) as c:c.execute("UPDATE environment_updates SET state='COMPLETED',reply=? WHERE update_id=? AND state='CLAIMED'",(reply,update_id))
