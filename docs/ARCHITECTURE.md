@@ -244,3 +244,12 @@ User authorized promotion of the DEV presentation through f027c897: butter backg
 ### 2026-10-11 — Non-SMS order reliability verification
 
 Verified 106 ledger, Woo writer, operator, fulfillment, customer ownership, notice and stock tests plus the dedicated checkout Chrome regression (zero external provider requests; no PROD mutations). Delivery completion now uses a serialized SQLite transaction and preserves the first receipt on replay, restart and concurrent duplicate commands. Initial sample stock tests explicitly disable the host-managed projection, so legitimate DEV stock changes cannot invalidate fixture expectations. DEV API promotion only; the existing PROD-hosted Telegram consumer remains pinned to its prior release and must receive this fix in a separately authorized promotion. No real customer order, stock write, external Telegram message or SMS was generated. Cancellation/return inventory restoration and real Woo concurrency validation remain separate outstanding work; return approval is not automatic stock restoration.
+
+
+### 2026-10-11 — Isolated Woo stock concurrency and cancellation primitive
+
+Added a DEV-only stock cancellation primitive bound to order ID, operation tag, delivery digest and exact line items. It shares the confirmation advisory lock, uses an InnoDB transaction, restores Woo stock only once, records a durable receipt and rejects unconfirmed or non-pending/on-hold orders. It is deliberately not wired to customer routes or Telegram: Woo status alone cannot prove Core has not shipped an order. Payment refunds and returns are not performed.
+
+Executed `python tests/run_shop_dev_stock_concurrency.py --execute-dev` against isolated synthetic private Woo fixtures: one stock/two concurrent confirmations admits one winner; replay does not re-reduce; wrong binding and processing cancellation are denied; concurrent and repeated cancellation restores exactly once; cancelled order cannot be reconfirmed. All synthetic products/orders were removed after verification. Related 106 regression tests pass. No SMS, Telegram message or PROD mutation.
+
+Next: connect an authorized Core cancellation operation with shipment/payment guards and reconciliation of ambiguous Woo outcomes; implement explicit return-received-and-inspected stock restoration separately from return approval. These workflow connections are not yet implemented or deployed.
