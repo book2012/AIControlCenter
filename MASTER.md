@@ -6796,3 +6796,5 @@ The shared consumer remembers each authorized operator conversation environment 
 
 ### 2026-10-12 Telegram bot separation
 DEV papachichi_bot uses a dedicated cursor and lock, with namespaced update IDs and the authenticated DEV bridge. PROD mommychichi_bot in split_bot_mode never composes or forwards DEV commands. Tokens remain private; SMS remains disabled.
+
+Telegram separation activated 2026-10-12: papachichi DEV consumer and mommychichi PROD-only consumer healthy; user verified DEV connection receipt. SMS disabled. See SHOP_TELEGRAM_SPLIT_BOTS.md.
