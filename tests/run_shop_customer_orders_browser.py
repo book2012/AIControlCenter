@@ -20,8 +20,11 @@ def main():
         @app.post("/__order-dev/orders/lookup")
         async def lookup(request:Request):
             data=await request.json()
-            if data!={"order_number":"15","phone":"01012345678"}:return JSONResponse({"message":"주문번호와 인증한 휴대폰 번호를 확인해 주세요."},status_code=403)
-            return JSONResponse({"order":{"order_id":15,"review_state":"CONFIRMED","items":[{"name":"테스트 블라우스","option":"화이트 / M","quantity":2}],"total":"58000","currency":"KRW","payment":{"state":"PAID"},"fulfillment":{"state":"SHIPPED","carrier":"테스트 택배","tracking":"TEST12345"},"delivery":{"first_name":"테스트 고객","postcode":"12345","address_1":"테스트 배송주소"},"cases":[],"return_available":False,"exchange_available":False}})
+            if data not in [{"order_number":n,"phone":"01012345678"} for n in ("15","16","17")]:return JSONResponse({"message":"주문번호와 인증한 휴대폰 번호를 확인해 주세요."},status_code=403)
+            response={"order":{"order_id":15,"review_state":"CONFIRMED","items":[{"name":"테스트 블라우스","option":"화이트 / M","quantity":2}],"total":"58000","currency":"KRW","payment":{"state":"PAID"},"fulfillment":{"state":"SHIPPED","carrier":"테스트 택배","tracking":"TEST12345"},"delivery":{"first_name":"테스트 고객","postcode":"12345","address_1":"테스트 배송주소"},"cases":[],"return_available":False,"exchange_available":False}}
+            if data["order_number"]!="15":
+                response["order"].update(order_id=int(data["order_number"]),payment={"state":"AWAITING_DEPOSIT"},fulfillment={"state":"NOT_SHIPPED"},cancellation={"state":"CANCELLED" if data["order_number"]=="16" else "UNKNOWN"})
+            return JSONResponse(response)
         @app.get("/{path:path}")
         def page(path:str,request:Request):
             r=preview.get("/"+path+("?"+request.url.query if request.url.query else ""));
@@ -49,16 +52,21 @@ const wait=async expression=>{for(let i=0;i<100;i++){if(await js(expression))ret
 const nav=async path=>{await call('Page.navigate',{url:'https://localhost:18443'+path});await wait('document.readyState==="complete"');await new Promise(r=>setTimeout(r,200));};
 try{
  await call('Page.enable');await nav('/homepage/storefront');
- if(!await js('document.querySelector(".header-orders").textContent==="ORDER"&&getComputedStyle(document.getElementById("shop-chat-launcher")).backgroundColor==="rgb(198, 83, 0)"'))throw Error('ORDER header / orange chat');
+ if(!await js('document.querySelector(".header-orders").textContent==="주문내역"&&getComputedStyle(document.getElementById("shop-chat-launcher")).backgroundColor==="rgb(198, 83, 0)"'))throw Error('ORDER header / orange chat');
  await nav('/homepage/storefront/my-orders');
  await js('document.getElementById("orders-number").value="15";document.getElementById("lookup-phone").value="01012345678";document.getElementById("orders-lookup").click()');
  await wait('!!document.querySelector(".order-card")');
  if(!await js('["주문확인 완료","입금완료","배송중","화이트 / M","테스트 배송주소","TEST12345"].every(t=>document.body.textContent.includes(t))'))throw Error('order detail');
+ for(const [number,label] of [["16","취소완료"],["17","취소 확인중"]]){
+  await js(`document.getElementById("orders-number").value="${number}";document.getElementById("orders-lookup").click()`);
+  await wait(`document.querySelector(".order-state")?.textContent==="${label}"`);
+  if(!await js('document.body.textContent.includes("입금하지 마세요")&&!document.querySelector(".order-card").textContent.includes("입금대기")'))throw Error('cancelled deposit presentation');
+ }
  await js('document.getElementById("orders-number").value="999";document.getElementById("orders-lookup").click()');
  await wait('!document.querySelector(".order-card")&&document.getElementById("orders-message").textContent.includes("주문번호")');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  if(!await js('document.documentElement.scrollWidth<=innerWidth'))throw Error('mobile overflow');
- console.log(JSON.stringify({passed:true,checks:['ORDER header','orange chat','number and phone lookup','payment and shipment','delivery and item detail','invalid lookup clears detail','mobile'],external_provider_requests:0,prod_mutation:false}));
+ console.log(JSON.stringify({passed:true,checks:['주문내역 header','orange chat','number and phone lookup','payment and shipment','delivery and item detail','cancelled and unknown states suppress deposit','invalid lookup clears detail','mobile'],external_provider_requests:0,prod_mutation:false}));
 }finally{s.close();}
 """
             r=subprocess.run(["/opt/homebrew/bin/node","--input-type=module","-e",driver,target["webSocketDebuggerUrl"]],capture_output=True,text=True,timeout=65)

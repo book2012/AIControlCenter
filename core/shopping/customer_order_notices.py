@@ -11,6 +11,11 @@ def order_notices(order,bank=None):
     review=order.get('review_state');payment=order.get('payment',{}).get('state');shipping=order.get('fulfillment',{})
     result=[]
     def add(kind,text):result.append({'id':number+':'+kind,'kind':kind,'message':GREETING+'\n'+text})
+    cancellation=order.get('cancellation',{}).get('state','NONE')
+    if cancellation!='NONE':
+        if cancellation=='CANCELLED':add('CANCELLED',summary+'\n주문이 취소되었습니다. 입금하지 마세요. 문의는 챗봇으로 연결해 주세요.')
+        else:add('CANCELLATION_PENDING',summary+'\n취소 처리 결과를 확인하고 있습니다. 확인 전에는 입금하지 마세요.')
+        return result
     if review=='REJECTED':add('REJECTED',summary+'\n주문이 거절되었습니다. 챗봇으로 문의해 주세요.');return result
     if review!='CONFIRMED':add('RECEIVED',summary+'\n주문을 접수했습니다. 운영자가 상품과 재고를 확인하고 있습니다.');return result
     text=summary+'\n주문이 확인되었습니다.'

@@ -74,7 +74,7 @@ class GuestAftersalesStore:
             active=any(v["state"] in ("REQUESTED","RETURN_APPROVED","EXCHANGE_APPROVED") for v in cases)
             result.append({"order_id":row["provider_order_id"],"review_state":row["review_state"],"requested_at":row["requested_at"],
                 "items":draft["body"]["quote"]["line_items"],"total":draft["body"]["quote"]["final_total"],"currency":draft["body"]["quote"]["currency"],
-                "fulfillment":f,"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
+                "fulfillment":f,"cancellation":self.cancellation(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
                 "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active),"cases":cases})
         return result
     def payment(self,order_id):
@@ -248,6 +248,8 @@ class GuestAftersalesStore:
             return "입금확인 #주문번호 / 배송 #주문번호 택배사 운송장번호 / 배송완료 #주문번호 형식으로 입력해 주세요."
         if re.fullmatch(r"배송\s*#[1-9][0-9]*",clean):return "택배사와 운송장번호를 함께 입력해 주세요. 예: 배송 #15 CJ대한통운 1234567890"
         patterns=[
+            (r"(?:주문)?취소\s*#([1-9][0-9]*)","cancel"),
+            (r"취소\s*확인\s*#([1-9][0-9]*)","cancel_reconcile"),
             (r"입금\s*(확인|상태)\s*#([1-9][0-9]*)","payment"),
             (r"(?:주문발송|배송)\s*#([1-9][0-9]*)\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40})","ship"),
             (r"배송\s*완료\s*#([1-9][0-9]*)","delivered"),
@@ -264,7 +266,10 @@ class GuestAftersalesStore:
         if old:return old[0]
         m,kind=matched
         try:
-            if kind=="payment":
+            if kind in ("cancel","cancel_reconcile"):
+                value=self.cancel_order(int(m[1])) if kind=="cancel" else self.reconcile_cancellation(int(m[1]))
+                reply="주문 #"+m[1]+" 취소완료 · 재고 복원 확인 · 결제 환불은 실행하지 않았습니다."
+            elif kind=="payment":
                 value=self.confirm_payment(int(m[2])) if m[1]=="확인" else self.payment(int(m[2]))
                 shipping_label={"SHIPPED":"배송중","DELIVERED":"배송완료"}.get(self._fulfillment(int(m[2]))["state"],"배송준비")
                 reply="주문 #"+m[2]+" · "+("입금완료 · "+shipping_label if value["state"]=="PAID" else "입금대기")
@@ -283,7 +288,12 @@ class GuestAftersalesStore:
                 else:
                     v=self.decide(m[3],m[2]=="승인");reply=m[1]+" #"+m[3]+" "+("승인" if m[2]=="승인" else "거절")+" · "+v["state"]
         except ValueError as error:
-            reply={"PAYMENT_REQUIRED":"입금확인 후 배송을 등록해 주세요.",
+            reply={"PAID_CANCELLATION_REQUIRES_REFUND_REVIEW":"입금된 주문은 자동 취소하지 않습니다. 환불 검토가 필요합니다.",
+                "SHIPPED_CANCELLATION_DENIED":"배송이 시작된 주문은 취소할 수 없습니다. 반품 접수로 진행해 주세요.",
+                "CANCELLATION_RECONCILIATION_REQUIRED":"취소 결과 확인이 필요합니다. 취소확인 #주문번호로 기존 처리 결과를 확인해 주세요. 재고 복원은 다시 실행하지 않습니다.",
+                "ORDER_CANCELLATION_ACTIVE":"취소 처리 중이거나 취소된 주문입니다. 입금·배송 변경을 중단합니다.",
+                "CANCELLATION_NOT_CONFIGURED":"취소 기능이 아직 활성화되지 않았습니다.",
+                "PAYMENT_REQUIRED":"입금확인 후 배송을 등록해 주세요.",
                 "SHIPMENT_ALREADY_REGISTERED":"기존 배송정보가 있습니다. 이미 배송된 주문은 다시 변경하지 않습니다.",
                 "SHIPMENT_REQUIRED":"배송을 먼저 등록해 주세요."}.get(str(error),"요청을 처리하지 못했습니다. 주문/케이스 상태를 확인해 주세요.")
         except Exception:

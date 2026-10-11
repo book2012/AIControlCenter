@@ -163,7 +163,8 @@ def create_app():
     aftersales=None
     if checkout is not None:
         from ops.macos.shopping.dev_aftersales import DevAftersalesStore
-        aftersales=DevAftersalesStore(DATA/'aftersales.sqlite3',DATA/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog)
+        from ops.macos.shopping.dev_order_operator import DevStockCancellation
+        aftersales=DevAftersalesStore(DATA/'aftersales.sqlite3',DATA/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog,stock_cancellation=DevStockCancellation(store=checkout))
     from ops.macos.shopping.dev_order_operator import DevOperatorAdapter,DevStockConfirmation
     operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue,aftersales=aftersales) if checkout else None
     from ops.macos.shopping.dev_product_operator import DevProductOperator,DevWooProductProvider

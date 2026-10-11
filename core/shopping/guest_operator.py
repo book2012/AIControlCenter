@@ -26,6 +26,8 @@ class GuestOperatorAdapter:
         matches=[r for r in self.rows() if r["reference"]==payload["reference"] and r["provider_order_id"]==payload["provider_order_id"]]
         if len(matches)!=1:return OrderTelegramIntegration._message(payload)
         r=matches[0];phone=r["phone"];state=payload["review_state"]
+        if self.aftersales and self.aftersales.cancellation(r["provider_order_id"])["state"]!="NONE":
+            return "주문 #"+str(r["provider_order_id"])+" · "+("취소완료 · 재고 복원 확인" if self.display_state(r)=="CANCELLED" else "취소 결과 확인중")
         title={"PENDING_REVIEW":" 고객님 주문","CONFIRMED":" 고객님 주문확인 완료 · 재고 차감 완료",
                "REJECTED":" 고객님 주문 거절","STOCK_BLOCKED":" 고객님 주문확정 보류 · 재고 확인 필요"}.get(state," 고객님 주문 상태")
         items="\n".join(v["name"]+" / "+v["option"]+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
@@ -36,6 +38,8 @@ class GuestOperatorAdapter:
         return text
     def display_state(self,row):
         if row["state"]!="CONFIRMED" or self.aftersales is None:return row["state"]
+        cancellation=self.aftersales.cancellation(row["provider_order_id"])["state"]
+        if cancellation!="NONE":return "CANCELLED" if cancellation=="CANCELLED" else "CANCELLATION_PENDING"
         fulfillment=self.aftersales.admin_fulfillment(row["provider_order_id"])
         return "COMPLETED" if fulfillment["state"]=="DELIVERED" else "SHIPPED" if fulfillment["state"]=="SHIPPED" else "READY_TO_SHIP" if self.aftersales.payment(row["provider_order_id"])["state"]=="PAID" else "AWAITING_DEPOSIT"
     def admin_orders(self,limit=50):
@@ -53,7 +57,7 @@ class GuestOperatorAdapter:
         rows=[r for r in self.rows() if phone is None or r["phone"]==phone]
         if limit is not None:rows=rows[:max(1,min(int(limit),100))]
         if not rows:return "현재 확인 가능한 주문이 없습니다."
-        labels={"PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        labels={"CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         lines=[("고객 "+phone+" 주문 " if phone else "전체 주문 ")+str(len(rows))+"건"]
         for r in rows:
             display=self.display_state(r)
@@ -61,6 +65,9 @@ class GuestOperatorAdapter:
             lines.extend("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
             if self.aftersales:
                 shipment=self.aftersales.admin_fulfillment(r["provider_order_id"])
+                if self.aftersales.cancellation(r["provider_order_id"])["state"]!="NONE":
+                    lines.append("취소 상태를 확인해 주세요.")
+                    continue
                 lines.append("입금: "+("확인완료" if self.aftersales.payment(r["provider_order_id"])["state"]=="PAID" else "대기"))
                 if shipment["tracking"]:lines.append(shipment["carrier"]+" · "+shipment["tracking"])
             lines.append("")
@@ -69,7 +76,7 @@ class GuestOperatorAdapter:
     def detail_message(self,order_id,phone=None):
         rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id) and (phone is None or r["phone"]==phone)]
         if len(rows)!=1:return "해당 주문을 찾지 못했습니다." if not rows else "주문을 구분할 수 없습니다."
-        r=rows[0];d=r["delivery"];labels={"PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        r=rows[0];d=r["delivery"];labels={"CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         items="\n".join("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
         address=" ".join(v for v in (d.get("address_1",""),d.get("address_2","")) if v).strip()
         display=self.display_state(r)
@@ -88,7 +95,7 @@ class GuestOperatorAdapter:
         mphone_list=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(?:주문\s*)?(?:상태|목록|내역)",clean)
         if mphone_list:return None,None,self.list_message(phone=local_phone(mphone_list[1]))
         if clean in ("주문내역","주문 내역","전체 주문","전체 주문내역","전체 주문 목록"):return None,None,self.list_message()
-        mphone_action=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(입금\s*확인|배송\s*완료|배송)(?:\s*#([1-9][0-9]*))?(?:\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40}))?",clean)
+        mphone_action=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(입금\s*확인|배송\s*완료|배송|주문\s*취소|취소\s*확인)(?:\s*#([1-9][0-9]*))?(?:\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40}))?",clean)
         if mphone_action and self.aftersales is not None and update_id is not None:
             phone=local_phone(mphone_action[1]);rows=[r for r in self.rows() if r["phone"]==phone]
             if mphone_action[3]:rows=[r for r in rows if r["provider_order_id"]==int(mphone_action[3])]

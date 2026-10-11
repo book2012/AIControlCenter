@@ -6829,3 +6829,8 @@ Next: connect an authorized Core cancellation operation with shipment/payment gu
 ### 2026-10-11 — Stage 2 cancellation guards and progress tracking
 
 See docs/SHOP_ORDER_PROGRESS.md for stage status. Core cancellation now reserves a durable SENDING record before provider work, blocks payment/shipping while cancellation is active, denies paid/post-shipment automatic cancellation, persists ambiguous outcomes without resend and supports explicit read-only reconciliation. Completed cancellations are idempotent across restart. Five new workflow tests pass; related regression totals 111 passed; Chrome checkout regression and isolated Woo receipt reconciliation pass. Stage 2 is code/test complete, not activated. Stage 3 Telegram/customer presentation and stage 4 return receipt/inspection remain pending; SMS and PROD remain held.
+
+
+### 2026-10-11 — Stage 3 operator/customer cancellation connection
+
+Added authorized order-number/phone cancellation and read-only outcome reconciliation commands, cancellation-aware operator listing/late notifications, customer lookup state and chatbot notices without deposit guidance. DEV runtime composes the stock cancellation provider; shared PROD Telegram remains on its prior release and is not implicitly activated. See docs/SHOP_ORDER_PROGRESS.md. Regression: 116 tests (115 suite plus added operator reconciliation test), Chrome customer orders and dedicated checkout pass. DEV API/presentation promotion follows this committed release; SMS and PROD remain held. Return received/inspected workflow remains stage 4.
