@@ -39,6 +39,10 @@ Validation: 136 related tests; isolated real Woo concurrent return/replay/receip
 
 ## Stage 5-1 preparation
 
-Opt-in private authenticated DEV receiver and shared-consumer client/composition added. No public route or second getUpdates loop. Shared consumer preserves its existing bot cursor and never falls back to the old embedded DEV handler after a forwarding failure. Receiver activation requires external-consumer mode. Configuration remains absent/disabled; actual bot remains unchanged. New independent personal-bot capacity checked locally: qwen3:4b uses ~2.87 GB at context 2048; validated separate no-thinking prefill returns Korean text. New bot credential/allowlist and personal conversation service remain pending.
+Opt-in private authenticated DEV receiver and shared-consumer client/composition added. No public route or second getUpdates loop. Shared consumer preserves its existing bot cursor and never falls back to the old embedded DEV handler after a forwarding failure. Receiver activation requires external-consumer mode. DEV receiver is now RUNNING on API release ab434b9; the shared consumer configuration/release is unchanged, so actual bot forwarding remains pending. New independent personal-bot capacity checked locally: qwen3:4b uses ~2.87 GB at context 2048; validated separate no-thinking prefill returns Korean text. New bot credential/allowlist and personal conversation service remain pending.
 
 Validation: 184 targeted order, Telegram, cancellation, return, guest-runtime and isolation regressions passed; diff whitespace and Python syntax checks passed. Socket probes use disposable fake providers. No external Telegram/SMS sends or PROD writes.
+
+### DEV activation checkpoint
+
+DEV API release ab434b9478498180345538d3141ce853048a2757 activated 2026-10-11 22:38:50 KST. operator_bridge=RUNNING, poller=EXTERNAL, product_management=RUNNING. An unsigned socket request was rejected without invoking any command. Private receiver key/config is 0600; no second getUpdates consumer. Homepage remains on 4473f1a because no UI change. Shared PROD bot and SMS remain unchanged. DEV LaunchAgent backup: com.aicontrolcenter.dev-order-api.plist.backup-20261011-223850.

@@ -24,7 +24,7 @@ After an unclean exit a stale socket is deliberately not unlinked automatically.
 
 Disposable Unix sockets/fake handlers cover HMAC/actor/target rejection, bounds, expiry, duplicate and concurrent requests, restart, changed payload, unknown outcomes, signed receipt mismatch, actor/confirmation-guard propagation, disabled startup and no-retry client behavior. No live Telegram/SMS sends or PROD writes.
 
-The current release contains an opt-in receiver and forwarding composition, but shared bot activation remains pending. SMS stays held.
+The DEV receiver is activated on API release ab434b9 with RUNNING health and rejected an unsigned socket probe. Shared bot forwarding composition remains unactivated; no PROD configuration was written. SMS stays held.
 
 ## Personal assistant capacity observation
 
