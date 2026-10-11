@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from ops.macos.shopping.dev_order_runtime import assert_isolation
-from ops.macos.shopping.dev_order_operator import DevStockConfirmation,DevStockCancellation
+from ops.macos.shopping.dev_order_operator import DevStockConfirmation,DevStockCancellation,CANCEL_RECONCILE_PHP
 PREFIX='aicc-dev-stock-probe-'
 
 def php(code):
@@ -58,8 +58,11 @@ $orders=[];for($i=0;$i<2;$i++){
         assert all(x['outcome']=='STOCK_CANCELLED' for x in receipts)
         assert quantity()==1,'duplicate restoration'
         assert cancel.apply(winner)['outcome']=='STOCK_CANCELLED' and quantity()==1
+        payload=base64.b64encode(json.dumps(winner).encode()).decode()
+        assert php(CANCEL_RECONCILE_PHP.replace('__PAYLOAD__',payload))=={'outcome':'STOCK_CANCELLED','order_id':winner['order_id']}
+        assert quantity()==1
         assert attempt(winner) is None and quantity()==1,'cancelled order re-confirmed'
-        print(json.dumps({'passed':True,'checks':['one stock / two concurrent orders','confirmation replay','binding denial','processing cancellation denied','concurrent cancellation restores once','cancellation replay','cancelled confirmation denied'],'environment':'DEV','external_messages':0,'prod_mutation':False}),flush=True)
+        print(json.dumps({'passed':True,'checks':['one stock / two concurrent orders','confirmation replay','binding denial','processing cancellation denied','concurrent cancellation restores once','cancellation replay','cancelled confirmation denied','read-only cancellation reconciliation'],'environment':'DEV','external_messages':0,'prod_mutation':False}),flush=True)
     finally:
         encoded=base64.b64encode(json.dumps(ids).encode()).decode()
         cleanup=HEADER+'$token='+json.dumps(token)+';$ids=json_decode(base64_decode('+json.dumps(encoded)+'),true);'+r'''

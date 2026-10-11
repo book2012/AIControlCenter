@@ -253,3 +253,8 @@ Added a DEV-only stock cancellation primitive bound to order ID, operation tag, 
 Executed `python tests/run_shop_dev_stock_concurrency.py --execute-dev` against isolated synthetic private Woo fixtures: one stock/two concurrent confirmations admits one winner; replay does not re-reduce; wrong binding and processing cancellation are denied; concurrent and repeated cancellation restores exactly once; cancelled order cannot be reconfirmed. All synthetic products/orders were removed after verification. Related 106 regression tests pass. No SMS, Telegram message or PROD mutation.
 
 Next: connect an authorized Core cancellation operation with shipment/payment guards and reconciliation of ambiguous Woo outcomes; implement explicit return-received-and-inspected stock restoration separately from return approval. These workflow connections are not yet implemented or deployed.
+
+
+### 2026-10-11 — Stage 2 cancellation guards and progress tracking
+
+See docs/SHOP_ORDER_PROGRESS.md for stage status. Core cancellation now reserves a durable SENDING record before provider work, blocks payment/shipping while cancellation is active, denies paid/post-shipment automatic cancellation, persists ambiguous outcomes without resend and supports explicit read-only reconciliation. Completed cancellations are idempotent across restart. Five new workflow tests pass; related regression totals 111 passed; Chrome checkout regression and isolated Woo receipt reconciliation pass. Stage 2 is code/test complete, not activated. Stage 3 Telegram/customer presentation and stage 4 return receipt/inspection remain pending; SMS and PROD remain held.

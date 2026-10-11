@@ -76,6 +76,22 @@ class DevStockCancellation:
     This is not return approval, payment refund or a public customer endpoint.
     """
     def __init__(self,*,store):self.store=store
+    @staticmethod
+    def expected(row,draft):
+        if draft["state"]!="CONFIRMED":raise ValueError("ORDER_NOT_CONFIRMED")
+        return {"order_id":row["provider_order_id"],"tag":hashlib.sha256(("aicc-order:"+row["operation_key"]).encode()).hexdigest(),
+            "digest":draft["digest"],"items":[{"product":int(v["product_id"]),"variation":int(v["variation_id"]),"quantity":v["quantity"]} for v in draft["body"]["line_items"]]}
+    def __call__(self,row,draft):return self.apply(self.expected(row,draft))
+    def reconcile(self,row,draft):
+        from ops.macos.shopping.dev_order_runtime import assert_isolation
+        assert_isolation();expected=self.expected(row,draft)
+        encoded=base64.b64encode(json.dumps(expected).encode()).decode()
+        code=CANCEL_RECONCILE_PHP.replace("__PAYLOAD__",encoded)
+        r=subprocess.run(["docker","--context","colima-aicontrolcenter-commerce","exec","-i","aicc-order-dev-wordpress-1","php"],input=code,capture_output=True,text=True,timeout=25)
+        if r.returncode:raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
+        value=json.loads(r.stdout)
+        if value.get("outcome")!="STOCK_CANCELLED" or value.get("order_id")!=expected["order_id"]:raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
+        return value
     def apply(self,expected):
         from ops.macos.shopping.dev_order_runtime import assert_isolation
         assert_isolation()
@@ -120,4 +136,17 @@ try {
  echo json_encode(['outcome'=>'STOCK_CANCELLED','order_id'=>$order->get_id(),'stocks'=>$stocks]);
 } catch(Throwable $e){$wpdb->query('ROLLBACK');exit(4);}
 finally{$wpdb->get_var("SELECT RELEASE_LOCK('aicc_dev_stock_confirmation')");}
+"""
+
+CANCEL_RECONCILE_PHP="""<?php
+if(getenv('WORDPRESS_DB_NAME')!=='aicc_order_dev'){exit(2);}
+require '/var/www/html/wp-load.php';
+$cfg=json_decode(base64_decode('__PAYLOAD__'),true);$order=wc_get_order($cfg['order_id']);
+if(!$order || $order->get_meta('_aicc_order_operation')!==$cfg['tag'] || $order->get_meta('_aicc_delivery_digest')!==$cfg['digest'] || $order->get_meta('_aicc_stock_cancellation')!==$cfg['tag'] || $order->get_status()!=='cancelled'){exit(3);}
+$actual=[];foreach($order->get_items() as $item){
+ $actual[]=['product'=>$item->get_product_id(),'variation'=>$item->get_variation_id(),'quantity'=>$item->get_quantity()];
+ if($item->get_meta('_reduced_stock',true)!==''){exit(4);}
+}
+if($actual!=$cfg['items'] || $order->get_data_store()->get_stock_reduced($order->get_id())){exit(5);}
+echo json_encode(['outcome'=>'STOCK_CANCELLED','order_id'=>$order->get_id()]);
 """

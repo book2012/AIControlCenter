@@ -14,8 +14,9 @@ class CaseCreate(BaseModel):
     reason:str=Field(strict=True,min_length=2,max_length=1000)
     target_variation_id:str|None=Field(default=None,pattern=r"^[1-9][0-9]*$")
 class GuestAftersalesStore:
-    def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time):
+    def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time,stock_cancellation=None):
         self.path=Path(path);self.attachments=Path(attachments);self.ledger=ledger;self.checkout=checkout;self.catalog=catalog;self.clock=clock
+        self.stock_cancellation=stock_cancellation
         if self.path.is_symlink() or self.attachments.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
         self.attachments.mkdir(parents=True,exist_ok=True);os.chmod(self.attachments,0o700)
         with sqlite3.connect(self.path) as c:
@@ -32,6 +33,7 @@ class GuestAftersalesStore:
             if not c.execute("SELECT 1 FROM fulfillment_settings WHERE key='shipping_seeded'").fetchone():
                 c.execute("INSERT OR IGNORE INTO shipping_notices SELECT order_id,carrier,tracking,'HISTORICAL' FROM fulfillment WHERE state IN ('SHIPPED','DELIVERED')")
                 c.execute("INSERT INTO fulfillment_settings VALUES('shipping_seeded','1')")
+            c.execute("CREATE TABLE IF NOT EXISTS cancellations(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS payments(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
@@ -79,10 +81,63 @@ class GuestAftersalesStore:
         with sqlite3.connect(self.path) as c:
             row=c.execute("SELECT state,updated FROM payments WHERE order_id=?",(order_id,)).fetchone()
         return {"state":row[0] if row else "AWAITING_DEPOSIT","updated":row[1] if row else None}
+    def cancellation(self,order_id):
+        with sqlite3.connect(self.path) as c:
+            row=c.execute("SELECT state,updated FROM cancellations WHERE order_id=?",(order_id,)).fetchone()
+        return {"state":row[0] if row else "NONE","updated":row[1] if row else None}
+    @staticmethod
+    def _deny_cancelled(c,order_id):
+        if c.execute("SELECT 1 FROM cancellations WHERE order_id=?",(order_id,)).fetchone():
+            raise ValueError("ORDER_CANCELLATION_ACTIVE")
+    def cancel_order(self,order_id):
+        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
+        if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
+        row=rows[0]
+        draft=self.checkout.by_customer_operation(row["operation_key"],row["customer_id"],allow_expired=True)
+        if draft["state"]!="CONFIRMED":raise ValueError("ORDER_NOT_CONFIRMED")
+        if self.stock_cancellation is None:raise ValueError("CANCELLATION_NOT_CONFIGURED")
+        with sqlite3.connect(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            old=c.execute("SELECT state FROM cancellations WHERE order_id=?",(order_id,)).fetchone()
+            if old:
+                if old[0]=="CANCELLED":return self.cancellation(order_id)
+                raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
+            payment=c.execute("SELECT state FROM payments WHERE order_id=?",(order_id,)).fetchone()
+            if payment and payment[0]=="PAID":raise ValueError("PAID_CANCELLATION_REQUIRES_REFUND_REVIEW")
+            shipment=c.execute("SELECT state FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
+            if shipment and shipment[0] in ("SHIPPED","DELIVERED"):raise ValueError("SHIPPED_CANCELLATION_DENIED")
+            c.execute("INSERT INTO cancellations VALUES(?,?,?)",(order_id,"SENDING",self.clock()))
+        try:
+            receipt=self.stock_cancellation(row,draft)
+            if receipt.get("outcome")!="STOCK_CANCELLED" or receipt.get("order_id")!=order_id:
+                raise ValueError("CANCELLATION_RECEIPT_INVALID")
+        except Exception:
+            with sqlite3.connect(self.path) as c:
+                c.execute("UPDATE cancellations SET state='UNKNOWN',updated=? WHERE order_id=?",(self.clock(),order_id))
+            raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED") from None
+        with sqlite3.connect(self.path) as c:
+            c.execute("UPDATE cancellations SET state='CANCELLED',updated=? WHERE order_id=?",(self.clock(),order_id))
+        return self.cancellation(order_id)
+    def reconcile_cancellation(self,order_id):
+        current=self.cancellation(order_id)
+        if current["state"]=="CANCELLED":return current
+        if current["state"] not in ("SENDING","UNKNOWN") or not hasattr(self.stock_cancellation,"reconcile"):
+            raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
+        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
+        if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
+        row=rows[0];draft=self.checkout.by_customer_operation(row["operation_key"],row["customer_id"],allow_expired=True)
+        receipt=self.stock_cancellation.reconcile(row,draft)
+        if not receipt or receipt.get("outcome")!="STOCK_CANCELLED" or receipt.get("order_id")!=order_id:
+            raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
+        with sqlite3.connect(self.path) as c:
+            c.execute("UPDATE cancellations SET state='CANCELLED',updated=? WHERE order_id=? AND state IN ('SENDING','UNKNOWN')",(self.clock(),order_id))
+        return self.cancellation(order_id)
     def confirm_payment(self,order_id):
         rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
         if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
         with sqlite3.connect(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            self._deny_cancelled(c,order_id)
             c.execute("INSERT OR IGNORE INTO payments VALUES(?,?,?)",(order_id,"PAID",self.clock()))
         return self.payment(order_id)
     def lookup(self,customer,order_number,phone,verified_phone):
@@ -149,6 +204,7 @@ class GuestAftersalesStore:
         stamp=self.clock()
         with sqlite3.connect(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
+            self._deny_cancelled(c,order_id)
             current=c.execute("SELECT state,carrier,tracking FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
             if current and current[0] in ("SHIPPED","DELIVERED"):
                 if (current[1],current[2])!=(carrier,tracking):raise ValueError("SHIPMENT_ALREADY_REGISTERED")
@@ -164,6 +220,7 @@ class GuestAftersalesStore:
             # Serialize delivery completion so concurrent commands preserve the
             # first receipt and the customer return-window start time.
             c.execute("BEGIN IMMEDIATE")
+            self._deny_cancelled(c,order_id)
             current=c.execute("SELECT state FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
             if not current or current[0] not in ("SHIPPED","DELIVERED"):
                 raise ValueError("SHIPMENT_REQUIRED")
