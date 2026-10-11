@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-10-11 — Private DEV Telegram bridge preparation
+
+Added an opt-in HMAC-authenticated private Unix-socket DEV command receiver and a single-attempt shared-consumer forwarding adapter. Separately pinned DEV releases can receive commands without a second Bot API poller; actor/allowlist checks, durable claims and signed receipts preserve duplicate and ambiguous-outcome safety. Shared PROD activation remains separately gated; absent configuration preserves existing behavior. SMS is held. See [bridge architecture](docs/architecture/SHOP_DEV_OPERATOR_BRIDGE.md).
+
+
 ## 2026-10-06 — SALE price presentation
 
 Discounted web cards and details now show a smaller struck-through regular price first, sale price second, and a red SALE label last. Semantic del/strong markup and explicit price labels preserve accessibility; validated live Woo sale projection remains the authority. Ordinary prices and Telegram text commands remain unchanged. No commerce or PROD mutation.

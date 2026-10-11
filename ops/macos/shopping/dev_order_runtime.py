@@ -223,7 +223,12 @@ def create_app():
     if operator_adapter is not None:
         from ops.macos.shopping.dev_order_admin import mount_admin
         mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue,aftersales=aftersales)
-    stop=threading.Event();health={'poller':'STARTING','product_management':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
+    from ops.macos.shopping.dev_operator_bridge import compose_dev_bridge
+    bridge_cfg=private_config('operator-bridge.private.json') if (PRIVATE/'operator-bridge.private.json').exists() else {'enabled':False}
+    if bridge_cfg.get('enabled') is True and __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':
+        raise RuntimeError('EXTERNAL_TELEGRAM_CONSUMER_REQUIRED')
+    command_bridge=compose_dev_bridge(cfg=bridge_cfg,data=DATA,telegram=telegram,adapter=operator_adapter,products=product_operator)
+    stop=threading.Event();health={'operator_bridge':'CONFIGURED' if command_bridge else 'DISABLED','poller':'STARTING','product_management':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         last_sync=0
         while not stop.is_set():
@@ -251,10 +256,15 @@ def create_app():
         if __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':
             lease=(DATA/'telegram-poller.lock').open('a')
             fcntl.flock(lease,fcntl.LOCK_EX|fcntl.LOCK_NB)
+        if command_bridge is not None:
+            command_bridge.start();health["operator_bridge"]="RUNNING"
         thread=threading.Thread(target=worker,daemon=True);thread.start()
-        yield
-        stop.set();await asyncio.to_thread(thread.join,20)
-        if lease is not None:lease.close()
+        try:
+            yield
+        finally:
+            stop.set();await asyncio.to_thread(thread.join,20)
+            if command_bridge is not None:await asyncio.to_thread(command_bridge.close)
+            if lease is not None:lease.close()
     app.router.lifespan_context=lifespan
     @app.exception_handler(SessionAPIDenied)
     async def session_denied(request,error):

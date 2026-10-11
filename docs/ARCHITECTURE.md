@@ -268,3 +268,8 @@ Added authorized order-number/phone cancellation and read-only outcome reconcili
 ### 2026-10-11 — Stage 4 physical return inspection and exactly-once stock restore
 
 Added separate approval, physical receipt and explicit resalable inspection transitions for whole-order RETURN cases. Serialized Core claims and case-bound Woo receipts restore inventory once; ambiguous results require read-only receipt reconciliation, never automatic resend. Concurrent case creation/approval is serialized; historical case access is exact. Customer/operator return states distinguish stock restoration from payment refund; financial refunds, partial returns and exchange replacement stock are not performed. DEV provider composition and presentation promotion follow this commit; shared PROD Telegram stays pinned. See docs/SHOP_ORDER_PROGRESS.md. Validation: 136 tests, real isolated Woo return/concurrency/replay probe and two Chrome regressions passed; synthetic fixtures cleaned; SMS/PROD held.
+
+
+## 2026-10-11 — Private DEV Telegram bridge preparation
+
+Added an opt-in HMAC-authenticated private Unix-socket DEV command receiver and a single-attempt shared-consumer forwarding adapter. Separately pinned DEV releases can receive commands without a second Bot API poller; actor/allowlist checks, durable claims and signed receipts preserve duplicate and ambiguous-outcome safety. Shared PROD activation remains separately gated; absent configuration preserves existing behavior. SMS is held. See [bridge architecture](architecture/SHOP_DEV_OPERATOR_BRIDGE.md).

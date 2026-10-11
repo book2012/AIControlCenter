@@ -43,9 +43,15 @@ def create_app():
     adapter=GuestOperatorAdapter(ledger=app.state.order_ledger,store=app.state.checkout,inquiry_queue=queue,aftersales=app.state.lookup_store)
     integration=OrderTelegramIntegration(ledger=app.state.order_ledger,transport=transport,operator_chat_id=tg['operator_chat_id'],operator_user_ids=frozenset(tg['operator_user_ids']),operator_adapter=adapter,product_operator=products,confirmation_guard=ProductionStockConfirmation(app.state.checkout))
     # DEV handler remains explicitly bound to its isolated DEV containers/storage.
-    from ops.macos.shopping.dev_order_runtime import create_app as create_dev_app
-    dev=create_dev_app();dev_integration=dev.state.telegram_integration
+    bridge_cfg=private("dev-operator-bridge.private.json") if (PRIVATE/"dev-operator-bridge.private.json").exists() else {"enabled":False}
     actor=[None]
+    dev=dev_integration=dev_client=None
+    if bridge_cfg.get("enabled") is True:
+        from ops.macos.shopping.dev_operator_bridge_client import compose_dev_command_client
+        dev_client=compose_dev_command_client(bridge_cfg,chat_id=tg["operator_chat_id"],user_ids=frozenset(tg["operator_user_ids"]))
+    else:
+        from ops.macos.shopping.dev_order_runtime import create_app as create_dev_app
+        dev=create_dev_app();dev_integration=dev.state.telegram_integration
     def handle(integration,adapter,products,text,update_id):
         reference,decision,reply=adapter.resolve(text,update_id=update_id)
         if reference is None and decision is None and reply is None:reply=products.command(text,update_id)
@@ -53,10 +59,14 @@ def create_app():
         if match:reference=match[2];decision={'status':'STATUS','confirm':'CONFIRMED','reject':'REJECTED'}[match[1]]
         result=integration._ledger.process_operator_update(update_id,reference=reference,decision=decision,actor_reference=actor[0] if decision else None,confirmation_guard=integration._confirmation_guard)
         return reply or ('주문 상태를 반영했습니다. 주문목록으로 확인해 주세요.' if decision else '상품관리 또는 주문목록으로 사용 가능한 명령을 확인해 주세요.')
-    router=DurableOperatorEnvironmentRouter(database_path=ROOT/'telegram-router.sqlite3',dev=lambda text,i:handle(dev_integration,dev.state.operator_adapter,dev.state.product_operator,text,i),prod=lambda text,i:handle(integration,adapter,products,text,i),default='PROD',chat_id=tg['operator_chat_id'],user_ids=frozenset(tg['operator_user_ids']))
+    router=DurableOperatorEnvironmentRouter(database_path=ROOT/'telegram-router.sqlite3',dev=lambda text,i:dev_client(text,i,actor[0]) if dev_client else handle(dev_integration,dev.state.operator_adapter,dev.state.product_operator,text,i),prod=lambda text,i:handle(integration,adapter,products,text,i),default='PROD',chat_id=tg['operator_chat_id'],user_ids=frozenset(tg['operator_user_ids']))
     with sqlite3.connect(router.path) as c:
         c.execute('CREATE TABLE IF NOT EXISTS bot_cursor(id INTEGER PRIMARY KEY,offset INTEGER NOT NULL)')
-        c.execute('INSERT OR IGNORE INTO bot_cursor VALUES(1,?)',(dev_integration._ledger.telegram_offset(),))
+        if dev_client is not None:
+            if c.execute('SELECT offset FROM bot_cursor WHERE id=1').fetchone() is None:
+                raise ValueError('EXISTING_TELEGRAM_CURSOR_REQUIRED')
+        else:
+            c.execute('INSERT OR IGNORE INTO bot_cursor VALUES(1,?)',(dev_integration._ledger.telegram_offset(),))
     state={'environment':'PROD','poller':'STARTING','product_management':'STARTING','transaction_sms':False};stop=threading.Event()
     def poll():
         with sqlite3.connect(router.path) as c:offset=c.execute('SELECT offset FROM bot_cursor WHERE id=1').fetchone()[0]

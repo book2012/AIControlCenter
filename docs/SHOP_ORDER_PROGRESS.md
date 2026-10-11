@@ -1,6 +1,6 @@
 # Non-SMS order workflow progress
 
-Updated: 2026-10-11 (Asia/Seoul). Current completed stage: 4 (code/tests). DEV API/presentation promotion follows the stage-4 commit. Next: stage 5 full-flow activation verification; live shared Telegram remains unchanged.
+Updated: 2026-10-11 (Asia/Seoul). Current completed stage: 4 (code/tests). Stage-4 DEV API/presentation is active at 4473f1a (verified during this stage-5 preparation). Stage 5-1 private receiver/forwarder preparation is implemented; shared Telegram activation remains separately gated.
 
 | Stage | Scope | Status | Evidence / remaining gate |
 |---|---|---|---|
@@ -8,7 +8,7 @@ Updated: 2026-10-11 (Asia/Seoul). Current completed stage: 4 (code/tests). DEV A
 | 2 | Core cancellation guards and ambiguous-outcome reconciliation | Complete in code/test | 111 tests; Chrome checkout regression; actual Woo read-only receipt verification |
 | 3 | DEV Telegram commands and customer cancellation presentation | Complete in code/tests | Order-number and phone commands, allowlist, duplicate/update replay and no deposit guidance tested; actual shared bot remains on old PROD release |
 | 4 | Return received/inspected restoration | Complete in code/tests | Approval/receipt never restore; explicit inspection restores once; ambiguous outcomes read-only reconciled; refund remains separate |
-| 5 | Full workflow regression and DEV activation | Pending | Per-stage commits are pushed; stage-3 DEV API/presentation active at 5f7c6c4; stage-4 promotion follows this commit; shared Telegram/live end-to-end validation remains pending |
+| 5 | Full workflow regression and DEV activation | Pending | Per-stage commits are pushed; stage-4 DEV API/presentation active at 4473f1a; private bridge preparation implemented; shared Telegram/live end-to-end validation remains pending |
 | 6 | PROD promotion | Pending authorization | Existing PROD Telegram consumer must not be updated implicitly |
 
 ## Stage 2 behavior
@@ -36,3 +36,9 @@ Validation: 116 regression tests including five new cancellation operator/custom
 Return operations bind order, operation tag, original delivery digest, exact line items and case ID. A unique order-level restoration claim prevents duplicate inventory movements. Restart/replay/concurrent inspection preserve the outcome. Approval and case creation now serialize state changes; historical case access uses exact case filtering. Woo return receipt also blocks later Core confirmation/cancellation from moving stock again. Native Woo order/payment status is not changed to refunded.
 
 Validation: 136 related tests; isolated real Woo concurrent return/replay/receipt-binding checks; customer-order Chrome checks for returned/unknown states; dedicated checkout Chrome regression. Synthetic Woo fixtures cleaned. Customer and operator labels show inspection complete/refund review, never financial refund complete. No external Telegram/SMS messages or PROD writes.
+
+## Stage 5-1 preparation
+
+Opt-in private authenticated DEV receiver and shared-consumer client/composition added. No public route or second getUpdates loop. Shared consumer preserves its existing bot cursor and never falls back to the old embedded DEV handler after a forwarding failure. Receiver activation requires external-consumer mode. Configuration remains absent/disabled; actual bot remains unchanged. New independent personal-bot capacity checked locally: qwen3:4b uses ~2.87 GB at context 2048; validated separate no-thinking prefill returns Korean text. New bot credential/allowlist and personal conversation service remain pending.
+
+Validation: 184 targeted order, Telegram, cancellation, return, guest-runtime and isolation regressions passed; diff whitespace and Python syntax checks passed. Socket probes use disposable fake providers. No external Telegram/SMS sends or PROD writes.
