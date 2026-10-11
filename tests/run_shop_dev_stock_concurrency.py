@@ -1,10 +1,11 @@
 """Explicit synthetic Woo integration probe; isolated DEV only, no network messages."""
-import argparse,base64,json,secrets,subprocess,sys
+import argparse,base64,hashlib,json,secrets,subprocess,sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 from ops.macos.shopping.dev_order_runtime import assert_isolation
 from ops.macos.shopping.dev_order_operator import DevStockConfirmation,DevStockCancellation,CANCEL_RECONCILE_PHP
+from ops.macos.shopping.dev_return_stock import DevReturnStock,RETURN_RECONCILE_PHP
 PREFIX='aicc-dev-stock-probe-'
 
 def php(code):
@@ -62,7 +63,25 @@ $orders=[];for($i=0;$i<2;$i++){
         assert php(CANCEL_RECONCILE_PHP.replace('__PAYLOAD__',payload))=={'outcome':'STOCK_CANCELLED','order_id':winner['order_id']}
         assert quantity()==1
         assert attempt(winner) is None and quantity()==1,'cancelled order re-confirmed'
-        print(json.dumps({'passed':True,'checks':['one stock / two concurrent orders','confirmation replay','binding denial','processing cancellation denied','concurrent cancellation restores once','cancellation replay','cancelled confirmation denied','read-only cancellation reconciliation'],'environment':'DEV','external_messages':0,'prod_mutation':False}),flush=True)
+        # The previously blocked synthetic order becomes a separate physical return fixture.
+        returned=next(p for p in payloads if p['order_id']!=winner['order_id'])
+        confirm.apply(returned);assert quantity()==0
+        case_id='a1b2c3d4'
+        expected={**returned,'case_id':case_id,'return_receipt':hashlib.sha256((returned['tag']+':return:'+case_id).encode()).hexdigest()}
+        restock=DevReturnStock()
+        with ThreadPoolExecutor(max_workers=2) as pool:returns=list(pool.map(restock.apply,[expected,expected]))
+        assert all(x['outcome']=='STOCK_RETURNED' for x in returns) and quantity()==1
+        assert restock.apply(expected)['outcome']=='STOCK_RETURNED' and quantity()==1
+        encoded_return=base64.b64encode(json.dumps(expected).encode()).decode()
+        assert php(RETURN_RECONCILE_PHP.replace('__PAYLOAD__',encoded_return))=={'outcome':'STOCK_RETURNED','order_id':returned['order_id'],'case_id':case_id}
+        try:restock.apply({**expected,'case_id':'deadbeef'})
+        except ValueError:pass
+        else:raise AssertionError('wrong return case accepted')
+        try:cancel.apply(returned)
+        except RuntimeError:pass
+        else:raise AssertionError('returned order cancelled again')
+        assert attempt(returned) is None and quantity()==1,'returned order re-reduced'
+        print(json.dumps({'passed':True,'checks':['one stock / two concurrent orders','confirmation replay','binding denial','processing cancellation denied','concurrent cancellation restores once','cancellation replay','cancelled confirmation denied','read-only cancellation reconciliation','concurrent return restoration once','return replay and reconciliation','wrong case denied','return reconfirmation and cancellation denied'],'environment':'DEV','external_messages':0,'prod_mutation':False}),flush=True)
     finally:
         encoded=base64.b64encode(json.dumps(ids).encode()).decode()
         cleanup=HEADER+'$token='+json.dumps(token)+';$ids=json_decode(base64_decode('+json.dumps(encoded)+'),true);'+r'''

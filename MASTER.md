@@ -6834,3 +6834,8 @@ See docs/SHOP_ORDER_PROGRESS.md for stage status. Core cancellation now reserves
 ### 2026-10-11 — Stage 3 operator/customer cancellation connection
 
 Added authorized order-number/phone cancellation and read-only outcome reconciliation commands, cancellation-aware operator listing/late notifications, customer lookup state and chatbot notices without deposit guidance. DEV runtime composes the stock cancellation provider; shared PROD Telegram remains on its prior release and is not implicitly activated. See docs/SHOP_ORDER_PROGRESS.md. Regression: 116 tests (115 suite plus added operator reconciliation test), Chrome customer orders and dedicated checkout pass. DEV API/presentation promotion follows this committed release; SMS and PROD remain held. Return received/inspected workflow remains stage 4.
+
+
+### 2026-10-11 — Stage 4 physical return inspection and exactly-once stock restore
+
+Added separate approval, physical receipt and explicit resalable inspection transitions for whole-order RETURN cases. Serialized Core claims and case-bound Woo receipts restore inventory once; ambiguous results require read-only receipt reconciliation, never automatic resend. Concurrent case creation/approval is serialized; historical case access is exact. Customer/operator return states distinguish stock restoration from payment refund; financial refunds, partial returns and exchange replacement stock are not performed. DEV provider composition and presentation promotion follow this commit; shared PROD Telegram stays pinned. See docs/SHOP_ORDER_PROGRESS.md. Validation: 136 tests, real isolated Woo return/concurrency/replay probe and two Chrome regressions passed; synthetic fixtures cleaned; SMS/PROD held.

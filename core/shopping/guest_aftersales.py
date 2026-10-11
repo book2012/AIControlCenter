@@ -13,9 +13,12 @@ class CaseCreate(BaseModel):
     kind:str=Field(pattern=r"^(RETURN|SIZE_EXCHANGE)$")
     reason:str=Field(strict=True,min_length=2,max_length=1000)
     target_variation_id:str|None=Field(default=None,pattern=r"^[1-9][0-9]*$")
-class GuestAftersalesStore:
-    def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time,stock_cancellation=None):
+from core.shopping.guest_returns import ReturnWorkflow
+
+class GuestAftersalesStore(ReturnWorkflow):
+    def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time,stock_cancellation=None,stock_return=None):
         self.path=Path(path);self.attachments=Path(attachments);self.ledger=ledger;self.checkout=checkout;self.catalog=catalog;self.clock=clock
+        self.stock_return=stock_return
         self.stock_cancellation=stock_cancellation
         if self.path.is_symlink() or self.attachments.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
         self.attachments.mkdir(parents=True,exist_ok=True);os.chmod(self.attachments,0o700)
@@ -33,6 +36,7 @@ class GuestAftersalesStore:
             if not c.execute("SELECT 1 FROM fulfillment_settings WHERE key='shipping_seeded'").fetchone():
                 c.execute("INSERT OR IGNORE INTO shipping_notices SELECT order_id,carrier,tracking,'HISTORICAL' FROM fulfillment WHERE state IN ('SHIPPED','DELIVERED')")
                 c.execute("INSERT INTO fulfillment_settings VALUES('shipping_seeded','1')")
+            c.execute("CREATE TABLE IF NOT EXISTS return_stock_operations(case_id TEXT PRIMARY KEY,order_id INTEGER UNIQUE NOT NULL,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS cancellations(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS payments(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
@@ -42,11 +46,12 @@ class GuestAftersalesStore:
             row=c.execute("SELECT state,carrier,tracking,shipped,delivered,updated FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
         if not row:return {"state":"NOT_SHIPPED","carrier":None,"tracking":None,"shipped":None,"delivered":None,"updated":None}
         return dict(zip(("state","carrier","tracking","shipped","delivered","updated"),row))
-    def _case_rows(self,order_id=None,customer=None,limit=100):
+    def _case_rows(self,order_id=None,customer=None,limit=100,case_id=None):
         q="SELECT id,order_id,customer,kind,target_variation_id,target_option,reason,state,created,updated FROM cases"
         where=[];args=[]
         if order_id is not None:where.append("order_id=?");args.append(order_id)
         if customer is not None:where.append("customer=?");args.append(customer)
+        if case_id is not None:where.append("id=?");args.append(case_id)
         if where:q+=" WHERE "+" AND ".join(where)
         q+=" ORDER BY created DESC LIMIT ?";args.append(max(1,min(int(limit),100)))
         with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
@@ -71,10 +76,10 @@ class GuestAftersalesStore:
             if draft["state"]!="CONFIRMED":continue
             f=self._fulfillment(row["provider_order_id"]);cases=self._case_rows(order_id=row["provider_order_id"],customer=customer,limit=20)
             now=self.clock();within=f["state"]=="DELIVERED" and type(f["delivered"]) in (int,float) and f["delivered"]<=now<f["delivered"]+RETURN_WINDOW
-            active=any(v["state"] in ("REQUESTED","RETURN_APPROVED","EXCHANGE_APPROVED") for v in cases)
+            active=any(v["state"]!="REJECTED" for v in cases)
             result.append({"order_id":row["provider_order_id"],"review_state":row["review_state"],"requested_at":row["requested_at"],
                 "items":draft["body"]["quote"]["line_items"],"total":draft["body"]["quote"]["final_total"],"currency":draft["body"]["quote"]["currency"],
-                "fulfillment":f,"cancellation":self.cancellation(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
+                "fulfillment":f,"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
                 "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active),"cases":cases})
         return result
     def payment(self,order_id):
@@ -166,7 +171,7 @@ class GuestAftersalesStore:
         data=CaseCreate.model_validate(data);row,draft=self._customer_order(customer,data.order_id);f=self._fulfillment(data.order_id);now=self.clock()
         if row["review_state"]!="CONFIRMED" or f["state"]!="DELIVERED" or not f["delivered"] or not f["delivered"]<=now<f["delivered"]+RETURN_WINDOW:
             raise ValueError("RETURN_WINDOW_CLOSED")
-        if any(v["state"] in ("REQUESTED","RETURN_APPROVED","EXCHANGE_APPROVED") for v in self._case_rows(order_id=data.order_id,customer=customer)):
+        if any(v["state"]!="REJECTED" for v in self._case_rows(order_id=data.order_id,customer=customer)):
             raise ValueError("CASE_ALREADY_ACTIVE")
         target=None
         if data.kind=="SIZE_EXCHANGE":
@@ -176,10 +181,12 @@ class GuestAftersalesStore:
             if target is None:raise ValueError("TARGET_SIZE_UNAVAILABLE")
         identifier=secrets.token_hex(4)
         with sqlite3.connect(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            if c.execute("SELECT 1 FROM cases WHERE order_id=? AND state!='REJECTED'",(data.order_id,)).fetchone():raise ValueError("CASE_ALREADY_ACTIVE")
             c.execute("INSERT INTO cases VALUES(?,?,?,?,?,?,?,?,?,?)",(identifier,data.order_id,customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",now,now))
         return self.case(customer,identifier)
     def case(self,customer,case_id):
-        rows=[r for r in self._case_rows(customer=customer) if r["id"]==case_id]
+        rows=self._case_rows(customer=customer,case_id=case_id)
         if len(rows)!=1:raise ValueError("CASE_NOT_OWNED")
         return rows[0]
     def attach(self,customer,case_id,media_type,raw):
@@ -234,20 +241,26 @@ class GuestAftersalesStore:
         if kind:rows=[r for r in rows if r["kind"]==kind]
         return rows
     def decide(self,case_id,approve):
-        rows=[r for r in self._case_rows(limit=100) if r["id"]==case_id]
-        if len(rows)!=1:raise ValueError("CASE_NOT_FOUND")
-        row=rows[0]
-        if row["state"]=="REJECTED" or row["state"] in ("RETURN_APPROVED","EXCHANGE_APPROVED"):return row
-        if row["state"]!="REQUESTED":raise ValueError("CASE_STATE_INVALID")
-        state=("RETURN_APPROVED" if row["kind"]=="RETURN" else "EXCHANGE_APPROVED") if approve else "REJECTED";stamp=self.clock()
-        with sqlite3.connect(self.path) as c:c.execute("UPDATE cases SET state=?,updated=? WHERE id=?",(state,stamp,case_id))
-        return [r for r in self._case_rows(limit=100) if r["id"]==case_id][0]
+        with sqlite3.connect(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            row=c.execute("SELECT kind,state FROM cases WHERE id=?",(case_id,)).fetchone()
+            if row is None:raise ValueError("CASE_NOT_FOUND")
+            kind,state=row
+            if state=="REQUESTED":
+                state=("RETURN_APPROVED" if kind=="RETURN" else "EXCHANGE_APPROVED") if approve else "REJECTED"
+                c.execute("UPDATE cases SET state=?,updated=? WHERE id=?",(state,self.clock(),case_id))
+            elif state!="REJECTED" and not state.startswith("RETURN_") and state!="EXCHANGE_APPROVED":
+                raise ValueError("CASE_STATE_INVALID")
+        matches=self._case_rows(case_id=case_id)
+        if not matches:raise ValueError("CASE_NOT_FOUND")
+        return matches[0]
     def operator_command(self,text,update_id):
         clean=text.strip()
         if clean in ("배송","배송 완료","배송완료","입금확인","입금 확인"):
             return "입금확인 #주문번호 / 배송 #주문번호 택배사 운송장번호 / 배송완료 #주문번호 형식으로 입력해 주세요."
         if re.fullmatch(r"배송\s*#[1-9][0-9]*",clean):return "택배사와 운송장번호를 함께 입력해 주세요. 예: 배송 #15 CJ대한통운 1234567890"
         patterns=[
+            (r"반품\s*(회수|검수완료|복원확인)\s*#([a-f0-9]{8})","return_stock"),
             (r"(?:주문)?취소\s*#([1-9][0-9]*)","cancel"),
             (r"취소\s*확인\s*#([1-9][0-9]*)","cancel_reconcile"),
             (r"입금\s*(확인|상태)\s*#([1-9][0-9]*)","payment"),
@@ -266,7 +279,10 @@ class GuestAftersalesStore:
         if old:return old[0]
         m,kind=matched
         try:
-            if kind in ("cancel","cancel_reconcile"):
+            if kind=="return_stock":
+                method={"회수":self.receive_return,"검수완료":self.inspect_return,"복원확인":self.reconcile_return}[m[1]]
+                value=method(m[2]);reply="반품 #"+m[2]+" · "+{"RETURN_RECEIVED":"회수완료 · 검수 대기","RETURN_RESTOCKED":"검수완료 · 재고 복원 확인 · 환불 검토 필요"}.get(value["state"],"처리 결과 확인중")
+            elif kind in ("cancel","cancel_reconcile"):
                 value=self.cancel_order(int(m[1])) if kind=="cancel" else self.reconcile_cancellation(int(m[1]))
                 reply="주문 #"+m[1]+" 취소완료 · 재고 복원 확인 · 결제 환불은 실행하지 않았습니다."
             elif kind=="payment":
@@ -288,7 +304,11 @@ class GuestAftersalesStore:
                 else:
                     v=self.decide(m[3],m[2]=="승인");reply=m[1]+" #"+m[3]+" "+("승인" if m[2]=="승인" else "거절")+" · "+v["state"]
         except ValueError as error:
-            reply={"PAID_CANCELLATION_REQUIRES_REFUND_REVIEW":"입금된 주문은 자동 취소하지 않습니다. 환불 검토가 필요합니다.",
+            reply={"RETURN_APPROVAL_REQUIRED":"반품 승인 후 회수를 등록해 주세요.",
+                "RETURN_RECEIPT_REQUIRED":"실물 회수 후 재판매 가능한 상품의 검수완료를 등록해 주세요.",
+                "RETURN_RECONCILIATION_REQUIRED":"재고 복원 결과 확인이 필요합니다. 반품 복원확인 #케이스번호로 기존 결과를 확인해 주세요. 재고는 다시 복원하지 않습니다.",
+                "RETURN_RESTORATION_NOT_CONFIGURED":"반품 재고 복원 기능이 아직 활성화되지 않았습니다.",
+                "PAID_CANCELLATION_REQUIRES_REFUND_REVIEW":"입금된 주문은 자동 취소하지 않습니다. 환불 검토가 필요합니다.",
                 "SHIPPED_CANCELLATION_DENIED":"배송이 시작된 주문은 취소할 수 없습니다. 반품 접수로 진행해 주세요.",
                 "CANCELLATION_RECONCILIATION_REQUIRED":"취소 결과 확인이 필요합니다. 취소확인 #주문번호로 기존 처리 결과를 확인해 주세요. 재고 복원은 다시 실행하지 않습니다.",
                 "ORDER_CANCELLATION_ACTIVE":"취소 처리 중이거나 취소된 주문입니다. 입금·배송 변경을 중단합니다.",

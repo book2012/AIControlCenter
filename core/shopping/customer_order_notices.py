@@ -16,6 +16,11 @@ def order_notices(order,bank=None):
         if cancellation=='CANCELLED':add('CANCELLED',summary+'\n주문이 취소되었습니다. 입금하지 마세요. 문의는 챗봇으로 연결해 주세요.')
         else:add('CANCELLATION_PENDING',summary+'\n취소 처리 결과를 확인하고 있습니다. 확인 전에는 입금하지 마세요.')
         return result
+    returned=order.get('return_status',{}).get('state','NONE')
+    if returned!='NONE':
+        label={'RETURN_APPROVED':'반품이 승인되었습니다. 실물 회수를 기다리고 있습니다.','RETURN_RECEIVED':'반품 상품을 회수했습니다. 검수 중입니다.','RETURN_RESTOCK_PENDING':'반품 검수와 재고 처리 결과를 확인하고 있습니다.','RETURN_RESTOCK_UNKNOWN':'반품 재고 처리 결과를 확인하고 있습니다.','RETURN_RESTOCKED':'반품 검수가 완료되었습니다. 환불은 운영자 검토 후 별도로 안내합니다.'}.get(returned,'반품 진행 상태를 확인하고 있습니다.')
+        add('RETURN',summary+'\n'+label)
+        return result
     if review=='REJECTED':add('REJECTED',summary+'\n주문이 거절되었습니다. 챗봇으로 문의해 주세요.');return result
     if review!='CONFIRMED':add('RECEIVED',summary+'\n주문을 접수했습니다. 운영자가 상품과 재고를 확인하고 있습니다.');return result
     text=summary+'\n주문이 확인되었습니다.'

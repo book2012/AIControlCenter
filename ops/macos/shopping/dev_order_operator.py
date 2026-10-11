@@ -43,6 +43,7 @@ try {
  $wpdb->query('START TRANSACTION');
  $order=wc_get_order($cfg['order_id']);
  if(!$order || $order->get_meta('_aicc_order_operation')!==$cfg['tag'] || $order->get_meta('_aicc_delivery_digest')!==$cfg['digest']){throw new Exception('BINDING');}
+ if($order->get_meta('_aicc_stock_return')!==''){throw new Exception('RETURN_ALREADY_RESTORED');}
  if(!in_array($order->get_status(),['pending','on-hold'],true)){throw new Exception('STATUS');}
  $items=array_values($order->get_items());$actual=[];$needs=[];
  foreach($items as $item){
@@ -118,6 +119,7 @@ try {
  $items=array_values($order->get_items());$actual=[];
  foreach($items as $item){$actual[]=['product'=>$item->get_product_id(),'variation'=>$item->get_variation_id(),'quantity'=>$item->get_quantity()];}
  if($actual!=$cfg['items']){throw new Exception('ITEM_BINDING');}
+ if($order->get_meta('_aicc_stock_return')!==''){throw new Exception('RETURN_ALREADY_RESTORED');}
  $receipt=$order->get_meta('_aicc_stock_cancellation');
  if($receipt!=='' && $receipt!==$cfg['tag']){throw new Exception('RECEIPT_BINDING');}
  if($receipt===''){

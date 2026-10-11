@@ -66,3 +66,16 @@ def test_cancel_result_command_recovers_without_provider_resend(tmp_path):
     assert notice[0]['kind']=='CANCELLATION_PENDING' and 'SECRET BANK' not in notice[0]['message']
     assert '취소완료' in op.resolve('01012345678 취소확인 #15',2)[2]
     assert provider.writes==1 and store.cancellation(ORDER)['state']=='CANCELLED'
+
+@pytest.mark.parametrize('authorized',[False,True])
+def test_telegram_allowlist_protects_return_inspection(api,composed,tmp_path,authorized):
+    from test_shop_return_stock_workflow import delivered,provider
+    store,case,_=delivered(tmp_path);calls=[];store.stock_return=provider(calls)
+    store.decide(case['id'],True);store.receive_return(case['id'])
+    _,draft=store._customer_order(CUSTOMER,ORDER);op=adapter(store,draft)
+    transport=Transport();u=update(user=OPERATOR if authorized else OPERATOR+1)
+    u['message']['text']='반품 검수완료 #'+case['id'];transport.updates=[u]
+    _,ledger,_=composed
+    driver=OrderTelegramIntegration(ledger=ledger,transport=transport,operator_chat_id=CHAT,operator_user_ids=frozenset({OPERATOR}),operator_adapter=op)
+    driver.poll_once();driver.poll_once()
+    assert calls==([case['id']] if authorized else [])

@@ -40,6 +40,8 @@ class GuestOperatorAdapter:
         if row["state"]!="CONFIRMED" or self.aftersales is None:return row["state"]
         cancellation=self.aftersales.cancellation(row["provider_order_id"])["state"]
         if cancellation!="NONE":return "CANCELLED" if cancellation=="CANCELLED" else "CANCELLATION_PENDING"
+        returned=self.aftersales.return_status(row["provider_order_id"])["state"]
+        if returned!="NONE":return returned
         fulfillment=self.aftersales.admin_fulfillment(row["provider_order_id"])
         return "COMPLETED" if fulfillment["state"]=="DELIVERED" else "SHIPPED" if fulfillment["state"]=="SHIPPED" else "READY_TO_SHIP" if self.aftersales.payment(row["provider_order_id"])["state"]=="PAID" else "AWAITING_DEPOSIT"
     def admin_orders(self,limit=50):
@@ -57,7 +59,7 @@ class GuestOperatorAdapter:
         rows=[r for r in self.rows() if phone is None or r["phone"]==phone]
         if limit is not None:rows=rows[:max(1,min(int(limit),100))]
         if not rows:return "현재 확인 가능한 주문이 없습니다."
-        labels={"CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        labels={"RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         lines=[("고객 "+phone+" 주문 " if phone else "전체 주문 ")+str(len(rows))+"건"]
         for r in rows:
             display=self.display_state(r)
@@ -76,7 +78,7 @@ class GuestOperatorAdapter:
     def detail_message(self,order_id,phone=None):
         rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id) and (phone is None or r["phone"]==phone)]
         if len(rows)!=1:return "해당 주문을 찾지 못했습니다." if not rows else "주문을 구분할 수 없습니다."
-        r=rows[0];d=r["delivery"];labels={"CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        r=rows[0];d=r["delivery"];labels={"RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         items="\n".join("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
         address=" ".join(v for v in (d.get("address_1",""),d.get("address_2","")) if v).strip()
         display=self.display_state(r)
