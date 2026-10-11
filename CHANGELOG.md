@@ -6286,3 +6286,7 @@ Live operator DEV response confirmed the shared forwarding path but exposed dupl
 ## 2026-10-12 — Actor-scoped DEV conversation routing
 
 The shared consumer remembers each authorized operator conversation environment for 30 minutes. Explicit DEV/PROD prefixes override it; plain replies stay in the chosen environment. Expired conversations request an explicit environment without executing a change. Only forwarding/routing modules are updated on the old-PROD-based branch. DEV Qwen conversation modules remain independently deployed.
+
+
+### 2026-10-12 Telegram bot separation
+DEV papachichi_bot uses a dedicated cursor and lock, with namespaced update IDs and the authenticated DEV bridge. PROD mommychichi_bot in split_bot_mode never composes or forwards DEV commands. Tokens remain private; SMS remains disabled.
