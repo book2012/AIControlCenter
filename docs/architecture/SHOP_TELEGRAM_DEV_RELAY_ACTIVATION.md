@@ -11,3 +11,7 @@ Before switching: backup current manifest, LaunchAgent and SQLite router using S
 Rollback: stop the new consumer, restore prior LaunchAgent and runtime manifest, remove the newly created relay config, then start prior service. Preserve current router DB/cursor; its snapshot is inspection evidence, not an instruction to reset consumed messages.
 
 Tests: 96 bridge, durable ledger, Telegram, PROD guest-runtime/customer-isolation/Woo-port and order-admin regressions pass on this exact old-PROD-based branch. No real commerce mutations or external messages in tests. Live Telegram human-command confirmation remains distinct from a local authenticated read-only diagnostic.
+
+## 2026-10-12 — Shared DEV relay activated
+
+Shared consumer active at 0289213a1ae1aff007edcf9972a0ba7c26651a57; independently pinned DEV API ab434b9. Authenticated local read-only 주문목록 roundtrip passed without advancing the existing DEV cursor or sending a diagnostic Telegram message. DEV receiver and PROD poller/product management RUNNING; DEV/PROD API and PROD storefront return HTTP 200. PROD business modules remain based on 63e0f104; presentation stays 8d6f508; SMS disabled. Existing router/cursor preserved. Backup: prod-commerce/backups/dev-relay-20261012-064125. Actual human Telegram command and full order workflow remain to verify.
