@@ -285,3 +285,7 @@ Live operator DEV response confirmed the shared forwarding path but exposed dupl
 ## 2026-10-12 — DEV Qwen dialogue, reminders and Codex drafts
 
 Natural operator text is locally classified into bounded order/product actions. Actor-scoped dialogue asks for missing targets/options and confirms mutations before existing guarded handlers run. Durable reminders cover approval, order review, deposit and shipping followup without retrying unknown sends. Confirmed website requests start an isolated sandboxed Codex DEV draft and notify review readiness; no automatic deployment. Shared environment memory keeps plain replies in the chosen DEV/PROD conversation and fails closed after expiry. 212 feature regressions, 98 separate relay regressions, seven actual Qwen cases and two real Codex capability probes passed. See [conversation architecture](architecture/SHOP_QWEN_OPERATOR_CONVERSATION_DEV.md).
+
+## 2026-10-12 — SOLAPI order SMS prepared; carrier blocker remains
+
+Added pinned SOLAPI order-confirmation and shipping transport, domestic-number normalization, byte-bounded SMS/LMS and bound final delivery-status receipts. Existing Twilio OTP stays unchanged. DEV activation is explicit/future-only, skips other recipients and never replays failed/unknown sends. 225 targeted regressions passed. One real connection test was accepted but finally failed with carrier code 3113; automatic SMS flags stay disabled pending sender-carrier resolution. See [SMS architecture](architecture/SHOP_SOLAPI_ORDER_SMS_DEV.md).

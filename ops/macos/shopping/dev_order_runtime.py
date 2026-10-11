@@ -207,7 +207,7 @@ def create_app():
     if phone is not None and aftersales is not None:
         from ops.macos.shopping.dev_order_sms import DevOrderSMS
         order_sms=DevOrderSMS(DATA/"order-sms.sqlite3",aftersales=aftersales,phone_cfg=phone_cfg,
-            config_path=Path("/Users/kyouhan/.config/aicontrolcenter-dev-order/order-notification.private.json"))
+            config_path=Path("/Users/kyouhan/.config/aicontrolcenter-dev-order/order-notification.private.json"),solapi_config_path=PRIVATE/"solapi.private.json")
     if order_sms is not None:aftersales.sms=order_sms
     history_store=None
     if phone is not None and checkout is not None:
