@@ -227,8 +227,14 @@ def create_app():
     bridge_cfg=private_config('operator-bridge.private.json') if (PRIVATE/'operator-bridge.private.json').exists() else {'enabled':False}
     if bridge_cfg.get('enabled') is True and __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':
         raise RuntimeError('EXTERNAL_TELEGRAM_CONSUMER_REQUIRED')
-    command_bridge=compose_dev_bridge(cfg=bridge_cfg,data=DATA,telegram=telegram,adapter=operator_adapter,products=product_operator)
-    stop=threading.Event();health={'operator_bridge':'CONFIGURED' if command_bridge else 'DISABLED','poller':'STARTING','product_management':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
+    conversation_cfg=private_config('operator-conversation.private.json') if (PRIVATE/'operator-conversation.private.json').exists() else {'enabled':False}
+    command_bridge=compose_dev_bridge(cfg=bridge_cfg,data=DATA,telegram=telegram,adapter=operator_adapter,products=product_operator,conversation_cfg=conversation_cfg)
+    conversation=command_bridge.conversation if command_bridge else None
+    codex_drafts=None
+    if conversation is not None and conversation_cfg.get('codex_drafts_enabled') is True:
+        from ops.macos.shopping.dev_codex_website_jobs import CodexWebsiteDraftWorker
+        codex_drafts=CodexWebsiteDraftWorker(conversation,revision=REPO.name,data=DATA)
+    stop=threading.Event();health={'codex_website_drafts':'ENABLED' if codex_drafts else 'DISABLED','operator_conversation':'QWEN_DEV' if conversation else 'DISABLED','operator_bridge':'CONFIGURED' if command_bridge else 'DISABLED','poller':'STARTING','product_management':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         last_sync=0
         while not stop.is_set():
@@ -245,7 +251,10 @@ def create_app():
             except Exception:health["order_sms"]="UNAVAILABLE"
             try:
                 if __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':telegram.poll_once()
-                telegram.dispatch_one();inquiry_queue.dispatch_one();health['poller']='EXTERNAL' if __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')=='1' else 'RUNNING'
+                telegram.dispatch_one();inquiry_queue.dispatch_one()
+                if conversation is not None:conversation.notify_one(transport)
+                if codex_drafts is not None:codex_drafts.start_one()
+                health['poller']='EXTERNAL' if __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')=='1' else 'RUNNING'
             except Exception:health['poller']='UNAVAILABLE'
             stop.wait(2)
     from contextlib import asynccontextmanager
@@ -262,7 +271,9 @@ def create_app():
         try:
             yield
         finally:
-            stop.set();await asyncio.to_thread(thread.join,20)
+            stop.set()
+            if codex_drafts is not None:codex_drafts.stop()
+            await asyncio.to_thread(thread.join,20)
             if command_bridge is not None:await asyncio.to_thread(command_bridge.close)
             if lease is not None:lease.close()
     app.router.lifespan_context=lifespan

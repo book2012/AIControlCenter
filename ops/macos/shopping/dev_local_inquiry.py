@@ -2,6 +2,7 @@
 import json,threading
 import requests
 from core.shopping.order_core.woocommerce_writer import WooCommerceOrderWriter
+from core.shopping.operator_intent import LOCAL_INFERENCE_SLOT
 INTENTS=("STOCK","PRICE","DESCRIPTION","PURCHASE","OPERATOR")
 class LocalInquiryJudge:
     def __init__(self,model="qwen3:4b",session=None):
@@ -9,6 +10,8 @@ class LocalInquiryJudge:
         self.model=model;self.session=session or requests.Session();self.session.trust_env=False;self.lock=threading.Semaphore(1)
     def __call__(self,message,product):
         if not self.lock.acquire(blocking=False):raise ValueError("LOCAL_AI_BUSY")
+        if not LOCAL_INFERENCE_SLOT.acquire(blocking=False):
+            self.lock.release();raise ValueError("LOCAL_AI_BUSY")
         try:
             facts={"name":product.name,"description":product.description[:1500],"in_stock":product.in_stock,
                 "options":[{"label":v.label,"available":v.available} for v in product.variants]}
@@ -25,4 +28,5 @@ class LocalInquiryJudge:
             value=json.loads(raw["message"]["content"])
             if type(value) is not dict or set(value)!={"intent"} or value["intent"] not in INTENTS:raise ValueError("LOCAL_AI_OUTPUT_REJECTED")
             return value["intent"]
-        finally:self.lock.release()
+        finally:
+            LOCAL_INFERENCE_SLOT.release();self.lock.release()

@@ -59,7 +59,7 @@ def create_app():
         if match:reference=match[2];decision={'status':'STATUS','confirm':'CONFIRMED','reject':'REJECTED'}[match[1]]
         result=integration._ledger.process_operator_update(update_id,reference=reference,decision=decision,actor_reference=actor[0] if decision else None,confirmation_guard=integration._confirmation_guard)
         return reply or ('주문 상태를 반영했습니다. 주문목록으로 확인해 주세요.' if decision else '상품관리 또는 주문목록으로 사용 가능한 명령을 확인해 주세요.')
-    router=DurableOperatorEnvironmentRouter(database_path=ROOT/'telegram-router.sqlite3',dev=lambda text,i:dev_client(text,i,actor[0]) if dev_client else handle(dev_integration,dev.state.operator_adapter,dev.state.product_operator,text,i),prod=lambda text,i:handle(integration,adapter,products,text,i),default='PROD',chat_id=tg['operator_chat_id'],user_ids=frozenset(tg['operator_user_ids']))
+    router=DurableOperatorEnvironmentRouter(database_path=ROOT/'telegram-router.sqlite3',dev=lambda text,i:dev_client(text,i,actor[0]) if dev_client else handle(dev_integration,dev.state.operator_adapter,dev.state.product_operator,text,i),prod=lambda text,i:handle(integration,adapter,products,text,i),default='PROD',chat_id=tg['operator_chat_id'],user_ids=frozenset(tg['operator_user_ids']),conversation_seconds=1800 if dev_client else 0)
     with sqlite3.connect(router.path) as c:
         c.execute('CREATE TABLE IF NOT EXISTS bot_cursor(id INTEGER PRIMARY KEY,offset INTEGER NOT NULL)')
         if dev_client is not None:

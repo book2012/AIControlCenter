@@ -5880,3 +5880,7 @@ Shared consumer active at 0289213a1ae1aff007edcf9972a0ba7c26651a57; independentl
 ## 2026-10-12 — One Telegram greeting across DEV forwarding
 
 Live operator DEV response confirmed the shared forwarding path but exposed duplicated greeting/environment headers. Environment routers now preserve an existing identical header instead of adding another. Nested-router replay and ordinary PROD/DEV reply regressions pass (97 targeted tests on isolated relay branch). Historical DEV fixtures 33/34 have shipment/delivery rows but no payment row; no payment or shipment state was changed.
+
+## 2026-10-12 — DEV Qwen dialogue, reminders and Codex drafts
+
+Natural operator text is locally classified into bounded order/product actions. Actor-scoped dialogue asks for missing targets/options and confirms mutations before existing guarded handlers run. Durable reminders cover approval, order review, deposit and shipping followup without retrying unknown sends. Confirmed website requests start an isolated sandboxed Codex DEV draft and notify review readiness; no automatic deployment. Shared environment memory keeps plain replies in the chosen DEV/PROD conversation and fails closed after expiry. 212 feature regressions, 98 separate relay regressions, seven actual Qwen cases and two real Codex capability probes passed. See [conversation architecture](docs/architecture/SHOP_QWEN_OPERATOR_CONVERSATION_DEV.md).

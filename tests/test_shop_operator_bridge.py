@@ -166,3 +166,51 @@ def test_shared_router_does_not_repeat_authenticated_dev_header(tmp_path):
         default="PROD",chat_id=CHAT,user_ids=frozenset({USER}))
     assert plain.dispatch("개발 주문목록",chat_id=CHAT,user_id=USER)==reply
     assert plain.dispatch("운영 주문목록",chat_id=CHAT,user_id=USER)=="안녕하세요 agachichi 입니다\n[운영]\n운영 목록"
+
+def test_environment_conversation_scopes_plain_followups_and_expiry(tmp_path,monkeypatch):
+    from core.shopping.operator_environment import DurableOperatorEnvironmentRouter
+    import time
+    now=[1000]
+    monkeypatch.setattr(time,"time",lambda:now[0])
+    calls=[]
+    router=DurableOperatorEnvironmentRouter(database_path=tmp_path/"scope.sqlite3",
+        dev=lambda t,i:(calls.append(("DEV",t,i)) or "개발 결과"),
+        prod=lambda t,i:(calls.append(("PROD",t,i)) or "운영 결과"),
+        default="PROD",chat_id=CHAT,user_ids=frozenset({USER,999}),conversation_seconds=1800)
+    router.dispatch("개발 입금 확인",chat_id=CHAT,user_id=USER,update_id=1)
+    assert "[개발]" in router.dispatch("응",chat_id=CHAT,user_id=USER,update_id=2)
+    assert calls[-1]==("DEV","응",2)
+    assert "[운영]" in router.dispatch("주문목록",chat_id=CHAT,user_id=999,update_id=3)
+    now[0]+=1801
+    assert "대화 시간이 지났" in router.dispatch("입금확인 #15",chat_id=CHAT,user_id=USER,update_id=4)
+    assert len(calls)==3
+    router.dispatch("운영 주문목록",chat_id=CHAT,user_id=USER,update_id=5)
+    assert "[운영]" in router.dispatch("주문목록",chat_id=CHAT,user_id=USER,update_id=6)
+
+def test_authenticated_bridge_dialogue_asks_before_payment_and_scopes_actor(tmp_path,monkeypatch):
+    import time
+    from types import SimpleNamespace
+    import core.shopping.operator_intent as intent_module
+    os.chmod(tmp_path,0o700)
+    monkeypatch.setattr(intent_module,"LocalOperatorJudge",lambda:lambda text,ctx:{"action":"DEPOSIT_CONFIRM","order_id":15})
+    payments=[]
+    adapter=SimpleNamespace(admin_orders=lambda limit:[dict(order_id=15,phone="01012345678",display_state="AWAITING_DEPOSIT")],
+        resolve=lambda text,update_id:(payments.append(text) or (None,None,"입금완료")),aftersales=None)
+    products=SimpleNamespace(records=[],command=lambda *_:None)
+    telegram=SimpleNamespace(_ledger=SimpleNamespace(process_operator_update=lambda *a,**kw:dict(outcome="IGNORED")),
+        _chat=CHAT,_users=frozenset({USER}),_confirmation_guard=None)
+    server=compose_dev_bridge(cfg={"enabled":True,"environment":"DEV","hmac_key_hex":KEY.hex()},
+        data=tmp_path,telegram=telegram,adapter=adapter,products=products,
+        conversation_cfg={"enabled":True,"environment":"DEV","model":"qwen3:4b"})
+    server.start()
+    try:
+        codec=BridgeCodec(KEY)
+        request=envelope(codec,text="15번 입금했어",update_id=1,timestamp=int(time.time()))
+        assert "처리할까요" in call_dev_bridge(server.path,request,codec)
+        assert payments==[]
+        request=envelope(codec,text="응",update_id=2,timestamp=int(time.time()))
+        assert "입금완료" in call_dev_bridge(server.path,request,codec)
+        assert payments==["입금확인 #15"]
+        call_dev_bridge(server.path,request,codec)
+        assert payments==["입금확인 #15"]
+    finally:server.close()
