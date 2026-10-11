@@ -34,3 +34,5 @@ Official references:
 - https://solapi.com/developers/api/authentication-api-key
 - https://solapi.com/developers/api/msg-getList
 - https://solapi.com/guides/message-status-codes
+
+Activation checkpoint 2026-10-12 07:50 KST: DEV API 3433cccdc3496e4feeed6b5826288e4d7b7aaf54 is active; order_sms=CONFIGURATION_REQUIRED and both SOLAPI/order-notification enabled flags remain false. Qwen operator bridge and Codex draft service remain healthy. Backup: com.aicontrolcenter.dev-order-api.plist.backup-20261012-075013. PROD is unchanged by this SMS task. Next gate is sender-carrier 3113 resolution, one successful final delivery/handset test, then future-only DEV activation.
