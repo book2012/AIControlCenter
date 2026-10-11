@@ -23,3 +23,9 @@ Live operator DEV response confirmed the shared forwarding path but exposed dupl
 ## 2026-10-12 — Actor-scoped DEV conversation routing
 
 The shared consumer remembers each authorized operator conversation environment for 30 minutes. Explicit DEV/PROD prefixes override it; plain replies stay in the chosen environment. Expired conversations request an explicit environment without executing a change. Only forwarding/routing modules are updated on the old-PROD-based branch. DEV Qwen conversation modules remain independently deployed.
+
+## Activation checkpoint — 2026-10-12 07:29 KST
+
+DEV API bb6f09fea12614758f769dcd5247fbc72efffda2 is active with operator_conversation=QWEN_DEV, operator_bridge=RUNNING, poller=EXTERNAL and codex_website_drafts=ENABLED. Shared relay e18d885770f7b97448bfb850ccda76d65ea577ab preserves PROD business base/frontend and enables actor-scoped environment memory. Live authenticated local Qwen order-list and unprefixed task-list roundtrips passed; neither bot cursor advanced and no diagnostic Telegram message was sent. Local model allocation ~3.86 GB at context 8192. Existing real order/payment/stock data was not changed.
+
+Backups: DEV LaunchAgent com.aicontrolcenter.dev-order-api.plist.backup-20261012-072833; shared prod-commerce/backups/conversation-scope-20261012-072905. Human natural-dialogue/confirmation, timed live reminders and a real requested homepage draft remain acceptance checks. No actual customer order mutation is claimed from the local diagnostic.
