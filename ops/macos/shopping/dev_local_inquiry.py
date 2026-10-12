@@ -2,11 +2,11 @@
 import json,threading
 import requests
 from core.shopping.order_core.woocommerce_writer import WooCommerceOrderWriter
-from core.shopping.operator_intent import LOCAL_INFERENCE_SLOT
+from core.shopping.operator_intent import ALLOWED_LOCAL_MODELS, LOCAL_INFERENCE_SLOT
 INTENTS=("STOCK","PRICE","DESCRIPTION","PURCHASE","OPERATOR")
 class LocalInquiryJudge:
     def __init__(self,model="qwen3:4b",session=None):
-        if model!="qwen3:4b":raise ValueError("EXPLICIT_LOCAL_MODEL_REQUIRED")
+        if model not in ALLOWED_LOCAL_MODELS:raise ValueError("EXPLICIT_LOCAL_MODEL_REQUIRED")
         self.model=model;self.session=session or requests.Session();self.session.trust_env=False;self.lock=threading.Semaphore(1)
     def __call__(self,message,product):
         if not self.lock.acquire(blocking=False):raise ValueError("LOCAL_AI_BUSY")

@@ -218,7 +218,9 @@ def create_app():
         history_store=DevChatHistory(DATA/"chat-history.sqlite3",history_app._authenticate,phone_cfg["guest_customer_id"],answer_lookup=inquiry_queue.history_answer)
         mount_history(app,history_store)
     from ops.macos.shopping.dev_local_inquiry import LocalInquiryJudge
-    mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(),phone_available=phone is not None,
+    conversation_cfg=private_config('operator-conversation.private.json') if (PRIVATE/'operator-conversation.private.json').exists() else {'enabled':False}
+    inquiry_model=conversation_cfg.get("model","qwen3:4b") if conversation_cfg.get("enabled") is True else "qwen3:4b"
+    mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(model=inquiry_model),phone_available=phone is not None,
         checkout_available=phone is not None and checkout is not None,inquiry_queue=inquiry_queue,history_store=history_store)
     mount_inquiry_status(app,inquiry_queue)
     if operator_adapter is not None:
@@ -228,7 +230,6 @@ def create_app():
     bridge_cfg=private_config('operator-bridge.private.json') if (PRIVATE/'operator-bridge.private.json').exists() else {'enabled':False}
     if bridge_cfg.get('enabled') is True and __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':
         raise RuntimeError('EXTERNAL_TELEGRAM_CONSUMER_REQUIRED')
-    conversation_cfg=private_config('operator-conversation.private.json') if (PRIVATE/'operator-conversation.private.json').exists() else {'enabled':False}
     command_bridge=compose_dev_bridge(cfg=bridge_cfg,data=DATA,telegram=telegram,adapter=operator_adapter,products=product_operator,conversation_cfg=conversation_cfg)
     conversation=command_bridge.conversation if command_bridge else None
     codex_drafts=None

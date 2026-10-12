@@ -3,6 +3,7 @@ import re
 import sqlite3
 from pathlib import Path
 from core.shopping.operator_bridge import DevOperatorBridge, PrivateBridgeServer
+from core.shopping.operator_intent import ALLOWED_LOCAL_MODELS
 
 def compose_dev_bridge(*, cfg, data, telegram, adapter, products, conversation_cfg=None):
     if cfg.get("enabled") is not True:
@@ -42,7 +43,7 @@ def compose_dev_bridge(*, cfg, data, telegram, adapter, products, conversation_c
         return "상품관리 또는 주문목록으로 사용 가능한 명령을 확인해 주세요."
     conversation=None
     if conversation_cfg and conversation_cfg.get("enabled") is True:
-        if conversation_cfg.get("environment")!="DEV" or conversation_cfg.get("model")!="qwen3:4b" or adapter is None:
+        if conversation_cfg.get("environment")!="DEV" or conversation_cfg.get("model") not in ALLOWED_LOCAL_MODELS or adapter is None:
             raise ValueError("DEV_OPERATOR_CONVERSATION_CONFIGURATION_REQUIRED")
         from core.shopping.operator_intent import LocalOperatorJudge
         from core.shopping.operator_conversation import OperatorConversation
@@ -65,7 +66,12 @@ def compose_dev_bridge(*, cfg, data, telegram, adapter, products, conversation_c
                     row=c.execute("SELECT state FROM return_stock_operations WHERE case_id=?",(returned[1],)).fetchone()
                 if row and row[0] in {"SENDING","UNKNOWN"}:raise RuntimeError("RETURN_OUTCOME_UNKNOWN")
             return reply
-        conversation=OperatorConversation(path=root/"operator-dialogue.sqlite3",judge=LocalOperatorJudge(),
+        judge_kwargs={}
+        configured_model=conversation_cfg.get("model","qwen3:4b")
+        configured_fallback=conversation_cfg.get("fallback_model")
+        if configured_model != "qwen3:4b" or configured_fallback:
+            judge_kwargs={"model":configured_model,"fallback_model":configured_fallback}
+        conversation=OperatorConversation(path=root/"operator-dialogue.sqlite3",judge=LocalOperatorJudge(**judge_kwargs),
             orders=lambda:adapter.admin_orders(100),products=lambda:products.records,
             validate_product=lambda text:parse_command(text,products.records),executor=execute_checked)
     def conversational_handle(text,update_id,actor):
