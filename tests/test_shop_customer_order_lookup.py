@@ -31,6 +31,16 @@ def test_lookup_requires_verified_session_origin_csrf_number_and_phone(tmp_path)
     assert store.lookup(CUSTOMER,"15",PHONE,PHONE)["payment"]["state"]=="PAID"
     store.confirm_payment(ORDER);store.mark_shipped(ORDER,"CJ대한통운","1234567890")
     assert store.lookup(CUSTOMER,"15",PHONE,PHONE)["fulfillment"]["state"]=="SHIPPED"
+
+def test_public_order_lookup_needs_only_public_order_number_and_redacts_delivery(tmp_path):
+    client,store=client_for(tmp_path)
+    number=store.customer_orders(CUSTOMER)[0]["order_number"]
+    response=client.post("/__order-dev/orders/public-lookup",json={"order_number":number})
+    assert response.status_code==200
+    order=response.json()["order"]
+    assert order["order_number"]==number and order["public_only"] is True
+    assert "delivery" not in order and "phone" not in order
+    assert client.post("/__order-dev/orders/public-lookup",json={"order_number":"15"}).status_code==404
 def config(tmp_path):
     p=tmp_path/"sms.json";p.write_text(json.dumps({"environment":"DEV","enabled":True,"bank":{"name":"TEST BANK","account":"TEST ACCOUNT","holder":"TEST HOLDER"},"credentials":{"account_sid":"AC"+"a"*32,"auth_token":"TEST","messaging_service_sid":"MG"+"b"*32}}));p.chmod(0o600);return p
 def sms_fixture(tmp_path,transport):

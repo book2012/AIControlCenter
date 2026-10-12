@@ -180,7 +180,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             order_id=row["provider_order_id"]
             return {
                 "order_number":number,
-                "review_state":row["review_state"],
+                "review_state":row.get("review_state") or row.get("state"),
                 "requested_at":row.get("requested_at"),
                 "items":draft["body"]["quote"]["line_items"],
                 "total":draft["body"]["quote"]["final_total"],

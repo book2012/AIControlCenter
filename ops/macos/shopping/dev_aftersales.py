@@ -32,6 +32,23 @@ def mount_aftersales(app,*,store,boundary,phone_cfg):
     mount_order_notices(app,path="/__order-dev/chat/orders/notices",store=store,
         authenticate=lambda request:auth(request,write=True),
         verified_phone=lambda customer:phone_cfg.get("test_phone"),bank_provider=bank_provider)
+    @app.post("/__order-dev/orders/public-lookup",include_in_schema=False)
+    async def public_lookup(request:Request):
+        try:
+            raw=bytearray()
+            async for chunk in request.stream():
+                if len(raw)+len(chunk)>1024:raise ValueError("BODY_TOO_LARGE")
+                raw.extend(chunk)
+            data=json.loads(raw)
+            from core.shopping.public_order_number import is_public_order_number
+            if type(data) is not dict or set(data)!={"order_number"} or type(data["order_number"]) is not str or not is_public_order_number(data["order_number"]):
+                raise ValueError("INVALID_PUBLIC_LOOKUP")
+            order=store.public_lookup(data["order_number"])
+            return JSONResponse({"order":order,"phone_verification_required_for_private_details":True},
+                headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
+        except Exception:
+            return JSONResponse({"message":"주문번호를 확인해 주세요."},status_code=404,
+                headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
     @app.post("/__order-dev/orders/lookup",include_in_schema=False)
     async def lookup(request:Request):
         try:
