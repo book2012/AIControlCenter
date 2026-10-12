@@ -33,6 +33,8 @@ def validate_plan(value):
     return {k:v for k,v in result.items() if v is not None}
 
 def resolve_explicit_slots(plan,text,context):
+    # Common Korean keyboard typo; never changes non-shipping intent semantics.
+    text=text.replace("운숭장", "운송장")
     plan=dict(plan)
     if plan["action"] in {"ORDER_DETAIL","ORDER_CONFIRM","DEPOSIT_CONFIRM","SHIP","DELIVERED","CANCEL"}:
         number=re.search(r"(?:주문번호|주문)\s*#?([1-9][0-9]{0,9})|^\s*#?([1-9][0-9]{0,9})\s*(?:번|주문|고객|입금|배송)",text)
@@ -56,8 +58,12 @@ def resolve_explicit_slots(plan,text,context):
     if plan["action"]=="SHIP":
         tracking=re.search(r"(?:운송장|송장)\s*(?:번호\s*)?([A-Za-z0-9-]{5,40})",text)
         if tracking:plan["tracking"]=tracking[1]
-        carrier=re.search(r"CJ대한통운|씨제이대한통운|한진택배|롯데택배|우체국택배|우체국|로젠택배|경동택배|DEV택배",text)
+        carrier=re.search(r"CJ대한통운|씨제이대한통운|한진택배|롯데택배|우체국택배|우체국|로젠택배|경동택배|DEV택배",text,re.I)
         if carrier:plan["carrier"]={"씨제이대한통운":"CJ대한통운","우체국":"우체국택배"}.get(carrier[0],carrier[0])
+        else:
+            # Accept a user-supplied carrier name such as Ch택배 when it appears before the tracking number.
+            generic=re.search(r"(?:택배사\s*)?([가-힣A-Za-z][가-힣A-Za-z0-9 ._-]{1,38}?택배)(?=\s*(?:운송장|송장))",text,re.I)
+            if generic:plan["carrier"]=generic[1].strip()
     return validate_plan(plan)
 
 SCHEMA = {"type":"object","properties":{"action":{"type":"string","enum":list(ACTIONS)},

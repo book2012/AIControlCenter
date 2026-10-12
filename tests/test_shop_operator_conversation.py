@@ -185,6 +185,8 @@ def test_explicit_slots_override_model_omissions_without_guessing():
     assert "order_id" not in resolve_explicit_slots({"action":"DEPOSIT_CONFIRM"},"그 고객 입금했어",{})
     plan=resolve_explicit_slots({"action":"SHIP"},"15번 CJ대한통운 운송장 1234567890로 보냈어",{})
     assert plan=={"action":"SHIP","order_id":15,"carrier":"CJ대한통운","tracking":"1234567890"}
+    assert resolve_explicit_slots({"action":"SHIP","order_id":177},"Ch택배 운송장 1234567",{})=={"action":"SHIP","order_id":177,"carrier":"Ch택배","tracking":"1234567"}
+    assert resolve_explicit_slots({"action":"SHIP","order_id":177},"택배사 ch택배 운숭장번호 12345667",{})=={"action":"SHIP","order_id":177,"carrier":"ch택배","tracking":"12345667"}
     assert resolve_explicit_slots({"action":"DEPOSIT_CONFIRM","order_id":99},"15번 입금했어",{})["order_id"]==15
 
 

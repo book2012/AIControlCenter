@@ -164,7 +164,15 @@ class OperatorConversation:
                 elif clean in {"주문목록","주문 목록","주문내역","주문 내역","전체 주문","전체 주문내역","전체 주문 목록"}:plan={"action":"ORDER_LIST"}
                 elif phone_list:plan={"action":"ORDER_LIST","phone":re.sub(r"[^0-9]","",phone_list[1])}
                 elif re.fullmatch(r"주문\s*상세\s*#?([1-9][0-9]*)",clean):plan={"action":"ORDER_DETAIL","order_id":int(re.fullmatch(r"주문\s*상세\s*#?([1-9][0-9]*)",clean)[1])}
-                else:plan=resolve_explicit_slots(validate_plan(self.judge(text,context)),text,context)
+                else:
+                    # Shipping follow-ups are deterministic when the pending request already
+                    # identifies shipping; this avoids Qwen dropping carrier/typo-only slots.
+                    shipping_followup=re.search(r"(?:운송장|운숭장|송장|택배사|택배)",clean)
+                    previous_action=context.get("previous_plan",{}).get("action")
+                    if shipping_followup and (previous_action=="SHIP" or "배송" in clean):
+                        plan=resolve_explicit_slots({"action":"SHIP"},clean,context)
+                    else:
+                        plan=resolve_explicit_slots(validate_plan(self.judge(text,context)),text,context)
             except Exception:return self._finish(update_id,"AI가 요청을 정확히 해석하지 못했습니다. 주문번호·상품명과 처리 내용을 다시 알려주세요.")
             if plan["action"]=="TASK_LIST":return self._finish(update_id,self.todo(actor))
             if plan["action"]=="WEBSITE_LIST":return self._finish(update_id,self.website_list(actor))

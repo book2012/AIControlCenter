@@ -16,5 +16,6 @@ def test_split_bot_authorization_namespace_and_no_replay(tmp_path):
         return '개발 목록'
     poll_once(Transport(),client,cfg,path);poll_once(Transport(),client,cfg,path)
     assert calls==[('주문목록',(1<<60)+2,'telegram-user-20'),('주문확인 #1',(1<<60)+3,'telegram-user-20')]
-    assert sent==['개발 목록']
+    assert sent[0]=='개발 목록'
+    assert '처리 결과 확인' in sent[1]
     with sqlite3.connect(path) as c:assert c.execute('SELECT offset FROM cursor').fetchone()[0]==4

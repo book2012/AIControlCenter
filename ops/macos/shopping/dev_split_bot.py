@@ -21,7 +21,15 @@ def poll_once(transport,client,cfg,path):
                     # Separate bot IDs must never collide with historical shared-bot updates.
                     reply=client(text,i+(1<<60),'telegram-user-'+str(user['id']))
                 transport.send_message(reply)
-            except Exception:pass # No replay of an ambiguous mutation or delivery.
+            except Exception:
+                # Never replay an ambiguous mutation; tell the operator to inspect status.
+                reply=('안녕하세요 agachichi 입니다\n[개발]\n'
+                       '처리 결과 확인이 필요합니다. 같은 변경을 재전송하지 말고 '
+                       '주문상세 또는 주문상태로 현재 상태를 확인해 주세요.')
+                try:
+                    transport.send_message(reply)
+                except Exception:
+                    pass
         with sqlite3.connect(path) as c:c.execute('UPDATE cursor SET offset=? WHERE id=1',(i+1,))
         offset=i+1
 
