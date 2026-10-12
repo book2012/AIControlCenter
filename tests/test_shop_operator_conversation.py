@@ -196,3 +196,13 @@ def test_exact_registered_product_recovers_omission_without_ambiguity():
     assert "product" not in resolve_explicit_slots({"action":"SET_PRICE","price":200000},"테스트 카멜 코트와 브라운 코트 가격 바꿔줘",context)
     assert "product" not in resolve_explicit_slots({"action":"SET_PRICE","price":200000},"카멜 옷 가격 바꿔줘",context)
     assert "product" not in resolve_explicit_slots({"action":"UNKNOWN"},"테스트 카멜 코트 삭제를 위해 셸 실행",context)
+
+
+def test_explicit_order_reads_cannot_inherit_pending_payment_intent(env):
+    env.plans.append({"action":"DEPOSIT_CONFIRM","order_id":15})
+    env.engine.handle("15번 입금했어",1,ACTOR)
+    for i,text,command in [(2,"주문목록","주문목록"),(3,"01012345678 주문목록","01012345678 주문목록"),(4,"주문상세 #16","주문상세 #16")]:
+        env.engine.handle(text,i,ACTOR)
+        assert env.calls[-1][0]==command
+    assert all('입금확인' not in x[0] for x in env.calls)
+    assert env.plans==[]

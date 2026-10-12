@@ -151,7 +151,13 @@ class OperatorConversation:
                 "last_order_id":session.get("last_order") if self.clock()<=session.get("expires",0) else None}
             if session.get("state") in {"WAITING_INFO","WAITING_APPROVAL"} and self.clock()<=session["expires"]:
                 context["previous_plan"]=json.loads(session["plan"])
-            try:plan=resolve_explicit_slots(validate_plan(self.judge(text,context)),text,context)
+            try:
+                # Explicit read commands must not inherit a pending mutation intent.
+                phone_list=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})(?:\s*(?:고객(?:님)?\s*)?(?:주문\s*)?(?:상태|목록|내역))?",clean)
+                if clean in {"주문목록","주문 목록","주문내역","주문 내역","전체 주문","전체 주문내역","전체 주문 목록"}:plan={"action":"ORDER_LIST"}
+                elif phone_list:plan={"action":"ORDER_LIST","phone":re.sub(r"[^0-9]","",phone_list[1])}
+                elif re.fullmatch(r"주문\s*상세\s*#?([1-9][0-9]*)",clean):plan={"action":"ORDER_DETAIL","order_id":int(re.fullmatch(r"주문\s*상세\s*#?([1-9][0-9]*)",clean)[1])}
+                else:plan=resolve_explicit_slots(validate_plan(self.judge(text,context)),text,context)
             except Exception:return self._finish(update_id,"AI가 요청을 정확히 해석하지 못했습니다. 주문번호·상품명과 처리 내용을 다시 알려주세요.")
             if plan["action"]=="TASK_LIST":return self._finish(update_id,self.todo(actor))
             if plan["action"]=="WEBSITE_LIST":return self._finish(update_id,self.website_list(actor))
