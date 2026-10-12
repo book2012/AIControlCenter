@@ -74,3 +74,11 @@ Backups: DEV LaunchAgent com.aicontrolcenter.dev-order-api.plist.backup-20261012
 Added pinned SOLAPI order-confirmation and shipping transport, domestic-number normalization, byte-bounded SMS/LMS and bound final delivery-status receipts. Existing Twilio OTP stays unchanged. DEV activation is explicit/future-only, skips other recipients and never replays failed/unknown sends. 225 targeted regressions passed. One real connection test was accepted but finally failed with carrier code 3113; automatic SMS flags stay disabled pending sender-carrier resolution. See [SMS architecture](docs/architecture/SHOP_SOLAPI_ORDER_SMS_DEV.md).
 
 Activation checkpoint 2026-10-12 07:50 KST: DEV API 3433cccdc3496e4feeed6b5826288e4d7b7aaf54 is active; order_sms=CONFIGURATION_REQUIRED and both SOLAPI/order-notification enabled flags remain false. Qwen operator bridge and Codex draft service remain healthy. Backup: com.aicontrolcenter.dev-order-api.plist.backup-20261012-075013. PROD is unchanged by this SMS task. Next gate is sender-carrier 3113 resolution, one successful final delivery/handset test, then future-only DEV activation.
+
+## 2026-10-12 Stage 2 DEV fulfillment verification
+- New isolated journey test links OperatorConversation approval to GuestOperatorAdapter, durable aftersales state and authenticated customer lookup HTTP route.
+- Shipping before payment is denied, every mutation requires confirmation, replay applies once, paid/shipped/delivered states match customer API, receipt survives restart, shipping outbox records one event.
+- Live isolated DEV Woo stock probe passed: stock 1/two simultaneous orders produces one confirmation, replay does not reduce twice; cancellation and return restoration concurrency/reconciliation boundaries also passed. Synthetic Woo product/orders and probe journal cleaned.
+- Related regression: 142 passed. No external Telegram/SMS messages, no real customer order edits, no PROD mutation. Runtime stays dfe5fd0 because this checkpoint changes tests/docs only.
+- Remaining acceptance: human storefront/browser flow and new Telegram message roundtrip; real phone/SOLAPI delivery still blocked by 3113. No claim of complete live browser-to-carrier end-to-end validation.
+- Next stage: detailed cancellation/return/refund-record workflow, without automatic money transfers.

@@ -46,3 +46,11 @@ Eight Qwen3:4b live intents classified correctly. Isolated dialogue executor ver
 Order identity presentation: customer_name projected from private shipping recipient; order timestamps rendered Asia/Seoul. Lists/details and dialogue choices/todos/reminders include phone, name, item options and date. Legacy missing names/dates remain explicitly unregistered/unknown. DEV-first, no PROD business changes.
 
 Live DEV follow-up found Qwen carrying a pending deposit intent into explicit order-list text. Deterministic list/phone/detail read routing now precedes model inference, with regression coverage; no actual payment mutation occurred.
+
+## 2026-10-12 Stage 2 DEV fulfillment verification
+- New isolated journey test links OperatorConversation approval to GuestOperatorAdapter, durable aftersales state and authenticated customer lookup HTTP route.
+- Shipping before payment is denied, every mutation requires confirmation, replay applies once, paid/shipped/delivered states match customer API, receipt survives restart, shipping outbox records one event.
+- Live isolated DEV Woo stock probe passed: stock 1/two simultaneous orders produces one confirmation, replay does not reduce twice; cancellation and return restoration concurrency/reconciliation boundaries also passed. Synthetic Woo product/orders and probe journal cleaned.
+- Related regression: 142 passed. No external Telegram/SMS messages, no real customer order edits, no PROD mutation. Runtime stays dfe5fd0 because this checkpoint changes tests/docs only.
+- Remaining acceptance: human storefront/browser flow and new Telegram message roundtrip; real phone/SOLAPI delivery still blocked by 3113. No claim of complete live browser-to-carrier end-to-end validation.
+- Next stage: detailed cancellation/return/refund-record workflow, without automatic money transfers.
