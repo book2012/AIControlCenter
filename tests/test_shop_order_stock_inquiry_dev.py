@@ -51,6 +51,8 @@ def test_operator_order_list_and_detail_separate_address():
     assert "#21" in listing and "#22" in listing and "테스트로" not in listing and "샘플길" not in listing
     detail=adapter.resolve("주문상세 #22")[2]
     assert "이고객" in detail and "54321" in detail and "서울 샘플길 2 202호" in detail
+    alias=adapter.resolve("주문번호 확인 #22")[2]
+    assert alias == detail
     assert adapter.admin_orders()[0]["order_id"]==21 and "delivery" not in adapter.admin_orders()[0]
     assert adapter.admin_detail(21)["delivery"]["address1"]=="서울 테스트로 1"
 

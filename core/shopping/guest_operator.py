@@ -129,7 +129,7 @@ class GuestOperatorAdapter:
             return None,None,self.aftersales.operator_command(command,update_id)
         mlist=re.fullmatch(r"주문\s*목록(?:\s+([1-9][0-9]?))?",clean)
         if mlist:return None,None,self.list_message(int(mlist[1]) if mlist[1] else None)
-        mdetail=re.fullmatch(r"주문\s*상세\s*#?([1-9][0-9]*)",clean)
+        mdetail=re.fullmatch(r"(?:주문\s*상세|주문번호\s*확인)\s*#?([1-9][0-9]*)",clean)
         if mdetail:return None,None,self.detail_message(int(mdetail[1]))
         mphone_detail=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*주문\s*상세\s*#?([1-9][0-9]*)",clean)
         if mphone_detail:return None,None,self.detail_message(int(mphone_detail[2]),local_phone(mphone_detail[1]))
