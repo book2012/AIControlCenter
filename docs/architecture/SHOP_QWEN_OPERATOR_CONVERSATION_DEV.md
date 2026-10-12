@@ -42,3 +42,5 @@ Backups: DEV LaunchAgent com.aicontrolcenter.dev-order-api.plist.backup-20261012
 
 ## 2026-10-12 stage 1 live validation
 Eight Qwen3:4b live intents classified correctly. Isolated dialogue executor verified confirmation-before-write, actor isolation, duplicate execution once and refusal cancellation. Found product slot omission on price request; explicit-slot resolver now recovers only a unique exact registered product name, with ambiguous/unregistered/unsupported-action regression coverage. No live orders or inventory changed.
+
+Order identity presentation: customer_name projected from private shipping recipient; order timestamps rendered Asia/Seoul. Lists/details and dialogue choices/todos/reminders include phone, name, item options and date. Legacy missing names/dates remain explicitly unregistered/unknown. DEV-first, no PROD business changes.

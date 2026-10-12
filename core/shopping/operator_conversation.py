@@ -1,3 +1,4 @@
+from core.shopping.guest_operator import order_identity
 """Private, actor-scoped operator dialogue and confirmation; no model-generated execution."""
 import hashlib
 import json
@@ -61,7 +62,7 @@ class OperatorConversation:
             if not plan.get("order_id") and not plan.get("phone"):
                 return None,"어느 주문인가요? 주문번호나 고객 휴대폰 번호를 알려주세요."
             if len(rows)!=1:
-                return None,("주문을 골라주세요: "+", ".join("#"+str(r["order_id"]) for r in rows[:12]) if rows else "일치하는 주문을 찾지 못했습니다.")
+                return None,("주문을 골라주세요: "+"\n\n".join("#"+str(r["order_id"])+" · "+order_identity(r) for r in rows[:12]) if rows else "일치하는 주문을 찾지 못했습니다.")
             number=rows[0]["order_id"];plan["order_id"]=number
             if action=="ORDER_CONFIRM":return rows[0]["phone"]+" 고객 주문확인 #"+str(number),None
             if action=="SHIP":
@@ -187,7 +188,7 @@ class OperatorConversation:
             parts.append("대기 중: "+(question or command)+" · 승인 또는 추가 정보를 알려주세요.")
         if session.get("state") in {"EXECUTING","UNKNOWN"}:parts.append("처리 결과 확인이 필요합니다. 같은 변경은 다시 실행하지 않습니다.")
         labels={"PENDING_REVIEW":"주문확인","READY_TO_SHIP":"배송등록","AWAITING_DEPOSIT":"입금상태 확인"}
-        parts.extend("주문 #"+str(r["order_id"])+" · "+labels[r["display_state"]] for r in self.orders()[:30] if r.get("display_state") in labels)
+        parts.extend("주문 #"+str(r["order_id"])+" · "+labels[r["display_state"]]+"\n"+order_identity(r) for r in self.orders()[:30] if r.get("display_state") in labels)
         with sqlite3.connect(self.path) as c:
             count=c.execute("SELECT count(*) FROM website_jobs WHERE actor=? AND state NOT IN ('NO_CHANGE')",(actor,)).fetchone()[0]
         if count:parts.append("홈페이지 개선 "+str(count)+"건 · ‘개선목록’으로 진행 확인")
@@ -208,7 +209,7 @@ class OperatorConversation:
                 if state not in delays:continue
                 key="order:"+str(order["order_id"])+":"+state;active.add(key)
                 label={"PENDING_REVIEW":"주문 확인","READY_TO_SHIP":"배송 등록","AWAITING_DEPOSIT":"입금 상태 확인"}[state]
-                body="주문 #"+str(order["order_id"])+" · "+label+" 대기\n잊지 않도록 알려드립니다. ‘주문상세 #"+str(order["order_id"])+"’로 확인해 주세요."
+                body="주문 #"+str(order["order_id"])+" · "+label+" 대기\n"+order_identity(order)+"\n잊지 않도록 알려드립니다. ‘주문상세 #"+str(order["order_id"])+"’로 확인해 주세요."
                 c.execute("INSERT OR IGNORE INTO dialogue_notices VALUES(?,'operations',?,'PENDING',?)",(key,body,self.clock()+delays[state]))
             for row in c.execute("SELECT id FROM dialogue_notices WHERE actor='operations' AND state='PENDING'").fetchall():
                 if row[0] not in active:c.execute("UPDATE dialogue_notices SET state='CANCELLED' WHERE id=?",(row[0],))

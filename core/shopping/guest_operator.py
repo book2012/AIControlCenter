@@ -3,6 +3,22 @@ import hashlib,json,re,sqlite3
 from core.shopping.order_core.guest_checkout import fingerprint
 from core.shopping.order_core.telegram import OrderTelegramIntegration
 
+def order_date(value):
+    from datetime import datetime,timezone
+    from zoneinfo import ZoneInfo
+    if not value:return "일자 미확인"
+    try:
+        date=datetime.fromisoformat(str(value).replace("Z","+00:00"))
+        if date.tzinfo is None:date=date.replace(tzinfo=timezone.utc)
+        return date.astimezone(ZoneInfo("Asia/Seoul")).strftime("%Y-%m-%d %H:%M")
+    except (ValueError,TypeError):return "일자 미확인"
+
+def order_identity(row):
+    name=row.get("customer_name") or row.get("delivery",{}).get("first_name") or "이름 미등록"
+    items=row.get("items") or row.get("quote",{}).get("line_items",[])
+    products=", ".join(str(v.get("name","상품 미확인"))+" / "+str(v.get("option") or "기본")+" / "+str(v.get("quantity",0))+"개" for v in items)
+    return str(name)+" · "+str(row.get("phone") or "번호 미등록")+"\n주문일: "+order_date(row.get("requested_at"))+"\n"+products
+
 def local_phone(value):
     value=re.sub(r"[^0-9+]","",value)
     if value.startswith("+82"):value="0"+value[3:]
@@ -31,7 +47,7 @@ class GuestOperatorAdapter:
         title={"PENDING_REVIEW":" 고객님 주문","CONFIRMED":" 고객님 주문확인 완료 · 재고 차감 완료",
                "REJECTED":" 고객님 주문 거절","STOCK_BLOCKED":" 고객님 주문확정 보류 · 재고 확인 필요"}.get(state," 고객님 주문 상태")
         items="\n".join(v["name"]+" / "+v["option"]+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
-        text=phone+title+"\n주문 #"+str(r["provider_order_id"])+"\n"+items+"\n"+payload["total"]+" "+payload["currency"]
+        text=phone+title+"\n주문 #"+str(r["provider_order_id"])+" · "+str(r["delivery"].get("first_name") or "이름 미등록")+"\n주문일: "+order_date(r.get("requested_at"))+"\n"+items+"\n"+payload["total"]+" "+payload["currency"]
         if state in ("PENDING_REVIEW","STOCK_BLOCKED"):
             text+="\n답장: "+phone+" 고객 주문확인\n여러 주문은: "+phone+" 고객 주문확인 #"+str(r["provider_order_id"])
         text+="\n상세: 주문상세 #"+str(r["provider_order_id"])+" · 전체: 주문목록"
@@ -46,13 +62,13 @@ class GuestOperatorAdapter:
         return "COMPLETED" if fulfillment["state"]=="DELIVERED" else "SHIPPED" if fulfillment["state"]=="SHIPPED" else "READY_TO_SHIP" if self.aftersales.payment(row["provider_order_id"])["state"]=="PAID" else "AWAITING_DEPOSIT"
     def admin_orders(self,limit=50):
         rows=self.rows()[:max(1,min(int(limit),100))]
-        return [{"order_id":r["provider_order_id"],"phone":r["phone"],"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
+        return [{"order_id":r["provider_order_id"],"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]]} for r in rows]
     def admin_detail(self,order_id):
         rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id)]
         if len(rows)!=1:return None
         r=rows[0];d=r["delivery"]
-        return {"order_id":r["provider_order_id"],"phone":r["phone"],"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
+        return {"order_id":r["provider_order_id"],"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]],
             "delivery":{"recipient":d.get("first_name",""),"postcode":d.get("postcode",""),"address1":d.get("address_1",""),"address2":d.get("address_2","")}}
     def list_message(self,limit=None,phone=None):
@@ -64,6 +80,7 @@ class GuestOperatorAdapter:
         for r in rows:
             display=self.display_state(r)
             lines.append("#"+str(r["provider_order_id"])+" · "+r["phone"]+" · "+labels.get(display,display)+" · "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
+            lines.append("고객: "+str(r["delivery"].get("first_name") or "이름 미등록")+" · 주문일: "+order_date(r.get("requested_at")))
             lines.extend("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
             if self.aftersales:
                 shipment=self.aftersales.admin_fulfillment(r["provider_order_id"])
@@ -82,7 +99,7 @@ class GuestOperatorAdapter:
         items="\n".join("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
         address=" ".join(v for v in (d.get("address_1",""),d.get("address_2","")) if v).strip()
         display=self.display_state(r)
-        return ("주문 #"+str(r["provider_order_id"])+" 상세\n상태: "+labels.get(display,display)+"\n고객: "+r["phone"]+"\n수령인: "+str(d.get("first_name",""))+"\n우편번호: "+str(d.get("postcode",""))+"\n주소: "+address+"\n\n"+items+"\n총액: "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
+        return ("주문 #"+str(r["provider_order_id"])+" 상세\n상태: "+labels.get(display,display)+"\n고객: "+r["phone"]+"\n주문일: "+order_date(r.get("requested_at"))+"\n수령인: "+str(d.get("first_name",""))+"\n우편번호: "+str(d.get("postcode",""))+"\n주소: "+address+"\n\n"+items+"\n총액: "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
     def resolve(self,text,update_id=None):
         if self.inquiry_queue is not None and update_id is not None:
             reply=self.inquiry_queue.command(text,update_id)

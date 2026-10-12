@@ -42,7 +42,8 @@ def test_natural_payment_requires_bound_confirmation_and_duplicate_is_once(env):
 
 def test_ambiguous_phone_followup_keeps_intent_and_never_guesses_order(env):
     env.plans.append({"action":"DEPOSIT_CONFIRM","phone":"01012345678"})
-    assert "#15, #16" in env.engine.handle("이 고객 입금했어",1,ACTOR)
+    reply=env.engine.handle("이 고객 입금했어",1,ACTOR)
+    assert "#15" in reply and "#16" in reply and "01012345678" in reply
     env.plans.append({"action":"DEPOSIT_CONFIRM","order_id":16})
     assert "입금확인 #16" in env.engine.handle("16번",2,ACTOR)
     assert env.calls==[]

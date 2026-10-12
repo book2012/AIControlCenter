@@ -5896,3 +5896,5 @@ DEV papachichi_bot uses a dedicated cursor and lock, with namespaced update IDs 
 Telegram separation activated 2026-10-12: papachichi DEV consumer and mommychichi PROD-only consumer healthy; user verified DEV connection receipt. SMS disabled. See SHOP_TELEGRAM_SPLIT_BOTS.md.
 
 2026-10-12 DEV dialogue validation: eight live Qwen intents checked with isolated fixtures; approval, actor binding, duplicate-once and cancellation verified. Recover one exact registered product name from operator text when Qwen omits it; ambiguous multi-product names remain unresolved. No real commerce or SMS mutation.
+
+DEV operator order lists/details, choice prompts and reminders now show recipient name, phone, items/options and KST order date alongside stable order number. Missing historical values are marked unknown; no invented identity/date.
