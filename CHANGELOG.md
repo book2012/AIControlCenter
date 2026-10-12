@@ -6358,3 +6358,5 @@ Added pinned SOLAPI order-confirmation and shipping transport, domestic-number n
 DEV papachichi_bot uses a dedicated cursor and lock, with namespaced update IDs and the authenticated DEV bridge. PROD mommychichi_bot in split_bot_mode never composes or forwards DEV commands. Tokens remain private; SMS remains disabled.
 
 Telegram separation activated 2026-10-12: papachichi DEV consumer and mommychichi PROD-only consumer healthy; user verified DEV connection receipt. SMS disabled. See SHOP_TELEGRAM_SPLIT_BOTS.md.
+
+2026-10-12 DEV dialogue validation: eight live Qwen intents checked with isolated fixtures; approval, actor binding, duplicate-once and cancellation verified. Recover one exact registered product name from operator text when Qwen omits it; ambiguous multi-product names remain unresolved. No real commerce or SMS mutation.

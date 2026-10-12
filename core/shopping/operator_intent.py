@@ -39,6 +39,10 @@ def resolve_explicit_slots(plan,text,context):
         if phone:plan["phone"]=re.sub(r"[^0-9]","",phone[0])
         if not plan.get("order_id") and not plan.get("phone") and re.search(r"그\s*(?:고객|주문)|해당\s*(?:고객|주문)|이\s*주문",text) and context.get("last_order_id"):
             plan["order_id"]=context["last_order_id"]
+    if plan["action"] in {"PRODUCT_STATUS","SET_STOCK","SET_PRICE","SET_SALE","UNSALE","HIDE","SHOW"}:
+        # Recover only one exact registered name explicitly present in user text.
+        names={r.get("name") for r in context.get("products",[]) if type(r) is dict and type(r.get("name")) is str and r["name"] and r["name"] in text}
+        if len(names)==1:plan["product"]=next(iter(names))
     if plan["action"]=="SHIP":
         tracking=re.search(r"(?:운송장|송장)\s*(?:번호\s*)?([A-Za-z0-9-]{5,40})",text)
         if tracking:plan["tracking"]=tracking[1]

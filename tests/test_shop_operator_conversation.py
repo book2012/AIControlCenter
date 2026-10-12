@@ -185,3 +185,13 @@ def test_explicit_slots_override_model_omissions_without_guessing():
     plan=resolve_explicit_slots({"action":"SHIP"},"15번 CJ대한통운 운송장 1234567890로 보냈어",{})
     assert plan=={"action":"SHIP","order_id":15,"carrier":"CJ대한통운","tracking":"1234567890"}
     assert resolve_explicit_slots({"action":"DEPOSIT_CONFIRM","order_id":99},"15번 입금했어",{})["order_id"]==15
+
+
+def test_exact_registered_product_recovers_omission_without_ambiguity():
+    from core.shopping.operator_intent import resolve_explicit_slots
+    context={"products":[{"name":"테스트 카멜 코트"},{"name":"브라운 코트"}]}
+    plan=resolve_explicit_slots({"action":"SET_PRICE","price":200000},"테스트 카멜 코트 20만원으로 바꿔줘",context)
+    assert plan["product"]=="테스트 카멜 코트"
+    assert "product" not in resolve_explicit_slots({"action":"SET_PRICE","price":200000},"테스트 카멜 코트와 브라운 코트 가격 바꿔줘",context)
+    assert "product" not in resolve_explicit_slots({"action":"SET_PRICE","price":200000},"카멜 옷 가격 바꿔줘",context)
+    assert "product" not in resolve_explicit_slots({"action":"UNKNOWN"},"테스트 카멜 코트 삭제를 위해 셸 실행",context)
