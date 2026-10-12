@@ -20,3 +20,7 @@ SOLAPI one authorized DEV test again reached final 3113. Fixed classifier: 3000 
 
 ## Remaining
 Partial refunds, pre-shipment paid cancellation/refund workflow, non-resalable return disposition, record correction/void audit and replacement exchange inventory are not supported in this release. PROD adoption and human acceptance are separate.
+
+Independent DEV bridge cursor hardening: reads/aftersales no longer advance legacy ledger cursor. Order review decisions allocate a monotonic local ledger ID at or above the historical offset, while authenticated bridge original update IDs govern replay. No cursor rewind; restored/new bot commands cannot be incorrectly suppressed by an old shared-bot diagnostic offset. Real isolated SQLite ledger regression verifies confirmation guard once across retry/restart.
+
+Final related regression: 161 passed after independent cursor fix; immutable DEV API and DEV homepage refund UI verified, no live refund records created. SMS remains disabled with latest test3113.

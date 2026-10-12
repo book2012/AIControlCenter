@@ -24,9 +24,17 @@ def compose_dev_bridge(*, cfg, data, telegram, adapter, products, conversation_c
         if match:
             reference = match[2]
             decision = {"status": "STATUS", "confirm": "CONFIRMED", "reject": "REJECTED"}[match[1]]
-        result=telegram._ledger.process_operator_update(update_id, reference=reference,
-            decision=decision, actor_reference=actor if decision else None,
-            confirmation_guard=telegram._confirmation_guard)
+        result={"outcome":"IGNORED"}
+        if decision is not None:
+            # The independent bot/bridge owns its own replay ledger and cursor.
+            # Allocate a monotonically increasing local ledger operation ID;
+            # never rewind the historical shared-bot cursor or advance it on reads.
+            ledger_id=update_id
+            offset=getattr(telegram._ledger,"telegram_offset",None)
+            if callable(offset):ledger_id=max(ledger_id,offset())
+            result=telegram._ledger.process_operator_update(ledger_id, reference=reference,
+                decision=decision, actor_reference=actor,
+                confirmation_guard=telegram._confirmation_guard)
         if reply:return reply
         if decision:
             outcome=result.get("outcome") if isinstance(result,dict) else "CONFIRMED"

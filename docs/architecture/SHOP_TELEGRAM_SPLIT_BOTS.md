@@ -8,3 +8,5 @@ Activation preserves backups, verifies bot identity/operator binding, stops the 
 
 ## Activation checkpoint 2026-10-12 08:49 KST
 Both bot consumers activated with distinct tokens/cursors/locks. User confirmed DEV connection message receipt. DEV API retains 3433ccc and QWEN_DEV; DEV consumer pin 1eb15cf. PROD API cc464bf split mode RUNNING; prior presentation pin retained. SMS remains disabled; original dirty tree preserved. Private config and launch manifests backed up with suffix 20261012-0850. New command acknowledgement test remains a user acceptance step.
+
+Independent DEV bridge cursor hardening: reads/aftersales no longer advance legacy ledger cursor. Order review decisions allocate a monotonic local ledger ID at or above the historical offset, while authenticated bridge original update IDs govern replay. No cursor rewind; restored/new bot commands cannot be incorrectly suppressed by an old shared-bot diagnostic offset. Real isolated SQLite ledger regression verifies confirmation guard once across retry/restart.

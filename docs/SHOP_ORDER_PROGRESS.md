@@ -90,3 +90,7 @@ Regression exposed contradictory case decision replies: reversing an approved/re
 Remaining: explicit manual refund-completion record with amount/evidence and customer presentation is not yet implemented; partial refunds and exchange replacement-stock orchestration are also pending. Human browser acceptance and SOLAPI 3113 resolution remain separate.
 
 2026-10-12: DEV manual refund-completion records implemented after verified return restocking; explicit case/full KRW amount/evidence and actor-bound confirmation required. No transfer APIs; customer projection omits proof/actor. Refund order-page UI and operator presentation updated. 160 regression tests + real isolated Chrome passed. SOLAPI retry final3113, auto SMS disabled; processing3000 classifier corrected. See SHOP_MANUAL_REFUND_RECORD_DEV.md.
+
+Independent DEV bridge cursor hardening: reads/aftersales no longer advance legacy ledger cursor. Order review decisions allocate a monotonic local ledger ID at or above the historical offset, while authenticated bridge original update IDs govern replay. No cursor rewind; restored/new bot commands cannot be incorrectly suppressed by an old shared-bot diagnostic offset. Real isolated SQLite ledger regression verifies confirmation guard once across retry/restart.
+
+Final related regression: 161 passed after independent cursor fix; immutable DEV API and DEV homepage refund UI verified, no live refund records created. SMS remains disabled with latest test3113.
