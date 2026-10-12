@@ -129,7 +129,7 @@
     const result=await r.json();if(!r.ok)throw new Error(result.message);
     for(const id of ["recipient","postcode","address1","address2"])by(id).value="";
     by("final-review").replaceChildren();by("delivery-form").hidden=true;
-    by("auth-note").textContent="주문 #"+result.provider_order_id+" 접수 완료. 운영자 알림을 준비했으며 확인을 기다립니다.";
+    by("auth-note").textContent="주문 #"+(result.order_number||result.provider_order_id)+" 접수 완료. 운영자 알림을 준비했으며 확인을 기다립니다.";
     by("guest-new").hidden=false;
     if(checkoutPage){
       for(const purchased of selectedCart){
@@ -146,7 +146,7 @@
     by("auth-note").textContent="접수 상태를 확인하는 중입니다…";
     const headers=await authHeaders();const r=await fetch("/shopping/orders/operations/"+encodeURIComponent(pending.operation_key),{credentials:"same-origin",cache:"no-store",headers});
     const status=await r.json();if(!r.ok)throw new Error("주문 상태를 확인하지 못했습니다. 새 주문을 만들지 마세요.");
-    by("auth-note").textContent=status.state==="COMPLETED" ? "주문 #"+status.provider_order_id+" / "+({CONFIRMED:"운영자가 주문을 확인했습니다.",REJECTED:"운영자가 주문을 거절했습니다.",PENDING_REVIEW:"운영자 확인 대기 중입니다."}[status.review_state]||status.review_state) : "주문 처리 상태: "+status.state+" · 중복 접수하지 마세요.";
+    by("auth-note").textContent=status.state==="COMPLETED" ? "주문 #"+(status.order_number||status.provider_order_id)+" / "+({CONFIRMED:"운영자가 주문을 확인했습니다.",REJECTED:"운영자가 주문을 거절했습니다.",PENDING_REVIEW:"운영자 확인 대기 중입니다."}[status.review_state]||status.review_state) : "주문 처리 상태: "+status.state+" · 중복 접수하지 마세요.";
     by("guest-new").hidden=status.state!=="COMPLETED";
   });
   by("guest-new").onclick=()=>{sessionStorage.removeItem("aicc-guest-operation-v1");if(checkoutPage){sessionStorage.removeItem(checkoutKey);location.assign("/homepage/storefront");return;}pending=null;prepared=null;by("order").hidden=true;by("guest-new").hidden=true;by("guest-status").disabled=true;render();};

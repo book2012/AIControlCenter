@@ -14,6 +14,7 @@ from core.shopping.guest_phone_runtime import GuestPhoneBridge,mount_phone_route
 from core.shopping.guest_checkout_runtime import mount_checkout_routes,mount_order_lookup,GuardedGuestOrderWriter
 from core.shopping.order_core import OrderCreateService,SQLiteOrderCreateLedger,ShoppingServiceOrderCatalogResolver
 from core.shopping.order_core.guest_checkout import PrivateCheckoutStore
+from core.shopping.public_order_number import public_order_number
 from core.shopping.order_core.guest_chat import GuestShoppingChat,GuestQuestion,GuestCart
 
 def create_guest_commerce_app(*,private_root,origin,phone_cfg,binding_key,csrf_key,catalog,
@@ -86,6 +87,13 @@ def create_guest_commerce_app(*,private_root,origin,phone_cfg,binding_key,csrf_k
             from core.api.schemas.order_create import OrderOperationStatus
             value=application.operation_status(request,key)
             if value is None:raise ValueError("ORDER_NOT_FOUND")
+            if value.get("provider_order_id"):
+                auth=application._authenticate(request,write=False)
+                for row in ledger.operator_orders():
+                    if row["provider_order_id"]==value["provider_order_id"]:
+                        draft=checkout.by_customer_operation(row["operation_key"],auth.customer_id,allow_expired=True)
+                        value["order_number"]=public_order_number(requested_at=row["requested_at"],phone=draft["body"]["billing"]["phone"],entropy=row.get("reference") or row["operation_key"])
+                        break
             return JSONResponse(OrderOperationStatus.model_validate(value).model_dump(mode="json"),headers={"Cache-Control":"no-store"})
         except Exception:return JSONResponse({"message":"주문 상태를 확인할 수 없습니다."},status_code=403,headers={"Cache-Control":"no-store"})
     from core.shopping.guest_chat_history import GuestChatHistory,mount_history

@@ -15,6 +15,7 @@ class CaseCreate(BaseModel):
     target_variation_id:str|None=Field(default=None,pattern=r"^[1-9][0-9]*$")
 from core.shopping.guest_returns import ReturnWorkflow
 from core.shopping.manual_refunds import ManualRefundRecords
+from core.shopping.public_order_number import public_order_number, is_public_order_number
 
 class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
     def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time,stock_cancellation=None,stock_return=None):
@@ -79,7 +80,8 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             f=self._fulfillment(row["provider_order_id"]);cases=self._case_rows(order_id=row["provider_order_id"],customer=customer,limit=20)
             now=self.clock();within=f["state"]=="DELIVERED" and type(f["delivered"]) in (int,float) and f["delivered"]<=now<f["delivered"]+RETURN_WINDOW
             active=any(v["state"]!="REJECTED" for v in cases)
-            result.append({"order_id":row["provider_order_id"],"review_state":row["review_state"],"requested_at":row["requested_at"],
+            order_number=public_order_number(requested_at=row["requested_at"],phone=draft["body"]["billing"]["phone"],entropy=row.get("reference") or row["operation_key"])
+            result.append({"order_id":row["provider_order_id"],"order_number":order_number,"review_state":row["review_state"],"requested_at":row["requested_at"],
                 "items":draft["body"]["quote"]["line_items"],"total":draft["body"]["quote"]["final_total"],"currency":draft["body"]["quote"]["currency"],
                 "fulfillment":f,"refund":self.refund(row["provider_order_id"]),"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
                 "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active),"cases":cases})
@@ -152,11 +154,14 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         if type(phone) is not str or not re.fullmatch(r"[+0-9 ()-]{8,32}",phone):raise ValueError("ORDER_NOT_FOUND")
         if local_phone(phone)!=local_phone(verified_phone):raise ValueError("ORDER_NOT_FOUND")
         number=str(order_number).strip().removeprefix("#")
-        if not re.fullmatch(r"[1-9][0-9]{0,11}",number):raise ValueError("ORDER_NOT_FOUND")
-        order_id=int(number);row,draft=self._customer_order(customer,order_id)
+        if not re.fullmatch(r"[0-9]{1,18}",number):raise ValueError("ORDER_NOT_FOUND")
+        orders=self.customer_orders(customer)
+        matched=[item for item in orders if item["order_number"]==number]
+        if not matched and number.isdigit() and int(number)>0:
+            matched=[item for item in orders if item["order_id"]==int(number)]
+        if len(matched)!=1:raise ValueError("ORDER_NOT_FOUND")
+        order=matched[0];order_id=order["order_id"];row,draft=self._customer_order(customer,order_id)
         if local_phone(draft["body"]["billing"]["phone"])!=local_phone(verified_phone):raise ValueError("ORDER_NOT_FOUND")
-        order=next(r for r in self.customer_orders(customer) if r["order_id"]==order_id)
-        order["order_number"]=str(order_id)
         order["delivery"]=draft["body"]["shipping"]
         order["payment"]=self.payment(order_id)
         if getattr(self,"sms",None):order["notification_state"]=self.sms.state(order_id)

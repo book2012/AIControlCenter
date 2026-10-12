@@ -19,3 +19,4 @@ class OrderOperationStatus(BaseModel):
     state: Literal["CLAIMED", "COMPLETED", "TERMINAL_FAILED", "UNKNOWN_OUTCOME"]
     review_state: Literal["PENDING_REVIEW", "CONFIRMED", "REJECTED"] | None
     provider_order_id: int | None = Field(ge=1)
+    order_number: str | None = Field(default=None, pattern=r"^[0-9]{10}$")

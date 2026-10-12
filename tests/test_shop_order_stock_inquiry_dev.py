@@ -48,7 +48,7 @@ def test_operator_order_list_and_detail_separate_address():
            delivery={"first_name":"이고객","postcode":"54321","address_1":"서울 샘플길 2","address_2":"202호"})]
     adapter.rows=lambda:rows
     listing=adapter.resolve("주문목록")[2]
-    assert "#21" in listing and "#22" in listing and "테스트로" not in listing and "샘플길" not in listing
+    assert "2610062277" in listing and "2610064444" in listing and "#21" not in listing and "#22" not in listing and "테스트로" not in listing and "샘플길" not in listing
     detail=adapter.resolve("주문상세 #22")[2]
     assert "이고객" in detail and "54321" in detail and "서울 샘플길 2 202호" in detail
     alias=adapter.resolve("주문번호 확인 #22")[2]

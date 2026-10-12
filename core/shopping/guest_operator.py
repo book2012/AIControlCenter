@@ -2,6 +2,7 @@
 import hashlib,json,re,sqlite3
 from core.shopping.order_core.guest_checkout import fingerprint
 from core.shopping.order_core.telegram import OrderTelegramIntegration
+from core.shopping.public_order_number import public_order_number, is_public_order_number
 
 def order_date(value):
     from datetime import datetime,timezone
@@ -36,21 +37,24 @@ class GuestOperatorAdapter:
             if raw is None:continue
             body=json.loads(raw[0])
             if fingerprint(body)!=raw[1]:raise ValueError("PRIVATE_DRAFT_CORRUPT")
-            result.append({**row,"phone":local_phone(body["billing"]["phone"]),"quote":body["quote"],"delivery":body["shipping"]})
+            phone=local_phone(body["billing"]["phone"])
+            result.append({**row,"phone":phone,"order_number":public_order_number(requested_at=row.get("requested_at"),phone=phone,entropy=row.get("reference") or row["operation_key"]),"quote":body["quote"],"delivery":body["shipping"]})
         return result
+    def _order_number(self,row):
+        return row.get("order_number") or public_order_number(requested_at=row.get("requested_at"),phone=row.get("phone",""),entropy=row.get("reference") or row.get("operation_key") or row.get("provider_order_id"))
     def message(self,payload):
         matches=[r for r in self.rows() if r["reference"]==payload["reference"] and r["provider_order_id"]==payload["provider_order_id"]]
         if len(matches)!=1:return OrderTelegramIntegration._message(payload)
         r=matches[0];phone=r["phone"];state=payload["review_state"]
         if self.aftersales and self.aftersales.cancellation(r["provider_order_id"])["state"]!="NONE":
-            return "주문 #"+str(r["provider_order_id"])+" · "+("취소완료 · 재고 복원 확인" if self.display_state(r)=="CANCELLED" else "취소 결과 확인중")
+            return "주문 "+self._order_number(r)+" · "+("취소완료 · 재고 복원 확인" if self.display_state(r)=="CANCELLED" else "취소 결과 확인중")
         title={"PENDING_REVIEW":" 고객님 주문","CONFIRMED":" 고객님 주문확인 완료 · 재고 차감 완료",
                "REJECTED":" 고객님 주문 거절","STOCK_BLOCKED":" 고객님 주문확정 보류 · 재고 확인 필요"}.get(state," 고객님 주문 상태")
         items="\n".join(v["name"]+" / "+v["option"]+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
-        text=phone+title+"\n주문 #"+str(r["provider_order_id"])+" · "+str(r["delivery"].get("first_name") or "이름 미등록")+"\n주문일: "+order_date(r.get("requested_at"))+"\n"+items+"\n"+payload["total"]+" "+payload["currency"]
+        text=phone+title+"\n주문 "+self._order_number(r)+" · "+str(r["delivery"].get("first_name") or "이름 미등록")+"\n주문일: "+order_date(r.get("requested_at"))+"\n"+items+"\n"+payload["total"]+" "+payload["currency"]
         if state in ("PENDING_REVIEW","STOCK_BLOCKED"):
-            text+="\n답장: "+phone+" 고객 주문확인\n여러 주문은: "+phone+" 고객 주문확인 #"+str(r["provider_order_id"])
-        text+="\n상세: 주문상세 #"+str(r["provider_order_id"])+" · 전체: 주문목록"
+            text+="\n답장: "+phone+" 고객 주문확인\n여러 주문은: "+phone+" 고객 주문확인 #"+self._order_number(r)
+        text+="\n상세: 주문상세 #"+self._order_number(r)+" · 전체: 주문목록"
         return text
     def display_state(self,row):
         if row["state"]!="CONFIRMED" or self.aftersales is None:return row["state"]
@@ -63,13 +67,13 @@ class GuestOperatorAdapter:
         return "COMPLETED" if fulfillment["state"]=="DELIVERED" else "SHIPPED" if fulfillment["state"]=="SHIPPED" else "READY_TO_SHIP" if self.aftersales.payment(row["provider_order_id"])["state"]=="PAID" else "AWAITING_DEPOSIT"
     def admin_orders(self,limit=50):
         rows=self.rows()[:max(1,min(int(limit),100))]
-        return [{"order_id":r["provider_order_id"],"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
+        return [{"order_id":r["provider_order_id"],"order_number":self._order_number(r),"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]]} for r in rows]
     def admin_detail(self,order_id):
         rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id)]
         if len(rows)!=1:return None
         r=rows[0];d=r["delivery"]
-        return {"order_id":r["provider_order_id"],"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
+        return {"order_id":r["provider_order_id"],"order_number":self._order_number(r),"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]],
             "delivery":{"recipient":d.get("first_name",""),"postcode":d.get("postcode",""),"address1":d.get("address_1",""),"address2":d.get("address_2","")}}
     def list_message(self,limit=None,phone=None):
@@ -80,7 +84,7 @@ class GuestOperatorAdapter:
         lines=[("고객 "+phone+" 주문 " if phone else "전체 주문 ")+str(len(rows))+"건"]
         for r in rows:
             display=self.display_state(r)
-            lines.append("#"+str(r["provider_order_id"])+" · "+r["phone"]+" · "+labels.get(display,display)+" · "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
+            lines.append(self._order_number(r)+" · "+r["phone"]+" · "+labels.get(display,display)+" · "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
             lines.append("고객: "+str(r["delivery"].get("first_name") or "이름 미등록")+" · 주문일: "+order_date(r.get("requested_at")))
             lines.extend("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
             if self.aftersales:
@@ -93,16 +97,26 @@ class GuestOperatorAdapter:
                 lines.append("입금: "+("확인완료" if self.aftersales.payment(r["provider_order_id"])["state"]=="PAID" else "대기"))
                 if shipment["tracking"]:lines.append(shipment["carrier"]+" · "+shipment["tracking"])
             lines.append("")
-        lines.append("상세보기: 주문상세 #주문번호")
+        lines.append("상세보기: 주문상세 #주문번호(10자리)")
         return "\n".join(lines)
+    def _identifier_rows(self, identifier, phone=None):
+        token=str(identifier).strip().removeprefix("#")
+        rows=self.rows()
+        if is_public_order_number(token):
+            rows=[r for r in rows if self._order_number(r)==token]
+        else:
+            try:provider_id=int(token)
+            except ValueError:return []
+            rows=[r for r in rows if r["provider_order_id"]==provider_id]
+        return [r for r in rows if phone is None or r["phone"]==phone]
     def detail_message(self,order_id,phone=None):
-        rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id) and (phone is None or r["phone"]==phone)]
+        rows=self._identifier_rows(order_id,phone)
         if len(rows)!=1:return "해당 주문을 찾지 못했습니다." if not rows else "주문을 구분할 수 없습니다."
         r=rows[0];d=r["delivery"];labels={"REFUND_RECORDED":"환불완료 기록","RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         items="\n".join("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
         address=" ".join(v for v in (d.get("address_1",""),d.get("address_2","")) if v).strip()
         display=self.display_state(r)
-        return ("주문 #"+str(r["provider_order_id"])+" 상세\n상태: "+labels.get(display,display)+"\n고객: "+r["phone"]+"\n주문일: "+order_date(r.get("requested_at"))+"\n수령인: "+str(d.get("first_name",""))+"\n우편번호: "+str(d.get("postcode",""))+"\n주소: "+address+"\n\n"+items+"\n총액: "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
+        return ("주문 "+self._order_number(r)+" 상세\n상태: "+labels.get(display,display)+"\n고객: "+r["phone"]+"\n주문일: "+order_date(r.get("requested_at"))+"\n수령인: "+str(d.get("first_name",""))+"\n우편번호: "+str(d.get("postcode",""))+"\n주소: "+address+"\n\n"+items+"\n총액: "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
     def resolve(self,text,update_id=None,actor=None):
         if self.inquiry_queue is not None and update_id is not None:
             reply=self.inquiry_queue.command(text,update_id)
@@ -117,15 +131,15 @@ class GuestOperatorAdapter:
         mphone_list=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(?:주문\s*)?(?:상태|목록|내역)",clean)
         if mphone_list:return None,None,self.list_message(phone=local_phone(mphone_list[1]))
         if clean in ("주문내역","주문 내역","전체 주문","전체 주문내역","전체 주문 목록"):return None,None,self.list_message()
-        mphone_action=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(입금\s*확인|배송\s*완료|배송|주문\s*취소|취소\s*확인)(?:\s*#([1-9][0-9]*))?(?:\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40}))?",clean)
+        mphone_action=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(입금\s*확인|배송\s*완료|배송|주문\s*취소|취소\s*확인)(?:\s*#([0-9]{1,18}))?(?:\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40}))?",clean)
         if mphone_action and self.aftersales is not None and update_id is not None:
             phone=local_phone(mphone_action[1]);rows=[r for r in self.rows() if r["phone"]==phone]
-            if mphone_action[3]:rows=[r for r in rows if r["provider_order_id"]==int(mphone_action[3])]
+            if mphone_action[3]:rows=self._identifier_rows(mphone_action[3],phone)
             if len(rows)!=1:
                 return None,None,("주문번호를 함께 입력해 주세요: "+", ".join("#"+str(r["provider_order_id"]) for r in rows) if rows else "해당 고객 주문을 찾지 못했습니다.")
             action=re.sub(r"\s","",mphone_action[2]);number=str(rows[0]["provider_order_id"])
             if action=="배송" and not mphone_action[4]:return None,None,"배송 #"+number+" 택배사 운송장번호 형식으로 입력해 주세요."
-            command=action+" #"+number+((" "+mphone_action[4]+" "+mphone_action[5]) if action=="배송" else "")
+            command=action+" #"+str(rows[0]["provider_order_id"])+((" "+mphone_action[4]+" "+mphone_action[5]) if action=="배송" else "")
             return None,None,self.aftersales.operator_command(command,update_id)
         mlist=re.fullmatch(r"주문\s*목록(?:\s+([1-9][0-9]?))?",clean)
         if mlist:return None,None,self.list_message(int(mlist[1]) if mlist[1] else None)
@@ -133,11 +147,11 @@ class GuestOperatorAdapter:
         if mdetail:return None,None,self.detail_message(int(mdetail[1]))
         mphone_detail=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*주문\s*상세\s*#?([1-9][0-9]*)",clean)
         if mphone_detail:return None,None,self.detail_message(int(mphone_detail[2]),local_phone(mphone_detail[1]))
-        match=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*주문\s*(확인|확정|거절|상태)(?:\s*#([1-9][0-9]*))?\s*",text)
+        match=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*주문\s*(확인|확정|거절|상태)(?:\s*#([0-9]{1,18}))?\s*",text)
         if not match:return None,None,None
         phone=local_phone(match[1]);decision={"확인":"CONFIRMED","확정":"CONFIRMED","거절":"REJECTED","상태":"STATUS"}[match[2]]
         rows=[r for r in self.rows() if r["phone"]==phone]
-        if match[3]:rows=[r for r in rows if r["provider_order_id"]==int(match[3])]
+        if match[3]:rows=self._identifier_rows(match[3],phone)
         elif decision!="STATUS":
             pending=[r for r in rows if r["state"]=="PENDING_REVIEW"]
             if pending:rows=pending
