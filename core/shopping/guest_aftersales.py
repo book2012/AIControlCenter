@@ -251,6 +251,9 @@ class GuestAftersalesStore(ReturnWorkflow):
                 c.execute("UPDATE cases SET state=?,updated=? WHERE id=?",(state,self.clock(),case_id))
             elif state!="REJECTED" and not state.startswith("RETURN_") and state!="EXCHANGE_APPROVED":
                 raise ValueError("CASE_STATE_INVALID")
+            elif (state=="REJECTED")==approve:
+                # A later opposite decision cannot change history or claim success.
+                raise ValueError("CASE_DECISION_CONFLICT")
         matches=self._case_rows(case_id=case_id)
         if not matches:raise ValueError("CASE_NOT_FOUND")
         return matches[0]
@@ -304,7 +307,8 @@ class GuestAftersalesStore(ReturnWorkflow):
                 else:
                     v=self.decide(m[3],m[2]=="승인");reply=m[1]+" #"+m[3]+" "+("승인" if m[2]=="승인" else "거절")+" · "+v["state"]
         except ValueError as error:
-            reply={"RETURN_APPROVAL_REQUIRED":"반품 승인 후 회수를 등록해 주세요.",
+            reply={"CASE_DECISION_CONFLICT":"기존 승인·거절 결정과 충돌합니다. 상태를 변경하지 않았습니다. 케이스 내역을 확인해 주세요.",
+                "RETURN_APPROVAL_REQUIRED":"반품 승인 후 회수를 등록해 주세요.",
                 "RETURN_RECEIPT_REQUIRED":"실물 회수 후 재판매 가능한 상품의 검수완료를 등록해 주세요.",
                 "RETURN_RECONCILIATION_REQUIRED":"재고 복원 결과 확인이 필요합니다. 반품 복원확인 #케이스번호로 기존 결과를 확인해 주세요. 재고는 다시 복원하지 않습니다.",
                 "RETURN_RESTORATION_NOT_CONFIGURED":"반품 재고 복원 기능이 아직 활성화되지 않았습니다.",

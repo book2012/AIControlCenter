@@ -6880,3 +6880,9 @@ Live DEV follow-up found Qwen carrying a pending deposit intent into explicit or
 - Related regression: 142 passed. No external Telegram/SMS messages, no real customer order edits, no PROD mutation. Runtime stays dfe5fd0 because this checkpoint changes tests/docs only.
 - Remaining acceptance: human storefront/browser flow and new Telegram message roundtrip; real phone/SOLAPI delivery still blocked by 3113. No claim of complete live browser-to-carrier end-to-end validation.
 - Next stage: detailed cancellation/return/refund-record workflow, without automatic money transfers.
+
+## 2026-10-12 Stage 3 cancellation and return checkpoint
+Isolated dialogue-to-aftersales journeys verify explicit actor-bound approval, one-time unpaid cancellation restoration, receipt-before-inspection, inspection-only return restoration, duplicate command suppression and customer notices without stale bank/deposit instructions. Return restocking preserves PAID and does not claim refund completion or execute payment transfers.
+Regression exposed contradictory case decision replies: reversing an approved/rejected case kept its state but reported the requested opposite decision. The durable store now rejects CASE_DECISION_CONFLICT and operator replies state the conflict without claiming success.
+146 related tests passed. No real customer orders, provider stock or PROD business data changed in this stage. DEV-only deployment; original dirty work preserved.
+Remaining: explicit manual refund-completion record with amount/evidence and customer presentation is not yet implemented; partial refunds and exchange replacement-stock orchestration are also pending. Human browser acceptance and SOLAPI 3113 resolution remain separate.
