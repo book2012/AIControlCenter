@@ -219,7 +219,7 @@ def create_app():
         mount_history(app,history_store)
     from ops.macos.shopping.dev_local_inquiry import LocalInquiryJudge
     conversation_cfg=private_config('operator-conversation.private.json') if (PRIVATE/'operator-conversation.private.json').exists() else {'enabled':False}
-    inquiry_model=conversation_cfg.get("model","qwen3:4b") if conversation_cfg.get("enabled") is True else "qwen3:4b"
+    inquiry_model=conversation_cfg.get("inquiry_model",conversation_cfg.get("model","qwen3:4b")) if conversation_cfg.get("enabled") is True else "qwen3:4b"
     mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(model=inquiry_model),phone_available=phone is not None,
         checkout_available=phone is not None and checkout is not None,inquiry_queue=inquiry_queue,history_store=history_store)
     mount_inquiry_status(app,inquiry_queue)

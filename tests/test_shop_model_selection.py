@@ -40,3 +40,9 @@ def test_inquiry_accepts_supported_dev_models_only():
     assert LocalInquiryJudge(model="qwen3:4b").model == "qwen3:4b"
     with pytest.raises(ValueError, match="EXPLICIT_LOCAL_MODEL_REQUIRED"):
         LocalInquiryJudge(model="qwen3:14b")
+
+
+def test_customer_inquiry_can_use_fast_model_while_operator_stays_on_primary():
+    from pathlib import Path
+    source = Path("ops/macos/shopping/dev_order_runtime.py").read_text()
+    assert 'conversation_cfg.get("inquiry_model",conversation_cfg.get("model","qwen3:4b"))' in source
