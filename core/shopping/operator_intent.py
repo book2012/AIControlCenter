@@ -57,12 +57,13 @@ def resolve_explicit_slots(plan,text,context):
         if evidence:plan["evidence"]=evidence[1]
     if plan["action"]=="SHIP":
         tracking=re.search(r"(?:운송장|송장)\s*(?:번호\s*)?([A-Za-z0-9-]{5,40})",text)
+        if not tracking:tracking=re.search(r"(?<![A-Za-z0-9])([0-9]{5,40})(?![A-Za-z0-9])",text)
         if tracking:plan["tracking"]=tracking[1]
         carrier=re.search(r"CJ대한통운|씨제이대한통운|한진택배|롯데택배|우체국택배|우체국|로젠택배|경동택배|DEV택배",text,re.I)
         if carrier:plan["carrier"]={"씨제이대한통운":"CJ대한통운","우체국":"우체국택배"}.get(carrier[0],carrier[0])
         else:
             # Accept a user-supplied carrier name such as Ch택배 when it appears before the tracking number.
-            generic=re.search(r"(?:택배사\s*)?([가-힣A-Za-z][가-힣A-Za-z0-9 ._-]{1,38}?택배)(?=\s*(?:운송장|송장))",text,re.I)
+            generic=re.search(r"(?:택배사\s*)?([가-힣A-Za-z][가-힣A-Za-z0-9 ._-]{1,38}?택배)(?=\s*(?:(?:(?:운송장|송장)(?:번호)?|번호)\s*)?[A-Za-z0-9-]{5,40}(?:\s|$))",text,re.I)
             if generic:plan["carrier"]=generic[1].strip()
     return validate_plan(plan)
 

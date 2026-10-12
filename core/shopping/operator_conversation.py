@@ -196,7 +196,12 @@ class OperatorConversation:
                 return self._finish(update_id,reply)
             pid=self._save(actor,plan,"WAITING_APPROVAL",request,plan.get("order_id"))
             detail=("이미 송금이 완료됐고 금액·증빙을 확인했다면 기록만 저장합니다. 실제 송금은 실행하지 않습니다. " if plan["action"]=="REFUND_RECORD" else "실물 회수·검수와 재판매 가능 여부를 확인하셨다면 " if plan["action"]=="RETURN_INSPECT" else "")
-            reply=detail+"‘"+command+"’로 처리할까요? 맞으면 ‘응’, 변경하려면 내용을 알려주세요. 취소하려면 ‘아니’라고 해주세요."
+            summary=""
+            if plan["action"]=="SHIP":
+                matched=next((r for r in self.orders() if r.get("order_id")==plan.get("order_id")),None)
+                if matched:
+                    summary="주문 확인\n"+order_identity(matched)+"\n"
+            reply=summary+detail+"‘"+command+"’로 처리할까요? 맞으면 ‘응’, 변경하려면 내용을 알려주세요. 취소하려면 ‘아니’라고 해주세요."
             with sqlite3.connect(self.path) as c:
                 c.execute("INSERT INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",
                     ("approval:"+pid,actor,"확인 대기: "+command+"\n잊지 않도록 알려드립니다. ‘응’ 또는 ‘아니’로 답해주세요.",self.clock()+self.remind_seconds))
