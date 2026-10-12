@@ -166,6 +166,36 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         order["payment"]=self.payment(order_id)
         if getattr(self,"sms",None):order["notification_state"]=self.sms.state(order_id)
         return order
+    def public_lookup(self,order_number):
+        number=str(order_number).strip().removeprefix("#")
+        if not is_public_order_number(number):raise ValueError("ORDER_NOT_FOUND")
+        for row in self.ledger.operator_orders():
+            if row.get("state")!="CONFIRMED":continue
+            try:draft=self.checkout.by_customer_operation(row["operation_key"],row["customer_id"],allow_expired=True)
+            except Exception:continue
+            if draft.get("state")!="CONFIRMED":continue
+            phone=draft["body"]["billing"]["phone"]
+            expected=public_order_number(requested_at=row.get("requested_at"),phone=phone,entropy=row.get("reference") or row["operation_key"])
+            if expected!=number:continue
+            order_id=row["provider_order_id"]
+            return {
+                "order_number":number,
+                "review_state":row["review_state"],
+                "requested_at":row.get("requested_at"),
+                "items":draft["body"]["quote"]["line_items"],
+                "total":draft["body"]["quote"]["final_total"],
+                "currency":draft["body"]["quote"]["currency"],
+                "fulfillment":self._fulfillment(order_id),
+                "payment":self.payment(order_id),
+                "refund":self.refund(order_id),
+                "cancellation":self.cancellation(order_id),
+                "return_status":self.return_status(order_id),
+                "return_available":False,
+                "exchange_available":False,
+                "cases":[],
+                "public_only":True,
+            }
+        raise ValueError("ORDER_NOT_FOUND")
     def exchange_options(self,customer,order_id):
         _,draft=self._customer_order(customer,order_id);body=draft["body"]
         if len(body["line_items"])!=1:raise ValueError("MULTILINE_EXCHANGE_UNSUPPORTED")

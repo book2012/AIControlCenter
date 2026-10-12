@@ -96,7 +96,37 @@
     return card;
   };
 
+  const renderPublicOrder=order=>{
+    const card=document.createElement("article");card.className="order-card";
+    const head=document.createElement("div");head.className="order-card-head";
+    const title=document.createElement("h2");title.textContent="주문 "+order.order_number;
+    const state=document.createElement("strong");state.className="order-state";
+    const fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
+    state.textContent=fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.payment?.state==="PAID"?"배송준비":order.review_state==="CONFIRMED"?"입금대기":"확인대기";
+    head.append(title,state);card.appendChild(head);
+    const date=document.createElement("p");date.textContent="주문일: "+(order.requested_at||"일자 미확인");card.appendChild(date);
+    const items=document.createElement("div");items.className="order-items";
+    for(const item of order.items||[]){const p=document.createElement("p");p.textContent=item.name+" / "+(item.option||"기본")+" / "+item.quantity+"개";items.appendChild(p);}
+    card.appendChild(items);
+    const total=document.createElement("p");total.className="order-total";total.textContent="총 "+order.total+" "+order.currency;card.appendChild(total);
+    if(order.fulfillment?.carrier||order.fulfillment?.tracking){
+      const shipping=document.createElement("p");shipping.className="field-note";shipping.textContent=[order.fulfillment.carrier,order.fulfillment.tracking].filter(Boolean).join(" · ");card.appendChild(shipping);
+    }
+    const note=document.createElement("p");note.className="order-customer-message";note.textContent="주문번호 조회 결과입니다. 배송주소와 환불·사이즈교환 기능은 휴대폰 인증 후 사용할 수 있습니다.";card.appendChild(note);
+    return card;
+  };
+
   const load=async()=>{
+    const number=by("orders-number").value.trim().replace(/^#/,"");
+    if(/^\\d{10}$/.test(number)){
+      const publicResponse=await fetch(commercePath('/orders/public-lookup'),{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({order_number:number})});
+      const publicData=await publicResponse.json();
+      if(publicResponse.ok){
+        by("orders-auth").hidden=true;by("orders-list").replaceChildren(renderPublicOrder(publicData.order));
+        message("주문번호만으로 기본 상태를 확인했습니다. 상세 기능은 휴대폰 인증 후 이용할 수 있습니다.");return;
+      }
+    }
     if(!(await session())){by("orders-phone").value=by("lookup-phone").value;by("orders-auth").hidden=false;by("orders-list").replaceChildren();return;}
     by("orders-auth").hidden=true;message("");
     const response=await fetch(commercePath('/orders/lookup'),{method:"POST",credentials:"same-origin",headers:headers(),

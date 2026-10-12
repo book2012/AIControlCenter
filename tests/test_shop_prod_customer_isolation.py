@@ -180,3 +180,21 @@ def test_production_phone_bridge_rejects_missing_live_credentials_before_start(s
     _,kwargs,_,calls,_=setup;kwargs={**kwargs,"port_factory":None}
     with pytest.raises((KeyError,ValueError)):GuestPhoneBridge(**kwargs)
     assert calls==[]
+
+def test_public_order_lookup_uses_order_number_only_and_redacts_private_fields():
+    class App:
+        def _authenticate(self,*args,**kwargs):raise AssertionError("public lookup must not authenticate")
+    class Store:
+        def public_lookup(self,number):
+            assert number=="2610122150"
+            return {"order_number":number,"review_state":"CONFIRMED","requested_at":"2026-10-12 13:36",
+                    "items":[{"name":"테스트 상품","option":"M","quantity":1}],"total":"450000","currency":"KRW",
+                    "fulfillment":{"state":"SHIPPED","carrier":"ch택배","tracking":"12345667"},
+                    "payment":{"state":"PAID"},"public_only":True}
+    app=FastAPI();mount_order_lookup(app,store=Store(),application=App(),verified_phone=lambda _:None)
+    client=TestClient(app)
+    response=client.post("/shopping/orders/public-lookup",json={"order_number":"2610122150"})
+    assert response.status_code==200 and response.json()["order"]["order_number"]=="2610122150"
+    assert '"phone":' not in response.text and '"address":' not in response.text
+    denied=client.post("/shopping/orders/public-lookup",json={"order_number":"177"})
+    assert denied.status_code==404

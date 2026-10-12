@@ -62,6 +62,24 @@ def mount_checkout_routes(app,*,store,verified_phone,application,catalog,ledger,
 
 
 def mount_order_lookup(app,*,store,application,verified_phone,bank_provider=None):
+    @app.post("/shopping/orders/public-lookup",include_in_schema=False)
+    async def public_lookup(request:Request):
+        try:
+            raw=bytearray()
+            async for chunk in request.stream():
+                if len(raw)+len(chunk)>1024:raise ValueError("BODY_TOO_LARGE")
+                raw.extend(chunk)
+            import json
+            from core.shopping.public_order_number import is_public_order_number
+            data=json.loads(raw)
+            if type(data) is not dict or set(data)!={"order_number"} or type(data["order_number"]) is not str or not is_public_order_number(data["order_number"]):
+                raise ValueError("INVALID_PUBLIC_LOOKUP")
+            order=store.public_lookup(data["order_number"])
+            return JSONResponse({"order":order,"phone_verification_required_for_private_details":True},
+                headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
+        except Exception:
+            return JSONResponse({"message":"주문번호를 확인해 주세요."},status_code=404,
+                headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
     @app.post("/shopping/orders/lookup",include_in_schema=False)
     async def lookup(request:Request):
         try:
