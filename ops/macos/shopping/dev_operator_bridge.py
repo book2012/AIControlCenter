@@ -17,7 +17,7 @@ def compose_dev_bridge(*, cfg, data, telegram, adapter, products, conversation_c
     def handle(text, update_id, actor):
         reference = decision = reply = None
         if adapter is not None:
-            reference, decision, reply = adapter.resolve(text, update_id=update_id)
+            reference, decision, reply = adapter.resolve(text, update_id=update_id,actor=actor)
         if reference is None and decision is None and reply is None:
             reply = products.command(text, update_id)
         match = re.fullmatch(r"/order_(status|confirm|reject) ([0-9a-f]{24})", text)

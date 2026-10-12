@@ -76,6 +76,7 @@ class SolapiSMS:
             raise SolapiUnknown("SOLAPI_STATUS_BINDING")
         code=row.get("statusCode")
         if code=="4000":state="DELIVERED"
-        elif type(code) is str and code.startswith(("1","3")):state="FAILED"
+        elif code in {"2000","3000"}:state="ACCEPTED"
+        elif type(code) is str and code.startswith(("1","2","3")):state="FAILED"
         else:state="ACCEPTED"
         return {"state":state,"status_code":code}

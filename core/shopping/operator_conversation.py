@@ -72,6 +72,11 @@ class OperatorConversation:
                 return "배송 #"+str(number)+" "+plan["carrier"]+" "+plan["tracking"],None
             prefix={"ORDER_DETAIL":"주문상세","DEPOSIT_CONFIRM":"입금확인","DELIVERED":"배송완료","CANCEL":"주문취소"}[action]
             return prefix+" #"+str(number),None
+        if action=="REFUND_RECORD":
+            if not plan.get("case_id"):return None,"송금 완료를 기록할 반품 케이스번호 8자리를 알려주세요."
+            if not plan.get("price"):return None,"이미 송금한 환불 금액을 원 단위로 알려주세요."
+            if not plan.get("evidence"):return None,"송금 완료 증빙의 참조번호를 알려주세요. 예: 증빙 BANK-20261012-001"
+            return "환불기록 #"+plan["case_id"]+" "+str(plan["price"])+"원 증빙 "+plan["evidence"],None
         if action in {"RETURN_RECEIVE","RETURN_INSPECT","RETURN_RECONCILE"}:
             if not plan.get("case_id"):return None,"반품 케이스번호 8자리를 알려주세요. 예: a1b2c3d4"
             return "반품 "+{"RETURN_RECEIVE":"회수","RETURN_INSPECT":"검수완료","RETURN_RECONCILE":"복원확인"}[action]+" #"+plan["case_id"],None
@@ -154,7 +159,9 @@ class OperatorConversation:
             try:
                 # Explicit read commands must not inherit a pending mutation intent.
                 phone_list=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})(?:\s*(?:고객(?:님)?\s*)?(?:주문\s*)?(?:상태|목록|내역))?",clean)
-                if clean in {"주문목록","주문 목록","주문내역","주문 내역","전체 주문","전체 주문내역","전체 주문 목록"}:plan={"action":"ORDER_LIST"}
+                refund_record=re.fullmatch(r"환불(?:완료|기록)\s*#([a-f0-9]{8})\s+([1-9][0-9]{0,7})원\s+증빙\s+([가-힣A-Za-z0-9._-]{3,80})(?:\s*기록해)?",clean)
+                if refund_record:plan=validate_plan({"action":"REFUND_RECORD","case_id":refund_record[1],"price":int(refund_record[2]),"evidence":refund_record[3]})
+                elif clean in {"주문목록","주문 목록","주문내역","주문 내역","전체 주문","전체 주문내역","전체 주문 목록"}:plan={"action":"ORDER_LIST"}
                 elif phone_list:plan={"action":"ORDER_LIST","phone":re.sub(r"[^0-9]","",phone_list[1])}
                 elif re.fullmatch(r"주문\s*상세\s*#?([1-9][0-9]*)",clean):plan={"action":"ORDER_DETAIL","order_id":int(re.fullmatch(r"주문\s*상세\s*#?([1-9][0-9]*)",clean)[1])}
                 else:plan=resolve_explicit_slots(validate_plan(self.judge(text,context)),text,context)
@@ -180,7 +187,7 @@ class OperatorConversation:
                 if session.get("state") not in {"EXECUTING","UNKNOWN"}:self._save(actor,plan,"READ",request,plan.get("order_id"))
                 return self._finish(update_id,reply)
             pid=self._save(actor,plan,"WAITING_APPROVAL",request,plan.get("order_id"))
-            detail=("실물 회수·검수와 재판매 가능 여부를 확인하셨다면 " if plan["action"]=="RETURN_INSPECT" else "")
+            detail=("이미 송금이 완료됐고 금액·증빙을 확인했다면 기록만 저장합니다. 실제 송금은 실행하지 않습니다. " if plan["action"]=="REFUND_RECORD" else "실물 회수·검수와 재판매 가능 여부를 확인하셨다면 " if plan["action"]=="RETURN_INSPECT" else "")
             reply=detail+"‘"+command+"’로 처리할까요? 맞으면 ‘응’, 변경하려면 내용을 알려주세요. 취소하려면 ‘아니’라고 해주세요."
             with sqlite3.connect(self.path) as c:
                 c.execute("INSERT INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",

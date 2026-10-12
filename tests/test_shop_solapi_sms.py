@@ -37,7 +37,7 @@ def test_hmac_is_fresh_redirect_disabled_and_accepted_is_not_delivered():
     assert client.auth()["Authorization"]!=header
     assert "TESTKEY" not in repr(client) and "TESTSECRET" not in repr(client)
 
-@pytest.mark.parametrize("code,state",[("2000","ACCEPTED"),("4000","DELIVERED"),("3113","FAILED")])
+@pytest.mark.parametrize("code,state",[("2000","ACCEPTED"),("3000","ACCEPTED"),("2230","FAILED"),("4000","DELIVERED"),("3113","FAILED")])
 def test_delivery_polling_verifies_exact_receipt_without_resend(code,state):
     session=Session();accepted(session);client=SolapiSMS(CFG,session=session);receipt=client.send(PHONE,"주문 확인","order:15")
     session.response={"messageList":{MID:{"groupId":GID,"to":"01012345678","from":CFG["sender_number"],

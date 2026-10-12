@@ -14,8 +14,9 @@ class CaseCreate(BaseModel):
     reason:str=Field(strict=True,min_length=2,max_length=1000)
     target_variation_id:str|None=Field(default=None,pattern=r"^[1-9][0-9]*$")
 from core.shopping.guest_returns import ReturnWorkflow
+from core.shopping.manual_refunds import ManualRefundRecords
 
-class GuestAftersalesStore(ReturnWorkflow):
+class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
     def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time,stock_cancellation=None,stock_return=None):
         self.path=Path(path);self.attachments=Path(attachments);self.ledger=ledger;self.checkout=checkout;self.catalog=catalog;self.clock=clock
         self.stock_return=stock_return
@@ -39,6 +40,7 @@ class GuestAftersalesStore(ReturnWorkflow):
             c.execute("CREATE TABLE IF NOT EXISTS return_stock_operations(case_id TEXT PRIMARY KEY,order_id INTEGER UNIQUE NOT NULL,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS cancellations(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS payments(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS manual_refunds(case_id TEXT PRIMARY KEY,order_id INTEGER UNIQUE NOT NULL,amount TEXT NOT NULL,currency TEXT NOT NULL,evidence TEXT UNIQUE NOT NULL,actor TEXT NOT NULL,update_id INTEGER NOT NULL,recorded REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
     def _fulfillment(self,order_id):
@@ -79,7 +81,7 @@ class GuestAftersalesStore(ReturnWorkflow):
             active=any(v["state"]!="REJECTED" for v in cases)
             result.append({"order_id":row["provider_order_id"],"review_state":row["review_state"],"requested_at":row["requested_at"],
                 "items":draft["body"]["quote"]["line_items"],"total":draft["body"]["quote"]["final_total"],"currency":draft["body"]["quote"]["currency"],
-                "fulfillment":f,"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
+                "fulfillment":f,"refund":self.refund(row["provider_order_id"]),"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
                 "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active),"cases":cases})
         return result
     def payment(self,order_id):
@@ -257,12 +259,13 @@ class GuestAftersalesStore(ReturnWorkflow):
         matches=self._case_rows(case_id=case_id)
         if not matches:raise ValueError("CASE_NOT_FOUND")
         return matches[0]
-    def operator_command(self,text,update_id):
+    def operator_command(self,text,update_id,actor=None):
         clean=text.strip()
         if clean in ("배송","배송 완료","배송완료","입금확인","입금 확인"):
             return "입금확인 #주문번호 / 배송 #주문번호 택배사 운송장번호 / 배송완료 #주문번호 형식으로 입력해 주세요."
         if re.fullmatch(r"배송\s*#[1-9][0-9]*",clean):return "택배사와 운송장번호를 함께 입력해 주세요. 예: 배송 #15 CJ대한통운 1234567890"
         patterns=[
+            (r"환불기록\s*#([a-f0-9]{8})\s+([1-9][0-9]{0,7})원\s+증빙\s+([가-힣A-Za-z0-9._-]{3,80})","refund_record"),
             (r"반품\s*(회수|검수완료|복원확인)\s*#([a-f0-9]{8})","return_stock"),
             (r"(?:주문)?취소\s*#([1-9][0-9]*)","cancel"),
             (r"취소\s*확인\s*#([1-9][0-9]*)","cancel_reconcile"),
@@ -282,9 +285,13 @@ class GuestAftersalesStore(ReturnWorkflow):
         if old:return old[0]
         m,kind=matched
         try:
-            if kind=="return_stock":
+            if kind=="refund_record":
+                value=self.record_refund(m[1],int(m[2]),m[3],actor,update_id)
+                reply="환불 #"+m[1]+" · 환불완료 기록 · "+value["amount"]+" KRW · 실제 송금은 실행하지 않았습니다."
+            elif kind=="return_stock":
                 method={"회수":self.receive_return,"검수완료":self.inspect_return,"복원확인":self.reconcile_return}[m[1]]
                 value=method(m[2]);reply="반품 #"+m[2]+" · "+{"RETURN_RECEIVED":"회수완료 · 검수 대기","RETURN_RESTOCKED":"검수완료 · 재고 복원 확인 · 환불 검토 필요"}.get(value["state"],"처리 결과 확인중")
+                if self.refund(self._return_case(m[2])[0]["order_id"])["state"]=="RECORDED":reply="반품 #"+m[2]+" · 검수완료 · 재고 복원 확인 · 환불완료 기록"
             elif kind in ("cancel","cancel_reconcile"):
                 value=self.cancel_order(int(m[1])) if kind=="cancel" else self.reconcile_cancellation(int(m[1]))
                 reply="주문 #"+m[1]+" 취소완료 · 재고 복원 확인 · 결제 환불은 실행하지 않았습니다."
@@ -300,14 +307,20 @@ class GuestAftersalesStore(ReturnWorkflow):
                 v=self._fulfillment(int(m[1]));reply="주문 #"+m[1]+" 배송상태: "+v["state"]+(("\n"+str(v["carrier"])+" "+str(v["tracking"])) if v["tracking"] else "")
             elif kind=="cases":
                 target="RETURN" if m[1]=="환불" else "SIZE_EXCHANGE";rows=self.admin_cases(target)
-                reply=(m[1]+" 요청이 없습니다." if not rows else "\n".join("#"+r["id"]+" · 주문 #"+str(r["order_id"])+" · "+r["state"]+" · "+r["reason"][:80] for r in rows[:20]))
+                reply=(m[1]+" 요청이 없습니다." if not rows else "\n".join("#"+r["id"]+" · 주문 #"+str(r["order_id"])+" · "+r["state"]+" · "+r["reason"][:80]+(" · 환불완료 기록 "+self.refund(r["order_id"])["amount"]+" KRW" if self.refund(r["order_id"])["state"]=="RECORDED" else "") for r in rows[:20]))
             else:
                 target="RETURN" if m[1]=="환불" else "SIZE_EXCHANGE";rows=[r for r in self.admin_cases(target) if r["id"]==m[3]]
                 if len(rows)!=1:reply="해당 요청을 찾지 못했습니다."
                 else:
                     v=self.decide(m[3],m[2]=="승인");reply=m[1]+" #"+m[3]+" "+("승인" if m[2]=="승인" else "거절")+" · "+v["state"]
         except ValueError as error:
-            reply={"CASE_DECISION_CONFLICT":"기존 승인·거절 결정과 충돌합니다. 상태를 변경하지 않았습니다. 케이스 내역을 확인해 주세요.",
+            reply={"MANUAL_REFUND_DISABLED":"환불완료 기록은 DEV 검증에서만 활성화되어 있습니다.",
+                "REFUND_ACTOR_REQUIRED":"허용된 운영자 확인이 필요합니다.",
+                "REFUND_INSPECTION_REQUIRED":"반품 회수·검수와 재고 복원 확인 후 환불완료를 기록해 주세요.",
+                "FULL_REFUND_AMOUNT_REQUIRED":"현재는 주문 전체 금액만 환불 기록할 수 있습니다. 금액을 확인해 주세요.",
+                "REFUND_RECORD_CONFLICT":"이미 기록된 환불 금액·증빙과 다릅니다. 기존 기록을 변경하지 않았습니다.",
+                "REFUND_EVIDENCE_REUSED":"다른 환불에 사용된 증빙입니다. 기록을 확인해 주세요.",
+                "CASE_DECISION_CONFLICT":"기존 승인·거절 결정과 충돌합니다. 상태를 변경하지 않았습니다. 케이스 내역을 확인해 주세요.",
                 "RETURN_APPROVAL_REQUIRED":"반품 승인 후 회수를 등록해 주세요.",
                 "RETURN_RECEIPT_REQUIRED":"실물 회수 후 재판매 가능한 상품의 검수완료를 등록해 주세요.",
                 "RETURN_RECONCILIATION_REQUIRED":"재고 복원 결과 확인이 필요합니다. 반품 복원확인 #케이스번호로 기존 결과를 확인해 주세요. 재고는 다시 복원하지 않습니다.",

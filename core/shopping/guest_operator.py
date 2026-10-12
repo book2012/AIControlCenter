@@ -54,6 +54,7 @@ class GuestOperatorAdapter:
         return text
     def display_state(self,row):
         if row["state"]!="CONFIRMED" or self.aftersales is None:return row["state"]
+        if self.aftersales.refund(row["provider_order_id"])["state"]=="RECORDED":return "REFUND_RECORDED"
         cancellation=self.aftersales.cancellation(row["provider_order_id"])["state"]
         if cancellation!="NONE":return "CANCELLED" if cancellation=="CANCELLED" else "CANCELLATION_PENDING"
         returned=self.aftersales.return_status(row["provider_order_id"])["state"]
@@ -75,7 +76,7 @@ class GuestOperatorAdapter:
         rows=[r for r in self.rows() if phone is None or r["phone"]==phone]
         if limit is not None:rows=rows[:max(1,min(int(limit),100))]
         if not rows:return "현재 확인 가능한 주문이 없습니다."
-        labels={"RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        labels={"REFUND_RECORDED":"환불완료 기록","RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         lines=[("고객 "+phone+" 주문 " if phone else "전체 주문 ")+str(len(rows))+"건"]
         for r in rows:
             display=self.display_state(r)
@@ -83,6 +84,8 @@ class GuestOperatorAdapter:
             lines.append("고객: "+str(r["delivery"].get("first_name") or "이름 미등록")+" · 주문일: "+order_date(r.get("requested_at")))
             lines.extend("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
             if self.aftersales:
+                refund=self.aftersales.refund(r["provider_order_id"])
+                if refund["state"]=="RECORDED":lines.append("환불완료 기록: "+refund["amount"]+" "+refund["currency"])
                 shipment=self.aftersales.admin_fulfillment(r["provider_order_id"])
                 if self.aftersales.cancellation(r["provider_order_id"])["state"]!="NONE":
                     lines.append("취소 상태를 확인해 주세요.")
@@ -95,19 +98,19 @@ class GuestOperatorAdapter:
     def detail_message(self,order_id,phone=None):
         rows=[r for r in self.rows() if r["provider_order_id"]==int(order_id) and (phone is None or r["phone"]==phone)]
         if len(rows)!=1:return "해당 주문을 찾지 못했습니다." if not rows else "주문을 구분할 수 없습니다."
-        r=rows[0];d=r["delivery"];labels={"RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
+        r=rows[0];d=r["delivery"];labels={"REFUND_RECORDED":"환불완료 기록","RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         items="\n".join("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
         address=" ".join(v for v in (d.get("address_1",""),d.get("address_2","")) if v).strip()
         display=self.display_state(r)
         return ("주문 #"+str(r["provider_order_id"])+" 상세\n상태: "+labels.get(display,display)+"\n고객: "+r["phone"]+"\n주문일: "+order_date(r.get("requested_at"))+"\n수령인: "+str(d.get("first_name",""))+"\n우편번호: "+str(d.get("postcode",""))+"\n주소: "+address+"\n\n"+items+"\n총액: "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
-    def resolve(self,text,update_id=None):
+    def resolve(self,text,update_id=None,actor=None):
         if self.inquiry_queue is not None and update_id is not None:
             reply=self.inquiry_queue.command(text,update_id)
             if reply is not None:
                 self.inquiry_queue.export(self.inquiry_queue.path.with_name("inquiry-learning.jsonl"))
                 return None,None,reply
         if self.aftersales is not None and update_id is not None:
-            reply=self.aftersales.operator_command(text,update_id)
+            reply=self.aftersales.operator_command(text,update_id,actor=actor)
             if reply is not None:return None,None,reply
         clean=text.strip()
         if re.fullmatch(r"010[0-9]{8}|010-[0-9]{4}-[0-9]{4}",clean):return None,None,self.list_message(phone=local_phone(clean))

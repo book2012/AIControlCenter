@@ -6,10 +6,10 @@ import threading
 LOCAL_INFERENCE_SLOT=threading.Semaphore(1)
 
 ACTIONS = ("ORDER_LIST","ORDER_DETAIL","ORDER_CONFIRM","DEPOSIT_CONFIRM","SHIP","DELIVERED","CANCEL",
-    "RETURN_RECEIVE","RETURN_INSPECT","RETURN_RECONCILE","PRODUCT_LIST","PRODUCT_STATUS","SET_STOCK",
+    "RETURN_RECEIVE","RETURN_INSPECT","RETURN_RECONCILE","REFUND_RECORD","PRODUCT_LIST","PRODUCT_STATUS","SET_STOCK",
     "SET_PRICE","SET_SALE","UNSALE","HIDE","SHOW","WEBSITE_TASK","TASK_LIST","WEBSITE_LIST","UNKNOWN")
-FIELDS = {"action","order_id","phone","case_id","product","size","color","quantity","price","category","carrier","tracking"}
-STRINGS = {"phone":20,"case_id":8,"product":100,"size":10,"color":30,"category":20,"carrier":40,"tracking":40}
+FIELDS = {"action","order_id","phone","case_id","product","size","color","quantity","price","category","carrier","tracking","evidence"}
+STRINGS = {"phone":20,"case_id":8,"product":100,"size":10,"color":30,"category":20,"carrier":40,"tracking":40,"evidence":80}
 NUMBERS = {"order_id":2147483647,"quantity":9999,"price":10000000}
 
 def validate_plan(value):
@@ -28,6 +28,7 @@ def validate_plan(value):
         raise ValueError("OPERATOR_INTENT_INVALID")
     if result.get("case_id") is not None and not re.fullmatch(r"[a-f0-9]{8}",result["case_id"]):
         raise ValueError("OPERATOR_INTENT_INVALID")
+    if result.get("evidence") is not None and not re.fullmatch(r"[가-힣A-Za-z0-9._-]{3,80}",result["evidence"]):raise ValueError("OPERATOR_INTENT_INVALID")
     return {k:v for k,v in result.items() if v is not None}
 
 def resolve_explicit_slots(plan,text,context):
@@ -43,6 +44,14 @@ def resolve_explicit_slots(plan,text,context):
         # Recover only one exact registered name explicitly present in user text.
         names={r.get("name") for r in context.get("products",[]) if type(r) is dict and type(r.get("name")) is str and r["name"] and r["name"] in text}
         if len(names)==1:plan["product"]=next(iter(names))
+    if plan["action"]=="REFUND_RECORD":
+        if not re.search(r"환불\s*(?:완료|기록|했)|송금\s*(?:완료|했)",text) and context.get("previous_plan",{}).get("action")!="REFUND_RECORD":return {"action":"UNKNOWN"}
+        case=re.search(r"#([a-f0-9]{8})(?![a-f0-9])",text)
+        amount=re.search(r"(?<![0-9])([1-9][0-9]{0,7})원",text)
+        evidence=re.search(r"증빙\s+([가-힣A-Za-z0-9._-]{3,80})(?![가-힣A-Za-z0-9._-])",text)
+        if case:plan["case_id"]=case[1]
+        if amount:plan["price"]=int(amount[1])
+        if evidence:plan["evidence"]=evidence[1]
     if plan["action"]=="SHIP":
         tracking=re.search(r"(?:운송장|송장)\s*(?:번호\s*)?([A-Za-z0-9-]{5,40})",text)
         if tracking:plan["tracking"]=tracking[1]
@@ -71,6 +80,7 @@ Only use supplied orders/products and previous context. Missing fields must be n
 '택배 CJ대한통운 송장 1234567890로 보냈어' => SHIP with carrier/tracking.
 '배송 끝났어' => DELIVERED. '반품 도착했어' => RETURN_RECEIVE, NOT inspection.
 '반품 검수 끝났고 재판매 가능해' => RETURN_INSPECT, needs exact case_id.
+'환불완료 #a1b2c3d4 58000원 증빙 BANK-001 기록해' => REFUND_RECORD case_id, price, evidence. This only records an operator-confirmed past transfer. Never transfer money.
 '카멜 코트 L 품절로 바꿔줘' => SET_STOCK quantity 0, exact registered product/option.
 '브라운 코트 20만원으로 바꿔줘' => SET_PRICE price 200000.
 '니트 5만원에 세일' => SET_SALE price 50000.

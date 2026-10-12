@@ -102,7 +102,7 @@ def test_adapter_actor_confirmation_guard_and_no_transport_calls(tmp_path):
     ledger = SimpleNamespace(process_operator_update=lambda *a, **kw: calls.append((a,kw)))
     telegram = SimpleNamespace(_ledger=ledger, _chat=CHAT, _users=frozenset({USER}),
         _confirmation_guard="guard")
-    adapter = SimpleNamespace(resolve=lambda text, update_id:("f"*24,"CONFIRMED",None))
+    adapter = SimpleNamespace(resolve=lambda text, update_id,actor=None:("f"*24,"CONFIRMED",None))
     products = SimpleNamespace(command=lambda *_:pytest.fail("should not route product"))
     server = compose_dev_bridge(cfg={"enabled":True, "environment":"DEV", "hmac_key_hex":KEY.hex()},
         data=tmp_path, telegram=telegram, adapter=adapter, products=products)
@@ -195,7 +195,7 @@ def test_authenticated_bridge_dialogue_asks_before_payment_and_scopes_actor(tmp_
     monkeypatch.setattr(intent_module,"LocalOperatorJudge",lambda:lambda text,ctx:{"action":"DEPOSIT_CONFIRM","order_id":15})
     payments=[]
     adapter=SimpleNamespace(admin_orders=lambda limit:[dict(order_id=15,phone="01012345678",display_state="AWAITING_DEPOSIT")],
-        resolve=lambda text,update_id:(payments.append(text) or (None,None,"입금완료")),aftersales=None)
+        resolve=lambda text,update_id,actor=None:(payments.append(text) or (None,None,"입금완료")),aftersales=None)
     products=SimpleNamespace(records=[],command=lambda *_:None)
     telegram=SimpleNamespace(_ledger=SimpleNamespace(process_operator_update=lambda *a,**kw:dict(outcome="IGNORED")),
         _chat=CHAT,_users=frozenset({USER}),_confirmation_guard=None)
