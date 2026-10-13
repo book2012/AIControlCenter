@@ -146,7 +146,8 @@ def test_hero_is_a_brand_owned_local_jpeg_and_visible_copy_is_fixed(client):
     filter_nav = html.split('<nav id="home-filter-nav"', 1)[1].split("</nav>", 1)[0]
     assert "HOT" in filter_nav and "추천" not in filter_nav
     assert html.count('id="shop-chat-form"') == 1
-    assert 'id="shop-chat-product"' in html
+    assert 'id="shop-chat-product"' not in html
+    assert 'class="shop-chat-stock"' not in html
     assert len([attrs for _, attrs in Elements(html).elements if attrs.get("class") == "header-search"]) == 1
 
 

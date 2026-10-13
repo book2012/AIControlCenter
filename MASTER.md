@@ -6939,3 +6939,7 @@ Remaining: explicit manual refund-completion record with amount/evidence and cus
 Independent DEV bridge cursor hardening: reads/aftersales no longer advance legacy ledger cursor. Order review decisions allocate a monotonic local ledger ID at or above the historical offset, while authenticated bridge original update IDs govern replay. No cursor rewind; restored/new bot commands cannot be incorrectly suppressed by an old shared-bot diagnostic offset. Real isolated SQLite ledger regression verifies confirmation guard once across retry/restart.
 
 Final related regression: 161 passed after independent cursor fix; immutable DEV API and DEV homepage refund UI verified, no live refund records created. SMS remains disabled with latest test3113.
+
+
+## 2026-10-13 storefront UI checkpoint
+DEV source now separates checkout entry (/homepage/storefront/checkout) from the guest flow (/homepage/storefront/guest-order). The shared chatbot no longer shows a product dropdown or stock-check block; product pages preload their current product and other pages retain contextual prompts. Targeted tests: 55 passed; isolated Chrome chatbot regression passed. Member order without SMS remains unimplemented pending secure server-side identity binding.

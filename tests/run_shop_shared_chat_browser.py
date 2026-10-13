@@ -18,7 +18,7 @@ def main():
     @app.post('/__order-dev/chat/history/link')
     def link():return JSONResponse({'linked':True},status_code=200 if state['verified'] else 403)
     @app.get('/__order-dev/chat/history')
-    def history():return JSONResponse({'items':[{**v,'question':v['message'],'answer':'재고 확인 답변','action':'ANSWER','created_at':time.time()} for v in state['inquiries']]})
+    def history():return JSONResponse({'items':[{**v,'question':v['message'],'answer':'상품 문의 답변','action':'ANSWER','created_at':time.time()} for v in state['inquiries']]})
     @app.post('/__order-dev/phone/start')
     def sms():state['sms']+=1;return JSONResponse({'message':'테스트 인증번호 입력'})
     @app.post('/__order-dev/phone/check')
@@ -26,7 +26,7 @@ def main():
     @app.post('/__order-dev/chat/inquiry')
     async def inquiry(request:Request):
         data=await request.json();state['inquiries'].append(data)
-        return JSONResponse({'action':'ANSWER','message':'재고 확인 답변','history_saved':True})
+        return JSONResponse({'action':'ANSWER','message':'상품 문의 답변','history_saved':True})
     @app.get('/__order-dev/chat/embed/{pid}')
     def embed(pid:str):return HTMLResponse('<div data-guest-shop-product="'+('36' if pid.endswith('0001') else '41')+'"></div>')
     @app.get('/__order-dev/guest-chat.js')
@@ -63,24 +63,29 @@ const checks=[];
 try{
  await call('Page.enable');await nav('/homepage/storefront');
  await evalJS('document.getElementById("shop-chat-launcher").click()');
- await wait('document.getElementById("shop-chat-messages").textContent.includes("어떤 상품")');checks.push('bot asks first');
- await evalJS('document.getElementById("shop-chat-product").value="ag-upload-outer-0001";document.getElementById("shop-chat-product").dispatchEvent(new Event("change"));document.getElementById("shop-chat-question").value="M 재고 있나요?";document.getElementById("shop-chat-form").requestSubmit()');
- await wait('document.getElementById("shop-chat-messages").textContent.includes("재고 확인 답변")');checks.push('tagged first inquiry');
+ await wait('document.getElementById("shop-chat-messages").textContent.length>0');
+ if(!await evalJS('!document.getElementById("shop-chat-product") && !document.getElementById("shop-chat-stock")'))throw Error('product/stock section still visible');checks.push('product picker and stock shortcut removed');
+ await evalJS('document.querySelector(".shop-chat-suggestion").click()');
+ await wait('document.getElementById("shop-chat-messages").textContent.includes("상품 카테고리")');checks.push('page-specific prompt');
  await nav('/homepage/storefront/product/ag-upload-outer-0002');
  await evalJS('document.getElementById("shop-chat-launcher").click()');
- await wait('document.getElementById("shop-chat-product").value==="ag-upload-outer-0002"');
- if(!await evalJS('document.getElementById("shop-chat-messages").textContent.includes("M 재고 있나요?")'))throw Error('lost navigation history');
- await evalJS('document.getElementById("shop-chat-question").value="L 재고 있나요?";document.getElementById("shop-chat-form").requestSubmit()');
- await wait('document.getElementById("shop-chat-messages").textContent.includes("L 재고 있나요?") && !document.getElementById("shop-chat-send").disabled');checks.push('navigation history and second product binding');
- await evalJS('document.getElementById("shop-chat-stock").click()');await wait('document.getElementById("shop-chat-messages").textContent.includes("재고와 사이즈 옵션 알려주세요") && !document.getElementById("shop-chat-send").disabled');checks.push('stock inquiry in shared chatbot');
+ await wait('JSON.parse(document.getElementById("shop-chat").dataset.pageContext).product.name.length>0');
+ if(!await evalJS('!JSON.parse(document.getElementById("shop-chat").dataset.pageContext).product.availability && document.getElementById("shop-chat-messages").textContent.includes(JSON.parse(document.getElementById("shop-chat").dataset.pageContext).product.name)'))throw Error('product summary missing or stock shown');checks.push('product information preloaded without stock block');
+ await evalJS('document.getElementById("shop-chat-question").value="소재가 궁금해요";document.getElementById("shop-chat-form").requestSubmit()');
+ await wait('document.getElementById("shop-chat-messages").textContent.includes("상품 문의 답변") && !document.getElementById("shop-chat-send").disabled');checks.push('product question submits with automatic binding');
+ await nav('/homepage/storefront/product/ag-upload-outer-0001');
+ await evalJS('document.getElementById("shop-chat-launcher").click()');
+ await wait('document.getElementById("shop-chat-messages").textContent.includes("소재가 궁금해요")');
+ await evalJS('document.getElementById("shop-chat-question").value="사이즈 옵션 알려주세요";document.getElementById("shop-chat-form").requestSubmit()');
+ await wait('document.getElementById("shop-chat-messages").textContent.includes("사이즈 옵션 알려주세요") && !document.getElementById("shop-chat-send").disabled');checks.push('product context changes and history persists');
  await nav('/homepage/storefront');
  await evalJS('document.getElementById("shop-chat-launcher").click()');
- if(!await evalJS('document.getElementById("shop-chat-messages").textContent.includes("M 재고 있나요?") && document.getElementById("shop-chat-messages").textContent.includes("L 재고 있나요?")'))throw Error('lost reload history');
+ if(!await evalJS('document.getElementById("shop-chat-messages").textContent.includes("소재가 궁금해요") && document.getElementById("shop-chat-messages").textContent.includes("사이즈 옵션 알려주세요")'))throw Error('lost reload history');
  checks.push('reload persistence');
  await evalJS('document.getElementById("shop-chat-history").click()');
  await wait('!document.getElementById("shop-chat-phone").hidden');
  await evalJS('document.getElementById("shop-chat-code").value="000000";document.getElementById("shop-chat-verify").click()');
- await wait('!document.getElementById("shop-chat-recent").hidden && document.getElementById("shop-chat-recent").textContent.includes("M 재고 있나요?")');checks.push('verified history');
+ await wait('!document.getElementById("shop-chat-recent").hidden && document.getElementById("shop-chat-recent").textContent.includes("소재가 궁금해요")');checks.push('verified history');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  if(!await evalJS('document.documentElement.scrollWidth<=innerWidth'))throw Error('mobile overflow');checks.push('mobile dialog');
  console.log(JSON.stringify({passed:true,checks}));
@@ -89,9 +94,9 @@ try{
             r=subprocess.run(['/opt/homebrew/bin/node','--input-type=module','-e',driver,target['webSocketDebuggerUrl']],capture_output=True,text=True,timeout=40)
             if r.returncode:raise RuntimeError(r.stderr[-2000:])
             result=json.loads(r.stdout)
-            assert [x['product_id'] for x in state['inquiries']]==['36','41','41']
+            assert [x['product_id'] for x in state['inquiries']]==['41','36']
             assert state['sms']==0
-            result.update(external_provider_requests=0,prod_mutation=False,inquiry_product_ids=['36','41','41'],mock_sms_requests=state['sms'])
+            result.update(external_provider_requests=0,prod_mutation=False,inquiry_product_ids=['41','36'],mock_sms_requests=state['sms'])
             print(json.dumps(result,ensure_ascii=False))
         finally:
             if chrome:

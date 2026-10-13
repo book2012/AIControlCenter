@@ -5921,3 +5921,9 @@ Remaining: explicit manual refund-completion record with amount/evidence and cus
 Independent DEV bridge cursor hardening: reads/aftersales no longer advance legacy ledger cursor. Order review decisions allocate a monotonic local ledger ID at or above the historical offset, while authenticated bridge original update IDs govern replay. No cursor rewind; restored/new bot commands cannot be incorrectly suppressed by an old shared-bot diagnostic offset. Real isolated SQLite ledger regression verifies confirmation guard once across retry/restart.
 
 Final related regression: 161 passed after independent cursor fix; immutable DEV API and DEV homepage refund UI verified, no live refund records created. SMS remains disabled with latest test3113.
+
+
+## Storefront next steps (2026-10-13)
+- Validate the checkout entry and guest-order route on an external DEV browser after DEV routing/auth returns non-401.
+- Deploy the WordPress account plugin separately and verify active header styling; Homepage releases do not deploy WordPress plugin files.
+- Implement and test a signed, expiring WooCommerce member identity bridge before enabling member orders without SMS.

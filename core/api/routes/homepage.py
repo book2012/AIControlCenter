@@ -172,6 +172,14 @@ def storefront_checkout_browser(service: ShoppingService = Depends(get_shopping_
     return HTMLResponse(html, headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
 
 
+@router.get("/homepage/storefront/guest-order", response_class=HTMLResponse, include_in_schema=False)
+def storefront_guest_order_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
+    from core.homepage.storefront_chat import widget
+    chat = widget(service, page_context={"type": "guest-order", "key": "guest-order", "summary": "비회원 휴대폰 인증과 배송정보를 입력하는 단계예요. 주문 확정 전에 상품과 금액을 확인할 수 있습니다."})
+    html = storefront.template("storefront-guest-order.html").replace("</body>", chat + "</body>")
+    return HTMLResponse(html, headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
+
+
 @router.get("/homepage/storefront/my-orders", response_class=HTMLResponse, include_in_schema=False)
 def storefront_orders_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
     from core.homepage.storefront_chat import widget

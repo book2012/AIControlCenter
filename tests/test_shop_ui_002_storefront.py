@@ -182,7 +182,7 @@ def test_editorial_home_and_search_have_separate_information_architecture(client
     assert {"listing-view", "search-input", "category-nav", "active-conditions", "product-count", "next-page"} <= search_ids
     assert "hero-title" not in search_ids
     assert any(tag == "a" and attrs.get("href") == "/homepage/storefront/search" for tag, attrs in home_elements)
-    assert "추천" not in home + search
+    assert "featured-hot-title" not in search and "recommended-tags" not in search
 
 
 def test_home_uses_one_mixed_feed_without_collection_sections(client):
@@ -334,7 +334,7 @@ def test_home_badges_prove_membership_and_failures_do_not_become_empty_catalogs(
     service.list_categories = Mock(return_value={"items": [], "total": 0})
     service.search_products = Mock(side_effect=AssertionError("No collection means no search"))
     response = client.get(storefront.HOME)
-    assert response.status_code == 200 and not links(response.text, class_name="product-link")
+    assert response.status_code == 503 and "상품 0개" not in response.text
     service.search_products.assert_not_called()
 
 

@@ -9,7 +9,7 @@ from core.homepage.preview import create_app
 from core.homepage import storefront_gallery
 from ops.macos.shopping.dev_chat_history import DevChatHistory,mount_history,COOKIE
 
-@pytest.mark.parametrize("url",["/homepage/storefront","/homepage/storefront/search","/homepage/storefront/my-orders","/homepage/storefront/cart","/homepage/storefront/checkout","/homepage/storefront/product/ag-upload-outer-0001","/homepage/storefront/product/ag-upload-outer-0002"])
+@pytest.mark.parametrize("url",["/homepage/storefront","/homepage/storefront/search","/homepage/storefront/my-orders","/homepage/storefront/cart","/homepage/storefront/checkout","/homepage/storefront/guest-order","/homepage/storefront/product/ag-upload-outer-0001","/homepage/storefront/product/ag-upload-outer-0002"])
 def test_one_shared_chat_on_customer_pages(url):
     with TestClient(create_app()) as c:
         r=c.get(url)
@@ -18,7 +18,8 @@ def test_one_shared_chat_on_customer_pages(url):
         assert r.text.count('id="shop-chat-form"')==1
         assert 'id="inquiry-section"' not in r.text
         assert 'storefront-chat.js' in r.text
-        assert 'id="shop-chat-stock"' in r.text
+        assert 'id="shop-chat-stock"' not in r.text
+        assert 'id="shop-chat-product"' not in r.text
         if "/product/" in url:
             pid=url.rsplit("/",1)[1]
             assert f'data-context="{pid}"' in r.text
@@ -46,16 +47,35 @@ def test_chat_carries_only_page_guidance_and_relevant_questions(url,kind):
     assert all(set(item)=={"label","text","action"} for item in context["questions"])
     assert not any(key in json.dumps(context).lower() for key in ("phone","address","postcode","recipient"))
 
+
+def test_checkout_separates_member_entry_and_guest_order_page():
+    with TestClient(create_app()) as c:
+        entry=c.get("/homepage/storefront/checkout")
+        guest=c.get("/homepage/storefront/guest-order")
+    assert entry.status_code==guest.status_code==200
+    assert entry.text.index('class="checkout-login-button"') < entry.text.index('class="checkout-guest-button"')
+    assert 'href="/homepage/storefront/guest-order"' in entry.text
+    assert 'id="phone-form"' not in entry.text
+    assert 'data-guest-order-page="true"' in guest.text
+    assert 'id="phone-form"' in guest.text and 'id="delivery-form"' in guest.text
+    assert '비회원 주문' in guest.text and '회원이신가요?' not in guest.text
+
+
 def test_product_chat_includes_public_product_summary_before_questions():
     with TestClient(create_app()) as c:
         response=c.get("/homepage/storefront/product/ag-upload-outer-0001")
     assert response.status_code==200
-    match=re.search(r'<option value="ag-upload-outer-0001" data-product-context="([^"]+)" selected>',response.text)
+    match=re.search(r'data-page-context="([^"]+)"',response.text)
     assert match
     context=json.loads(unescape(match.group(1)))
-    assert context["name"] and context["price"] and context["availability"]
-    assert context["options"] and context["questions"]
-    assert context["description"]
+    assert context["product"]["name"] and context["product"]["price"]
+    assert context["product"]["options"] and context["product"]["questions"]
+    assert context["product"]["description"]
+    assert "availability" not in context["product"]
+    assert all(set(item)=={"label","text","action"} for item in context["product"]["questions"])
+    assert not any("재고" in item["label"] or "재고" in item["text"] for item in context["product"]["questions"])
+    assert 'id="shop-chat-product"' not in response.text
+    assert 'id="shop-chat-stock"' not in response.text
 
 @pytest.mark.parametrize("pid",["ag-upload-outer-0001","ag-upload-outer-0002"])
 def test_gallery_preserves_original_and_labels_model_angles(pid):
@@ -191,16 +211,15 @@ def test_chat_recommendations_send_directly_and_do_not_open_mobile_keyboard():
     assert 'question.placeholder = "질문을 입력해 주세요"' in opener
 
 
-def test_checkout_offers_member_login_and_labels_sms_flow_as_guest_only():
+def test_guest_order_page_keeps_phone_verification_and_delivery_form():
     from pathlib import Path
-    from core.homepage.preview import create_app
     with TestClient(create_app()) as client:
-        response = client.get("/homepage/storefront/checkout")
+        response = client.get("/homepage/storefront/guest-order")
     assert response.status_code == 200
-    assert 'class="checkout-member-entry"' in response.text
-    assert 'href="/my-account/?redirect=%2Fhomepage%2Fstorefront%2Fcheckout"' in response.text
-    assert "비회원 주문" in response.text
-    assert "비회원은 휴대폰 인증 후 주문할 수 있습니다." in response.text
+    assert 'data-guest-order-page="true"' in response.text
+    assert "비회원 휴대폰 인증" in response.text
+    assert 'id="phone-form"' in response.text
+    assert 'id="delivery-form"' in response.text
     plugin = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/aicc-agachichi-account.php").read_text()
     assert "function checkout_profile()" in plugin
     assert "if (!is_user_logged_in())" in plugin

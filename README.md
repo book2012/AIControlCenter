@@ -5976,3 +5976,7 @@ Remaining: explicit manual refund-completion record with amount/evidence and cus
 Independent DEV bridge cursor hardening: reads/aftersales no longer advance legacy ledger cursor. Order review decisions allocate a monotonic local ledger ID at or above the historical offset, while authenticated bridge original update IDs govern replay. No cursor rewind; restored/new bot commands cannot be incorrectly suppressed by an old shared-bot diagnostic offset. Real isolated SQLite ledger regression verifies confirmation guard once across retry/restart.
 
 Final related regression: 161 passed after independent cursor fix; immutable DEV API and DEV homepage refund UI verified, no live refund records created. SMS remains disabled with latest test3113.
+
+
+## 2026-10-13 — DEV storefront chat and guest checkout
+Product detail chat now starts with that product's public information and no product picker or stock-check shortcut. Other storefront pages show page-specific prompts. /homepage/storefront/checkout offers LOGIN followed by a separate guest-order button; /homepage/storefront/guest-order contains the existing guest phone-verification and order-confirmation flow. Logged-in member order authorization without SMS remains pending the server-trusted WooCommerce-to-Shopping identity bridge.

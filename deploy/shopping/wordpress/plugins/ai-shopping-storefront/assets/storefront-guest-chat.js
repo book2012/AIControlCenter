@@ -5,7 +5,7 @@
 
   const root=document.querySelector("[data-guest-shop-product]")||document.querySelector("main[data-product]"); if(!root)return;
   const by=id=>document.getElementById(id);
-  const checkoutPage=root.dataset.checkoutPage==="true",checkoutKey="aicc-guest-checkout-v1";
+  const checkoutPage=root.dataset.checkoutPage==="true",guestOrderPage=root.dataset.guestOrderPage==="true",checkoutKey="aicc-guest-checkout-v1";
   const product=root.dataset.guestShopProduct||root.dataset.product;
   let cart=[], busy=false,inquiryBusy=false,postcodeLoader=null,selectedCart=[],prepared=null,checkoutAvailable=false,pending=null;
   try{pending=JSON.parse(sessionStorage.getItem("aicc-guest-operation-v1")||"null");if(pending&&(!/^[a-f0-9]{48}$/.test(pending.draft_id)||!/^guest-order-[a-f0-9]{48}$/.test(pending.operation_key)))throw new Error();}catch(_){pending={blocked:true};}
@@ -166,7 +166,7 @@
   render();
   if(checkoutPage){
     const init=async()=>{
-      await loadMemberProfile();
+      if(!guestOrderPage)return;
       if(pending){
         const response=await fetch(commercePath('/chat/capabilities'),{credentials:"same-origin"});
         if(!response.ok)throw new Error("주문 상태 연결을 확인하지 못했습니다.");
