@@ -1,9 +1,10 @@
-## 2026-10-13 — DEV account UX follow-up
+## 2026-10-13 — DEV account and address follow-up
 
-Completed: dedicated `/my-account/register/` page, 회원가입 link beside LOGIN, unknown-account
-login prompt, custom password entry, and phone-verified signup. Next: run one manual
-DEV signup with the configured test phone, then separately plan social login and any
-PROD rollout.
+Completed: dedicated signup page, unknown-account login prompt, phone-verified signup,
+and button-triggered address search modal for signup and checkout. Postcode and base
+address populate from Kakao Postcode; detailed address remains user-entered.
+Next: run one manual DEV signup and checkout address selection with safe test data.
+Social login and any PROD rollout remain separately scoped.
 
 # Roadmap
 
@@ -13,7 +14,8 @@ PROD rollout.
 - [x] Add DEV WooCommerce signup fields for name, nickname, phone, email, and address.
 - [x] Bind the signup phone to a short-lived, one-use server verification ticket.
 - [x] Support device dark appearance on the account page.
-- [ ] Validate the authenticated mobile flow with the configured DEV test phone.
+- [x] Add popup address search to registration and checkout; store the signup postcode.
+- [ ] Validate the authenticated mobile flow with the configured DEV test phone and real address selection.
 - [ ] Expand beyond the DEV test-number restriction before broader customer rollout.
 - [ ] Keep social sign-in and PROD release as later separately scoped work.
 

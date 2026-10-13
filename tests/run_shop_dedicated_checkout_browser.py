@@ -110,7 +110,12 @@ try{
  await wait('document.getElementById("phone-check").disabled===false');
  await js('document.getElementById("phone-code").value="123456";document.getElementById("phone-check").click()');
  await wait('document.getElementById("delivery-form").hidden===false');
- await js('document.getElementById("recipient").value="테스트 고객";document.getElementById("postcode").value="12345";document.getElementById("address1").value="테스트 도로 1";document.getElementById("address2").value="101호";document.getElementById("prepare").click()');
+ await js('window.kakao={Postcode:class{constructor(options){window.__postcodeOptions=options}embed(frame){frame.innerHTML="<iframe title=주소검색></iframe>"}}};document.getElementById("address-search").click()');
+ await wait('document.getElementById("address-search-layer").open');
+ await js('window.__postcodeOptions.oncomplete({userSelectedType:"R",roadAddress:"서울 테스트로 1",jibunAddress:"서울 테스트동 1",zonecode:"12345"})');
+ await wait('!document.getElementById("address-search-layer").open&&document.getElementById("address2")===document.activeElement');
+ if(!await js('document.getElementById("postcode").value==="12345"&&document.getElementById("address1").value==="서울 테스트로 1"'))throw Error("postcode selection");
+ await js('document.getElementById("recipient").value="테스트 고객";document.getElementById("address2").value="101호";document.getElementById("prepare").click()');
  await wait('document.getElementById("confirm").disabled===false');
  if(!await js('!JSON.stringify(sessionStorage).includes("테스트 고객")&&!JSON.stringify(sessionStorage).includes("01012345678")&&!JSON.stringify(sessionStorage).includes("테스트 도로")'))throw Error('PII persisted');
  await js('document.getElementById("confirm").click()');

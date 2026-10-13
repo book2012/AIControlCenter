@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV address search modal
+
+- Added button-triggered Kakao Postcode modal search to registration and checkout.
+- Populates postcode and road/jibun address, leaves detailed address for customer input, and stores signup postcode in billing/shipping metadata.
+- Checkout modal retains its existing server validation and explicit order confirmation flow.
+- DEV only; no PROD changes or live orders/SMS.
+
 ## 2026-10-13 — DEV dedicated registration page
 
 - Added a storefront 회원가입 link next to LOGIN and a dedicated `/my-account/register/` page.

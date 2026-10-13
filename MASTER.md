@@ -1,3 +1,11 @@
+## 2026-10-13 — DEV address search
+
+Registration and checkout 주소 검색 buttons open a Kakao Postcode modal.
+Selected postcode and road/jibun address populate their existing form fields;
+signup saves the postcode to WooCommerce billing and shipping metadata. Checkout
+still requires the existing final review and explicit confirmation. DEV only;
+PROD untouched.
+
 ## 2026-10-13 — DEV dedicated registration flow
 
 A 회원가입 link now sits beside LOGIN and opens `/my-account/register/`. WooCommerce

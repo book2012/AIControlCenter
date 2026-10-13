@@ -9,7 +9,12 @@ The storefront header places a 회원가입 link beside LOGIN, and `/my-account/
 dedicated registration page.
 
 Registration requests the member's name, nickname, mobile number, email, home
-address, and a password chosen by the member. A login attempt for an unknown
+address, and a password chosen by the member. The 주소 검색 button opens a
+Kakao Postcode modal; a selected five-digit postcode and road/jibun base address
+are required and stored in WooCommerce billing/shipping profile metadata. Detailed
+address remains a separate customer-entered field. This avoids users mistyping
+the administrative-area/base address while preserving their apartment/unit entry.
+A login attempt for an unknown
 username or email opens a registration prompt; a known account with a wrong
 password continues to receive the normal login error. WooCommerce remains the
 account and profile store. Name, nickname,
@@ -44,6 +49,7 @@ release.
 The phone bridge test covers origin and consent, verified customer session,
 signed ticket issue, phone binding, expiry, and replay denial. Homepage tests
 cover insertion of LOGIN and the neighboring 회원가입 link. PHP syntax and
-account form rendering are checked in the DEV WordPress container. Focused
-Homepage tests also verify that LOGIN inherits the same text-only navigation
-style as the other header links.
+account form rendering are checked in the DEV WordPress container. Address-search
+markup, postcode persistence, and phone-bound registration validation are part
+of the form contract. Focused Homepage tests also verify that LOGIN inherits the
+same text-only navigation style as the other header links.

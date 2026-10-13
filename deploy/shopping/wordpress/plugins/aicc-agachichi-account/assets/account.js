@@ -16,6 +16,59 @@
       if (event.target === signupDialog) signupDialog.close();
     });
   }
+  const addressButton = document.getElementById('aicc-address-search');
+  const addressDialog = document.getElementById('aicc-postcode-dialog');
+  if (addressButton && addressDialog) {
+    let postcodeLoader;
+    const loadPostcode = () => {
+      if (window.kakao?.Postcode) return Promise.resolve();
+      if (postcodeLoader) return postcodeLoader;
+      postcodeLoader = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://t1.kakaocdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js';
+        script.async = true;
+        script.onload = () => window.kakao?.Postcode ? resolve() : reject(new Error('주소 검색 서비스를 불러오지 못했습니다.'));
+        script.onerror = () => reject(new Error('주소 검색 서비스를 불러오지 못했습니다.'));
+        document.head.appendChild(script);
+      });
+      return postcodeLoader;
+    };
+    const closeAddress = () => {
+      if (addressDialog.open) addressDialog.close();
+      document.getElementById('aicc-postcode-frame')?.replaceChildren();
+    };
+    addressButton.addEventListener('click', async () => {
+      const frame = document.getElementById('aicc-postcode-frame');
+      try {
+        await loadPostcode();
+        frame.replaceChildren();
+        addressDialog.showModal();
+        new window.kakao.Postcode({
+          oncomplete: data => {
+            const address = data.userSelectedType === 'J' ? data.jibunAddress : data.roadAddress;
+            if (!/^[0-9]{5}$/.test(data.zonecode || '') || !address) return;
+            document.getElementById('aicc_postcode').value = data.zonecode;
+            document.getElementById('aicc_address').value = address;
+            closeAddress();
+            document.getElementById('aicc_address_detail')?.focus();
+          },
+          width: '100%', height: '100%'
+        }).embed(frame);
+      } catch (error) {
+        closeAddress();
+        const status = document.getElementById('aicc-phone-status');
+        if (status) status.textContent = error.message || '주소 검색을 열지 못했습니다.';
+      }
+    });
+    document.getElementById('aicc-address-close')?.addEventListener('click', closeAddress);
+    addressDialog.addEventListener('click', event => {
+      if (event.target === addressDialog) closeAddress();
+    });
+    addressDialog.addEventListener('close', () => {
+      document.getElementById('aicc-postcode-frame')?.replaceChildren();
+      if (document.activeElement !== document.getElementById('aicc_address_detail')) addressButton.focus();
+    });
+  }
   if (!phone || !code || !ticket || !status || !send || !check) return;
   let sentPhone = '';
   const message = value => { status.textContent = value; };

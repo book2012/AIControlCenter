@@ -34,8 +34,8 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.2.0');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.2.0', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.3.0');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.3.0', true);
     }
 
     public static function intro(): void {
@@ -135,8 +135,10 @@ final class AICC_Agachichi_Account {
         echo '<label class="aicc-account-label" for="aicc_phone_code">인증번호</label><div class="aicc-phone-actions"><input id="aicc_phone_code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="10"><button type="button" class="aicc-account-button" id="aicc-check-code">인증 확인</button></div>';
         echo '<label class="aicc-account-consent"><input type="checkbox" id="aicc-phone-consent"><span>회원가입을 위한 휴대폰 본인 확인에 동의합니다.</span></label>';
         echo '<input type="hidden" name="aicc_phone_ticket" id="aicc_phone_ticket" value="">';
-        self::input('aicc_address', '집 주소', 'text', true, '도로명 주소', 'autocomplete="street-address"');
+        echo '<label class="aicc-account-label" for="aicc_postcode">우편번호 <span aria-hidden="true">*</span></label><div class="aicc-address-row"><input class="aicc-account-input" id="aicc_postcode" name="aicc_postcode" type="text" inputmode="numeric" autocomplete="postal-code" placeholder="주소 검색으로 입력" readonly required><button type="button" class="aicc-account-button" id="aicc-address-search">주소 검색</button></div>';
+        self::input('aicc_address', '집 주소', 'text', true, '도로명 주소', 'autocomplete="street-address" readonly');
         self::input('aicc_address_detail', '상세 주소', 'text', false, '동·호수 등', 'autocomplete="address-line2"');
+        echo '<dialog class="aicc-postcode-dialog" id="aicc-postcode-dialog" aria-labelledby="aicc-postcode-title"><div class="aicc-postcode-head"><h2 id="aicc-postcode-title">주소 검색</h2><button type="button" id="aicc-address-close" aria-label="주소 검색 닫기">×</button></div><div id="aicc-postcode-frame"></div></dialog>';
         echo '<p class="aicc-account-hint">휴대폰 인증을 완료한 뒤 이메일과 비밀번호를 입력해 주세요.</p></fieldset>';
     }
 
@@ -157,7 +159,8 @@ final class AICC_Agachichi_Account {
         $phone = sanitize_text_field(wp_unslash($_POST['aicc_phone'] ?? ''));
         $address = sanitize_text_field(wp_unslash($_POST['aicc_address'] ?? ''));
         $ticket = sanitize_text_field(wp_unslash($_POST['aicc_phone_ticket'] ?? ''));
-        if ($name === '' || $nickname === '' || $phone === '' || $address === '') {
+        $postcode = preg_replace('/\\D+/', '', sanitize_text_field(wp_unslash($_POST['aicc_postcode'] ?? '')));
+        if ($name === '' || $nickname === '' || $phone === '' || $address === '' || !preg_match('/^[0-9]{5}$/', (string) $postcode)) {
             $errors->add('aicc_signup_fields', '이름, 닉네임, 휴대폰 번호, 집 주소를 입력해 주세요.');
             return $errors;
         }
@@ -235,6 +238,9 @@ final class AICC_Agachichi_Account {
         update_user_meta($customer_id, 'nickname', $nickname);
         wp_update_user(['ID' => $customer_id, 'display_name' => $nickname]);
         update_user_meta($customer_id, 'billing_phone', self::$verified_phone);
+        $postcode = preg_replace('/\\D+/', '', sanitize_text_field(wp_unslash($_POST['aicc_postcode'] ?? '')));
+        update_user_meta($customer_id, 'billing_postcode', $postcode);
+        update_user_meta($customer_id, 'shipping_postcode', $postcode);
         update_user_meta($customer_id, 'billing_address_1', $address);
         update_user_meta($customer_id, 'billing_address_2', $detail);
         update_user_meta($customer_id, 'shipping_first_name', $name);
