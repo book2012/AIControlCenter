@@ -47,7 +47,7 @@
       code.value = '';
       if (!response.ok) throw new Error('인증번호가 맞지 않거나 만료되었습니다.');
       const proof = response.headers.get('X-AICC-Registration-Ticket');
-      if (!proof || !/^[A-Za-z0-9_-]{43}$/.test(proof)) throw new Error('인증 상태를 확인할 수 없습니다.');
+      if (!proof || proof.length > 512 || !/^[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+$/.test(proof)) throw new Error('인증 상태를 확인할 수 없습니다.');
       ticket.value = proof;
       message('휴대폰 인증이 완료되었습니다.');
     } catch (error) {

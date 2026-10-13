@@ -2,7 +2,7 @@
 from pathlib import Path
 from datetime import datetime,timezone,timedelta
 from email.utils import parsedate_to_datetime
-import hashlib,json,os,re,secrets,sqlite3,threading,uuid,time
+import base64,hashlib,json,os,re,secrets,sqlite3,threading,uuid,time
 import requests
 from pydantic import BaseModel,ConfigDict,Field
 from fastapi import Request
@@ -103,7 +103,6 @@ class DevPhoneBridge:
         self.customer_id=cfg["guest_customer_id"]
         with sqlite3.connect(self.path) as c:
             c.execute("CREATE TABLE IF NOT EXISTS dev_phone_browser(token_hash TEXT PRIMARY KEY,challenge TEXT NOT NULL,replay TEXT NOT NULL,browser TEXT NOT NULL,state TEXT NOT NULL,created REAL NOT NULL,expires REAL NOT NULL)")
-            c.execute("CREATE TABLE IF NOT EXISTS dev_account_registration_ticket(token_hash TEXT PRIMARY KEY,customer_id TEXT NOT NULL,phone_binding TEXT NOT NULL,created REAL NOT NULL,expires REAL NOT NULL,consumed INTEGER NOT NULL DEFAULT 0)")
         os.chmod(self.path,0o600)
         store=SQLiteCustomerSessionStore(self.customer_path)
         with sqlite3.connect(self.customer_path) as c:c.row_factory=sqlite3.Row;existing=customer_from_connection(c,self.customer_id)
@@ -141,29 +140,16 @@ class DevPhoneBridge:
             or customer.contact_binding.contact_ref!=self.cfg["guest_contact_ref"]):raise PhoneDenied("DENIED")
         return normalize_phone(self.cfg["test_phone"]).value
     def issue_registration_ticket(self,customer_id):
-        phone=self.verified_phone(customer_id);binding=derive_phone_binding(normalize_phone(phone),self.binding_key).value
-        stamp=self.clock().timestamp();token=secrets.token_urlsafe(32)
-        with sqlite3.connect(self.path) as c:
-            c.execute("BEGIN IMMEDIATE")
-            c.execute("DELETE FROM dev_account_registration_ticket WHERE expires<=?",(stamp,))
-            recent=c.execute("SELECT count(*) FROM dev_account_registration_ticket WHERE customer_id=? AND created>?",(customer_id,stamp-3600)).fetchone()[0]
-            if recent>=5:raise PhoneDenied("RATE_LIMITED")
-            c.execute("INSERT INTO dev_account_registration_ticket(token_hash,customer_id,phone_binding,created,expires) VALUES(?,?,?,?,?)",
-                (digest(token),customer_id,binding,stamp,stamp+300))
-        return token
-    def consume_registration_ticket(self,token,phone):
-        if not token or not re.fullmatch(r"[A-Za-z0-9_-]{43}",token):raise PhoneDenied("DENIED")
-        canonical=normalize_phone(phone) if phone.strip().startswith("+") else normalize_phone(phone,country_calling_code="+82",national_trunk_prefix="0")
-        with sqlite3.connect(self.path) as c:
-            c.execute("BEGIN IMMEDIATE")
-            c.execute("DELETE FROM dev_account_registration_ticket WHERE expires<=?",(self.clock().timestamp(),))
-            row=c.execute("SELECT customer_id,phone_binding,expires,consumed FROM dev_account_registration_ticket WHERE token_hash=?",(digest(token),)).fetchone()
-            binding=derive_phone_binding(canonical,self.binding_key).value
-            if not row or row[3]!=0 or self.clock().timestamp()>=row[2] or binding!=row[1]:raise PhoneDenied("DENIED")
-            if derive_phone_binding(normalize_phone(self.verified_phone(row[0])),self.binding_key).value!=row[1]:raise PhoneDenied("DENIED")
-            c.execute("UPDATE dev_account_registration_ticket SET consumed=1 WHERE token_hash=? AND consumed=0",(digest(token),))
-            if c.execute("SELECT changes()").fetchone()[0]!=1:raise PhoneDenied("DENIED")
-        return canonical.value
+        phone=self.verified_phone(customer_id)
+        stamp=int(self.clock().timestamp())
+        claims={"aud":"dev.bokstory.duckdns.org/aicc-account-registration","exp":stamp+300,
+                "nonce":secrets.token_urlsafe(16),"phone":phone,"v":1}
+        payload=json.dumps(claims,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")
+        seed=hashlib.sha256(b"aicc/dev-account-registration/signing/v1"+bytes((0,))+self.binding_key).digest()
+        from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+        signature=Ed25519PrivateKey.from_private_bytes(seed).sign(payload)
+        encode=lambda value:base64.urlsafe_b64encode(value).decode("ascii").rstrip("=")
+        return encode(payload)+"."+encode(signature)
     def verify(self,token,code):
         if not token or not re.fullmatch(r"[A-Za-z0-9_-]{43}",token):raise PhoneDenied("DENIED")
         with self.lock:
@@ -188,11 +174,6 @@ class DevPhoneBridge:
             with sqlite3.connect(self.path) as c:c.execute("UPDATE dev_phone_browser SET state='VERIFIED' WHERE token_hash=?",(digest(token),))
             return outcome
 
-class RegistrationTicketPayload(BaseModel):
-    model_config=ConfigDict(extra="forbid",hide_input_in_errors=True)
-    ticket:str=Field(strict=True,min_length=43,max_length=43,pattern=r"^[A-Za-z0-9_-]{43}$",repr=False)
-    phone:str=Field(strict=True,min_length=8,max_length=32,repr=False)
-
 def mount_phone_routes(app,*,bridge,boundary,register_evidence):
     async def payload(request,model,*,require_origin=True):
         if require_origin:boundary.check_origin(request,required=True)
@@ -201,13 +182,6 @@ def mount_phone_routes(app,*,bridge,boundary,register_evidence):
             if len(raw)+len(chunk)>2048:raise ValueError()
             raw.extend(chunk)
         return model.model_validate_json(bytes(raw))
-    @app.post("/__order-dev/account/registration-ticket/consume",include_in_schema=False)
-    async def consume_registration_ticket(request:Request):
-        try:
-            data=await payload(request,RegistrationTicketPayload,require_origin=False)
-            phone=await __import__("asyncio").to_thread(bridge.consume_registration_ticket,data.ticket,data.phone)
-            return JSONResponse({"verified":True,"phone":phone},headers={"Cache-Control":"no-store"})
-        except Exception:return JSONResponse({"verified":False},status_code=401,headers={"Cache-Control":"no-store"})
     @app.post("/__order-dev/phone/start",include_in_schema=False)
     async def start(request:Request):
         try:

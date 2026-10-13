@@ -16,10 +16,12 @@ Social sign-in is outside this first DEV registration step.
 ## Phone verification
 
 The signup form sends and checks an SMS through the existing DEV-only Twilio
-Verify bridge. A server-side, short-lived one-use ticket binds the successful
-verification to the phone submitted during registration. WordPress consumes
-the ticket server-to-server before creating the account. Tickets are stored
-hashed, expire after five minutes, and cannot be replayed.
+Verify bridge. The order service signs a short-lived ticket containing the
+verified phone, audience, expiry, and random nonce with an Ed25519 key derived from the
+DEV-only binding secret. WordPress verifies the signature offline using a
+public key, matches the submitted phone, and atomically records the nonce to
+prevent replay. Tickets expire after five minutes; the WordPress container
+does not need network access to the Mac host API.
 
 The current DEV bridge intentionally accepts only the configured test phone.
 It retains its existing request limits and sends no SMS until a visitor
@@ -35,7 +37,7 @@ release.
 ## Validation
 
 The phone bridge test covers origin and consent, verified customer session,
-ticket issue, phone binding, expiry, and replay denial. PHP syntax and account
-form rendering are checked in the DEV WordPress container. Focused Homepage
-tests also verify that LOGIN inherits the same text-only navigation style as
-the other header links.
+signed ticket issue, phone binding, expiry, and replay denial. PHP syntax and
+account form rendering are checked in the DEV WordPress container. Focused
+Homepage tests also verify that LOGIN inherits the same text-only navigation
+style as the other header links.

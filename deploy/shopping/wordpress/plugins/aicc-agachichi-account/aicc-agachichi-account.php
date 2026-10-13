@@ -9,7 +9,8 @@ if (!defined('ABSPATH')) { exit; }
 
 final class AICC_Agachichi_Account {
     private static ?string $verified_phone = null;
-    private const VERIFY_URL = 'http://host.docker.internal:18445/__order-dev/account/registration-ticket/consume';
+    private const REGISTRATION_PUBLIC_KEY = 'OYh42Nj3arnQL3oqfcX_-oKRVK_SktTxnyPvXWX4G8c';
+    private const REGISTRATION_AUDIENCE = 'dev.bokstory.duckdns.org/aicc-account-registration';
 
     public static function boot(): void {
         if (strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST)) !== 'dev.bokstory.duckdns.org') { return; }
@@ -67,27 +68,67 @@ final class AICC_Agachichi_Account {
             $errors->add('aicc_signup_fields', '이름, 닉네임, 휴대폰 번호, 집 주소를 입력해 주세요.');
             return $errors;
         }
-        if (!preg_match('/^[A-Za-z0-9_-]{43}$/', $ticket)) {
+        if (strlen($ticket) > 512 || !preg_match('/^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$/', $ticket)) {
             $errors->add('aicc_signup_phone', '회원가입 전에 휴대폰 인증을 완료해 주세요.');
             return $errors;
         }
-        $response = wp_remote_post(self::VERIFY_URL, [
-            'timeout' => 8,
-            'redirection' => 0,
-            'headers' => ['Content-Type' => 'application/json', 'Cache-Control' => 'no-store'],
-            'body' => wp_json_encode(['ticket' => $ticket, 'phone' => $phone]),
-        ]);
-        if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {
+        $claims = self::verified_ticket($ticket, $phone);
+        if ($claims === null) {
             $errors->add('aicc_signup_phone', '휴대폰 인증을 확인하지 못했습니다. 인증을 다시 진행해 주세요.');
             return $errors;
         }
-        $result = json_decode(wp_remote_retrieve_body($response), true);
-        if (!is_array($result) || ($result['verified'] ?? false) !== true || !isset($result['phone'])) {
-            $errors->add('aicc_signup_phone', '휴대폰 인증을 확인하지 못했습니다. 인증을 다시 진행해 주세요.');
+        self::prune_used_tickets();
+        $option = 'aicc_dev_signup_ticket_' . $claims['nonce'];
+        if (!add_option($option, (string) $claims['exp'], '', false)) {
+            $errors->add('aicc_signup_phone', '이미 사용한 인증입니다. 휴대폰 인증을 다시 진행해 주세요.');
             return $errors;
         }
-        self::$verified_phone = sanitize_text_field($result['phone']);
+        self::$verified_phone = $claims['phone'];
         return $errors;
+    }
+
+    private static function verified_ticket(string $ticket, string $phone): ?array {
+        if (strlen($ticket) > 512 || !preg_match('/^[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+$/', $ticket)) { return null; }
+        [$encoded, $signed] = explode('.', $ticket, 2);
+        $decode = static function (string $value): string|false {
+            $padded = strtr($value, '-_', '+/') . str_repeat('=', (4 - strlen($value) % 4) % 4);
+            return base64_decode($padded, true);
+        };
+        $payload = $decode($encoded);
+        $signature = $decode($signed);
+        $public = $decode(self::REGISTRATION_PUBLIC_KEY);
+        if (!is_string($payload) || !is_string($signature) || !is_string($public)
+            || strlen($signature) !== SODIUM_CRYPTO_SIGN_BYTES
+            || strlen($public) !== SODIUM_CRYPTO_SIGN_PUBLICKEYBYTES
+            || !sodium_crypto_sign_verify_detached($signature, $payload, $public)) { return null; }
+        $claims = json_decode($payload, true);
+        if (!is_array($claims) || ($claims['v'] ?? null) !== 1
+            || ($claims['aud'] ?? null) !== self::REGISTRATION_AUDIENCE
+            || !is_int($claims['exp'] ?? null) || $claims['exp'] <= time() || $claims['exp'] > time() + 360
+            || !is_string($claims['nonce'] ?? null) || !preg_match('/^[A-Za-z0-9_-]{22}$/', $claims['nonce'])
+            || !is_string($claims['phone'] ?? null)) { return null; }
+        $submitted = self::canonical_phone($phone);
+        if ($submitted === '' || !hash_equals($claims['phone'], $submitted)) { return null; }
+        return $claims;
+    }
+
+    private static function canonical_phone(string $phone): string {
+        $trimmed = trim($phone);
+        $digits = preg_replace('/\\D+/', '', $trimmed);
+        if (!is_string($digits)) { return ''; }
+        if (str_starts_with($trimmed, '+')) { $canonical = '+' . $digits; }
+        elseif (str_starts_with($digits, '82')) { $canonical = '+' . $digits; }
+        elseif (str_starts_with($digits, '0')) { $canonical = '+82' . substr($digits, 1); }
+        else { return ''; }
+        return preg_match('/^\\+8210[0-9]{8}$/', $canonical) ? $canonical : '';
+    }
+
+    private static function prune_used_tickets(): void {
+        global $wpdb;
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s AND CAST(option_value AS UNSIGNED) < %d",
+            $wpdb->esc_like('aicc_dev_signup_ticket_') . '%', time() - 3600
+        ));
     }
 
     public static function save(int $customer_id): void {

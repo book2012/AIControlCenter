@@ -1,6 +1,6 @@
 from datetime import datetime,timezone,timedelta
 from pathlib import Path
-import secrets,sqlite3,uuid
+import base64,hashlib,json,secrets,sqlite3,uuid
 import pytest
 from pydantic import SecretBytes
 from fastapi import FastAPI
@@ -38,12 +38,23 @@ def test_success_is_real_service_receipt_and_browser_bound(setup):
  assert out.receipt.customer_id==b.customer_id and p.calls==["start","verify"]
  with pytest.raises(PhoneDenied):b.verify(token,"123456")
  with sqlite3.connect(b.customer_path) as c:assert c.execute("SELECT status FROM shopping_verification_challenges").fetchone()[0]=="VERIFIED"
-def test_account_registration_ticket_expires_and_phone_must_match(setup):
+def test_account_registration_ticket_is_signed_and_short_lived(setup):
+ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+ from cryptography.hazmat.primitives.serialization import Encoding,PublicFormat
  b,_,now=setup;token,_=b.start("01012345678");b.verify(token,"123456")
  ticket=b.issue_registration_ticket(b.customer_id)
- with pytest.raises(PhoneDenied):b.consume_registration_ticket(ticket,"01019999999")
- now[0]+=timedelta(minutes=5)
- with pytest.raises(PhoneDenied):b.consume_registration_ticket(ticket,"01012345678")
+ encoded,signature=ticket.split(".")
+ decode=lambda value:base64.urlsafe_b64decode(value+"="*((4-len(value)%4)%4))
+ payload=decode(encoded);sig=decode(signature)
+ seed=hashlib.sha256(b"aicc/dev-account-registration/signing/v1"+bytes((0,))+b"binding-secret").digest()
+ key=Ed25519PrivateKey.from_private_bytes(seed)
+ key.public_key().verify(sig,payload)
+ claims=json.loads(payload)
+ assert claims["aud"]=="dev.bokstory.duckdns.org/aicc-account-registration"
+ assert claims["phone"]=="+821012345678" and claims["v"]==1
+ assert claims["exp"]==int(now[0].timestamp())+300 and len(claims["nonce"])==22
+ public=key.public_key().public_bytes(Encoding.Raw,PublicFormat.Raw)
+ assert len(public)==32
 
 def test_other_phone_and_fake_browser_rejected_without_provider(setup):
  b,p,_=setup
@@ -101,12 +112,12 @@ def test_http_phone_routes_require_consent_origin_and_issue_session(setup):
  assert b.verified_phone(b.customer_id)=="+821012345678"
  assert "X-AICC-Registration-Ticket" in result.headers
  ticket=result.headers["X-AICC-Registration-Ticket"]
- rejected=client.post("/__order-dev/account/registration-ticket/consume",json={"ticket":ticket,"phone":"01019999999"})
- assert rejected.status_code==401
- consumed=client.post("/__order-dev/account/registration-ticket/consume",json={"ticket":ticket,"phone":"01012345678"})
- assert consumed.status_code==200 and consumed.json()=={"verified":True,"phone":"+821012345678"}
- replay=client.post("/__order-dev/account/registration-ticket/consume",json={"ticket":ticket,"phone":"01012345678"})
- assert replay.status_code==401
+ encoded,signature=ticket.split(".")
+ payload=base64.urlsafe_b64decode(encoded+"="*((4-len(encoded)%4)%4))
+ seed=hashlib.sha256(b"aicc/dev-account-registration/signing/v1"+bytes((0,))+b"binding-secret").digest()
+ from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+ Ed25519PrivateKey.from_private_bytes(seed).public_key().verify(base64.urlsafe_b64decode(signature+"="*((4-len(signature)%4)%4)),payload)
+ assert json.loads(payload)["phone"]=="+821012345678"
  assert "123456" not in result.text and "+821012345678" not in result.text
 
 def test_twilio_endpoint_cannot_escape_verify_scope():
