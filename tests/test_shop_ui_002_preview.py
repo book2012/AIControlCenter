@@ -338,3 +338,16 @@ def test_preview_canonical_json_equals_unmodified_shopping_router(client, path):
         expected, actual = canonical.get(path), client.get(path)
         assert actual.status_code == expected.status_code
         assert actual.json() == expected.json()
+
+
+def test_shared_header_inserts_login_after_search_and_links_woocommerce_account(client):
+    html = client.get("/homepage/storefront").text
+    script = client.get("/homepage/assets/storefront-header.js").text
+    css = client.get("/homepage/assets/storefront.css").text
+    assert 'class="header-search"' in html
+    assert 'className = "header-login"' in script
+    assert 'login.href = "/my-account/"' in script
+    assert 'login.textContent = "LOGIN"' in script
+    assert 'opener.insertAdjacentElement("afterend", login)' in script
+    assert ".store-header .header-actions a.header-login" in css
+    assert "max-width: 600px" in css and "header-login" in css

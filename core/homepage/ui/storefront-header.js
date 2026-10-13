@@ -1,6 +1,15 @@
 (() => {
   "use strict";
   const opener = document.querySelector(".header-search");
+  const actions = document.querySelector(".header-actions");
+  if (opener && actions && !actions.querySelector(".header-login")) {
+    const login = document.createElement("a");
+    login.className = "header-login";
+    login.href = "/my-account/";
+    login.textContent = "LOGIN";
+    login.setAttribute("aria-label", "로그인");
+    opener.insertAdjacentElement("afterend", login);
+  }
   if (!opener || !window.HTMLDialogElement) return;
   const dialog = document.createElement("dialog");
   dialog.className = "header-search-dialog";

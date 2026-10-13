@@ -1,5 +1,12 @@
 # MASTER
 
+## 2026-10-13 — DEV storefront LOGIN link
+
+Homepage DEV source adds a responsive LOGIN action after search and links to
+the isolated DEV WooCommerce account page. The route keeps registration
+disabled and preserves the Homepage preview and order API destinations. See
+[DEV storefront login routing](docs/homepage/DEV-STOREFRONT-LOGIN-01.md).
+
 ## 2026-10-13 — DEV order lookup recovery
 
 Fixed the over-escaped public order-number regex and removed eager customer-session probes. Unknown public numbers show an error without falling through to authentication. Short-lived order, aftersales, dialogue and SMS SQLite transactions now close deterministically after commit/rollback, preventing descriptor exhaustion. Validation: 2 UI execution tests and 168 provider/order/return/isolation regressions passed. DEV-only rollout; PROD runtime and existing private configuration remain unchanged. See [recovery details](docs/architecture/SHOP_ORDER_LOOKUP_RECOVERY_DEV.md).
