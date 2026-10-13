@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.1
+ * Version: 0.6.2
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
