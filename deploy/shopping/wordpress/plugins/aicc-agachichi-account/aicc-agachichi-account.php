@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.0
+ * Version: 0.6.1
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -44,13 +44,12 @@ final class AICC_Agachichi_Account {
         $logged_in = is_user_logged_in();
         $is_login = $account_page && !$logged_in && !$is_registration;
         $login_state = $is_login ? ' class="header-login is-active" aria-current="page"' : ' class="header-login"';
-        $signup_state = $is_registration ? ' class="header-signup is-active" aria-current="page"' : ' class="header-signup"';
         $account_link = $logged_in
-            ? '<a class="header-orders" href="/my-account/">내 정보</a>'
+            ? '<a class="header-orders" href="/my-account/">주문내역</a><a class="header-profile" href="/my-account/edit-account/">내 정보</a>'
             : '<a class="header-orders" href="/homepage/storefront/my-orders" aria-label="비회원 주문 조회">비회원 주문 조회</a>';
         $auth_link = $logged_in
             ? '<a class="header-logout" href="' . esc_url(wp_logout_url(home_url('/homepage/storefront/'))) . '" data-aicc-confirm="로그아웃하시겠습니까?" aria-label="로그아웃">LOG OUT</a>'
-            : '<a' . $login_state . ' href="/my-account/" aria-label="로그인">LOGIN</a><a' . $signup_state . ' href="/my-account/register/" aria-label="회원가입">회원가입</a>';
+            : '<a' . $login_state . ' href="/my-account/" aria-label="로그인">LOGIN</a>';
         echo '<header class="store-header aicc-account-store-header"><a class="wordmark" href="/homepage/storefront/">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="주요 메뉴"><a class="header-search" href="/homepage/storefront/search">검색</a>' . $auth_link . '<a class="header-cart" href="/homepage/storefront/cart">장바구니</a>' . $account_link . '</nav></header>';
     }
 
@@ -63,8 +62,8 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.0');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.0', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.1');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.1', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),

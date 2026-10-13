@@ -1,7 +1,7 @@
 ## 2026-10-13 — DEV account landing and member controls
 
 - Successful signup now opens a themed welcome page with the login ID, home link, and up to four recent products.
-- Account navigation switches LOGIN to confirmed LOG OUT and replaces guest order lookup with 내 정보 when signed in.
+- Account navigation switches LOGIN to confirmed LOG OUT; signed-in header retains 주문내역 and adds 내 정보. 회원가입 appears below the login form, not in the header.
 - Signed-in account landing begins with recent orders, followed by profile/address edit links and a confirmed customer-only withdrawal form.
 - Logged-out account pages provide the existing phone-verified guest order lookup.
 - Regression coverage passed; WordPress runtime deployment remains pending because the local Docker daemon is unavailable.

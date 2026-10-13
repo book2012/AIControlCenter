@@ -5,8 +5,7 @@
 The DEV WooCommerce login page uses agachichi's warm ivory and brown palette.
 It follows the device color preference: dark preference switches account and
 registration pages to a dark brown-black surface with warm text and accent buttons.
-The storefront header places a 회원가입 link beside LOGIN, and `/my-account/register/` is a
-dedicated registration page. The generic DEV site title and duplicate page title are hidden on account routes so agachichi branding remains primary.
+The login form links to a dedicated `/my-account/register/` registration page; 회원가입 is not a top-level account header item. The generic DEV site title and duplicate page title are hidden on account routes so agachichi branding remains primary.
 
 Registration starts with login ID, email, password, and password confirmation, followed by name, nickname, mobile number, and home address. The signup fields sit in one outer form frame without an extra inner box. The customer checks ID availability
 before submitting; WordPress checks again on submit to catch simultaneous claims.
@@ -71,7 +70,7 @@ The success page is created on DEV if missing and is not exposed on other hosts.
 ## Member and guest order access
 
 When logged in, the account header replaces LOGIN with a confirmed LOG OUT
-action and routes the account link to 내 정보. The account dashboard starts with
+action and shows both 주문내역 (the recent-order dashboard) and 내 정보 (edit-account page). When logged out, 회원가입 is shown below the login form, not in the header. The account dashboard starts with
 the latest five orders and a link to the full WooCommerce order history, followed
 by links to edit account details and delivery addresses. The bottom section
 provides a confirmed 회원 탈퇴 action. Customers are deleted through the

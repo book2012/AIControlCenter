@@ -2,7 +2,7 @@
 
 - [x] Show signup congratulations, login ID, home link, and recent product recommendations.
 - [x] Switch account header from LOGIN to confirmation-gated LOG OUT after authentication.
-- [x] Replace account-header order link with 내 정보 for signed-in users and guest order lookup when signed out.
+- [x] Keep 주문내역 and add 내 정보 in signed-in navigation; keep guest order lookup for signed-out users. Put 회원가입 below the login form rather than in the header.
 - [x] Put recent WooCommerce orders first on the member account screen; add account and shipping-address edit links.
 - [x] Add nonce-protected, customer-only withdrawal with a confirmation prompt.
 - [ ] Deploy the updated WordPress plugin and verify signed-in, signed-out, order, edit, and withdrawal flows in DEV.

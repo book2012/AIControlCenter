@@ -265,7 +265,11 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     css = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.css").read_text()
     js = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.js").read_text()
     assert "data-aicc-confirm" in plugin and "로그아웃하시겠습니까?" in plugin
-    assert "내 정보</a>" in plugin and "비회원 주문 조회" in plugin
+    assert "header-orders" in plugin and ">주문내역</a>" in plugin
+    assert "header-profile" in plugin and "/my-account/edit-account/" in plugin
+    assert "비회원 주문 조회" in plugin and "header-signup" not in plugin
+    login_link = plugin[plugin.index("function login_signup_link"):plugin.index("function login_failed") ]
+    assert "회원가입</a>" in login_link
     assert "비회원 주문 조회 · 휴대폰 인증" in plugin
     assert "woocommerce_locate_template" in plugin and "templates/myaccount/dashboard.php" in plugin
     assert "'orders' => '주문내역'" in plugin and "'edit-account' => '내 정보 수정'" in plugin
