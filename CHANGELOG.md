@@ -1,3 +1,11 @@
+## 2026-10-13 — DEV dedicated registration page
+
+- Added a storefront 회원가입 link next to LOGIN and a dedicated `/my-account/register/` page.
+- Separated WooCommerce registration from the login form; customers set their own password.
+- Added a modal invitation only when login fails for an unknown username/email.
+- Retained phone OTP proof validation, replay prevention, responsive theme, and dark mode.
+- DEV only; no PROD changes.
+
 # CHANGELOG
 
 ## 2026-10-13 — DEV account registration and theme

@@ -30,3 +30,23 @@ body.woocommerce-account{background:var(--aicc-bg)!important;color:var(--aicc-in
  .woocommerce-account .woocommerce-error a,.woocommerce-account .woocommerce-info a,.woocommerce-account .woocommerce-message a{color:var(--aicc-accent)}
 }
 @media(max-width:600px){.woocommerce-account .woocommerce form.login,.woocommerce-account .woocommerce form.register{padding:16px}.woocommerce-account .aicc-account-brand{font-size:26px}}
+
+.woocommerce-account .aicc-register-page{max-width:560px;margin:0 auto;padding:0 20px 48px}
+.woocommerce-account .aicc-register-heading{margin:12px 0 24px;text-align:center}
+.woocommerce-account .aicc-register-heading h1{margin:4px 0 8px;font-size:28px}
+.woocommerce-account .aicc-register-heading>p:last-child{color:var(--aicc-muted);font-size:14px}
+.woocommerce-account .aicc-registration-form{display:grid;gap:9px}
+.woocommerce-account .aicc-registration-form .aicc-signup-fields{margin-top:4px}
+.woocommerce-account .aicc-registration-form>.aicc-account-label{margin-top:8px}
+.woocommerce-account .aicc-register-submit{width:100%;margin-top:12px}
+.woocommerce-account .aicc-register-login,.woocommerce-account .aicc-login-signup{text-align:center;margin:18px 0;color:var(--aicc-muted);font-size:13px}
+.woocommerce-account .aicc-register-login a,.woocommerce-account .aicc-login-signup a{color:var(--aicc-accent);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+.aicc-signup-dialog{position:fixed;width:min(420px,calc(100% - 32px));margin:auto;padding:30px;border:1px solid var(--aicc-line);border-radius:16px;background:var(--aicc-panel);color:var(--aicc-ink);box-shadow:0 24px 80px #1b100b44}
+.aicc-signup-dialog::backdrop{background:#21181388;backdrop-filter:blur(3px)}
+.aicc-signup-dialog h2{margin:5px 0 10px;font-size:23px;letter-spacing:-.04em}
+.aicc-signup-dialog>p:not(.aicc-dialog-eyebrow){color:var(--aicc-muted);font-size:14px}
+.aicc-dialog-eyebrow{color:var(--aicc-accent);font-size:10px;font-weight:700;letter-spacing:.14em}
+.aicc-dialog-close{position:absolute;top:12px;right:12px;width:40px;height:40px;border:0;background:transparent;color:var(--aicc-muted);font-size:25px;cursor:pointer}
+.aicc-dialog-actions{display:flex;align-items:center;gap:14px;margin-top:22px}
+.aicc-dialog-later{min-height:44px;padding:8px 12px;border:0;background:transparent;color:var(--aicc-muted);cursor:pointer}
+@media(prefers-color-scheme:dark){.aicc-signup-dialog{box-shadow:0 24px 80px #0009}}

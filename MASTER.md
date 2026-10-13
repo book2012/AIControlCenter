@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV dedicated registration flow
+
+A 회원가입 link now sits beside LOGIN and opens `/my-account/register/`. WooCommerce
+registration is separated from the login screen. Unknown usernames/emails receive
+a signup dialog after login failure; existing accounts with a wrong password do not.
+The page retains verified phone signup and system-following dark theme. DEV only.
 # MASTER
 
 ## 2026-10-13 — DEV account registration

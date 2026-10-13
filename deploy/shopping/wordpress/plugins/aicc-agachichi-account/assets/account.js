@@ -7,6 +7,15 @@
   const status = document.getElementById('aicc-phone-status');
   const send = document.getElementById('aicc-send-code');
   const check = document.getElementById('aicc-check-code');
+  const signupDialog = document.getElementById('aicc-signup-dialog');
+  if (signupDialog && window.HTMLDialogElement) {
+    signupDialog.showModal();
+    signupDialog.querySelector('.aicc-dialog-close')?.addEventListener('click', () => signupDialog.close());
+    signupDialog.querySelector('.aicc-dialog-later')?.addEventListener('click', () => signupDialog.close());
+    signupDialog.addEventListener('click', event => {
+      if (event.target === signupDialog) signupDialog.close();
+    });
+  }
   if (!phone || !code || !ticket || !status || !send || !check) return;
   let sentPhone = '';
   const message = value => { status.textContent = value; };

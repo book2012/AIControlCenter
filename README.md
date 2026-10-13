@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV dedicated registration and login prompt
+
+The storefront now places 회원가입 beside LOGIN and links to `/my-account/register/`, a
+dedicated WooCommerce registration page with email/password and verified-phone
+fields. A failed login prompts registration only when the submitted username or
+email is not an existing account. DEV only; PROD remains unchanged.
+
 # AIControlCenter
 
 ## 2026-10-13 — DEV account registration

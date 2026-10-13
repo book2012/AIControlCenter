@@ -341,7 +341,7 @@ def test_preview_canonical_json_equals_unmodified_shopping_router(client, path):
         assert actual.json() == expected.json()
 
 
-def test_shared_header_inserts_login_after_search_and_links_woocommerce_account(client):
+def test_shared_header_inserts_login_and_signup_after_search(client):
     html = client.get("/homepage/storefront").text
     script = client.get("/homepage/assets/storefront-header.js").text
     css = client.get("/homepage/assets/storefront.css").text
@@ -350,6 +350,9 @@ def test_shared_header_inserts_login_after_search_and_links_woocommerce_account(
     assert 'login.href = "/my-account/"' in script
     assert 'login.textContent = "LOGIN"' in script
     assert 'opener.insertAdjacentElement("afterend", login)' in script
+    assert 'signup.href = "/my-account/register/"' in script
+    assert 'signup.textContent = "회원가입"' in script
+    assert 'login.insertAdjacentElement("afterend", signup)' in script
     assert ".store-header .header-actions a {" in css
     assert ".store-header .header-actions a.header-login" not in css
     assert "max-width: 600px" in css and ".store-header .header-actions a { font-size: 11px; }" in css

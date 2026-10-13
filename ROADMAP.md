@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV account UX follow-up
+
+Completed: dedicated `/my-account/register/` page, 회원가입 link beside LOGIN, unknown-account
+login prompt, custom password entry, and phone-verified signup. Next: run one manual
+DEV signup with the configured test phone, then separately plan social login and any
+PROD rollout.
+
 # Roadmap
 
 ## 2026-10-13 — DEV account registration

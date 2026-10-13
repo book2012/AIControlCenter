@@ -2,12 +2,17 @@
 
 ## Account experience
 
-The DEV WooCommerce account page uses agachichi's warm ivory and brown palette.
-It follows the device color preference: dark preference switches the account page
-to a dark brown-black surface with warm text and accent buttons.
+The DEV WooCommerce login page uses agachichi's warm ivory and brown palette.
+It follows the device color preference: dark preference switches account and
+registration pages to a dark brown-black surface with warm text and accent buttons.
+The storefront header places a 회원가입 link beside LOGIN, and `/my-account/register/` is a
+dedicated registration page.
 
-Registration requests the member's name, nickname, mobile number, email, and
-home address. WooCommerce remains the account and profile store. Name, nickname,
+Registration requests the member's name, nickname, mobile number, email, home
+address, and a password chosen by the member. A login attempt for an unknown
+username or email opens a registration prompt; a known account with a wrong
+password continues to receive the normal login error. WooCommerce remains the
+account and profile store. Name, nickname,
 verified phone, billing address, and shipping address are saved to the DEV
 customer record. Existing WooCommerce password handling remains enabled.
 
@@ -37,7 +42,8 @@ release.
 ## Validation
 
 The phone bridge test covers origin and consent, verified customer session,
-signed ticket issue, phone binding, expiry, and replay denial. PHP syntax and
+signed ticket issue, phone binding, expiry, and replay denial. Homepage tests
+cover insertion of LOGIN and the neighboring 회원가입 link. PHP syntax and
 account form rendering are checked in the DEV WordPress container. Focused
 Homepage tests also verify that LOGIN inherits the same text-only navigation
 style as the other header links.
