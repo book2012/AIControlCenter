@@ -1,5 +1,10 @@
 (() => {
   'use strict';
+  document.querySelectorAll('[data-aicc-confirm]').forEach(control => {
+    control.addEventListener(control.tagName === 'FORM' ? 'submit' : 'click', event => {
+      if (!window.confirm(control.dataset.aiccConfirm || '계속 진행할까요?')) event.preventDefault();
+    });
+  });
   const signupForm = document.querySelector('.aicc-registration-form');
   const username = document.getElementById('aicc_signup_username');
   const usernameCheck = document.getElementById('aicc-check-username');

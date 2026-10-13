@@ -65,3 +65,48 @@ body.woocommerce-account{background:var(--aicc-bg)!important;color:var(--aicc-in
 .woocommerce-account .aicc-register-page{margin-top:28px}
 @media(max-width:720px){.woocommerce-account .aicc-account-store-header{grid-template-columns:minmax(0,1fr) auto;gap:4px 8px;padding:14px 4.2% 10px}.woocommerce-account .aicc-account-store-header .wordmark{grid-column:1;align-items:flex-start;font-size:21px}.woocommerce-account .aicc-account-store-header .wordmark span{font-size:9px;letter-spacing:0}.woocommerce-account .aicc-account-store-header .header-actions{grid-column:2;gap:8px}.woocommerce-account .aicc-account-store-header .header-actions a{font-size:11px}}
 @media(max-width:520px){.woocommerce-account .aicc-account-store-header{grid-template-columns:1fr}.woocommerce-account .aicc-account-store-header .wordmark{grid-column:1}.woocommerce-account .aicc-account-store-header .header-actions{grid-column:1;justify-self:stretch;justify-content:space-between;gap:4px}.woocommerce-account .aicc-account-store-header .header-actions a{font-size:11px}}
+
+
+/* Friendly, branded confirmation after a successful DEV registration. */
+.woocommerce-account .aicc-signup-complete{max-width:760px;margin:34px auto 56px;padding:30px 22px;text-align:center}
+.woocommerce-account .aicc-signup-complete>h1{margin:8px 0;font-size:30px;line-height:1.35}
+.woocommerce-account .aicc-signup-complete-copy{margin:0;color:var(--aicc-muted);font-size:15px}
+.woocommerce-account .aicc-signup-id{display:flex;align-items:center;justify-content:center;gap:10px;margin:22px auto;padding:12px 16px;width:max-content;max-width:100%;border:1px solid var(--aicc-line);border-radius:10px;background:var(--aicc-panel);color:var(--aicc-muted);font-size:14px}
+.woocommerce-account .aicc-signup-id strong{color:var(--aicc-ink);font-size:16px;overflow-wrap:anywhere}
+.woocommerce-account .aicc-home-button{display:inline-flex;align-items:center;justify-content:center;min-width:180px;text-decoration:none}
+.woocommerce-account .aicc-recommendations{margin:42px 0 0;text-align:left}
+.woocommerce-account .aicc-recommendations>h2{margin:0 0 18px;font-size:21px}
+.woocommerce-account .aicc-recommendations ul.products{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:0;padding:0;list-style:none}
+.woocommerce-account .aicc-recommendations ul.products li.product{float:none;width:auto;margin:0}
+.woocommerce-account .aicc-recommend-empty{padding:18px;border:1px solid var(--aicc-line);border-radius:10px;background:var(--aicc-panel);color:var(--aicc-muted)}
+.woocommerce-account .aicc-recommend-empty a{color:var(--aicc-accent);font-weight:700}
+@media(max-width:520px){.woocommerce-account .aicc-signup-complete{margin:20px auto 36px;padding:18px 14px}.woocommerce-account .aicc-signup-complete>h1{font-size:25px}.woocommerce-account .aicc-recommendations{margin-top:32px}.woocommerce-account .aicc-recommendations ul.products{gap:10px}.woocommerce-account .aicc-recommendations ul.products li.product{font-size:12px}}
+
+
+/* Account header changes with the authentication state. */
+.woocommerce-account .aicc-account-store-header .header-actions a.header-logout{color:var(--aicc-ink)}
+.woocommerce-account .aicc-account-store-header .header-actions a.header-logout:hover{color:var(--aicc-accent);text-decoration:underline;text-underline-offset:4px}
+.woocommerce-account .aicc-guest-order-link{text-align:center;margin:10px 0 18px;font-size:13px}
+.woocommerce-account .aicc-guest-order-link a{color:var(--aicc-accent);text-decoration:underline;text-underline-offset:3px}
+.woocommerce-account .woocommerce-MyAccount-navigation{padding:12px 16px}
+.woocommerce-account .woocommerce-MyAccount-navigation ul{display:flex;flex-wrap:wrap;gap:8px 18px;margin:0;padding:0;list-style:none}
+.woocommerce-account .woocommerce-MyAccount-navigation li{margin:0}
+.woocommerce-account .woocommerce-MyAccount-navigation a{color:var(--aicc-ink);text-decoration:none}
+.woocommerce-account .woocommerce-MyAccount-navigation .is-active a{color:var(--aicc-accent);font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.woocommerce-account .aicc-member-dashboard{display:grid;gap:26px}
+.woocommerce-account .aicc-dashboard-orders,.woocommerce-account .aicc-dashboard-profile,.woocommerce-account .aicc-dashboard-withdraw{padding:20px;border:1px solid var(--aicc-line);border-radius:12px;background:var(--aicc-panel)}
+.woocommerce-account .aicc-dashboard-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}
+.woocommerce-account .aicc-dashboard-heading h1,.woocommerce-account .aicc-dashboard-profile h2,.woocommerce-account .aicc-dashboard-withdraw h2{margin:3px 0;color:var(--aicc-ink);font-size:22px}
+.woocommerce-account .aicc-dashboard-heading>a,.woocommerce-account .aicc-orders-table a{color:var(--aicc-accent);font-weight:650}
+.woocommerce-account .aicc-orders-table-wrap{width:100%;overflow-x:auto}
+.woocommerce-account .aicc-orders-table{width:100%;border-collapse:collapse;font-size:13px}
+.woocommerce-account .aicc-orders-table th,.woocommerce-account .aicc-orders-table td{padding:12px 9px;border-bottom:1px solid var(--aicc-line);text-align:left;white-space:nowrap}
+.woocommerce-account .aicc-orders-table th{color:var(--aicc-muted);font-weight:650}
+.woocommerce-account .aicc-no-orders,.woocommerce-account .aicc-dashboard-profile>p:not(.aicc-dialog-eyebrow),.woocommerce-account .aicc-dashboard-withdraw>p{color:var(--aicc-muted);font-size:13px;line-height:1.7}
+.woocommerce-account .aicc-dashboard-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.woocommerce-account .aicc-dashboard-links a{text-decoration:none}
+.woocommerce-account .aicc-dashboard-withdraw{border-color:#ddcfc2}
+.woocommerce-account .aicc-dashboard-withdraw h2{font-size:17px}
+.woocommerce-account .aicc-withdraw-button{min-height:40px;padding:8px 15px;border:1px solid #a64432;border-radius:8px;background:transparent;color:#a64432;font-weight:650;cursor:pointer}
+.woocommerce-account .aicc-withdraw-button:hover{background:#a64432;color:white}
+@media(max-width:600px){.woocommerce-account .aicc-dashboard-orders,.woocommerce-account .aicc-dashboard-profile,.woocommerce-account .aicc-dashboard-withdraw{padding:15px}.woocommerce-account .aicc-dashboard-heading h1{font-size:20px}.woocommerce-account .aicc-orders-table thead{display:none}.woocommerce-account .aicc-orders-table,.woocommerce-account .aicc-orders-table tbody,.woocommerce-account .aicc-orders-table tr,.woocommerce-account .aicc-orders-table td{display:block;width:100%;box-sizing:border-box}.woocommerce-account .aicc-orders-table tr{padding:10px 0;border-bottom:1px solid var(--aicc-line)}.woocommerce-account .aicc-orders-table td{display:flex;justify-content:space-between;gap:12px;padding:5px 3px;border:0;white-space:normal}.woocommerce-account .aicc-orders-table td:before{content:attr(data-label);color:var(--aicc-muted);font-weight:600}}

@@ -1,3 +1,13 @@
+## 2026-10-13 — DEV account dashboard and signup completion
+
+- [x] Show signup congratulations, login ID, home link, and recent product recommendations.
+- [x] Switch account header from LOGIN to confirmation-gated LOG OUT after authentication.
+- [x] Replace account-header order link with 내 정보 for signed-in users and guest order lookup when signed out.
+- [x] Put recent WooCommerce orders first on the member account screen; add account and shipping-address edit links.
+- [x] Add nonce-protected, customer-only withdrawal with a confirmation prompt.
+- [ ] Deploy the updated WordPress plugin and verify signed-in, signed-out, order, edit, and withdrawal flows in DEV.
+- [ ] Confirm historical order retention and privacy-erasure requirements before broader customer rollout.
+
 ## 2026-10-13 — DEV contextual chatbot and member checkout
 
 - [x] Inject public product summary and current-page guidance into the shared chatbot.

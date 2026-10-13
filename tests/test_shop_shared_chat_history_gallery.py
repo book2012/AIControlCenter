@@ -241,3 +241,37 @@ def test_signup_link_uses_normal_style_until_its_page_is_active():
     css = Path("core/homepage/ui/storefront.css").read_text()
     assert ".store-header .header-actions a.header-signup{" not in css
     assert ".store-header .header-actions a.is-active{" in css
+
+
+def test_signup_success_shows_id_home_and_recommended_products():
+    from pathlib import Path
+    plugin = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/aicc-agachichi-account.php").read_text()
+    css = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.css").read_text()
+    assert "wp_safe_redirect(self::signup_complete_url())" in plugin
+    assert "function signup_complete_page()" in plugin
+    assert "가입 아이디 <strong>" in plugin
+    assert "회원가입을 축하합니다!" in plugin
+    assert 'href="/homepage/storefront/">홈으로 가기' in plugin
+    assert '[products limit="4" columns="2" orderby="date" order="DESC"]' in plugin
+    assert "['signup-complete', '가입 완료', '[aicc_agachichi_signup_complete]']" in plugin
+    assert "is_page('signup-complete')" in plugin
+    assert ".aicc-recommendations ul.products" in css
+
+
+def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
+    from pathlib import Path
+    plugin = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/aicc-agachichi-account.php").read_text()
+    dashboard = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/templates/myaccount/dashboard.php").read_text()
+    css = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.css").read_text()
+    js = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.js").read_text()
+    assert "data-aicc-confirm" in plugin and "로그아웃하시겠습니까?" in plugin
+    assert "내 정보</a>" in plugin and "비회원 주문 조회" in plugin
+    assert "비회원 주문 조회 · 휴대폰 인증" in plugin
+    assert "woocommerce_locate_template" in plugin and "templates/myaccount/dashboard.php" in plugin
+    assert "'orders' => '주문내역'" in plugin and "'edit-account' => '내 정보 수정'" in plugin
+    assert "wc_get_orders([" in dashboard and "id=\"aicc-dashboard-orders-title\">주문내역" in dashboard
+    assert "회원 탈퇴" in dashboard and "wp_nonce_field('aicc_delete_account')" in dashboard
+    assert "WC_Customer($user_id)" in plugin and "delete_and_reassign(0)" in plugin
+    assert "add_action('admin_post_aicc_delete_account'" in plugin
+    assert "data-aicc-confirm" in js and "window.confirm" in js
+    assert ".aicc-orders-table" in css and ".aicc-withdraw-button" in css

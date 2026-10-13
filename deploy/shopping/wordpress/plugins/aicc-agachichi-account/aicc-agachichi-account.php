@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.2.0
+ * Version: 0.6.0
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -15,13 +15,18 @@ final class AICC_Agachichi_Account {
 
     public static function boot(): void {
         if (strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST)) !== 'dev.bokstory.duckdns.org') { return; }
+        add_action('init', [self::class, 'ensure_pages'], 20);
         add_action('wp_enqueue_scripts', [self::class, 'assets']);
         add_action('wp_ajax_aicc_check_username', [self::class, 'check_username']);
         add_action('wp_ajax_nopriv_aicc_check_username', [self::class, 'check_username']);
         add_action('wp_ajax_aicc_checkout_profile', [self::class, 'checkout_profile']);
+        add_action('admin_post_aicc_delete_account', [self::class, 'delete_account']);
+        add_filter('woocommerce_locate_template', [self::class, 'account_template'], 20, 3);
+        add_filter('woocommerce_account_menu_items', [self::class, 'account_menu_items']);
         add_filter('body_class', [self::class, 'body_classes']);
         add_action('wp_body_open', [self::class, 'storefront_header'], 5);
         add_shortcode('aicc_agachichi_register', [self::class, 'registration_page']);
+        add_shortcode('aicc_agachichi_signup_complete', [self::class, 'signup_complete_page']);
         add_filter('woocommerce_registration_errors', [self::class, 'validate'], 99, 3);
         add_action('woocommerce_created_customer', [self::class, 'save'], 10, 1);
         add_action('woocommerce_before_customer_login_form', [self::class, 'intro']);
@@ -32,29 +37,73 @@ final class AICC_Agachichi_Account {
     }
 
     public static function storefront_header(): void {
-        if (!(function_exists('is_account_page') && is_account_page()) && !is_page('register')) { return; }
+        $account_page = function_exists('is_account_page') && is_account_page();
         $is_registration = is_page('register');
-        $is_login = function_exists('is_account_page') && is_account_page() && !is_user_logged_in() && !$is_registration;
+        $is_signup_complete = is_page('signup-complete');
+        if (!$account_page && !$is_registration && !$is_signup_complete) { return; }
+        $logged_in = is_user_logged_in();
+        $is_login = $account_page && !$logged_in && !$is_registration;
         $login_state = $is_login ? ' class="header-login is-active" aria-current="page"' : ' class="header-login"';
         $signup_state = $is_registration ? ' class="header-signup is-active" aria-current="page"' : ' class="header-signup"';
-        echo '<header class="store-header aicc-account-store-header"><a class="wordmark" href="/homepage/storefront/">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="주요 메뉴"><a class="header-search" href="/homepage/storefront/search">검색</a><a' . $login_state . ' href="/my-account/" aria-label="로그인">LOGIN</a><a' . $signup_state . ' href="/my-account/register/" aria-label="회원가입">회원가입</a><a class="header-cart" href="/homepage/storefront/cart">장바구니</a><a class="header-orders" href="/homepage/storefront/my-orders">주문내역</a></nav></header>';
+        $account_link = $logged_in
+            ? '<a class="header-orders" href="/my-account/">내 정보</a>'
+            : '<a class="header-orders" href="/homepage/storefront/my-orders" aria-label="비회원 주문 조회">비회원 주문 조회</a>';
+        $auth_link = $logged_in
+            ? '<a class="header-logout" href="' . esc_url(wp_logout_url(home_url('/homepage/storefront/'))) . '" data-aicc-confirm="로그아웃하시겠습니까?" aria-label="로그아웃">LOG OUT</a>'
+            : '<a' . $login_state . ' href="/my-account/" aria-label="로그인">LOGIN</a><a' . $signup_state . ' href="/my-account/register/" aria-label="회원가입">회원가입</a>';
+        echo '<header class="store-header aicc-account-store-header"><a class="wordmark" href="/homepage/storefront/">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="주요 메뉴"><a class="header-search" href="/homepage/storefront/search">검색</a>' . $auth_link . '<a class="header-cart" href="/homepage/storefront/cart">장바구니</a>' . $account_link . '</nav></header>';
     }
 
     public static function body_classes(array $classes): array {
-        if (is_page('register')) { $classes[] = 'woocommerce-account'; }
+        if (is_page('register') || is_page('signup-complete')) { $classes[] = 'woocommerce-account'; }
         return $classes;
     }
 
     public static function assets(): void {
         $account_page = function_exists('is_account_page') && is_account_page();
-        if (!$account_page && !is_page('register')) { return; }
+        if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.4.3');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.4.0', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.0');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.0', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),
         ]);
+    }
+
+    public static function account_template(string $template, string $template_name, string $template_path): string {
+        if ($template_name !== 'myaccount/dashboard.php' || !is_user_logged_in()) { return $template; }
+        $custom = plugin_dir_path(__FILE__) . 'templates/myaccount/dashboard.php';
+        return is_file($custom) ? $custom : $template;
+    }
+
+    public static function account_menu_items(array $items): array {
+        $labels = [
+            'orders' => '주문내역',
+            'edit-account' => '내 정보 수정',
+            'edit-address' => '배송지 관리',
+            'customer-logout' => '로그아웃',
+        ];
+        return array_intersect_key($labels, $items);
+    }
+
+    public static function delete_account(): void {
+        if (!is_user_logged_in()) { wp_safe_redirect(wc_get_page_permalink('myaccount')); exit; }
+        check_admin_referer('aicc_delete_account');
+        $user_id = get_current_user_id();
+        $user = get_userdata($user_id);
+        if (!$user || !in_array('customer', (array) $user->roles, true) || user_can($user, 'manage_options')) {
+            wp_safe_redirect(add_query_arg('account_error', 'not-eligible', wc_get_page_permalink('myaccount')));
+            exit;
+        }
+        $customer = new WC_Customer($user_id);
+        if (!$customer->delete_and_reassign(0)) {
+            wp_safe_redirect(add_query_arg('account_error', 'delete-failed', wc_get_page_permalink('myaccount')));
+            exit;
+        }
+        wp_logout();
+        wp_safe_redirect(home_url('/homepage/storefront/?account=deleted'));
+        exit;
     }
 
     public static function check_username(): void {
@@ -114,7 +163,7 @@ final class AICC_Agachichi_Account {
     }
 
     public static function login_signup_link(): void {
-        echo '<p class="aicc-login-signup">아직 회원이 아니신가요? <a href="' . esc_url(self::registration_url()) . '">회원가입</a></p>';
+        echo '<p class="aicc-login-signup">아직 회원이 아니신가요? <a href="' . esc_url(self::registration_url()) . '">회원가입</a></p><p class="aicc-guest-order-link"><a href="/homepage/storefront/my-orders">비회원 주문 조회 · 휴대폰 인증</a></p>';
     }
 
     public static function login_failed(): void {
@@ -163,7 +212,7 @@ final class AICC_Agachichi_Account {
                         foreach ($customer_id->get_error_messages() as $message) { wc_add_notice($message, 'error'); }
                     } else {
                         wc_set_customer_auth_cookie($customer_id);
-                        wp_safe_redirect(wc_get_page_permalink('myaccount'));
+                        wp_safe_redirect(self::signup_complete_url());
                         exit;
                     }
                 }
@@ -179,23 +228,56 @@ final class AICC_Agachichi_Account {
         return (string) ob_get_clean();
     }
 
-    public static function activate(): void {
+    public static function signup_complete_url(): string {
+        return trailingslashit(wc_get_page_permalink('myaccount')) . 'signup-complete/';
+    }
+
+    public static function signup_complete_page(): string {
+        if (!is_user_logged_in()) {
+            return '<div class="woocommerce aicc-signup-complete"><p>가입 완료 정보를 확인할 수 없습니다. <a href="' . esc_url(wc_get_page_permalink('myaccount')) . '">로그인</a>해 주세요.</p></div>';
+        }
+        $user = wp_get_current_user();
+        $products = do_shortcode('[products limit="4" columns="2" orderby="date" order="DESC"]');
+        if (trim(wp_strip_all_tags($products)) === '') {
+            $products = '<p class="aicc-recommend-empty">새로운 상품을 준비하고 있어요. <a href="/homepage/storefront/search">상품 둘러보기</a></p>';
+        }
+        return '<section class="woocommerce aicc-signup-complete" aria-labelledby="aicc-signup-complete-title">'
+            . '<p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p>'
+            . '<h1 id="aicc-signup-complete-title">회원가입을 축하합니다!</h1>'
+            . '<p class="aicc-signup-complete-copy">아가치치의 회원이 되신 것을 환영합니다.</p>'
+            . '<p class="aicc-signup-id">가입 아이디 <strong>' . esc_html($user->user_login) . '</strong></p>'
+            . '<a class="aicc-account-button aicc-home-button" href="/homepage/storefront/">홈으로 가기</a>'
+            . '<section class="aicc-recommendations" aria-labelledby="aicc-recommendations-title"><h2 id="aicc-recommendations-title">회원님을 위한 추천 상품</h2>' . $products . '</section>'
+            . '</section>';
+    }
+
+    public static function ensure_pages(): void {
         if (strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST)) !== 'dev.bokstory.duckdns.org') { return; }
         $parent_id = function_exists('wc_get_page_id') ? (int) wc_get_page_id('myaccount') : 0;
-        $children = $parent_id > 0 ? get_posts([
-            'post_type' => 'page', 'post_parent' => $parent_id, 'name' => 'register',
-            'post_status' => 'publish', 'numberposts' => 1,
-        ]) : [];
-        if ($parent_id > 0 && !$children) {
+        if ($parent_id < 1) { return; }
+        $pages = [
+            ['register', '회원가입', '[aicc_agachichi_register]'],
+            ['signup-complete', '가입 완료', '[aicc_agachichi_signup_complete]'],
+        ];
+        foreach ($pages as [$slug, $title, $content]) {
+            $existing = get_posts([
+                'post_type' => 'page', 'post_parent' => $parent_id, 'name' => $slug,
+                'post_status' => 'publish', 'numberposts' => 1,
+            ]);
+            if ($existing) { continue; }
             wp_insert_post([
-                'post_title' => '회원가입',
-                'post_name' => 'register',
+                'post_title' => $title,
+                'post_name' => $slug,
                 'post_parent' => $parent_id,
-                'post_content' => '[aicc_agachichi_register]',
+                'post_content' => $content,
                 'post_status' => 'publish',
                 'post_type' => 'page',
             ]);
         }
+    }
+
+    public static function activate(): void {
+        self::ensure_pages();
     }
 
     public static function fields(): void {

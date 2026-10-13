@@ -56,3 +56,30 @@ account form rendering are checked in the DEV WordPress container. Address-searc
 markup, postcode persistence, and phone-bound registration validation are part
 of the form contract. Focused Homepage tests also verify that LOGIN inherits the
 same text-only navigation style as the other header links.
+
+
+## Signup completion
+
+After successful customer creation, the member is signed in and redirected to
+`/my-account/signup-complete/`. The branded confirmation shows a congratulations
+message and the new member's login ID, links back to the agachichi storefront,
+and displays up to four recently added WooCommerce products. The account theme,
+responsive layout, color-scheme support, and storefront header remain enabled.
+The success page is created on DEV if missing and is not exposed on other hosts.
+
+
+## Member and guest order access
+
+When logged in, the account header replaces LOGIN with a confirmed LOG OUT
+action and routes the account link to 내 정보. The account dashboard starts with
+the latest five orders and a link to the full WooCommerce order history, followed
+by links to edit account details and delivery addresses. The bottom section
+provides a confirmed 회원 탈퇴 action. Customers are deleted through the
+WooCommerce customer data store, which detaches their order customer ID while
+retaining order records; order billing details may remain for required
+transaction retention. Administrators and non-customer roles cannot use the
+self-service withdrawal handler.
+
+When logged out, account pages show the login screen and a separate 비회원 주문
+조회 link to the existing phone-verified order lookup. Header navigation uses
+비회원 주문 조회 in place of 내 정보 until a customer signs in.
