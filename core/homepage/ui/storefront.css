@@ -273,6 +273,10 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 
 /* Dedicated guest checkout: full-page form and stable order summary. */
 .checkout-page{max-width:1120px;margin:0 auto;padding:28px 24px 64px}
+.checkout-member-entry{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:20px 24px;margin:18px 0;border:1px solid var(--line);border-radius:14px;background:var(--paper)}
+.checkout-member-entry h2{font-size:18px;margin:2px 0 4px}.checkout-member-entry p:not(.eyebrow){color:var(--muted);font-size:13px}
+.checkout-login-button{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;min-height:44px;padding:8px 24px;border:1px solid var(--ink);border-radius:8px;background:var(--ink);color:var(--paper);font-weight:650}
+.checkout-login-button:hover{background:var(--accent);border-color:var(--accent)}
 .checkout-heading{margin:24px 0}.checkout-heading h1{font-size:32px;margin:8px 0}
 .checkout-steps{display:flex;gap:24px;list-style:none;padding:16px 0;border-block:1px solid #ded5ca;color:#79533a}
 .checkout-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:28px;align-items:start;margin-top:24px}
@@ -289,7 +293,7 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 .checkout-complete-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:20px}
 .checkout-page #error{color:#a33226;overflow-wrap:anywhere}.checkout-address-dialog{width:min(560px,calc(100% - 24px));height:min(620px,calc(100dvh - 32px));padding:0;border:1px solid #e4dbd1;border-radius:16px;background:#fffdf9;color:#352b26;box-shadow:0 24px 80px #21181366}.checkout-address-dialog::backdrop{background:#21181399;backdrop-filter:blur(3px)}.checkout-address-dialog-head{height:54px;display:flex;align-items:center;justify-content:space-between;padding:0 14px}.checkout-address-dialog-head h2{margin:0;font-size:17px}.checkout-address-dialog-head button{width:42px;height:42px;padding:0;border:0;background:transparent;color:#79533a;font-size:27px}.checkout-page #address-search-frame{width:100%;height:calc(100% - 54px)}.checkout-page #address-search-frame>iframe{border:0!important}
 #commerce-panel #order{display:none}
-@media(max-width:760px){.checkout-page{padding:20px 16px 40px}.checkout-layout{grid-template-columns:1fr;gap:0}.checkout-summary{position:static;grid-row:1}.checkout-card{padding:22px 18px}.checkout-steps{gap:12px;font-size:13px}.checkout-heading h1{font-size:28px}}
+@media(max-width:760px){.checkout-page{padding:20px 16px 40px}.checkout-layout{grid-template-columns:1fr;gap:0}.checkout-summary{position:static;grid-row:1}.checkout-card{padding:22px 18px}.checkout-steps{gap:12px;font-size:13px}.checkout-heading h1{font-size:28px}.checkout-member-entry{padding:16px;gap:12px}.checkout-login-button{padding-inline:18px;min-width:74px}}
 
 /* Desktop branding; HOT and UPDATE share the unified feed container. */
 @media (min-width: 901px) {
@@ -394,5 +398,38 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
   .header-search-results { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
-.store-header .header-actions a.header-signup{color:var(--accent);font-weight:650;text-decoration:underline;text-underline-offset:4px}
-.store-header .header-actions a.header-signup:hover{color:var(--ink)}
+.store-header .header-actions a.is-active{color:var(--accent);font-weight:650;text-decoration:underline;text-underline-offset:4px}
+
+/* Page-aware agachichi assistant: polished launcher, context and guided questions. */
+.shop-chat-launcher{position:fixed;right:20px;bottom:24px;z-index:30;display:flex;align-items:center;gap:11px;min-height:62px;padding:9px 16px 9px 10px;border:1px solid #a64a13;border-radius:999px;background:#c65300;color:#fff;text-align:left;box-shadow:0 9px 30px #4f352b35;transition:transform .18s ease,box-shadow .18s ease}
+.shop-chat-launcher:hover{transform:translateY(-2px);box-shadow:0 12px 34px #4f352b45}
+.shop-chat-launcher-icon{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#fff2e9;color:#9e4314;font-size:22px}
+.shop-chat-launcher-copy{display:grid;gap:1px}.shop-chat-launcher-copy strong{font-size:14px;line-height:1.25}.shop-chat-launcher-copy small{font-size:10px;opacity:.88}.shop-chat-launcher-arrow{margin-left:5px;font-size:17px}
+#shop-chat{display:none;flex-direction:column;gap:0;width:min(440px,calc(100vw - 24px));height:min(700px,82dvh);max-height:calc(100dvh - 36px);margin:0 16px 16px auto;padding:0;overflow:hidden;border:1px solid #e5d8c9;border-radius:22px;background:#fffbf2;color:#4f352b;box-shadow:0 24px 80px #25170f40}
+#shop-chat[open]{display:flex}#shop-chat::backdrop{background:#21181377;backdrop-filter:blur(2px)}
+#shop-chat .shop-chat-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 18px;background:#f3e4d5;border-bottom:1px solid #e5d8c9}
+.shop-chat-brand{display:flex;align-items:center;gap:11px;min-width:0}.shop-chat-avatar{display:grid;place-items:center;flex:0 0 42px;height:42px;border-radius:50%;background:#80513b;color:#fff;font-family:Georgia,serif;font-size:24px;font-weight:700;letter-spacing:.04em}
+.shop-chat-eyebrow{color:#8b482f;font-size:9px;font-weight:750;letter-spacing:.14em}.shop-chat-header h2{margin:2px 0;font-size:17px;line-height:1.35;letter-spacing:-.03em}.shop-chat-page-label{color:#775d50;font-size:11px}.shop-chat-header button{flex:0 0 40px;width:40px;height:40px;padding:0;border:0;border-radius:50%;background:#fff9;color:#634a3d;font-size:25px;line-height:1}
+.shop-chat-body{display:flex;flex:1;flex-direction:column;gap:9px;min-height:0;padding:14px 16px 8px;overflow-y:auto}.shop-chat-product-label{color:#775d50;font-size:11px;font-weight:650}.shop-chat-body select{width:100%;min-height:42px;padding:8px 12px;border:1px solid #dfd1c1;border-radius:10px;background:#fffdf8;color:#4f352b;font-size:13px}.shop-chat-tag{align-self:flex-start;margin:0;padding:4px 9px;border-radius:999px;background:#f2e4d8;color:#80513b;font-size:10px;font-weight:700}
+#shop-chat .shop-chat-stock{align-self:flex-start;min-height:34px;padding:6px 11px;border:1px solid #dfc3ad;border-radius:999px;background:transparent;color:#80513b;font-size:11px;font-weight:650}
+#shop-chat-messages{display:flex;flex:1;flex-direction:column;gap:9px;min-height:100px;max-height:none;padding:5px 2px;overflow-y:auto;overscroll-behavior:contain;scrollbar-color:#d6c1ad transparent;scrollbar-width:thin}
+#shop-chat-messages p{max-width:91%;margin:0;padding:11px 13px;border:1px solid #eee4d8;border-radius:5px 16px 16px 16px;background:#fff;color:#4f352b;font-size:13px;line-height:1.65;white-space:pre-wrap;overflow-wrap:anywhere;box-shadow:0 2px 8px #47301b0a}
+#shop-chat-messages p.customer{align-self:flex-end;margin:0 0 0 auto;border-color:#d9ad8e;border-radius:16px 5px 16px 16px;background:#f2c7aa;color:#4f352b}
+#shop-chat-messages p[data-order-notice]{align-self:flex-start;white-space:pre-wrap}
+.shop-chat-suggestions{display:flex;flex-wrap:wrap;gap:7px;padding:4px 0 2px}.shop-chat-suggestion{min-height:34px;padding:6px 10px;border:1px solid #e3cbb8;border-radius:999px;background:#fffdf8;color:#754a36;font-size:11px;line-height:1.35}.shop-chat-suggestion:hover{background:#f6e8dc;border-color:#c89b79}
+.shop-chat-privacy{margin:0;color:#8a7769;font-size:10px;line-height:1.45}
+#shop-chat-form{display:flex;align-items:center;gap:8px;padding:10px 12px;border-top:1px solid #e9ded2;background:#fffdf8}#shop-chat-form input{flex:1;min-width:0;min-height:44px;padding:10px 13px;border:1px solid #e3d6c8;border-radius:999px;background:#fff;color:#4f352b;font-size:13px}#shop-chat-form button{min-height:42px;padding:8px 15px;border:1px solid #80513b;border-radius:999px;background:#80513b;color:#fff;font-size:12px;font-weight:700}
+.shop-chat-visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+#shop-chat .shop-chat-history{align-self:center;min-height:36px;padding:5px 12px;border:0;background:transparent;color:#80513b;font-size:11px;text-decoration:underline;text-underline-offset:3px}
+#shop-chat-phone{display:grid;gap:8px;padding:12px 16px;background:#f6eee6}#shop-chat-phone label{display:grid;gap:5px;color:#634a3d;font-size:11px}#shop-chat-phone input:not([type=checkbox]){min-height:40px;padding:8px 10px;border:1px solid #dfd1c1;border-radius:8px;background:#fff;color:#4f352b}#shop-chat-phone input[type=checkbox]{width:16px;height:16px}
+#shop-chat-recent{max-height:180px;padding:12px 16px;overflow:auto;background:#faf4ec}#shop-chat-recent h3{margin:0 0 8px;font-size:13px}#shop-chat-recent p{margin:6px 0;padding:9px;border-radius:10px;background:#fff;font-size:11px;white-space:pre-wrap}
+#shop-chat-error{margin:0;padding:0 16px 8px;color:#a13c2b;font-size:11px;line-height:1.5}
+@media(prefers-color-scheme:dark){
+ #shop-chat{border-color:#514239;background:#1f1c19;color:#f4e9dc;box-shadow:0 24px 80px #000a}
+ #shop-chat .shop-chat-header{background:#2c2622;border-color:#514239}.shop-chat-eyebrow,.shop-chat-tag{color:#e4a37f}.shop-chat-avatar{background:#a36c50;color:#fff8ee}.shop-chat-header h2{color:#f4e9dc}.shop-chat-page-label,.shop-chat-product-label{color:#c3ad99}.shop-chat-header button{background:#3a322c;color:#f4e9dc}
+ .shop-chat-tag{background:#3a302a}.shop-chat-body select,#shop-chat-form input,#shop-chat-phone input:not([type=checkbox]){border-color:#514239;background:#171513;color:#f4e9dc}#shop-chat .shop-chat-stock,.shop-chat-suggestion{border-color:#71543f;background:#29231f;color:#f0c4a8}.shop-chat-suggestion:hover{background:#3a302a}
+ #shop-chat-messages p{border-color:#3b332d;background:#2b2622;color:#f4e9dc}#shop-chat-messages p.customer{border-color:#8f654b;background:#80513b;color:#fff7ee}.shop-chat-privacy{color:#bca996}
+ #shop-chat-form,#shop-chat-phone{border-color:#514239;background:#211e1b}#shop-chat-form button{border-color:#a87355;background:#80513b;color:#fff7ee}#shop-chat .shop-chat-history{color:#e4a37f}#shop-chat-recent{background:#211e1b}#shop-chat-recent p{background:#2b2622;color:#f4e9dc}#shop-chat-error{color:#ffad9c}
+}
+@media(max-width:600px){.shop-chat-launcher{right:14px;bottom:18px;min-height:56px;padding:7px 13px 7px 8px}.shop-chat-launcher-icon{width:38px;height:38px;font-size:20px}.shop-chat-launcher-copy strong{font-size:13px}#shop-chat{width:calc(100vw - 16px);height:min(760px,88dvh);max-height:calc(100dvh - 20px);margin:0 8px 10px;border-radius:19px}#shop-chat .shop-chat-header{padding:13px 14px}.shop-chat-body{padding:11px 13px 6px}}
+@media(prefers-reduced-motion:reduce){.shop-chat-launcher{transition:none}}

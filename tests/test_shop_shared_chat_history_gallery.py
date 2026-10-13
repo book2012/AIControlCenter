@@ -1,5 +1,7 @@
 from types import SimpleNamespace
+from html import unescape
 import json
+import re
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -7,7 +9,7 @@ from core.homepage.preview import create_app
 from core.homepage import storefront_gallery
 from ops.macos.shopping.dev_chat_history import DevChatHistory,mount_history,COOKIE
 
-@pytest.mark.parametrize("url",["/homepage/storefront","/homepage/storefront/search","/homepage/storefront/my-orders","/homepage/storefront/cart","/homepage/storefront/product/ag-upload-outer-0001","/homepage/storefront/product/ag-upload-outer-0002"])
+@pytest.mark.parametrize("url",["/homepage/storefront","/homepage/storefront/search","/homepage/storefront/my-orders","/homepage/storefront/cart","/homepage/storefront/checkout","/homepage/storefront/product/ag-upload-outer-0001","/homepage/storefront/product/ag-upload-outer-0002"])
 def test_one_shared_chat_on_customer_pages(url):
     with TestClient(create_app()) as c:
         r=c.get(url)
@@ -24,6 +26,36 @@ def test_one_shared_chat_on_customer_pages(url):
             assert "제품 문의는 챗봇으로 해주세요." in r.text
             assert r.text.index('id="variant-section"') < r.text.index('id="commerce-panel"') < r.text.index('id="description-section"')
             assert 'id="detail-image"' in r.text and 'model-hero-caption' in r.text
+
+@pytest.mark.parametrize("url,kind",[
+    ("/homepage/storefront","home"),
+    ("/homepage/storefront/search?category=women-outer&q=coat","search"),
+    ("/homepage/storefront/cart","cart"),
+    ("/homepage/storefront/my-orders","orders"),
+    ("/homepage/storefront/checkout","checkout"),
+])
+def test_chat_carries_only_page_guidance_and_relevant_questions(url,kind):
+    with TestClient(create_app()) as c:
+        response=c.get(url)
+    assert response.status_code==200
+    match=re.search(r'<dialog[^>]+data-page-context="([^"]+)"',response.text)
+    assert match
+    context=json.loads(unescape(match.group(1)))
+    assert context["type"]==kind and context["title"]
+    assert context["questions"]
+    assert all(set(item)=={"label","text","action"} for item in context["questions"])
+    assert not any(key in json.dumps(context).lower() for key in ("phone","address","postcode","recipient"))
+
+def test_product_chat_includes_public_product_summary_before_questions():
+    with TestClient(create_app()) as c:
+        response=c.get("/homepage/storefront/product/ag-upload-outer-0001")
+    assert response.status_code==200
+    match=re.search(r'<option value="ag-upload-outer-0001" data-product-context="([^"]+)" selected>',response.text)
+    assert match
+    context=json.loads(unescape(match.group(1)))
+    assert context["name"] and context["price"] and context["availability"]
+    assert context["options"] and context["questions"]
+    assert context["description"]
 
 @pytest.mark.parametrize("pid",["ag-upload-outer-0001","ag-upload-outer-0002"])
 def test_gallery_preserves_original_and_labels_model_angles(pid):
@@ -145,3 +177,48 @@ def test_home_hot_update_and_search_use_same_front_model_as_detail(pid):
         row=storefront_gallery.assets()[pid+"-garment-cutout.webp"]
         response=c.get(row["url"])
         assert response.status_code==200 and response.headers["content-type"]=="image/webp"
+
+
+
+def test_chat_recommendations_send_directly_and_do_not_open_mobile_keyboard():
+    from pathlib import Path
+    source = Path("core/homepage/ui/storefront-chat.js").read_text()
+    suggestion = source[source.index("function showSuggestions"):source.index("function presentContext")]
+    opener = source[source.index("const open = productId"):source.index('by("shop-chat-launcher")')]
+    assert "form.requestSubmit();" in suggestion
+    assert "question.focus()" not in suggestion
+    assert "question.focus()" not in opener
+    assert 'question.placeholder = "질문을 입력해 주세요"' in opener
+
+
+def test_checkout_offers_member_login_and_labels_sms_flow_as_guest_only():
+    from pathlib import Path
+    from core.homepage.preview import create_app
+    with TestClient(create_app()) as client:
+        response = client.get("/homepage/storefront/checkout")
+    assert response.status_code == 200
+    assert 'class="checkout-member-entry"' in response.text
+    assert 'href="/my-account/?redirect=%2Fhomepage%2Fstorefront%2Fcheckout"' in response.text
+    assert "비회원 주문" in response.text
+    assert "비회원은 휴대폰 인증 후 주문할 수 있습니다." in response.text
+    plugin = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/aicc-agachichi-account.php").read_text()
+    assert "function checkout_profile()" in plugin
+    assert "if (!is_user_logged_in())" in plugin
+
+
+def test_account_navigation_highlight_follows_current_route_only():
+    from pathlib import Path
+    plugin = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/aicc-agachichi-account.php").read_text()
+    css = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.css").read_text()
+    assert "$is_registration = is_page('register')" in plugin
+    assert "$is_login =" in plugin
+    assert "aria-current=\"page\"" in plugin
+    assert ".header-actions a.is-active" in css
+    assert ".header-actions a.header-signup{" not in css
+
+
+def test_signup_link_uses_normal_style_until_its_page_is_active():
+    from pathlib import Path
+    css = Path("core/homepage/ui/storefront.css").read_text()
+    assert ".store-header .header-actions a.header-signup{" not in css
+    assert ".store-header .header-actions a.is-active{" in css

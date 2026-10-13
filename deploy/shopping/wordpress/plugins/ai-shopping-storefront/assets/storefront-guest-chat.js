@@ -11,6 +11,19 @@
   try{pending=JSON.parse(sessionStorage.getItem("aicc-guest-operation-v1")||"null");if(pending&&(!/^[a-f0-9]{48}$/.test(pending.draft_id)||!/^guest-order-[a-f0-9]{48}$/.test(pending.operation_key)))throw new Error();}catch(_){pending={blocked:true};}
   const authHeaders=async()=>{const r=await fetch("/shopping/auth/session",{credentials:"same-origin"});if(!r.ok)throw new Error("휴대폰 인증이 필요합니다.");const token=r.headers.get("X-CSRF-Token");if(!token)throw new Error("인증 상태를 확인할 수 없습니다.");return {"Content-Type":"application/json","X-CSRF-Token":token};};
   const showDelivery=async()=>{if(!checkoutAvailable)return;try{const headers=await authHeaders();const r=await fetch(commercePath('/checkout/session'),{credentials:"same-origin",headers});if(r.ok){by("delivery-form").hidden=!!pending;by("phone-form").hidden=true;by("auth-note").textContent=pending?"진행 중인 주문의 접수 상태를 확인해 주세요.":"휴대폰 인증 완료. 배송정보를 입력해 주세요.";}}catch(_){}};
+  const loadMemberProfile=async()=>{
+    if(!checkoutPage||!by("member-note"))return;
+    try{
+      const response=await fetch("/wp-admin/admin-ajax.php?action=aicc_checkout_profile",{credentials:"same-origin",cache:"no-store"});
+      if(!response.ok)return;
+      const result=await response.json(),profile=result?.success?result.data:null;
+      if(!profile||typeof profile!=="object")return;
+      for(const [id,value] of [["recipient",profile.recipient],["phone-number",profile.phone],["postcode",profile.postcode],["address1",profile.address1],["address2",profile.address2]]){
+        const field=by(id);if(field&&typeof value==="string"&&value.trim()&&!field.value.trim())field.value=value;
+      }
+      by("member-note").textContent="회원 정보를 불러왔습니다. 주문 전 배송정보를 확인하고 수정할 수 있어요.";
+    }catch(_){}
+  };
 
   const money=(value,currency)=>currency==="KRW"?Number(value).toLocaleString("ko-KR")+"원":value+" "+currency;
   const key="aicc-guest-cart-v1";
@@ -153,6 +166,7 @@
   render();
   if(checkoutPage){
     const init=async()=>{
+      await loadMemberProfile();
       if(pending){
         const response=await fetch(commercePath('/chat/capabilities'),{credentials:"same-origin"});
         if(!response.ok)throw new Error("주문 상태 연결을 확인하지 못했습니다.");

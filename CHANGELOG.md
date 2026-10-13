@@ -1,9 +1,13 @@
-## 2026-10-13 — DEV account page storefront header
+## 2026-10-13 — DEV contextual chatbot and checkout login
 
-Login and registration now use the same agachichi header and live Search, Cart,
-and Order History routes as the storefront. Removed the duplicate in-page logo,
-hid the generic WordPress navigation, and retained the existing warm theme and
-dark appearance support. DEV only; PROD unchanged.
+- Chatbot page context includes a public product summary on detail pages and page-specific suggestions elsewhere.
+- Recommended prompts submit directly; opening the dialog does not focus the composer or open the mobile keyboard.
+- Checkout presents LOGIN above the guest flow and reads saved WooCommerce profile fields only for a logged-in user; blank fields are prefilled and remain editable.
+- LOGIN and 회원가입 are emphasized only on their matching account page; the storefront signup link uses the common menu style on unrelated pages.
+- Guest order SMS and server-side phone-verified checkout remain required. Member SMS bypass awaits a signed member identity bridge; UI state alone cannot bypass the API.
+- DEV only; PROD unchanged.
+
+## 2026-10-13 — DEV account page storefront header
 
 ## 2026-10-13 — DEV account brand cleanup
 

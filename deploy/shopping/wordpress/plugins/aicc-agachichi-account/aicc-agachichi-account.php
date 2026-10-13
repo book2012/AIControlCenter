@@ -18,6 +18,7 @@ final class AICC_Agachichi_Account {
         add_action('wp_enqueue_scripts', [self::class, 'assets']);
         add_action('wp_ajax_aicc_check_username', [self::class, 'check_username']);
         add_action('wp_ajax_nopriv_aicc_check_username', [self::class, 'check_username']);
+        add_action('wp_ajax_aicc_checkout_profile', [self::class, 'checkout_profile']);
         add_filter('body_class', [self::class, 'body_classes']);
         add_action('wp_body_open', [self::class, 'storefront_header'], 5);
         add_shortcode('aicc_agachichi_register', [self::class, 'registration_page']);
@@ -25,12 +26,18 @@ final class AICC_Agachichi_Account {
         add_action('woocommerce_created_customer', [self::class, 'save'], 10, 1);
         add_action('woocommerce_before_customer_login_form', [self::class, 'intro']);
         add_action('woocommerce_login_form_end', [self::class, 'login_signup_link']);
+        add_action('woocommerce_login_form', [self::class, 'login_return_field']);
+        add_filter('woocommerce_login_redirect', [self::class, 'login_redirect'], 10, 2);
         add_action('woocommerce_login_failed', [self::class, 'login_failed']);
     }
 
     public static function storefront_header(): void {
         if (!(function_exists('is_account_page') && is_account_page()) && !is_page('register')) { return; }
-        echo '<header class="store-header aicc-account-store-header"><a class="wordmark" href="/homepage/storefront/">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="주요 메뉴"><a class="header-search" href="/homepage/storefront/search">검색</a><a class="header-login" href="/my-account/" aria-label="로그인">LOGIN</a><a class="header-signup" href="/my-account/register/" aria-label="회원가입">회원가입</a><a class="header-cart" href="/homepage/storefront/cart">장바구니</a><a class="header-orders" href="/homepage/storefront/my-orders">주문내역</a></nav></header>';
+        $is_registration = is_page('register');
+        $is_login = function_exists('is_account_page') && is_account_page() && !is_user_logged_in() && !$is_registration;
+        $login_state = $is_login ? ' class="header-login is-active" aria-current="page"' : ' class="header-login"';
+        $signup_state = $is_registration ? ' class="header-signup is-active" aria-current="page"' : ' class="header-signup"';
+        echo '<header class="store-header aicc-account-store-header"><a class="wordmark" href="/homepage/storefront/">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="주요 메뉴"><a class="header-search" href="/homepage/storefront/search">검색</a><a' . $login_state . ' href="/my-account/" aria-label="로그인">LOGIN</a><a' . $signup_state . ' href="/my-account/register/" aria-label="회원가입">회원가입</a><a class="header-cart" href="/homepage/storefront/cart">장바구니</a><a class="header-orders" href="/homepage/storefront/my-orders">주문내역</a></nav></header>';
     }
 
     public static function body_classes(array $classes): array {
@@ -63,6 +70,26 @@ final class AICC_Agachichi_Account {
         wp_send_json_success(['available' => true, 'message' => '사용할 수 있는 아이디입니다.']);
     }
 
+    public static function checkout_profile(): void {
+        nocache_headers();
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => 'LOGIN_REQUIRED'], 401);
+        }
+        $customer_id = get_current_user_id();
+        $name = get_user_meta($customer_id, 'billing_first_name', true);
+        if (!is_string($name) || $name === '') { $name = get_user_meta($customer_id, 'first_name', true); }
+        $phone = self::canonical_phone((string) get_user_meta($customer_id, 'billing_phone', true));
+        $postcode = preg_replace('/\\D+/', '', (string) get_user_meta($customer_id, 'shipping_postcode', true));
+        if (!is_string($postcode) || strlen($postcode) !== 5) { $postcode = ''; }
+        wp_send_json_success([
+            'recipient' => sanitize_text_field((string) $name),
+            'phone' => $phone,
+            'postcode' => $postcode,
+            'address1' => sanitize_text_field((string) get_user_meta($customer_id, 'shipping_address_1', true)),
+            'address2' => sanitize_text_field((string) get_user_meta($customer_id, 'shipping_address_2', true)),
+        ]);
+    }
+
     public static function intro(): void {
         if (self::$unknown_login) {
             echo '<dialog class="aicc-signup-dialog" id="aicc-signup-dialog" aria-labelledby="aicc-signup-dialog-title"><button type="button" class="aicc-dialog-close" aria-label="닫기">×</button><p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p><h2 id="aicc-signup-dialog-title">아직 회원이 아니신가요?</h2><p>간단한 정보와 휴대폰 인증으로 회원가입을 시작할 수 있어요.</p><div class="aicc-dialog-actions"><a class="aicc-account-button" href="' . esc_url(self::registration_url()) . '">회원가입하기</a><button type="button" class="aicc-dialog-later">나중에</button></div></dialog>';
@@ -71,6 +98,19 @@ final class AICC_Agachichi_Account {
 
     public static function registration_url(): string {
         return trailingslashit(wc_get_page_permalink('myaccount')) . 'register/';
+    }
+
+    public static function login_return_field(): void {
+        $return = sanitize_text_field(wp_unslash($_GET['redirect'] ?? ''));
+        if (wp_parse_url($return, PHP_URL_PATH) === '/homepage/storefront/checkout') {
+            echo '<input type="hidden" name="aicc_checkout_return" value="/homepage/storefront/checkout">';
+        }
+    }
+
+    public static function login_redirect(string $redirect, $user): string {
+        $return = sanitize_text_field(wp_unslash($_POST['aicc_checkout_return'] ?? ''));
+        if ($return === '/homepage/storefront/checkout') { return home_url($return); }
+        return $redirect;
     }
 
     public static function login_signup_link(): void {

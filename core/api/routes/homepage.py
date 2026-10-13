@@ -160,19 +160,23 @@ def storefront_orders_script() -> Response:
 @router.get("/homepage/storefront/cart", response_class=HTMLResponse, include_in_schema=False)
 def storefront_cart_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
     from core.homepage.storefront_chat import widget
-    return HTMLResponse(storefront.template("storefront-cart.html").replace("</body>", widget(service) + "</body>"))
+    chat = widget(service, page_context={"type": "cart", "key": "cart", "summary": "장바구니에 담은 상품의 옵션·수량과 주문 방법을 확인할 수 있어요."})
+    return HTMLResponse(storefront.template("storefront-cart.html").replace("</body>", chat + "</body>"))
 
 
 @router.get("/homepage/storefront/checkout", response_class=HTMLResponse, include_in_schema=False)
-def storefront_checkout_browser() -> HTMLResponse:
-    return HTMLResponse(storefront.template("storefront-checkout.html"),
-        headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
+def storefront_checkout_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
+    from core.homepage.storefront_chat import widget
+    chat = widget(service, page_context={"type": "checkout", "key": "checkout", "summary": "주문 상품·옵션, 배송비와 최종 금액을 확인하는 단계예요. 이름·주소·전화번호는 챗봇으로 전달되지 않습니다."})
+    html = storefront.template("storefront-checkout.html").replace("</body>", chat + "</body>")
+    return HTMLResponse(html, headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
 
 
 @router.get("/homepage/storefront/my-orders", response_class=HTMLResponse, include_in_schema=False)
 def storefront_orders_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
     from core.homepage.storefront_chat import widget
-    return HTMLResponse(storefront.template("storefront-orders.html").replace("</body>",widget(service)+"</body>"))
+    chat = widget(service, page_context={"type": "orders", "key": "orders", "summary": "주문번호를 입력해 배송 상태를 조회할 수 있어요. 상세조회·교환·환불에는 휴대폰 인증이 필요할 수 있습니다."})
+    return HTMLResponse(storefront.template("storefront-orders.html").replace("</body>", chat + "</body>"))
 
 
 @router.get("/homepage/assets/storefront/hero-sunlit-home-v1.jpg", include_in_schema=False)

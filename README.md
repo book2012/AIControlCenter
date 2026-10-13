@@ -1,8 +1,24 @@
-## 2026-10-13 — DEV account page storefront header
+## 2026-10-13 — DEV contextual chatbot and checkout login
 
-Login and registration use the same storefront header and working Search, Cart,
-and Order History links. The generic WordPress header and duplicate page logo are
-hidden; light/dark account styling is retained. DEV only.
+The shared storefront chatbot now introduces public product facts, adapts its
+greeting and suggested questions to the current page, sends a suggestion when
+selected, and leaves the composer empty until the customer types. Opening the
+chat no longer opens the mobile keyboard.
+
+Checkout now puts LOGIN above the existing guest order flow. Authenticated DEV
+WooCommerce customers can fetch saved recipient, phone, and shipping address
+fields into empty checkout fields, then edit them. The existing explicit quote,
+delivery review, confirmation, and guest SMS checks remain in force.
+
+LOGIN and 회원가입 receive active emphasis only on their matching account route; the storefront signup link no longer appears bold or underlined on unrelated pages.
+
+Member SMS bypass is not active: checkout's order API currently trusts only its
+phone-verified Shopping session, and no signed WooCommerce-to-Shopping member
+identity bridge exists. Do not hide verification or dispatch an order based on
+browser-provided login state. DEV only; PROD unchanged. See
+[chat and checkout architecture](docs/architecture/SHOP_STORE_CHAT_AND_MEMBER_CHECKOUT_DEV.md).
+
+## 2026-10-13 — DEV account page storefront header
 
 ## 2026-10-13 — DEV registration ID and password checks
 

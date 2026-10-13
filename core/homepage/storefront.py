@@ -54,14 +54,14 @@ def template(filename: str, **values: str) -> str:
     return result
 
 
-def rendered(filename: str, values: dict, code: int, retry_id: str, service=None) -> tuple[str, int]:
+def rendered(filename: str, values: dict, code: int, retry_id: str, service=None, chat_context: dict | None = None) -> tuple[str, int]:
     values["media"] = storefront_media.browser_mapping()
     if service is not None and getattr(service, "_dev_uploaded_only", False) is True:
         values["media"] = json.dumps({key: value for key, value in json.loads(values["media"]).items() if key.startswith("ag-upload-")}, ensure_ascii=False)
     html = template(filename, **values)
     if service is not None:
         from core.homepage.storefront_chat import widget
-        chat_html = widget(service, values.get("product_id", ""))
+        chat_html = widget(service, values.get("product_id", ""), chat_context)
         if chat_html:
             html = re.sub(r'<section id="inquiry-section".*?</section>', "", html, flags=re.S)
         html = html.replace("</body>", chat_html + "</body>")
@@ -389,7 +389,7 @@ def home(service: ShoppingService, state: dict | None = None) -> tuple[str, int]
                                       else "조건에 맞는 상품이 없습니다.")
     except Exception:
         values["feed_status"], code = UNAVAILABLE, 503
-    return rendered("storefront.html", values, code, "home-retry", service)
+    return rendered("storefront.html", values, code, "home-retry", service, {"type": "home", "key": "home:" + str(state.get("collection") or state.get("category") or "all"), "summary": "지금 " + ("HOT 인기 상품" if state.get("collection") == "hot" else "SALE 할인 상품" if state.get("collection") == "sale" else "신상품 피드" if state.get("collection") == "update" else LABELS.get(state.get("category", "").lower(), "쇼핑 홈")) + "을 보고 계세요. 원하는 스타일이나 상품을 알려주세요."})
 
 
 def search(service: ShoppingService, state: dict) -> tuple[str, int]:
@@ -426,7 +426,7 @@ def search(service: ShoppingService, state: dict) -> tuple[str, int]:
               "page_label": f"{page} / {pages} 페이지"}
     for query in ("블라우스", "미니멀", "내추럴", "주말", "출근"):
         values["mood_" + query] = escape(listing_url({**state, "q": query, "page": 1}))
-    return rendered("storefront-search.html", values, code, "retry", service)
+    return rendered("storefront-search.html", values, code, "retry", service, {"type": "search", "key": "search:" + state["category"] + ":" + state["q"], "summary": label + ("에서 ‘" + state["q"] + "’를 검색하고 있어요." if state["q"] else "을 살펴보고 계세요.")})
 
 
 def temporary_size_controls(product: dict) -> str:
@@ -491,4 +491,4 @@ def detail(service: ShoppingService, product_id: str, back: str) -> tuple[str, i
     except Exception:
         code = 503
         values.update(name="상품을 불러오지 못했습니다", status=UNAVAILABLE)
-    return rendered("storefront-product.html", values, code, "detail-retry", service)
+    return rendered("storefront-product.html", values, code, "detail-retry", service, {"type": "product", "key": "product:" + values.get("product_id", ""), "summary": values.get("name", "상품") + " 상세 페이지를 보고 계세요."})

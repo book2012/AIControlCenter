@@ -1,11 +1,15 @@
-## 2026-10-13 — DEV account and address follow-up
+## 2026-10-13 — DEV contextual chatbot and member checkout
 
-Completed: dedicated signup page, unknown-account login prompt, phone-verified signup,
-and button-triggered address search modal for signup and checkout. Postcode and base
-address populate from Kakao Postcode; detailed address remains user-entered.
-Next: verify ID availability, password mismatch, and address selection in the
-authenticated DEV browser with safe test data; then run one manual signup with
-the configured DEV test phone. Social login and any PROD rollout remain separately scoped.
+- [x] Inject public product summary and current-page guidance into the shared chatbot.
+- [x] Send a recommendation when clicked; keep the manual composer blank and do not auto-open the mobile keyboard.
+- [x] Put LOGIN above the guest order flow and prefill editable, blank checkout fields from authenticated WooCommerce account data.
+- [x] Highlight LOGIN or 회원가입 only on its matching account route.
+- [ ] Define and implement a signed WooCommerce-to-Shopping member identity bridge.
+- [ ] Allow authenticated members to prepare and confirm orders without SMS only after the Shopping API verifies that bridge.
+- [ ] Validate member and guest paths in DEV; keep SMS mandatory for guests and preserve the explicit order confirmation.
+- [ ] Deploy a clean, commit-addressed immutable DEV release after the member auth contract and tests are complete.
+
+## 2026-10-13 — DEV account and address follow-up
 
 # Roadmap
 

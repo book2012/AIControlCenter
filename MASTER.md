@@ -1,9 +1,15 @@
-## 2026-10-13 — DEV account page storefront header
+## 2026-10-13 — DEV contextual chatbot and checkout login
 
-Login and registration now retain the agachichi storefront header with Search,
-LOGIN, 회원가입, 장바구니, and 주문내역 routes. Generic WordPress navigation and
-the duplicate in-page brand were removed. Warm and dark account themes remain.
-DEV only; PROD unchanged.
+Storefront chat now provides page-aware public context and directly sends
+recommended prompts. Checkout has a top-level WooCommerce login link and
+server-authenticated profile prefill for logged-in members. LOGIN and 회원가입
+are highlighted only on their matching account route; the storefront signup link is normal on unrelated pages. The current order API still
+requires a phone-verified Shopping session for every order; skipping SMS
+for members requires a signed account-to-Shopping identity bridge. DEV only;
+PROD unchanged. See
+[chat and checkout architecture](docs/architecture/SHOP_STORE_CHAT_AND_MEMBER_CHECKOUT_DEV.md).
+
+## 2026-10-13 — DEV account page storefront header
 
 ## 2026-10-13 — DEV signup identity and password validation
 
