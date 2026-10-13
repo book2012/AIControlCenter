@@ -6,7 +6,7 @@ The DEV WooCommerce login page uses agachichi's warm ivory and brown palette.
 It follows the device color preference: dark preference switches account and
 registration pages to a dark brown-black surface with warm text and accent buttons.
 The storefront header places a 회원가입 link beside LOGIN, and `/my-account/register/` is a
-dedicated registration page.
+dedicated registration page. The generic DEV site title and duplicate page title are hidden on account routes so agachichi branding remains primary.
 
 Registration starts with login ID, email, password, and password confirmation, followed by name, nickname, mobile number, and home address. The signup fields sit in one outer form frame without an extra inner box. The customer checks ID availability
 before submitting; WordPress checks again on submit to catch simultaneous claims.

@@ -1,3 +1,8 @@
+## 2026-10-13 — DEV account brand cleanup
+
+- Hid the generic AIControlCenter site title and duplicate page title on login and registration pages, retaining agachichi account branding.
+- DEV only; no PROD changes.
+
 ## 2026-10-13 — DEV registration single form frame
 
 - Removed the inner fieldset outline and padding so registration uses one outer form box.

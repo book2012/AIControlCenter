@@ -33,6 +33,7 @@ body.woocommerce-account{background:var(--aicc-bg)!important;color:var(--aicc-in
 }
 @media(max-width:600px){.woocommerce-account .woocommerce form.login,.woocommerce-account .woocommerce form.register{padding:16px}.woocommerce-account .aicc-account-brand{font-size:26px}}
 
+.woocommerce-account .wp-block-site-title,.woocommerce-account .wp-block-post-title{display:none!important}
 .woocommerce-account .aicc-register-page{max-width:560px;margin:0 auto;padding:0 20px 48px}
 .woocommerce-account .aicc-register-heading{margin:12px 0 24px;text-align:center}
 .woocommerce-account .aicc-register-heading h1{margin:4px 0 8px;font-size:28px}
