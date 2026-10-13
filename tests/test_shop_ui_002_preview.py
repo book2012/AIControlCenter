@@ -139,11 +139,12 @@ def test_hero_is_a_brand_owned_local_jpeg_and_visible_copy_is_fixed(client):
     assert response.status_code == 200 and response.headers["content-type"] == "image/jpeg"
     assert response.content == path.read_bytes() and response.content.startswith(b"\xff\xd8\xff")
     html = client.get("/homepage/storefront").text
-    assert 'src="/homepage/assets/storefront/hero-boutique.jpg"' in html
-    assert "매일 편하게," in html and "조금 더 사랑스럽게." in html
+    assert 'src="/homepage/assets/storefront/hero-sunlit-home-v1.jpg"' in html
+    assert "매일 손이 가는 옷에," in html and "작은 특별함을 더해요." in html
     assert "agachichi" in html and "Everyday Comfort, Playful Touch" in html
     assert 'data-feed-filter="all"' in html
-    assert "HOT" in html and "추천" not in html
+    filter_nav = html.split('<nav id="home-filter-nav"', 1)[1].split("</nav>", 1)[0]
+    assert "HOT" in filter_nav and "추천" not in filter_nav
     assert html.count('id="shop-chat-form"') == 1
     assert 'id="shop-chat-product"' in html
     assert len([attrs for _, attrs in Elements(html).elements if attrs.get("class") == "header-search"]) == 1
