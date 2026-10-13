@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV account order history theme
+
+Localized the no-orders message and browse action, restyled the notice in the
+agachichi palette, reduced excess space below the header, and replaced the
+WordPress theme's English footer with the storefront footer. Plugin 0.6.6; DEV
+only, PROD unchanged.
+
 ## 2026-10-13 — DEV mobile account actions
 
 Kept order/cart shortcuts in two columns and made the longer profile/address

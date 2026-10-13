@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV order history and account footer
+
+Localized and branded the empty order state, reduced excess space after the
+common account header, and replaced the generic WordPress English footer with
+the agachichi footer. Responsive account styling remains scoped to DEV account
+routes. Plugin 0.6.6; PROD unchanged.
+
 ## 2026-10-13 — DEV mobile account action alignment
 
 Responsive dashboard buttons preserve two-column order/cart shortcuts and use

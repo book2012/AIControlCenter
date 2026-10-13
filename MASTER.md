@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV account order history presentation
+
+Order history empty state now uses Korean copy and the agachichi button palette.
+Account routes use the storefront footer instead of generic English theme links;
+top spacing is reduced. Plugin version 0.6.6.
+
 ## 2026-10-13 — DEV mobile account action alignment
 
 Longer profile and address editing buttons now span the available mobile width;

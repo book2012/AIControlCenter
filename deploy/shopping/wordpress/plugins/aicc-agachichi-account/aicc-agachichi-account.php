@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.5
+ * Version: 0.6.6
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -24,9 +24,11 @@ final class AICC_Agachichi_Account {
         add_action('wp_ajax_aicc_checkout_profile', [self::class, 'checkout_profile']);
         add_action('admin_post_aicc_delete_account', [self::class, 'delete_account']);
         add_filter('woocommerce_locate_template', [self::class, 'account_template'], 20, 3);
+        add_filter('gettext_woocommerce', [self::class, 'translate_orders_empty_state'], 10, 3);
         add_filter('woocommerce_account_menu_items', [self::class, 'account_menu_items']);
         add_filter('body_class', [self::class, 'body_classes']);
         add_action('wp_body_open', [self::class, 'storefront_header'], 5);
+        add_action('wp_footer', [self::class, 'storefront_footer'], 5);
         add_shortcode('aicc_agachichi_register', [self::class, 'registration_page']);
         add_shortcode('aicc_agachichi_signup_complete', [self::class, 'signup_complete_page']);
         add_filter('woocommerce_registration_errors', [self::class, 'validate'], 99, 3);
@@ -55,11 +57,28 @@ final class AICC_Agachichi_Account {
         echo '<header class="store-header aicc-account-store-header"><a class="wordmark" href="/homepage/storefront/">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="주요 메뉴"><a class="header-search" href="/homepage/storefront/search">검색</a>' . $auth_link . '<a class="header-cart" href="/homepage/storefront/cart">장바구니</a>' . $account_link . '</nav></header>';
     }
 
+    public static function storefront_footer(): void {
+        $account_page = function_exists('is_account_page') && is_account_page();
+        if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
+        echo '<footer class="aicc-account-store-footer"><a class="wordmark" href="' . esc_url(home_url('/homepage/storefront/')) . '">agachichi</a><p>Everyday Comfort, Playful Touch</p></footer>';
+    }
+
+    public static function translate_orders_empty_state(string $translation, string $text, string $domain): string {
+        if (!function_exists('is_account_page') || !is_account_page()
+            || !function_exists('is_wc_endpoint_url') || !is_wc_endpoint_url('orders')) { return $translation; }
+        return match ($text) {
+            'No order has been made yet.' => '아직 주문내역이 없습니다.',
+            'Browse products' => '상품 둘러보기',
+            default => $translation,
+        };
+    }
+
     public static function body_classes(array $classes): array {
         if (is_page('register') || is_page('signup-complete')) { $classes[] = 'woocommerce-account'; }
         if (function_exists('is_account_page') && is_account_page() && is_user_logged_in()
-            && function_exists('is_wc_endpoint_url') && !is_wc_endpoint_url()) {
-            $classes[] = 'aicc-account-dashboard-view';
+            && function_exists('is_wc_endpoint_url')) {
+            if (!is_wc_endpoint_url()) { $classes[] = 'aicc-account-dashboard-view'; }
+            if (is_wc_endpoint_url('orders')) { $classes[] = 'aicc-account-orders-view'; }
         }
         return $classes;
     }
@@ -68,8 +87,8 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.5');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.5', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.6');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.6', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),

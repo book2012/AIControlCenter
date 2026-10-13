@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV order history empty state and footer
+
+The empty order list now uses Korean storefront copy and a branded browse button.
+Account pages replace the generic English WordPress footer with the agachichi
+footer and use tighter spacing below the common header.
+
 ## 2026-10-13 — DEV account action buttons
 
 On mobile, order/cart shortcuts share a two-column row; profile and address
