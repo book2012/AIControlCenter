@@ -1,3 +1,4 @@
+from core.shopping.sqlite_resource import connection
 """Scoped DEV product commands; no product creation, deletion, or production target."""
 from pathlib import Path
 import base64, hashlib, json, os, re, sqlite3, subprocess, threading
@@ -101,7 +102,7 @@ class DevProductOperator:
         self.records=records;self.provider=provider;self.path=Path(path);self.projection_path=Path(projection_path)
         self.catalog_hash=catalog_hash;self.lock=threading.RLock()
         self.path.parent.mkdir(parents=True,exist_ok=True,mode=0o700)
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("CREATE TABLE IF NOT EXISTS product_commands (update_id INTEGER PRIMARY KEY,digest TEXT NOT NULL,body TEXT NOT NULL,state TEXT NOT NULL,reply TEXT)")
         os.chmod(self.path,0o600)
     def publish(self,snapshot):
@@ -141,7 +142,7 @@ class DevProductOperator:
                 return r["name"]+" · "+("공개" if row["enabled"] else "숨김")+" · "+format(row["sale_price"] or row["regular_price"],",")+"원"+(" · SALE" if row["sale_price"] else "")+"\n"+", ".join(option_label(r,k)+": "+str(v)+"개" for k,v in row["inventory"].items())
             if type(update_id) is not int or not 0<=update_id<2**63-1:raise ValueError("UPDATE_ID_REQUIRED")
             body=json.dumps(cmd,sort_keys=True,ensure_ascii=False);digest=hashlib.sha256(body.encode()).hexdigest()
-            with sqlite3.connect(self.path) as c:
+            with connection(self.path) as c:
                 old=c.execute("SELECT digest,state,reply FROM product_commands WHERE update_id=?",(update_id,)).fetchone()
                 if old:
                     if old[0]!=digest:raise ValueError("COMMAND_REPLAY_CONFLICT")
@@ -164,16 +165,16 @@ class DevProductOperator:
                 "SALE "+format(row["sale_price"],",")+"원" if action=="sale" else
                 "할인 해제" if action=="unsale" else "숨김 완료 · 다시 공개 가능" if action=="hide" else "다시 공개 완료")
             reply="[DEV] "+r["name"]+" · "+value;state="APPLIED"
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("UPDATE product_commands SET state=?,reply=? WHERE update_id=?",(state,reply,update_id))
         return reply
     def recover(self):
         with self.lock:
-            with sqlite3.connect(self.path) as c:rows=c.execute("SELECT update_id,body,digest FROM product_commands WHERE state='PENDING' ORDER BY update_id LIMIT 5").fetchall()
+            with connection(self.path) as c:rows=c.execute("SELECT update_id,body,digest FROM product_commands WHERE state='PENDING' ORDER BY update_id LIMIT 5").fetchall()
             replies=[]
             for i,b,d in rows:
                 reply=self._apply(i,json.loads(b),d)
-                with sqlite3.connect(self.path) as c:state=c.execute("SELECT state FROM product_commands WHERE update_id=?",(i,)).fetchone()[0]
+                with connection(self.path) as c:state=c.execute("SELECT state FROM product_commands WHERE update_id=?",(i,)).fetchone()[0]
                 if state in {"APPLIED","REJECTED"}:replies.append(reply)
             return replies
 

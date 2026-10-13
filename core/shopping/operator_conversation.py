@@ -1,3 +1,4 @@
+from core.shopping.sqlite_resource import connection
 from core.shopping.guest_operator import order_identity
 """Private, actor-scoped operator dialogue and confirmation; no model-generated execution."""
 import hashlib
@@ -23,7 +24,7 @@ class OperatorConversation:
         self.judge,self.orders,self.products,self.validate_product,self.executor=judge,orders,products,validate_product,executor
         self.clock,self.approval_seconds,self.remind_seconds=clock,approval_seconds,remind_seconds
         self.lock=threading.RLock()
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("CREATE TABLE IF NOT EXISTS dialogue_turns(update_id INTEGER PRIMARY KEY,actor TEXT NOT NULL,digest TEXT NOT NULL,state TEXT NOT NULL,reply TEXT)")
             c.execute("CREATE TABLE IF NOT EXISTS dialogue_sessions(actor TEXT PRIMARY KEY,plan TEXT,last_order INTEGER,request TEXT,proposal_id TEXT,state TEXT,created REAL,expires REAL)")
             c.execute("CREATE TABLE IF NOT EXISTS dialogue_notices(id TEXT PRIMARY KEY,actor TEXT,body TEXT NOT NULL,state TEXT NOT NULL,due REAL NOT NULL)")
@@ -31,7 +32,7 @@ class OperatorConversation:
         os.chmod(self.path,0o600)
 
     def _session(self, actor):
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.row_factory=sqlite3.Row
             row=c.execute("SELECT * FROM dialogue_sessions WHERE actor=?",(actor,)).fetchone()
         return dict(row) if row else {}
@@ -39,7 +40,7 @@ class OperatorConversation:
     def _save(self, actor, plan, state, request, last_order=None):
         old=self._session(actor)
         now=self.clock();pid=secrets.token_hex(4)
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("UPDATE dialogue_notices SET state='CANCELLED' WHERE actor=? AND state='PENDING' AND (id LIKE 'approval:%' OR id LIKE 'info:%')",(actor,))
             c.execute("INSERT INTO dialogue_sessions VALUES(?,?,?,?,?,?,?,?) ON CONFLICT(actor) DO UPDATE SET plan=excluded.plan,last_order=excluded.last_order,request=excluded.request,proposal_id=excluded.proposal_id,state=excluded.state,created=excluded.created,expires=excluded.expires",
                 (actor,json.dumps(plan,ensure_ascii=False),last_order or old.get("last_order"),request,pid,state,now,now+self.approval_seconds))
@@ -48,7 +49,7 @@ class OperatorConversation:
     def _finish(self, update_id, reply):
         if type(reply) is not str or not 1<=len(reply)<=3500:
             reply="결과가 길거나 형식이 맞지 않습니다. 주문번호나 상품명을 지정해 다시 조회해 주세요."
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("UPDATE dialogue_turns SET state='COMPLETED',reply=? WHERE update_id=? AND state='CLAIMED'",(reply,update_id))
         return reply
 
@@ -110,7 +111,7 @@ class OperatorConversation:
         if type(text) is not str or not 1<=len(text)<=1500:return "내용을 1500자 이내로 알려주세요."
         digest=hashlib.sha256(text.encode()).hexdigest()
         with self.lock:
-            with sqlite3.connect(self.path) as c:
+            with connection(self.path) as c:
                 c.execute("BEGIN IMMEDIATE")
                 row=c.execute("SELECT actor,digest,state,reply FROM dialogue_turns WHERE update_id=?",(update_id,)).fetchone()
                 if row:
@@ -136,17 +137,17 @@ class OperatorConversation:
                 if question:return self._finish(update_id,question)
                 if session["state"]!="WAITING_APPROVAL":return self._finish(update_id,"먼저 필요한 정보를 알려주세요.")
                 # Claim before any commerce mutation. Restart/exception never retries.
-                with sqlite3.connect(self.path) as c:
+                with connection(self.path) as c:
                     c.execute("UPDATE dialogue_sessions SET state='EXECUTING' WHERE actor=? AND state='WAITING_APPROVAL'",(actor,))
                     c.execute("UPDATE dialogue_notices SET state='CANCELLED' WHERE actor=? AND state='PENDING' AND (id LIKE 'approval:%' OR id LIKE 'info:%')",(actor,))
                 try:
                     if plan["action"]=="WEBSITE_TASK":
                         job=session["proposal_id"]
-                        with sqlite3.connect(self.path) as c:c.execute("INSERT INTO website_jobs VALUES(?,?,?,'WAITING_CODEX',?)",(job,actor,session["request"],self.clock()))
+                        with connection(self.path) as c:c.execute("INSERT INTO website_jobs VALUES(?,?,?,'WAITING_CODEX',?)",(job,actor,session["request"],self.clock()))
                         reply="홈페이지 개선 #"+job+"를 Codex 작업 대기에 기록했습니다. DEV 수정·테스트·검토 후 반영합니다. 운영 배포는 별도입니다."
                     else:reply=self.executor(command,update_id,actor)
                 except Exception:
-                    with sqlite3.connect(self.path) as c:
+                    with connection(self.path) as c:
                         c.execute("UPDATE dialogue_sessions SET state='UNKNOWN',expires=? WHERE actor=?",(self.clock()+86400,actor))
                         c.execute("INSERT OR IGNORE INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",("unknown:"+session["proposal_id"],actor,"처리 결과 확인 필요: "+command+"\n같은 변경을 재실행하지 말고 주문/재고 상태를 확인해 주세요.",self.clock()+300))
                     return self._finish(update_id,"처리 결과가 불확실합니다. 재실행하지 않고 주문 상태 확인이 필요합니다.")
@@ -188,7 +189,7 @@ class OperatorConversation:
                 request=text if "previous_plan" not in context else ("이전 요청: "+session.get("request","")+"\n최신 요청: "+text)[-1500:]
             if question:
                 pid=self._save(actor,plan,"WAITING_INFO",request,plan.get("order_id"))
-                with sqlite3.connect(self.path) as c:c.execute("INSERT INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",("info:"+pid,actor,"추가 정보 대기: "+question,self.clock()+self.remind_seconds))
+                with connection(self.path) as c:c.execute("INSERT INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",("info:"+pid,actor,"추가 정보 대기: "+question,self.clock()+self.remind_seconds))
                 return self._finish(update_id,question)
             if plan["action"] in READ_ACTIONS:
                 reply=self.executor(command,update_id,actor)
@@ -202,7 +203,7 @@ class OperatorConversation:
                 if matched:
                     summary="주문 확인\n"+order_identity(matched)+"\n"
             reply=summary+detail+"‘"+command+"’로 처리할까요? 맞으면 ‘응’, 변경하려면 내용을 알려주세요. 취소하려면 ‘아니’라고 해주세요."
-            with sqlite3.connect(self.path) as c:
+            with connection(self.path) as c:
                 c.execute("INSERT INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",
                     ("approval:"+pid,actor,"확인 대기: "+command+"\n잊지 않도록 알려드립니다. ‘응’ 또는 ‘아니’로 답해주세요.",self.clock()+self.remind_seconds))
             return self._finish(update_id,reply)
@@ -215,20 +216,20 @@ class OperatorConversation:
         if session.get("state") in {"EXECUTING","UNKNOWN"}:parts.append("처리 결과 확인이 필요합니다. 같은 변경은 다시 실행하지 않습니다.")
         labels={"PENDING_REVIEW":"주문확인","READY_TO_SHIP":"배송등록","AWAITING_DEPOSIT":"입금상태 확인"}
         parts.extend("주문 #"+str(r["order_id"])+" · "+labels[r["display_state"]]+"\n"+order_identity(r) for r in self.orders()[:30] if r.get("display_state") in labels)
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             count=c.execute("SELECT count(*) FROM website_jobs WHERE actor=? AND state NOT IN ('NO_CHANGE')",(actor,)).fetchone()[0]
         if count:parts.append("홈페이지 개선 "+str(count)+"건 · ‘개선목록’으로 진행 확인")
         return "\n".join(parts) or "현재 확인 대기 중인 작업이 없습니다."
 
     def website_list(self, actor):
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             rows=c.execute("SELECT id,request,state FROM website_jobs WHERE actor=? ORDER BY created DESC LIMIT 10",(actor,)).fetchall()
         labels={"WAITING_CODEX":"Codex 작업대기","CODEX_RUNNING":"Codex 수정중","REVIEW_REQUIRED":"초안 검토대기","NO_CHANGE":"수정 없음 · 검토필요","SCOPE_REJECTED":"범위 확인필요","CODEX_FAILED":"실행 실패 · 검토필요","CODEX_INTERRUPTED":"실행 중단 · 확인필요"}
         return "\n".join("#"+r[0]+" · "+labels.get(r[2],r[2])+" · "+r[1][:120] for r in rows) or "홈페이지 개선 대기 요청이 없습니다."
 
     def schedule_order_notices(self):
         active=set()
-        with self.lock,sqlite3.connect(self.path) as c:
+        with self.lock,connection(self.path) as c:
             for order in self.orders():
                 state=order.get("display_state")
                 delays={"PENDING_REVIEW":1800,"READY_TO_SHIP":3600,"AWAITING_DEPOSIT":86400}
@@ -242,7 +243,7 @@ class OperatorConversation:
 
     def notify_one(self, transport):
         self.schedule_order_notices()
-        with self.lock,sqlite3.connect(self.path) as c:
+        with self.lock,connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             now=self.clock()
             c.execute("UPDATE dialogue_notices SET state='CANCELLED' WHERE actor IN (SELECT actor FROM dialogue_sessions WHERE expires<?) AND state='PENDING'",(now,))
@@ -252,5 +253,5 @@ class OperatorConversation:
         try:
             transport.send_message("안녕하세요 agachichi 입니다\n[개발]\n"+row[1]);state="SENT"
         except Exception:state="UNKNOWN"
-        with sqlite3.connect(self.path) as c:c.execute("UPDATE dialogue_notices SET state=? WHERE id=?",(state,row[0]))
+        with connection(self.path) as c:c.execute("UPDATE dialogue_notices SET state=? WHERE id=?",(state,row[0]))
         return state

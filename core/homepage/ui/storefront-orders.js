@@ -118,7 +118,7 @@
 
   const load=async()=>{
     const number=by("orders-number").value.trim().replace(/^#/,"");
-    if(/^\\d{10}$/.test(number)){
+    if(/^\d{10}$/.test(number)){
       const publicResponse=await fetch(commercePath('/orders/public-lookup'),{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({order_number:number})});
       const publicData=await publicResponse.json();
@@ -126,6 +126,9 @@
         by("orders-auth").hidden=true;by("orders-list").replaceChildren(renderPublicOrder(publicData.order));
         message("주문번호만으로 기본 상태를 확인했습니다. 상세 기능은 휴대폰 인증 후 이용할 수 있습니다.");return;
       }
+      by("orders-list").replaceChildren();
+      message(publicResponse.status===404?"주문번호를 찾을 수 없습니다. 10자리 주문번호를 확인해 주세요.":"주문조회 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      return;
     }
     if(!(await session())){by("orders-phone").value=by("lookup-phone").value;by("orders-auth").hidden=false;by("orders-list").replaceChildren();return;}
     by("orders-auth").hidden=true;message("");
@@ -156,5 +159,6 @@
     if(!by("lookup-phone").value)by("lookup-phone").value=by("orders-phone").value;
     csrf=response.headers.get("X-CSRF-Token")||csrf;message("휴대폰 인증이 완료됐습니다.");await load();
   };
-  session().then(verified=>{by("orders-auth").hidden=verified;});
+  // Public lookup needs no customer session; probe only for private details.
+  by("orders-auth").hidden=true;
 })();

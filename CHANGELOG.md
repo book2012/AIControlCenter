@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 2026-10-13 — DEV order lookup recovery
+
+Fixed the over-escaped public order-number regex and removed eager customer-session probes. Unknown public numbers show an error without falling through to authentication. Short-lived order, aftersales, dialogue and SMS SQLite transactions now close deterministically after commit/rollback, preventing descriptor exhaustion. Validation: 2 UI execution tests and 168 provider/order/return/isolation regressions passed. DEV-only rollout; PROD runtime and existing private configuration remain unchanged. See [recovery details](docs/architecture/SHOP_ORDER_LOOKUP_RECOVERY_DEV.md).
+
 ## 2026-10-11 — Private DEV Telegram bridge preparation
 
 Added an opt-in HMAC-authenticated private Unix-socket DEV command receiver and a single-attempt shared-consumer forwarding adapter. Separately pinned DEV releases can receive commands without a second Bot API poller; actor/allowlist checks, durable claims and signed receipts preserve duplicate and ambiguous-outcome safety. Shared PROD activation remains separately gated; absent configuration preserves existing behavior. SMS is held. See [bridge architecture](docs/architecture/SHOP_DEV_OPERATOR_BRIDGE.md).

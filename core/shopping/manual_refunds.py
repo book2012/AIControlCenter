@@ -1,3 +1,4 @@
+from core.shopping.sqlite_resource import connection
 """Immutable operator attestation of an already completed transfer; never transfers money."""
 from decimal import Decimal,InvalidOperation
 import re,sqlite3
@@ -5,7 +6,7 @@ import re,sqlite3
 class ManualRefundRecords:
     manual_refund_records_enabled=False
     def refund(self,order_id):
-        with sqlite3.connect('file:'+str(self.path.resolve())+'?mode=ro',uri=True) as c:
+        with connection('file:'+str(self.path.resolve())+'?mode=ro',uri=True) as c:
             row=c.execute('SELECT amount,currency,recorded FROM manual_refunds WHERE order_id=?',(order_id,)).fetchone()
         return {'state':'RECORDED','amount':row[0],'currency':row[1],'recorded_at':row[2]} if row else {'state':'NOT_RECORDED'}
 
@@ -20,7 +21,7 @@ class ManualRefundRecords:
         try:total=Decimal(quote['final_total'])
         except (InvalidOperation,TypeError,ValueError):raise ValueError('REFUND_AMOUNT_INVALID') from None
         if quote['currency']!='KRW' or not total.is_finite() or total!=amount:raise ValueError('FULL_REFUND_AMOUNT_REQUIRED')
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute('BEGIN IMMEDIATE')
             state=c.execute('SELECT state FROM cases WHERE id=?',(case_id,)).fetchone()[0]
             restoration=c.execute('SELECT state FROM return_stock_operations WHERE case_id=?',(case_id,)).fetchone()

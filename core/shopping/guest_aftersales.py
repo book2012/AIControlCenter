@@ -1,3 +1,4 @@
+from core.shopping.sqlite_resource import connection
 """Private customer-owned order fulfillment and aftersales state; no provider defaults."""
 from pathlib import Path
 import hashlib,json,os,re,secrets,sqlite3,time
@@ -24,7 +25,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         self.stock_cancellation=stock_cancellation
         if self.path.is_symlink() or self.attachments.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
         self.attachments.mkdir(parents=True,exist_ok=True);os.chmod(self.attachments,0o700)
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("""CREATE TABLE IF NOT EXISTS fulfillment(
                 order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,carrier TEXT,tracking TEXT,shipped REAL,delivered REAL,updated REAL NOT NULL)""")
             c.execute("""CREATE TABLE IF NOT EXISTS cases(
@@ -45,7 +46,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
     def _fulfillment(self,order_id):
-        with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+        with connection("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
             row=c.execute("SELECT state,carrier,tracking,shipped,delivered,updated FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
         if not row:return {"state":"NOT_SHIPPED","carrier":None,"tracking":None,"shipped":None,"delivered":None,"updated":None}
         return dict(zip(("state","carrier","tracking","shipped","delivered","updated"),row))
@@ -57,7 +58,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         if case_id is not None:where.append("id=?");args.append(case_id)
         if where:q+=" WHERE "+" AND ".join(where)
         q+=" ORDER BY created DESC LIMIT ?";args.append(max(1,min(int(limit),100)))
-        with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+        with connection("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
             c.row_factory=sqlite3.Row;rows=[dict(r) for r in c.execute(q,args)]
             for row in rows:
                 row["attachments"]=c.execute("SELECT COUNT(*) FROM attachments WHERE case_id=?",(row["id"],)).fetchone()[0]
@@ -87,11 +88,11 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
                 "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active),"cases":cases})
         return result
     def payment(self,order_id):
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             row=c.execute("SELECT state,updated FROM payments WHERE order_id=?",(order_id,)).fetchone()
         return {"state":row[0] if row else "AWAITING_DEPOSIT","updated":row[1] if row else None}
     def cancellation(self,order_id):
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             row=c.execute("SELECT state,updated FROM cancellations WHERE order_id=?",(order_id,)).fetchone()
         return {"state":row[0] if row else "NONE","updated":row[1] if row else None}
     @staticmethod
@@ -105,7 +106,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         draft=self.checkout.by_customer_operation(row["operation_key"],row["customer_id"],allow_expired=True)
         if draft["state"]!="CONFIRMED":raise ValueError("ORDER_NOT_CONFIRMED")
         if self.stock_cancellation is None:raise ValueError("CANCELLATION_NOT_CONFIGURED")
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             old=c.execute("SELECT state FROM cancellations WHERE order_id=?",(order_id,)).fetchone()
             if old:
@@ -121,10 +122,10 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             if receipt.get("outcome")!="STOCK_CANCELLED" or receipt.get("order_id")!=order_id:
                 raise ValueError("CANCELLATION_RECEIPT_INVALID")
         except Exception:
-            with sqlite3.connect(self.path) as c:
+            with connection(self.path) as c:
                 c.execute("UPDATE cancellations SET state='UNKNOWN',updated=? WHERE order_id=?",(self.clock(),order_id))
             raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED") from None
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("UPDATE cancellations SET state='CANCELLED',updated=? WHERE order_id=?",(self.clock(),order_id))
         return self.cancellation(order_id)
     def reconcile_cancellation(self,order_id):
@@ -138,13 +139,13 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         receipt=self.stock_cancellation.reconcile(row,draft)
         if not receipt or receipt.get("outcome")!="STOCK_CANCELLED" or receipt.get("order_id")!=order_id:
             raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("UPDATE cancellations SET state='CANCELLED',updated=? WHERE order_id=? AND state IN ('SENDING','UNKNOWN')",(self.clock(),order_id))
         return self.cancellation(order_id)
     def confirm_payment(self,order_id):
         rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
         if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             self._deny_cancelled(c,order_id)
             c.execute("INSERT OR IGNORE INTO payments VALUES(?,?,?)",(order_id,"PAID",self.clock()))
@@ -217,7 +218,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             target=opts.get(data.target_variation_id)
             if target is None:raise ValueError("TARGET_SIZE_UNAVAILABLE")
         identifier=secrets.token_hex(4)
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             if c.execute("SELECT 1 FROM cases WHERE order_id=? AND state!='REJECTED'",(data.order_id,)).fetchone():raise ValueError("CASE_ALREADY_ACTIVE")
             c.execute("INSERT INTO cases VALUES(?,?,?,?,?,?,?,?,?,?)",(identifier,data.order_id,customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",now,now))
@@ -236,7 +237,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         identifier=secrets.token_hex(8);stored=identifier+suffix;target=self.attachments/stored
         with target.open("xb") as f:f.write(raw)
         os.chmod(target,0o600);stamp=self.clock()
-        with sqlite3.connect(self.path) as c:c.execute("INSERT INTO attachments VALUES(?,?,?,?,?,?,?)",(identifier,case_id,media_type,len(raw),hashlib.sha256(raw).hexdigest(),stored,stamp))
+        with connection(self.path) as c:c.execute("INSERT INTO attachments VALUES(?,?,?,?,?,?,?)",(identifier,case_id,media_type,len(raw),hashlib.sha256(raw).hexdigest(),stored,stamp))
         return {"attachment_id":identifier,"media_type":media_type,"size":len(raw)}
     def _operator_order(self,order_id):
         rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==int(order_id)]
@@ -246,7 +247,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         self._operator_order(order_id)
         if not re.fullmatch(r"[가-힣A-Za-z0-9 ._-]{2,40}",carrier) or not re.fullmatch(r"[A-Za-z0-9-]{5,40}",tracking):raise ValueError("TRACKING_INVALID")
         stamp=self.clock()
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             self._deny_cancelled(c,order_id)
             current=c.execute("SELECT state,carrier,tracking FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
@@ -260,7 +261,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         return self._fulfillment(order_id)
     def mark_delivered(self,order_id):
         self._operator_order(order_id)
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             # Serialize delivery completion so concurrent commands preserve the
             # first receipt and the customer return-window start time.
             c.execute("BEGIN IMMEDIATE")
@@ -278,7 +279,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         if kind:rows=[r for r in rows if r["kind"]==kind]
         return rows
     def decide(self,case_id,approve):
-        with sqlite3.connect(self.path) as c:
+        with connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             row=c.execute("SELECT kind,state FROM cases WHERE id=?",(case_id,)).fetchone()
             if row is None:raise ValueError("CASE_NOT_FOUND")
@@ -315,7 +316,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             m=re.fullmatch(pattern,clean)
             if m:matched=(m,kind);break
         if matched is None:return None
-        with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+        with connection("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
             old=c.execute("SELECT reply FROM operator_updates WHERE update_id=?",(update_id,)).fetchone()
         if old:return old[0]
         m,kind=matched
@@ -371,9 +372,9 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         except Exception:
             reply="요청을 처리하지 못했습니다. 주문/케이스 상태를 확인해 주세요."
         try:
-            with sqlite3.connect(self.path) as c:c.execute("INSERT INTO operator_updates VALUES(?,?)",(update_id,reply))
+            with connection(self.path) as c:c.execute("INSERT INTO operator_updates VALUES(?,?)",(update_id,reply))
         except sqlite3.IntegrityError:
-            with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+            with connection("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
                 existing=c.execute("SELECT reply FROM operator_updates WHERE update_id=?",(update_id,)).fetchone()
             if existing:return existing[0]
         return reply
