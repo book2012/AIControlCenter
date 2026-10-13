@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV account dashboard mobile alignment
+
+The account navigation/content no longer inherit mismatched WooCommerce floats.
+Removed the nested account-content shell, switched mobile navigation and profile
+shortcuts to balanced two-column layouts, and removed duplicate subnavigation
+logout. Regression covers the responsive layout contract. DEV only; PROD unchanged.
+
 ## 2026-10-13 — DEV shared account navigation correction
 
 Removed 회원가입 from the common storefront header and connected all shared pages

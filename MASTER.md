@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV account dashboard responsive layout
+
+The signed-in account page now uses full-width stacked content with no extra
+outer panel around its dashboard cards. On mobile, account navigation and four
+shortcuts use aligned two-column grids; the header remains the single logout
+entry. Plugin version 0.6.4.
+
 ## 2026-10-13 — DEV shared account navigation correction
 
 The storefront-wide header now removes 회원가입 (signup remains on the login

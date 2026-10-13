@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.3
+ * Version: 0.6.4
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -57,6 +57,10 @@ final class AICC_Agachichi_Account {
 
     public static function body_classes(array $classes): array {
         if (is_page('register') || is_page('signup-complete')) { $classes[] = 'woocommerce-account'; }
+        if (function_exists('is_account_page') && is_account_page() && is_user_logged_in()
+            && function_exists('is_wc_endpoint_url') && !is_wc_endpoint_url()) {
+            $classes[] = 'aicc-account-dashboard-view';
+        }
         return $classes;
     }
 
@@ -64,8 +68,8 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.3');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.3', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.4');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.4', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),
@@ -93,7 +97,6 @@ final class AICC_Agachichi_Account {
             'orders' => '주문내역',
             'edit-account' => '내 정보 수정',
             'edit-address' => '배송지 관리',
-            'customer-logout' => '로그아웃',
         ];
         return array_intersect_key($labels, $items);
     }

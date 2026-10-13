@@ -1,3 +1,11 @@
+## 2026-10-13 — DEV account dashboard responsive layout
+
+Fixed WooCommerce's narrow floating account columns and nested dashboard panel.
+Mobile account navigation and dashboard shortcuts now use balanced two-column
+grids, consistent widths, and touch-friendly heights. Removed the duplicate
+logout item from the account subnavigation because the storefront header already
+provides LOG OUT. Plugin 0.6.4; DEV only.
+
 ## 2026-10-13 — DEV shared account navigation
 
 Removed the signup link from every shared storefront page. Added a no-store,

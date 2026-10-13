@@ -275,6 +275,7 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "woocommerce_locate_template" in plugin and "templates/myaccount/dashboard.php" in plugin
     assert "'dashboard' => '내 정보'" in plugin and "'orders' => '주문내역'" in plugin
     assert "'edit-account' => '내 정보 수정'" in plugin
+    assert "'customer-logout' => '로그아웃'" not in plugin
     assert "wc_get_orders([" in dashboard and "id=\"aicc-dashboard-orders-title\">주문내역" in dashboard
     assert "주문내역 바로가기" in dashboard and "장바구니 바로가기" in dashboard
     assert "이름·이메일·비밀번호 수정" in dashboard and "주소 수정" in dashboard
@@ -283,3 +284,6 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "add_action('admin_post_aicc_delete_account'" in plugin
     assert "data-aicc-confirm" in js and "window.confirm" in js
     assert ".aicc-orders-table" in css and ".aicc-withdraw-button" in css
+    assert "grid-template-columns:repeat(2,minmax(0,1fr))" in css
+    assert ".woocommerce-account.aicc-account-dashboard-view .woocommerce-MyAccount-content" in css and "border:0" in css
+    assert "aicc-account-dashboard-view" in plugin

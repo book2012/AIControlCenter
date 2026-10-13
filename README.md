@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV account dashboard mobile layout
+
+Aligned the account navigation and content to the same width, removed the
+redundant inner panel around dashboard cards, and made account actions a uniform
+two-column grid on mobile. The common header remains the only logout control.
+DEV only; PROD unchanged.
+
 ## 2026-10-13 — DEV account navigation correction
 
 Removed 회원가입 from the shared storefront header. The common navigation now
