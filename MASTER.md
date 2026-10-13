@@ -1,11 +1,13 @@
 # MASTER
 
-## 2026-10-13 — DEV storefront LOGIN link
+## 2026-10-13 — DEV account registration
 
-Homepage DEV source adds a responsive LOGIN action after search and links to
-the isolated DEV WooCommerce account page. The route keeps registration
-disabled and preserves the Homepage preview and order API destinations. See
-[DEV storefront login routing](docs/homepage/DEV-STOREFRONT-LOGIN-01.md).
+The shared Homepage LOGIN action opens isolated DEV WooCommerce. Account
+registration stores name, nickname, verified phone, email, and home address;
+the agachichi account theme supports the device's light and dark appearance.
+The DEV OTP bridge remains limited to its configured test phone. Social sign-in
+and PROD account changes are outside this DEV rollout. See
+[DEV account registration](docs/homepage/DEV-ACCOUNT-REGISTRATION-01.md).
 
 ## 2026-10-13 — DEV order lookup recovery
 

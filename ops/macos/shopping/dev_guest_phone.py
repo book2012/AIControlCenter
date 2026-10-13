@@ -97,11 +97,13 @@ class FixedDevTwilioPort:
 
 class DevPhoneBridge:
     def __init__(self,*,cfg,binding_key,customer_path,bridge_path,clock=utc,port=None):
-        self.cfg=cfg;self.clock=clock;self.customer_path=Path(customer_path);self.path=Path(bridge_path);self.lock=threading.Lock()
+        self.cfg=cfg;self.clock=clock;self.customer_path=Path(customer_path);self.path=Path(bridge_path);self.lock=threading.Lock();self.binding_key=binding_key
         self.port=port or FixedDevTwilioPort(cfg,binding_key)
         self.service=PhoneVerificationService(self.port,clock=clock,binding_key=binding_key,provider_source=SOURCE,database_path=self.customer_path)
         self.customer_id=cfg["guest_customer_id"]
-        with sqlite3.connect(self.path) as c:c.execute("CREATE TABLE IF NOT EXISTS dev_phone_browser(token_hash TEXT PRIMARY KEY,challenge TEXT NOT NULL,replay TEXT NOT NULL,browser TEXT NOT NULL,state TEXT NOT NULL,created REAL NOT NULL,expires REAL NOT NULL)")
+        with sqlite3.connect(self.path) as c:
+            c.execute("CREATE TABLE IF NOT EXISTS dev_phone_browser(token_hash TEXT PRIMARY KEY,challenge TEXT NOT NULL,replay TEXT NOT NULL,browser TEXT NOT NULL,state TEXT NOT NULL,created REAL NOT NULL,expires REAL NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS dev_account_registration_ticket(token_hash TEXT PRIMARY KEY,customer_id TEXT NOT NULL,phone_binding TEXT NOT NULL,created REAL NOT NULL,expires REAL NOT NULL,consumed INTEGER NOT NULL DEFAULT 0)")
         os.chmod(self.path,0o600)
         store=SQLiteCustomerSessionStore(self.customer_path)
         with sqlite3.connect(self.customer_path) as c:c.row_factory=sqlite3.Row;existing=customer_from_connection(c,self.customer_id)
@@ -130,6 +132,38 @@ class DevPhoneBridge:
                 raise PhoneDenied("INSPECTION_REQUIRED",self.port.last_error_code) from None
             with sqlite3.connect(self.path) as c:c.execute("UPDATE dev_phone_browser SET state='PENDING' WHERE token_hash=?",(digest(token),))
             return token,True
+    def verified_phone(self,customer_id):
+        if customer_id!=self.customer_id:raise PhoneDenied("DENIED")
+        with sqlite3.connect(self.customer_path) as c:
+            c.row_factory=sqlite3.Row;customer=customer_from_connection(c,self.customer_id)
+        if (customer is None or customer.state.value!="ACTIVE"
+            or customer.contact_binding.state.value!="VERIFIED"
+            or customer.contact_binding.contact_ref!=self.cfg["guest_contact_ref"]):raise PhoneDenied("DENIED")
+        return normalize_phone(self.cfg["test_phone"]).value
+    def issue_registration_ticket(self,customer_id):
+        phone=self.verified_phone(customer_id);binding=derive_phone_binding(normalize_phone(phone),self.binding_key).value
+        stamp=self.clock().timestamp();token=secrets.token_urlsafe(32)
+        with sqlite3.connect(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            c.execute("DELETE FROM dev_account_registration_ticket WHERE expires<=?",(stamp,))
+            recent=c.execute("SELECT count(*) FROM dev_account_registration_ticket WHERE customer_id=? AND created>?",(customer_id,stamp-3600)).fetchone()[0]
+            if recent>=5:raise PhoneDenied("RATE_LIMITED")
+            c.execute("INSERT INTO dev_account_registration_ticket(token_hash,customer_id,phone_binding,created,expires) VALUES(?,?,?,?,?)",
+                (digest(token),customer_id,binding,stamp,stamp+300))
+        return token
+    def consume_registration_ticket(self,token,phone):
+        if not token or not re.fullmatch(r"[A-Za-z0-9_-]{43}",token):raise PhoneDenied("DENIED")
+        canonical=normalize_phone(phone) if phone.strip().startswith("+") else normalize_phone(phone,country_calling_code="+82",national_trunk_prefix="0")
+        with sqlite3.connect(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            c.execute("DELETE FROM dev_account_registration_ticket WHERE expires<=?",(self.clock().timestamp(),))
+            row=c.execute("SELECT customer_id,phone_binding,expires,consumed FROM dev_account_registration_ticket WHERE token_hash=?",(digest(token),)).fetchone()
+            binding=derive_phone_binding(canonical,self.binding_key).value
+            if not row or row[3]!=0 or self.clock().timestamp()>=row[2] or binding!=row[1]:raise PhoneDenied("DENIED")
+            if derive_phone_binding(normalize_phone(self.verified_phone(row[0])),self.binding_key).value!=row[1]:raise PhoneDenied("DENIED")
+            c.execute("UPDATE dev_account_registration_ticket SET consumed=1 WHERE token_hash=? AND consumed=0",(digest(token),))
+            if c.execute("SELECT changes()").fetchone()[0]!=1:raise PhoneDenied("DENIED")
+        return canonical.value
     def verify(self,token,code):
         if not token or not re.fullmatch(r"[A-Za-z0-9_-]{43}",token):raise PhoneDenied("DENIED")
         with self.lock:
@@ -154,13 +188,26 @@ class DevPhoneBridge:
             with sqlite3.connect(self.path) as c:c.execute("UPDATE dev_phone_browser SET state='VERIFIED' WHERE token_hash=?",(digest(token),))
             return outcome
 
+class RegistrationTicketPayload(BaseModel):
+    model_config=ConfigDict(extra="forbid",hide_input_in_errors=True)
+    ticket:str=Field(strict=True,min_length=43,max_length=43,pattern=r"^[A-Za-z0-9_-]{43}$",repr=False)
+    phone:str=Field(strict=True,min_length=8,max_length=32,repr=False)
+
 def mount_phone_routes(app,*,bridge,boundary,register_evidence):
-    async def payload(request,model):
-        boundary.check_origin(request,required=True);raw=bytearray()
+    async def payload(request,model,*,require_origin=True):
+        if require_origin:boundary.check_origin(request,required=True)
+        raw=bytearray()
         async for chunk in request.stream():
             if len(raw)+len(chunk)>2048:raise ValueError()
             raw.extend(chunk)
         return model.model_validate_json(bytes(raw))
+    @app.post("/__order-dev/account/registration-ticket/consume",include_in_schema=False)
+    async def consume_registration_ticket(request:Request):
+        try:
+            data=await payload(request,RegistrationTicketPayload,require_origin=False)
+            phone=await __import__("asyncio").to_thread(bridge.consume_registration_ticket,data.ticket,data.phone)
+            return JSONResponse({"verified":True,"phone":phone},headers={"Cache-Control":"no-store"})
+        except Exception:return JSONResponse({"verified":False},status_code=401,headers={"Cache-Control":"no-store"})
     @app.post("/__order-dev/phone/start",include_in_schema=False)
     async def start(request:Request):
         try:
@@ -183,6 +230,9 @@ def mount_phone_routes(app,*,bridge,boundary,register_evidence):
             outcome=await __import__("asyncio").to_thread(bridge.verify,request.cookies.get(COOKIE),data.code)
             public=register_evidence(TrustedSessionEvidence(outcome.receipt,outcome.context,outcome.receipt.browser_challenge))
             response=create_session(VerificationReceiptConsumeRequest(**public),request,boundary)
+            ticket=await __import__("asyncio").to_thread(bridge.issue_registration_ticket,outcome.receipt.customer_id)
+            response.headers["X-AICC-Registration-Ticket"]=ticket
+            response.headers["Cache-Control"]="no-store"
             response.delete_cookie(COOKIE,path="/",secure=True,httponly=True,samesite="strict")
             return response
         except Exception:return JSONResponse({"message":"인증을 완료하지 못했습니다. 인증번호 또는 요청 상태를 확인해 주세요."},status_code=401,headers={"Cache-Control":"no-store"})

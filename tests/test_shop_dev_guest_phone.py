@@ -38,6 +38,13 @@ def test_success_is_real_service_receipt_and_browser_bound(setup):
  assert out.receipt.customer_id==b.customer_id and p.calls==["start","verify"]
  with pytest.raises(PhoneDenied):b.verify(token,"123456")
  with sqlite3.connect(b.customer_path) as c:assert c.execute("SELECT status FROM shopping_verification_challenges").fetchone()[0]=="VERIFIED"
+def test_account_registration_ticket_expires_and_phone_must_match(setup):
+ b,_,now=setup;token,_=b.start("01012345678");b.verify(token,"123456")
+ ticket=b.issue_registration_ticket(b.customer_id)
+ with pytest.raises(PhoneDenied):b.consume_registration_ticket(ticket,"01019999999")
+ now[0]+=timedelta(minutes=5)
+ with pytest.raises(PhoneDenied):b.consume_registration_ticket(ticket,"01012345678")
+
 def test_other_phone_and_fake_browser_rejected_without_provider(setup):
  b,p,_=setup
  with pytest.raises(PhoneDenied):b.start("+821099999999")
@@ -91,7 +98,15 @@ def test_http_phone_routes_require_consent_origin_and_issue_session(setup):
  assert start.status_code==200 and COOKIE in client.cookies
  result=client.post("/__order-dev/phone/check",json={"code":"123456"},headers=headers)
  assert result.status_code==201 and "__Host-aicc_customer" in client.cookies
- assert client.get("/shopping/auth/session").status_code==200
+ assert b.verified_phone(b.customer_id)=="+821012345678"
+ assert "X-AICC-Registration-Ticket" in result.headers
+ ticket=result.headers["X-AICC-Registration-Ticket"]
+ rejected=client.post("/__order-dev/account/registration-ticket/consume",json={"ticket":ticket,"phone":"01019999999"})
+ assert rejected.status_code==401
+ consumed=client.post("/__order-dev/account/registration-ticket/consume",json={"ticket":ticket,"phone":"01012345678"})
+ assert consumed.status_code==200 and consumed.json()=={"verified":True,"phone":"+821012345678"}
+ replay=client.post("/__order-dev/account/registration-ticket/consume",json={"ticket":ticket,"phone":"01012345678"})
+ assert replay.status_code==401
  assert "123456" not in result.text and "+821012345678" not in result.text
 
 def test_twilio_endpoint_cannot_escape_verify_scope():

@@ -1,11 +1,14 @@
 # Roadmap
 
-## 2026-10-13 — DEV storefront login
+## 2026-10-13 — DEV account registration
 
-- [x] Add LOGIN beside search across the shared Homepage storefront header.
-- [x] Route the account link to DEV WooCommerce while keeping customer signup disabled.
-- [x] Add focused UI regression and update the immutable Homepage DEV release.
-- [ ] Verify authenticated mobile browser flow on dev.bokstory.duckdns.org.
+- [x] Style LOGIN like the other text-only header actions.
+- [x] Add DEV WooCommerce signup fields for name, nickname, phone, email, and address.
+- [x] Bind the signup phone to a short-lived, one-use server verification ticket.
+- [x] Support device dark appearance on the account page.
+- [ ] Validate the authenticated mobile flow with the configured DEV test phone.
+- [ ] Expand beyond the DEV test-number restriction before broader customer rollout.
+- [ ] Keep social sign-in and PROD release as later separately scoped work.
 
 ## 2026-10-13 — DEV order lookup recovery
 

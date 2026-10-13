@@ -350,5 +350,6 @@ def test_shared_header_inserts_login_after_search_and_links_woocommerce_account(
     assert 'login.href = "/my-account/"' in script
     assert 'login.textContent = "LOGIN"' in script
     assert 'opener.insertAdjacentElement("afterend", login)' in script
-    assert ".store-header .header-actions a.header-login" in css
-    assert "max-width: 600px" in css and "header-login" in css
+    assert ".store-header .header-actions a {" in css
+    assert ".store-header .header-actions a.header-login" not in css
+    assert "max-width: 600px" in css and ".store-header .header-actions a { font-size: 11px; }" in css

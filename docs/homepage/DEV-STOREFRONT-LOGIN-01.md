@@ -8,8 +8,9 @@ link opens WooCommerce's DEV account page at /my-account/. Its responsive
 style keeps the touch target at least 44 pixels high and reduces padding on
 small screens.
 
-Customer self-registration remains disabled in the DEV WooCommerce settings.
-Guest inquiry and the existing phone-verified order flow remain unchanged.
+DEV customer registration now uses the fields and verification flow documented in
+[DEV account registration](DEV-ACCOUNT-REGISTRATION-01.md). Guest inquiry and the
+existing phone-verified order flow remain unchanged.
 
 ## DEV routing
 
@@ -29,6 +30,6 @@ WooCommerce data are outside this change.
 ## Validation
 
 The focused preview suite verifies the shared script inserts LOGIN after the
-search action, uses the DEV account path, and loads responsive button styles.
+search action, uses the DEV account path, and inherits the same shared header-link style as the other navigation actions.
 The immutable Homepage DEV release is updated only after tests pass and a clean
 commit is available.

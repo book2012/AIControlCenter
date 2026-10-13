@@ -1,12 +1,12 @@
 # AIControlCenter
 
-## 2026-10-13 — DEV storefront LOGIN link
+## 2026-10-13 — DEV account registration
 
-The agachichi DEV storefront now has a shared LOGIN action beside search,
-linking to DEV WooCommerce /my-account/. Registration remains disabled.
-The Homepage preview and account pages use separate DEV upstreams behind the
-existing authenticated ingress. See
-[DEV storefront login routing](docs/homepage/DEV-STOREFRONT-LOGIN-01.md).
+LOGIN beside search opens the isolated DEV WooCommerce account page. Registration
+collects name, nickname, verified phone, email, and home address; its theme follows
+the device light or dark preference. OTP issuance stays within the DEV phone
+bridge's configured test-number policy. See
+[DEV account registration](docs/homepage/DEV-ACCOUNT-REGISTRATION-01.md).
 
 ## 2026-10-13 — DEV order lookup recovery
 

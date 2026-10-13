@@ -1,13 +1,14 @@
 # CHANGELOG
 
-## 2026-10-13 — DEV storefront LOGIN link
+## 2026-10-13 — DEV account registration and theme
 
-Added a shared LOGIN action immediately beside search across the agachichi
-Homepage pages. It opens the DEV WooCommerce account page; customer signup stays
-disabled. DEV ingress routes the storefront root to the Homepage preview and
-account pages to isolated DEV WordPress. Focused preview tests cover the link,
-target, and mobile styling. No PROD data or routes changed. See
-[DEV storefront login routing](docs/homepage/DEV-STOREFRONT-LOGIN-01.md).
+Added DEV WooCommerce registration for name, nickname, verified mobile, email,
+and home address. The themed account page follows the device light or dark
+preference. SMS proof is bound to the submitted phone by a five-minute, one-use
+server ticket. LOGIN uses the same text-only header link style as its neighbors.
+The DEV Twilio bridge remains restricted to its configured test phone. No PROD
+routes or data changed. See
+[DEV account registration](docs/homepage/DEV-ACCOUNT-REGISTRATION-01.md).
 
 ## 2026-10-13 — DEV order lookup recovery
 
