@@ -1,3 +1,13 @@
+## 2026-10-13 — DEV shared account navigation correction
+
+Removed 회원가입 from the common storefront header and connected all shared pages
+to a no-store DEV WordPress session endpoint. Logged-out navigation shows LOGIN
+and 비회원 주문 조회; authenticated navigation shows confirmed LOG OUT, 주문내역,
+and 내 정보. The account dashboard retains order/cart shortcuts and address/
+password editing. Regression: 197 focused tests passed; JavaScript syntax and
+whitespace checks passed. Deploy Homepage assets and the DEV-only WordPress plugin
+separately; PROD remains untouched.
+
 ## 2026-10-13 — DEV account dashboard and signup completion
 
 - [x] Show signup congratulations, login ID, home link, and recent product recommendations.

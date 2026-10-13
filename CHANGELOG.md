@@ -1,3 +1,12 @@
+## 2026-10-13 — DEV shared account navigation
+
+Removed the signup link from every shared storefront page. Added a no-store,
+DEV-host-guarded account-state endpoint so the header can show LOGIN and guest
+order lookup while logged out, or confirmed LOG OUT, member 주문내역, and 내 정보
+while logged in. The member dashboard continues to expose orders, cart, address,
+and password shortcuts. Regression: 197 focused tests passed. DEV only; PROD
+unchanged.
+
 ## 2026-10-13 — DEV account landing and member controls
 
 - Successful signup now opens a themed welcome page with the login ID, home link, and up to four recent products.

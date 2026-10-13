@@ -3,6 +3,7 @@ import hashlib
 import json
 import re
 from html import unescape
+from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -342,18 +343,23 @@ def test_preview_canonical_json_equals_unmodified_shopping_router(client, path):
         assert actual.json() == expected.json()
 
 
-def test_shared_header_inserts_login_and_signup_after_search(client):
+def test_shared_header_hides_signup_and_uses_account_state(client):
     html = client.get("/homepage/storefront").text
     script = client.get("/homepage/assets/storefront-header.js").text
     css = client.get("/homepage/assets/storefront.css").text
+    plugin = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/aicc-agachichi-account.php").read_text()
     assert 'class="header-search"' in html
     assert 'className = "header-login"' in script
     assert 'login.href = "/my-account/"' in script
-    assert 'login.textContent = "LOGIN"' in script
-    assert 'opener.insertAdjacentElement("afterend", login)' in script
-    assert 'signup.href = "/my-account/register/"' in script
-    assert 'signup.textContent = "회원가입"' in script
-    assert 'login.insertAdjacentElement("afterend", signup)' in script
+    assert 'actions.querySelectorAll(".header-signup").forEach(item => item.remove())' in script
+    assert 'signup.textContent = "회원가입"' not in script
+    assert 'signup.href = "/my-account/register/"' not in script
+    assert 'fetch("/wp-admin/admin-ajax.php?action=aicc_account_navigation"' in script
+    assert 'login.textContent = member ? "LOG OUT" : "LOGIN"' in script
+    assert 'orders.textContent = member ? "주문내역" : "비회원 주문 조회"' in script
+    assert 'profile.textContent = "내 정보"' in script
+    assert 'data.authenticated' in script and 'wp_logout_url(home_url' in plugin
+    assert "wp_ajax_aicc_account_navigation" in plugin
     assert ".store-header .header-actions a {" in css
     assert ".store-header .header-actions a.header-login" not in css
     assert "max-width: 600px" in css and ".store-header .header-actions a { font-size: 11px; }" in css

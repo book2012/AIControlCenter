@@ -1,3 +1,11 @@
+## 2026-10-13 — DEV account navigation correction
+
+Removed 회원가입 from the shared storefront header. The common navigation now
+reads the same-origin WordPress session: logged-out visitors get LOGIN and
+비회원 주문 조회; logged-in customers get confirmed LOG OUT, 주문내역, and 내 정보.
+The My Info dashboard retains order/cart shortcuts and address/password editing.
+DEV only; PROD unchanged.
+
 ## 2026-10-13 — DEV contextual chatbot and checkout login
 
 The shared storefront chatbot now introduces public product facts, adapts its

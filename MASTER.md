@@ -1,3 +1,11 @@
+## 2026-10-13 — DEV shared account navigation correction
+
+The storefront-wide header now removes 회원가입 (signup remains on the login
+page), and switches navigation from a no-store DEV WordPress session response.
+Logged-out: LOGIN and 비회원 주문 조회. Logged-in: confirmed LOG OUT, 주문내역, and
+내 정보. The account dashboard provides order/cart shortcuts and address/password
+editing. Validation: 197 focused tests and JavaScript syntax check passed.
+
 ## 2026-10-13 — DEV contextual chatbot and checkout login
 
 Storefront chat now provides page-aware public context and directly sends

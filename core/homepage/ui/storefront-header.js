@@ -2,7 +2,7 @@
   "use strict";
   const opener = document.querySelector(".header-search");
   const actions = document.querySelector(".header-actions");
-  if (opener && actions) {
+  if (actions) {
     let login = actions.querySelector(".header-login");
     if (!login) {
       login = document.createElement("a");
@@ -10,15 +10,44 @@
       login.href = "/my-account/";
       login.textContent = "LOGIN";
       login.setAttribute("aria-label", "로그인");
-      opener.insertAdjacentElement("afterend", login);
+      opener?.insertAdjacentElement("afterend", login);
     }
-    if (!actions.querySelector(".header-signup")) {
-      const signup = document.createElement("a");
-      signup.className = "header-signup";
-      signup.href = "/my-account/register/";
-      signup.textContent = "회원가입";
-      signup.setAttribute("aria-label", "회원가입");
-      login.insertAdjacentElement("afterend", signup);
+    actions.querySelectorAll(".header-signup").forEach(item => item.remove());
+    const orders = actions.querySelector(".header-orders");
+    let profile = actions.querySelector(".header-profile");
+    if (login) {
+      login.addEventListener("click", event => {
+        if (login.dataset.authenticated === "true" && !window.confirm("로그아웃하시겠습니까?")) event.preventDefault();
+      });
+      fetch("/wp-admin/admin-ajax.php?action=aicc_account_navigation", {
+        credentials: "same-origin", cache: "no-store", headers: {Accept: "application/json"}
+      }).then(response => {
+        if (!response.ok) throw new Error("account state unavailable");
+        return response.json();
+      }).then(result => {
+        if (!result.success || !result.data) return;
+        const member = result.data.authenticated === true;
+        login.dataset.authenticated = member ? "true" : "false";
+        login.textContent = member ? "LOG OUT" : "LOGIN";
+        login.href = member ? result.data.logoutUrl : "/my-account/";
+        login.setAttribute("aria-label", member ? "로그아웃" : "로그인");
+        login.classList.toggle("header-logout", member);
+        if (orders) {
+          orders.href = member ? "/my-account/orders/" : "/homepage/storefront/my-orders";
+          orders.textContent = member ? "주문내역" : "비회원 주문 조회";
+          orders.setAttribute("aria-label", member ? "주문내역" : "비회원 주문 조회");
+        }
+        if (member && orders && !profile) {
+          profile = document.createElement("a");
+          profile.className = "header-profile";
+          profile.href = "/my-account/";
+          profile.textContent = "내 정보";
+          profile.setAttribute("aria-label", "내 정보");
+          orders.insertAdjacentElement("afterend", profile);
+        } else if (!member && profile) {
+          profile.remove();
+        }
+      }).catch(() => {});
     }
   }
   if (!opener || !window.HTMLDialogElement) return;

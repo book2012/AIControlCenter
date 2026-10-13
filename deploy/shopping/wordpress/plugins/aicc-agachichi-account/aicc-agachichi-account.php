@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.2
+ * Version: 0.6.3
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -17,6 +17,8 @@ final class AICC_Agachichi_Account {
         if (strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST)) !== 'dev.bokstory.duckdns.org') { return; }
         add_action('init', [self::class, 'ensure_pages'], 20);
         add_action('wp_enqueue_scripts', [self::class, 'assets']);
+        add_action('wp_ajax_aicc_account_navigation', [self::class, 'account_navigation']);
+        add_action('wp_ajax_nopriv_aicc_account_navigation', [self::class, 'account_navigation']);
         add_action('wp_ajax_aicc_check_username', [self::class, 'check_username']);
         add_action('wp_ajax_nopriv_aicc_check_username', [self::class, 'check_username']);
         add_action('wp_ajax_aicc_checkout_profile', [self::class, 'checkout_profile']);
@@ -62,11 +64,20 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.2');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.2', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.3');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.3', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),
+        ]);
+    }
+
+    public static function account_navigation(): void {
+        nocache_headers();
+        $authenticated = is_user_logged_in();
+        wp_send_json_success([
+            'authenticated' => $authenticated,
+            'logoutUrl' => $authenticated ? wp_logout_url(home_url('/homepage/storefront/')) : '',
         ]);
     }
 

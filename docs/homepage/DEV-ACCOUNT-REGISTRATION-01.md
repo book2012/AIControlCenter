@@ -69,11 +69,12 @@ The success page is created on DEV if missing and is not exposed on other hosts.
 
 ## Member and guest order access
 
-When logged in, the account header replaces LOGIN with a confirmed LOG OUT
-action and shows 주문내역 (the full WooCommerce orders endpoint) and 내 정보
-(the account dashboard). When logged out, 회원가입 is shown below the login
-form, not in the header. The account dashboard starts with the latest five
-orders and provides shortcuts to full order history and the shopping cart, then
+Across storefront pages, the common header removes 회원가입 and reads the
+current WordPress session from a no-store account-navigation response. Logged
+out visitors see LOGIN and 비회원 주문 조회; 회원가입 remains below the login
+form only. Logged-in customers see confirmed LOG OUT, 주문내역 (the full
+WooCommerce orders endpoint), and 내 정보 (the account dashboard). The
+account dashboard starts with the latest five orders and provides shortcuts to full order history and the shopping cart, then
 links to edit name/email/password and delivery addresses. The bottom section
 provides a confirmed 회원 탈퇴 action. Customers are deleted through the
 WooCommerce customer data store, which detaches their order customer ID while
