@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV signup credential field order
+
+- Moved email, password, and password confirmation directly below the login ID and removed duplicate lower fields.
+- Removed the extra signup introduction copy so the form starts with its requested fields.
+- DEV only; no PROD changes or account creation.
+
 ## 2026-10-13 — DEV signup ID and password validation
 
 - Added a separate login ID with explicit availability check and server-side duplicate enforcement.

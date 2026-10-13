@@ -8,8 +8,7 @@ registration pages to a dark brown-black surface with warm text and accent butto
 The storefront header places a 회원가입 link beside LOGIN, and `/my-account/register/` is a
 dedicated registration page.
 
-Registration requests a login ID, name, nickname, mobile number, email, home
-address, and a password chosen by the member. The customer checks ID availability
+Registration starts with login ID, email, password, and password confirmation, followed by name, nickname, mobile number, and home address. The customer checks ID availability
 before submitting; WordPress checks again on submit to catch simultaneous claims.
 The ID is 4–20 ASCII letters, digits, dots, underscores, or hyphens, beginning
 with a letter or digit. Password confirmation shows a live match status and is

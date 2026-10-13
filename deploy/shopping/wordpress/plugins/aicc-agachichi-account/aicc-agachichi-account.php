@@ -125,14 +125,11 @@ final class AICC_Agachichi_Account {
             }
         }
         ob_start();
-        echo '<div class="woocommerce aicc-register-page"><div class="aicc-account-intro"><a href="' . esc_url(home_url('/')) . '" class="aicc-account-brand">agachichi</a><p>Everyday Comfort, Playful Touch</p></div><header class="aicc-register-heading"><p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p><h1>회원가입</h1><p>간단한 정보를 입력하고 agachichi의 회원이 되어보세요.</p></header>';
+        echo '<div class="woocommerce aicc-register-page"><div class="aicc-account-intro"><a href="' . esc_url(home_url('/')) . '" class="aicc-account-brand">agachichi</a><p>Everyday Comfort, Playful Touch</p></div><header class="aicc-register-heading"><p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p><h1>회원가입</h1></header>';
         wc_print_notices();
         echo '<form method="post" class="register aicc-registration-form">';
         wp_nonce_field('aicc_registration', 'aicc_registration_nonce');
         self::fields();
-        echo '<label class="aicc-account-label" for="aicc_signup_email">이메일 주소 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_email" name="email" type="email" autocomplete="email" required maxlength="190">';
-        echo '<label class="aicc-account-label" for="aicc_signup_password">비밀번호 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_password" name="password" type="password" autocomplete="new-password" minlength="8" required>';
-        echo '<label class="aicc-account-label" for="aicc_signup_password_confirm">비밀번호 확인 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_password_confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" required aria-describedby="aicc-password-status"><span id="aicc-password-status" role="status" aria-live="polite"></span>';
         echo '<p class="aicc-account-hint">비밀번호는 8자 이상 입력해 주세요.</p><button class="aicc-account-button aicc-register-submit" type="submit" name="aicc_registration_submit" value="1">회원가입</button></form><p class="aicc-register-login">이미 회원이신가요? <a href="' . esc_url(wc_get_page_permalink('myaccount')) . '">로그인</a></p></div>';
         return (string) ob_get_clean();
     }
@@ -160,6 +157,9 @@ final class AICC_Agachichi_Account {
         wp_nonce_field('aicc_signup', 'aicc_signup_nonce');
         echo '<fieldset class="aicc-signup-fields"><legend class="aicc-visually-hidden">회원 정보</legend>';
         echo '<label class="aicc-account-label" for="aicc_signup_username">아이디 <span aria-hidden="true">*</span></label><div class="aicc-username-row"><input class="aicc-account-input" id="aicc_signup_username" name="username" type="text" autocomplete="username" minlength="4" maxlength="20" pattern="[A-Za-z0-9][A-Za-z0-9._-]{3,19}" required placeholder="영문·숫자 4~20자" value="' . esc_attr(sanitize_user(wp_unslash($_POST['username'] ?? ''), true)) . '" aria-describedby="aicc-username-status"><button type="button" class="aicc-account-button" id="aicc-check-username">중복 확인</button></div><span id="aicc-username-status" role="status" aria-live="polite"></span>';
+        echo '<label class="aicc-account-label" for="aicc_signup_email">이메일 주소 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_email" name="email" type="email" autocomplete="email" required maxlength="190">';
+        echo '<label class="aicc-account-label" for="aicc_signup_password">비밀번호 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_password" name="password" type="password" autocomplete="new-password" minlength="8" required>';
+        echo '<label class="aicc-account-label" for="aicc_signup_password_confirm">비밀번호 확인 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_password_confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" required aria-describedby="aicc-password-status"><span id="aicc-password-status" role="status" aria-live="polite"></span>';
         self::input('aicc_full_name', '이름', 'text', true, '홍길동', 'autocomplete="name"');
         self::input('aicc_nickname', '닉네임', 'text', true, '사용할 닉네임', 'autocomplete="nickname"');
         self::input('aicc_phone', '휴대폰 번호', 'tel', true, '01012345678', 'autocomplete="tel"');
