@@ -1,3 +1,4 @@
+from core.shopping.sqlite_resource import connection
 """Approved website requests become isolated Codex drafts; never deploy or execute commerce tools."""
 from pathlib import Path
 import os
@@ -40,7 +41,7 @@ class CodexWebsiteDraftWorker:
 
     def start_one(self):
         if self.stopping or not self.busy.acquire(blocking=False):return
-        with sqlite3.connect(self.conversation.path) as c:
+        with connection(self.conversation.path) as c:
             c.execute("BEGIN IMMEDIATE")
             row=c.execute("SELECT id,actor,request FROM website_jobs WHERE state='WAITING_CODEX' ORDER BY created LIMIT 1").fetchone()
             if row:c.execute("UPDATE website_jobs SET state='CODEX_RUNNING' WHERE id=? AND state='WAITING_CODEX'",(row[0],))
@@ -61,7 +62,7 @@ class CodexWebsiteDraftWorker:
             label={"REVIEW_REQUIRED":"초안 준비 · 검토 대기","NO_CHANGE":"수정 없음 · 요청 검토 필요",
                 "SCOPE_REJECTED":"허용 범위 밖 변경 · 검토 필요","CODEX_FAILED":"실행 실패 · 검토 필요",
                 "CODEX_INTERRUPTED":"실행 중단 · 재실행 전 확인 필요"}[state]
-            with sqlite3.connect(self.conversation.path) as c:
+            with connection(self.conversation.path) as c:
                 c.execute("UPDATE website_jobs SET state=? WHERE id=?",(state,job))
                 c.execute("INSERT OR IGNORE INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",
                     ("website:"+job,actor,"홈페이지 개선 #"+job+" · "+label+"\n‘개선목록’으로 확인해 주세요. 운영 반영은 하지 않았습니다.",self.conversation.clock()))
