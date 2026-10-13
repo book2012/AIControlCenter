@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV mobile account action alignment
+
+Responsive dashboard buttons preserve two-column order/cart shortcuts and use
+full-width rows for profile/address editing labels. Verified in a mobile-sized
+Chrome render. Plugin 0.6.5; DEV only.
+
 ## 2026-10-13 — DEV account dashboard mobile alignment
 
 The account navigation/content no longer inherit mismatched WooCommerce floats.

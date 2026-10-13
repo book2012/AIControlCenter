@@ -1,3 +1,8 @@
+## 2026-10-13 — DEV mobile account action alignment
+
+Longer profile and address editing buttons now span the available mobile width;
+short order/cart shortcuts remain side-by-side. Plugin version 0.6.5.
+
 ## 2026-10-13 — DEV account dashboard responsive layout
 
 The signed-in account page now uses full-width stacked content with no extra

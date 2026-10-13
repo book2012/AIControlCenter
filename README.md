@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV account action buttons
+
+On mobile, order/cart shortcuts share a two-column row; profile and address
+editing actions use full-width rows so their Korean labels remain readable.
+Plugin 0.6.5; DEV only.
+
 ## 2026-10-13 — DEV account dashboard mobile layout
 
 Aligned the account navigation and content to the same width, removed the

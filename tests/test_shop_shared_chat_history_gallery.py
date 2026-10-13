@@ -287,3 +287,4 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "grid-template-columns:repeat(2,minmax(0,1fr))" in css
     assert ".woocommerce-account.aicc-account-dashboard-view .woocommerce-MyAccount-content" in css and "border:0" in css
     assert "aicc-account-dashboard-view" in plugin
+    assert ".aicc-dashboard-links .aicc-account-button:nth-child(n+3){grid-column:1/-1}" in css

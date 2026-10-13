@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.4
+ * Version: 0.6.5
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -68,8 +68,8 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.4');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.4', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.5');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.5', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),

@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV mobile account actions
+
+Kept order/cart shortcuts in two columns and made the longer profile/address
+actions full-width on mobile to prevent awkward label wrapping. Plugin 0.6.5;
+DEV only, PROD unchanged.
+
 ## 2026-10-13 — DEV account dashboard responsive layout
 
 Fixed WooCommerce's narrow floating account columns and nested dashboard panel.
