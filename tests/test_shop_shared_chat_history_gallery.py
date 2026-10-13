@@ -266,14 +266,18 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     js = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.js").read_text()
     assert "data-aicc-confirm" in plugin and "로그아웃하시겠습니까?" in plugin
     assert "header-orders" in plugin and ">주문내역</a>" in plugin
-    assert "header-profile" in plugin and "/my-account/edit-account/" in plugin
+    assert "header-profile" in plugin and "/my-account/" in plugin
+    assert "header-orders" in plugin and "/my-account/orders/" in plugin
     assert "비회원 주문 조회" in plugin and "header-signup" not in plugin
     login_link = plugin[plugin.index("function login_signup_link"):plugin.index("function login_failed") ]
     assert "회원가입</a>" in login_link
     assert "비회원 주문 조회 · 휴대폰 인증" in plugin
     assert "woocommerce_locate_template" in plugin and "templates/myaccount/dashboard.php" in plugin
-    assert "'orders' => '주문내역'" in plugin and "'edit-account' => '내 정보 수정'" in plugin
+    assert "'dashboard' => '내 정보'" in plugin and "'orders' => '주문내역'" in plugin
+    assert "'edit-account' => '내 정보 수정'" in plugin
     assert "wc_get_orders([" in dashboard and "id=\"aicc-dashboard-orders-title\">주문내역" in dashboard
+    assert "주문내역 바로가기" in dashboard and "장바구니 바로가기" in dashboard
+    assert "이름·이메일·비밀번호 수정" in dashboard and "주소 수정" in dashboard
     assert "회원 탈퇴" in dashboard and "wp_nonce_field('aicc_delete_account')" in dashboard
     assert "WC_Customer($user_id)" in plugin and "delete_and_reassign(0)" in plugin
     assert "add_action('admin_post_aicc_delete_account'" in plugin

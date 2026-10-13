@@ -45,7 +45,7 @@ final class AICC_Agachichi_Account {
         $is_login = $account_page && !$logged_in && !$is_registration;
         $login_state = $is_login ? ' class="header-login is-active" aria-current="page"' : ' class="header-login"';
         $account_link = $logged_in
-            ? '<a class="header-orders" href="/my-account/">주문내역</a><a class="header-profile" href="/my-account/edit-account/">내 정보</a>'
+            ? '<a class="header-orders" href="/my-account/orders/">주문내역</a><a class="header-profile" href="/my-account/">내 정보</a>'
             : '<a class="header-orders" href="/homepage/storefront/my-orders" aria-label="비회원 주문 조회">비회원 주문 조회</a>';
         $auth_link = $logged_in
             ? '<a class="header-logout" href="' . esc_url(wp_logout_url(home_url('/homepage/storefront/'))) . '" data-aicc-confirm="로그아웃하시겠습니까?" aria-label="로그아웃">LOG OUT</a>'
@@ -62,8 +62,8 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.1');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.1', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.2');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.2', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),
@@ -78,6 +78,7 @@ final class AICC_Agachichi_Account {
 
     public static function account_menu_items(array $items): array {
         $labels = [
+            'dashboard' => '내 정보',
             'orders' => '주문내역',
             'edit-account' => '내 정보 수정',
             'edit-address' => '배송지 관리',

@@ -5937,3 +5937,9 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - Validate the checkout entry and guest-order route on an external DEV browser after DEV routing/auth returns non-401.
 - Deploy the WordPress account plugin separately and verify active header styling; Homepage releases do not deploy WordPress plugin files.
 - Implement and test a signed, expiring WooCommerce member identity bridge before enabling member orders without SMS.
+
+## Next account milestone — secure ID/password recovery
+Design and implement an AIControlCenter-owned recovery API before exposing recovery forms. Requirements: ID lookup from name+phone with abuse limits and privacy-safe responses; password reset key with short expiry and one-time use; SMS link delivery through an approved provider adapter; per-account/IP throttles; idempotency and UNKNOWN_OUTCOME reconciliation; audit evidence without raw phone, OTP, reset token, or message content. Current DEV phone verification is restricted to one configured test phone and OTP-only, so it cannot safely serve all customer accounts.
+
+## Next Telegram milestone — customer Shopping/Sales Bot
+Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.

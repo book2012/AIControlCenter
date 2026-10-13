@@ -6462,3 +6462,12 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - Removed the chatbot's product selector and stock-check shortcut; product detail pages bind the current product automatically and page-level guidance remains available elsewhere.
 - Split checkout entry from the guest order form. The main order page presents LOGIN and then a button to the new guest-order route; guest phone verification and final confirmation remain required.
 - Member SMS bypass is still pending a server-trusted authentication bridge.
+
+## 2026-10-13 — DEV account navigation and recovery assessment
+- Changed logged-in account navigation so 주문내역 opens the full order endpoint and 내 정보 opens the dashboard.
+- Added dashboard shortcuts for orders, cart, name/email/password, and address editing.
+- Assessed requested ID/password recovery: no UI was exposed because the DEV phone bridge only verifies one configured test number and has no password-reset-link SMS operation. Recovery requires a customer-wide verified-phone binding and a fail-closed outbound SMS adapter in AIControlCenter.
+
+## 2026-10-13 — Telegram customer bot requirements
+- Recorded a separate customer-facing Telegram Shopping/Sales Bot requirement: guests remain unlinked; members link through an authenticated account challenge; members are marked first-purchase until a successful paid order exists.
+- Kept current papachichi operator bot and mommychichi production operator bot isolated. No customer bot runtime was activated.

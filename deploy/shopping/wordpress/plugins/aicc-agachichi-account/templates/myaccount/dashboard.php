@@ -40,8 +40,10 @@ $orders = wc_get_orders([
         <p class="aicc-dialog-eyebrow">MY INFORMATION</p><h2 id="aicc-dashboard-profile-title">내 정보</h2>
         <p><?php echo esc_html($current_user->display_name); ?> · <?php echo esc_html($current_user->user_email); ?></p>
         <div class="aicc-dashboard-links">
-            <a class="aicc-account-button" href="<?php echo esc_url(wc_get_endpoint_url('edit-account', '', wc_get_page_permalink('myaccount'))); ?>">내 정보 수정</a>
-            <a class="aicc-account-button" href="<?php echo esc_url(wc_get_endpoint_url('edit-address', '', wc_get_page_permalink('myaccount'))); ?>">배송지 수정</a>
+            <a class="aicc-account-button" href="<?php echo esc_url(wc_get_endpoint_url('orders', '', wc_get_page_permalink('myaccount'))); ?>">주문내역 바로가기</a>
+            <a class="aicc-account-button" href="/homepage/storefront/cart">장바구니 바로가기</a>
+            <a class="aicc-account-button" href="<?php echo esc_url(wc_get_endpoint_url('edit-account', '', wc_get_page_permalink('myaccount'))); ?>">이름·이메일·비밀번호 수정</a>
+            <a class="aicc-account-button" href="<?php echo esc_url(wc_get_endpoint_url('edit-address', '', wc_get_page_permalink('myaccount'))); ?>">주소 수정</a>
         </div>
     </section>
 

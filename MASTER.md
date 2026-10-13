@@ -6943,3 +6943,9 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 
 ## 2026-10-13 storefront UI checkpoint
 DEV source now separates checkout entry (/homepage/storefront/checkout) from the guest flow (/homepage/storefront/guest-order). The shared chatbot no longer shows a product dropdown or stock-check block; product pages preload their current product and other pages retain contextual prompts. Targeted tests: 55 passed; isolated Chrome chatbot regression passed. Member order without SMS remains unimplemented pending secure server-side identity binding.
+
+## DEV Account Navigation (2026-10-13)
+Logged-in header has dedicated 주문내역 and 내 정보 destinations. The account dashboard offers recent orders and shortcuts to full orders, cart, profile/password editing, and address editing. Signup remains accessible under the login form only. SMS-based ID/password recovery is not implemented until the control-plane recovery flow supports customer-wide phone matching, link SMS delivery, rate limits, replay prevention, and ambiguous-send reconciliation.
+
+## Telegram customer bot boundary
+Customer member/guest identification and first-purchase classification belong in a future separate Shopping/Sales Bot backed by AIControlCenter account linking and order history. Current papachichi/mommychichi bots remain operator-only. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
