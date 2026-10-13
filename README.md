@@ -1,3 +1,8 @@
+## 2026-10-13 — DEV account order card alignment
+
+Removed the extra WooCommerce content frame around the localized empty-order
+notice so the orders page presents one consistent card. Plugin 0.6.7.
+
 ## 2026-10-13 — DEV order history empty state and footer
 
 The empty order list now uses Korean storefront copy and a branded browse button.

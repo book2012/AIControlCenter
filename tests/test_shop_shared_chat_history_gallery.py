@@ -293,3 +293,4 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert ".aicc-dashboard-links .aicc-account-button:nth-child(n+3){grid-column:1/-1}" in css
     assert ".woocommerce-account footer.wp-block-template-part{display:none!important}" in css
     assert ".woocommerce-account.aicc-account-orders-view .woocommerce-info:before{display:none}" in css
+    assert ".woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content{padding:0;border:0" in css

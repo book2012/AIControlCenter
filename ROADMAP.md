@@ -1,3 +1,8 @@
+## 2026-10-13 — DEV order history single-card layout
+
+Removed the outer account-content frame around the themed no-orders card.
+Plugin 0.6.7; DEV only, PROD unchanged.
+
 ## 2026-10-13 — DEV order history and account footer
 
 Localized and branded the empty order state, reduced excess space after the

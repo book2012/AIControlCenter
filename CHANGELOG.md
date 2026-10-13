@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV order history card alignment
+
+Removed the duplicate outer account-content box around the empty order card.
+The Korean message, themed browse button, and agachichi footer remain. Plugin
+0.6.7; DEV only.
+
 ## 2026-10-13 — DEV account order history theme
 
 Localized the no-orders message and browse action, restyled the notice in the

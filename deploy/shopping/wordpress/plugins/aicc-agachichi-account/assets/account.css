@@ -150,6 +150,7 @@ body.woocommerce-account{background:var(--aicc-bg)!important;color:var(--aicc-in
 .woocommerce-account .aicc-account-store-footer{display:flex;align-items:center;flex-wrap:wrap;gap:4px 16px;margin-top:24px;padding:20px max(4.2%,calc((100% - 1440px)/2));border-top:1px solid var(--aicc-line);background:var(--aicc-bg);color:var(--aicc-ink)}
 .woocommerce-account .aicc-account-store-footer .wordmark{color:var(--aicc-ink);font-size:20px;font-weight:650;letter-spacing:.12em;text-decoration:none}
 .woocommerce-account .aicc-account-store-footer p{margin:0;color:var(--aicc-muted);font-size:13px}
+.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content{padding:0;border:0;border-radius:0;background:transparent;box-shadow:none}
 .woocommerce-account.aicc-account-orders-view .woocommerce-info{position:relative;margin:0;padding:16px;border:1px solid var(--aicc-line);border-radius:10px;background:var(--aicc-panel);color:var(--aicc-ink);line-height:1.65}
 .woocommerce-account.aicc-account-orders-view .woocommerce-info:before{display:none}
 .woocommerce-account.aicc-account-orders-view .woocommerce-info .wc-forward{float:none;display:inline-flex;align-items:center;justify-content:center;min-height:42px;margin:10px 0 0;padding:8px 14px;border:1px solid #dfad8b;border-radius:8px;background:var(--aicc-button);color:var(--aicc-ink);font-weight:650;text-decoration:none}

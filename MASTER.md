@@ -1,3 +1,8 @@
+## 2026-10-13 — DEV order history single-card layout
+
+The orders endpoint now shows one branded empty-state card without the extra
+WooCommerce content panel. Plugin version 0.6.7.
+
 ## 2026-10-13 — DEV account order history presentation
 
 Order history empty state now uses Korean copy and the agachichi button palette.
