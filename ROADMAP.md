@@ -3,8 +3,9 @@
 Completed: dedicated signup page, unknown-account login prompt, phone-verified signup,
 and button-triggered address search modal for signup and checkout. Postcode and base
 address populate from Kakao Postcode; detailed address remains user-entered.
-Next: run one manual DEV signup and checkout address selection with safe test data.
-Social login and any PROD rollout remain separately scoped.
+Next: verify ID availability, password mismatch, and address selection in the
+authenticated DEV browser with safe test data; then run one manual signup with
+the configured DEV test phone. Social login and any PROD rollout remain separately scoped.
 
 # Roadmap
 
@@ -15,6 +16,7 @@ Social login and any PROD rollout remain separately scoped.
 - [x] Bind the signup phone to a short-lived, one-use server verification ticket.
 - [x] Support device dark appearance on the account page.
 - [x] Add popup address search to registration and checkout; store the signup postcode.
+- [x] Add login ID availability and server uniqueness checks; show password match feedback.
 - [ ] Validate the authenticated mobile flow with the configured DEV test phone and real address selection.
 - [ ] Expand beyond the DEV test-number restriction before broader customer rollout.
 - [ ] Keep social sign-in and PROD release as later separately scoped work.

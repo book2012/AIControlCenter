@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.1.0
+ * Version: 0.2.0
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -16,6 +16,8 @@ final class AICC_Agachichi_Account {
     public static function boot(): void {
         if (strtolower((string) wp_parse_url(home_url('/'), PHP_URL_HOST)) !== 'dev.bokstory.duckdns.org') { return; }
         add_action('wp_enqueue_scripts', [self::class, 'assets']);
+        add_action('wp_ajax_aicc_check_username', [self::class, 'check_username']);
+        add_action('wp_ajax_nopriv_aicc_check_username', [self::class, 'check_username']);
         add_filter('body_class', [self::class, 'body_classes']);
         add_shortcode('aicc_agachichi_register', [self::class, 'registration_page']);
         add_filter('woocommerce_registration_errors', [self::class, 'validate'], 99, 3);
@@ -34,8 +36,25 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.3.0');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.3.0', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.4.0');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.4.0', true);
+        wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
+            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'usernameNonce' => wp_create_nonce('aicc_check_username'),
+        ]);
+    }
+
+    public static function check_username(): void {
+        check_ajax_referer('aicc_check_username', 'nonce');
+        $raw_username = sanitize_text_field(wp_unslash($_POST['username'] ?? ''));
+        $username = sanitize_user($raw_username, true);
+        if ($username !== $raw_username || !preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]{3,19}$/', $username)) {
+            wp_send_json_success(['available' => false, 'message' => '아이디는 영문 또는 숫자로 시작하는 4~20자로 입력해 주세요.']);
+        }
+        if (username_exists($username)) {
+            wp_send_json_success(['available' => false, 'message' => '이미 사용 중인 아이디입니다.']);
+        }
+        wp_send_json_success(['available' => true, 'message' => '사용할 수 있는 아이디입니다.']);
     }
 
     public static function intro(): void {
@@ -70,16 +89,28 @@ final class AICC_Agachichi_Account {
                 wc_add_notice('회원가입 요청을 확인할 수 없습니다. 페이지를 새로고침해 주세요.', 'error');
             } else {
                 $email = sanitize_email(wp_unslash($_POST['email'] ?? ''));
+                $raw_username = sanitize_text_field(wp_unslash($_POST['username'] ?? ''));
+                $username = sanitize_user($raw_username, true);
+                $username_valid = true;
+                if ($username !== $raw_username || !preg_match('/^[A-Za-z0-9][A-Za-z0-9._-]{3,19}$/', $username)) {
+                    wc_add_notice('아이디는 영문 또는 숫자로 시작하는 4~20자의 영문, 숫자, 점, 밑줄, 하이픈으로 입력해 주세요.', 'error');
+                    $username_valid = false;
+                } elseif (username_exists($username)) {
+                    wc_add_notice('이미 사용 중인 아이디입니다. 다른 아이디를 입력해 주세요.', 'error');
+                    $username_valid = false;
+                }
                 $password = (string) ($_POST['password'] ?? '');
                 $confirm = (string) ($_POST['password_confirm'] ?? '');
-                if ($password !== $confirm) {
+                if (!$username_valid) {
+                    // Keep the submitted form visible with its existing validation notices.
+                } elseif ($password !== $confirm) {
                     wc_add_notice('비밀번호가 서로 일치하지 않습니다.', 'error');
                 } elseif (strlen($password) < 8) {
                     wc_add_notice('비밀번호는 8자 이상 입력해 주세요.', 'error');
                 } else {
                     $name = sanitize_text_field(wp_unslash($_POST['aicc_full_name'] ?? ''));
                     $nickname = sanitize_text_field(wp_unslash($_POST['aicc_nickname'] ?? ''));
-                    $customer_id = wc_create_new_customer($email, '', $password, [
+                    $customer_id = wc_create_new_customer($email, $username, $password, [
                         'first_name' => $name,
                         'display_name' => $nickname,
                     ]);
@@ -101,7 +132,7 @@ final class AICC_Agachichi_Account {
         self::fields();
         echo '<label class="aicc-account-label" for="aicc_signup_email">이메일 주소 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_email" name="email" type="email" autocomplete="email" required maxlength="190">';
         echo '<label class="aicc-account-label" for="aicc_signup_password">비밀번호 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_password" name="password" type="password" autocomplete="new-password" minlength="8" required>';
-        echo '<label class="aicc-account-label" for="aicc_signup_password_confirm">비밀번호 확인 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_password_confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" required>';
+        echo '<label class="aicc-account-label" for="aicc_signup_password_confirm">비밀번호 확인 <span aria-hidden="true">*</span></label><input class="aicc-account-input" id="aicc_signup_password_confirm" name="password_confirm" type="password" autocomplete="new-password" minlength="8" required aria-describedby="aicc-password-status"><span id="aicc-password-status" role="status" aria-live="polite"></span>';
         echo '<p class="aicc-account-hint">비밀번호는 8자 이상 입력해 주세요.</p><button class="aicc-account-button aicc-register-submit" type="submit" name="aicc_registration_submit" value="1">회원가입</button></form><p class="aicc-register-login">이미 회원이신가요? <a href="' . esc_url(wc_get_page_permalink('myaccount')) . '">로그인</a></p></div>';
         return (string) ob_get_clean();
     }
@@ -127,7 +158,8 @@ final class AICC_Agachichi_Account {
 
     public static function fields(): void {
         wp_nonce_field('aicc_signup', 'aicc_signup_nonce');
-        echo '<fieldset class="aicc-signup-fields"><legend>간단 회원가입</legend>';
+        echo '<fieldset class="aicc-signup-fields"><legend class="aicc-visually-hidden">회원 정보</legend>';
+        echo '<label class="aicc-account-label" for="aicc_signup_username">아이디 <span aria-hidden="true">*</span></label><div class="aicc-username-row"><input class="aicc-account-input" id="aicc_signup_username" name="username" type="text" autocomplete="username" minlength="4" maxlength="20" pattern="[A-Za-z0-9][A-Za-z0-9._-]{3,19}" required placeholder="영문·숫자 4~20자" value="' . esc_attr(sanitize_user(wp_unslash($_POST['username'] ?? ''), true)) . '" aria-describedby="aicc-username-status"><button type="button" class="aicc-account-button" id="aicc-check-username">중복 확인</button></div><span id="aicc-username-status" role="status" aria-live="polite"></span>';
         self::input('aicc_full_name', '이름', 'text', true, '홍길동', 'autocomplete="name"');
         self::input('aicc_nickname', '닉네임', 'text', true, '사용할 닉네임', 'autocomplete="nickname"');
         self::input('aicc_phone', '휴대폰 번호', 'tel', true, '01012345678', 'autocomplete="tel"');

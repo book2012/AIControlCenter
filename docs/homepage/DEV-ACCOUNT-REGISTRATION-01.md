@@ -8,8 +8,12 @@ registration pages to a dark brown-black surface with warm text and accent butto
 The storefront header places a 회원가입 link beside LOGIN, and `/my-account/register/` is a
 dedicated registration page.
 
-Registration requests the member's name, nickname, mobile number, email, home
-address, and a password chosen by the member. The 주소 검색 button opens a
+Registration requests a login ID, name, nickname, mobile number, email, home
+address, and a password chosen by the member. The customer checks ID availability
+before submitting; WordPress checks again on submit to catch simultaneous claims.
+The ID is 4–20 ASCII letters, digits, dots, underscores, or hyphens, beginning
+with a letter or digit. Password confirmation shows a live match status and is
+validated again server-side. The ID remains filled after a validation error. The 주소 검색 button opens a
 Kakao Postcode modal; a selected five-digit postcode and road/jibun base address
 are required and stored in WooCommerce billing/shipping profile metadata. Detailed
 address remains a separate customer-entered field. This avoids users mistyping

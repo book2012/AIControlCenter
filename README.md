@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV registration ID and password checks
+
+Signup now asks for a login ID, checks availability before submit, and validates
+password confirmation as the customer types. The server repeats the ID uniqueness
+check during registration to handle races. Password and confirmation fields stay
+visible on the dedicated registration form; no password is stored by the browser.
+
 ## 2026-10-13 — DEV registration and checkout address search
 
 회원가입 and checkout now open a Kakao Postcode modal from the 주소 검색 button.

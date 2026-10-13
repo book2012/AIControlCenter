@@ -1,5 +1,60 @@
 (() => {
   'use strict';
+  const signupForm = document.querySelector('.aicc-registration-form');
+  const username = document.getElementById('aicc_signup_username');
+  const usernameCheck = document.getElementById('aicc-check-username');
+  const usernameStatus = document.getElementById('aicc-username-status');
+  let checkedUsername = '';
+  if (signupForm && username && usernameCheck && usernameStatus) {
+    username.addEventListener('input', () => {
+      checkedUsername = '';
+      usernameStatus.textContent = '';
+    });
+    usernameCheck.addEventListener('click', async () => {
+      if (!username.reportValidity()) return;
+      usernameCheck.disabled = true;
+      usernameStatus.textContent = '아이디 사용 여부를 확인하고 있습니다.';
+      try {
+        const response = await fetch(window.AICCAccountConfig.ajaxUrl, {
+          method: 'POST', credentials: 'same-origin',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
+          body: new URLSearchParams({
+            action: 'aicc_check_username',
+            nonce: window.AICCAccountConfig.usernameNonce,
+            username: username.value.trim()
+          })
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success || !result.data) throw new Error('아이디를 확인하지 못했습니다. 다시 시도해 주세요.');
+        checkedUsername = result.data.available ? username.value.trim() : '';
+        usernameStatus.textContent = result.data.message;
+      } catch (error) {
+        checkedUsername = '';
+        usernameStatus.textContent = error.message || '아이디를 확인하지 못했습니다. 다시 시도해 주세요.';
+      } finally {
+        usernameCheck.disabled = false;
+      }
+    });
+    signupForm.addEventListener('submit', event => {
+      if (checkedUsername !== username.value.trim()) {
+        event.preventDefault();
+        usernameStatus.textContent = '회원가입 전에 아이디 중복 확인을 완료해 주세요.';
+        usernameCheck.focus();
+      }
+    });
+  }
+  const password = document.getElementById('aicc_signup_password');
+  const passwordConfirm = document.getElementById('aicc_signup_password_confirm');
+  const passwordStatus = document.getElementById('aicc-password-status');
+  if (password && passwordConfirm && passwordStatus) {
+    const comparePasswords = () => {
+      const mismatch = passwordConfirm.value !== '' && password.value !== passwordConfirm.value;
+      passwordConfirm.setCustomValidity(mismatch ? '비밀번호가 서로 일치하지 않습니다.' : '');
+      passwordStatus.textContent = passwordConfirm.value === '' ? '' : mismatch ? '비밀번호가 서로 다릅니다.' : '비밀번호가 일치합니다.';
+    };
+    password.addEventListener('input', comparePasswords);
+    passwordConfirm.addEventListener('input', comparePasswords);
+  }
   const phone = document.getElementById('aicc_phone');
   const code = document.getElementById('aicc_phone_code');
   const ticket = document.getElementById('aicc_phone_ticket');

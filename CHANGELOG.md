@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV signup ID and password validation
+
+- Added a separate login ID with explicit availability check and server-side duplicate enforcement.
+- Added live password-match feedback while preserving server-side match and minimum-length checks.
+- Kept entered ID visible after a validation error.
+- DEV only; no PROD changes or account creation during validation.
+
 ## 2026-10-13 — DEV address search modal
 
 - Added button-triggered Kakao Postcode modal search to registration and checkout.

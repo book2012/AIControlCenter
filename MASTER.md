@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV signup identity and password validation
+
+Signup has a customer-chosen login ID with a pre-submit availability check and
+server-side uniqueness validation. Password confirmation gives live feedback
+and is enforced again on submit. A failed validation keeps the typed ID visible.
+No account was created during verification; DEV only.
+
 ## 2026-10-13 — DEV address search
 
 Registration and checkout 주소 검색 buttons open a Kakao Postcode modal.
