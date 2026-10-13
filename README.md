@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV account page storefront header
+
+Login and registration use the same storefront header and working Search, Cart,
+and Order History links. The generic WordPress header and duplicate page logo are
+hidden; light/dark account styling is retained. DEV only.
+
 ## 2026-10-13 — DEV registration ID and password checks
 
 Signup now asks for a login ID, checks availability before submit, and validates

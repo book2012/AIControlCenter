@@ -19,12 +19,18 @@ final class AICC_Agachichi_Account {
         add_action('wp_ajax_aicc_check_username', [self::class, 'check_username']);
         add_action('wp_ajax_nopriv_aicc_check_username', [self::class, 'check_username']);
         add_filter('body_class', [self::class, 'body_classes']);
+        add_action('wp_body_open', [self::class, 'storefront_header'], 5);
         add_shortcode('aicc_agachichi_register', [self::class, 'registration_page']);
         add_filter('woocommerce_registration_errors', [self::class, 'validate'], 99, 3);
         add_action('woocommerce_created_customer', [self::class, 'save'], 10, 1);
         add_action('woocommerce_before_customer_login_form', [self::class, 'intro']);
         add_action('woocommerce_login_form_end', [self::class, 'login_signup_link']);
         add_action('woocommerce_login_failed', [self::class, 'login_failed']);
+    }
+
+    public static function storefront_header(): void {
+        if (!(function_exists('is_account_page') && is_account_page()) && !is_page('register')) { return; }
+        echo '<header class="store-header aicc-account-store-header"><a class="wordmark" href="/homepage/storefront/">agachichi<span>Everyday Comfort, Playful Touch</span></a><nav class="header-actions" aria-label="주요 메뉴"><a class="header-search" href="/homepage/storefront/search">검색</a><a class="header-login" href="/my-account/" aria-label="로그인">LOGIN</a><a class="header-signup" href="/my-account/register/" aria-label="회원가입">회원가입</a><a class="header-cart" href="/homepage/storefront/cart">장바구니</a><a class="header-orders" href="/homepage/storefront/my-orders">주문내역</a></nav></header>';
     }
 
     public static function body_classes(array $classes): array {
@@ -36,7 +42,7 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.4.2');
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.4.3');
         wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.4.0', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
@@ -58,7 +64,6 @@ final class AICC_Agachichi_Account {
     }
 
     public static function intro(): void {
-        echo '<div class="aicc-account-intro"><a href="/" class="aicc-account-brand">agachichi</a><p>Everyday Comfort, Playful Touch</p></div>';
         if (self::$unknown_login) {
             echo '<dialog class="aicc-signup-dialog" id="aicc-signup-dialog" aria-labelledby="aicc-signup-dialog-title"><button type="button" class="aicc-dialog-close" aria-label="닫기">×</button><p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p><h2 id="aicc-signup-dialog-title">아직 회원이 아니신가요?</h2><p>간단한 정보와 휴대폰 인증으로 회원가입을 시작할 수 있어요.</p><div class="aicc-dialog-actions"><a class="aicc-account-button" href="' . esc_url(self::registration_url()) . '">회원가입하기</a><button type="button" class="aicc-dialog-later">나중에</button></div></dialog>';
         }
@@ -125,7 +130,7 @@ final class AICC_Agachichi_Account {
             }
         }
         ob_start();
-        echo '<div class="woocommerce aicc-register-page"><div class="aicc-account-intro"><a href="' . esc_url(home_url('/')) . '" class="aicc-account-brand">agachichi</a><p>Everyday Comfort, Playful Touch</p></div><header class="aicc-register-heading"><p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p><h1>회원가입</h1></header>';
+        echo '<div class="woocommerce aicc-register-page"><header class="aicc-register-heading"><p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p><h1>회원가입</h1></header>';
         wc_print_notices();
         echo '<form method="post" class="register aicc-registration-form">';
         wp_nonce_field('aicc_registration', 'aicc_registration_nonce');

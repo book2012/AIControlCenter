@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV account page storefront header
+
+Login and registration now retain the agachichi storefront header with Search,
+LOGIN, 회원가입, 장바구니, and 주문내역 routes. Generic WordPress navigation and
+the duplicate in-page brand were removed. Warm and dark account themes remain.
+DEV only; PROD unchanged.
+
 ## 2026-10-13 — DEV signup identity and password validation
 
 Signup has a customer-chosen login ID with a pre-submit availability check and

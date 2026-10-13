@@ -1,3 +1,10 @@
+## 2026-10-13 — DEV account page storefront header
+
+Login and registration now use the same agachichi header and live Search, Cart,
+and Order History routes as the storefront. Removed the duplicate in-page logo,
+hid the generic WordPress navigation, and retained the existing warm theme and
+dark appearance support. DEV only; PROD unchanged.
+
 ## 2026-10-13 — DEV account brand cleanup
 
 - Hid the generic AIControlCenter site title and duplicate page title on login and registration pages, retaining agachichi account branding.

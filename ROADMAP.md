@@ -9,6 +9,14 @@ the configured DEV test phone. Social login and any PROD rollout remain separate
 
 # Roadmap
 
+## 2026-10-13 — DEV account page storefront header
+
+- [x] Reuse the agachichi storefront header on login and signup.
+- [x] Link Search, LOGIN, 회원가입, Cart, and Order History to the working storefront routes.
+- [x] Hide the generic WordPress menu and remove duplicate in-page branding.
+- [x] Preserve the account light/dark theme and adapt the header for narrow screens.
+- [ ] Validate the authenticated mobile flow with the configured DEV test phone and real address selection.
+
 ## 2026-10-13 — DEV account registration
 
 - [x] Style LOGIN like the other text-only header actions.
