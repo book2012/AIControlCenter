@@ -36,7 +36,7 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         if (!$account_page && !is_page('register')) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.4.0');
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.4.1');
         wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.4.0', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),

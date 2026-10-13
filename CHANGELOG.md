@@ -1,3 +1,9 @@
+## 2026-10-13 — DEV registration single form frame
+
+- Removed the inner fieldset outline and padding so registration uses one outer form box.
+- Constrained signup fields and inputs to the form width on mobile.
+- DEV only; no PROD changes.
+
 ## 2026-10-13 — DEV signup credential field order
 
 - Moved email, password, and password confirmation directly below the login ID and removed duplicate lower fields.
