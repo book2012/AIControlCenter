@@ -5945,7 +5945,8 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 
 ## Storefront next steps (2026-10-13)
 - Validate the checkout entry and guest-order route on an external DEV browser after DEV routing/auth returns non-401.
-- Deploy the WordPress account plugin separately and verify active header styling; Homepage releases do not deploy WordPress plugin files.
+- [x] Deploy the DEV-only WordPress account plugin separately from Homepage releases; verify version 0.6.3 and the no-store account-state response.
+- [x] Publish the shared Homepage header asset in immutable DEV release 64a22b929f57c207138376ab0242b0340b4872ea and verify the served asset checksum.
 - Implement and test a signed, expiring WooCommerce member identity bridge before enabling member orders without SMS.
 
 ## Next account milestone — secure ID/password recovery
