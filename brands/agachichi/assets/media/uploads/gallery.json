@@ -788,6 +788,42 @@
       "source_filenames": [
         "70628.jpg"
       ]
+    },
+    {
+      "product_id": "ag-upload-outer-0006",
+      "kind": "original",
+      "label": "업로드 원본 사진",
+      "ai_generated": false,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0006-original.jpg",
+      "sha256": "8512e762d17b130f4cbc2f7b11fe6c6853cfd226760d545358d45466e4433915",
+      "source_filename": "01-71196.jpg"
+    },
+    {
+      "product_id": "ag-upload-outer-0006",
+      "kind": "model-front",
+      "label": "AI 모델 정면 착용 예상 이미지",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0006-model-front.jpg",
+      "sha256": "88a1519144c63aab414938a20bd684cc7e735d51d182d06af6d94d6b188db211",
+      "transparent_background": false
+    },
+    {
+      "product_id": "ag-upload-outer-0006",
+      "kind": "garment-cutout",
+      "label": "AI 의류 누끼 예상 이미지",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0006-garment-cutout.webp",
+      "sha256": "bec57f9aa70de2a3a788ffcead3b242039506cb964d3d1d1e432c7ad603febbc",
+      "transparent_background": true
+    },
+    {
+      "product_id": "ag-upload-outer-0006",
+      "kind": "model-other",
+      "label": "AI 모델 뒷면 착용 예상 이미지",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0006-model-other.jpg",
+      "sha256": "dc77a34f62281ee724c70ffc55b3672a1b65230ec7e84962d9df1db269a2ee57",
+      "transparent_background": false
     }
   ]
 }

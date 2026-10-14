@@ -3,6 +3,49 @@
   "environment": "DEV",
   "products": [
     {
+      "id": "ag-upload-outer-0006",
+      "source": "user_upload",
+      "name": "MM6 차콜 핀스트라이프 재킷",
+      "slug": "ag-upload-outer-0006",
+      "category": "outer",
+      "category_label": "OUTER",
+      "description": "MM6 Maison Margiela 재킷입니다. 차콜 블랙 바탕의 세로 핀스트라이프와 여유 있는 테일러드 실루엣, 소매 끝의 밝은 배색 디테일이 돋보입니다. MM6 공식 제품에서도 핀스트라이프 테일러드 재킷과 뒷면 화이트 스티치 디테일을 확인할 수 있습니다. 사진 속 제품의 정확한 품번, 소재 혼용률, 사이즈와 실측은 확인 중입니다. AI 보정 이미지로 실제 색감과 세부 형태가 다를 수 있습니다.",
+      "style_tip": "화이트 셔츠와 슬랙스를 매치해 차분한 테일러드 룩으로 연출해 보세요. 사진 속 별도 코디 상품과 액세서리는 포함되지 않습니다.",
+      "tags": [
+        "MM6",
+        "메종마르지엘라",
+        "핀스트라이프",
+        "재킷",
+        "차콜",
+        "테일러드"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-outer-0006",
+      "price_status": "READY",
+      "price": 300000,
+      "price_basis": "user_authorized_temporary",
+      "currency": "KRW",
+      "option_type": "color",
+      "color_options": [
+        {
+          "id": "charcoal",
+          "label": "차콜"
+        }
+      ],
+      "inventory": {
+        "charcoal": 0
+      },
+      "inventory_pending": true,
+      "enabled": true,
+      "registered_at": "2026-10-14",
+      "source_files": [
+        "01-71196.jpg"
+      ],
+      "registration_method": "single_product"
+    },
+    {
       "id": "ag-upload-outer-0005",
       "source": "user_upload",
       "name": "카멜 숄카라 벨티드 코트",

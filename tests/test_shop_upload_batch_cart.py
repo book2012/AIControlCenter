@@ -12,10 +12,13 @@ ROOT=Path(__file__).resolve().parents[1]
 PATH=ROOT/'brands/agachichi/catalog/dev-upload-products.json'
 def batch():return [v for v in json.loads(PATH.read_text())['products'] if v.get('inventory_pending') is True]
 def test_photo_batch_identity_prices_colors_and_no_fabricated_stock():
-    rows=batch();assert len(rows)==17
+    rows=batch();assert len(rows)==18
     sources=[name for row in rows for name in row['source_files']]
-    assert len(sources)==len(set(sources))==18
+    assert len(sources)==len(set(sources))==19
     assert next(v for v in rows if v['id']=='ag-upload-outer-0004')['source_files']==['70626.jpg','70624.jpg']
+    mm6=next(v for v in rows if v['id']=='ag-upload-outer-0006')
+    assert mm6['price']==300000 and mm6['inventory']=={'charcoal':0} and mm6['inventory_pending'] is True
+    assert '소재 혼용률' in mm6['description'] and '확인 중' in mm6['description']
     assert all(v['price']>0 and v['price_basis']=='user_authorized_temporary' and not any(v['inventory'].values()) for v in rows)
     adapter=DemoCommerceCatalogAdapter(upload_overlay=PATH,include_samples=False)
     for row in rows:

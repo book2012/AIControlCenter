@@ -3,6 +3,23 @@
   "environment": "DEV",
   "assets": [
     {
+      "id": "ag-upload-outer-0006",
+      "product_id": "ag-upload-outer-0006",
+      "category": "OUTER",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-outer-0006.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/outer/ag-upload-outer-0006.jpg",
+      "sha256": "dc77a34f62281ee724c70ffc55b3672a1b65230ec7e84962d9df1db269a2ee57",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "01-71196.jpg"
+        ],
+        "processing": "AI retouch from user supplied image; remove social media UI; preserve jacket silhouette, pinstripe and cuff detail; original retained",
+        "model_edit": true
+      }
+    },
+    {
       "id": "ag-upload-outer-0001",
       "product_id": "ag-upload-outer-0001",
       "category": "OUTER",

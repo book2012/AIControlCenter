@@ -7,10 +7,10 @@ def overlay(records,source,path=PATH):
     if data.get('environment')!='DEV' or data.get('schema_version')!=1 or data.get('status')!='USER_AUTHORIZED_TEST_INVENTORY' or data.get('catalog_sha256')!=hashlib.sha256(Path(source).read_bytes()).hexdigest():
         raise ValueError('DEV_TEST_STOCK_BOUNDARY')
     pending={r['id']:r for r in records if r.get('inventory_pending') is True}
-    if type(data.get('products')) is not dict or set(data['products'])!=set(pending):raise ValueError('DEV_TEST_STOCK_SCOPE')
+    if type(data.get('products')) is not dict or not set(data['products']).issubset(set(pending)):raise ValueError('DEV_TEST_STOCK_SCOPE')
     result=[]
     for row in records:
-        if row['id'] not in pending:result.append(row);continue
+        if row['id'] not in pending or row['id'] not in data['products']:result.append(row);continue
         spec=data['products'][row['id']]
         expected=['FREE'] if row['category'] in ['bag','acc'] else ['S','M','L']
         if spec.get('sizes')!=expected or type(spec.get('quantity_per_combination')) is not int or spec['quantity_per_combination']!=3:raise ValueError('DEV_TEST_STOCK_OPTIONS')

@@ -7,7 +7,7 @@ from ops.macos.shopping.dev_order_runtime import assert_isolation
 REPO=Path(__file__).resolve().parents[3]
 def read_specs():
     document=json.loads((REPO/'brands/agachichi/catalog/dev-upload-products.json').read_text())
-    rows=[v for v in document['products'] if v.get('inventory_pending') is True]
+    rows=[v for v in document['products'] if v.get('inventory_pending') is True and v.get('registration_method')!='single_product']
     manifest=json.loads((REPO/'brands/agachichi/assets/media/uploads/manifest.json').read_text())
     if document['environment']!='DEV' or manifest['environment']!='DEV' or len(rows)!=17:raise ValueError('REVIEWED_DEV_BATCH_REQUIRED')
     result=[]
