@@ -1,3 +1,7 @@
+## 2026-10-14 — preserve the DEV product photo on color selection
+
+Fixed the storefront color-preview interaction: choosing a color with no dedicated color asset no longer hides the already loaded product photo, and a failed preview keeps that photo visible. Added a regression check for the fallback behavior. Focused validation: 84 tests passed. This source change is local and has not been activated in DEV; the managed release procedure requires a clean pushed feature commit, and remote writes remain blocked by the user's unresolved GitGuardian credential warning.
+
 ## 2026-10-14 — MM6 DEV product registration
 
 Added the user-supplied MM6 charcoal pinstripe jacket to the reviewed DEV upload catalog at KRW 300,000. The source screenshot and AI-edited product presentation images are SHA-bound in the media manifests; AI expected front/cutout views are labeled as such. Exact model code, fabric composition, size and measurements remain unverified. Stock is zero and inventory remains pending, so the jacket is visible in product data but not orderable.

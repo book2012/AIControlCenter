@@ -83,6 +83,15 @@ def test_pdp_valid_and_not_found_canonical_api(client):
     assert set(product.json()) == {"id", "name", "slug", "description", "price", "currency", "category", "in_stock", "source", "image_url", "variants"}
 
 
+def test_color_preview_keeps_product_photo_when_color_image_is_missing():
+    js = (UI / "storefront.js").read_text()
+    preview = js[js.index("  function previewColor(button)"):js.index("  if (isDetail)", js.index("  function previewColor(button)"))]
+    assert 'if (!path || !allowed)' in preview
+    assert '색상의 추가 사진은 아직 준비 중입니다.' in preview
+    assert '현재 대표 사진을 표시합니다.' in preview
+    assert 'image.hidden = true' not in preview
+
+
 def test_cards_are_real_links_and_pdp_reads_only_canonical_detail():
     html = (UI / "storefront.html").read_text()
     js = (UI / "storefront.js").read_text()

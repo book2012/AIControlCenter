@@ -459,9 +459,9 @@
     const allowed = path === "/homepage/assets/storefront/gallery/"+pid+"-model-front.jpg" ||
       path === "/homepage/assets/storefront/gallery/"+pid+"-color-"+button.dataset.colorId+".jpg";
     const label = button.textContent.trim();
-    image.hidden = true;
     status.textContent = label+" 이미지 불러오는 중…";
-    if (!path || !allowed) { status.textContent = label+" 이미지 준비 중입니다."; return; }
+    // Keep the current product photo visible until a verified replacement loads.
+    if (!path || !allowed) { status.textContent = label+" 색상의 추가 사진은 아직 준비 중입니다."; return; }
     const next = new Image();
     next.onload = () => {
       if (version !== colorPreviewVersion) return;
@@ -472,8 +472,7 @@
     };
     next.onerror = () => {
       if (version !== colorPreviewVersion) return;
-      image.hidden = true;
-      status.textContent = label+" 이미지를 불러오지 못했습니다. 다시 선택해 주세요.";
+      status.textContent = label+" 추가 이미지를 불러오지 못했습니다. 현재 대표 사진을 표시합니다.";
     };
     next.src = path;
   }
