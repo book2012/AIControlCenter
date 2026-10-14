@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.7.1
+ * Version: 0.7.2
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -25,7 +25,7 @@ final class AICC_Agachichi_Account {
         add_action('wp_ajax_aicc_checkout_profile', [self::class, 'checkout_profile']);
         add_action('admin_post_aicc_delete_account', [self::class, 'delete_account']);
         add_filter('woocommerce_locate_template', [self::class, 'account_template'], 20, 3);
-        add_filter('gettext_woocommerce', [self::class, 'translate_orders_empty_state'], 10, 3);
+        add_filter('gettext_woocommerce', [self::class, 'translate_account_strings'], 10, 3);
         add_filter('woocommerce_return_to_shop_redirect', [self::class, 'orders_browse_url']);
         add_filter('woocommerce_account_menu_items', [self::class, 'account_menu_items']);
         add_filter('body_class', [self::class, 'body_classes']);
@@ -38,6 +38,8 @@ final class AICC_Agachichi_Account {
         add_filter('woocommerce_registration_errors', [self::class, 'validate'], 99, 3);
         add_action('woocommerce_created_customer', [self::class, 'save'], 10, 1);
         add_action('woocommerce_before_customer_login_form', [self::class, 'intro']);
+        add_action('woocommerce_before_edit_account_form', [self::class, 'edit_account_intro']);
+        add_action('woocommerce_before_edit_account_address_form', [self::class, 'edit_address_intro']);
         add_action('woocommerce_login_form_end', [self::class, 'login_signup_link']);
         add_action('woocommerce_login_form', [self::class, 'login_return_field']);
         add_filter('woocommerce_login_redirect', [self::class, 'login_redirect'], 10, 2);
@@ -69,14 +71,50 @@ final class AICC_Agachichi_Account {
         echo '<footer class="aicc-account-store-footer"><a class="wordmark" href="' . esc_url(home_url('/homepage/storefront/')) . '">agachichi</a><p>Everyday Comfort, Playful Touch</p></footer>';
     }
 
-    public static function translate_orders_empty_state(string $translation, string $text, string $domain): string {
+    public static function translate_account_strings(string $translation, string $text, string $domain): string {
         if (!function_exists('is_account_page') || !is_account_page()
-            || !function_exists('is_wc_endpoint_url') || !is_wc_endpoint_url('orders')) { return $translation; }
-        return match ($text) {
+            || !function_exists('is_wc_endpoint_url')
+            || !(is_wc_endpoint_url('orders') || is_wc_endpoint_url('edit-account') || is_wc_endpoint_url('edit-address'))) {
+            return $translation;
+        }
+        static $strings = [
             'No order has been made yet.' => '아직 주문내역이 없습니다.',
             'Browse products' => '상품 둘러보기',
-            default => $translation,
-        };
+            'First name' => '이름',
+            'Last name' => '성',
+            'Display name' => '닉네임',
+            'This will be how your name will be displayed in the account section and in reviews' => '계정과 상품 후기에서 표시되는 이름입니다.',
+            'Email address' => '이메일 주소',
+            'Password change' => '비밀번호 변경',
+            'Current password (leave blank to leave unchanged)' => '현재 비밀번호 (변경하지 않으려면 비워두세요)',
+            'New password (leave blank to leave unchanged)' => '새 비밀번호 (변경하지 않으려면 비워두세요)',
+            'Confirm new password' => '새 비밀번호 확인',
+            'Save changes' => '변경사항 저장',
+            'Save address' => '주소 저장',
+            'Billing address' => '청구 주소',
+            'Shipping address' => '배송지 주소',
+            'The following addresses will be used on the checkout page by default.' => '주문 시 사용할 기본 주소입니다.',
+            'You have not set up this type of address yet.' => '아직 등록된 주소가 없습니다.',
+            'Edit %s' => '%s 수정',
+            'Add %s' => '%s 추가',
+            'Company' => '회사명',
+            'Country / Region' => '국가 / 지역',
+            'Street address' => '도로명 주소',
+            'Apartment, suite, unit, etc.' => '상세 주소 (동·호수 등)',
+            'Town / City' => '시·군·구',
+            'State / County' => '시·도',
+            'Postcode / ZIP' => '우편번호',
+            'Phone' => '휴대폰 번호',
+        ];
+        return $strings[$text] ?? $translation;
+    }
+
+    public static function edit_account_intro(): void {
+        echo '<header class="aicc-edit-page-heading"><p class="aicc-dialog-eyebrow">회원 정보</p><h1>내 정보 수정</h1><p>이름, 이메일, 비밀번호를 변경할 수 있습니다.</p></header>';
+    }
+
+    public static function edit_address_intro(): void {
+        echo '<header class="aicc-edit-page-heading"><p class="aicc-dialog-eyebrow">주소록</p><h1>주소 관리</h1><p>주문에 사용할 기본 주소를 등록하고 수정할 수 있습니다.</p></header>';
     }
 
     public static function orders_browse_url(string $url): string {
@@ -94,6 +132,8 @@ final class AICC_Agachichi_Account {
             && function_exists('is_wc_endpoint_url')) {
             if (!is_wc_endpoint_url()) { $classes[] = 'aicc-account-dashboard-view'; }
             if (is_wc_endpoint_url('orders')) { $classes[] = 'aicc-account-orders-view'; }
+            if (is_wc_endpoint_url('edit-account')) { $classes[] = 'aicc-account-edit-view'; }
+            if (is_wc_endpoint_url('edit-address')) { $classes[] = 'aicc-account-address-view'; }
         }
         return $classes;
     }
@@ -103,8 +143,8 @@ final class AICC_Agachichi_Account {
         if (!$account_page && !is_page('register') && !is_page('signup-complete')
             && !is_page(['account-recovery', 'reset'])) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.7.1');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.7.1', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.7.2');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.7.2', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),

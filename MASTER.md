@@ -1,4 +1,8 @@
 
+## 2026-10-14 — Korean account and address editing
+
+Localized WooCommerce profile and address labels, descriptions, address types, and save actions on member account routes. Added Korean page headings and agachichi form typography, colors, controls, and responsive layout. Account plugin version 0.7.2. Validation: 108 focused tests passed and PHP lint passed in the DEV container. DEV rollout follows. PROD unchanged.
+
 ## 2026-10-14 — strengthen empty order history styling
 
 The DEV order-history screenshot still showed a blue default WooCommerce notice. Added high-specificity, order-route-scoped styles for the empty-state panel, icon, and browse button, and tightened mobile account navigation spacing. Bumped the account plugin/assets to 0.7.1 to refresh browser caches. Verification: 108 focused tests passed; PHP lint passed inside the DEV container; the order-history route returned HTTP 200 through its local container port; and account.css 0.7.1 served the expected scoped overrides. The public edge remains behind its existing Basic Auth. PROD unchanged.

@@ -290,8 +290,8 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "aicc-account-dashboard-view" in plugin
     assert "aicc-account-orders-view" in plugin
     assert "No order has been made yet." in plugin and "상품 둘러보기" in plugin
-    assert "add_filter('gettext_woocommerce', [self::class, 'translate_orders_empty_state'], 10, 3);" in plugin
-    assert "add_filter('gettext', [self::class, 'translate_orders_empty_state']" not in plugin
+    assert "add_filter('gettext_woocommerce', [self::class, 'translate_account_strings'], 10, 3);" in plugin
+    assert "add_filter('gettext', [self::class, 'translate_account_strings']" not in plugin
     assert "woocommerce_return_to_shop_redirect" in plugin and "orders_browse_url" in plugin
     assert "aicc-account-store-footer" in plugin and "Everyday Comfort, Playful Touch" in plugin
     assert ".aicc-dashboard-links .aicc-account-button:nth-child(n+3){grid-column:1/-1}" in css
@@ -304,6 +304,10 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info" in css
     assert "display:flex!important;flex-direction:column!important;align-items:flex-start!important" in css
     assert "body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-navigation a{min-height:40px!important" in css
+    assert "woocommerce_before_edit_account_form" in plugin and "woocommerce_before_edit_account_address_form" in plugin
+    assert "First name" in plugin and "Shipping address" in plugin and "변경사항 저장" in plugin
+    assert "aicc-account-edit-view" in plugin and "aicc-account-address-view" in plugin
+    assert ".aicc-edit-page-heading" in css and ".woocommerce-address-fields__field-wrapper" in css
 
 
 def test_account_recovery_ui_is_gated_and_uses_same_origin_api():

@@ -233,3 +233,60 @@ body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-navigat
  body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info .wc-forward,
  body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info .wc-forward{border-color:#a87355!important;background:var(--aicc-button)!important;color:var(--aicc-ink)!important}
 }
+
+
+/* Korean edit-profile and address forms use the same compact storefront typography. */
+.woocommerce-account .aicc-edit-page-heading{margin:0 0 20px;padding:0 0 14px;border-bottom:1px solid var(--aicc-line)}
+.woocommerce-account .aicc-edit-page-heading .aicc-dialog-eyebrow{margin:0 0 5px;color:var(--aicc-accent);font-size:11px;font-weight:700;letter-spacing:.08em}
+.woocommerce-account .aicc-edit-page-heading h1{margin:0;color:var(--aicc-ink);font-size:23px;font-weight:650;line-height:1.4;letter-spacing:-.035em}
+.woocommerce-account .aicc-edit-page-heading>p:last-child{margin:5px 0 0;color:var(--aicc-muted);font-size:13px;line-height:1.6}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content{font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;font-size:14px;line-height:1.6}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account .form-row{float:none;width:100%;margin:0 0 14px;padding:0;box-sizing:border-box}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account .form-row label,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .form-row label{display:block;margin:0 0 6px;color:var(--aicc-ink);font-size:13px;font-weight:600;line-height:1.5}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account .form-row-wide{grid-column:1/-1}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account fieldset{grid-column:1/-1;min-width:0;margin:2px 0 14px;padding:14px;border:1px solid var(--aicc-line);border-radius:9px;background:transparent}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account fieldset legend{padding:0 6px;color:var(--aicc-ink);font-size:15px;font-weight:650}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account fieldset .form-row{margin-bottom:12px}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account .clear{display:none}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account>p:last-of-type{grid-column:1/-1;margin:0}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account input,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-address-fields input,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-address-fields textarea,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-address-fields select{box-sizing:border-box;width:100%;min-height:44px;padding:9px 11px;border:1px solid var(--aicc-line);border-radius:8px;background:var(--aicc-bg);color:var(--aicc-ink);font:inherit}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account input:focus,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-address-fields input:focus,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-address-fields textarea:focus,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-address-fields select:focus{outline:2px solid color-mix(in srgb,var(--aicc-accent) 35%,transparent);outline-offset:1px}
+.woocommerce-account.aicc-account-edit-view #account_display_name_description{display:block;margin-top:5px;color:var(--aicc-muted);font-size:12px;line-height:1.55}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account .required{color:var(--aicc-accent)}
+.woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account button.button,
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-address-fields button.button{min-height:44px;padding:10px 18px;border:1px solid #dfad8b;border-radius:8px;background:var(--aicc-button);color:var(--aicc-ink);font-family:inherit;font-size:14px;font-weight:650}
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content form>.woocommerce-address-fields{margin-top:8px}
+.woocommerce-account.aicc-account-address-view .woocommerce-address-fields__field-wrapper{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.woocommerce-account.aicc-account-address-view .woocommerce-address-fields__field-wrapper .form-row-wide{grid-column:1/-1}
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content form>h2{margin:0 0 14px;color:var(--aicc-ink);font-size:18px;font-weight:650;letter-spacing:-.03em}
+.woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-Addresses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.woocommerce-account.aicc-account-address-view .woocommerce-Address{min-width:0;padding:15px;border:1px solid var(--aicc-line);border-radius:9px;background:var(--aicc-panel);box-sizing:border-box}
+.woocommerce-account.aicc-account-address-view .woocommerce-Address-title{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}
+.woocommerce-account.aicc-account-address-view .woocommerce-Address-title h2{margin:0;color:var(--aicc-ink);font-size:16px;font-weight:650}
+.woocommerce-account.aicc-account-address-view .woocommerce-Address-title .edit{color:var(--aicc-accent);font-size:13px;font-weight:600;text-underline-offset:3px}
+.woocommerce-account.aicc-account-address-view .woocommerce-Address address{color:var(--aicc-muted);font-size:13px;font-style:normal;line-height:1.7;overflow-wrap:anywhere}
+@media(max-width:600px){
+ .woocommerce-account .aicc-edit-page-heading{margin-bottom:16px}
+ .woocommerce-account .aicc-edit-page-heading h1{font-size:21px}
+ .woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account{grid-template-columns:minmax(0,1fr);gap:0}
+ .woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account .form-row-wide,
+ .woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account fieldset,
+ .woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account>p:last-of-type{grid-column:1}
+ .woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account fieldset{padding:12px}
+ .woocommerce-account.aicc-account-address-view .woocommerce-address-fields__field-wrapper,
+ .woocommerce-account.aicc-account-address-view .woocommerce-MyAccount-content .woocommerce-Addresses{grid-template-columns:minmax(0,1fr)}
+ .woocommerce-account.aicc-account-address-view .woocommerce-address-fields__field-wrapper .form-row-wide{grid-column:1}
+}
+@media(prefers-color-scheme:dark){
+ .woocommerce-account.aicc-account-edit-view .woocommerce-MyAccount-content form.edit-account fieldset,
+ .woocommerce-account.aicc-account-address-view .woocommerce-Address{background:var(--aicc-panel);border-color:var(--aicc-line)}
+}
