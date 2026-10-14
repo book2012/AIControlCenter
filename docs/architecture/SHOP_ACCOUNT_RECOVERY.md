@@ -94,17 +94,19 @@ handset delivery and never automatically retry `UNKNOWN_OUTCOME`.
 
 Implemented but not runtime-enabled: the AIControlCenter recovery service,
 SQLite claims/tokens/rate buckets/audit records, same-origin API router, fixed
-DEV Verify adapter, Woo account adapter, and narrow WordPress bridge. The API
-module is deliberately not registered in the shared production app or DEV order
-runtime. The dedicated WordPress recovery role and Application Password have not
-been provisioned. Runtime binding, functional UI, and live SMS validation are
+DEV Verify adapter, Woo account adapter, narrow WordPress bridge, and themed
+login/reset UI source. The UI is guarded by the explicit
+`AICC_ACCOUNT_RECOVERY_ENABLED` WordPress constant and remains hidden by default.
+The API module is deliberately not registered in the shared production app or
+DEV order runtime. The dedicated WordPress recovery role and Application
+Password have not been provisioned. Runtime binding and live SMS validation are
 absent.
 
-Validation: 74 targeted tests passed across recovery service/API, Twilio Verify
-and Messaging adapters, Woo account adapter, DEV guest phone verification, and
-production customer isolation. The WordPress bridge passed PHP syntax lint in
-the DEV WordPress container; it was not installed or activated. API tests use
-fake providers; no Twilio request or SMS occurred.
+Latest validation: 150 targeted tests passed across recovery service/API, Twilio
+Verify and Messaging adapters, Woo account adapter, storefront UI, DEV guest phone
+verification, and production customer isolation. The account plugin passed PHP
+syntax lint in the DEV WordPress container; it was not installed or activated.
+API tests use fake providers; no Twilio request or SMS occurred.
 
 ## WooCommerce adapter boundary
 
@@ -138,10 +140,11 @@ Do not expose functional recovery forms until all gates pass:
    Twilio Message SID, and reconcile delivery without automatic resend.
 6. After provider setup and test-plan review, separately authorize one DEV
    handset test to the configured test phone; no other recipient.
-7. Add UI and regressions for throttling, enumeration resistance, concurrency,
-   expiry, replay, audit redaction, and provider-unknown outcomes.
-8. Mount in isolated DEV only and verify ID/reset journeys with synthetic
-   accounts. No real customer account mutation and no PROD activation.
+7. Complete regression coverage for concurrency, replay, audit redaction, and
+   provider-unknown outcomes.
+8. After separate approval, mount in isolated DEV and enable the WordPress UI
+   flag; verify journeys using synthetic accounts only. No real customer account
+   mutation and no PROD activation.
 
 Adapter tests: `tests/test_shop_twilio_recovery_messaging.py` (9 passed). These
 use a mocked transport; they do not contact Twilio or send SMS.
@@ -150,14 +153,16 @@ Adapter tests:
 tests/test_shop_woocommerce_account_recovery.py (11 tests) use a fake HTTP
 session. No live WordPress user, password, or network API was exercised.
 
-## Deferred UI
+## UI implementation
 
-After the gates, add “아이디 찾기” and “비밀번호 재설정” links to the existing
-agachichi login page. Reuse the account page header/theme. ID lookup should show
-the result only after phone verification. Password request UI must show the same
-acknowledgement for matching and non-matching details. The reset page must never
-put the secret in analytics, referrer headers, browser logs, or persistent local
-storage.
+The account plugin now contains themed “아이디 찾기” and “비밀번호 재설정”
+forms plus a reset page at `/account-recovery/reset/`. It uses the existing
+agachichi header/theme and same-origin recovery API. The ID is rendered only after
+OTP confirmation, and reset requests display one generic acknowledgement. The
+page sends `Referrer-Policy: no-referrer` and no-store headers; client code removes
+the reset token from browser history immediately and does not use browser storage.
+The UI is hidden unless `AICC_ACCOUNT_RECOVERY_ENABLED` is explicitly true. The
+DEV runtime/API and plugin have not been deployed or enabled.
 
 ## Telegram remains a separate milestone
 

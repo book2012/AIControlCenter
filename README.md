@@ -1,3 +1,10 @@
+## 2026-10-14 — gated account recovery UI source
+
+Added agachichi-themed ID lookup and password reset forms and a reset page to the
+DEV account plugin. UI requires the explicit `AICC_ACCOUNT_RECOVERY_ENABLED`
+constant and defaults off. No runtime/API binding, account change, Twilio request,
+or deployment was performed. See `docs/architecture/SHOP_ACCOUNT_RECOVERY.md`.
+
 ## 2026-10-14 — account recovery adapters
 
 Implemented the AIControlCenter recovery service/API, fixed-test-phone DEV

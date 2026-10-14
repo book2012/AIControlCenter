@@ -253,7 +253,7 @@ def test_signup_success_shows_id_home_and_recommended_products():
     assert "회원가입을 축하합니다!" in plugin
     assert 'href="/homepage/storefront/">홈으로 가기' in plugin
     assert '[products limit="4" columns="2" orderby="date" order="DESC"]' in plugin
-    assert "['signup-complete', '가입 완료', '[aicc_agachichi_signup_complete]']" in plugin
+    assert "['signup-complete', '가입 완료', '[aicc_agachichi_signup_complete]', $parent_id]" in plugin
     assert "is_page('signup-complete')" in plugin
     assert ".aicc-recommendations ul.products" in css
 
@@ -294,3 +294,20 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert ".woocommerce-account footer.wp-block-template-part{display:none!important}" in css
     assert ".woocommerce-account.aicc-account-orders-view .woocommerce-info:before{display:none}" in css
     assert ".woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content{padding:0;border:0" in css
+
+
+def test_account_recovery_ui_is_gated_and_uses_same_origin_api():
+    from pathlib import Path
+    plugin = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/aicc-agachichi-account.php").read_text()
+    js = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.js").read_text()
+    css = Path("deploy/shopping/wordpress/plugins/aicc-agachichi-account/assets/account.css").read_text()
+    assert "defined('AICC_ACCOUNT_RECOVERY_ENABLED') && AICC_ACCOUNT_RECOVERY_ENABLED === true" in plugin
+    assert "if (!self::recovery_enabled()) { return; }" in plugin
+    assert "아이디 찾기" in plugin and "비밀번호 재설정" in plugin
+    assert "account-recovery/reset" in plugin
+    assert "Referrer-Policy: no-referrer" in plugin and "nocache_headers()" in plugin
+    assert "accountRecoveryEnabled" in plugin and "recoveryApi" in plugin
+    assert "'/id-challenge'" in js and "'/id-confirm'" in js
+    assert "'/password-reset'" in js and "'/password-reset/complete'" in js
+    assert "localStorage" not in js and "sessionStorage" not in js
+    assert ".aicc-recovery-page" in css

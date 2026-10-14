@@ -177,4 +177,119 @@
       message(error.message || '인증을 완료하지 못했습니다. 다시 시도해 주세요.');
     } finally { check.disabled = false; }
   });
+
+  if (window.AICCAccountConfig?.accountRecoveryEnabled === true) {
+    const api = String(window.AICCAccountConfig.recoveryApi || '/v1/shop/account-recovery').replace(/\/$/, '');
+    const cleanPhone = value => {
+      const digits = value.replace(/\D/g, '');
+      if (digits.startsWith('010') && digits.length === 11) return '+82' + digits.slice(1);
+      if (digits.startsWith('8210') && digits.length === 12) return '+' + digits;
+      if (value.startsWith('+8210') && digits.length === 12) return '+' + digits;
+      return '';
+    };
+    const post = async (path, value) => {
+      const response = await fetch(api + path, {
+        method: 'POST', credentials: 'same-origin', cache: 'no-store',
+        headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
+        body: JSON.stringify(value)
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error('요청을 처리하지 못했습니다. 잠시 후 다시 시도해 주세요.');
+      return result;
+    };
+    document.querySelectorAll('form[data-aicc-recovery="id"]').forEach(form => {
+      const status = form.querySelector('[role="status"]');
+      const codeStep = form.querySelector('[data-aicc-code-step]');
+      const codeInput = form.elements.code;
+      let challenge = '';
+      let requestAttempted = false;
+      let confirmationPending = false;
+      const requestButton = form.querySelector('button[type=submit]');
+      const confirmButton = form.querySelector('[data-aicc-id-confirm]');
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (requestAttempted) return;
+        const phone = cleanPhone(form.elements.phone.value.trim());
+        if (!phone) { status.textContent = '휴대폰 번호를 다시 확인해 주세요.'; return; }
+        requestAttempted = true;
+        requestButton.disabled = true;
+        status.textContent = '인증번호 요청을 처리하고 있습니다.';
+        try {
+          const result = await post('/id-challenge', {name: form.elements.name.value.trim(), phone});
+          challenge = typeof result.challenge === 'string' ? result.challenge : '';
+          codeStep.hidden = false;
+          codeInput.focus();
+          status.textContent = '요청을 접수했습니다. 입력한 정보가 확인되면 등록된 휴대폰으로 인증번호가 전송됩니다.';
+        } catch (error) { status.textContent = '요청 결과를 확인할 수 없습니다. 같은 요청을 다시 보내지 말고 잠시 후 확인해 주세요.'; }
+      });
+      confirmButton?.addEventListener('click', async () => {
+        if (confirmationPending) return;
+        const phone = cleanPhone(form.elements.phone.value.trim());
+        const code = codeInput.value.trim();
+        if (!challenge || !phone || !/^[0-9]{4,10}$/.test(code)) {
+          status.textContent = '인증번호를 확인해 주세요.'; return;
+        }
+        confirmationPending = true;
+        confirmButton.disabled = true;
+        status.textContent = '아이디를 확인하고 있습니다.';
+        try {
+          const result = await post('/id-confirm', {challenge, phone, code});
+          codeInput.value = '';
+          status.textContent = result.state === 'FOUND' && typeof result.login_id === 'string'
+            ? '회원님의 아이디는 ' + result.login_id + ' 입니다.'
+            : '정보를 확인하지 못했습니다. 입력 내용을 확인해 주세요.';
+          challenge = '';
+        } catch (error) { status.textContent = '인증 결과를 확인하지 못했습니다. 요청을 반복하지 말고 잠시 후 다시 확인해 주세요.'; }
+      });
+    });
+    document.querySelectorAll('form[data-aicc-recovery="password"]').forEach(form => {
+      const status = form.querySelector('[role="status"]');
+      let requestAttempted = false;
+      const requestButton = form.querySelector('button[type=submit]');
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (requestAttempted) return;
+        const phone = cleanPhone(form.elements.phone.value.trim());
+        if (!phone) { status.textContent = '휴대폰 번호를 다시 확인해 주세요.'; return; }
+        requestAttempted = true;
+        requestButton.disabled = true;
+        status.textContent = '요청을 처리하고 있습니다.';
+        try {
+          await post('/password-reset', {
+            login_id: form.elements.login_id.value.trim(),
+            name: form.elements.name.value.trim(), phone
+          });
+          status.textContent = '입력한 정보와 일치하는 계정이 있으면 비밀번호 재설정 링크를 문자로 보내드립니다.';
+        } catch (error) { status.textContent = '요청 결과를 확인할 수 없습니다. 같은 요청을 다시 보내지 말고 잠시 후 확인해 주세요.'; }
+      });
+    });
+    const resetPage = document.querySelector('[data-aicc-reset-token]');
+    const resetForm = document.querySelector('form[data-aicc-recovery="complete"]');
+    if (resetPage && resetForm) {
+      const token = resetPage.dataset.aiccResetToken || '';
+      if (window.history?.replaceState) window.history.replaceState(null, '', window.location.pathname);
+      resetPage.dataset.aiccResetToken = '';
+      const status = resetForm.querySelector('[role="status"]');
+      let resetAttempted = false;
+      const resetButton = resetForm.querySelector('button[type=submit]');
+      resetForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (resetAttempted) return;
+        const password = resetForm.elements.password.value;
+        if (!token || password.length < 8 || password !== resetForm.elements.confirm.value) {
+          status.textContent = '비밀번호를 확인해 주세요. 두 입력이 같고 8자 이상이어야 합니다.'; return;
+        }
+        resetAttempted = true;
+        resetButton.disabled = true;
+        status.textContent = '비밀번호를 변경하고 있습니다.';
+        try {
+          const result = await post('/password-reset/complete', {token, new_password: password});
+          resetForm.reset();
+          status.textContent = result.state === 'COMPLETED'
+            ? '비밀번호가 변경되었습니다. 로그인해 주세요.'
+            : '링크가 만료되었거나 이미 사용되었습니다. 다시 요청해 주세요.';
+        } catch (error) { status.textContent = '변경 결과를 확인하지 못했습니다. 링크를 반복 사용하지 말고 로그인 화면에서 상태를 확인해 주세요.'; }
+      });
+    }
+  }
 })();

@@ -165,3 +165,13 @@ body.woocommerce-account{background:var(--aicc-bg)!important;color:var(--aicc-in
  .woocommerce-account.aicc-account-orders-view .woocommerce-info{border-color:var(--aicc-line);background:var(--aicc-panel);color:var(--aicc-ink)}
  .woocommerce-account.aicc-account-orders-view .woocommerce-info .wc-forward{border-color:#a87355;color:#fff7ee}
 }
+
+.woocommerce-account .aicc-recovery-panel{display:grid;gap:10px;margin:16px auto;max-width:560px;color:var(--aicc-ink)}
+.woocommerce-account .aicc-recovery-panel details,.woocommerce-account .aicc-recovery-page{padding:16px;border:1px solid var(--aicc-line);border-radius:10px;background:var(--aicc-panel);color:var(--aicc-ink)}
+.woocommerce-account .aicc-recovery-panel summary{cursor:pointer;font-weight:600}
+.woocommerce-account .aicc-recovery-panel form,.woocommerce-account .aicc-recovery-page form{display:grid;gap:10px;margin-top:14px}
+.woocommerce-account .aicc-recovery-panel label,.woocommerce-account .aicc-recovery-page label{display:grid;gap:6px;color:var(--aicc-ink)}
+.woocommerce-account .aicc-recovery-panel input,.woocommerce-account .aicc-recovery-page input{box-sizing:border-box;width:100%;min-height:44px;padding:9px 12px;border:1px solid var(--aicc-line);border-radius:8px;background:var(--aicc-bg);color:var(--aicc-ink)}
+.woocommerce-account .aicc-recovery-panel [role=status],.woocommerce-account .aicc-recovery-page [role=status]{min-height:1.4em;color:var(--aicc-accent);font-size:13px}
+.woocommerce-account .aicc-recovery-page{max-width:520px;margin:48px auto;padding:24px}
+@media(max-width:600px){.woocommerce-account .aicc-recovery-page{margin:28px 16px;padding:18px}}

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.7
+ * Version: 0.6.8
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -31,6 +31,8 @@ final class AICC_Agachichi_Account {
         add_action('wp_footer', [self::class, 'storefront_footer'], 5);
         add_shortcode('aicc_agachichi_register', [self::class, 'registration_page']);
         add_shortcode('aicc_agachichi_signup_complete', [self::class, 'signup_complete_page']);
+        add_shortcode('aicc_account_recovery_reset', [self::class, 'recovery_reset_page']);
+        add_action('send_headers', [self::class, 'recovery_headers']);
         add_filter('woocommerce_registration_errors', [self::class, 'validate'], 99, 3);
         add_action('woocommerce_created_customer', [self::class, 'save'], 10, 1);
         add_action('woocommerce_before_customer_login_form', [self::class, 'intro']);
@@ -44,7 +46,8 @@ final class AICC_Agachichi_Account {
         $account_page = function_exists('is_account_page') && is_account_page();
         $is_registration = is_page('register');
         $is_signup_complete = is_page('signup-complete');
-        if (!$account_page && !$is_registration && !$is_signup_complete) { return; }
+        $is_recovery_page = is_page(['account-recovery', 'reset']);
+        if (!$account_page && !$is_registration && !$is_signup_complete && !$is_recovery_page) { return; }
         $logged_in = is_user_logged_in();
         $is_login = $account_page && !$logged_in && !$is_registration;
         $login_state = $is_login ? ' class="header-login is-active" aria-current="page"' : ' class="header-login"';
@@ -59,7 +62,8 @@ final class AICC_Agachichi_Account {
 
     public static function storefront_footer(): void {
         $account_page = function_exists('is_account_page') && is_account_page();
-        if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
+        if (!$account_page && !is_page('register') && !is_page('signup-complete')
+            && !is_page(['account-recovery', 'reset'])) { return; }
         echo '<footer class="aicc-account-store-footer"><a class="wordmark" href="' . esc_url(home_url('/homepage/storefront/')) . '">agachichi</a><p>Everyday Comfort, Playful Touch</p></footer>';
     }
 
@@ -74,7 +78,8 @@ final class AICC_Agachichi_Account {
     }
 
     public static function body_classes(array $classes): array {
-        if (is_page('register') || is_page('signup-complete')) { $classes[] = 'woocommerce-account'; }
+        if (is_page('register') || is_page('signup-complete')
+            || is_page(['account-recovery', 'reset'])) { $classes[] = 'woocommerce-account'; }
         if (function_exists('is_account_page') && is_account_page() && is_user_logged_in()
             && function_exists('is_wc_endpoint_url')) {
             if (!is_wc_endpoint_url()) { $classes[] = 'aicc-account-dashboard-view'; }
@@ -85,13 +90,16 @@ final class AICC_Agachichi_Account {
 
     public static function assets(): void {
         $account_page = function_exists('is_account_page') && is_account_page();
-        if (!$account_page && !is_page('register') && !is_page('signup-complete')) { return; }
+        if (!$account_page && !is_page('register') && !is_page('signup-complete')
+            && !is_page(['account-recovery', 'reset'])) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.7');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.7', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.8');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.8', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),
+            'accountRecoveryEnabled' => self::recovery_enabled(),
+            'recoveryApi' => '/v1/shop/account-recovery',
         ]);
     }
 
@@ -195,8 +203,30 @@ final class AICC_Agachichi_Account {
         return $redirect;
     }
 
+    private static function recovery_enabled(): bool {
+        return defined('AICC_ACCOUNT_RECOVERY_ENABLED') && AICC_ACCOUNT_RECOVERY_ENABLED === true;
+    }
+
     public static function login_signup_link(): void {
         echo '<p class="aicc-login-signup">아직 회원이 아니신가요? <a href="' . esc_url(self::registration_url()) . '">회원가입</a></p><p class="aicc-guest-order-link"><a href="/homepage/storefront/my-orders">비회원 주문 조회 · 휴대폰 인증</a></p>';
+        if (!self::recovery_enabled()) { return; }
+        echo '<section class="aicc-recovery-panel" aria-label="계정 찾기"><details><summary>아이디 찾기</summary><form data-aicc-recovery="id"><label>이름<input name="name" autocomplete="name" required maxlength="100"></label><label>휴대폰 번호<input name="phone" type="tel" autocomplete="tel" placeholder="01012345678" required maxlength="16"></label><button class="aicc-account-button" type="submit">인증번호 받기</button><div data-aicc-code-step hidden><label>인증번호<input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="10"></label><button class="aicc-account-button" type="button" data-aicc-id-confirm>아이디 확인</button></div><p role="status" aria-live="polite"></p></form></details><details><summary>비밀번호 재설정</summary><form data-aicc-recovery="password"><label>아이디<input name="login_id" autocomplete="username" required maxlength="100"></label><label>이름<input name="name" autocomplete="name" required maxlength="100"></label><label>휴대폰 번호<input name="phone" type="tel" autocomplete="tel" placeholder="01012345678" required maxlength="16"></label><button class="aicc-account-button" type="submit">재설정 링크 받기</button><p role="status" aria-live="polite"></p></form></details></section>';
+    }
+
+    public static function recovery_headers(): void {
+        if (is_page(['account-recovery', 'reset'])) {
+            nocache_headers();
+            header('Referrer-Policy: no-referrer');
+            header('X-Robots-Tag: noindex, nofollow');
+        }
+    }
+
+    public static function recovery_reset_page(): string {
+        if (!self::recovery_enabled()) {
+            return '<section class="woocommerce aicc-recovery-page"><h1>비밀번호 재설정</h1><p>현재 계정 복구 기능을 이용할 수 없습니다.</p><a href="' . esc_url(wc_get_page_permalink('myaccount')) . '">로그인으로 이동</a></section>';
+        }
+        $token = sanitize_text_field(wp_unslash($_GET['token'] ?? ''));
+        return '<section class="woocommerce aicc-recovery-page" data-aicc-reset-token="' . esc_attr($token) . '"><p class="aicc-dialog-eyebrow">AGACHICHI MEMBERSHIP</p><h1>비밀번호 재설정</h1><form data-aicc-recovery="complete"><label>새 비밀번호<input name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label><label>새 비밀번호 확인<input name="confirm" type="password" autocomplete="new-password" minlength="8" maxlength="128" required></label><button class="aicc-account-button" type="submit">비밀번호 변경</button><p role="status" aria-live="polite"></p></form><a href="' . esc_url(wc_get_page_permalink('myaccount')) . '">로그인으로 이동</a></section>';
     }
 
     public static function login_failed(): void {
@@ -289,22 +319,32 @@ final class AICC_Agachichi_Account {
         $parent_id = function_exists('wc_get_page_id') ? (int) wc_get_page_id('myaccount') : 0;
         if ($parent_id < 1) { return; }
         $pages = [
-            ['register', '회원가입', '[aicc_agachichi_register]'],
-            ['signup-complete', '가입 완료', '[aicc_agachichi_signup_complete]'],
+            ['register', '회원가입', '[aicc_agachichi_register]', $parent_id],
+            ['signup-complete', '가입 완료', '[aicc_agachichi_signup_complete]', $parent_id],
+            ['account-recovery', '계정 복구', '', 0],
         ];
-        foreach ($pages as [$slug, $title, $content]) {
+        foreach ($pages as [$slug, $title, $content, $page_parent]) {
             $existing = get_posts([
-                'post_type' => 'page', 'post_parent' => $parent_id, 'name' => $slug,
+                'post_type' => 'page', 'post_parent' => $page_parent, 'name' => $slug,
                 'post_status' => 'publish', 'numberposts' => 1,
             ]);
             if ($existing) { continue; }
             wp_insert_post([
                 'post_title' => $title,
                 'post_name' => $slug,
-                'post_parent' => $parent_id,
+                'post_parent' => $page_parent,
                 'post_content' => $content,
                 'post_status' => 'publish',
                 'post_type' => 'page',
+            ]);
+        }
+        $recovery = get_page_by_path('account-recovery');
+        if ($recovery && !get_page_by_path('account-recovery/reset')) {
+            wp_insert_post([
+                'post_title' => '비밀번호 재설정', 'post_name' => 'reset',
+                'post_parent' => (int) $recovery->ID,
+                'post_content' => '[aicc_account_recovery_reset]',
+                'post_status' => 'publish', 'post_type' => 'page',
             ]);
         }
     }
