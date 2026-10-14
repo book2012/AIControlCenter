@@ -7,12 +7,16 @@ and customer-profile store, exposed through a narrowly scoped adapter. The accou
 plugin may render and submit forms, but it must not decide identity matches,
 issue reset credentials, or send messages.
 
-No recovery endpoint or recovery form is enabled. DEV phone verification is
-restricted to one configured test phone. The existing SOLAPI integration is an
-order/shipping test adapter; its last sender check failed with carrier status
-3113 and automatic dispatch remains disabled. It is not approved or ready for
-account recovery. Do not issue real customer SMS or enable the order sender as
-part of this work.
+Twilio is selected for account recovery. Use Twilio Verify for the ID-recovery
+OTP and Twilio Programmable Messaging with a dedicated Messaging Service for
+password-reset links. The existing DEV config has Verify enabled for exactly one
+configured test phone but has no Messaging Service SID or sender. A DEV-only
+Messaging adapter now exists; it rejects every recipient except that configured
+test phone. It has not been activated and no SMS has been sent. The adapter uses
+Twilio's Messages resource with `To`, `MessagingServiceSid`, and `Body`, then
+binds status reconciliation to the returned Message SID, test recipient, and
+Messaging Service. See the
+[Twilio Messages resource](https://www.twilio.com/docs/messaging/api/message-resource).
 
 ## Customer flows
 
@@ -87,18 +91,22 @@ handset delivery and never automatically retry `UNKNOWN_OUTCOME`.
 
 Do not expose functional recovery forms until all gates pass:
 
-1. Approve and configure a customer recovery SMS sender/provider, independent of
-   the current order-notification test configuration.
-2. Resolve sender/carrier eligibility and complete one explicitly authorized
-   DEV handset delivery test; automatic order SMS can remain disabled.
-3. Implement the provider receipt/status reconciliation contract and verify
-   ambiguous sends are never duplicated.
+1. Provision a dedicated Twilio Messaging Service, attach an eligible sender,
+   and add its SID to the private DEV recovery config; keep order-notification
+   configuration independent.
+2. After the route/service is implemented, explicitly authorize and complete one
+   DEV handset test to the configured test phone; do not send to other recipients.
+3. Implement a durable claim/outbox around this single-attempt adapter, persist
+   the Twilio Message SID, and reconcile delivery without automatic resend.
 4. Implement the Woo identity/password adapter with least privilege and isolated
    DEV credentials.
 5. Add service, route, persistence, throttling, enumeration-resistance,
    concurrency, expiry, replay, audit-redaction, and provider-unknown tests.
 6. Deploy DEV only and verify ID and reset journeys with synthetic accounts.
    No real customer account mutation; no PROD activation.
+
+Adapter tests: `tests/test_shop_twilio_recovery_messaging.py` (9 passed). These
+use a mocked transport; they do not contact Twilio or send SMS.
 
 ## Deferred UI
 

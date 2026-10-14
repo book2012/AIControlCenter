@@ -1,3 +1,13 @@
+## 2026-10-14 — Twilio account recovery transport
+
+Twilio Verify is selected for ID lookup phone challenges; Twilio Programmable
+Messaging is selected for reset links. The DEV Messaging adapter is implemented
+and fixed to the configured test phone; durable recovery service/API and Woo
+credential adapters remain to be implemented. No Messaging Service SID is
+configured, so no SMS was sent. Nine mocked-transport tests pass. See
+[account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
+
 ## 2026-10-14 — account recovery design
 
 Account ID and password recovery are specified as an AIControlCenter-owned API

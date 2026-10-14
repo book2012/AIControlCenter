@@ -1,3 +1,13 @@
+## 2026-10-14 — Twilio recovery SMS transport
+
+Added a DEV-only Twilio Messaging adapter for password-reset links. It sends
+only to the configured test phone, performs a single request, and reconciles
+status against the exact Twilio Message SID, recipient, and Messaging Service.
+Nine mocked-transport tests pass. No real SMS, endpoint, UI, or account mutation;
+DEV Messaging Service SID is not configured. See
+[account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
+
 ## 2026-10-14 — account recovery design and provider gate
 
 Documented the AIControlCenter-owned recovery API and safe user flows. Recovery

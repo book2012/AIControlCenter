@@ -1,3 +1,12 @@
+## 2026-10-14 — Twilio recovery SMS transport
+
+Selected Twilio for account recovery and added a DEV-only, fixed-test-recipient
+Messaging adapter with one-attempt delivery and bound status reconciliation.
+Nine mocked-transport tests pass. The private DEV configuration has no Messaging
+Service SID, so no SMS was sent and recovery routes/forms remain disabled. See
+[account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
+
 ## 2026-10-14 — account recovery API design
 
 Defined the AIControlCenter-owned ID-recovery and password-reset API, privacy

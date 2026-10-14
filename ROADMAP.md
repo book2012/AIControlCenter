@@ -5976,12 +5976,12 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 
 ## Next account milestone — secure ID/password recovery
 - [x] Define AIControlCenter-owned recovery flows, API, privacy contract, provider states, UI boundary and delivery/security gates: [account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
-- [ ] Approve/configure a recovery-scoped SMS sender/provider; keep the order-notification sender independent.
-- [ ] Resolve carrier eligibility and complete one explicitly authorized DEV handset delivery test.
-- [ ] Implement exact Woo customer identity and password adapters, recovery persistence/service/API, audit redaction, throttling, and UNKNOWN_OUTCOME reconciliation.
+- [x] Select Twilio Verify for OTP and add a DEV-only Twilio Messaging adapter, fixed to the configured test phone with one-attempt dispatch and status reconciliation tests (9 passed).
+- [ ] Provision a recovery-scoped Twilio Messaging Service/sender and private DEV SID; keep order-notification sending independent.
+- [ ] Implement account identity/password adapters, durable recovery outbox/service/API, audit redaction, throttling, and UNKNOWN_OUTCOME reconciliation.
 - [ ] Add synthetic-account tests for enumeration resistance, replay, expiry, rate limits, concurrent use, provider ambiguity, and password-update outcomes.
 - [ ] Add login-page recovery UI only after API and provider gates pass; deploy and verify DEV without real customer account mutation.
-Current DEV phone verification remains restricted to one configured test phone. Existing SOLAPI order SMS is disabled after carrier status 3113 and is not an approved account-recovery sender. No customer SMS or account mutation has been performed.
+Current DEV Twilio Verify remains restricted to one configured test phone. Its private config has no Twilio Messaging Service SID/sender. The new Messaging adapter is test-only until provisioned; no SMS or account mutation has been performed.
 
 
 ## Next Telegram milestone — customer Shopping/Sales Bot
