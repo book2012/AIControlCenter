@@ -6,7 +6,6 @@ SOLAPI order sender is disabled after carrier status 3113. No customer SMS or
 account mutation was performed. See
 [account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
 
-
 ## 2026-10-13 — DEV order history card alignment
 
 Removed the duplicate outer account-content box around the empty order card.

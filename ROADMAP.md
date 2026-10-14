@@ -5983,8 +5983,6 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - [ ] Add login-page recovery UI only after API and provider gates pass; deploy and verify DEV without real customer account mutation.
 Current DEV phone verification remains restricted to one configured test phone. Existing SOLAPI order SMS is disabled after carrier status 3113 and is not an approved account-recovery sender. No customer SMS or account mutation has been performed.
 
-## Next Telegram milestone — customer Shopping/Sales Bot
-Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
 
 ## Next Telegram milestone — customer Shopping/Sales Bot
 Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.

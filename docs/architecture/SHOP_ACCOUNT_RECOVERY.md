@@ -23,10 +23,8 @@ part of this work.
    recovery-scoped provider adapter.
 3. On valid code, resolve the exact WooCommerce account through the AIControlCenter
    identity adapter. Do not match browser-supplied user IDs or Telegram identity.
-4. Return the login ID only after verification. Mask it (for example, `ab***`)
-   unless product policy explicitly requires the full ID; the initial user request
-   asked to show the ID, so full display remains a UI decision after verified
-   phone ownership.
+4. Return the full login ID only after successful phone verification, as
+   requested. Never include it in logs, analytics, or an unverified response.
 5. Invalid, missing, duplicate, throttled, and provider-unknown cases use the same
    public response and do not reveal whether an account exists.
 
@@ -54,7 +52,7 @@ Public operations should be versioned and return no-store JSON:
   - Response: generic challenge acknowledgement and opaque challenge reference.
 - `POST /v1/shop/account-recovery/id-confirm`
   - Request: challenge reference and one-time code.
-  - Response: verified account ID (masked/full per product decision), or generic
+  - Response: full verified account ID, or generic
     failure.
 - `POST /v1/shop/account-recovery/password-reset`
   - Request: login ID, registered name, mobile.

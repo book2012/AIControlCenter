@@ -8,7 +8,6 @@ successful DEV delivery validation. Existing SOLAPI order notifications remain
 disabled; no customer message was sent. See
 [account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
 
-
 ## 2026-10-13 — DEV order history single-card layout
 
 The orders endpoint now shows one branded empty-state card without the extra

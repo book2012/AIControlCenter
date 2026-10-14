@@ -6,7 +6,6 @@ DEV enablement gates. Functional forms remain disabled until a recovery SMS
 provider is approved and passes delivery/reconciliation checks. See
 [account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
 
-
 ## 2026-10-13 — DEV account order card alignment
 
 Removed the extra WooCommerce content frame around the localized empty-order
