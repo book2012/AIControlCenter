@@ -1,3 +1,8 @@
+## 2026-10-14 — unified order history navigation
+
+The storefront header always labels the menu “주문내역”. Signed-in customers go
+directly to `/my-account/orders/`; signed-out visitors go to guest order lookup.
+
 ## 2026-10-14 — Twilio account recovery implementation
 
 - [x] Implement AIControlCenter ID-recovery/password-reset policy service and durable single-use challenge/reset claims.

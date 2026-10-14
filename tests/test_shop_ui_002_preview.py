@@ -356,7 +356,8 @@ def test_shared_header_hides_signup_and_uses_account_state(client):
     assert 'signup.href = "/my-account/register/"' not in script
     assert 'fetch("/wp-admin/admin-ajax.php?action=aicc_account_navigation"' in script
     assert 'login.textContent = member ? "LOG OUT" : "LOGIN"' in script
-    assert 'orders.textContent = member ? "주문내역" : "비회원 주문 조회"' in script
+    assert 'orders.textContent = "주문내역"' in script
+    assert 'orders.href = member ? "/my-account/orders/" : "/homepage/storefront/my-orders"' in script
     assert 'profile.textContent = "내 정보"' in script
     assert 'data.authenticated' in script and 'wp_logout_url(home_url' in plugin
     assert "wp_ajax_aicc_account_navigation" in plugin

@@ -53,7 +53,7 @@ final class AICC_Agachichi_Account {
         $login_state = $is_login ? ' class="header-login is-active" aria-current="page"' : ' class="header-login"';
         $account_link = $logged_in
             ? '<a class="header-orders" href="/my-account/orders/">주문내역</a><a class="header-profile" href="/my-account/">내 정보</a>'
-            : '<a class="header-orders" href="/homepage/storefront/my-orders" aria-label="비회원 주문 조회">비회원 주문 조회</a>';
+            : '<a class="header-orders" href="/homepage/storefront/my-orders" aria-label="비회원 주문 조회">주문내역</a>';
         $auth_link = $logged_in
             ? '<a class="header-logout" href="' . esc_url(wp_logout_url(home_url('/homepage/storefront/'))) . '" data-aicc-confirm="로그아웃하시겠습니까?" aria-label="로그아웃">LOG OUT</a>'
             : '<a' . $login_state . ' href="/my-account/" aria-label="로그인">LOGIN</a>';

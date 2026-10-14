@@ -1,3 +1,8 @@
+## 2026-10-14 — unified order history navigation
+
+The storefront header always labels the menu “주문내역”. Signed-in customers go
+directly to `/my-account/orders/`; signed-out visitors go to guest order lookup.
+
 ## 2026-10-14 — gated account recovery UI source
 
 Added agachichi-themed ID lookup and password reset forms and a reset page to the

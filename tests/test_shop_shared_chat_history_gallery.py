@@ -268,7 +268,7 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "header-orders" in plugin and ">주문내역</a>" in plugin
     assert "header-profile" in plugin and "/my-account/" in plugin
     assert "header-orders" in plugin and "/my-account/orders/" in plugin
-    assert "비회원 주문 조회" in plugin and "header-signup" not in plugin
+    assert 'aria-label="비회원 주문 조회">주문내역</a>' in plugin and "header-signup" not in plugin
     login_link = plugin[plugin.index("function login_signup_link"):plugin.index("function login_failed") ]
     assert "회원가입</a>" in login_link
     assert "비회원 주문 조회 · 휴대폰 인증" in plugin

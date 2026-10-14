@@ -34,7 +34,7 @@
         login.classList.toggle("header-logout", member);
         if (orders) {
           orders.href = member ? "/my-account/orders/" : "/homepage/storefront/my-orders";
-          orders.textContent = member ? "주문내역" : "비회원 주문 조회";
+          orders.textContent = "주문내역";
           orders.setAttribute("aria-label", member ? "주문내역" : "비회원 주문 조회");
         }
         if (member && orders && !profile) {
