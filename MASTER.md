@@ -1,4 +1,8 @@
 
+## 2026-10-14 — strengthen empty order history styling
+
+The DEV order-history screenshot still showed a blue default WooCommerce notice. Added high-specificity, order-route-scoped styles for the empty-state panel, icon, and browse button, and tightened mobile account navigation spacing. Bumped the account plugin/assets to 0.7.1 to refresh browser caches. Verification: 108 focused tests pass; DEV PHP lint and live-route checks follow deployment. PROD unchanged.
+
 ## 2026-10-14 — scope order copy translation to WooCommerce
 
 DEV login attempts exposed PHP memory exhaustion after the account page loaded.

@@ -195,3 +195,41 @@ body.woocommerce-account{background:var(--aicc-bg)!important;color:var(--aicc-in
  .woocommerce-account .woocommerce-info{border-color:var(--aicc-line)!important;background:var(--aicc-panel)!important;color:var(--aicc-ink)!important}
  .woocommerce-account .woocommerce-info .wc-forward{border-color:#a87355;background:var(--aicc-button)!important;color:var(--aicc-ink)!important}
 }
+
+
+/* Strongly scope the empty-orders state so block-theme defaults cannot reintroduce blue notices. */
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info,
+body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info{
+ display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:12px!important;
+ margin:0!important;padding:18px 20px!important;border:1px solid var(--aicc-line)!important;border-top-width:1px!important;
+ border-radius:10px!important;background:var(--aicc-panel)!important;color:var(--aicc-ink)!important;
+ font-size:15px!important;line-height:1.65!important;box-shadow:none!important
+}
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info:before,
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info:after,
+body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info:before,
+body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info:after{content:none!important;display:none!important;background:none!important}
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info .wc-forward,
+body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info .wc-forward{
+ float:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:auto!important;min-height:42px!important;margin:0!important;padding:8px 15px!important;
+ border:1px solid #dfad8b!important;border-radius:8px!important;background:var(--aicc-button)!important;
+ color:var(--aicc-ink)!important;font-size:14px!important;font-weight:650!important;line-height:1.4!important;
+ text-decoration:none!important;box-shadow:none!important
+}
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info .wc-forward:hover,
+body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info .wc-forward:hover{background:#efb794!important;color:var(--aicc-ink)!important}
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-navigation{padding:10px!important;margin:0 0 16px!important}
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-navigation ul{align-content:start!important;row-gap:2px!important}
+body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-navigation a{min-height:40px!important;padding:6px 4px!important;font-size:14px!important;line-height:1.35!important}
+@media(max-width:600px){
+ body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info,
+ body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info{padding:15px 14px!important;font-size:14px!important}
+ body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-navigation{padding:8px!important;margin-bottom:14px!important}
+}
+@media(prefers-color-scheme:dark){
+ body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info,
+ body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info{border-color:var(--aicc-line)!important;background:var(--aicc-panel)!important;color:var(--aicc-ink)!important}
+ body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info .wc-forward,
+ body.woocommerce-account.aicc-account-orders-view .woocommerce-notices-wrapper .woocommerce-info .wc-forward{border-color:#a87355!important;background:var(--aicc-button)!important;color:var(--aicc-ink)!important}
+}

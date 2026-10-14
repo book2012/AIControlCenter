@@ -301,6 +301,9 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert ".woocommerce-account .aicc-dashboard-links .aicc-account-button{font-size:15px" in css
     assert ".woocommerce-account .aicc-no-orders{margin:0;padding:18px 20px" in css
     assert ".woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content{padding:0;border:0" in css
+    assert "body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content .woocommerce-info" in css
+    assert "display:flex!important;flex-direction:column!important;align-items:flex-start!important" in css
+    assert "body.woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-navigation a{min-height:40px!important" in css
 
 
 def test_account_recovery_ui_is_gated_and_uses_same_origin_api():
