@@ -290,6 +290,8 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "aicc-account-dashboard-view" in plugin
     assert "aicc-account-orders-view" in plugin
     assert "No order has been made yet." in plugin and "상품 둘러보기" in plugin
+    assert "add_filter('gettext_woocommerce', [self::class, 'translate_orders_empty_state'], 10, 3);" in plugin
+    assert "add_filter('gettext', [self::class, 'translate_orders_empty_state']" not in plugin
     assert "woocommerce_return_to_shop_redirect" in plugin and "orders_browse_url" in plugin
     assert "aicc-account-store-footer" in plugin and "Everyday Comfort, Playful Touch" in plugin
     assert ".aicc-dashboard-links .aicc-account-button:nth-child(n+3){grid-column:1/-1}" in css

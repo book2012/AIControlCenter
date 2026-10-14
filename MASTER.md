@@ -1,3 +1,11 @@
+
+## 2026-10-14 — scope order copy translation to WooCommerce
+
+DEV login attempts exposed intermittent PHP memory exhaustion on account pages.
+Restricted the empty-orders translation hook to WooCommerce strings instead of
+all WordPress translations and bumped account assets to version 0.7.0.
+Validation and DEV deployment are in progress; PROD remains unchanged.
+
 ## 2026-10-14 — direct logout to storefront home
 
 The logout confirmation remains in place. After confirmation, a nonce-protected
