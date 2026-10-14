@@ -1,3 +1,12 @@
+## 2026-10-14 — account recovery adapters
+
+Added a fixed-test-phone Twilio Verify adapter plus a Core Woo account
+adapter and DEV-only WordPress REST bridge with exact-match lookup and a
+dedicated recovery capability. No role or Application Password was provisioned;
+the bridge is not deployed or runtime-bound. No SMS or account mutation.
+Validation: 74 targeted tests passed and DEV WordPress PHP syntax lint passed.
+See [account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
 ## 2026-10-14 — Twilio recovery SMS transport
 
 Added a DEV-only Twilio Messaging adapter for password-reset links. It sends

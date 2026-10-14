@@ -1,3 +1,15 @@
+## 2026-10-14 — account recovery Core and Woo adapters
+
+Implemented the unmounted AIControlCenter service/API, fixed-test-phone
+Twilio Verify adapter, Core Woo adapter, and a DEV-only WordPress REST bridge.
+The bridge is limited to a dedicated recovery role and four lookup/password
+operations. The role and Application Password are not provisioned; there is no
+runtime binding, UI, Twilio request/SMS, account mutation, or PROD change.
+Validation: 74 targeted regressions and PHP syntax lint passed. Next: provision
+the dedicated DEV identity privately, wire a gated DEV composition and recovery
+UI, then validate without customer account mutation. See
+[account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
 ## 2026-10-14 — Twilio account recovery transport
 
 Twilio Verify is selected for ID lookup phone challenges; Twilio Programmable

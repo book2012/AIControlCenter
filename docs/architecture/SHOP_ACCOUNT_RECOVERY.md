@@ -11,8 +11,11 @@ Twilio is selected for account recovery. Use Twilio Verify for the ID-recovery
 OTP and Twilio Programmable Messaging with a dedicated Messaging Service for
 password-reset links. The existing DEV config has Verify enabled for exactly one
 configured test phone but has no Messaging Service SID or sender. A DEV-only
-Messaging adapter now exists; it rejects every recipient except that configured
-test phone. It has not been activated and no SMS has been sent. The adapter uses
+Messaging adapter exists; it rejects every recipient except that configured
+test phone. The recovery service, same-origin FastAPI router, fixed-test-phone DEV Verify
+adapter, Core Woo adapter, and DEV-only WordPress recovery bridge are implemented
+with mocked-provider tests. None is wired into a runtime. No
+SMS has been sent. The adapter uses
 Twilio's Messages resource with `To`, `MessagingServiceSid`, and `Body`, then
 binds status reconciliation to the returned Message SID, test recipient, and
 Messaging Service. See the
@@ -87,6 +90,37 @@ Provider dispatch states: `CLAIMED`, `ACCEPTED`, `FAILED`, `UNKNOWN_OUTCOME`,
 `RECONCILED_DELIVERED`, `RECONCILED_FAILED`. Never treat HTTP acceptance as
 handset delivery and never automatically retry `UNKNOWN_OUTCOME`.
 
+## Implementation status
+
+Implemented but not runtime-enabled: the AIControlCenter recovery service,
+SQLite claims/tokens/rate buckets/audit records, same-origin API router, fixed
+DEV Verify adapter, Woo account adapter, and narrow WordPress bridge. The API
+module is deliberately not registered in the shared production app or DEV order
+runtime. The dedicated WordPress recovery role and Application Password have not
+been provisioned. Runtime binding, functional UI, and live SMS validation are
+absent.
+
+Validation: 74 targeted tests passed across recovery service/API, Twilio Verify
+and Messaging adapters, Woo account adapter, DEV guest phone verification, and
+production customer isolation. The WordPress bridge passed PHP syntax lint in
+the DEV WordPress container; it was not installed or activated. API tests use
+fake providers; no Twilio request or SMS occurred.
+
+## WooCommerce adapter boundary
+
+The WordPress bridge is a separate account-recovery plugin. It exposes only
+exact-match ID lookup, exact-match reset lookup, post-OTP phone re-resolution,
+and password update. Every route requires HTTPS Basic authentication via a
+dedicated WordPress Application Password, the aicc_recovery_service role, and
+the aicc_manage_account_recovery capability. The Core adapter pins the DEV HTTPS
+origin, disables environment proxies and redirects, bounds response bodies, and
+validates every returned account reference and identity field. Woo REST keys,
+admin credentials, and public storefront requests are not accepted.
+
+No recovery role, service user, Application Password, plugin activation, or
+runtime composition has been provisioned. The bridge PHP syntax was checked
+read-only in the DEV WordPress container.
+
 ## Enablement gates
 
 Do not expose functional recovery forms until all gates pass:
@@ -94,19 +128,27 @@ Do not expose functional recovery forms until all gates pass:
 1. Provision a dedicated Twilio Messaging Service, attach an eligible sender,
    and add its SID to the private DEV recovery config; keep order-notification
    configuration independent.
-2. After the route/service is implemented, explicitly authorize and complete one
-   DEV handset test to the configured test phone; do not send to other recipients.
-3. Implement a durable claim/outbox around this single-attempt adapter, persist
-   the Twilio Message SID, and reconcile delivery without automatic resend.
-4. Implement the Woo identity/password adapter with least privilege and isolated
-   DEV credentials.
-5. Add service, route, persistence, throttling, enumeration-resistance,
-   concurrency, expiry, replay, audit-redaction, and provider-unknown tests.
-6. Deploy DEV only and verify ID and reset journeys with synthetic accounts.
-   No real customer account mutation; no PROD activation.
+2. Bind the new DEV Verify adapter to the recovery service using the existing
+   fixed-test-phone composition without broadening recipient scope.
+3. Privately provision the dedicated DEV recovery role and WordPress
+   Application Password. Never reuse Woo REST or administrator keys.
+4. Bind the Core Woo adapter to the DEV bridge and verify exact identity lookup
+   with synthetic customer data.
+5. Add a durable single-attempt claim/outbox around message dispatch, persist the
+   Twilio Message SID, and reconcile delivery without automatic resend.
+6. After provider setup and test-plan review, separately authorize one DEV
+   handset test to the configured test phone; no other recipient.
+7. Add UI and regressions for throttling, enumeration resistance, concurrency,
+   expiry, replay, audit redaction, and provider-unknown outcomes.
+8. Mount in isolated DEV only and verify ID/reset journeys with synthetic
+   accounts. No real customer account mutation and no PROD activation.
 
 Adapter tests: `tests/test_shop_twilio_recovery_messaging.py` (9 passed). These
 use a mocked transport; they do not contact Twilio or send SMS.
+
+Adapter tests:
+tests/test_shop_woocommerce_account_recovery.py (11 tests) use a fake HTTP
+session. No live WordPress user, password, or network API was exercised.
 
 ## Deferred UI
 

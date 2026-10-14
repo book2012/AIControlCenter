@@ -1,3 +1,13 @@
+## 2026-10-14 — account recovery adapters
+
+Implemented the AIControlCenter recovery service/API, fixed-test-phone DEV
+Twilio Verify adapter, and narrow Woo account-recovery adapter/WordPress bridge.
+The bridge requires a dedicated DEV role and Application Password; neither has
+been provisioned or deployed. Recovery is not runtime-bound, no account UI is
+available, and no Twilio request or SMS was sent. Validation: 74 targeted
+regressions passed; the PHP bridge passed syntax lint in the DEV WordPress
+container. See [account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
 ## 2026-10-14 — Twilio recovery SMS transport
 
 Selected Twilio for account recovery and added a DEV-only, fixed-test-recipient

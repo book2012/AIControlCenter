@@ -1,3 +1,17 @@
+## 2026-10-14 — Twilio account recovery implementation
+
+- [x] Implement AIControlCenter ID-recovery/password-reset policy service and durable single-use challenge/reset claims.
+- [x] Add same-origin FastAPI routes with bounded request bodies, no-store responses, rate limits, and generic reset acknowledgement.
+- [x] Add fake-provider tests for service, routes, Verify, Messaging, and Woo adapters; 74 targeted regressions pass.
+- [x] Add a DEV fixed-phone Twilio Verify adapter that reuses the existing test-phone provider port and rejects other recipients.
+- [ ] Bind the adapter to the recovery service in an isolated DEV composition without expanding recipient scope.
+- [x] Implement exact Woo customer lookup and password update through a least-privilege Core adapter and DEV-only WordPress bridge.
+- [ ] Privately provision the DEV recovery role and dedicated WordPress Application Password; do not reuse Woo REST/admin credentials.
+- [ ] Provision a dedicated DEV Twilio Messaging Service SID in private config; do not send until a separate one-shot test is authorized.
+- [ ] Add recovery UI to login page; keep routes/forms disabled until adapters, provider reconciliation, and UI tests pass.
+- [ ] Wire adapters in an isolated DEV runtime behind explicit private enablement; keep endpoints unavailable until all credentials and UI gates pass.
+- [ ] Deploy DEV and validate synthetic accounts only after the private role/credential setup and recovery UI are reviewed. PROD activation remains prohibited.
+
 ## 2026-10-13 — DEV order history single-card layout
 
 Removed the outer account-content frame around the themed no-orders card.
