@@ -167,10 +167,10 @@ def main():
     woo = read_woo(spec, sha)
     projection, projection_path = build_projection(spec)
     current_path = PRIVATE / "runtime.private.json"
-    candidate_path = PRIVATE / "runtime.batch-candidate.private.json"
+    candidate_path = PRIVATE / "runtime.mm6-candidate.private.json"
     current = json.loads(current_path.read_text())
-    candidate = json.loads(candidate_path.read_text()) if candidate_path.exists() else current
-    if current.get("environment") != "DEV" or candidate.get("environment") != "DEV":
+    candidate = json.loads(json.dumps(current))
+    if current.get("environment") != "DEV":
         raise RuntimeError("DEV_RUNTIME_REQUIRED")
     active = candidate.get("active_products")
     if not isinstance(active, list) or len(active) < 5:
