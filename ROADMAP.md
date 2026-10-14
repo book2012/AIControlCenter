@@ -5975,7 +5975,16 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - Implement and test a signed, expiring WooCommerce member identity bridge before enabling member orders without SMS.
 
 ## Next account milestone — secure ID/password recovery
-Design and implement an AIControlCenter-owned recovery API before exposing recovery forms. Requirements: ID lookup from name+phone with abuse limits and privacy-safe responses; password reset key with short expiry and one-time use; SMS link delivery through an approved provider adapter; per-account/IP throttles; idempotency and UNKNOWN_OUTCOME reconciliation; audit evidence without raw phone, OTP, reset token, or message content. Current DEV phone verification is restricted to one configured test phone and OTP-only, so it cannot safely serve all customer accounts.
+- [x] Define AIControlCenter-owned recovery flows, API, privacy contract, provider states, UI boundary and delivery/security gates: [account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+- [ ] Approve/configure a recovery-scoped SMS sender/provider; keep the order-notification sender independent.
+- [ ] Resolve carrier eligibility and complete one explicitly authorized DEV handset delivery test.
+- [ ] Implement exact Woo customer identity and password adapters, recovery persistence/service/API, audit redaction, throttling, and UNKNOWN_OUTCOME reconciliation.
+- [ ] Add synthetic-account tests for enumeration resistance, replay, expiry, rate limits, concurrent use, provider ambiguity, and password-update outcomes.
+- [ ] Add login-page recovery UI only after API and provider gates pass; deploy and verify DEV without real customer account mutation.
+Current DEV phone verification remains restricted to one configured test phone. Existing SOLAPI order SMS is disabled after carrier status 3113 and is not an approved account-recovery sender. No customer SMS or account mutation has been performed.
+
+## Next Telegram milestone — customer Shopping/Sales Bot
+Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
 
 ## Next Telegram milestone — customer Shopping/Sales Bot
 Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.

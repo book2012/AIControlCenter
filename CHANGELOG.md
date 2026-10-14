@@ -1,3 +1,12 @@
+## 2026-10-14 — account recovery design and provider gate
+
+Documented the AIControlCenter-owned recovery API and safe user flows. Recovery
+forms and delivery remain disabled: DEV OTP is test-phone-only, and the existing
+SOLAPI order sender is disabled after carrier status 3113. No customer SMS or
+account mutation was performed. See
+[account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
+
 ## 2026-10-13 — DEV order history card alignment
 
 Removed the duplicate outer account-content box around the empty order card.

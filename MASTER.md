@@ -1,3 +1,14 @@
+## 2026-10-14 — account recovery design
+
+Account ID and password recovery are specified as an AIControlCenter-owned API
+with verified-phone ID disclosure, generic reset acknowledgements, one-time
+short-lived reset secrets, throttles, audit redaction, and unknown-delivery
+reconciliation. Functional UI is gated on an approved recovery SMS provider and
+successful DEV delivery validation. Existing SOLAPI order notifications remain
+disabled; no customer message was sent. See
+[account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
+
 ## 2026-10-13 — DEV order history single-card layout
 
 The orders endpoint now shows one branded empty-state card without the extra

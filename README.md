@@ -1,3 +1,12 @@
+## 2026-10-14 — account recovery API design
+
+Defined the AIControlCenter-owned ID-recovery and password-reset API, privacy
+responses, throttles, one-time token lifecycle, delivery reconciliation, and
+DEV enablement gates. Functional forms remain disabled until a recovery SMS
+provider is approved and passes delivery/reconciliation checks. See
+[account recovery design](docs/architecture/SHOP_ACCOUNT_RECOVERY.md).
+
+
 ## 2026-10-13 — DEV account order card alignment
 
 Removed the extra WooCommerce content frame around the localized empty-order
