@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AICC Agachichi Account
  * Description: DEV WooCommerce account presentation, verified-phone registration, and profile fields.
- * Version: 0.6.8
+ * Version: 0.6.9
  * Requires PHP: 8.1
  */
 if (!defined('ABSPATH')) { exit; }
@@ -26,6 +26,8 @@ final class AICC_Agachichi_Account {
         add_action('admin_post_aicc_delete_account', [self::class, 'delete_account']);
         add_filter('woocommerce_locate_template', [self::class, 'account_template'], 20, 3);
         add_filter('gettext_woocommerce', [self::class, 'translate_orders_empty_state'], 10, 3);
+        add_filter('gettext', [self::class, 'translate_orders_empty_state'], 10, 3);
+        add_filter('woocommerce_return_to_shop_redirect', [self::class, 'orders_browse_url']);
         add_filter('woocommerce_account_menu_items', [self::class, 'account_menu_items']);
         add_filter('body_class', [self::class, 'body_classes']);
         add_action('wp_body_open', [self::class, 'storefront_header'], 5);
@@ -78,6 +80,14 @@ final class AICC_Agachichi_Account {
         };
     }
 
+    public static function orders_browse_url(string $url): string {
+        if (function_exists('is_account_page') && is_account_page()
+            && function_exists('is_wc_endpoint_url') && is_wc_endpoint_url('orders')) {
+            return home_url('/homepage/storefront/');
+        }
+        return $url;
+    }
+
     public static function body_classes(array $classes): array {
         if (is_page('register') || is_page('signup-complete')
             || is_page(['account-recovery', 'reset'])) { $classes[] = 'woocommerce-account'; }
@@ -94,8 +104,8 @@ final class AICC_Agachichi_Account {
         if (!$account_page && !is_page('register') && !is_page('signup-complete')
             && !is_page(['account-recovery', 'reset'])) { return; }
         $base = plugin_dir_url(__FILE__);
-        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.8');
-        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.8', true);
+        wp_enqueue_style('aicc-agachichi-account', $base . 'assets/account.css', [], '0.6.9');
+        wp_enqueue_script('aicc-agachichi-account', $base . 'assets/account.js', [], '0.6.9', true);
         wp_localize_script('aicc-agachichi-account', 'AICCAccountConfig', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
             'usernameNonce' => wp_create_nonce('aicc_check_username'),

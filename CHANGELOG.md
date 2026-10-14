@@ -5,6 +5,13 @@ same-origin request ends the session and returns the browser to the storefront
 home, avoiding the WordPress logout interstitial. The signed-in “내 정보” link
 remains available.
 
+## 2026-10-14 — account typography and empty orders state
+
+Adjusted account navigation and dashboard shortcut typography for mobile and
+desktop. The no-orders message and product browsing action now use the agachichi
+panel, border, text, and button palette; the browse action returns to the
+storefront home. Plugin 0.6.9; DEV only.
+
 ## 2026-10-14 — unified order history navigation
 
 The storefront header always labels the menu “주문내역”. Signed-in customers go

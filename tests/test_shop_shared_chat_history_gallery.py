@@ -290,10 +290,14 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "aicc-account-dashboard-view" in plugin
     assert "aicc-account-orders-view" in plugin
     assert "No order has been made yet." in plugin and "상품 둘러보기" in plugin
+    assert "woocommerce_return_to_shop_redirect" in plugin and "orders_browse_url" in plugin
     assert "aicc-account-store-footer" in plugin and "Everyday Comfort, Playful Touch" in plugin
     assert ".aicc-dashboard-links .aicc-account-button:nth-child(n+3){grid-column:1/-1}" in css
     assert ".woocommerce-account footer.wp-block-template-part{display:none!important}" in css
     assert ".woocommerce-account.aicc-account-orders-view .woocommerce-info:before{display:none}" in css
+    assert ".woocommerce-account .woocommerce-info:before{display:none!important}" in css
+    assert ".woocommerce-account .aicc-dashboard-links .aicc-account-button{font-size:15px" in css
+    assert ".woocommerce-account .aicc-no-orders{margin:0;padding:18px 20px" in css
     assert ".woocommerce-account.aicc-account-orders-view .woocommerce-MyAccount-content{padding:0;border:0" in css
 
 

@@ -175,3 +175,23 @@ body.woocommerce-account{background:var(--aicc-bg)!important;color:var(--aicc-in
 .woocommerce-account .aicc-recovery-panel [role=status],.woocommerce-account .aicc-recovery-page [role=status]{min-height:1.4em;color:var(--aicc-accent);font-size:13px}
 .woocommerce-account .aicc-recovery-page{max-width:520px;margin:48px auto;padding:24px}
 @media(max-width:600px){.woocommerce-account .aicc-recovery-page{margin:28px 16px;padding:18px}}
+
+/* Refine account typography and keep both custom and Woo empty states on brand. */
+.woocommerce-account .woocommerce-MyAccount-navigation a{font-size:15px;font-weight:500;line-height:1.45;letter-spacing:-.02em}
+.woocommerce-account .woocommerce-MyAccount-navigation .is-active a{font-weight:650}
+.woocommerce-account .aicc-dashboard-links .aicc-account-button{font-size:15px;font-weight:600;letter-spacing:-.025em;line-height:1.45}
+.woocommerce-account .aicc-dashboard-heading h1,.woocommerce-account .aicc-dashboard-profile h2{letter-spacing:-.035em}
+.woocommerce-account .aicc-no-orders{margin:0;padding:18px 20px;border:1px solid var(--aicc-line);border-radius:10px;background:var(--aicc-bg);color:var(--aicc-muted);font-size:15px;line-height:1.7}
+.woocommerce-account .woocommerce-info{position:relative;margin:0;padding:18px 20px;border:1px solid var(--aicc-line)!important;border-radius:10px;background:var(--aicc-panel)!important;color:var(--aicc-ink)!important;line-height:1.7;box-shadow:none}
+.woocommerce-account .woocommerce-info:before{display:none!important}
+.woocommerce-account .woocommerce-info .wc-forward{float:none;display:inline-flex;align-items:center;justify-content:center;min-height:44px;margin:12px 0 0;padding:9px 15px;border:1px solid #dfad8b;border-radius:8px;background:var(--aicc-button)!important;color:var(--aicc-ink)!important;font-size:14px;font-weight:650;text-decoration:none}
+.woocommerce-account .woocommerce-info .wc-forward:hover{background:#efb794!important;color:var(--aicc-ink)!important}
+@media(max-width:600px){
+ .woocommerce-account .woocommerce-MyAccount-navigation a{font-size:14px}
+ .woocommerce-account .aicc-dashboard-links .aicc-account-button{font-size:14px;line-height:1.4}
+ .woocommerce-account .aicc-no-orders,.woocommerce-account .woocommerce-info{padding:15px 14px;font-size:14px}
+}
+@media(prefers-color-scheme:dark){
+ .woocommerce-account .woocommerce-info{border-color:var(--aicc-line)!important;background:var(--aicc-panel)!important;color:var(--aicc-ink)!important}
+ .woocommerce-account .woocommerce-info .wc-forward{border-color:#a87355;background:var(--aicc-button)!important;color:var(--aicc-ink)!important}
+}
