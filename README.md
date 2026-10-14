@@ -10,7 +10,9 @@ remains available.
 Adjusted account navigation and dashboard shortcut typography for mobile and
 desktop. The no-orders message and product browsing action now use the agachichi
 panel, border, text, and button palette; the browse action returns to the
-storefront home. Plugin 0.6.9; DEV only.
+storefront home. Plugin 0.6.9 deployed to DEV on 2026-10-14. Validation:
+108 targeted tests passed, PHP syntax lint passed, and the live DEV login page
+serves account.css with version 0.6.9. PROD unchanged.
 
 ## 2026-10-14 — unified order history navigation
 
