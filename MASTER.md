@@ -1,7 +1,7 @@
 
 ## 2026-10-14 — Korean account and address editing
 
-Localized WooCommerce profile and address labels, descriptions, address types, and save actions on member account routes. Added Korean page headings and agachichi form typography, colors, controls, and responsive layout. Account plugin version 0.7.2. Validation: 108 focused tests passed and PHP lint passed in the DEV container. DEV rollout follows. PROD unchanged.
+Localized WooCommerce profile and address labels, descriptions, address types, and save actions on member account routes. Added Korean page headings and agachichi form typography, colors, controls, and responsive layout. Account plugin version 0.7.2. Validation: 108 focused tests passed and PHP lint passed in the DEV container. DEV plugin 0.7.2 is active; both edit-account and edit-address routes returned HTTP 200 and the versioned stylesheet served the new scoped selectors. PROD unchanged.
 
 ## 2026-10-14 — strengthen empty order history styling
 
