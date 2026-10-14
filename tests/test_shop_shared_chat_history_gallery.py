@@ -267,6 +267,7 @@ def test_account_navigation_orders_guest_lookup_profile_logout_and_withdrawal():
     assert "data-aicc-confirm" in plugin and "로그아웃하시겠습니까?" in plugin
     assert "header-orders" in plugin and ">주문내역</a>" in plugin
     assert "header-profile" in plugin and "/my-account/" in plugin
+    assert "profile.textContent = \"내 정보\"" in Path("core/homepage/ui/storefront-header.js").read_text()
     assert "header-orders" in plugin and "/my-account/orders/" in plugin
     assert 'aria-label="비회원 주문 조회">주문내역</a>' in plugin and "header-signup" not in plugin
     login_link = plugin[plugin.index("function login_signup_link"):plugin.index("function login_failed") ]

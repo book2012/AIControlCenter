@@ -1,3 +1,10 @@
+## 2026-10-14 — direct logout to storefront home
+
+The logout confirmation remains in place. After confirmation, a nonce-protected
+same-origin request ends the session and returns the browser to the storefront
+home, avoiding the WordPress logout interstitial. The signed-in “내 정보” link
+remains available.
+
 ## 2026-10-14 — unified order history navigation
 
 The storefront header always labels the menu “주문내역”. Signed-in customers go

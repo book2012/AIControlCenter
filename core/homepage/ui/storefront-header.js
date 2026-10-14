@@ -16,8 +16,24 @@
     const orders = actions.querySelector(".header-orders");
     let profile = actions.querySelector(".header-profile");
     if (login) {
-      login.addEventListener("click", event => {
-        if (login.dataset.authenticated === "true" && !window.confirm("로그아웃하시겠습니까?")) event.preventDefault();
+      login.addEventListener("click", async event => {
+        if (login.dataset.authenticated !== "true") return;
+        event.preventDefault();
+        if (!window.confirm("로그아웃하시겠습니까?")) return;
+        login.setAttribute("aria-disabled", "true");
+        try {
+          const response = await fetch("/wp-admin/admin-ajax.php", {
+            method: "POST", credentials: "same-origin", cache: "no-store",
+            headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Accept: "application/json"},
+            body: new URLSearchParams({action: "aicc_account_logout", nonce: login.dataset.logoutNonce || ""})
+          });
+          const result = await response.json();
+          if (!response.ok || !result.success || result.data?.loggedOut !== true) throw new Error("logout failed");
+          window.location.assign("/homepage/storefront/");
+        } catch (_) {
+          login.removeAttribute("aria-disabled");
+          window.alert("로그아웃하지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.");
+        }
       });
       fetch("/wp-admin/admin-ajax.php?action=aicc_account_navigation", {
         credentials: "same-origin", cache: "no-store", headers: {Accept: "application/json"}
@@ -31,6 +47,7 @@
         login.textContent = member ? "LOG OUT" : "LOGIN";
         login.href = member ? result.data.logoutUrl : "/my-account/";
         login.setAttribute("aria-label", member ? "로그아웃" : "로그인");
+        login.dataset.logoutNonce = member && typeof result.data.logoutNonce === "string" ? result.data.logoutNonce : "";
         login.classList.toggle("header-logout", member);
         if (orders) {
           orders.href = member ? "/my-account/orders/" : "/homepage/storefront/my-orders";

@@ -18,6 +18,7 @@ final class AICC_Agachichi_Account {
         add_action('init', [self::class, 'ensure_pages'], 20);
         add_action('wp_enqueue_scripts', [self::class, 'assets']);
         add_action('wp_ajax_aicc_account_navigation', [self::class, 'account_navigation']);
+        add_action('wp_ajax_aicc_account_logout', [self::class, 'account_logout']);
         add_action('wp_ajax_nopriv_aicc_account_navigation', [self::class, 'account_navigation']);
         add_action('wp_ajax_aicc_check_username', [self::class, 'check_username']);
         add_action('wp_ajax_nopriv_aicc_check_username', [self::class, 'check_username']);
@@ -100,6 +101,7 @@ final class AICC_Agachichi_Account {
             'usernameNonce' => wp_create_nonce('aicc_check_username'),
             'accountRecoveryEnabled' => self::recovery_enabled(),
             'recoveryApi' => '/v1/shop/account-recovery',
+            'logoutNonce' => is_user_logged_in() ? wp_create_nonce('aicc_account_logout') : '',
         ]);
     }
 
@@ -109,7 +111,18 @@ final class AICC_Agachichi_Account {
         wp_send_json_success([
             'authenticated' => $authenticated,
             'logoutUrl' => $authenticated ? wp_logout_url(home_url('/homepage/storefront/')) : '',
+            'logoutNonce' => $authenticated ? wp_create_nonce('aicc_account_logout') : '',
         ]);
+    }
+
+    public static function account_logout(): void {
+        check_ajax_referer('aicc_account_logout', 'nonce');
+        if (!is_user_logged_in()) {
+            wp_send_json_error(['message' => 'LOGIN_REQUIRED'], 401);
+        }
+        nocache_headers();
+        wp_logout();
+        wp_send_json_success(['loggedOut' => true]);
     }
 
     public static function account_template(string $template, string $template_name, string $template_path): string {

@@ -1,8 +1,29 @@
 (() => {
   'use strict';
   document.querySelectorAll('[data-aicc-confirm]').forEach(control => {
+    if (control.matches('.header-logout')) return;
     control.addEventListener(control.tagName === 'FORM' ? 'submit' : 'click', event => {
       if (!window.confirm(control.dataset.aiccConfirm || '계속 진행할까요?')) event.preventDefault();
+    });
+  });
+  document.querySelectorAll('.header-logout').forEach(control => {
+    control.addEventListener('click', async event => {
+      event.preventDefault();
+      if (!window.confirm(control.dataset.aiccConfirm || '로그아웃하시겠습니까?')) return;
+      control.setAttribute('aria-disabled', 'true');
+      try {
+        const response = await fetch(window.AICCAccountConfig.ajaxUrl, {
+          method: 'POST', credentials: 'same-origin', cache: 'no-store',
+          headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8', Accept: 'application/json'},
+          body: new URLSearchParams({action: 'aicc_account_logout', nonce: window.AICCAccountConfig.logoutNonce || ''})
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success || result.data?.loggedOut !== true) throw new Error();
+        window.location.assign('/homepage/storefront/');
+      } catch (_) {
+        control.removeAttribute('aria-disabled');
+        window.alert('로그아웃하지 못했습니다. 페이지를 새로고침한 뒤 다시 시도해 주세요.');
+      }
     });
   });
   const signupForm = document.querySelector('.aicc-registration-form');

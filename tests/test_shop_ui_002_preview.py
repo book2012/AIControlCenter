@@ -358,8 +358,12 @@ def test_shared_header_hides_signup_and_uses_account_state(client):
     assert 'login.textContent = member ? "LOG OUT" : "LOGIN"' in script
     assert 'orders.textContent = "주문내역"' in script
     assert 'orders.href = member ? "/my-account/orders/" : "/homepage/storefront/my-orders"' in script
+    assert 'action: "aicc_account_logout"' in script
+    assert 'window.location.assign("/homepage/storefront/")' in script
     assert 'profile.textContent = "내 정보"' in script
     assert 'data.authenticated' in script and 'wp_logout_url(home_url' in plugin
+    assert "wp_ajax_aicc_account_logout" in plugin and "check_ajax_referer(\'aicc_account_logout\', \'nonce\')" in plugin
+    assert 'logoutNonce' in plugin and 'class=\"header-profile\"' in plugin
     assert "wp_ajax_aicc_account_navigation" in plugin
     assert ".store-header .header-actions a {" in css
     assert ".store-header .header-actions a.header-login" not in css
