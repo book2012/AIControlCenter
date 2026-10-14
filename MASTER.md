@@ -1,10 +1,11 @@
 
 ## 2026-10-14 — scope order copy translation to WooCommerce
 
-DEV login attempts exposed intermittent PHP memory exhaustion on account pages.
-Restricted the empty-orders translation hook to WooCommerce strings instead of
-all WordPress translations and bumped account assets to version 0.7.0.
-Validation and DEV deployment are in progress; PROD remains unchanged.
+DEV login attempts exposed PHP memory exhaustion after the account page loaded.
+Removed the unrestricted global WordPress translation hook and kept the empty-
+orders copy filter on WooCommerce strings. Plugin 0.7.0 was deployed to DEV and
+WordPress restarted to clear PHP opcode cache. Four account routes returned HTTP
+200 after deployment; 108 focused tests and PHP syntax lint passed. PROD unchanged.
 
 ## 2026-10-14 — direct logout to storefront home
 
