@@ -2,7 +2,7 @@
 
 Added the user-supplied MM6 charcoal pinstripe jacket to the reviewed DEV upload catalog at KRW 300,000. The source screenshot and AI-edited product presentation images are SHA-bound in the media manifests; AI expected front/cutout views are labeled as such. Exact model code, fabric composition, size and measurements remain unverified. Stock is zero and inventory remains pending, so the jacket is visible in product data but not orderable.
 
-The initial guarded batch apply created WooCommerce DEV product 183 and then stopped on a legacy existing-product binding check before finishing the batch. A read-only follow-up verified the MM6 SKU, price, image hash, charcoal variation and zero-stock state. The single-product staging command validated that record and staged its binding in the private DEV candidate. The existing batch remains scoped to its reviewed 17 items. PROD was not accessed. Validation: 16 upload/storefront tests passed; default registrar plans are read-only.
+The initial guarded batch apply created WooCommerce DEV product 183 and then stopped on a legacy existing-product binding check before finishing the batch. A read-only follow-up verified the MM6 SKU, price, image hash, charcoal variation and zero-stock state. The single-product staging command validated that record and staged its binding plus a catalog-hash-bound product projection candidate in DEV runtime storage. The existing batch remains scoped to its reviewed 17 items. PROD was not accessed. Validation: 16 upload/storefront tests passed; default registrar plans are read-only.
 
 ## 2026-10-14 — Korean account and address editing
 

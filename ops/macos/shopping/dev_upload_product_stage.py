@@ -116,6 +116,48 @@ def read_woo(spec, sha):
         raise RuntimeError("DEV_PRODUCT_VARIANT_INVALID")
     return data
 
+def build_projection(spec):
+    projection_root = RUNTIME / "data"
+    current_path = projection_root / "product-projection.json"
+    candidate_path = projection_root / "product-projection.candidate.json"
+    catalog_bytes = (REPO / "brands/agachichi/catalog/dev-upload-products.json").read_bytes()
+    catalog_sha = hashlib.sha256(catalog_bytes).hexdigest()
+    catalog_doc = json.loads(catalog_bytes)
+    expected_ids = {r["id"] for r in catalog_doc["products"]}
+    product_projection = {
+        "enabled": True,
+        "regular_price": PRICE,
+        "sale_price": None,
+        "inventory": dict(spec["inventory"]),
+    }
+    if current_path.is_symlink() or not current_path.is_file():
+        raise RuntimeError("DEV_PRODUCT_PROJECTION_REQUIRED")
+    current = json.loads(current_path.read_text())
+    if current.get("schema_version") != 1 or current.get("environment") != "DEV":
+        raise RuntimeError("DEV_PRODUCT_PROJECTION_INVALID")
+    current_rows = current.get("products")
+    if not isinstance(current_rows, dict):
+        raise RuntimeError("DEV_PRODUCT_PROJECTION_INVALID")
+    if current.get("catalog_sha256") == catalog_sha:
+        candidate = current
+        if set(current_rows) != expected_ids or current_rows.get(CATALOG_ID) != product_projection:
+            raise RuntimeError("DEV_PRODUCT_PROJECTION_BINDING_INVALID")
+    elif current.get("catalog_sha256") == "1e0d7007a3edf32ace51f6b3609c6b3789af5df9a1ef806d7317a3f87fe9b15d":
+        if set(current_rows) != expected_ids - {CATALOG_ID}:
+            raise RuntimeError("DEV_PRODUCT_PROJECTION_SCOPE_INVALID")
+        candidate = dict(current)
+        candidate["catalog_sha256"] = catalog_sha
+        candidate["products"] = {**current_rows, CATALOG_ID: product_projection}
+    else:
+        raise RuntimeError("DEV_PRODUCT_PROJECTION_SOURCE_UNRECOGNIZED")
+    if candidate_path.exists():
+        if candidate_path.is_symlink():
+            raise RuntimeError("DEV_PRODUCT_PROJECTION_CANDIDATE_INVALID")
+        existing = json.loads(candidate_path.read_text())
+        if existing != candidate:
+            raise RuntimeError("DEV_PRODUCT_PROJECTION_CANDIDATE_CONFLICT")
+    return candidate, candidate_path
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--apply-dev", action="store_true", help="Stage private DEV mapping; never mutates WooCommerce")
@@ -123,6 +165,7 @@ def main():
     assert_isolation()
     spec, sha = read_spec()
     woo = read_woo(spec, sha)
+    projection, projection_path = build_projection(spec)
     current_path = PRIVATE / "runtime.private.json"
     candidate_path = PRIVATE / "runtime.batch-candidate.private.json"
     current = json.loads(current_path.read_text())
@@ -145,17 +188,18 @@ def main():
     if not args.apply_dev:
         print(json.dumps({"environment":"DEV","catalog_id":CATALOG_ID,
                           "product_id":woo["product_id"],"price":PRICE,
-                          "stock":0,"inventory_pending":True,"mutation":False}))
+                          "stock":0,"inventory_pending":True,"projection_products":len(projection["products"]),"mutation":False}))
         return
     candidate["active_products"] = [x for x in active if x.get("demo_id") != CATALOG_ID
                                     and x.get("product_id") != woo["product_id"]] + [binding]
     private_write(candidate_path, candidate)
+    private_write(projection_path, projection)
     RUNTIME.mkdir(parents=True, exist_ok=True)
     private_write(RUNTIME / "upload-product-staging-evidence.json", {
         "environment":"DEV","catalog_id":CATALOG_ID,"product_id":woo["product_id"],
         "price":PRICE,"status":"publish","inventory":{"charcoal":0},
         "inventory_pending":True,"available":False,"active_product_count":len(candidate["active_products"]),
-        "order_count_at_stage":woo["order_count"],"production_mutation":False,
+        "order_count_at_stage":woo["order_count"],"projection_sha256":projection["catalog_sha256"],"projection_products":len(projection["products"]),"production_mutation":False,
     })
     print(json.dumps({"environment":"DEV","staged":True,"catalog_id":CATALOG_ID,
                       "product_id":woo["product_id"],"candidate_product_count":len(candidate["active_products"]),
