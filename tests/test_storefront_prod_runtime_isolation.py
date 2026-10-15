@@ -190,7 +190,7 @@ def test_plan_is_read_only_execute_false_and_has_no_lifecycle_operation():
     assert result["release_path"].endswith(
         f"releases/{ACCEPTED_GIT_COMMIT}/ai-shopping-storefront"
     )
-    assert result["plugin_version"] == "0.19.1"
+    assert result["plugin_version"] == "0.19.2"
     assert result["presentation_identifier"] == "SHOP_MEDIA_003_AGACHICHI"
     source = CLI.read_text() + "\n" + (ROOT / "core/shopping/storefront_prod_runtime.py").read_text()
     assert 'add_parser("apply"' not in source
