@@ -189,3 +189,6 @@ def test_wrong_origin_host_or_remote_peer_is_blocked(tmp_path):
     with TestClient(app, base_url="https://agachichi.duckdns.org") as client:
         response = client.get("/v1/shop/signup/session", headers={"Origin": DEV_ORIGIN})
         assert response.status_code == 403
+    with TestClient(app, base_url=DEV_ORIGIN, client=("127.0.0.1", 55123)) as client:
+        response = client.get("/v1/shop/signup/session", headers={"Origin": DEV_ORIGIN})
+        assert response.status_code == 403

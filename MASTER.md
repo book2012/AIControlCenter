@@ -1,7 +1,7 @@
 ## COMPLETE — isolated synthetic DEV signup API contract
 
 - [x] Add an unmounted FastAPI composition requiring explicit DEV opt-in and a contained DEV data root.
-- [x] Reject non-DEV environment, disabled flag, unmarked providers/customer ports, path escape, mismatched stores, wrong host/origin and non-loopback peers.
+- [x] Reject non-DEV environment, disabled flag, unmarked providers/customer ports, path escape, mismatched stores, wrong host/origin and non-TestClient peers.
 - [x] Verify session-bound phone/email challenges, consent, claim, uniqueness, one fake customer write and exact readback end-to-end.
 - [x] Verify no-store responses and no contact, OTP, password or profile persistence.
 - [x] Combined focused suite: 69 passed; one Starlette/httpx deprecation warning.

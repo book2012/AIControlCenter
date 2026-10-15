@@ -5,7 +5,6 @@ database contained under that root. It is never imported by core.api.app.
 """
 from __future__ import annotations
 
-import ipaddress
 from pathlib import Path
 import secrets
 
@@ -121,11 +120,10 @@ def create_signup_dev_app(
         origin = request.headers.get("origin")
         host = request.headers.get("host", "").split(":", 1)[0].lower()
         peer = request.client.host if request.client else ""
-        try:
-            local_peer = peer == "testclient" or ipaddress.ip_address(peer).is_loopback
-        except ValueError:
-            local_peer = False
-        if origin != DEV_ORIGIN or host != "dev.bokstory.duckdns.org" or not local_peer:
+        # This factory is only for Starlette TestClient. A real Uvicorn
+        # socket, including loopback behind Caddy, must fail closed.
+        test_client_peer = peer == "testclient"
+        if origin != DEV_ORIGIN or host != "dev.bokstory.duckdns.org" or not test_client_peer:
             return response({"state": "NOT_COMPLETED"}, 403)
         session = request.cookies.get(_COOKIE)
         issue_cookie = not session or len(session) < 32 or len(session) > 128

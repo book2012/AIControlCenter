@@ -322,7 +322,7 @@ Tests use a memory-only fake customer port. No production adapter, API/runtime r
 
 ## Implementation slice — synthetic DEV HTTP composition
 
-Added core/shopping/signup_dev_app.py as an unmounted test-only FastAPI factory. It requires explicit environment=DEV, an explicit feature flag, all services to share one store under a DEV data root, and providers/customer port marked as DEV test doubles. Requests require the exact DEV origin and host and a loopback peer; session binding uses an HttpOnly, Secure, SameSite=Strict cookie. Request bodies are bounded, responses are no-store, and public signup completion maps internal non-success outcomes to one generic response.
+Added core/shopping/signup_dev_app.py as an unmounted test-only FastAPI factory. It requires explicit environment=DEV, an explicit feature flag, all services to share one store under a DEV data root, and providers/customer port marked as DEV test doubles. Requests require the exact DEV origin/host and the TestClient transport peer only; session binding uses an HttpOnly, Secure, SameSite=Strict cookie. Request bodies are bounded, responses are no-store, and public signup completion maps internal non-success outcomes to one generic response.
 
 Synthetic TestClient E2E exercised phone/email challenges, same-session proofs, consent validation, durable claim, read-only uniqueness checks, one fake customer write and matching readback. Negative tests reject PROD environment, disabled signup, data-root escape, unmarked provider and wrong origin/host. The factory is not imported by core/api/app and does not connect to the running DEV or PROD service. Combined focused suite: 69 passed with one Starlette/httpx deprecation warning.
 
