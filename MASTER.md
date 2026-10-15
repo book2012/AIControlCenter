@@ -1,3 +1,15 @@
+## COMPLETE — product registration intake standard
+
+- [x] Define one reusable photo + product details intake block.
+- [x] Separate user-confirmed values, sourced facts, and unknowns.
+- [x] Document image provenance, single-pass review, and post-registration DEV checks.
+- [x] Record existing uploader scope so fixed scripts are not reused for new products.
+- [ ] Implement a general JSON-first, idempotent single-product DEV registrar.
+- [ ] Keep WooCommerce writes behind explicit DEV apply and post-write readback.
+
+Current workflow: `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md`.
+ProductDraft runtime-to-WooCommerce registration remains unimplemented.
+
 ## 2026-10-14 — preserve the DEV product photo on color selection
 
 Fixed the storefront color-preview interaction: choosing a color with no dedicated color asset no longer hides the already loaded product photo, and a failed preview keeps that photo visible. Added a regression check for the fallback behavior. Focused validation: 84 tests passed. This source change is local and has not been activated in DEV; the managed release procedure requires a clean pushed feature commit, and remote writes remain blocked by the user's unresolved GitGuardian credential warning.

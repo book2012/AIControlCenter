@@ -1,3 +1,11 @@
+## 2026-10-15 — standardize product intake for faster DEV registration
+
+Added `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md` with a reusable
+photo-and-details intake block, fact/provenance rules, one-pass review summary,
+and DEV verification checklist. Clarified that current upload scripts are
+product/batch scoped and that the generic registrar is not implemented.
+Docs-only change; no WooCommerce or storefront mutation.
+
 ## 2026-10-14 — preserve the DEV product photo on color selection
 
 Fixed the storefront color-preview interaction: choosing a color with no dedicated color asset no longer hides the already loaded product photo, and a failed preview keeps that photo visible. Added a regression check for the fallback behavior. Focused validation: 84 tests passed. This source change is local and has not been activated in DEV; the managed release procedure requires a clean pushed feature commit, and remote writes remain blocked by the user's unresolved GitGuardian credential warning.

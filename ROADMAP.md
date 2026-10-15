@@ -1,3 +1,19 @@
+## NEXT — generic single-product DEV registration
+
+- [ ] Build a reusable registrar that accepts validated JSON and an image manifest.
+- [ ] Default to read-only plan; validate required fields, SKU uniqueness,
+  media hashes, option matrix, and inventory before any write.
+- [ ] Make repeated applies idempotent and restrict writes to isolated DEV WooCommerce.
+- [ ] Verify the created product by reading back its price, images, variations,
+  inventory, and orderable state.
+- [ ] Keep unresolved inventory at zero and non-orderable.
+- [ ] Connect the operator review format in
+  `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md`.
+
+The intake format is ready for immediate use. Generic automated creation is
+not implemented; existing upload scripts remain scoped to their named product
+or reviewed batch. No production work is authorized by this roadmap item.
+
 ## 2026-10-14 — preserve the DEV product photo on color selection
 
 Fixed the storefront color-preview interaction: choosing a color with no dedicated color asset no longer hides the already loaded product photo, and a failed preview keeps that photo visible. Added a regression check for the fallback behavior. Focused validation: 84 tests passed. This source change is local and has not been activated in DEV; the managed release procedure requires a clean pushed feature commit, and remote writes remain blocked by the user's unresolved GitGuardian credential warning.
