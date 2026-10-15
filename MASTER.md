@@ -7111,3 +7111,7 @@ Logged-in header has dedicated 주문내역 and 내 정보 destinations. The acc
 
 ## Telegram customer bot boundary
 Customer member/guest identification and first-purchase classification belong in a future separate Shopping/Sales Bot backed by AIControlCenter account linking and order history. Current papachichi/mommychichi bots remain operator-only. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
+
+
+## PROD Stabilization — 2026-10-15
+Account presentation release v0.19.2 is active as an immutable PROD plugin release; v0.19.1 remains available for rollback. WordPress and DB containers are healthy. Storefront/account/catalog/health routes are available; signup, order-list, wp-login and REST routes are blocked. Catalog reads return 21 products and 7 categories. User authorized continued necessary scoped PROD stabilization without repeated approvals. Stabilization covers operational storefront readiness only; live customer auth and transaction acceptance remain untested and ordering/signup stay disabled. Details and exit gate: `docs/shopping-current-prod-promotion.md`.

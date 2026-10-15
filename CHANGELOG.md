@@ -6619,3 +6619,10 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 ## 2026-10-13 — Telegram customer bot requirements
 - Recorded a separate customer-facing Telegram Shopping/Sales Bot requirement: guests remain unlinked; members link through an authenticated account challenge; members are marked first-purchase until a successful paid order exists.
 - Kept current papachichi operator bot and mommychichi production operator bot isolated. No customer bot runtime was activated.
+
+
+## 2026-10-15 — PROD account stabilization record
+- Recorded standing user authorization to continue necessary scoped PROD stabilization upgrades without repeated approval.
+- Verified healthy PROD WordPress and database containers, service health, storefront/account route allowlist, signup/order/admin/REST denials, and catalog counts (21 products, 7 categories).
+- Clarified that these checks do not certify a real customer login, checkout, payment or shipping transaction. No such production mutation was performed.
+- Documented host CLI dependency mismatch (`python-dotenv` missing from system Python); use the managed runtime interpreter for release CLI checks.
