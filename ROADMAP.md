@@ -1,3 +1,13 @@
+## NEXT — signup claim execution foundations (PROD remains disabled)
+
+- [x] Implement fake-only phone and email verification with expiry, throttles and one-use proofs.
+- [x] Bind both proofs to the same session and candidate identity.
+- [x] Atomically create an idempotent durable claim after input and consent validation.
+- [x] Validate combined focused suite: 58 passed.
+- [ ] Add privacy-preserving uniqueness checks and durable operation/reconciliation states.
+- [ ] Compose only in isolated DEV and prove no PROD reachability or live messaging.
+- [ ] Complete operational/privacy gates before separately authorized PROD activation.
+
 ## NEXT — complete customer signup foundations (PROD remains disabled)
 
 - [x] Implement isolated fake-only phone challenge/ticket core; focused suite 50 passed.

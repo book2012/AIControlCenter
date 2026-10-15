@@ -1,3 +1,7 @@
+## 2026-10-16 — fake-only email verification and two-contact signup claim
+
+Added an isolated email challenge/ticket flow and an atomic durable claim that consumes phone and email proofs only when both match the validated registration candidate, session and consent requirements. The claim stores keyed digests, idempotency and terms-version evidence, never profile/password values. Combined focused suite: 58 passed. No live email/SMS, API/runtime wiring, WooCommerce account creation or PROD mutation.
+
 ## 2026-10-15 — fake-only PROD signup phone-verification core
 
 Added an isolated phone-challenge/ticket service with injected provider port, explicit SQLite initialization, keyed-digest persistence, expiry, replay protection, throttles and ambiguous-outcome quarantine. Focused signup/message/input/recovery suite: 50 passed. This proves phone verification only; no API/runtime wiring, live provider, SMS, account creation, WooCommerce call or PROD change. Signup remains disabled. See `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.

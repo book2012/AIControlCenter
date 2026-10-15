@@ -277,9 +277,10 @@ production state was changed.
 
 ## Out of scope and unresolved decisions
 
-- No registration service/API/runtime composition beyond the side-effect-free
-  input validator; no provider provisioning, SMS/email dispatch, real customer
-  creation, signup activation, checkout or PROD deployment in this task.
+- No signup API/runtime composition, uniqueness checks, complete registration
+  operation, live provider provisioning, SMS/email dispatch, customer creation,
+  signup activation, checkout or PROD deployment. Current Core verification
+  and two-contact claim foundations remain unmounted and fake-only.
 - No migration or synchronization of DEV accounts into PROD.
 - Recovery remains governed by
   [account recovery design](SHOP_ACCOUNT_RECOVERY.md); registration must use
@@ -305,3 +306,10 @@ The ticket proves phone verification only. It is not a registration authorizatio
 Focused validation: 50 tests passed across signup verification, message formatting, registration input validation and account recovery. The test fake has no external IO.
 
 ## Delivery gates
+
+
+## Implementation slice — fake-only email and two-contact claim
+
+Added `core/shopping/signup_email_and_claim.py` on top of the isolated phone-verification store. Email challenges and tickets are session-bound, expire after five minutes, enforce attempt/resend limits and a shared phone/email client budget, and use an injected provider port. The final claim operation revalidates the registration candidate and required terms/privacy consent, checks that both proof tickets match the candidate phone/email and same session, then consumes both tickets and records an idempotent durable claim in one SQLite transaction. Only keyed digests, ticket references, session binding, idempotency and terms-version evidence persist; password, name, login ID and contact values are not stored.
+
+The claim is a Core proof/operation boundary only. It does not check account uniqueness, create an account, invoke WooCommerce, or act as runtime/API authorization. Email provider delivery/template and consent wording remain unconfigured; there is no live provider. Combined focused tests: 58 passed.

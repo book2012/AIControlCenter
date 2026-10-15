@@ -122,6 +122,13 @@ class SQLiteSignupVerificationStore:
                     expires_at TEXT NOT NULL,
                     version INTEGER NOT NULL DEFAULT 0
                 );
+                CREATE TABLE IF NOT EXISTS signup_client_attempts (
+                    client_binding TEXT NOT NULL,
+                    channel TEXT NOT NULL,
+                    created_at TEXT NOT NULL
+                );
+                CREATE INDEX IF NOT EXISTS signup_client_attempts_created
+                    ON signup_client_attempts(client_binding, created_at);
             """)
         try:
             self.path.chmod(0o600)
@@ -165,13 +172,17 @@ class SQLiteSignupVerificationStore:
                 "DELETE FROM signup_phone_tickets WHERE expires_at<=?",
                 (now.isoformat(),),
             )
+            connection.execute(
+                "DELETE FROM signup_client_attempts WHERE created_at<=?",
+                (phone_since,),
+            )
             phone_count = connection.execute(
                 "SELECT count(*) FROM signup_phone_challenges "
                 "WHERE phone_binding=? AND created_at>?",
                 (phone_binding, phone_since),
             ).fetchone()[0]
             client_count = connection.execute(
-                "SELECT count(*) FROM signup_phone_challenges "
+                "SELECT count(*) FROM signup_client_attempts "
                 "WHERE client_binding=? AND created_at>?",
                 (client_binding, client_since),
             ).fetchone()[0]
@@ -187,6 +198,10 @@ class SQLiteSignupVerificationStore:
                 "UPDATE signup_phone_challenges SET lifecycle='SUPERSEDED',version=version+1 "
                 "WHERE phone_binding=? AND lifecycle='PENDING'",
                 (phone_binding,),
+            )
+            connection.execute(
+                "INSERT INTO signup_client_attempts(client_binding,channel,created_at) VALUES(?,?,?)",
+                (client_binding, "phone", now.isoformat()),
             )
             connection.execute(
                 "INSERT INTO signup_phone_challenges "

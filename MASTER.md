@@ -1,3 +1,14 @@
+## COMPLETE — fake-only two-contact signup claim foundation
+
+- [x] Add expiring email challenge and email proof ticket using an injected fakeable provider port.
+- [x] Require phone and email tickets to match one session and the candidate's verified phone/email.
+- [x] Atomically consume both proofs into a durable, idempotent signup claim.
+- [x] Revalidate signup fields and required terms/privacy consent; retain no profile or password.
+- [x] Combined focused suite: 58 passed.
+- [ ] Add uniqueness checks, claim execution/reconciliation and isolated API composition.
+
+No live providers, API/runtime wiring, WooCommerce customer creation or PROD mutation.
+
 ## COMPLETE — isolated phone-verification core foundation
 
 - [x] Add provider-injected signup phone challenge and one-use phone ticket service.

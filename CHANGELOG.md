@@ -1,3 +1,7 @@
+## 2026-10-16 — fake-only email verification and two-contact signup claim
+
+Added injected email-provider port, expiring email proof tickets and atomic phone+email claim with input/consent validation, identity binding and replay/idempotency protection. Focused signup, input, message and recovery suite: 56 passed. No network, account creation or PROD effects.
+
 ## 2026-10-15 — fake-only PROD signup phone-verification core
 
 Added a provider-injected Core phone verification service with five-minute challenge/ticket TTLs, one-use ticket consumption, attempt/rate limits and durable keyed-digest state. Focused tests: 50 passed. No network/provider, API/runtime, account/WooCommerce or PROD effects; PROD signup remains disabled.
