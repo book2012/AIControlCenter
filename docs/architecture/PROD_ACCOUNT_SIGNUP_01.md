@@ -140,6 +140,95 @@ runs use fake adapters and do not create a real customer. Live provider delivery
 or production test-account creation requires its own reviewed, explicit
 authorization.
 
+## Step 2 proposal — providers, consent and retention
+
+### Provider selection
+
+Recommended production path:
+
+- Use **Twilio Verify SMS** for phone OTP, consistent with the already selected
+  account-recovery vendor. Create a signup-specific PROD Verify Service SID and
+  restricted API credentials. Do not reuse the DEV test-number configuration
+  or recovery service identity. Recovery-link Messaging remains a distinct
+  workflow.
+- Use **Twilio Verify email verification through Twilio SendGrid** for email
+  OTP. Twilio documents this integration as requiring a SendGrid account, a
+  restricted Mail Send API key, a verification template, and authenticated
+  sending domain. When `agachichi.com` is owned and DNS can be controlled,
+  authenticate a dedicated sender subdomain before sending.
+- Keep both as replaceable Core ports. Send only the destination and
+  verification content to the providers; do not send customer names, login IDs,
+  addresses, or passwords.
+- This is a provider recommendation, not provisioning authorization. Production
+  service SIDs, keys, DNS records, templates, and live sends remain absent.
+
+Twilio Verify supports email as a verification channel and its email setup uses
+Twilio SendGrid. The provider integration and domain authentication are described
+in the [Verify service API](https://www.twilio.com/docs/verify/api/service),
+[Verify email setup](https://www.twilio.com/docs/verify/email), and
+[SendGrid email authentication](https://www.twilio.com/docs/sendgrid/concepts/security/email-authentication).
+
+### Draft consent presentation
+
+Keep terms, essential personal-information processing, and any required
+international transfer disclosure distinguishable. Do not include marketing
+consent in signup; if added later, it must be optional and unchecked.
+
+Proposed form labels (final wording and lawful basis require privacy review):
+
+- `[필수] Agachichi 이용약관에 동의합니다.`
+- `[필수] 회원가입 및 계정 관리를 위한 개인정보 수집·이용 내용을 확인했습니다.`
+  Show an adjacent disclosure listing login ID, email, name and mobile number;
+  account creation, contact verification and account management purposes; and
+  retention until withdrawal, subject to a separately stated statutory
+  retention requirement where applicable.
+- Where a consent basis is used for overseas transfer, show a separate
+  disclosure/choice before the first provider call. It must identify the
+  actual recipient legal entity, destination country, transfer method and
+  timing, data items, purpose, retention period, refusal option and effect.
+  Confirm these facts from the provider contract and account region before
+  publishing; do not assume the country from the vendor brand.
+
+The Privacy Act requires collection to be limited to the minimum necessary and
+requires overseas-transfer conditions and disclosures to be checked. Twilio and
+SendGrid processing of Korean contact data is therefore a launch gate, not
+something implied by ordinary terms acceptance. See the official
+[Personal Information Protection Act, Articles 16 and 28-8](https://www.law.go.kr/LSW/lsInfoP.do?ancYnChk=0&lsId=011357)
+and [Article 21](https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&lsJoLnkSeq=1029335387).
+
+### Retention proposal
+
+- OTP values and passwords are never written to Core storage or logs.
+- Keep registration challenge state only as keyed destination digests, opaque
+  provider references, lifecycle and timestamps. Challenge lifetime: 5 minutes;
+  one-use registration ticket lifetime: 5 minutes. Delete or irreversibly
+  expire those records after completion/expiry; retain a non-PII replay tombstone
+  only until the original ticket could no longer be accepted.
+- Keep rate-limit buckets as keyed digests only, for the configured window
+  (initially 24 hours), then purge them. Do not store raw IP or contact values
+  in signup audit.
+- Do not persist an unfinished profile in Core. Hold submitted fields only for
+  the active request; WooCommerce stores the verified profile after successful
+  creation.
+- Keep the active account profile until account withdrawal. At withdrawal,
+  remove account-only fields unless a specific legal retention duty applies;
+  isolate any transaction records subject to retention rather than retaining
+  the whole customer account. Record the accepted terms/notice version and
+  timestamp with the account; retention after withdrawal must be covered by the
+  approved privacy schedule.
+- Obtain provider deletion/retention terms for verification metadata and
+  document the applicable cross-border processing arrangement before launch.
+  No fixed post-withdrawal period is asserted until the business/legal review
+  determines which records must be preserved.
+
+### Decision status
+
+Twilio Verify + SendGrid is the recommended provider path, and the retention
+rules above are the proposed technical defaults. Provider-account/legal-entity
+details, transfer basis/disclosure, final Korean consent wording, and the
+post-withdrawal schedule remain launch blockers. No provider has been configured
+or contacted.
+
 ## First implementation slice — input contract
 
 Implemented as an isolated, side-effect-free Core module in

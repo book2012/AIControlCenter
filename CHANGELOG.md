@@ -6643,4 +6643,4 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 
 ## 2026-10-16 — PROD signup input contract
 
-Added side-effect-free Core input validation for the DEV-compatible login ID, email, password confirmation, name, Korean mobile format and explicit terms/privacy consent. Twenty-six focused/recovery tests pass. No contact verification, persistence, provider call, WooCommerce account creation or PROD activation. See `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.
+Added side-effect-free Core input validation for the DEV-compatible login ID, email, password confirmation, name, Korean mobile format and explicit terms/privacy consent. Twenty-six focused/recovery tests pass. Added a proposed production OTP path (separate Twilio Verify service + SendGrid email channel), retention defaults and privacy-transfer launch gates. No provider was configured/contacted; no contact verification, persistence, WooCommerce account creation or PROD activation. See `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.
