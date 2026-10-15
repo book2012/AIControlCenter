@@ -7119,3 +7119,7 @@ Account presentation release v0.19.2 is active as an immutable PROD plugin relea
 
 ## PROD account/storefront stability follow-up — 2026-10-16
 After several hours, read-only route and health checks repeated successfully; the managed immutable v0.19.2 release validates, WordPress and DB are healthy, and the v0.19.1 rollback release remains present. Browser navigation from the public homepage LOGIN link reaches the canonical Agachichi login page. All 54 focused tests pass again. Account/storefront stability gate: PASS. Customer purchase remains unavailable and no signup/order/payment/SMS action was enabled. Full verification detail: `docs/shopping-current-prod-promotion.md`.
+
+
+## PROD signup and product registration boundary — 2026-10-16
+Customer signup stays disabled under the current PROD account policy. Operator-side registration is separate and already implemented through the read-only-by-default `prod_upload_product_register.py`; it creates isolated PROD WooCommerce IDs/SKUs and zero-stock variants, then stages private candidates without activating a public release. Read-only plans for two current uploaded catalog items returned `ALREADY_REGISTERED`, mutation false. The quickstart now uses the managed interpreter and explains the separation.

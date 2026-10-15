@@ -65,3 +65,19 @@ python3 ops/macos/shopping/dev_upload_product_register.py --catalog-id ag-upload
 - 범용 `dev_upload_product_register.py`는 catalog/manifest 검증, read-only plan, 격리 DEV WooCommerce 등록, 결과 readback, idempotent SKU 확인, private mapping/projection 후보 생성까지 지원합니다.
 - 이 도구는 ProductDraft API와 연결되지 않았고 후보 활성화나 홈페이지 배포도 하지 않습니다. 다음 과제는 후보 검토/승격을 기존 immutable DEV 릴리스와 연결하고, 이후 새 상품 1건으로 전체 흐름을 검증하는 것입니다.
 - PROD와 Ubuntu에는 접근하거나 변경하지 않습니다.
+
+
+## PROD 운영자 상품 등록과 고객 회원가입은 별도 기능
+
+PROD 고객 회원가입은 현재 정책상 꺼져 있습니다. WooCommerce 로그인과 운영자 상품 등록은 별개라서, 가입 링크가 없어도 운영자는 새 상품을 독립된 PROD WooCommerce 상품/SKU로 등록할 수 있습니다.
+
+새 업로드 상품이 검토된 뒤 먼저 읽기 전용 계획을 실행합니다.
+
+```bash
+cd /Users/kyouhan/AIControlCenterRuntime/prod-commerce/build/prod-current
+/Users/kyouhan/AIControlCenter/.venv/bin/python ops/macos/shopping/prod_upload_product_register.py --catalog-id <catalog-id>
+```
+
+계획 결과에서 `environment=PROD`, `mutation=false`, 가격·옵션·이미지·SKU 상태를 확인합니다. 검토한 정확한 상품만 PROD에 등록할 때 `--apply-prod`를 붙입니다. 이 쓰기 단계는 PROD WooCommerce에 별도 상품과 옵션을 만들고, 미확인 재고는 0으로 두며, private binding/projection 후보를 기록합니다. 주문 수를 전후 비교하고 후보를 활성 공개하지는 않습니다. 상품이 실제 화면에 나오려면 별도의 승인된 immutable release 활성화 단계가 필요합니다.
+
+2026-10-16 read-only PROD plan 확인: `ag-upload-bottom-0002`와 `ag-upload-outer-0006`은 각각 `aicc-prod-` SKU로 이미 PROD에 등록되어 `ALREADY_REGISTERED`를 반환했고, 둘 다 `mutation=false`였습니다. CLI는 기본 macOS Python 대신 위 프로젝트 가상환경으로 실행해야 합니다.

@@ -6092,3 +6092,10 @@ Build a separately credentialed customer bot. Guests remain unlinked. Members li
 - [x] Close the account/storefront stability gate; purchasing, signup, payment and SMS remain unavailable.
 - [x] Run release CLI validation using the managed Python interpreter; keep system Python isolated.
 - Keep production signup/order flow disabled until separately planned and explicitly tested with safe customer authorization.
+
+
+## PROD registration handoff clarity (2026-10-16)
+- [x] Clarify that shopper signup is disabled separately from operator product registration.
+- [x] Verify two existing PROD uploaded products with read-only registration plans; both return `ALREADY_REGISTERED`, mutation false.
+- [x] Correct the PROD registrar examples to use the installed project virtualenv.
+- [ ] Keep ProductDraft API integration, candidate approval and public activation as distinct follow-up work; no auto-publish.

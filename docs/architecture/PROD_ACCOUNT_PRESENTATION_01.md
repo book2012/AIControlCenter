@@ -5,7 +5,7 @@
 - Active plugin version: `0.19.2`, commit `7dda8c9e012208977cf26ed2b563d8111c56c27e`.
 - Host gate: `agachichi.duckdns.org` only.
 - Presentation: Agachichi document title, branded login heading/header/footer, and responsive account styling.
-- Authentication remains WooCommerce-owned. Customer registration and DEV phone verification are excluded.
+- Authentication remains WooCommerce-owned. Customer registration and DEV phone verification are excluded by the current PROD customer-account policy; the PROD homepage exposes login and order lookup, not signup.
 - Logout uses WooCommerce's `customer-logout` account endpoint with its nonce. It does not call `wp-admin/admin-ajax.php`, which public ingress blocks.
 - Account UI asset loading is limited to WooCommerce account pages.
 

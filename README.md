@@ -6137,3 +6137,6 @@ PROD `agachichi.duckdns.org` now serves account presentation plugin v0.19.2 on a
 
 
 2026-10-16 follow-up: after several hours, PROD release validation and 54 focused tests passed again; WordPress/DB and allowed public routes stayed healthy. The homepage login menu was browser-verified to open the correct Agachichi `/my-account/` form; same-origin assets and icon fonts returned 200. The account/storefront stability gate passed. Customer purchasing remains explicitly unavailable and was not enabled. See the PROD promotion record for exact boundaries and checks.
+
+
+2026-10-16: Clarified that customer signup is intentionally disabled in PROD while operator-side product registration is a separate feature. The existing PROD registrar is read-only by default and uses the project virtualenv; two PROD catalog entries were verified as already registered with no mutation. See `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md`.

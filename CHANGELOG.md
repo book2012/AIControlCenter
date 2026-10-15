@@ -6633,3 +6633,10 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - Browser-clicked homepage LOGIN and confirmed the canonical `/my-account/` destination and rendered account form; all 28 linked same-origin assets and referenced icon-font assets returned 200.
 - 54 focused tests passed again. Verified the retained v0.19.1 rollback directory and clean, upstream-synced feature branch.
 - Account/storefront stability gate now passes. Customer login credentials, order, payment, SMS, signup and purchase activation were not used or enabled.
+
+
+## 2026-10-16 — Separate PROD product registration from customer signup
+- Documented the distinction between disabled customer account signup and operator-side PROD product registration.
+- Corrected the PROD registration command to use the project managed Python interpreter.
+- Read-only plans verified PROD catalog IDs `ag-upload-bottom-0002` and `ag-upload-outer-0006` are already registered under separate `aicc-prod-` SKUs; no mutation occurred.
+- Clarified that product registration stages a candidate and does not publish or enable purchasing.

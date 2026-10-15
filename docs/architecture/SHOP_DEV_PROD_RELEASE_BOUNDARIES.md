@@ -11,11 +11,11 @@
 
 Plan first:
 
-python3 ops/macos/shopping/prod_upload_product_register.py --catalog-id ag-upload-bottom-0002
+/Users/kyouhan/AIControlCenter/.venv/bin/python ops/macos/shopping/prod_upload_product_register.py --catalog-id ag-upload-bottom-0002
 
 The default command is read-only. After reviewing the product, price, options, and media, register it explicitly:
 
-python3 ops/macos/shopping/prod_upload_product_register.py --catalog-id ag-upload-bottom-0002 --apply-prod
+/Users/kyouhan/AIControlCenter/.venv/bin/python ops/macos/shopping/prod_upload_product_register.py --catalog-id ag-upload-bottom-0002 --apply-prod
 
 The command asserts the production Docker project and database, creates only the matching product and variations with zero stock, verifies media hashes and order count, and stages private binding/projection candidates. It does not create orders, change existing product quantities, or activate a candidate release.
 
