@@ -6134,3 +6134,6 @@ Telegram customer bot requirements are tracked in [SHOP_TELEGRAM_CUSTOMER_BOT.md
 
 ## PROD account/storefront stabilization (2026-10-15)
 PROD `agachichi.duckdns.org` now serves account presentation plugin v0.19.2 on an immutable release with v0.19.1 retained for rollback. WordPress and DB report healthy; storefront, catalog, health and account routes return 200, while signup, customer order listing, wp-login and REST routes remain blocked. The catalog reports 21 products and 7 categories. See `docs/shopping-current-prod-promotion.md` for route checks, standing stabilization authorization, boundaries and closure criteria. No production customer session, order, payment, inventory change or SMS was used.
+
+
+2026-10-16 follow-up: after several hours, PROD release validation and 54 focused tests passed again; WordPress/DB and allowed public routes stayed healthy. The homepage login menu was browser-verified to open the correct Agachichi `/my-account/` form; same-origin assets and icon fonts returned 200. The account/storefront stability gate passed. Customer purchasing remains explicitly unavailable and was not enabled. See the PROD promotion record for exact boundaries and checks.

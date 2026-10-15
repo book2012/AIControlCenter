@@ -6084,9 +6084,11 @@ Current DEV Twilio Verify remains restricted to one configured test phone. Its p
 Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
 
 
-## PROD stabilization follow-up (2026-10-15)
+## PROD stabilization follow-up (2026-10-15–16)
 - [x] Confirm active immutable account plugin v0.19.2 and retained v0.19.1 rollback.
 - [x] Verify WordPress/DB health, public storefront/account/service routes, blocked signup/order/admin/REST routes and catalog counts.
-- [ ] Repeat smoke checks over time and re-run focused regressions after each code change before closing storefront stabilization.
+- [x] Repeat smoke checks several hours later; 54 focused regressions rerun successfully.
+- [x] Click homepage LOGIN and verify canonical `/my-account/` page; all 28 same-origin assets and referenced icon fonts return 200.
+- [x] Close the account/storefront stability gate; purchasing, signup, payment and SMS remain unavailable.
 - [x] Run release CLI validation using the managed Python interpreter; keep system Python isolated.
 - Keep production signup/order flow disabled until separately planned and explicitly tested with safe customer authorization.

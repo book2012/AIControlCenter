@@ -7115,3 +7115,7 @@ Customer member/guest identification and first-purchase classification belong in
 
 ## PROD Stabilization — 2026-10-15
 Account presentation release v0.19.2 is active as an immutable PROD plugin release; v0.19.1 remains available for rollback. WordPress and DB containers are healthy. Storefront/account/catalog/health routes are available; signup, order-list, wp-login and REST routes are blocked. Catalog reads return 21 products and 7 categories. User authorized continued necessary scoped PROD stabilization without repeated approvals. Stabilization covers operational storefront readiness only; live customer auth and transaction acceptance remain untested and ordering/signup stay disabled. Details and exit gate: `docs/shopping-current-prod-promotion.md`.
+
+
+## PROD account/storefront stability follow-up — 2026-10-16
+After several hours, read-only route and health checks repeated successfully; the managed immutable v0.19.2 release validates, WordPress and DB are healthy, and the v0.19.1 rollback release remains present. Browser navigation from the public homepage LOGIN link reaches the canonical Agachichi login page. All 54 focused tests pass again. Account/storefront stability gate: PASS. Customer purchase remains unavailable and no signup/order/payment/SMS action was enabled. Full verification detail: `docs/shopping-current-prod-promotion.md`.

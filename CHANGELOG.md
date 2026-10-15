@@ -6626,3 +6626,10 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - Verified healthy PROD WordPress and database containers, service health, storefront/account route allowlist, signup/order/admin/REST denials, and catalog counts (21 products, 7 categories).
 - Clarified that these checks do not certify a real customer login, checkout, payment or shipping transaction. No such production mutation was performed.
 - Documented host CLI dependency mismatch (`python-dotenv` missing from system Python); use the managed runtime interpreter for release CLI checks.
+
+
+## 2026-10-16 — sustained PROD account verification
+- Rechecked PROD several hours after the initial gate: release validator valid, WordPress and DB healthy, route allow/deny matrix unchanged, catalog still 21 products / 7 categories.
+- Browser-clicked homepage LOGIN and confirmed the canonical `/my-account/` destination and rendered account form; all 28 linked same-origin assets and referenced icon-font assets returned 200.
+- 54 focused tests passed again. Verified the retained v0.19.1 rollback directory and clean, upstream-synced feature branch.
+- Account/storefront stability gate now passes. Customer login credentials, order, payment, SMS, signup and purchase activation were not used or enabled.
