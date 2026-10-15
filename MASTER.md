@@ -5,7 +5,7 @@
 - [x] Minimize signup fields; defer legal name/address/shipping/payment details until actually needed.
 - [x] Document overseas provider disclosure fields and keep unverified supplier facts blank.
 - [x] Align side-effect-free Core candidate and synthetic TestClient flow: remove mandatory legal name and blanket privacy-consent checkbox; preserve separate terms acceptance/version and privacy-notice version evidence.
-- [x] Validate signup/account-recovery/customer-isolation regression suite: 97 passed, one dependency deprecation warning.
+- [x] Validate signup/account-recovery/customer-isolation regression suite: 98 passed, one dependency deprecation warning.
 - [ ] Resolve notice version server-side and verify it matches the rendered production policy before any real route is added.
 - [ ] Confirm operator identity, provider legal entities/locations/contracts, contact-channel necessity, retention schedule, age policy, and legal review.
 

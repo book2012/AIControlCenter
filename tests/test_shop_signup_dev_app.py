@@ -191,3 +191,25 @@ def test_wrong_origin_host_or_remote_peer_is_blocked(tmp_path):
     with TestClient(app, base_url=DEV_ORIGIN, client=("127.0.0.1", 55123)) as client:
         response = client.get("/v1/shop/signup/session", headers={"Origin": DEV_ORIGIN})
         assert response.status_code == 403
+
+
+def test_terms_acceptance_rejects_coerced_boolean_values(tmp_path):
+    app, *_ = make_app(tmp_path)
+    payload = {
+        "login_id": "customer_1",
+        "email": "customer@example.test",
+        "password": "S3cure-pass-123",
+        "password_confirmation": "S3cure-pass-123",
+        "phone": "+821012345678",
+        "terms_accepted": 1,
+        "terms_version": "terms-dev-001",
+        "privacy_notice_version": "privacy-dev-001",
+        "phone_ticket": "phone-ticket",
+        "email_ticket": "email-ticket",
+        "idempotency_key": "signup-dev-strict-boolean-0001",
+    }
+    with TestClient(app, base_url=DEV_ORIGIN) as client:
+        response = client.post("/v1/shop/signup/complete",
+                               headers={"Origin": DEV_ORIGIN}, json=payload)
+    assert response.status_code == 422
+    assert response.json()["state"] == "NOT_COMPLETED"

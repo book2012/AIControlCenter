@@ -54,7 +54,7 @@ class _Signup(_Body):
     password: SecretStr = Field(min_length=8, max_length=128, repr=False)
     password_confirmation: SecretStr = Field(min_length=8, max_length=128, repr=False)
     phone: str = Field(strict=True, min_length=13, max_length=13)
-    terms_accepted: bool
+    terms_accepted: bool = Field(strict=True)
     terms_version: str = Field(strict=True, min_length=1, max_length=64)
     privacy_notice_version: str = Field(strict=True, min_length=1, max_length=64)
     phone_ticket: str = Field(strict=True, min_length=1, max_length=128, repr=False)
