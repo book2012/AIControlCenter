@@ -147,10 +147,11 @@ authorization.
 Recommended production path:
 
 - Use **Twilio Verify SMS** for phone OTP, consistent with the already selected
-  account-recovery vendor. Create a signup-specific PROD Verify Service SID and
-  restricted API credentials. Do not reuse the DEV test-number configuration
-  or recovery service identity. Recovery-link Messaging remains a distinct
-  workflow.
+  account-recovery vendor. Use a 4-digit code and the exact user-approved copy:
+  `[Agachichi] 인증번호 {{code}} 입니다`. Create a signup-specific PROD Verify
+  Service SID and restricted API credentials. Do not reuse the DEV test-number
+  configuration or recovery service identity. Recovery-link Messaging remains
+  a distinct workflow.
 - Use **Twilio Verify email verification through Twilio SendGrid** for email
   OTP. Twilio documents this integration as requiring a SendGrid account, a
   restricted Mail Send API key, a verification template, and authenticated
@@ -159,6 +160,10 @@ Recommended production path:
 - Keep both as replaceable Core ports. Send only the destination and
   verification content to the providers; do not send customer names, login IDs,
   addresses, or passwords.
+- Twilio requires an approved pre-approved/custom Verify template for customized
+  SMS copy; custom templates are handled case-by-case. Do not use the deprecated
+  `CustomMessage` override. Request/verify the Korean template and 4-digit
+  substitution before any live send.
 - This is a provider recommendation, not provisioning authorization. Production
   service SIDs, keys, DNS records, templates, and live sends remain absent.
 
@@ -223,6 +228,10 @@ and [Article 21](https://www.law.go.kr/LSW/lsLinkCommonInfo.do?chrClsCd=010202&l
 
 ### Decision status
 
+The user approved the SMS copy `[Agachichi] 인증번호 ×××× 입니다`; the design
+interprets the mask as a four-digit code and maps the provider template to
+`[Agachichi] 인증번호 {{code}} 입니다`. A side-effect-free preview formatter
+and tests are implemented in `core/shopping/adapters/signup_verification_message.py`.
 Twilio Verify + SendGrid is the recommended provider path, and the retention
 rules above are the proposed technical defaults. Provider-account/legal-entity
 details, transfer basis/disclosure, final Korean consent wording, and the
@@ -239,7 +248,9 @@ returns a redacted candidate object only; the result does not prove phone/email
 ownership and cannot authorize persistence or WooCommerce account creation.
 
 Focused tests: `tests/test_shop_account_registration_input.py` plus the existing
-account-recovery regression suite (26 passed). No API/router/runtime composition,
+account-recovery regression suite (26 passed). The SMS copy/preview contract is
+covered by `tests/test_shop_signup_verification_message.py`; the combined
+focused suite now has 33 passing tests. No API/router/runtime composition,
 provider, database schema, WordPress bridge, WooCommerce call, PROD flag, or
 production state was changed.
 

@@ -6105,6 +6105,7 @@ Build a separately credentialed customer bot. Guests remain unlinked. Members li
 - [x] Define PROD-only signup ownership, user flow, identity verification, abuse controls, state reconciliation, DEV/PROD separation and rollout gates.
 - [x] Set DEV-compatible custom login ID and implement side-effect-free signup input validation; 26 focused/recovery tests pass.
 - [x] Propose PROD signup OTP via a separate Twilio Verify service and Twilio SendGrid email channel; define short challenge/rate-limit retention defaults and consent disclosure structure.
+- [x] Record the approved Korean SMS copy with a four-digit code and add side-effect-free preview tests (33 focused/recovery tests pass).
 - [ ] Review provider legal entities, data location/cross-border basis, final consent wording, post-withdrawal retention and support recovery procedure.
 - [ ] Implement Core service and durable idempotent registration states with fake-provider tests.
 - [ ] Provision and verify dedicated least-privilege PROD bridge and separate provider credentials after review.
