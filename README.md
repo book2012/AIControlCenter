@@ -1,3 +1,7 @@
+## 2026-10-16 — isolated synthetic DEV signup API
+
+Added an unmounted FastAPI test composition guarded by explicit DEV opt-in, DEV-only data-root containment, marked test doubles, exact DEV host/origin and loopback peer checks. End-to-end synthetic flow covers session cookie, phone/email challenges, consent, claim, uniqueness, fake customer write and readback; responses are no-store and durable storage contains no profile/password/contact/code values. Combined focused suite: 69 passed (one dependency deprecation warning). This is not connected to the running DEV or PROD runtime.
+
 ## 2026-10-16 — signup uniqueness and durable operation boundary
 
 Added enumeration-resistant identity preflight, durable one-attempt dispatch state, and read-only reconciliation for ambiguous outcomes. Duplicate candidates get a uniform non-completion response; all three identity lookups are attempted. Ambiguous customer writes are quarantined without retry; readback/reconciliation can confirm active or definitive absence. Fake-only combined focused suite: 66 passed. No API/runtime binding, live adapter, real account, or PROD change.

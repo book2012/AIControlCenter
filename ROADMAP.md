@@ -1,3 +1,12 @@
+## NEXT — pre-PROD signup readiness
+
+- [x] Complete Core phone/email proof, combined claim, uniqueness and one-attempt operation/reconciliation foundations.
+- [x] Complete isolated synthetic FastAPI E2E using fake providers and fake customer writer (69 focused tests pass).
+- [ ] Review whether the isolated app may be mounted in DEV; keep signup disabled in the shared application by default.
+- [ ] Define isolated DEV persistence/retention and operational monitoring without reusing DEV recovery or order providers.
+- [ ] Prepare production adapter contracts, least-privilege WooCommerce capabilities, email/SMS template and privacy gates without provisioning or contacting them.
+- [ ] Stop at the PROD integration boundary; do not connect or activate PROD signup in this workstream.
+
 ## NEXT — isolated DEV signup composition (PROD remains disabled)
 
 - [x] Implement privacy-preserving, enumeration-resistant uniqueness preflight.

@@ -1,3 +1,7 @@
+## 2026-10-16 — isolated synthetic DEV signup API
+
+Added an explicitly opted-in, unmounted DEV test app with fake-only adapters, bounded no-store routes, session binding, host/origin/loopback guards and DEV-root database containment. Synthetic end-to-end signup completed through fake readback; no live DEV/PROD service or account was touched. Combined focused suite: 69 passed, one dependency deprecation warning.
+
 ## 2026-10-16 — signup uniqueness and durable operation boundary
 
 Added uniform duplicate handling and a durable one-attempt registration operation with pre-write claim, readback, unknown-outcome quarantine, and read-only reconciliation. 65 focused tests passed. Production adapters, runtime composition and account creation remain absent.

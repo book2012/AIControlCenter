@@ -1,3 +1,14 @@
+## COMPLETE — isolated synthetic DEV signup API contract
+
+- [x] Add an unmounted FastAPI composition requiring explicit DEV opt-in and a contained DEV data root.
+- [x] Reject non-DEV environment, disabled flag, unmarked providers/customer ports, path escape, mismatched stores, wrong host/origin and non-loopback peers.
+- [x] Verify session-bound phone/email challenges, consent, claim, uniqueness, one fake customer write and exact readback end-to-end.
+- [x] Verify no-store responses and no contact, OTP, password or profile persistence.
+- [x] Combined focused suite: 69 passed; one Starlette/httpx deprecation warning.
+- [ ] Decide and separately validate whether to mount in actual DEV; current app is test-only and not included by platform API.
+
+No production provider, real DEV runtime, WordPress/WooCommerce, or PROD service was contacted.
+
 ## COMPLETE — signup uniqueness and operation reconciliation foundation
 
 - [x] Check username, email and phone through a read-only injected port; evaluate all fields and return a uniform public result.
