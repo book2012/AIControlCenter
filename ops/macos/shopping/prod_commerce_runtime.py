@@ -35,7 +35,7 @@ def create_app():
     queue=GuestInquiryQueue(ROOT/'inquiries.sqlite3',transport)
     def lookup(ledger,checkout,catalog):return GuestAftersalesStore(ROOT/'aftersales.sqlite3',ROOT/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog)
     from ops.macos.shopping.dev_local_inquiry import LocalInquiryJudge
-    app=create_guest_commerce_app(private_root=ROOT,origin='https://bokstory.duckdns.org',phone_cfg=phone,binding_key=bytes.fromhex(cfg['binding_key']),csrf_key=bytes.fromhex(cfg['csrf_key']),catalog=catalog,quote=production_quote,writer_factory=writer_factory(tuple(cfg['port_credentials']),now),lookup_store_factory=lookup,clock=now,intent_classifier=LocalInquiryJudge(),inquiry_queue=queue,storefront_bindings={b['demo_id']:str(b['product_id']) for b in cfg['bindings']},bank_provider=lambda:private('bank.private.json').get('bank'))
+    app=create_guest_commerce_app(private_root=ROOT,origin='https://agachichi.duckdns.org',phone_cfg=phone,binding_key=bytes.fromhex(cfg['binding_key']),csrf_key=bytes.fromhex(cfg['csrf_key']),catalog=catalog,quote=production_quote,writer_factory=writer_factory(tuple(cfg['port_credentials']),now),lookup_store_factory=lookup,clock=now,intent_classifier=LocalInquiryJudge(),inquiry_queue=queue,storefront_bindings={b['demo_id']:str(b['product_id']) for b in cfg['bindings']},bank_provider=lambda:private('bank.private.json').get('bank'))
     source=REPO/'brands/agachichi/catalog/dev-upload-products.json'
     from core.homepage.dev_test_stock import overlay
     records=overlay(json.loads(source.read_text())['products'],source)
@@ -46,7 +46,10 @@ def create_app():
     bridge_cfg=private("dev-operator-bridge.private.json") if (PRIVATE/"dev-operator-bridge.private.json").exists() else {"enabled":False}
     actor=[None]
     dev=dev_integration=dev_client=None
-    if bridge_cfg.get("enabled") is True:
+    split_bot=tg.get("split_bot_mode") is True
+    if split_bot:
+        pass  # The PROD bot never composes or dispatches DEV.
+    elif bridge_cfg.get("enabled") is True:
         from ops.macos.shopping.dev_operator_bridge_client import compose_dev_command_client
         dev_client=compose_dev_command_client(bridge_cfg,chat_id=tg["operator_chat_id"],user_ids=frozenset(tg["operator_user_ids"]))
     else:
@@ -59,10 +62,11 @@ def create_app():
         if match:reference=match[2];decision={'status':'STATUS','confirm':'CONFIRMED','reject':'REJECTED'}[match[1]]
         result=integration._ledger.process_operator_update(update_id,reference=reference,decision=decision,actor_reference=actor[0] if decision else None,confirmation_guard=integration._confirmation_guard)
         return reply or ('주문 상태를 반영했습니다. 주문목록으로 확인해 주세요.' if decision else '상품관리 또는 주문목록으로 사용 가능한 명령을 확인해 주세요.')
-    router=DurableOperatorEnvironmentRouter(database_path=ROOT/'telegram-router.sqlite3',dev=lambda text,i:dev_client(text,i,actor[0]) if dev_client else handle(dev_integration,dev.state.operator_adapter,dev.state.product_operator,text,i),prod=lambda text,i:handle(integration,adapter,products,text,i),default='PROD',chat_id=tg['operator_chat_id'],user_ids=frozenset(tg['operator_user_ids']),conversation_seconds=1800 if dev_client else 0)
+    def dev_denied(*_):return '개발 명령은 @papachichi_bot에서 보내주세요. 변경은 실행하지 않았습니다.'
+    router=DurableOperatorEnvironmentRouter(database_path=ROOT/'telegram-router.sqlite3',dev=lambda text,i:dev_denied() if split_bot else (dev_client(text,i,actor[0]) if dev_client else handle(dev_integration,dev.state.operator_adapter,dev.state.product_operator,text,i)),prod=lambda text,i:handle(integration,adapter,products,text,i),default='PROD',chat_id=tg['operator_chat_id'],user_ids=frozenset(tg['operator_user_ids']),conversation_seconds=1800 if dev_client else 0)
     with sqlite3.connect(router.path) as c:
         c.execute('CREATE TABLE IF NOT EXISTS bot_cursor(id INTEGER PRIMARY KEY,offset INTEGER NOT NULL)')
-        if dev_client is not None:
+        if dev_client is not None or split_bot:
             if c.execute('SELECT offset FROM bot_cursor WHERE id=1').fetchone() is None:
                 raise ValueError('EXISTING_TELEGRAM_CURSOR_REQUIRED')
         else:

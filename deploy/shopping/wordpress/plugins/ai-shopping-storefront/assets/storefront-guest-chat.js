@@ -1,7 +1,7 @@
 /* Guest inquiry/cart only. No identity, PII, credentials or automatic order POST. */
 (() => {
   "use strict";
-  const commercePath=path=>(window.location.hostname==="bokstory.duckdns.org"?"/shopping":"/__order-dev")+path;
+  const commercePath=path=>(["bokstory.duckdns.org","agachichi.duckdns.org"].includes(window.location.hostname)?"/shopping":"/__order-dev")+path;
 
   const root=document.querySelector("[data-guest-shop-product]")||document.querySelector("main[data-product]"); if(!root)return;
   const by=id=>document.getElementById(id);

@@ -74,7 +74,7 @@ class ProductionOrderSession:
     def __init__(self,*,checkout,credentials):self.checkout=checkout;self.credentials=credentials
     def endpoint(self,url):
         v=urlsplit(url)
-        if v.scheme!='https' or v.netloc!='bokstory.duckdns.org' or v.query or v.fragment or not re.fullmatch('/wp-json/wc/v3/orders(?:/[1-9][0-9]*)?',v.path):raise ValueError('PRODUCTION_ORDER_ENDPOINT_DENIED')
+        if v.scheme!='https' or v.netloc!='agachichi.duckdns.org' or v.query or v.fragment or not re.fullmatch('/wp-json/wc/v3/orders(?:/[1-9][0-9]*)?',v.path):raise ValueError('PRODUCTION_ORDER_ENDPOINT_DENIED')
         return v.path.removeprefix('/wp-json/wc/v3/')
     def invoke(self,method,url,**kwargs):
         if kwargs.get('auth')!=self.credentials:raise ValueError('PRODUCTION_PORT_CREDENTIAL_DENIED')
@@ -110,5 +110,5 @@ def writer_factory(credentials,clock):
             bridge.verified_phone(command.customer_id);checkout.operation(command.idempotency_key,command.customer_id,op['session_id'])
             expires=datetime.fromisoformat(op['authority_expires_at'].replace('Z','+00:00'))
             return ProviderOrderWritePermit(command.customer_id,op['session_id'],command.idempotency_key,command.command_digest,'prod-explicit-confirmation',stamp,min(expires,stamp+timedelta(seconds=30)))
-        return WooCommerceOrderWriter(base_url='https://bokstory.duckdns.org',consumer_key=SecretStr(credentials[0]),consumer_secret=SecretStr(credentials[1]),ledger=ledger,clock=clock,authorize_once=authorize,resolve_customer=provider_customer,session=ProductionOrderSession(checkout=checkout,credentials=credentials))
+        return WooCommerceOrderWriter(base_url='https://agachichi.duckdns.org',consumer_key=SecretStr(credentials[0]),consumer_secret=SecretStr(credentials[1]),ledger=ledger,clock=clock,authorize_once=authorize,resolve_customer=provider_customer,session=ProductionOrderSession(checkout=checkout,credentials=credentials))
     return factory

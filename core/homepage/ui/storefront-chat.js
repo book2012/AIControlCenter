@@ -1,6 +1,6 @@
 "use strict";
 (() => {
-  const commercePath = path => (window.location.hostname === "bokstory.duckdns.org" ? "/shopping" : "/__order-dev") + path;
+  const commercePath = path => (["bokstory.duckdns.org", "agachichi.duckdns.org"].includes(window.location.hostname) ? "/shopping" : "/__order-dev") + path;
   const by = id => document.getElementById(id);
   const dialog = by("shop-chat");
   if (!dialog) return;
