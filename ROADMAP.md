@@ -1,3 +1,15 @@
+## 2026-10-15 — registration candidate validation
+
+The skirt is registered in isolated DEV WooCommerce as #186 at temporary KRW
+79,000 with zero/pending inventory. The strict test-stock overlay digest now
+matches the 21-product upload catalog; no existing test inventory values were
+changed. The private mapping/projection candidates pass catalog-hash and
+provider checks. The reviewed batch remains scoped to 17 products. Focused
+suite: 30 passed. **Next:** commit/push the catalog-hash and regression updates,
+then align and activate the DEV API and immutable Homepage release; verify the
+21-product feed, image hashes and pending-stock order denial. PROD is not part
+of this DEV activation.
+
 ## COMPLETE — generic single-product DEV registrar and one live intake
 
 The read-only-by-default registrar, isolated `--apply-dev` writer, media and

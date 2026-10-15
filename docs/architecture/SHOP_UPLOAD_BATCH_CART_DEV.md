@@ -1,6 +1,6 @@
 # SHOP_UPLOAD_BATCH_CART_DEV
 
-Reviewed 19 source photos as 18 new products (the two brown-coat photos are one product). Together with the two existing coats, uploaded-only storefront has 20 products. New prices are user-authorized temporary values; unknown size/physical inventory remains explicitly pending with zero sellable stock. Front model thumbnails, original-based transparent retouches and other model views share the existing manifest/SHA boundary. Order controls sit below SIZE/COLOR with compact buttons; the top-right cart opens a dedicated page with product names/options, quantity edits, removal and session navigation persistence. Server quotes and final checkout revalidate authority; cart edits invalidate prepared review and pending durable operations remain protected. PROD is outside scope.
+Reviewed 19 source photos as 18 new products (the two brown-coat photos are one product). Together with the two existing coats, uploaded-only storefront had 20 products before the 2026-10-15 skirt intake; the catalog now contains 21. New prices are user-authorized temporary values; unknown size/physical inventory remains explicitly pending with zero sellable stock. Front model thumbnails, original-based transparent retouches and other model views share the existing manifest/SHA boundary. Order controls sit below SIZE/COLOR with compact buttons; the top-right cart opens a dedicated page with product names/options, quantity edits, removal and session navigation persistence. Server quotes and final checkout revalidate authority; cart edits invalidate prepared review and pending durable operations remain protected. PROD is outside scope.
 
 | Product | Temporary KRW | Color options |
 |---|---:|---|
@@ -60,3 +60,8 @@ The existing 17-product batch apply was attempted with the new photo included. W
 The MM6 catalog row is marked registration_method: single_product, so the 17-item batch registrar excludes it. The storefront release still needs the staged private mapping, staged product projection and new source revision before the item appears in the DEV customer listing.
 
 Research context: [Official MM6 pinstripe suit jacket](https://www.maisonmargiela.com/en-gb/pinstripe-suit-jacket-S52BN0119S52200003F.html). This is brand/design context only; the uploaded jacket's exact SKU is unconfirmed.
+
+
+## Single-product skirt — 2026-10-15
+
+`베이지 플라워 레이스 롱 스커트` is outside the reviewed batch registrar and uses the generic single-product path. DEV WooCommerce product #186 has a single beige variation, temporary price KRW 79,000, and stock zero with pending inventory. Original and generated gallery images are SHA-bound. The DEV projection and private runtime mapping candidates are staged separately. `dev-test-stock.json` was rebound to the new catalog digest without changing any of its 17 existing test-inventory rows or quantities; batch selection remains exactly 17. Candidate activation and active Homepage verification are pending. PROD unchanged.

@@ -1,3 +1,13 @@
+## 2026-10-15 — prepare skirt candidate for immutable DEV activation
+
+The single-product registration candidate passes the 30-test registration,
+storefront, media and batch-boundary suite. Because the DEV test-stock overlay
+is bound to the whole catalog SHA, its digest was updated for the added skirt;
+all 17 existing test-inventory entries and quantities are unchanged. The live
+WooCommerce product remains #186, KRW 79,000, beige stock zero/pending. Runtime
+mapping and projection candidates are validated but still inactive. Homepage
+release and DEV API activation remain pending; PROD unchanged.
+
 ## 2026-10-15 — skirt intake and isolated DEV registration
 
 Registered `베이지 플라워 레이스 롱 스커트` in isolated DEV WooCommerce as product

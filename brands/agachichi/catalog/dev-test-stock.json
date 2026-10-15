@@ -2,7 +2,7 @@
   "schema_version": 1,
   "environment": "DEV",
   "status": "USER_AUTHORIZED_TEST_INVENTORY",
-  "catalog_sha256": "b1fdc866e6c48139e8ea0a323c498117ad8c8c8da413b01d34e3cd19e67a20f6",
+  "catalog_sha256": "2676aa4e249845a31469821e82091f38cbabe114d95627c24d475d199aa73947",
   "products": {
     "ag-upload-outer-0005": {
       "sizes": [

@@ -1,3 +1,13 @@
+## 2026-10-15 — skirt candidate staged; DEV activation pending
+
+- WooCommerce DEV product #186 is verified at temporary KRW 79,000.
+- Beige inventory stays zero and pending; no order can be created for the skirt.
+- Media, product mapping and catalog projection hashes validate.
+- Refreshed only the `dev-test-stock.json` catalog digest; existing 17 test-stock entries and quantities are unchanged.
+- The legacy reviewed batch remains 17 products and excludes `registration_method: single_product`.
+- 30 focused registration, storefront, media and batch-boundary tests pass.
+- Homepage release and DEV API mapping activation remain pending; PROD unchanged.
+
 ## COMPLETE — generic single-product DEV registrar foundation
 
 - [x] Validate catalog identity, approved price, option/stock matrix and SHA-bound media.
