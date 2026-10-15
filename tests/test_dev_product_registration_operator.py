@@ -32,6 +32,18 @@ class RegistrationOperatorTests(unittest.TestCase):
         self.assertFalse(receipt["activation"])
         self.assertEqual(receipt["sku_state"], "SKU_AVAILABLE")
 
+    def test_woo_call_executes_php_harness_and_sends_payload_as_stdin(self):
+        payload = {"environment": "DEV", "mode": "inspect", "catalog_id": "ag-upload-bottom-9001"}
+        receipt = {"environment": "DEV", "state": "SKU_AVAILABLE", "order_count": 4}
+        completed = REGISTER.subprocess.CompletedProcess([], 0, json.dumps(receipt), "")
+        with patch.object(REGISTER, "_run", return_value=completed) as run:
+            result = REGISTER._woo_call(payload)
+        self.assertEqual(result, receipt)
+        argv = run.call_args.args[0]
+        self.assertEqual(argv[-2], "-r")
+        self.assertIn("aicc_snapshot", argv[-1])
+        self.assertEqual(json.loads(run.call_args.kwargs["input_text"]), payload)
+
     def test_existing_mapping_must_match_exactly(self):
         product = {"catalog_id": "ag-upload-outer-9001", "sku": "aicc-dev-ag-upload-outer-9001"}
         woo = {"state": "ALREADY_REGISTERED", "product": {"product_id": 901}}

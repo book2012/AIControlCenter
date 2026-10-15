@@ -231,7 +231,8 @@ def _woo_payload(product: dict, mode: str) -> dict:
 
 
 def _woo_call(payload: dict, *, timeout: int = 90) -> dict:
-    result = _run(DOCKER + ["exec", "-i", WORDPRESS, "php", "-d", "memory_limit=512M"],
+    php_source = PHP[5:-2].strip()
+    result = _run(DOCKER + ["exec", "-i", WORDPRESS, "php", "-d", "memory_limit=512M", "-r", php_source],
                   input_text=json.dumps(payload, ensure_ascii=False), timeout=timeout)
     if result.returncode:
         raise RuntimeError("DEV_PRODUCT_REGISTRATION_FAILED_INSPECT_REQUIRED")

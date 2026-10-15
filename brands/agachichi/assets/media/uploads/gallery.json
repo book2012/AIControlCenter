@@ -824,6 +824,51 @@
       "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-outer-0006-model-other.jpg",
       "sha256": "dc77a34f62281ee724c70ffc55b3672a1b65230ec7e84962d9df1db269a2ee57",
       "transparent_background": false
+    },
+    {
+      "product_id": "ag-upload-bottom-0002",
+      "kind": "original",
+      "label": "업로드 원본 사진",
+      "ai_generated": false,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-bottom-0002-original.jpg",
+      "sha256": "9d816fc1032ada82a753f9ce31d4aceee9a369ac057ec2e6089be1549cfac78b",
+      "source_filename": "01-71250.jpg"
+    },
+    {
+      "product_id": "ag-upload-bottom-0002",
+      "kind": "model-front",
+      "label": "AI 모델 정면 착용 참고 이미지",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-bottom-0002-model-front.jpg",
+      "sha256": "1564878462605926f2d86bfe0fd473aecd4d71264d647060faa4de52710b4939",
+      "source_filenames": [
+        "01-71250.jpg"
+      ],
+      "transparent_background": false
+    },
+    {
+      "product_id": "ag-upload-bottom-0002",
+      "kind": "garment-cutout",
+      "label": "AI 생성 상품 단독 참고 · 실제 상품과 다를 수 있음",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-bottom-0002-garment-cutout.webp",
+      "sha256": "41fceec62c39b692fb22a08431df0915b5d84c7114bc117df8cc8bda49f8622c",
+      "source_filenames": [
+        "01-71250.jpg"
+      ],
+      "transparent_background": true
+    },
+    {
+      "product_id": "ag-upload-bottom-0002",
+      "kind": "model-other",
+      "label": "AI 모델 추가 착용 참고 이미지",
+      "ai_generated": true,
+      "path": "brands/agachichi/assets/media/uploads/gallery/ag-upload-bottom-0002-model-other.jpg",
+      "sha256": "09a12fcda4d45908a91600438e2faaf78ce59732c5eadd66184d188f4cb3256d",
+      "source_filenames": [
+        "01-71250.jpg"
+      ],
+      "transparent_background": false
     }
   ]
 }

@@ -3,6 +3,23 @@
   "environment": "DEV",
   "assets": [
     {
+      "id": "ag-upload-bottom-0002",
+      "product_id": "ag-upload-bottom-0002",
+      "category": "BOTTOM",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-bottom-0002.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/bottom/ag-upload-bottom-0002.jpg",
+      "sha256": "1564878462605926f2d86bfe0fd473aecd4d71264d647060faa4de52710b4939",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "01-71250.jpg"
+        ],
+        "processing": "AI generated clean model-front reference based on user source; clearly label generated imagery; source retained under uploads/source",
+        "model_edit": true
+      }
+    },
+    {
       "id": "ag-upload-outer-0006",
       "product_id": "ag-upload-outer-0006",
       "category": "OUTER",

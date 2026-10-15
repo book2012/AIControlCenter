@@ -1,9 +1,11 @@
-## COMPLETE — generic single-product DEV registrar
+## COMPLETE — generic single-product DEV registrar and one live intake
 
 The read-only-by-default registrar, isolated `--apply-dev` writer, media and
 option validation, SKU/idempotency checks, WooCommerce readback and private
-mapping/projection candidate staging are implemented. Eleven standard-library
-tests pass. No product was registered and no runtime was activated.
+mapping/projection candidate staging are implemented. Thirteen standard-library
+tests pass. `베이지 플라워 레이스 롱 스커트` is registered as DEV WooCommerce product
+#186 at KRW 79,000 with inventory zero/pending. The product and images are not
+yet active in Homepage or the order API.
 
 ## NEXT — review and activate registration candidates in DEV
 
@@ -11,8 +13,8 @@ tests pass. No product was registered and no runtime was activated.
   immutable Homepage DEV release procedure.
 - [ ] Keep WooCommerce, mapping and projection candidates aligned to the same
   catalog hash before activation.
-- [ ] Run a future user-requested product through plan, approval, DEV apply,
-  candidate promotion, storefront visual check and orderability verification.
+- [ ] Promote product #186, then verify its storefront images, details and
+  pending-stock denial in the active DEV release.
 - [ ] Keep ProductDraft API integration as a separate follow-up.
 
 

@@ -1,11 +1,13 @@
-## 2026-10-15 — generic single-product DEV registration flow
+## 2026-10-15 — skirt intake and isolated DEV registration
 
-Added a reusable registrar for validated agachichi uploads. The default command
-checks the product, option/inventory matrix, media hashes, SKU and isolated DEV
-target without writing. `--apply-dev` creates and reads back one WooCommerce
-DEV product, then stages private mapping/projection candidates. It does not
-activate the candidates or deploy Homepage. Twelve standard-library tests,
-Python compilation, CLI help, PHP lint and diff checks passed. No product was registered.
+Registered `베이지 플라워 레이스 롱 스커트` in isolated DEV WooCommerce as product
+#186 at user-approved temporary KRW 79,000. Beige inventory remains zero and
+pending; the product cannot be ordered. Original and AI-generated images are
+SHA-bound and AI images are labeled. The runtime mapping/projection candidates
+are staged but not activated, so Homepage has not been updated. Fixed the
+registrar PHP invocation discovered during the live plan check. Thirteen
+standard-library tests, syntax checks, CLI plan and WooCommerce readback passed;
+order count stayed unchanged. PROD unchanged.
 
 ## 2026-10-15 — standardize product intake for faster DEV registration
 

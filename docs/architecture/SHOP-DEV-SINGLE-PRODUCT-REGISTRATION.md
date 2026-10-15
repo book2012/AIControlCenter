@@ -34,4 +34,10 @@ Inventory marked pending must be zero for every variant. Such products remain un
 - DEV registration command (only after product review):
   `python3 ops/macos/shopping/dev_upload_product_register.py --catalog-id <id> --apply-dev`.
 
-Both new test files use the Python standard library. No live product registration is performed by the tests.
+Both registration test files use the Python standard library; tests perform no live WooCommerce writes.
+
+## 2026-10-15 intake verification
+
+`ag-upload-bottom-0002` (베이지 플라워 레이스 롱 스커트) was registered in isolated DEV WooCommerce as product #186 at user-approved temporary KRW 79,000. The only option is beige with inventory `0` and `inventory_pending=true`, so it is unavailable for purchase. The upload source and three AI-generated presentation images are SHA-bound. Product and image metadata were read back successfully and the Woo order count was unchanged. Private runtime mapping and projection candidates are staged; Homepage/order API activation remains pending.
+
+The first plan attempt exposed a registrar integration defect: the PHP harness was not passed to PHP CLI, which received only the JSON payload. The operator now executes the harness with `php -r` and leaves JSON on stdin. A regression test covers that boundary; the final focused suite has 13 passing tests.

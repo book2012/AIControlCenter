@@ -1,9 +1,12 @@
-## 2026-10-15 — generic single-product DEV registration
+## 2026-10-15 — skirt intake and isolated DEV registration
 
-Implemented a reusable single-product registrar with read-only plan by default,
-media/option/inventory validation, SKU idempotency, isolated DEV-only WooCommerce
-creation, post-write readback and private mapping/projection candidates. Tests:
-12 standard-library checks passed. No product registration or Homepage activation.
+Added `베이지 플라워 레이스 롱 스커트` to the DEV catalog and isolated WooCommerce
+(product #186) at user-approved temporary KRW 79,000. Stock remains zero/pending.
+Source and AI-generated images are SHA-bound with provenance labels. Fixed the
+registrar's PHP CLI invocation, then verified its read-only plan, post-write
+readback and unchanged Woo order count. Thirteen standard-library tests pass.
+Private runtime candidates are staged; Homepage activation and PROD changes were
+not performed.
 
 ## 2026-10-15 — standardize product intake for faster DEV registration
 

@@ -5,9 +5,9 @@
 - [x] Bind writes to isolated DEV container identity and database name.
 - [x] Verify product/variation/image data after writes and preserve order count.
 - [x] Stage private product mapping and catalog-hash-bound projection candidates.
-- [x] Add 12 standard-library validation and operator tests.
-- [ ] Connect candidate review/promotion to immutable Homepage DEV release.
-- [ ] Run one new user-requested product through the full DEV storefront flow.
+- [x] Add 13 standard-library validation and operator tests.
+- [x] Run a new user-requested product through plan, approval, isolated DEV apply and candidate staging.
+- [ ] Connect candidate review/promotion to immutable Homepage DEV release and visually verify storefront.
 
 Implementation: `core/shopping/product_registration.py` and
 `ops/macos/shopping/dev_upload_product_register.py`.
