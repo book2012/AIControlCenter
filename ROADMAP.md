@@ -1,6 +1,6 @@
-## 2026-10-15 — PROD account presentation candidate
+## 2026-10-15 — PROD account presentation activated
 
-Prepared the scoped `0.19.2` login/account presentation candidate for `agachichi.duckdns.org`. WooCommerce remains responsible for authentication; registration and DEV phone verification remain disabled. The logout control uses WooCommerce's nonce-protected `customer-logout` endpoint, avoiding blocked admin-ajax routes. Focused account, presentation and immutable-runtime tests pass (40); PHP syntax checks pass. PROD is still running immutable plugin `0.19.1`; the candidate has not been activated. See `docs/architecture/PROD_ACCOUNT_PRESENTATION_01.md`.
+Activated immutable WooCommerce storefront plugin `0.19.2` from commit `7dda8c9e012208977cf26ed2b563d8111c56c27e` on `agachichi.duckdns.org`. The account title and page now use Agachichi branding; login form and account CSS/JS return successfully. Registration remains blocked, login remains WooCommerce-owned, and logout uses its nonce-protected account endpoint. Focused storefront tests: 54 passed; PHP syntax checks passed. Public product/category APIs remain healthy (21 products, 7 categories); WordPress and database data volumes were preserved, and the previous immutable plugin release remains available for rollback. DEV account/signup policy remains isolated. See `docs/architecture/PROD_ACCOUNT_PRESENTATION_01.md`.
 
 ## 2026-10-15 — DEV activation complete; PROD readiness remains gated
 
