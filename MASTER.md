@@ -1,18 +1,37 @@
+## COMPLETE — generic single-product DEV registrar foundation
+
+- [x] Validate catalog identity, approved price, option/stock matrix and SHA-bound media.
+- [x] Default to read-only plan and require `--apply-dev` for WooCommerce creation.
+- [x] Bind writes to isolated DEV container identity and database name.
+- [x] Verify product/variation/image data after writes and preserve order count.
+- [x] Stage private product mapping and catalog-hash-bound projection candidates.
+- [x] Add 12 standard-library validation and operator tests.
+- [ ] Connect candidate review/promotion to immutable Homepage DEV release.
+- [ ] Run one new user-requested product through the full DEV storefront flow.
+
+Implementation: `core/shopping/product_registration.py` and
+`ops/macos/shopping/dev_upload_product_register.py`.
+Architecture: `docs/architecture/SHOP-DEV-SINGLE-PRODUCT-REGISTRATION.md`.
+
 ## COMPLETE — product registration intake standard
 
 - [x] Define one reusable photo + product details intake block.
 - [x] Separate user-confirmed values, sourced facts, and unknowns.
 - [x] Document image provenance, single-pass review, and post-registration DEV checks.
 - [x] Record existing uploader scope so fixed scripts are not reused for new products.
-- [ ] Implement a general JSON-first, idempotent single-product DEV registrar.
-- [ ] Keep WooCommerce writes behind explicit DEV apply and post-write readback.
+- [x] Implement a general single-product DEV registrar with plan-by-default, explicit apply and post-write readback.
+- [x] Keep WooCommerce writes isolated to DEV and stage private candidates for separate activation.
 
 Current workflow: `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md`.
 ProductDraft runtime-to-WooCommerce registration remains unimplemented.
 
 ## 2026-10-14 — preserve the DEV product photo on color selection
 
-Fixed the storefront color-preview interaction: choosing a color with no dedicated color asset no longer hides the already loaded product photo, and a failed preview keeps that photo visible. Added a regression check for the fallback behavior. Focused validation: 84 tests passed. This source change is local and has not been activated in DEV; the managed release procedure requires a clean pushed feature commit, and remote writes remain blocked by the user's unresolved GitGuardian credential warning.
+Fixed the storefront color-preview interaction: choosing a color with no
+dedicated color asset no longer hides the loaded product photo, and a failed
+preview keeps that photo visible. Focused validation: 84 tests passed. Commit
+b18312fab6ef1204d71272fa0c28de42d02ae0ae was pushed and verified active in the
+immutable Homepage DEV release; PROD unchanged.
 
 ## 2026-10-14 — MM6 DEV product registration
 

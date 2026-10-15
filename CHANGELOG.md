@@ -1,14 +1,26 @@
+## 2026-10-15 — generic single-product DEV registration
+
+Implemented a reusable single-product registrar with read-only plan by default,
+media/option/inventory validation, SKU idempotency, isolated DEV-only WooCommerce
+creation, post-write readback and private mapping/projection candidates. Tests:
+12 standard-library checks passed. No product registration or Homepage activation.
+
 ## 2026-10-15 — standardize product intake for faster DEV registration
 
 Added `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md` with a reusable
 photo-and-details intake block, fact/provenance rules, one-pass review summary,
 and DEV verification checklist. Clarified that current upload scripts are
-product/batch scoped and that the generic registrar is not implemented.
-Docs-only change; no WooCommerce or storefront mutation.
+product/batch scoped. At that point the generic registrar was a follow-up; it is
+now implemented in the later 2026-10-15 entry above. Docs-only change; no
+WooCommerce or storefront mutation.
 
 ## 2026-10-14 — preserve the DEV product photo on color selection
 
-Fixed the storefront color-preview interaction: choosing a color with no dedicated color asset no longer hides the already loaded product photo, and a failed preview keeps that photo visible. Added a regression check for the fallback behavior. Focused validation: 84 tests passed. This source change is local and has not been activated in DEV; the managed release procedure requires a clean pushed feature commit, and remote writes remain blocked by the user's unresolved GitGuardian credential warning.
+Fixed the storefront color-preview interaction: choosing a color with no
+dedicated color asset no longer hides the loaded product photo, and a failed
+preview keeps that photo visible. Focused validation: 84 tests passed. Commit
+b18312fab6ef1204d71272fa0c28de42d02ae0ae was pushed and verified active in the
+immutable Homepage DEV release; PROD unchanged.
 
 ## 2026-10-14 — MM6 DEV product registration
 

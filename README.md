@@ -1,15 +1,28 @@
+## 2026-10-15 — generic single-product DEV registration flow
+
+Added a reusable registrar for validated agachichi uploads. The default command
+checks the product, option/inventory matrix, media hashes, SKU and isolated DEV
+target without writing. `--apply-dev` creates and reads back one WooCommerce
+DEV product, then stages private mapping/projection candidates. It does not
+activate the candidates or deploy Homepage. Twelve standard-library tests,
+Python compilation, CLI help, PHP lint and diff checks passed. No product was registered.
+
 ## 2026-10-15 — standardize product intake for faster DEV registration
 
 Added `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md` with a reusable
 photo-and-details intake block, fact/provenance rules, one-pass review summary,
 and DEV verification checklist. It documents the limits of the current
-single-product and reviewed-batch scripts. A generic JSON-first, idempotent
-single-product DEV registrar remains a separate implementation milestone;
-no runtime or catalog was changed.
+single-product and reviewed-batch scripts. The generic registrar is now
+implemented in the 2026-10-15 entry above; no catalog or runtime was changed
+by the original docs-only update.
 
 ## 2026-10-14 — preserve the DEV product photo on color selection
 
-Fixed the storefront color-preview interaction: choosing a color with no dedicated color asset no longer hides the already loaded product photo, and a failed preview keeps that photo visible. Added a regression check for the fallback behavior. Focused validation: 84 tests passed. This source change is local and has not been activated in DEV; the managed release procedure requires a clean pushed feature commit, and remote writes remain blocked by the user's unresolved GitGuardian credential warning.
+Fixed the storefront color-preview interaction: choosing a color with no
+dedicated color asset no longer hides the loaded product photo, and a failed
+preview keeps that photo visible. Focused validation: 84 tests passed. Commit
+b18312fab6ef1204d71272fa0c28de42d02ae0ae was pushed and verified active in the
+immutable Homepage DEV release; PROD unchanged.
 
 ## 2026-10-14 — MM6 DEV product registration
 

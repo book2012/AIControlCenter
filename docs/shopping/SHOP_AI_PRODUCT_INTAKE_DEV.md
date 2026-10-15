@@ -1,9 +1,10 @@
 ## Ongoing product intake standard
 
-This file records the completed one-product pilot. For future product requests,
-use [PRODUCT_REGISTRATION_QUICKSTART.md](PRODUCT_REGISTRATION_QUICKSTART.md)
-for the reusable intake, review, and DEV verification flow. The pilot's
-single-product scripts and historical values are not generic templates.
+This file records the completed one-product pilot. For future product requests, use
+[PRODUCT_REGISTRATION_QUICKSTART.md](PRODUCT_REGISTRATION_QUICKSTART.md) for
+the reusable intake, review and DEV registration command. The generic registrar
+is `ops/macos/shopping/dev_upload_product_register.py`; this pilot's historical
+single-product scripts and values are not generic templates.
 
 # DEV AI product intake pilot
 
