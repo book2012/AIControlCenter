@@ -22,6 +22,7 @@ final class AI_Shopping_Account_Presentation
 
         add_action('wp_enqueue_scripts', [self::class, 'enqueue_assets']);
         add_filter('body_class', [self::class, 'body_classes']);
+        add_filter('document_title_parts', [self::class, 'document_title_parts']);
         add_action('wp_body_open', [self::class, 'render_header'], 5);
         add_action('wp_footer', [self::class, 'render_footer'], 5);
         add_action('woocommerce_before_customer_login_form', [self::class, 'render_login_heading'], 5);
@@ -59,6 +60,17 @@ final class AI_Shopping_Account_Presentation
             $classes[] = 'aicc-prod-account';
         }
         return $classes;
+    }
+
+    public static function document_title_parts(array $parts): array
+    {
+        if (!self::is_account_page()) {
+            return $parts;
+        }
+
+        $parts['title'] = is_user_logged_in() ? '내 계정' : '로그인';
+        $parts['site'] = 'agachichi';
+        return $parts;
     }
 
     public static function render_header(): void

@@ -16,6 +16,8 @@ def test_account_presentation_is_strictly_production_host_scoped():
     assert "if ($host !== self::PROD_HOST)" in ACCOUNT
     assert "AI_Shopping_Account_Presentation::boot();" in MAIN
     assert "includes/class-account-presentation.php" in MAIN
+    assert "document_title_parts" in ACCOUNT
+    assert "$parts['site'] = 'agachichi';" in ACCOUNT
 
 
 def test_login_and_logout_use_woocommerce_account_endpoints():
