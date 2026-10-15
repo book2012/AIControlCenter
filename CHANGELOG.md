@@ -6640,3 +6640,7 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - Corrected the PROD registration command to use the project managed Python interpreter.
 - Read-only plans verified PROD catalog IDs `ag-upload-bottom-0002` and `ag-upload-outer-0006` are already registered under separate `aicc-prod-` SKUs; no mutation occurred.
 - Clarified that product registration stages a candidate and does not publish or enable purchasing.
+
+## 2026-10-16 — PROD customer signup design
+
+Defined the gated PROD customer signup architecture. DEV remains test-only with isolated identities, providers, keys and WooCommerce. No code, provider provisioning, live contact, customer creation or production activation was performed. See `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.

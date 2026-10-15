@@ -6140,3 +6140,7 @@ PROD `agachichi.duckdns.org` now serves account presentation plugin v0.19.2 on a
 
 
 2026-10-16: Clarified that customer signup is intentionally disabled in PROD while operator-side product registration is a separate feature. The existing PROD registrar is read-only by default and uses the project virtualenv; two PROD catalog entries were verified as already registered with no mutation. See `docs/shopping/PRODUCT_REGISTRATION_QUICKSTART.md`.
+
+## 2026-10-16 — PROD customer signup design
+
+Added `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`: a production-only, Core-governed signup design with WooCommerce as credential/profile store, isolated DEV test boundaries, provider and least-privilege bridge gates, and reconciliation/security requirements. Design only; signup remains disabled and no production state or customer data changed.

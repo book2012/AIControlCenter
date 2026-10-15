@@ -7123,3 +7123,7 @@ After several hours, read-only route and health checks repeated successfully; th
 
 ## PROD signup and product registration boundary — 2026-10-16
 Customer signup stays disabled under the current PROD account policy. Operator-side registration is separate and already implemented through the read-only-by-default `prod_upload_product_register.py`; it creates isolated PROD WooCommerce IDs/SKUs and zero-stock variants, then stages private candidates without activating a public release. Read-only plans for two current uploaded catalog items returned `ALREADY_REGISTERED`, mutation false. The quickstart now uses the managed interpreter and explains the separation.
+
+
+## PROD customer signup architecture (2026-10-16)
+Customer signup remains disabled. The proposed PROD-only flow is governed by AIControlCenter, creates WooCommerce customer accounts through a least-privilege private bridge, verifies phone and email, and remains independent from orders/payments/inventory. DEV stays isolated for tests. Enablement requires provider, security, privacy, test, dry-run and separate rollout gates. Design: `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.
