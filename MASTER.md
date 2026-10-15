@@ -1,3 +1,15 @@
+## COMPLETE — signup uniqueness and operation reconciliation foundation
+
+- [x] Check username, email and phone through a read-only injected port; evaluate all fields and return a uniform public result.
+- [x] Persist a one-attempt operation claim before customer-write dispatch.
+- [x] Read back the accepted customer result before marking the operation active.
+- [x] Quarantine ambiguous writes; never retry automatically.
+- [x] Reconcile only through a read-only operation lookup and exact customer readback.
+- [x] Fake-only combined focused suite: 66 passed.
+- [ ] Build a separately gated DEV-only API/runtime composition and validate environment isolation.
+
+No production adapter, WordPress/WooCommerce call, real customer, or PROD change.
+
 ## COMPLETE — fake-only two-contact signup claim foundation
 
 - [x] Add expiring email challenge and email proof ticket using an injected fakeable provider port.
@@ -5,7 +17,8 @@
 - [x] Atomically consume both proofs into a durable, idempotent signup claim.
 - [x] Revalidate signup fields and required terms/privacy consent; retain no profile or password.
 - [x] Combined focused suite: 58 passed.
-- [ ] Add uniqueness checks, claim execution/reconciliation and isolated API composition.
+- [x] Add uniqueness checks and durable operation/reconciliation with fake adapters.
+- [ ] Add isolated DEV API composition and prove environment isolation.
 
 No live providers, API/runtime wiring, WooCommerce customer creation or PROD mutation.
 

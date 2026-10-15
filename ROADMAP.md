@@ -1,10 +1,20 @@
-## NEXT — signup claim execution foundations (PROD remains disabled)
+## NEXT — isolated DEV signup composition (PROD remains disabled)
+
+- [x] Implement privacy-preserving, enumeration-resistant uniqueness preflight.
+- [x] Implement durable one-attempt registration operation and read-only reconciliation.
+- [x] Verify duplicate, concurrency/replay, readback and uncertain-outcome behavior with fake adapters.
+- [x] Combined focused signup suite: 66 passed.
+- [ ] Add a disabled-by-default DEV-only composition with synthetic identities and an explicit DEV boundary.
+- [ ] Verify DEV composition cannot resolve PROD hosts, credentials, databases or adapters.
+- [ ] Keep actual messaging and customer creation disabled until a separate reviewed gate.
+
+## COMPLETE — fake-only signup claim foundations (PROD remains disabled)
 
 - [x] Implement fake-only phone and email verification with expiry, throttles and one-use proofs.
 - [x] Bind both proofs to the same session and candidate identity.
 - [x] Atomically create an idempotent durable claim after input and consent validation.
 - [x] Validate combined focused suite: 58 passed.
-- [ ] Add privacy-preserving uniqueness checks and durable operation/reconciliation states.
+- [x] Add privacy-preserving uniqueness checks and durable operation/reconciliation states.
 - [ ] Compose only in isolated DEV and prove no PROD reachability or live messaging.
 - [ ] Complete operational/privacy gates before separately authorized PROD activation.
 

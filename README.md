@@ -1,3 +1,7 @@
+## 2026-10-16 — signup uniqueness and durable operation boundary
+
+Added enumeration-resistant identity preflight, durable one-attempt dispatch state, and read-only reconciliation for ambiguous outcomes. Duplicate candidates get a uniform non-completion response; all three identity lookups are attempted. Ambiguous customer writes are quarantined without retry; readback/reconciliation can confirm active or definitive absence. Fake-only combined focused suite: 66 passed. No API/runtime binding, live adapter, real account, or PROD change.
+
 ## 2026-10-16 — fake-only email verification and two-contact signup claim
 
 Added an isolated email challenge/ticket flow and an atomic durable claim that consumes phone and email proofs only when both match the validated registration candidate, session and consent requirements. The claim stores keyed digests, idempotency and terms-version evidence, never profile/password values. Combined focused suite: 58 passed. No live email/SMS, API/runtime wiring, WooCommerce account creation or PROD mutation.

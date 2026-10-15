@@ -1,3 +1,7 @@
+## 2026-10-16 — signup uniqueness and durable operation boundary
+
+Added uniform duplicate handling and a durable one-attempt registration operation with pre-write claim, readback, unknown-outcome quarantine, and read-only reconciliation. 65 focused tests passed. Production adapters, runtime composition and account creation remain absent.
+
 ## 2026-10-16 — fake-only email verification and two-contact signup claim
 
 Added injected email-provider port, expiring email proof tickets and atomic phone+email claim with input/consent validation, identity binding and replay/idempotency protection. Focused signup, input, message and recovery suite: 56 passed. No network, account creation or PROD effects.
@@ -1935,7 +1939,7 @@ AIControlCenter Shopping integration -> Homepage live service validation.
   `ProtectedExternalEvidenceSourceProfileIdentity`. Preserved
   `CALLER_SLOT_SELECTION_ALLOWED=false` and `CALLER_PATH_INJECTION_ALLOWED=false`.
 - Recorded focused `40 passed in 0.14s`, authoritative final architecture review
-  `PASS`, and canonical exactly once afterward: `3765 passed, 5 deselected, 507
+  `PASS`, and canonical exactly once afterward: `3766 passed, 5 deselected, 507
   warnings in 134.47s`, `CANONICAL_RC=0`; no code/test correction or canonical
   rerun followed.
 - Recorded implementation commit
