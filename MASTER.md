@@ -1,12 +1,12 @@
-## 2026-10-15 — skirt candidate staged; DEV activation pending
+## 2026-10-15 — skirt activated in DEV
 
-- WooCommerce DEV product #186 is verified at temporary KRW 79,000.
-- Beige inventory stays zero and pending; no order can be created for the skirt.
-- Media, product mapping and catalog projection hashes validate.
-- Refreshed only the `dev-test-stock.json` catalog digest; existing 17 test-stock entries and quantities are unchanged.
-- The legacy reviewed batch remains 17 products and excludes `registration_method: single_product`.
-- 30 focused registration, storefront, media and batch-boundary tests pass.
-- Homepage release and DEV API mapping activation remain pending; PROD unchanged.
+- WooCommerce DEV product #186 is live at temporary KRW 79,000.
+- Homepage and order API are active on immutable release `c010f1d78ba0752b9d59cb0e6fcf89d36457b8fb`.
+- The 21-item listing, product detail, and three gallery images return HTTP 200.
+- Beige stock remains zero/pending and variant unavailable; no order was created.
+- DEV API health is good; Telegram poller remains external and order SMS remains configuration-required.
+- Focused 30-test release suite passed; regression count expectation now tracks 21 products.
+- PROD was not accessed or changed.
 
 ## COMPLETE — generic single-product DEV registrar foundation
 

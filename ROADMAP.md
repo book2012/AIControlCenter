@@ -1,14 +1,9 @@
-## 2026-10-15 — registration candidate validation
+## 2026-10-15 — DEV activation complete; PROD readiness remains gated
 
-The skirt is registered in isolated DEV WooCommerce as #186 at temporary KRW
-79,000 with zero/pending inventory. The strict test-stock overlay digest now
-matches the 21-product upload catalog; no existing test inventory values were
-changed. The private mapping/projection candidates pass catalog-hash and
-provider checks. The reviewed batch remains scoped to 17 products. Focused
-suite: 30 passed. **Next:** commit/push the catalog-hash and regression updates,
-then align and activate the DEV API and immutable Homepage release; verify the
-21-product feed, image hashes and pending-stock order denial. PROD is not part
-of this DEV activation.
+The skirt is registered as isolated DEV WooCommerce product #186 at KRW 79,000
+and active in Homepage and order API release `c010f1d78ba0752b9d59cb0e6fcf89d36457b8fb`. Live checks confirmed a 21-product feed, PDP, three gallery assets, and a denied/unavailable state while beige stock is zero and pending. The API health is good; Telegram polling remains external and order SMS needs configuration. No order was created and PROD was untouched.
+
+Next: complete broader DEV acceptance for inquiries, inventory, cart, phone verification, address and order review, plus Telegram alignment. Then assess customer identity, shipping/tax policy, media/catalog mapping, backups and rollback before any separate PROD activation authorization.
 
 ## COMPLETE — generic single-product DEV registrar and one live intake
 
