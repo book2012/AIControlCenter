@@ -6641,6 +6641,6 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - Read-only plans verified PROD catalog IDs `ag-upload-bottom-0002` and `ag-upload-outer-0006` are already registered under separate `aicc-prod-` SKUs; no mutation occurred.
 - Clarified that product registration stages a candidate and does not publish or enable purchasing.
 
-## 2026-10-16 — PROD customer signup design
+## 2026-10-16 — PROD signup input contract
 
-Defined the gated PROD customer signup architecture. DEV remains test-only with isolated identities, providers, keys and WooCommerce. No code, provider provisioning, live contact, customer creation or production activation was performed. See `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.
+Added side-effect-free Core input validation for the DEV-compatible login ID, email, password confirmation, name, Korean mobile format and explicit terms/privacy consent. Twenty-six focused/recovery tests pass. No contact verification, persistence, provider call, WooCommerce account creation or PROD activation. See `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.

@@ -140,6 +140,20 @@ runs use fake adapters and do not create a real customer. Live provider delivery
 or production test-account creation requires its own reviewed, explicit
 authorization.
 
+## First implementation slice — input contract
+
+Implemented as an isolated, side-effect-free Core module in
+`core/shopping/account_registration.py`. It validates the DEV-compatible
+4–20-character ASCII login ID, email, password and confirmation, legal name,
+Korean mobile format, explicit terms/privacy consent, and terms version. It
+returns a redacted candidate object only; the result does not prove phone/email
+ownership and cannot authorize persistence or WooCommerce account creation.
+
+Focused tests: `tests/test_shop_account_registration_input.py` plus the existing
+account-recovery regression suite (26 passed). No API/router/runtime composition,
+provider, database schema, WordPress bridge, WooCommerce call, PROD flag, or
+production state was changed.
+
 ## Delivery gates
 
 1. Implement Core registration service, durable claims, idempotency,
@@ -163,15 +177,16 @@ authorization.
 
 ## Out of scope and unresolved decisions
 
-- No implementation, provider provisioning, SMS/email dispatch, real customer
-  creation, signup activation, checkout or PROD deployment in this design task.
+- No registration service/API/runtime composition beyond the side-effect-free
+  input validator; no provider provisioning, SMS/email dispatch, real customer
+  creation, signup activation, checkout or PROD deployment in this task.
 - No migration or synchronization of DEV accounts into PROD.
 - Recovery remains governed by
   [account recovery design](SHOP_ACCOUNT_RECOVERY.md); registration must use
   compatible verified identity bindings but does not activate recovery.
-- Confirm the preferred login ID policy (custom username as DEV parity versus
-  email-first UX), final consent/terms wording, retention periods and approved
-  production messaging/email providers during implementation planning.
+- Login ID policy is set to the DEV-compatible custom username (4–20 ASCII
+  characters); confirm final consent/terms wording, retention periods and
+  approved production messaging/email providers during implementation planning.
 
 ## Related documents
 

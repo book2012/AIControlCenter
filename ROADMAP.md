@@ -6103,7 +6103,8 @@ Build a separately credentialed customer bot. Guests remain unlinked. Members li
 
 ## PROD customer signup
 - [x] Define PROD-only signup ownership, user flow, identity verification, abuse controls, state reconciliation, DEV/PROD separation and rollout gates.
-- [ ] Decide login ID policy, approved PROD phone/email providers, consent wording, retention and support recovery procedure.
+- [x] Set DEV-compatible custom login ID and implement side-effect-free signup input validation; 26 focused/recovery tests pass.
+- [ ] Decide approved PROD phone/email providers, consent wording, retention and support recovery procedure.
 - [ ] Implement Core service and durable idempotent registration states with fake-provider tests.
 - [ ] Provision and verify dedicated least-privilege PROD bridge and separate provider credentials after review.
 - [ ] Complete isolated DEV regressions and PROD fake-adapter dry-run.

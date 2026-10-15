@@ -7126,4 +7126,4 @@ Customer signup stays disabled under the current PROD account policy. Operator-s
 
 
 ## PROD customer signup architecture (2026-10-16)
-Customer signup remains disabled. The proposed PROD-only flow is governed by AIControlCenter, creates WooCommerce customer accounts through a least-privilege private bridge, verifies phone and email, and remains independent from orders/payments/inventory. DEV stays isolated for tests. Enablement requires provider, security, privacy, test, dry-run and separate rollout gates. Design: `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.
+Customer signup remains disabled. AIControlCenter will govern the PROD-only flow; WooCommerce remains credential/profile store. DEV stays isolated for tests. The first code slice validates a DEV-compatible custom login ID, email, password, name, Korean mobile, terms and privacy consent without side effects; 26 focused/recovery tests pass. Contact verification, durable service, bridge, provider setup and rollout gates remain ahead. Design: `docs/architecture/PROD_ACCOUNT_SIGNUP_01.md`.
