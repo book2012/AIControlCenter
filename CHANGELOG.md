@@ -1,3 +1,11 @@
+## 2026-10-16 — minimize signup fields and separate privacy notice evidence
+
+Removed legal name and blanket privacy-consent gating from the side-effect-free candidate and synthetic TestClient flow. Terms acceptance/version and privacy-notice version are represented separately; claim/operation binding uses keyed digests. Signup, recovery and customer-isolation regression suite: 97 passed with one Starlette/httpx deprecation warning. No runtime, external provider, real account or PROD mutation. A future real API must resolve notice version server-side.
+
+## 2026-10-16 — PROD signup privacy notice draft
+
+Prepared `docs/architecture/PROD_ACCOUNT_PRIVACY_NOTICE_DRAFT_01.md` using the Privacy Act currently effective 2026-09-11, PIPC's 2026 privacy-policy writing guideline, e-commerce retention rules, and Coupang's public notice layout as a format reference. The draft separates terms agreement, processing notice and any actual consent; avoids signup legal name by default; and flags unresolved processor and cross-border details. The schema mismatch is now resolved for the isolated Core/TestClient path; a real route is still absent. No runtime, provider or PROD state changed.
+
 ## 2026-10-16 — isolated synthetic DEV signup API
 
 Added an explicitly opted-in, unmounted DEV test app with fake-only adapters, bounded no-store routes, session binding, host/origin/loopback guards and DEV-root database containment. Synthetic end-to-end signup completed through fake readback; no live DEV/PROD service or account was touched. Combined focused suite: 69 passed, one dependency deprecation warning.

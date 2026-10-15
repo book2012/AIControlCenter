@@ -75,9 +75,9 @@ def verified_contact_pair(phone, email, *, email_address=EMAIL):
 def candidate(**overrides):
     data = dict(
         login_id="customer_1", email=EMAIL, password="S3cure-pass-123",
-        password_confirmation="S3cure-pass-123", full_name="Kim Customer",
-        phone=PHONE, terms_accepted=True, privacy_accepted=True,
-        terms_version="terms-2026-10",
+        password_confirmation="S3cure-pass-123", phone=PHONE,
+        terms_accepted=True, terms_version="terms-2026-10",
+        privacy_notice_version="privacy-2026-10",
     )
     data.update(overrides)
     return SignupCandidate(**data)
@@ -125,9 +125,9 @@ def test_email_start_unknown_outcome_is_not_resent_and_email_rate_limited(tmp_pa
 def test_two_contact_claim_requires_valid_input_and_matching_bound_tickets(tmp_path):
     store, clock, pp, ep, phone, email, claims = setup(tmp_path)
     pt, et = verified_contact_pair(phone, email)
-    missing_consent = candidate(privacy_accepted=False)
+    missing_terms_acceptance = candidate(terms_accepted=False)
     assert claims.claim(phone_ticket=pt, email_ticket=et, session_ref=SESSION,
-                        idempotency_key="signup-request-0001", candidate=missing_consent).state == "NOT_AUTHORIZED"
+                        idempotency_key="signup-request-0001", candidate=missing_terms_acceptance).state == "NOT_AUTHORIZED"
     wrong_identity = candidate(email="other@example.test")
     assert claims.claim(phone_ticket=pt, email_ticket=et, session_ref=SESSION,
                         idempotency_key="signup-request-0001", candidate=wrong_identity).state == "NOT_AUTHORIZED"
@@ -153,7 +153,7 @@ def test_claim_is_atomic_one_use_and_idempotent_without_saving_profile_or_passwo
         data = " ".join(str(v) for table in (
             "signup_phone_tickets", "signup_email_tickets", "signup_registration_claims"
         ) for row in db.execute(f"SELECT * FROM {table}") for v in row)
-    for secret in (EMAIL, PHONE, "S3cure-pass-123", "Kim Customer", "customer_1"):
+    for secret in (EMAIL, PHONE, "S3cure-pass-123", "customer_1"):
         assert secret not in data
     assert "terms-2026-10" not in data
 

@@ -327,3 +327,8 @@ Added core/shopping/signup_dev_app.py as an unmounted test-only FastAPI factory.
 Synthetic TestClient E2E exercised phone/email challenges, same-session proofs, consent validation, durable claim, read-only uniqueness checks, one fake customer write and matching readback. Negative tests reject PROD environment, disabled signup, data-root escape, unmarked provider and wrong origin/host. The factory is not imported by core/api/app and does not connect to the running DEV or PROD service. Combined focused suite: 69 passed with one Starlette/httpx deprecation warning.
 
 This is pre-PROD readiness evidence only. It does not prove real ingress, persistent DEV deployment, WooCommerce least-privilege behavior, production template delivery, privacy/legal readiness or operational recovery. Do not connect PROD before those separate checks.
+
+
+## 2026-10-16 privacy notice alignment
+
+The current Korean signup notice draft is maintained in [PROD_ACCOUNT_PRIVACY_NOTICE_DRAFT_01.md](PROD_ACCOUNT_PRIVACY_NOTICE_DRAFT_01.md). It supersedes the earlier proposal to require a legal name and a blanket privacy-consent checkbox at signup. The isolated candidate and synthetic TestClient flow now require terms acceptance while recording the terms and privacy-notice versions separately as keyed digests. This remains test-only: the notice is unpublished, its legal basis and supplier disclosures are not approved, the TestClient app is unmounted, and no provider/PROD route exists. Before a real route, bind the notice version server-side and resolve phone/email necessity, provider transfer details, controller identity, retention, age policy and legal review.

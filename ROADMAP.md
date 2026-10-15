@@ -1,6 +1,11 @@
 ## NEXT — pre-PROD signup readiness
 
 - [x] Complete Core phone/email proof, combined claim, uniqueness and one-attempt operation/reconciliation foundations.
+- [x] Draft Korean signup privacy notice from current statute, PIPC 2026 guidance, e-commerce retention provisions, and a public retailer notice format.
+- [x] Align the side-effect-free candidate and fake TestClient flow with the draft: remove legal name and privacy-consent-as-terms gating; keep terms acceptance/version and notice-version evidence separate.
+- [ ] Bind the privacy-notice version server-side before a real API/runtime route.
+- [ ] Confirm each phone/email field's necessity and supplier/transfer details with actual contract/account facts.
+
 - [x] Complete isolated synthetic FastAPI E2E using fake providers and fake customer writer (69 focused tests pass).
 - [ ] Review whether the isolated app may be mounted in DEV; keep signup disabled in the shared application by default.
 - [ ] Define isolated DEV persistence/retention and operational monitoring without reusing DEV recovery or order providers.

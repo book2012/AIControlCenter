@@ -53,11 +53,10 @@ class _Signup(_Body):
     email: str = Field(strict=True, min_length=3, max_length=254)
     password: SecretStr = Field(min_length=8, max_length=128, repr=False)
     password_confirmation: SecretStr = Field(min_length=8, max_length=128, repr=False)
-    full_name: str = Field(strict=True, min_length=1, max_length=100)
     phone: str = Field(strict=True, min_length=13, max_length=13)
     terms_accepted: bool
-    privacy_accepted: bool
     terms_version: str = Field(strict=True, min_length=1, max_length=64)
+    privacy_notice_version: str = Field(strict=True, min_length=1, max_length=64)
     phone_ticket: str = Field(strict=True, min_length=1, max_length=128, repr=False)
     email_ticket: str = Field(strict=True, min_length=1, max_length=128, repr=False)
     idempotency_key: str = Field(strict=True, min_length=16, max_length=128, repr=False)
@@ -206,9 +205,9 @@ def create_signup_dev_app(
             login_id=data.login_id, email=data.email,
             password=data.password.get_secret_value(),
             password_confirmation=data.password_confirmation.get_secret_value(),
-            full_name=data.full_name, phone=data.phone,
-            terms_accepted=data.terms_accepted,
-            privacy_accepted=data.privacy_accepted, terms_version=data.terms_version,
+            phone=data.phone, terms_accepted=data.terms_accepted,
+            terms_version=data.terms_version,
+            privacy_notice_version=data.privacy_notice_version,
         )
         claim = claim_service.claim(
             phone_ticket=data.phone_ticket, email_ticket=data.email_ticket,

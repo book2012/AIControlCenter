@@ -1,3 +1,16 @@
+## COMPLETE — PROD signup privacy notice draft (2026-10-16)
+
+- [x] Prepare a Korean signup notice draft from current law, regulator guidance, e-commerce retention rules, and public e-commerce disclosure format.
+- [x] Separate terms acceptance from privacy notice and any consent-based processing.
+- [x] Minimize signup fields; defer legal name/address/shipping/payment details until actually needed.
+- [x] Document overseas provider disclosure fields and keep unverified supplier facts blank.
+- [x] Align side-effect-free Core candidate and synthetic TestClient flow: remove mandatory legal name and blanket privacy-consent checkbox; preserve separate terms acceptance/version and privacy-notice version evidence.
+- [x] Validate signup/account-recovery/customer-isolation regression suite: 97 passed, one dependency deprecation warning.
+- [ ] Resolve notice version server-side and verify it matches the rendered production policy before any real route is added.
+- [ ] Confirm operator identity, provider legal entities/locations/contracts, contact-channel necessity, retention schedule, age policy, and legal review.
+
+Draft only; not published, not legally approved, and no provider/runtime/PROD was contacted. See `docs/architecture/PROD_ACCOUNT_PRIVACY_NOTICE_DRAFT_01.md`.
+
 ## COMPLETE — isolated synthetic DEV signup API contract
 
 - [x] Add an unmounted FastAPI composition requiring explicit DEV opt-in and a contained DEV data root.

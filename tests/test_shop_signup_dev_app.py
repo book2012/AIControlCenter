@@ -156,11 +156,10 @@ def test_synthetic_api_end_to_end_is_session_bound_no_store_and_durable_only(tmp
             "email": "customer@example.test",
             "password": "S3cure-pass-123",
             "password_confirmation": "S3cure-pass-123",
-            "full_name": "Kim Customer",
             "phone": "+821012345678",
             "terms_accepted": True,
-            "privacy_accepted": True,
             "terms_version": "terms-dev-001",
+            "privacy_notice_version": "privacy-dev-001",
             "phone_ticket": phone_verify.json()["ticket"],
             "email_ticket": email_verify.json()["ticket"],
             "idempotency_key": "signup-dev-operation-0001",
@@ -176,7 +175,7 @@ def test_synthetic_api_end_to_end_is_session_bound_no_store_and_durable_only(tmp
         persisted = " ".join(str(v) for table in tables
                              for row in db.execute(f"SELECT * FROM {table}") for v in row)
     for sensitive in ("+821012345678", "customer@example.test", "0427", "735194",
-                      "S3cure-pass-123", "Kim Customer", "customer_1"):
+                      "S3cure-pass-123", "customer_1"):
         assert sensitive not in persisted
 
 

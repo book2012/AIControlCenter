@@ -122,6 +122,7 @@ class SignupEmailVerificationService:
                     created_at TEXT NOT NULL,
                     candidate_hash TEXT NOT NULL,
                     terms_version_hash TEXT NOT NULL,
+                    privacy_notice_version_hash TEXT NOT NULL,
                     version INTEGER NOT NULL DEFAULT 0
                 );
             """)
@@ -337,18 +338,20 @@ class TwoContactSignupClaimService:
                 "signup_candidate",
                 json.dumps(
                     [validated.login_id, validated.email.strip().lower(),
-                     validated.phone, validated.full_name, validated.terms_version],
+                     validated.phone, validated.terms_version,
+                     validated.privacy_notice_version],
                     ensure_ascii=False, separators=(",", ":"),
                 ),
             )
             terms_hash = self.store.digest("signup_terms", validated.terms_version)
+            notice_hash = self.store.digest("signup_privacy_notice", validated.privacy_notice_version)
             db.execute("UPDATE signup_phone_tickets SET lifecycle='CONSUMED',version=version+1 "
                        "WHERE ticket_hash=? AND lifecycle='ISSUED'", (ph,))
             db.execute("UPDATE signup_email_tickets SET lifecycle='CONSUMED',version=version+1 "
                        "WHERE ticket_hash=? AND lifecycle='ISSUED'", (eh,))
-            db.execute("INSERT INTO signup_registration_claims VALUES(?,?,?,?,?,?,?,?,?,0)",
+            db.execute("INSERT INTO signup_registration_claims VALUES(?,?,?,?,?,?,?,?,?,?,0)",
                        (ch, ih, ph, eh, sb, "CLAIMED", now.isoformat(),
-                        candidate_hash, terms_hash))
+                        candidate_hash, terms_hash, notice_hash))
             db.commit()
             return SignupClaimReply("CLAIMED", claim_ref=claim_ref)
         except sqlite3.IntegrityError:
