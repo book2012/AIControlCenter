@@ -22,7 +22,7 @@
         if (!window.confirm("로그아웃하시겠습니까?")) return;
         login.setAttribute("aria-disabled", "true");
         try {
-          const response = await fetch("/wp-admin/admin-ajax.php", {
+          const response = await fetch("/wp-admin/admin-ajax.php?action=aicc_account_logout", {
             method: "POST", credentials: "same-origin", cache: "no-store",
             headers: {"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8", Accept: "application/json"},
             body: new URLSearchParams({action: "aicc_account_logout", nonce: login.dataset.logoutNonce || ""})

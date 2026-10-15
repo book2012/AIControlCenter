@@ -31,3 +31,11 @@ Use the same plan/review/apply steps for each new PROD product. The product sour
 6. Record both environment pointers and catalog hashes in AIControlCenterRuntime/version-matrix.json.
 
 DEV is synced to the PROD code version after a successful PROD update; PROD catalog registrations and business data are never copied back into DEV.
+
+## PROD account login ingress
+
+The storefront account link uses WooCommerce's existing `/my-account/` login page.
+PROD Caddy may proxy that page and its static CSS/JS/image assets to the isolated
+WordPress upstream. It may proxy only the `aicc_account_navigation` GET and
+`aicc_account_logout` POST AJAX actions. Keep other WordPress admin, REST, and
+WooCommerce management paths unavailable at the public ingress.

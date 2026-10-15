@@ -358,6 +358,7 @@ def test_shared_header_hides_signup_and_uses_account_state(client):
     assert 'login.textContent = member ? "LOG OUT" : "LOGIN"' in script
     assert 'orders.textContent = "주문내역"' in script
     assert 'orders.href = member ? "/my-account/orders/" : "/homepage/storefront/my-orders"' in script
+    assert 'fetch("/wp-admin/admin-ajax.php?action=aicc_account_logout"' in script
     assert 'action: "aicc_account_logout"' in script
     assert 'window.location.assign("/homepage/storefront/")' in script
     assert 'profile.textContent = "내 정보"' in script
