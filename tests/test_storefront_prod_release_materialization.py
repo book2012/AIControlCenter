@@ -142,12 +142,12 @@ def test_dirty_control_plane_fails_before_authorization_is_consumed(tmp_path, mo
     assert manifest["source_provenance"]["working_tree_clean"] is True
 
 
-def test_payload_identity_is_the_accepted_archive_and_has_302_files(tmp_path):
+def test_payload_identity_is_the_accepted_archive_and_has_304_files(tmp_path):
     root, _, manifest = _materialize(tmp_path)
     files = _archive_files()
     payload = root / "releases" / ACCEPTED_GIT_COMMIT / "ai-shopping-storefront"
-    assert len(files) == EXPECTED_FILE_COUNT == 302
-    assert manifest["file_count"] == 302
+    assert len(files) == EXPECTED_FILE_COUNT == 304
+    assert manifest["file_count"] == 304
     assert manifest["relative_file_paths"] == sorted(files)
     for relative, content in files.items():
         assert (payload / relative).read_bytes() == content

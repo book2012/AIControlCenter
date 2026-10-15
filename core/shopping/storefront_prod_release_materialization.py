@@ -41,7 +41,7 @@ from core.shopping.storefront_prod_runtime import (
 
 
 ARCHIVE_SUBTREE = "deploy/shopping/wordpress/plugins/ai-shopping-storefront"
-EXPECTED_FILE_COUNT = 302
+EXPECTED_FILE_COUNT = 304
 AUTHORIZATION_SCHEMA_VERSION = 1
 _COMMIT_PATTERN = re.compile(r"^[0-9a-f]{40}$")
 _VERSION_PATTERN = re.compile(
