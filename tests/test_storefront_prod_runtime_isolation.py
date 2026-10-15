@@ -12,6 +12,8 @@ import pytest
 
 from core.shopping.storefront_prod_runtime import (
     ACCEPTED_GIT_COMMIT,
+    PREVIOUS_PROD_GIT_COMMIT,
+    PREVIOUS_PROD_PLUGIN_VERSION,
     PLUGIN_VERSION,
     PRESENTATION_IDENTIFIER,
     ReleaseManifestError,
@@ -27,30 +29,38 @@ CLI = ROOT / "scripts/storefront_prod_runtime.py"
 PLUGIN = ROOT / "deploy/shopping/wordpress/plugins/ai-shopping-storefront"
 
 
-def _manifest(release: Path) -> dict[str, object]:
+def _manifest(
+    release: Path,
+    commit: str = ACCEPTED_GIT_COMMIT,
+    version: str = PLUGIN_VERSION,
+) -> dict[str, object]:
     return {
         "schema_version": 1,
         "environment": "prod",
         "service": "storefront",
-        "git_commit": ACCEPTED_GIT_COMMIT,
-        "plugin_version": PLUGIN_VERSION,
+        "git_commit": commit,
+        "plugin_version": version,
         "presentation_identifier": PRESENTATION_IDENTIFIER,
         "release_path": str(release.absolute()),
         "created_at": "2026-10-04T00:00:00Z",
         "source_clean": True,
         "source_provenance": {
             "method": "git_archive",
-            "archived_revision": ACCEPTED_GIT_COMMIT,
+            "archived_revision": commit,
             "working_tree_clean": True,
         },
     }
 
 
-def _write_release(root: Path) -> Path:
-    release = root / "releases" / ACCEPTED_GIT_COMMIT / "ai-shopping-storefront"
+def _write_release(
+    root: Path,
+    commit: str = ACCEPTED_GIT_COMMIT,
+    version: str = PLUGIN_VERSION,
+) -> Path:
+    release = root / "releases" / commit / "ai-shopping-storefront"
     release.mkdir(parents=True)
     (release / "ai-shopping-storefront.php").write_text("<?php\n")
-    manifest = _manifest(release)
+    manifest = _manifest(release, commit, version)
     (root / "current.json").write_text(json.dumps(manifest, sort_keys=True) + "\n")
     (release / ".aicontrolcenter-release.json").write_text(
         json.dumps(manifest, sort_keys=True) + "\n"
@@ -79,6 +89,19 @@ def test_release_is_commit_addressed_and_validates(tmp_path):
     release = _write_release(root)
     assert release == root / "releases" / ACCEPTED_GIT_COMMIT / "ai-shopping-storefront"
     assert validate_release(root).release_path == str(release.absolute())
+    assert validate_contract(root)["valid"] is True
+
+
+def test_previous_prod_release_remains_valid_for_rollback(tmp_path):
+    root = tmp_path / "storefront-prod"
+    release = _write_release(
+        root,
+        PREVIOUS_PROD_GIT_COMMIT,
+        PREVIOUS_PROD_PLUGIN_VERSION,
+    )
+    manifest = validate_release(root)
+    assert manifest.git_commit == PREVIOUS_PROD_GIT_COMMIT
+    assert manifest.plugin_version == PREVIOUS_PROD_PLUGIN_VERSION
     assert validate_contract(root)["valid"] is True
 
 

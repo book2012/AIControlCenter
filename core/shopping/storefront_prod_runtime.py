@@ -23,6 +23,12 @@ SERVICE = "storefront"
 PLUGIN_VERSION = "0.19.2"
 PRESENTATION_IDENTIFIER = "SHOP_MEDIA_003_AGACHICHI"
 ACCEPTED_GIT_COMMIT = "7dda8c9e012208977cf26ed2b563d8111c56c27e"
+PREVIOUS_PROD_GIT_COMMIT = "ee229261459e24d1a2d73b39bbbb8e2fa4042ba9"
+PREVIOUS_PROD_PLUGIN_VERSION = "0.19.1"
+SUPPORTED_RELEASE_VERSIONS = {
+    ACCEPTED_GIT_COMMIT: PLUGIN_VERSION,
+    PREVIOUS_PROD_GIT_COMMIT: PREVIOUS_PROD_PLUGIN_VERSION,
+}
 PLUGIN_DIRECTORY_NAME = "ai-shopping-storefront"
 PLUGIN_MAIN_FILE = "ai-shopping-storefront.php"
 CURRENT_MANIFEST_NAME = "current.json"
@@ -72,10 +78,11 @@ class ReleaseManifest:
         commit = value["git_commit"]
         if not isinstance(commit, str) or not COMMIT_PATTERN.fullmatch(commit):
             raise ReleaseManifestError("release manifest git_commit is invalid")
-        if commit != ACCEPTED_GIT_COMMIT:
-            raise ReleaseManifestError("release manifest git_commit is not the accepted candidate")
+        expected_version = SUPPORTED_RELEASE_VERSIONS.get(commit)
+        if expected_version is None:
+            raise ReleaseManifestError("release manifest git_commit is unsupported")
 
-        if value["plugin_version"] != PLUGIN_VERSION:
+        if value["plugin_version"] != expected_version:
             raise ReleaseManifestError("release manifest plugin_version is invalid")
         if value["presentation_identifier"] != PRESENTATION_IDENTIFIER:
             raise ReleaseManifestError("release manifest presentation_identifier is invalid")
@@ -109,7 +116,7 @@ class ReleaseManifest:
             environment=ENVIRONMENT,
             service=SERVICE,
             git_commit=commit,
-            plugin_version=PLUGIN_VERSION,
+            plugin_version=expected_version,
             presentation_identifier=PRESENTATION_IDENTIFIER,
             release_path=release_path,
             created_at=created_at,
