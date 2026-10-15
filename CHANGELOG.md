@@ -1,3 +1,7 @@
+## 2026-10-15 — fake-only PROD signup phone-verification core
+
+Added a provider-injected Core phone verification service with five-minute challenge/ticket TTLs, one-use ticket consumption, attempt/rate limits and durable keyed-digest state. Focused tests: 50 passed. No network/provider, API/runtime, account/WooCommerce or PROD effects; PROD signup remains disabled.
+
 ## 2026-10-15 — PROD account presentation activated
 
 Activated immutable WooCommerce storefront plugin `0.19.2` from commit `7dda8c9e012208977cf26ed2b563d8111c56c27e` on `agachichi.duckdns.org`. The account title and page now use Agachichi branding; login form and account CSS/JS return successfully. Registration remains blocked, login remains WooCommerce-owned, and logout uses its nonce-protected account endpoint. Focused storefront tests: 54 passed; PHP syntax checks passed. Public product/category APIs remain healthy (21 products, 7 categories); WordPress and database data volumes were preserved, and the previous immutable plugin release remains available for rollback. DEV account/signup policy remains isolated. See `docs/architecture/PROD_ACCOUNT_PRESENTATION_01.md`.

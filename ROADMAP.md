@@ -1,3 +1,13 @@
+## NEXT — complete customer signup foundations (PROD remains disabled)
+
+- [x] Implement isolated fake-only phone challenge/ticket core; focused suite 50 passed.
+- [ ] Add fake email verification and bind both contact proofs to one registration session.
+- [ ] Implement durable, idempotent registration operation and reconciliation tests.
+- [ ] Add isolated DEV/API composition and prove it cannot reach PROD or send live SMS.
+- [ ] Complete privacy/retention and operational gates before separately authorized PROD activation.
+
+The phone ticket is not sufficient to create an account. No live provider, API/runtime wiring, WooCommerce bridge, customer creation, or PROD signup activation exists.
+
 ## 2026-10-15 — PROD account presentation activated
 
 Activated immutable WooCommerce storefront plugin `0.19.2` from commit `7dda8c9e012208977cf26ed2b563d8111c56c27e` on `agachichi.duckdns.org`. The account title and page now use Agachichi branding; login form and account CSS/JS return successfully. Registration remains blocked, login remains WooCommerce-owned, and logout uses its nonce-protected account endpoint. Focused storefront tests: 54 passed; PHP syntax checks passed. Public product/category APIs remain healthy (21 products, 7 categories); WordPress and database data volumes were preserved, and the previous immutable plugin release remains available for rollback. DEV account/signup policy remains isolated. See `docs/architecture/PROD_ACCOUNT_PRESENTATION_01.md`.

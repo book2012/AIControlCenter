@@ -294,3 +294,14 @@ production state was changed.
 - [DEV/PROD release boundaries](SHOP_DEV_PROD_RELEASE_BOUNDARIES.md)
 - [Account recovery](SHOP_ACCOUNT_RECOVERY.md)
 - [DEV registration flow](../homepage/DEV-ACCOUNT-REGISTRATION-01.md)
+
+
+## Implementation slice — fake-only phone verification core
+
+Implemented as an isolated Core service in `core/shopping/signup_verification.py`. Its provider is injected through a narrow port; the included tests use an in-memory fake and perform no network calls. The service issues five-minute phone challenges and phone-verification tickets, enforces a 60-second resend cooldown, five starts per phone per day, ten per client per hour, and five code attempts. It stores keyed digests and opaque provider references in an explicitly initialized, owner-only SQLite store. Construction is inert; it does not initialize the database, bind an API/runtime, create an account, or call WooCommerce. Ambiguous provider outcomes are quarantined without an automatic retry.
+
+The ticket proves phone verification only. It is not a registration authorization and must not be used to create or activate an account. Email verification, the registration operation/idempotency claim, uniqueness checks, audit/reconciliation, API composition, provider adapters, WordPress bridge and WooCommerce customer creation remain unimplemented. Production signup remains disabled; no production configuration, SMS provider, customer, or runtime state was touched.
+
+Focused validation: 50 tests passed across signup verification, message formatting, registration input validation and account recovery. The test fake has no external IO.
+
+## Delivery gates
