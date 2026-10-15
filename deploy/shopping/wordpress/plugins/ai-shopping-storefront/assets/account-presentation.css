@@ -1,0 +1,31 @@
+:root{color-scheme:light dark;--aicc-bg:#fffbef;--aicc-panel:#fffdf9;--aicc-ink:#4f352b;--aicc-muted:#775d50;--aicc-line:#e6d7c8;--aicc-accent:#8b482f;--aicc-button:#f5c5a8}
+body.aicc-prod-account{background:var(--aicc-bg)!important;color:var(--aicc-ink)!important;font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Malgun Gothic",sans-serif}
+body.aicc-prod-account .site-header,body.aicc-prod-account .site-footer,body.aicc-prod-account .storefront-breadcrumb,body.aicc-prod-account .entry-header{display:none!important}
+body.aicc-prod-account .site-content{margin:0!important;padding:0 4.2% 64px!important;background:var(--aicc-bg)}
+body.aicc-prod-account .col-full{max-width:1120px!important;padding:0!important}
+body.aicc-prod-account .site-main,body.aicc-prod-account .entry-content,body.aicc-prod-account .woocommerce{color:var(--aicc-ink)}
+.aicc-prod-account-header{display:flex;align-items:center;justify-content:space-between;gap:18px;max-width:1440px;margin:0 auto;padding:18px 4.2% 12px;border-bottom:1px solid var(--aicc-line);background:var(--aicc-bg);color:var(--aicc-ink)}
+.aicc-prod-wordmark{display:flex;flex-direction:column;gap:0;color:var(--aicc-ink);font-size:23px;font-weight:700;letter-spacing:.08em;text-decoration:none}
+.aicc-prod-wordmark span{color:var(--aicc-muted);font-size:11px;font-weight:500;letter-spacing:0}
+.aicc-prod-account-nav{display:flex;align-items:center;gap:16px}
+.aicc-prod-account-nav a,.aicc-prod-account-nav button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:4px 0;border:0;background:transparent;color:var(--aicc-ink);font-family:inherit;font-size:13px;font-weight:500;line-height:1.5;text-decoration:none;white-space:nowrap}
+.aicc-prod-account-nav .is-active{color:var(--aicc-accent);font-weight:700;text-decoration:underline;text-underline-offset:4px}
+.aicc-prod-account-heading{max-width:520px;margin:38px auto 18px;text-align:center}
+.aicc-prod-account-heading>p{margin:0;color:var(--aicc-accent);font-size:10px;font-weight:700;letter-spacing:.16em}
+.aicc-prod-account-heading h1{margin:8px 0 4px;color:var(--aicc-ink);font-size:28px;font-weight:650;letter-spacing:-.04em}
+.aicc-prod-account-heading span{color:var(--aicc-muted);font-size:13px}
+.aicc-prod-guest-order{text-align:center;margin:12px auto 20px;font-size:13px}
+.aicc-prod-guest-order a{color:var(--aicc-accent);text-decoration:underline;text-underline-offset:3px}
+body.aicc-prod-account .woocommerce form.login,body.aicc-prod-account .woocommerce-MyAccount-navigation,body.aicc-prod-account .woocommerce-MyAccount-content{max-width:520px;margin:0 auto 24px;padding:22px;border:1px solid var(--aicc-line);border-radius:12px;background:var(--aicc-panel);color:var(--aicc-ink);box-shadow:0 14px 40px #4028190d}
+body.aicc-prod-account .woocommerce h1,body.aicc-prod-account .woocommerce h2,body.aicc-prod-account .woocommerce h3{color:var(--aicc-ink);letter-spacing:-.03em}
+body.aicc-prod-account .woocommerce form .form-row label{color:var(--aicc-ink);font-size:13px;font-weight:600}
+body.aicc-prod-account .woocommerce input.input-text,body.aicc-prod-account .woocommerce input[type=email],body.aicc-prod-account .woocommerce input[type=password],body.aicc-prod-account .woocommerce input[type=text]{box-sizing:border-box;width:100%;min-height:46px;padding:10px 12px;border:1px solid var(--aicc-line);border-radius:8px;background:var(--aicc-bg);color:var(--aicc-ink)}
+body.aicc-prod-account .woocommerce input::placeholder{color:var(--aicc-muted);opacity:.8}
+body.aicc-prod-account .woocommerce button.button,body.aicc-prod-account .woocommerce a.button{min-height:44px;padding:10px 18px;border:1px solid #dfad8b;border-radius:8px;background:var(--aicc-button);color:var(--aicc-ink);font-weight:650}
+body.aicc-prod-account .woocommerce button.button:hover,body.aicc-prod-account .woocommerce a.button:hover{background:#efb794;color:var(--aicc-ink)}
+.aicc-prod-account-footer{padding:28px 4.2%;background:#f4f0e8;text-align:center;color:var(--aicc-muted);font-size:12px}
+.aicc-prod-account-footer a{color:var(--aicc-ink);font-size:15px;font-weight:700;letter-spacing:.1em;text-decoration:none}
+.aicc-prod-account-footer p{margin:4px 0 0}
+@media(prefers-color-scheme:dark){body.aicc-prod-account{--aicc-bg:#171513;--aicc-panel:#211e1b;--aicc-ink:#f4e9dc;--aicc-muted:#c3ad99;--aicc-line:#514239;--aicc-accent:#e4a37f;--aicc-button:#80513b}.aicc-prod-account-footer{background:#211e1b}body.aicc-prod-account .woocommerce button.button,body.aicc-prod-account .woocommerce a.button{border-color:#a87355;color:#fff7ee}}
+@media(max-width:720px){.aicc-prod-account-header{align-items:flex-start;padding:14px 4.2% 10px}.aicc-prod-wordmark{font-size:21px}.aicc-prod-account-nav{justify-content:flex-end;gap:8px;flex-wrap:wrap}.aicc-prod-account-nav a,.aicc-prod-account-nav button{font-size:11px}}
+@media(max-width:520px){.aicc-prod-account-header{display:block}.aicc-prod-wordmark{align-items:center;margin-bottom:8px}.aicc-prod-account-nav{justify-content:space-between;gap:4px}.aicc-prod-account-nav a,.aicc-prod-account-nav button{font-size:10px}body.aicc-prod-account .site-content{padding:0 4.2% 40px!important}body.aicc-prod-account .woocommerce form.login,body.aicc-prod-account .woocommerce-MyAccount-navigation,body.aicc-prod-account .woocommerce-MyAccount-content{padding:16px}.aicc-prod-account-heading{margin:28px auto 14px}.aicc-prod-account-heading h1{font-size:25px}}

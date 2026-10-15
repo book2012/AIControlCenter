@@ -38,7 +38,7 @@ def test_plugin_presentation_identifier_and_version_are_explicit():
     historical_candidate = "Version: 0.18.0"
     assert "AI_SHOPPING_STOREFRONT_PRESENTATION" in PLUGIN_MAIN
     assert "SHOP_MEDIA_003_AGACHICHI" in PLUGIN_MAIN
-    assert "Version: 0.19.1" in PLUGIN_MAIN
+    assert "Version: 0.19.2" in PLUGIN_MAIN
     assert historical_candidate
 
 

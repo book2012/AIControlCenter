@@ -215,7 +215,7 @@ def test_presentation_security_and_caddy_topology_contracts_remain_untouched():
     promotion = (ROOT / "tests/test_storefront_promotion_01.py").read_text()
     migration = (ROOT / "tests/test_public_storefront_migration_02.py").read_text()
     assert "SHOP_MEDIA_003_AGACHICHI" in promotion
-    assert "Version: 0.19.1" in promotion
+    assert "Version: 0.19.2" in promotion
     assert "reverse_proxy 127.0.0.1:58082" in migration
     assert "reverse_proxy 127.0.0.1:18080" in migration
     assert not re.search(r"caddy.*(reload|stop|restart)", CLI.read_text(), re.I)

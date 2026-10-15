@@ -1,3 +1,7 @@
+## 2026-10-15 — PROD account presentation candidate
+
+Prepared the scoped `0.19.2` login/account presentation candidate for `agachichi.duckdns.org`. WooCommerce remains responsible for authentication; registration and DEV phone verification remain disabled. The logout control uses WooCommerce's nonce-protected `customer-logout` endpoint, avoiding blocked admin-ajax routes. Focused account, presentation and immutable-runtime tests pass (40); PHP syntax checks pass. PROD is still running immutable plugin `0.19.1`; the candidate has not been activated. See `docs/architecture/PROD_ACCOUNT_PRESENTATION_01.md`.
+
 ## 2026-10-15 — skirt activated in immutable DEV releases
 
 Activated Homepage and order API on immutable release `c010f1d78ba0752b9d59cb0e6fcf89d36457b8fb`. Live checks return 21 catalog items; product #186 appears at KRW 79,000, with beige stock zero and unavailable. PDP and all three gallery images return HTTP 200. The DEV API is healthy with the Telegram poller still external; order SMS remains configuration-required. No order was created and PROD was untouched. Updated the search-page regression expectation to 21 products.

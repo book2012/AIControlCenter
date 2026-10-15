@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AI Shopping Storefront
  * Description: Presentation adapter for the AIControlCenter Shopping API.
- * Version: 0.19.1
+ * Version: 0.19.2
  * Requires PHP: 8.1
  */
 
@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 
 define(
     'AI_SHOPPING_STOREFRONT_VERSION',
-    '0.19.1'
+    '0.19.2'
 );
 
 define(
@@ -51,6 +51,8 @@ require_once AI_SHOPPING_STOREFRONT_DIR
     . 'includes/class-shortcodes.php';
 require_once AI_SHOPPING_STOREFRONT_DIR
     . 'includes/renderers/class-product-detail-renderer.php';
+require_once AI_SHOPPING_STOREFRONT_DIR
+    . 'includes/class-account-presentation.php';
 
 final class AI_Shopping_Storefront_Plugin
 {
@@ -67,6 +69,7 @@ final class AI_Shopping_Storefront_Plugin
 
     public static function boot(): void
     {
+        AI_Shopping_Account_Presentation::boot();
         add_action(
             'plugins_loaded',
             [self::class, 'initialize']
@@ -290,7 +293,7 @@ final class AI_Shopping_Storefront_Plugin
             'ai-shopping-storefront-order',
             AI_SHOPPING_STOREFRONT_URL . 'assets/storefront-order.js',
             [],
-            '0.19.1',
+            '0.19.2',
             true
         );
         wp_enqueue_script(

@@ -1,3 +1,7 @@
+## 2026-10-15 — PROD account presentation candidate
+
+Prepared the scoped `0.19.2` login/account presentation candidate for `agachichi.duckdns.org`. WooCommerce remains responsible for authentication; registration and DEV phone verification remain disabled. The logout control uses WooCommerce's nonce-protected `customer-logout` endpoint, avoiding blocked admin-ajax routes. Focused account, presentation and immutable-runtime tests pass (40); PHP syntax checks pass. PROD is still running immutable plugin `0.19.1`; the candidate has not been activated. See `docs/architecture/PROD_ACCOUNT_PRESENTATION_01.md`.
+
 ## 2026-10-15 — DEV activation complete; PROD readiness remains gated
 
 The skirt is registered as isolated DEV WooCommerce product #186 at KRW 79,000
