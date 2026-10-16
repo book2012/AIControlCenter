@@ -8,7 +8,28 @@ Status: working product/privacy draft for review; not approved legal advice and 
 
 [필수] Agachichi 이용약관에 동의합니다. (이용약관 보기)
 
-This is acceptance of the service contract, not a privacy consent checkbox.
+This is acceptance of the service contract and is separate from privacy consent.
+
+### Required privacy processing consent
+
+[필수] 회원가입을 위한 개인정보 수집·이용에 동의합니다. (내용 보기)
+
+Show the items, purpose, retention period, right to refuse and effect of refusal
+before the user accepts. The signup choice covers only the account fields listed
+below; it does not cover marketing, third-party provision, or overseas transfer.
+Marketing stays outside signup and unchecked. Keep this choice independent from
+terms acceptance.
+
+Requested UX behavior: do not start phone/email verification until the current
+privacy-notice version has been shown and affirmatively accepted in the same
+session. Record the notice-version digest and acceptance time; never store raw
+contact details, OTP or password in the consent record. A refusal stops signup
+without calling a verification provider.
+
+This requested checkbox is not a conclusion that consent is the only available
+legal basis. Before PROD, a Korean privacy reviewer must confirm the basis for
+each field and whether a required consent choice is appropriate versus notice of
+processing necessary to form/perform the account contract.
 
 ### Account information notice
 
@@ -63,7 +84,7 @@ Coupang public privacy policy is used only as a format example: it groups inform
 
 ## Implementation alignment and remaining mismatch
 
-The side-effect-free candidate contract and unmounted synthetic TestClient flow now omit legal name and a blanket privacy-consent checkbox. They require terms acceptance and separately bind keyed digests of the terms version and privacy-notice version to the fake-only claim/operation. Password, profile and contact values remain absent from durable Core signup state. This is implementation evidence, not an assertion that phone/email are legally necessary or that a production notice is ready.
+The side-effect-free candidate and unmounted synthetic DEV TestClient flow require separate terms and privacy-processing acceptance. The DEV flow serves a versioned signup notice, records a keyed digest and timestamp before either contact challenge, blocks challenge/confirmation without that same-session record, and rechecks it at final claim. The notice version is selected by the server. Only synthetic providers are composed; no real email/SMS is sent. The consent store contains no raw contact, password or OTP. This is a test-flow contract, not legal approval or evidence that phone/email are necessary in PROD.
 
 Before adding a real API/runtime route:
 1. decide whether both phone and email are necessary; record the necessity and available alternative;

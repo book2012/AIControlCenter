@@ -50,7 +50,7 @@ def _candidate_hash(store: SQLiteSignupVerificationStore, candidate: SignupCandi
         "signup_candidate",
         json.dumps(
             [valid.login_id, valid.email.strip().lower(), valid.phone,
-             valid.terms_version, valid.privacy_notice_version],
+             valid.terms_version, valid.privacy_notice_version, valid.privacy_accepted],
             ensure_ascii=False, separators=(",", ":"),
         ),
     )

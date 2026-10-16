@@ -34,9 +34,11 @@ class DevFakeEmail:
 
     def __init__(self):
         self.rows = {}
+        self.starts = []
 
     def start_email(self, email, challenge):
         ref = "devemail-" + challenge
+        self.starts.append((email, challenge))
         self.rows[ref] = (email, "735194")
         return ref
 
@@ -135,6 +137,13 @@ def test_synthetic_api_end_to_end_is_session_bound_no_store_and_durable_only(tmp
         assert "httponly" in session.headers["set-cookie"].lower()
         assert "secure" in session.headers["set-cookie"].lower()
 
+        notice = client.get("/v1/shop/signup/privacy-notice", headers=headers)
+        assert notice.json()["version"] == "privacy-dev-001"
+        assert "휴대전화번호" in notice.json()["required_items"]
+        accepted = client.post("/v1/shop/signup/privacy-consent", headers=headers,
+                               json={"accepted": True})
+        assert accepted.json() == {"state": "ACCEPTED"}
+
         phone_start = client.post("/v1/shop/signup/phone-challenge", headers=headers,
                                   json={"phone": "+821012345678"})
         assert phone_start.json()["state"] == "PENDING"
@@ -159,7 +168,6 @@ def test_synthetic_api_end_to_end_is_session_bound_no_store_and_durable_only(tmp
             "phone": "+821012345678",
             "terms_accepted": True,
             "terms_version": "terms-dev-001",
-            "privacy_notice_version": "privacy-dev-001",
             "phone_ticket": phone_verify.json()["ticket"],
             "email_ticket": email_verify.json()["ticket"],
             "idempotency_key": "signup-dev-operation-0001",
@@ -171,7 +179,8 @@ def test_synthetic_api_end_to_end_is_session_bound_no_store_and_durable_only(tmp
     with sqlite3.connect(store.path) as db:
         tables = ("signup_phone_challenges", "signup_phone_tickets",
                   "signup_email_challenges", "signup_email_tickets",
-                  "signup_registration_claims", "signup_registration_operations")
+                  "signup_privacy_consents", "signup_registration_claims",
+                  "signup_registration_operations")
         persisted = " ".join(str(v) for table in tables
                              for row in db.execute(f"SELECT * FROM {table}") for v in row)
     for sensitive in ("+821012345678", "customer@example.test", "0427", "735194",
@@ -193,6 +202,22 @@ def test_wrong_origin_host_or_remote_peer_is_blocked(tmp_path):
         assert response.status_code == 403
 
 
+def test_privacy_consent_is_required_before_any_contact_challenge(tmp_path):
+    app, store, phone_provider, email_provider, _ = make_app(tmp_path)
+    headers = {"Origin": DEV_ORIGIN}
+    with TestClient(app, base_url=DEV_ORIGIN) as client:
+        session = client.get("/v1/shop/signup/session", headers=headers)
+        denied = client.post("/v1/shop/signup/privacy-consent", headers=headers,
+                             json={"accepted": False})
+        assert denied.status_code == 422
+        blocked = client.post("/v1/shop/signup/phone-challenge", headers=headers,
+                              json={"phone": "+821012345678"})
+        assert blocked.status_code == 403
+        assert blocked.json() == {"state": "CONSENT_REQUIRED"}
+        assert phone_provider.starts == []
+        assert email_provider.starts == []
+
+
 def test_terms_acceptance_rejects_coerced_boolean_values(tmp_path):
     app, *_ = make_app(tmp_path)
     payload = {
@@ -203,7 +228,6 @@ def test_terms_acceptance_rejects_coerced_boolean_values(tmp_path):
         "phone": "+821012345678",
         "terms_accepted": 1,
         "terms_version": "terms-dev-001",
-        "privacy_notice_version": "privacy-dev-001",
         "phone_ticket": "phone-ticket",
         "email_ticket": "email-ticket",
         "idempotency_key": "signup-dev-strict-boolean-0001",

@@ -2,11 +2,12 @@
 
 - [x] Complete Core phone/email proof, combined claim, uniqueness and one-attempt operation/reconciliation foundations.
 - [x] Draft Korean signup privacy notice from current statute, PIPC 2026 guidance, e-commerce retention provisions, and a public retailer notice format.
-- [x] Align the side-effect-free candidate and fake TestClient flow with the draft: remove legal name and privacy-consent-as-terms gating; keep terms acceptance/version and notice-version evidence separate.
-- [ ] Bind the privacy-notice version server-side before a real API/runtime route.
+- [x] Align the side-effect-free candidate and fake TestClient flow with the draft: omit legal name; keep terms and privacy processing choices separate and bind acceptance to the displayed notice version.
+- [x] Bind a synthetic DEV notice version server-side; recheck session consent at claim and revoke on explicit rejection.
+- [ ] Before any real API/runtime route, align the displayed policy with approved production text and resolve controller/provider/transfer/retention facts.
 - [ ] Confirm each phone/email field's necessity and supplier/transfer details with actual contract/account facts.
 
-- [x] Complete isolated synthetic FastAPI E2E using fake providers and fake customer writer (69 focused tests pass).
+- [x] Complete isolated synthetic FastAPI E2E using fake providers and fake customer writer (63 focused tests pass).
 - [ ] Review whether the isolated app may be mounted in DEV; keep signup disabled in the shared application by default.
 - [ ] Define isolated DEV persistence/retention and operational monitoring without reusing DEV recovery or order providers.
 - [ ] Prepare production adapter contracts, least-privilege WooCommerce capabilities, email/SMS template and privacy gates without provisioning or contacting them.

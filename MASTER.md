@@ -1,26 +1,14 @@
-## COMPLETE — PROD signup privacy notice draft (2026-10-16)
+## COMPLETE — DEV signup privacy acceptance contract (2026-10-16)
 
-- [x] Prepare a Korean signup notice draft from current law, regulator guidance, e-commerce retention rules, and public e-commerce disclosure format.
-- [x] Separate terms acceptance from privacy notice and any consent-based processing.
-- [x] Minimize signup fields; defer legal name/address/shipping/payment details until actually needed.
-- [x] Document overseas provider disclosure fields and keep unverified supplier facts blank.
-- [x] Align side-effect-free Core candidate and synthetic TestClient flow: remove mandatory legal name and blanket privacy-consent checkbox; preserve separate terms acceptance/version and privacy-notice version evidence.
-- [x] Validate signup/account-recovery/customer-isolation regression suite: 98 passed, one dependency deprecation warning.
-- [ ] Resolve notice version server-side and verify it matches the rendered production policy before any real route is added.
-- [ ] Confirm operator identity, provider legal entities/locations/contracts, contact-channel necessity, retention schedule, age policy, and legal review.
+- [x] Keep signup legal name out; separate terms from privacy processing notice/acceptance.
+- [x] Serve a versioned, synthetic-only DEV notice; the server selects the notice version.
+- [x] Require session-bound acceptance before contact verification and recheck at final claim.
+- [x] Persist only keyed session/version evidence and acceptance time; explicit rejection revokes the active session record.
+- [x] Validate the signup input/API/claim/operation regression suite: 63 passed, one Starlette/httpx deprecation warning.
+- [ ] Review controller identity, contact-channel necessity, provider legal entities/locations/contracts, transfer basis, retention, age policy and final legal text.
+- [ ] Decide separately whether to mount the synthetic app in DEV; it remains test-only and unmounted.
 
-Draft only; not published, not legally approved, and no provider/runtime/PROD was contacted. See `docs/architecture/PROD_ACCOUNT_PRIVACY_NOTICE_DRAFT_01.md`.
-
-## COMPLETE — isolated synthetic DEV signup API contract
-
-- [x] Add an unmounted FastAPI composition requiring explicit DEV opt-in and a contained DEV data root.
-- [x] Reject non-DEV environment, disabled flag, unmarked providers/customer ports, path escape, mismatched stores, wrong host/origin and non-TestClient peers.
-- [x] Verify session-bound phone/email challenges, consent, claim, uniqueness, one fake customer write and exact readback end-to-end.
-- [x] Verify no-store responses and no contact, OTP, password or profile persistence.
-- [x] Combined focused suite: 69 passed; one Starlette/httpx deprecation warning.
-- [ ] Decide and separately validate whether to mount in actual DEV; current app is test-only and not included by platform API.
-
-No production provider, real DEV runtime, WordPress/WooCommerce, or PROD service was contacted.
+Draft notice is not published or legally approved. No real provider, account, customer data or PROD route was contacted or enabled. See docs/architecture/PROD_ACCOUNT_PRIVACY_NOTICE_DRAFT_01.md.
 
 ## COMPLETE — signup uniqueness and operation reconciliation foundation
 

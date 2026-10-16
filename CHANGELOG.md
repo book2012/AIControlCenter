@@ -1,6 +1,6 @@
-## 2026-10-16 — minimize signup fields and separate privacy notice evidence
+## 2026-10-16 — require signup privacy acceptance before verification
 
-Removed legal name and blanket privacy-consent gating from the side-effect-free candidate and synthetic TestClient flow. Terms acceptance/version and privacy-notice version are represented separately; claim/operation binding uses keyed digests. Signup, recovery and customer-isolation regression suite: 98 passed with one Starlette/httpx deprecation warning. No runtime, external provider, real account or PROD mutation. A future real API must resolve notice version server-side.
+Completed the isolated DEV contract, including server-selected notice version, consent revocation, same-session claim enforcement, and matching candidate fingerprints through account-operation validation. Focused signup suite: 63 passed; one Starlette/httpx deprecation warning. No runtime route or PROD activation.
 
 ## 2026-10-16 — PROD signup privacy notice draft
 

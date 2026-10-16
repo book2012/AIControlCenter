@@ -112,6 +112,11 @@ class SignupEmailVerificationService:
                     expires_at TEXT NOT NULL,
                     version INTEGER NOT NULL DEFAULT 0
                 );
+                CREATE TABLE IF NOT EXISTS signup_privacy_consents (
+                    session_binding TEXT PRIMARY KEY,
+                    notice_version_hash TEXT NOT NULL,
+                    accepted_at TEXT NOT NULL
+                );
                 CREATE TABLE IF NOT EXISTS signup_registration_claims (
                     claim_hash TEXT PRIMARY KEY,
                     idempotency_hash TEXT NOT NULL UNIQUE,
@@ -294,6 +299,55 @@ class TwoContactSignupClaimService:
     def __init__(self, *, store: SQLiteSignupVerificationStore, clock=lambda: datetime.now(timezone.utc)):
         self.store, self.clock = store, clock
 
+    def record_privacy_consent(self, *, session_ref: str, notice_version: str,
+                               accepted: bool) -> str:
+        if (not SignupEmailVerificationService._binding(session_ref)
+                or type(notice_version) is not str or not 1 <= len(notice_version) <= 64
+                or notice_version != notice_version.strip() or type(accepted) is not bool):
+            return "NOT_ACCEPTED"
+        session_binding = self.store.digest("session", session_ref)
+        if not accepted:
+            db = self.store._connect()
+            try:
+                db.execute("DELETE FROM signup_privacy_consents WHERE session_binding=?",
+                           (session_binding,))
+                db.commit()
+            except sqlite3.Error:
+                db.rollback()
+                raise SignupVerificationError("SIGNUP_STORAGE_UNAVAILABLE") from None
+            finally:
+                db.close()
+            return "NOT_ACCEPTED"
+        now = _utc(self.clock())
+        db = self.store._connect()
+        try:
+            db.execute(
+                "INSERT INTO signup_privacy_consents VALUES(?,?,?) "
+                "ON CONFLICT(session_binding) DO UPDATE SET "
+                "notice_version_hash=excluded.notice_version_hash,accepted_at=excluded.accepted_at",
+                (session_binding, self.store.digest("signup_privacy_notice", notice_version),
+                 now.isoformat()),
+            )
+            db.commit()
+        except sqlite3.Error:
+            db.rollback()
+            raise SignupVerificationError("SIGNUP_STORAGE_UNAVAILABLE") from None
+        finally:
+            db.close()
+        return "ACCEPTED"
+
+    def has_privacy_consent(self, *, session_ref: str, notice_version: str) -> bool:
+        if (not SignupEmailVerificationService._binding(session_ref)
+                or type(notice_version) is not str or not 1 <= len(notice_version) <= 64):
+            return False
+        with closing(self.store._connect()) as db:
+            row = db.execute(
+                "SELECT 1 FROM signup_privacy_consents WHERE session_binding=? AND notice_version_hash=?",
+                (self.store.digest("session", session_ref),
+                 self.store.digest("signup_privacy_notice", notice_version)),
+            ).fetchone()
+        return row is not None
+
     def claim(self, *, phone_ticket: str, email_ticket: str, session_ref: str,
               idempotency_key: str, candidate) -> SignupClaimReply:
         from core.shopping.account_registration import (
@@ -325,9 +379,14 @@ class TwoContactSignupClaimService:
             if existing:
                 db.commit()
                 return SignupClaimReply("ALREADY_CLAIMED")
+            consent = db.execute(
+                "SELECT 1 FROM signup_privacy_consents WHERE session_binding=? AND notice_version_hash=?",
+                (sb, self.store.digest("signup_privacy_notice", validated.privacy_notice_version)),
+            ).fetchone()
             phone = db.execute("SELECT * FROM signup_phone_tickets WHERE ticket_hash=?", (ph,)).fetchone()
             email = db.execute("SELECT * FROM signup_email_tickets WHERE ticket_hash=?", (eh,)).fetchone()
-            if (not self._ticket_ok(phone, sb, now) or not self._ticket_ok(email, sb, now)
+            if (consent is None or not validated.privacy_accepted
+                    or not self._ticket_ok(phone, sb, now) or not self._ticket_ok(email, sb, now)
                     or phone["phone_binding"] != self.store.digest("phone", validated.phone)
                     or email["email_binding"] != self.store.digest("email", validated.email.strip().lower())):
                 db.rollback()
@@ -339,7 +398,7 @@ class TwoContactSignupClaimService:
                 json.dumps(
                     [validated.login_id, validated.email.strip().lower(),
                      validated.phone, validated.terms_version,
-                     validated.privacy_notice_version],
+                     validated.privacy_notice_version, validated.privacy_accepted],
                     ensure_ascii=False, separators=(",", ":"),
                 ),
             )

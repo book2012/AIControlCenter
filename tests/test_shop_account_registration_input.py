@@ -16,6 +16,7 @@ def candidate(**overrides):
         "password_confirmation": "secure-pass-123",
         "phone": "+821012345678",
         "terms_accepted": True,
+        "privacy_accepted": True,
         "terms_version": "terms-2026-10-16",
         "privacy_notice_version": "privacy-2026-10-16",
     }
@@ -46,6 +47,7 @@ def test_valid_candidate_is_returned_as_unverified_minimal_contract():
         ("phone", "01012345678", "SIGNUP_PHONE_INVALID"),
         ("phone", "+821199999999", "SIGNUP_PHONE_INVALID"),
         ("terms_accepted", False, "SIGNUP_TERMS_REQUIRED"),
+        ("privacy_accepted", False, "SIGNUP_PRIVACY_CONSENT_REQUIRED"),
         ("terms_version", "", "SIGNUP_TERMS_VERSION_INVALID"),
         ("privacy_notice_version", "", "SIGNUP_PRIVACY_NOTICE_VERSION_INVALID"),
     ],
@@ -78,8 +80,11 @@ def test_candidate_requires_exact_type_and_strict_boolean_terms_acceptance():
         validate_signup_candidate(candidate(terms_accepted=1))
     assert exc.value.code == "SIGNUP_TERMS_REQUIRED"
 
+    with pytest.raises(SignupInputError) as exc:
+        validate_signup_candidate(candidate(privacy_accepted=1))
+    assert exc.value.code == "SIGNUP_PRIVACY_CONSENT_REQUIRED"
 
-@pytest.mark.parametrize("field", ["full_name", "privacy_accepted"])
-def test_candidate_rejects_name_and_blanket_privacy_consent_fields(field):
+
+def test_candidate_still_rejects_legal_name_at_signup():
     with pytest.raises(TypeError):
-        candidate(**{field: "홍길동" if field == "full_name" else True})
+        candidate(full_name="홍길동")

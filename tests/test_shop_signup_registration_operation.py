@@ -57,6 +57,9 @@ class FakeCustomerPort:
 def claim_ready_signup(tmp_path):
     store, clock, pp, ep, phone, email, claim_service = setup(tmp_path)
     phone_ticket, email_ticket = verified_contact_pair(phone, email)
+    assert claim_service.record_privacy_consent(
+        session_ref="session-binding-000001", notice_version="privacy-2026-10", accepted=True,
+    ) == "ACCEPTED"
     claim = claim_service.claim(
         phone_ticket=phone_ticket, email_ticket=email_ticket,
         session_ref="session-binding-000001", idempotency_key="signup-operation-0001",

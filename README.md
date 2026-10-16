@@ -1,6 +1,6 @@
-## 2026-10-16 — minimize signup fields and separate privacy notice evidence
+## 2026-10-16 — require signup privacy acceptance before verification
 
-Aligned the side-effect-free Core candidate and unmounted synthetic TestClient API with the draft: legal name and the blanket privacy-consent checkbox are removed; terms acceptance and terms version remain distinct from the privacy-notice version. The claim stores keyed digests for both versions. Signup/account recovery regression suite: 98 passed, one Starlette/httpx deprecation warning. No actual DEV/PROD runtime, provider, or account was touched. The synthetic app still accepts the notice version from its test client; a future real API must bind it server-side.
+Implemented the unmounted synthetic DEV notice and consent flow with a server-selected version, separate terms and privacy choices, same-session checks before verification and final claim, and consent withdrawal. The consent record keeps keyed session/version evidence and acceptance time only. Focused signup suite: 63 passed with one dependency deprecation warning. Legal/provider facts remain unresolved; no live DEV/PROD runtime, provider, or account was touched.
 
 ## 2026-10-16 — PROD signup privacy notice draft
 

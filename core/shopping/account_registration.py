@@ -30,11 +30,12 @@ class SignupCandidate:
     password_confirmation: str = field(repr=False)
     phone: str = field(repr=False)
     terms_accepted: bool
+    privacy_accepted: bool
     terms_version: str = field(repr=False)
     privacy_notice_version: str = field(repr=False)
 
     def __repr__(self) -> str:
-        return "SignupCandidate(private_fields=<redacted>, terms_accepted=<redacted>)"
+        return "SignupCandidate(private_fields=<redacted>, terms_accepted=<redacted>, privacy_accepted=<redacted>)"
 
 
 @dataclass(frozen=True)
@@ -47,6 +48,7 @@ class ValidatedSignupCandidate:
     phone: str = field(repr=False)
     terms_version: str = field(repr=False)
     privacy_notice_version: str = field(repr=False)
+    privacy_accepted: bool
 
     def __repr__(self) -> str:
         return "ValidatedSignupCandidate(private_fields=<redacted>)"
@@ -73,6 +75,8 @@ def validate_signup_candidate(candidate: SignupCandidate) -> ValidatedSignupCand
         raise SignupInputError("SIGNUP_PHONE_INVALID")
     if candidate.terms_accepted is not True:
         raise SignupInputError("SIGNUP_TERMS_REQUIRED")
+    if candidate.privacy_accepted is not True:
+        raise SignupInputError("SIGNUP_PRIVACY_CONSENT_REQUIRED")
     if (type(candidate.terms_version) is not str or not 1 <= len(candidate.terms_version) <= 64
             or candidate.terms_version != candidate.terms_version.strip()):
         raise SignupInputError("SIGNUP_TERMS_VERSION_INVALID")
@@ -88,6 +92,7 @@ def validate_signup_candidate(candidate: SignupCandidate) -> ValidatedSignupCand
         phone=candidate.phone,
         terms_version=candidate.terms_version,
         privacy_notice_version=candidate.privacy_notice_version,
+        privacy_accepted=True,
     )
 
 

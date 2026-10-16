@@ -21,6 +21,7 @@ from core.shopping.signup_verification import SignupPhoneVerificationService, SQ
 
 
 DEV_ORIGIN = "https://dev.bokstory.duckdns.org"
+DEV_PRIVACY_NOTICE_VERSION = "privacy-dev-001"
 _COOKIE = "aicc_signup_dev_session"
 
 
@@ -48,6 +49,10 @@ class _EmailConfirm(_Body):
     code: str = Field(strict=True, min_length=6, max_length=6, pattern=r"^[0-9]{6}$", repr=False)
 
 
+class _PrivacyConsent(_Body):
+    accepted: bool = Field(strict=True)
+
+
 class _Signup(_Body):
     login_id: str = Field(strict=True, min_length=4, max_length=20)
     email: str = Field(strict=True, min_length=3, max_length=254)
@@ -56,7 +61,6 @@ class _Signup(_Body):
     phone: str = Field(strict=True, min_length=13, max_length=13)
     terms_accepted: bool = Field(strict=True)
     terms_version: str = Field(strict=True, min_length=1, max_length=64)
-    privacy_notice_version: str = Field(strict=True, min_length=1, max_length=64)
     phone_ticket: str = Field(strict=True, min_length=1, max_length=128, repr=False)
     email_ticket: str = Field(strict=True, min_length=1, max_length=128, repr=False)
     idempotency_key: str = Field(strict=True, min_length=16, max_length=128, repr=False)
@@ -156,11 +160,38 @@ def create_signup_dev_app(
     async def signup_session():
         return response({"state": "READY"})
 
+    @app.get("/v1/shop/signup/privacy-notice")
+    async def privacy_notice():
+        return response({
+            "version": DEV_PRIVACY_NOTICE_VERSION,
+            "required_items": ["아이디", "이메일 주소", "휴대전화번호", "비밀번호"],
+            "purpose": "DEV 테스트 계정 생성, 로그인, 연락처 확인 및 계정 보안 흐름 검증",
+            "retention": "테스트 요청 종료 후 테스트 저장소에서 제거; 실제 고객정보로 시험하지 않음",
+            "refusal": "동의를 거부할 수 있으며, 거부하면 가입 테스트를 진행할 수 없음",
+            "provider_scope": "가상 테스트 제공자만 사용하며 실제 SMS·이메일은 발송하지 않음",
+        })
+
+    @app.post("/v1/shop/signup/privacy-consent")
+    async def privacy_consent(request: Request):
+        data = await bounded_model(request, _PrivacyConsent, 512)
+        if data is None:
+            return response({"state": "NOT_ACCEPTED"}, 422)
+        state = claim_service.record_privacy_consent(
+            session_ref=request.state.signup_session,
+            notice_version=DEV_PRIVACY_NOTICE_VERSION,
+            accepted=data.accepted,
+        )
+        return response({"state": state}, 200 if state == "ACCEPTED" else 422)
+
     @app.post("/v1/shop/signup/phone-challenge")
     async def phone_challenge(request: Request):
         data = await bounded_model(request, _PhoneStart, 1024)
         if data is None:
             return response({"state": "NOT_STARTED"}, 422)
+        if not claim_service.has_privacy_consent(
+            session_ref=request.state.signup_session, notice_version=DEV_PRIVACY_NOTICE_VERSION,
+        ):
+            return response({"state": "CONSENT_REQUIRED"}, 403)
         result = phone_service.start_phone(
             data.phone, session_ref=request.state.signup_session, client_ref="127.0.0.1",
         )
@@ -171,6 +202,10 @@ def create_signup_dev_app(
         data = await bounded_model(request, _PhoneConfirm, 1024)
         if data is None:
             return response({"state": "NOT_VERIFIED"}, 422)
+        if not claim_service.has_privacy_consent(
+            session_ref=request.state.signup_session, notice_version=DEV_PRIVACY_NOTICE_VERSION,
+        ):
+            return response({"state": "CONSENT_REQUIRED"}, 403)
         result = phone_service.confirm_phone(
             data.challenge, data.phone, data.code, session_ref=request.state.signup_session,
         )
@@ -181,6 +216,10 @@ def create_signup_dev_app(
         data = await bounded_model(request, _EmailStart, 1024)
         if data is None:
             return response({"state": "NOT_STARTED"}, 422)
+        if not claim_service.has_privacy_consent(
+            session_ref=request.state.signup_session, notice_version=DEV_PRIVACY_NOTICE_VERSION,
+        ):
+            return response({"state": "CONSENT_REQUIRED"}, 403)
         result = email_service.start_email(
             data.email, session_ref=request.state.signup_session, client_ref="127.0.0.1",
         )
@@ -191,6 +230,10 @@ def create_signup_dev_app(
         data = await bounded_model(request, _EmailConfirm, 1024)
         if data is None:
             return response({"state": "NOT_VERIFIED"}, 422)
+        if not claim_service.has_privacy_consent(
+            session_ref=request.state.signup_session, notice_version=DEV_PRIVACY_NOTICE_VERSION,
+        ):
+            return response({"state": "CONSENT_REQUIRED"}, 403)
         result = email_service.confirm_email(
             data.challenge, data.email, data.code, session_ref=request.state.signup_session,
         )
@@ -206,8 +249,9 @@ def create_signup_dev_app(
             password=data.password.get_secret_value(),
             password_confirmation=data.password_confirmation.get_secret_value(),
             phone=data.phone, terms_accepted=data.terms_accepted,
+            privacy_accepted=True,
             terms_version=data.terms_version,
-            privacy_notice_version=data.privacy_notice_version,
+            privacy_notice_version=DEV_PRIVACY_NOTICE_VERSION,
         )
         claim = claim_service.claim(
             phone_ticket=data.phone_ticket, email_ticket=data.email_ticket,

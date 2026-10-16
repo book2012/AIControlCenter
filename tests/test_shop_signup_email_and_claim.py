@@ -76,7 +76,7 @@ def candidate(**overrides):
     data = dict(
         login_id="customer_1", email=EMAIL, password="S3cure-pass-123",
         password_confirmation="S3cure-pass-123", phone=PHONE,
-        terms_accepted=True, terms_version="terms-2026-10",
+        terms_accepted=True, privacy_accepted=True, terms_version="terms-2026-10",
         privacy_notice_version="privacy-2026-10",
     )
     data.update(overrides)
@@ -134,14 +134,40 @@ def test_two_contact_claim_requires_valid_input_and_matching_bound_tickets(tmp_p
     wrong_session = claims.claim(phone_ticket=pt, email_ticket=et, session_ref="other-session-00001",
                                  idempotency_key="signup-request-0001", candidate=candidate())
     assert wrong_session.state == "NOT_AUTHORIZED"
+    assert claims.claim(phone_ticket=pt, email_ticket=et, session_ref=SESSION,
+                        idempotency_key="signup-request-no-consent", candidate=candidate()).state == "NOT_AUTHORIZED"
+    assert claims.record_privacy_consent(
+        session_ref=SESSION, notice_version="privacy-2026-10", accepted=True,
+    ) == "ACCEPTED"
     claimed = claims.claim(phone_ticket=pt, email_ticket=et, session_ref=SESSION,
                            idempotency_key="signup-request-0001", candidate=candidate())
     assert claimed.state == "CLAIMED" and claimed.claim_ref
 
 
+def test_privacy_consent_withdrawal_removes_current_session_authority(tmp_path):
+    store, clock, pp, ep, phone, email, claims = setup(tmp_path)
+    assert claims.record_privacy_consent(
+        session_ref=SESSION, notice_version="privacy-2026-10", accepted=True,
+    ) == "ACCEPTED"
+    assert claims.has_privacy_consent(
+        session_ref=SESSION, notice_version="privacy-2026-10",
+    )
+    assert claims.record_privacy_consent(
+        session_ref=SESSION, notice_version="privacy-2026-10", accepted=False,
+    ) == "NOT_ACCEPTED"
+    assert not claims.has_privacy_consent(
+        session_ref=SESSION, notice_version="privacy-2026-10",
+    )
+    with sqlite3.connect(store.path) as db:
+        assert db.execute("SELECT count(*) FROM signup_privacy_consents").fetchone()[0] == 0
+
+
 def test_claim_is_atomic_one_use_and_idempotent_without_saving_profile_or_password(tmp_path):
     store, clock, pp, ep, phone, email, claims = setup(tmp_path)
     pt, et = verified_contact_pair(phone, email)
+    assert claims.record_privacy_consent(
+        session_ref=SESSION, notice_version="privacy-2026-10", accepted=True,
+    ) == "ACCEPTED"
     with ThreadPoolExecutor(max_workers=2) as pool:
         results = list(pool.map(
             lambda _: claims.claim(phone_ticket=pt, email_ticket=et, session_ref=SESSION,
@@ -151,16 +177,21 @@ def test_claim_is_atomic_one_use_and_idempotent_without_saving_profile_or_passwo
     assert sorted(results) == ["ALREADY_CLAIMED", "CLAIMED"]
     with sqlite3.connect(store.path) as db:
         data = " ".join(str(v) for table in (
-            "signup_phone_tickets", "signup_email_tickets", "signup_registration_claims"
+            "signup_phone_tickets", "signup_email_tickets", "signup_privacy_consents",
+        "signup_registration_claims"
         ) for row in db.execute(f"SELECT * FROM {table}") for v in row)
     for secret in (EMAIL, PHONE, "S3cure-pass-123", "customer_1"):
         assert secret not in data
     assert "terms-2026-10" not in data
+    assert "privacy-2026-10" not in data
 
 
 def test_email_ticket_expiry_blocks_combined_claim(tmp_path):
     store, clock, pp, ep, phone, email, claims = setup(tmp_path)
     pt, et = verified_contact_pair(phone, email)
+    claims.record_privacy_consent(
+        session_ref=SESSION, notice_version="privacy-2026-10", accepted=True,
+    )
     clock.advance(timedelta(minutes=5))
     assert claims.claim(phone_ticket=pt, email_ticket=et, session_ref=SESSION,
                         idempotency_key="signup-request-expiry", candidate=candidate()).state == "NOT_AUTHORIZED"
