@@ -1,3 +1,12 @@
+## 2026-10-17 — DEV admin order/chat candidate
+
+- DEV-only `/dev-order/admin` now includes orders, details, aftersales/inquiries, and the existing operator conversation.
+- Same-origin POST guard protects web chat and Codex product-intake requests. Order mutations still pass the existing explicit operator confirmation flow.
+- Product-intake requests queue an isolated Codex job that may create one schema-checked JSON draft under `brands/agachichi/catalog/intake-drafts/`; it cannot edit the catalog, media, manifests, WooCommerce, or PROD.
+- This is a Codex-assisted intake/review step. Actual DEV product registration still requires complete verified product and image inputs through the existing DEV registration workflow.
+- Focused tests: 60 passed. Activation to DEV pending validation and deployment.
+- See `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+
 ## 2026-10-16 — DEV 주문 조회와 챗봇 후보
 
 - 활성 DEV 릴리스 78ac5c5에서 분기한 별도 후보 브랜치입니다.

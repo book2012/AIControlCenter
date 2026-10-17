@@ -1,3 +1,13 @@
+## NEXT — finish DEV order admin and product intake validation
+
+- [ ] Run the complete DEV order/admin regression suite and browser smoke.
+- [ ] Confirm Codex CLI availability and inspect a generated product JSON draft in an isolated worktree; do not register a product during this check.
+- [ ] Deploy only the DEV order API immutable release and verify Basic Auth, same-origin chat, order read, and Codex intake status.
+- [ ] Add reviewed image upload and verified spec handoff to the existing `dev_upload_product_register.py` workflow before calling this end-to-end product registration.
+- [ ] Keep PROD unchanged.
+
+Architecture: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+
 ## NEXT — activate DEV order lookup and assistant candidate
 
 - [x] Rebase candidate on active DEV homepage commit 78ac5c5.

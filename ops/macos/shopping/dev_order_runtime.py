@@ -223,9 +223,6 @@ def create_app():
     mount_guest_chat(app,catalog=catalog,session_boundary=boundary,intent_classifier=LocalInquiryJudge(model=inquiry_model),phone_available=phone is not None,
         checkout_available=phone is not None and checkout is not None,inquiry_queue=inquiry_queue,history_store=history_store)
     mount_inquiry_status(app,inquiry_queue)
-    if operator_adapter is not None:
-        from ops.macos.shopping.dev_order_admin import mount_admin
-        mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue,aftersales=aftersales)
     from ops.macos.shopping.dev_operator_bridge import compose_dev_bridge
     bridge_cfg=private_config('operator-bridge.private.json') if (PRIVATE/'operator-bridge.private.json').exists() else {'enabled':False}
     if bridge_cfg.get('enabled') is True and __import__('os').environ.get('AICC_EXTERNAL_TELEGRAM_CONSUMER')!='1':
@@ -236,6 +233,9 @@ def create_app():
     if conversation is not None and conversation_cfg.get('codex_drafts_enabled') is True:
         from ops.macos.shopping.dev_codex_website_jobs import CodexWebsiteDraftWorker
         codex_drafts=CodexWebsiteDraftWorker(conversation,revision=REPO.name,data=DATA)
+    if operator_adapter is not None:
+        from ops.macos.shopping.dev_order_admin import mount_admin
+        mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue,aftersales=aftersales,conversation=conversation,codex_drafts=codex_drafts)
     stop=threading.Event();health={'codex_website_drafts':'ENABLED' if codex_drafts else 'DISABLED','operator_conversation':'QWEN_DEV' if conversation else 'DISABLED','operator_bridge':'CONFIGURED' if command_bridge else 'DISABLED','poller':'STARTING','product_management':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         last_sync=0
