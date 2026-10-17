@@ -1,6 +1,6 @@
 ## 2026-10-16 — DEV 주문 조회 화면과 주문 도우미
 
-현재 active DEV commit 기준 후보를 분리했습니다. 상태 진행 표시, 반응형 조회 폼, 환불·교환 액션을 유지하고 조회 성공 뒤에만 배송/결제/환불 상태를 안내하는 챗봇을 표시합니다. 83개 관련 테스트 및 합성 Chrome 검증 통과. 활성화는 문서화된 immutable DEV homepage 절차로 이어집니다.
+현재 active DEV commit 기준 후보를 분리했습니다. 상태 진행 표시, 반응형 조회 폼, 환불·교환 액션을 유지하고 조회 성공 뒤에만 배송/결제/환불 상태를 안내하는 챗봇을 표시합니다. 83개 관련 테스트 및 합성 Chrome 검증 통과. Immutable DEV Homepage release `345b6968bd7f20aa971138f9f50ae2f68c695b88`로 활성화했습니다. 이전 릴리스는 유지했습니다.
 
 ## 2026-10-15 — skirt activated in immutable DEV releases
 

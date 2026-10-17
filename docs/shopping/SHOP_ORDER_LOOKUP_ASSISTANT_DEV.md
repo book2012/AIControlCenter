@@ -24,7 +24,7 @@
 - 테스트는 합성 주문과 가짜 API만 사용하며 외부 서비스 요청과 PROD 변경은 없습니다.
 
 ## 출시 상태
-현재 DEV active commit `78ac5c570039a6e0cbb0c04a3a722fce2371ecdd`에서 분기한 별도 작업 브랜치의 후보입니다. 아직 DEV 런타임에 배포하지 않았습니다. 다음 단계는 후보를 깨끗한 immutable release로 만들고 현재 DEV에서 읽기 전용 smoke test를 수행하는 것입니다.
+활성 DEV Homepage commit `78ac5c570039a6e0cbb0c04a3a722fce2371ecdd`에서 분기해 `345b6968bd7f20aa971138f9f50ae2f68c695b88` immutable release로 활성화했습니다. 주문조회 페이지, storefront, catalog, JS와 CSS가 localhost DEV에서 HTTP 200을 반환했고, 주문 페이지는 `no-store` 및 `noindex`를 유지합니다. 이전 78ac5c5 릴리스와 current manifest 백업을 보존했습니다. 주문 API, DEV 계정/주문 데이터, PROD 서비스는 변경하지 않았습니다. 가짜 Chrome 테스트는 83개 회귀 테스트와 별도로 통과했고, 실제 DEV에서는 GET만 사용했습니다.
 
 ## 참고
 - [Shopify 주문 상태 페이지](https://help.shopify.com/ko/manual/fulfillment/setup/order-status-page)

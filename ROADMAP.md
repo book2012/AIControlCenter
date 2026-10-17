@@ -3,9 +3,9 @@
 - [x] Rebase candidate on active DEV homepage commit 78ac5c5.
 - [x] Build mobile order lookup, status timeline, and order-aware assistant gated by successful lookup.
 - [x] Verify order cancellations/refunds and chat isolation in fake-provider browser.
-- [ ] Commit and push the clean feature branch.
-- [ ] Archive a new immutable homepage DEV release; preserve the prior pointer and release.
-- [ ] Switch only the homepage DEV release, then check public page and health with GET-only probes. Do not restart order API or PROD services.
+- [x] Commit and push the clean feature branch.
+- [x] Archive immutable Homepage DEV release `345b6968bd7f20aa971138f9f50ae2f68c695b88`; preserve the prior pointer and release.
+- [x] Switch only the Homepage DEV release; page, catalog and assets returned HTTP 200. Order API and PROD services were not restarted or modified.
 
 Architecture: `docs/shopping/SHOP_ORDER_LOOKUP_ASSISTANT_DEV.md`.
 
