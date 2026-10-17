@@ -1,14 +1,18 @@
-## NEXT — finish DEV order admin and product intake validation
+## 2026-10-17 — DEV order admin and Codex product intake active
 
-- [ ] Run the complete DEV order/admin regression suite and browser smoke.
-- [ ] Confirm Codex CLI availability and inspect a generated product JSON draft in an isolated worktree; do not register a product during this check.
-- [ ] Deploy only the DEV order API immutable release and verify Basic Auth, same-origin chat, order read, and Codex intake status.
-- [ ] Add reviewed image upload and verified spec handoff to the existing `dev_upload_product_register.py` workflow before calling this end-to-end product registration.
-- [ ] Keep PROD unchanged.
+- [x] Run 60 order/admin, operator conversation, bridge, and Codex scope tests plus Python/JavaScript syntax checks.
+- [x] Verify fake Codex output acceptance and reject extra files.
+- [x] Activate immutable DEV API release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8`.
+- [x] Verify external unauthenticated admin access returns 401, local page returns 200, same-origin order chat returns 200, and Telegram polling remains EXTERNAL.
+- [x] Run a synthetic live Codex intake; validated DEV JSON draft returned in the isolated worktree. No order or WooCommerce write.
+- [x] Keep PROD unchanged.
+
+Next: add reviewed image upload and verified spec handoff to `dev_upload_product_register.py` before end-to-end product registration.
 
 Architecture: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
 
-## NEXT — activate DEV order lookup and assistant candidate
+## 2026-10-16 — DEV order lookup and assistant activated
+
 
 - [x] Rebase candidate on active DEV homepage commit 78ac5c5.
 - [x] Build mobile order lookup, status timeline, and order-aware assistant gated by successful lookup.

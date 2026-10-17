@@ -1,6 +1,6 @@
 ## 2026-10-17 — DEV 주문 관리자와 Codex 상품 초안
 
-DEV 주문 관리자에 주문·상세, 환불/교환 요청, 문의, 대화형 운영 챗봇을 결합했습니다. 주문 챗봇은 기존 DEV OperatorConversation을 사용하며 변경은 기존 확인 단계를 유지합니다. “상품 등록/추가” 요청은 Codex가 별도 격리 브랜치에서 등록 초안 JSON 한 파일만 작성합니다. 초안은 검토 자료이며 WooCommerce 등록·공개, 카탈로그 변경을 하지 않습니다. 같은 출처 POST만 허용합니다. 회귀 테스트 60개 통과. DEV API 적용 전 상태입니다. PROD에는 연결하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+DEV 주문 관리자에 주문·상세, 환불/교환 요청, 문의, 대화형 운영 챗봇을 결합했습니다. 주문 챗봇은 기존 DEV OperatorConversation을 사용하며 변경은 기존 확인 단계를 유지합니다. “상품 등록/추가” 요청은 Codex가 별도 격리 브랜치에서 등록 초안 JSON 한 파일만 작성합니다. 초안은 검토 자료이며 WooCommerce 등록·공개, 카탈로그 변경을 하지 않습니다. 같은 출처 POST만 허용합니다. 관련 회귀 테스트 60개 통과. DEV API immutable release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8`에 활성화했습니다. 외부 비인증 관리자 요청은 401, 같은 출처 주문 챗봇 읽기는 200, 합성 Codex 작업은 스키마 검증된 검토 초안을 만들었습니다. 주문/상품 쓰기는 하지 않았고 PROD에는 연결하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
 
 ## 2026-10-16 — DEV 주문 조회와 주문 도우미 후보
 

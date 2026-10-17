@@ -45,7 +45,10 @@ for a matching product-intake job.
 
 Focused tests cover address-on-demand behavior, same-origin chat requests,
 product job queuing without Commerce writes, Codex prompt bounds, and review-only
-job completion. Deployment must separately confirm the current DEV API release,
-Basic Auth gate, page rendering, a read-only order check, and isolated Codex
-draft visibility. No live order mutation or product registration is needed for
-that smoke test.
+job completion. DEV API immutable release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8`
+is active. The external unauthenticated admin route returned 401, the local page
+returned 200, and a same-origin read-only order-list chat returned 200. A
+synthetic product request completed through the live Codex worker and produced
+schema-valid JSON in an isolated worktree. No order mutation, WooCommerce
+registration, or PROD write was performed. The rollback backup is stored under
+`AIControlCenterRuntime/dev-order/backups/dev-order-admin-20261017-095343`.

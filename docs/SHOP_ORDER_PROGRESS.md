@@ -1,3 +1,7 @@
+## 2026-10-17 — DEV 관리자 주문 챗봇과 Codex 상품 intake 활성화
+
+Immutable DEV API release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8` is active. `/dev-order/admin` combines orders, on-demand delivery details, aftersales/inquiries and operator chat. Same-origin requests are required; Caddy Basic Auth protects the external DEV route. Order chat uses the existing explicit confirmation path. Product intake queues Codex in an isolated worktree; only a schema-checked JSON proposal is shown, with no catalog, WooCommerce, order, or PROD write. A synthetic Codex request generated a review draft. Checks: 60 focused tests passed; page 200, unauthenticated public page 401, same-origin read-only chat 200, health reports `poller=EXTERNAL`. Backup at `AIControlCenterRuntime/dev-order/backups/dev-order-admin-20261017-095343` (private runtime). Existing release 534 remains preserved. Next: reviewed image upload and complete verified spec handoff to the isolated DEV registrar.
+
 # Non-SMS order workflow progress
 
 Updated: 2026-10-11 (Asia/Seoul). Current completed stage: 4 (code/tests). Stage-4 DEV API/presentation is active at 4473f1a (verified during this stage-5 preparation). Stage 5-1 shared relay is active at 0289213 (old-PROD-based isolated relay branch); actual human Telegram and stage 5-2 full order workflow remain pending.

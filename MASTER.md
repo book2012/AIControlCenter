@@ -4,7 +4,7 @@
 - Same-origin POST guard protects web chat and Codex product-intake requests. Order mutations still pass the existing explicit operator confirmation flow.
 - Product-intake requests queue an isolated Codex job that may create one schema-checked JSON draft under `brands/agachichi/catalog/intake-drafts/`; it cannot edit the catalog, media, manifests, WooCommerce, or PROD.
 - This is a Codex-assisted intake/review step. Actual DEV product registration still requires complete verified product and image inputs through the existing DEV registration workflow.
-- Focused tests: 60 passed. Activation to DEV pending validation and deployment.
+- Related tests: 60 passed. Immutable DEV API release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8` is active. Unauthorized external page probe returned 401; same-origin order chat returned 200; a synthetic Codex draft passed schema validation. No order/product Commerce write or PROD change.
 - See `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
 
 ## 2026-10-16 — DEV 주문 조회와 챗봇 후보
