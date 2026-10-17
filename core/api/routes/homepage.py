@@ -181,10 +181,10 @@ def storefront_guest_order_browser(service: ShoppingService = Depends(get_shoppi
 
 
 @router.get("/homepage/storefront/my-orders", response_class=HTMLResponse, include_in_schema=False)
-def storefront_orders_browser(service: ShoppingService = Depends(get_shopping_service)) -> HTMLResponse:
-    from core.homepage.storefront_chat import widget
-    chat = widget(service, page_context={"type": "orders", "key": "orders", "summary": "주문번호를 입력해 배송 상태를 조회할 수 있어요. 상세조회·교환·환불에는 휴대폰 인증이 필요할 수 있습니다."})
-    return HTMLResponse(storefront.template("storefront-orders.html").replace("</body>", chat + "</body>"))
+def storefront_orders_browser() -> HTMLResponse:
+    # The order-aware assistant appears only after this page returns an order.
+    # It receives the same authorized response the customer can already see.
+    return HTMLResponse(storefront.template("storefront-orders.html"), headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
 
 
 @router.get("/homepage/assets/storefront/hero-sunlit-home-v1.jpg", include_in_schema=False)

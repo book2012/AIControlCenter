@@ -1,3 +1,7 @@
+## 2026-10-16 — DEV 주문 조회 화면과 주문 도우미
+
+현재 active DEV commit 기준 후보를 분리했습니다. 상태 진행 표시, 반응형 조회 폼, 환불·교환 액션을 유지하고 조회 성공 뒤에만 배송/결제/환불 상태를 안내하는 챗봇을 표시합니다. 83개 관련 테스트 및 합성 Chrome 검증 통과. 활성화는 문서화된 immutable DEV homepage 절차로 이어집니다.
+
 ## 2026-10-15 — skirt activated in immutable DEV releases
 
 Activated Homepage and order API on immutable release `c010f1d78ba0752b9d59cb0e6fcf89d36457b8fb`. Live checks return 21 catalog items; product #186 appears at KRW 79,000, with beige stock zero and unavailable. PDP and all three gallery images return HTTP 200. The DEV API is healthy with the Telegram poller still external; order SMS remains configuration-required. No order was created and PROD was untouched. Updated the search-page regression expectation to 21 products.

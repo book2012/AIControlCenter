@@ -5,6 +5,7 @@
 
   const by=id=>document.getElementById(id);
   let csrf=null;
+  let activeOrder=null;
 
   const message=text=>{by("orders-message").textContent=text||"";};
   const session=async()=>{
@@ -14,6 +15,40 @@
     return Boolean(csrf);
   };
   const headers=()=>({"Content-Type":"application/json","X-CSRF-Token":csrf});
+  const showProgress=(card,order)=>{
+    const fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
+    const cancelled=order.cancellation?.state&&order.cancellation.state!=="NONE";
+    const step=fulfillment==="DELIVERED"?3:fulfillment==="SHIPPED"?2:order.review_state==="CONFIRMED"?1:0;
+    const list=document.createElement("ol");list.className="orders-progress";list.setAttribute("aria-label","주문 진행 단계");
+    const names=["주문 접수","주문 확인","배송 중","배송 완료"];
+    names.forEach((name,index)=>{const item=document.createElement("li");item.textContent=name;if(index<step)item.classList.add("is-complete");if(index===step){item.classList.add("is-current");item.setAttribute("aria-current","step");}list.appendChild(item);});
+    if(cancelled){const note=document.createElement("p");note.className="order-delivery-address";note.textContent=order.cancellation.state==="CANCELLED"?"이 주문은 취소 처리되었습니다.":"취소 상태를 확인하고 있습니다.";card.appendChild(note);}
+    card.appendChild(list);
+  };
+  const orderAnswer=question=>{
+    const order=activeOrder;if(!order)return "먼저 주문을 조회해 주세요.";
+    const q=question.toLowerCase(),fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
+    if(order.refund?.state==="RECORDED")return "운영자가 환불 완료를 기록했습니다. 환불 금액은 "+order.refund.amount+" "+order.refund.currency+"입니다.";
+    if(order.cancellation?.state==="CANCELLED")return "주문 취소가 완료되었습니다. 중복 입금을 방지하기 위해 입금하지 마세요.";
+    if(order.cancellation?.state&&order.cancellation.state!=="NONE")return "주문 취소 여부를 확인하고 있습니다. 확인이 끝날 때까지 입금하지 말고 고객 문의로 확인해 주세요.";
+    if(/배송|택배|운송장|도착|언제/.test(q)){
+      if(fulfillment==="DELIVERED")return "조회된 주문은 배송 완료 상태입니다. 배송 관련 추가 확인은 고객 문의로 알려 주세요.";
+      if(fulfillment==="SHIPPED")return "상품이 배송 중입니다."+(order.fulfillment?.carrier?" 택배사: "+order.fulfillment.carrier+".":"")+(order.fulfillment?.tracking?" 운송장 번호: "+order.fulfillment.tracking+".":" 운송장 정보가 준비되면 이 화면에 표시됩니다.");
+      return "현재 주문은 아직 발송 전입니다. 주문 확인과 입금 상태를 함께 확인해 주세요. 발송이 시작되면 배송 정보가 표시됩니다.";
+    }
+    if(/환불|반품|교환|사이즈/.test(q)){
+      const options=[];if(order.return_available)options.push("환불");if(order.exchange_available)options.push("사이즈 교환");
+      return options.length?"이 주문은 "+options.join(" 및 ")+" 요청이 가능합니다. 주문 카드의 해당 버튼에서 접수해 주세요.":"현재 주문 상태에서는 환불·교환 요청을 온라인으로 접수할 수 없습니다. 고객 문의로 주문 상태를 확인해 주세요.";
+    }
+    if(/입금|결제|은행/.test(q))return order.payment?.state==="PAID"?"입금 확인이 완료됐습니다.":"현재 입금 확인 전 상태입니다. 입금 확인 후 주문 상태가 갱신됩니다.";
+    const review={CONFIRMED:"주문 확인이 완료됐습니다.",PENDING_REVIEW:"주문 확인을 기다리고 있습니다.",REJECTED:"주문 확인이 완료되지 않았습니다. 고객 문의로 확인해 주세요.",STOCK_BLOCKED:"상품 재고를 확인하고 있습니다."}[order.review_state]||"주문이 접수되어 확인 중입니다.";
+    const payment=order.payment?.state==="PAID"?"입금 확인 완료":"입금 확인 대기";
+    return review+" 현재 상태는 "+payment+" · "+({NOT_SHIPPED:"발송 전",SHIPPED:"배송 중",DELIVERED:"배송 완료"}[fulfillment]||"발송 전")+"입니다.";
+  };
+  const addChatMessage=(text,kind)=>{const p=document.createElement("p");p.className=kind==="user"?"user-message":"assistant-message";p.textContent=text;by("order-chat-log").appendChild(p);p.scrollIntoView({block:"nearest"});};
+  const askOrder=question=>{const q=question.trim();if(!q||!activeOrder)return;addChatMessage(q,"user");addChatMessage(orderAnswer(q),"assistant");};
+  by("order-chat-form").addEventListener("submit",event=>{event.preventDefault();const input=by("order-chat-question");askOrder(input.value);input.value="";input.focus();});
+  document.querySelectorAll("[data-order-question]").forEach(button=>button.addEventListener("click",()=>askOrder(button.dataset.orderQuestion)));
 
   const requestCaseForm=async(card,order,kind)=>{
     if(card.querySelector(".orders-request"))return;
@@ -62,8 +97,8 @@
     const returnLabels={RETURN_APPROVED:"반품승인",RETURN_RECEIVED:"반품회수 · 검수대기",RETURN_RESTOCK_PENDING:"반품 처리 확인중",RETURN_RESTOCK_UNKNOWN:"반품 처리 확인중",RETURN_RESTOCKED:"반품검수완료 · 환불검토"};
     const cancellationLabel=cancellation==="CANCELLED"?"취소완료":"취소 확인중";
     state.textContent=refundRecorded?"환불완료":cancellation!=="NONE"?cancellationLabel:returned!=="NONE"?(returnLabels[returned]||"반품 처리중"):fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.review_state==="CONFIRMED"?(order.payment?.state==="PAID"?"배송준비":"입금대기"):order.review_state==="REJECTED"?"거절":"확인대기";
-    head.append(title,state);card.appendChild(head);
-    const details=document.createElement("p");
+    head.append(title,state);card.appendChild(head);showProgress(card,order);
+    const details=document.createElement("p");details.className="orders-status-summary";
     const labels={CONFIRMED:"주문확인 완료",PENDING_REVIEW:"주문확인 대기",REJECTED:"주문 거절",STOCK_BLOCKED:"재고확인 중"};
     details.textContent=refundRecorded?"환불완료 · "+order.refund.amount+" "+order.refund.currency+" · 운영자 송금 확인 기록":cancellation!=="NONE"?cancellationLabel+" · 입금하지 마세요.":returned!=="NONE"?(returnLabels[returned]||"반품 처리중")+" · 환불 안내는 별도로 확인해 주세요.":(labels[order.review_state]||"주문확인 대기")+" · "+(order.payment?.state==="PAID"?"입금완료":"입금대기")+" · "+({NOT_SHIPPED:order.payment?.state==="PAID"?"배송준비":"입금대기",SHIPPED:"배송중",DELIVERED:"배송완료"}[fulfillment]||"발송대기");
     card.appendChild(details);
@@ -73,7 +108,7 @@
       card.appendChild(notice);
     }
     const address=document.createElement("p");const delivery=order.delivery||{};
-    address.textContent="배송주소: "+[delivery.first_name,delivery.postcode,delivery.address_1,delivery.address_2].filter(Boolean).join(" ");
+    address.className="order-delivery-address";address.textContent="배송주소: "+[delivery.first_name,delivery.postcode,delivery.address_1,delivery.address_2].filter(Boolean).join(" ");
     card.appendChild(address);
     const items=document.createElement("div");items.className="order-items";
     for(const item of order.items){const p=document.createElement("p");p.textContent=item.name+" / "+(item.option||"기본")+" / "+item.quantity+"개";items.appendChild(p);}
@@ -103,7 +138,7 @@
     const state=document.createElement("strong");state.className="order-state";
     const fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
     state.textContent=fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.payment?.state==="PAID"?"배송준비":order.review_state==="CONFIRMED"?"입금대기":"확인대기";
-    head.append(title,state);card.appendChild(head);
+    head.append(title,state);card.appendChild(head);showProgress(card,order);
     const date=document.createElement("p");date.textContent="주문일: "+(order.requested_at||"일자 미확인");card.appendChild(date);
     const items=document.createElement("div");items.className="order-items";
     for(const item of order.items||[]){const p=document.createElement("p");p.textContent=item.name+" / "+(item.option||"기본")+" / "+item.quantity+"개";items.appendChild(p);}
@@ -117,26 +152,26 @@
   };
 
   const load=async()=>{
+    activeOrder=null;by("orders-list").replaceChildren();by("order-chat").hidden=true;by("order-chat-log").replaceChildren();
     const number=by("orders-number").value.trim().replace(/^#/,"");
     if(/^\d{10}$/.test(number)){
       const publicResponse=await fetch(commercePath('/orders/public-lookup'),{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},
         body:JSON.stringify({order_number:number})});
       const publicData=await publicResponse.json();
       if(publicResponse.ok){
-        by("orders-auth").hidden=true;by("orders-list").replaceChildren(renderPublicOrder(publicData.order));
+        activeOrder=publicData.order;by("orders-auth").hidden=true;by("orders-list").appendChild(renderPublicOrder(activeOrder));by("order-chat").hidden=false;
         message("주문번호만으로 기본 상태를 확인했습니다. 상세 기능은 휴대폰 인증 후 이용할 수 있습니다.");return;
       }
-      by("orders-list").replaceChildren();
       message(publicResponse.status===404?"주문번호를 찾을 수 없습니다. 10자리 주문번호를 확인해 주세요.":"주문조회 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
-    if(!(await session())){by("orders-phone").value=by("lookup-phone").value;by("orders-auth").hidden=false;by("orders-list").replaceChildren();return;}
+    if(!(await session())){by("orders-phone").value=by("lookup-phone").value;by("orders-auth").hidden=false;message("상세 주문 조회는 휴대폰 인증 후 이용할 수 있습니다.");return;}
     by("orders-auth").hidden=true;message("");
     const response=await fetch(commercePath('/orders/lookup'),{method:"POST",credentials:"same-origin",headers:headers(),
       body:JSON.stringify({order_number:by("orders-number").value,phone:by("lookup-phone").value})});
-    const data=await response.json();by("orders-list").replaceChildren();
+    const data=await response.json();
     if(!response.ok){message(data.message||"주문을 조회하지 못했습니다.");return;}
-    by("orders-list").appendChild(renderOrder(data.order));
+    activeOrder=data.order;by("orders-list").appendChild(renderOrder(activeOrder));by("order-chat").hidden=false;message("");
   };
   by("orders-lookup").onclick=()=>load().catch(()=>message("주문을 조회하지 못했습니다."));
 

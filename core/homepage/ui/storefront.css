@@ -433,3 +433,75 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 }
 @media(max-width:600px){.shop-chat-launcher{right:14px;bottom:18px;min-height:56px;padding:7px 13px 7px 8px}.shop-chat-launcher-icon{width:38px;height:38px;font-size:20px}.shop-chat-launcher-copy strong{font-size:13px}#shop-chat{width:calc(100vw - 16px);height:min(760px,88dvh);max-height:calc(100dvh - 20px);margin:0 8px 10px;border-radius:19px}#shop-chat .shop-chat-header{padding:13px 14px}.shop-chat-body{padding:11px 13px 6px}}
 @media(prefers-reduced-motion:reduce){.shop-chat-launcher{transition:none}}
+
+/* Dedicated DEV order lookup and order-aware assistant */
+.orders-page{max-width:880px;padding:34px 24px 72px;color:#493a32}
+.orders-hero{padding:38px 0 26px}
+.orders-hero .eyebrow,.orders-panel .eyebrow,.order-chat .eyebrow{margin:0 0 9px;color:#8d604d;font-size:11px;font-weight:800;letter-spacing:.16em}
+.orders-hero h1{margin:0;font-size:clamp(34px,7vw,52px);font-weight:500;letter-spacing:-.045em}
+.orders-hero>p:not(.eyebrow){max-width:600px;margin:12px 0 20px;color:#75665d;line-height:1.75}
+.orders-trust{display:flex;flex-wrap:wrap;gap:9px 18px;color:#78675d;font-size:12px}
+.orders-trust span:first-child{color:#6b795b}
+.orders-panel,.order-card,.order-chat{margin:14px 0 22px;padding:clamp(20px,5vw,30px);border:1px solid #e8ded2;border-radius:20px;background:#fffdf9;box-shadow:0 10px 30px #493a3208}
+.orders-panel-heading{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.orders-panel-heading h2,.orders-auth-panel h2,.order-chat h2{margin:0;font-size:20px;font-weight:600;letter-spacing:-.025em}
+.orders-lock{display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:#f7eee6;color:#98674e;font-size:24px}
+.orders-fields{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.orders-panel label{display:grid;gap:8px;color:#55463d;font-size:13px;font-weight:650}
+.orders-panel input,.orders-request input,.orders-request select,.orders-request textarea{width:100%;min-height:50px;padding:12px 14px;border:1px solid #e1d6ca;border-radius:11px;background:#fffefa;color:#3e332d;font:inherit}
+.orders-panel input:focus,.order-chat-form input:focus{outline:3px solid #eec2a7;outline-offset:1px}
+.orders-panel button,.orders-request button,.order-actions button{min-height:46px;padding:11px 16px;border:1px solid #e3b399;border-radius:11px;background:#efb897;color:#4f382d;font:inherit;font-weight:700;cursor:pointer}
+.orders-panel .orders-primary{display:flex;justify-content:center;align-items:center;gap:12px;width:100%;min-height:52px;margin-top:16px}
+.orders-primary span{font-size:20px}
+.orders-privacy-note,.order-chat-note{margin:13px 0 0;color:#897d73;font-size:12px;line-height:1.65}
+.orders-auth-panel{gap:13px}
+.orders-auth-panel>p:not(.eyebrow){margin:0;color:#75665d;font-size:13px;line-height:1.6}
+.orders-auth-panel .commerce-consent{display:flex!important;align-items:center;gap:9px!important}
+.orders-auth-panel .commerce-consent input{width:18px;min-height:18px}
+.orders-message{min-height:1.4em;margin:10px 0;color:#8b4d35;font-size:14px}
+.orders-results:empty{display:none}
+.order-card{padding:clamp(20px,5vw,30px)}
+.order-card-head{padding-bottom:18px;border-bottom:1px solid #eee7df}
+.order-card-head h2{font-size:18px}
+.order-state{padding:7px 11px;border-radius:999px;background:#f5e7dc;color:#81553f;font-size:12px}
+.orders-status-summary{margin:20px 0 12px;color:#57473e;font-weight:650}
+.orders-progress{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:22px 0 25px;padding:0;list-style:none;counter-reset:step}
+.orders-progress li{position:relative;padding-top:28px;color:#9a9088;font-size:11px;text-align:center}
+.orders-progress li:before{position:absolute;top:0;left:calc(50% - 9px);display:grid;place-items:center;width:18px;height:18px;border:2px solid #ded5cc;border-radius:50%;background:#fff;content:"";z-index:1}
+.orders-progress li:after{position:absolute;top:9px;left:calc(-50% + 9px);width:calc(100% - 18px);height:2px;background:#e7dfd8;content:""}
+.orders-progress li:first-child:after{display:none}
+.orders-progress li.is-complete:before,.orders-progress li.is-current:before{border-color:#bd8768;background:#bd8768;box-shadow:inset 0 0 0 4px #fff}
+.orders-progress li.is-current{color:#624434;font-weight:750}
+.orders-progress li.is-complete:after,.orders-progress li.is-current:after{background:#bd8768}
+.order-delivery-address{padding:14px 16px;border-radius:12px;background:#f8f4ee;color:#6d5c51;font-size:13px;line-height:1.65}
+.order-items{margin:16px 0;padding:15px 0;border-block:1px solid #eee7df}
+.order-items p{font-size:13px;line-height:1.6}
+.order-total{font-size:16px}
+.order-actions{margin-top:16px}
+.order-chat{padding:clamp(20px,5vw,30px);background:#f8f3ed}
+.order-chat[hidden]{display:none!important}
+.order-chat-heading{display:flex;justify-content:space-between;gap:12px}
+.order-chat-heading h2{font-size:23px}
+.order-chat-heading>div>p:last-child{margin:9px 0 0;color:#75665d;font-size:13px;line-height:1.6}
+.order-chat-heading>span{color:#bc8667;font-size:26px}
+.order-chat-quick{display:flex;flex-wrap:wrap;gap:8px;margin:19px 0}
+.order-chat-quick button{min-height:37px;padding:8px 12px;border:1px solid #dfd2c6;border-radius:999px;background:#fffdfa;color:#69574b;font:inherit;font-size:12px;cursor:pointer}
+.order-chat-log{display:grid;gap:8px;max-height:260px;overflow:auto;padding:12px;border-radius:13px;background:#fffdf9}
+.order-chat-log p{max-width:88%;margin:0;padding:11px 13px;border-radius:13px;background:#f0e9e1;color:#55463d;font-size:13px;line-height:1.65;white-space:pre-wrap}
+.order-chat-log .user-message{justify-self:end;background:#e9c1a8}
+.order-chat-form{display:flex;gap:8px;margin-top:11px}
+.order-chat-form input{flex:1;min-width:0;min-height:47px;padding:11px 13px;border:1px solid #dfd2c6;border-radius:11px;background:#fffdfa;font:inherit}
+.order-chat-form button{min-width:72px;padding:10px 14px;border:0;border-radius:11px;background:#70513f;color:white;font:inherit;font-weight:700;cursor:pointer}
+.orders-page [hidden]{display:none!important}
+.visually-hidden{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:600px){
+ .orders-page{padding:20px 16px 56px}
+ .orders-hero{padding:28px 0 20px}
+ .orders-trust{gap:8px 12px;font-size:11px}
+ .orders-fields{grid-template-columns:1fr;gap:13px}
+ .orders-panel,.order-card,.order-chat{border-radius:16px}
+ .orders-progress{gap:2px}
+ .orders-progress li{font-size:10px}
+ .order-card-head{align-items:center}
+ .order-chat-form button{min-width:64px}
+}

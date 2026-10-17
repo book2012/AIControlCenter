@@ -1,3 +1,14 @@
+## NEXT — activate DEV order lookup and assistant candidate
+
+- [x] Rebase candidate on active DEV homepage commit 78ac5c5.
+- [x] Build mobile order lookup, status timeline, and order-aware assistant gated by successful lookup.
+- [x] Verify order cancellations/refunds and chat isolation in fake-provider browser.
+- [ ] Commit and push the clean feature branch.
+- [ ] Archive a new immutable homepage DEV release; preserve the prior pointer and release.
+- [ ] Switch only the homepage DEV release, then check public page and health with GET-only probes. Do not restart order API or PROD services.
+
+Architecture: `docs/shopping/SHOP_ORDER_LOOKUP_ASSISTANT_DEV.md`.
+
 ## 2026-10-15 — DEV activation complete; PROD readiness remains gated
 
 The skirt is registered as isolated DEV WooCommerce product #186 at KRW 79,000

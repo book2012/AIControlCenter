@@ -1,3 +1,12 @@
+## 2026-10-16 — DEV 주문 조회와 챗봇 후보
+
+- 활성 DEV 릴리스 78ac5c5에서 분기한 별도 후보 브랜치입니다.
+- 주문 상태 진행선과 모바일 우선 주문 조회 UI를 추가했습니다.
+- 조회 응답의 결제·배송·환불·교환 정보만 설명하는 결정형 챗봇이며, 새 주문/다른 주문 조회는 허용하지 않습니다.
+- 주문/상태 경계 및 Chrome 검증 83개 통과. 외부 서비스 호출 0건, PROD 변경 0건.
+- 다음 단계는 clean pushed HEAD로 immutable DEV homepage 릴리스를 만들고 read-only live smoke 후 current pointer를 바꾸는 것입니다.
+- 사례 조사 및 범위: `docs/shopping/SHOP_ORDER_LOOKUP_ASSISTANT_DEV.md`.
+
 ## 2026-10-15 — skirt activated in DEV
 
 - WooCommerce DEV product #186 is live at temporary KRW 79,000.

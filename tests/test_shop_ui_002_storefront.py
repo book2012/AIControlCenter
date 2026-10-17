@@ -69,7 +69,7 @@ def test_legacy_fixture_integrates_existing_five_orderable_products(client):
     other=client.get("/homepage/storefront/product/oc-demo-acc-0001")
     assert other.status_code==200 and 'id="commerce-panel"' not in other.text
     orders=client.get("/homepage/storefront/my-orders")
-    assert orders.status_code==200 and "내 주문" in orders.text and "/homepage/assets/storefront-orders.js" in orders.text
+    assert orders.status_code==200 and "주문 조회" in orders.text and "/homepage/assets/storefront-orders.js" in orders.text and "shop-chat-product" not in orders.text
 
 def test_pdp_valid_and_not_found_canonical_api(client):
     product = client.get("/shopping/products/oc-demo-top-0001")

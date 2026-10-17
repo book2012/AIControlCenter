@@ -56,9 +56,12 @@ try{
  await call('Page.enable');await nav('/homepage/storefront');
  if(!await js('document.querySelector(".header-orders").textContent==="주문내역"&&getComputedStyle(document.getElementById("shop-chat-launcher")).backgroundColor==="rgb(198, 83, 0)"'))throw Error('ORDER header / orange chat');
  await nav('/homepage/storefront/my-orders');
+ if(!await js('document.getElementById("order-chat").hidden&&!document.getElementById("shop-chat-launcher")&&document.querySelector(".orders-fields").children.length===2'))throw Error('order assistant hidden before verified lookup');
  await js('document.getElementById("orders-number").value="15";document.getElementById("lookup-phone").value="01012345678";document.getElementById("orders-lookup").click()');
- await wait('!!document.querySelector(".order-card")');
- if(!await js('["주문확인 완료","입금완료","배송중","화이트 / M","테스트 배송주소","TEST12345"].every(t=>document.body.textContent.includes(t))'))throw Error('order detail');
+ await wait('!!document.querySelector(".order-card")&&!document.getElementById("order-chat").hidden');
+ if(!await js('["주문확인 완료","입금완료","배송중","배송 완료","화이트 / M","테스트 배송주소","TEST12345"].every(t=>document.body.textContent.includes(t))'))throw Error('order detail / timeline');
+ await js('document.querySelectorAll("[data-order-question]")[1].click()');
+ await wait('document.getElementById("order-chat-log").textContent.includes("TEST12345")');
  for(const [number,label] of [["16","취소완료"],["17","취소 확인중"]]){
   await js(`document.getElementById("orders-number").value="${number}";document.getElementById("orders-lookup").click()`);
   await wait(`document.querySelector(".order-state")?.textContent==="${label}"`);
@@ -70,10 +73,10 @@ try{
   if(!await js('document.querySelector(".order-card").textContent.includes("환불 안내는 별도로")&&!document.querySelector(".order-card").textContent.includes("환불완료")'))throw Error('return/refund state');
  }
  await js('document.getElementById("orders-number").value="999";document.getElementById("orders-lookup").click()');
- await wait('!document.querySelector(".order-card")&&document.getElementById("orders-message").textContent.includes("주문번호")');
+ await wait('!document.querySelector(".order-card")&&document.getElementById("order-chat").hidden&&document.getElementById("orders-message").textContent.includes("주문번호")');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  if(!await js('document.documentElement.scrollWidth<=innerWidth'))throw Error('mobile overflow');
- console.log(JSON.stringify({passed:true,checks:['주문내역 header','orange chat','number and phone lookup','payment and shipment','delivery and item detail','cancelled and unknown states suppress deposit','return stock and refund states separated','invalid lookup clears detail','mobile'],external_provider_requests:0,prod_mutation:false}));
+ console.log(JSON.stringify({passed:true,checks:['주문내역 header','orange chat','number and phone lookup','payment and shipment','delivery and item detail','cancelled and unknown states suppress deposit','return stock and refund states separated','verified order assistant answer','invalid lookup clears detail and assistant context','mobile'],external_provider_requests:0,prod_mutation:false}));
 }finally{s.close();}
 """
             r=subprocess.run(["/opt/homebrew/bin/node","--input-type=module","-e",driver,target["webSocketDebuggerUrl"]],capture_output=True,text=True,timeout=65)

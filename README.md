@@ -1,3 +1,7 @@
+## 2026-10-16 — DEV 주문 조회와 주문 도우미 후보
+
+주문 조회 화면을 모바일 우선으로 다듬고 상태 진행선과 현재 조회 주문에 한정된 상태 안내형 챗봇을 추가했습니다. 83개 주문/스토어프런트 테스트와 격리 Chrome 검증을 통과했습니다. Shopify 주문 상태, 패션플러스 비회원 조회, SSF 주문 상세 배송조회 사례를 참고했습니다. 활성 DEV 런타임에는 아직 배포하지 않았으며 다음 단계에서 immutable DEV release에 적용합니다. 자세한 내용: `docs/shopping/SHOP_ORDER_LOOKUP_ASSISTANT_DEV.md`. PROD는 변경하지 않았습니다.
+
 ## 2026-10-15 — skirt activated in immutable DEV releases
 
 Activated Homepage and order API on immutable release `c010f1d78ba0752b9d59cb0e6fcf89d36457b8fb`. Live checks return 21 catalog items; product #186 appears at KRW 79,000, with beige stock zero and unavailable. PDP and all three gallery images return HTTP 200. The DEV API is healthy with the Telegram poller still external; order SMS remains configuration-required. No order was created and PROD was untouched. Updated the search-page regression expectation to 21 products.
