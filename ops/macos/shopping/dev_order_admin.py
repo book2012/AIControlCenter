@@ -92,8 +92,9 @@ async function load(){
  for(const x of cases.cases){
   const wrap=document.createElement("div");wrap.className="inquiry";
   const title=document.createElement("div");title.className="state";
-  title.textContent=(x.kind==="RETURN"?"환불/반품":"사이즈교환")+" #"+x.id+" · 주문 #"+x.order_id+" · "+x.state;
-  const reason=document.createElement("div");reason.textContent=x.reason+(x.target_option?" · 희망 "+x.target_option:"")+" · 첨부 "+x.attachments+"개";
+  title.textContent=(x.kind==="RETURN"?"취소·환불/반품":x.kind==="ORDER_CHANGE"?"주문 변경":"사이즈교환")+" #"+x.id+" · 주문 #"+x.order_id+" · "+x.state;
+  if(x.shipping_fee_payer){const fee=document.createElement("div");fee.className="meta";fee.textContent="배송비 부담: "+(x.shipping_fee_payer==="CUSTOMER"?"고객 (단순 변심·사이즈 변경)":"판매자 (하자·오배송)");wrap.appendChild(fee);}
+  const reason=document.createElement("div");reason.className="meta";reason.textContent="신청 내용: "+x.reason+(x.target_option?" · 희망 "+x.target_option:"")+" · 첨부 "+x.attachments+"개";
   wrap.append(title,reason);
   const act=(label,fn)=>{const b=document.createElement("button");b.textContent=label;b.onclick=fn;wrap.appendChild(b);};
   const refresh=async()=>{await load();detail(x.order_id);};
@@ -122,6 +123,9 @@ async function load(){
     const evidence=prompt("송금 증빙 번호를 입력하세요.");if(!evidence)return;
     await post("/__order-dev/admin/cases/"+x.id+"/refund",{amount,evidence:evidence.trim()});
    });
+  }
+  if(x.kind==="ORDER_CHANGE"&&x.state==="ORDER_CHANGE_APPROVED"){
+   const note=document.createElement("div");note.className="meta";note.textContent="변경 요청 승인됨 · 실제 주문 정보/배송지는 운영자가 WooCommerce에서 별도 수정해야 합니다.";wrap.appendChild(note);
   }
   if(x.kind==="SIZE_EXCHANGE"&&x.state==="EXCHANGE_APPROVED"){
    const note=document.createElement("div");note.className="meta";note.textContent="교환 승인됨 · 실물 회수, 재고 변경, 재출고는 별도 실행 상태로 확인해야 합니다.";wrap.appendChild(note);

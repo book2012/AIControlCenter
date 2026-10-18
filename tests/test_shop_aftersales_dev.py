@@ -56,7 +56,7 @@ def test_delivery_completion_starts_14_day_customer_window(tmp_path):
 def test_exchange_case_attachment_and_approval(tmp_path):
     clock=[1000.0];store,_=fixture(tmp_path,clock);store.confirm_payment(ORDER);store.mark_shipped(ORDER,"한진택배","1234567890");store.mark_delivered(ORDER)
     assert store.exchange_options(CUSTOMER,ORDER)==[{"variation_id":"12","option":"M"}]
-    case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"SIZE_EXCHANGE","reason":"M 사이즈로 교환하고 싶어요","target_variation_id":"12"})
+    case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"SIZE_EXCHANGE","reason":"M 사이즈로 교환하고 싶어요","reason_type":"CHANGE_OF_MIND","target_variation_id":"12"})
     assert case["state"]=="REQUESTED" and case["target_option"]=="M"
     assert not store.customer_orders(CUSTOMER)[0]["exchange_available"]
     png=b"\x89PNG\r\n\x1a\n"+b"x"*64
@@ -70,7 +70,7 @@ def test_return_case_and_operator_commands_are_idempotent(tmp_path):
     reply=store.operator_command("주문발송 #15 CJ대한통운 1234567890",1)
     assert "발송 등록" in reply and store.operator_command("주문발송 #15 CJ대한통운 9999999999",1)==reply
     assert "14일" in store.operator_command("배송완료 #15",2)
-    case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"RETURN","reason":"단순 변심","target_variation_id":None})
+    case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"RETURN","reason":"단순 변심","reason_type":"CHANGE_OF_MIND","target_variation_id":None})
     listing=store.operator_command("환불목록",3);assert case["id"] in listing
     approved=store.operator_command("환불승인 #"+case["id"],4);assert "RETURN_APPROVED" in approved
     assert store.operator_command("환불승인 #"+case["id"],4)==approved
@@ -84,14 +84,70 @@ def test_customer_routes_require_session_csrf_and_keep_attachments_private(tmp_p
         assert client.get("/__order-dev/aftersales/orders").status_code==401
         client.cookies.set("__Host-aicc_customer","secret")
         orders=client.get("/__order-dev/aftersales/orders").json()["orders"];assert orders[0]["return_available"]
-        assert client.post("/__order-dev/aftersales/cases",json={"order_id":ORDER,"kind":"RETURN","reason":"변심","target_variation_id":None}).status_code==422
+        assert client.post("/__order-dev/aftersales/cases",json={"order_id":ORDER,"kind":"RETURN","reason":"변심","reason_type":"CHANGE_OF_MIND","target_variation_id":None}).status_code==422
         h={"Origin":"https://dev.bokstory.duckdns.org","X-CSRF-Token":"csrf"}
-        created=client.post("/__order-dev/aftersales/cases",json={"order_id":ORDER,"kind":"RETURN","reason":"변심","target_variation_id":None},headers=h)
+        created=client.post("/__order-dev/aftersales/cases",json={"order_id":ORDER,"kind":"RETURN","reason":"변심","reason_type":"CHANGE_OF_MIND","target_variation_id":None},headers=h)
         assert created.status_code==201;case_id=created.json()["case"]["id"]
         png=b"\x89PNG\r\n\x1a\n"+b"x"*64
         attached=client.post("/__order-dev/aftersales/cases/"+case_id+"/attachments",content=png,headers={**h,"Content-Type":"image/png"})
         assert attached.status_code==201 and boundary.csrf_checked>=2
         assert list((tmp_path/"files").iterdir()) and all(p.stat().st_mode&0o077==0 for p in (tmp_path/"files").iterdir())
+
+
+def test_customer_pre_shipment_cancel_and_order_change_are_review_requests(tmp_path):
+    clock=[1000.0];store,_=fixture(tmp_path,clock)
+    order=store.customer_orders(CUSTOMER)[0]
+    assert order["cancel_request_available"] and order["order_change_available"]
+    assert not order["return_available"] and not order["exchange_available"]
+    case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"ORDER_CHANGE","reason":"배송지 주소를 변경해 주세요","target_variation_id":None})
+    assert case["state"]=="REQUESTED" and case["shipping_fee_payer"] is None
+    assert not store.customer_orders(CUSTOMER)[0]["order_change_available"]
+    assert store.decide(case["id"],True)["state"]=="ORDER_CHANGE_APPROVED"
+    # Approval records review only; the checkout address is not silently mutated.
+    _,draft=store._customer_order(CUSTOMER,ORDER)
+    assert draft["body"]["shipping"]["address_1"]=="DEV 테스트 배송 주소"
+
+
+def test_pre_shipment_cancel_refund_request_is_separate_from_actual_cancellation(tmp_path):
+    clock=[1000.0];store,_=fixture(tmp_path,clock)
+    case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"RETURN","reason":"입금한 주문 취소 요청","target_variation_id":None})
+    assert case["state"]=="REQUESTED" and case["shipping_fee_payer"] is None
+    assert store.cancellation(ORDER)["state"]=="NONE"
+    assert not store.customer_orders(CUSTOMER)[0]["cancel_request_available"]
+    assert store.decide(case["id"],True)["state"]=="RETURN_APPROVED"
+    assert store.cancellation(ORDER)["state"]=="NONE"
+
+
+def test_delivery_reason_persists_correct_shipping_fee_owner_and_must_be_selected(tmp_path):
+    clock=[1000.0];store,_=fixture(tmp_path,clock)
+    store.confirm_payment(ORDER);store.mark_shipped(ORDER,"CJ대한통운","1234567890");store.mark_delivered(ORDER)
+    with pytest.raises(ValueError,match="REASON_TYPE_REQUIRED"):
+        store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"RETURN","reason":"상품 반품"})
+    seller_case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"RETURN","reason":"상품에 하자가 있습니다","reason_type":"DEFECT_OR_WRONG"})
+    assert seller_case["shipping_fee_payer"]=="SELLER"
+    assert seller_case["reason_type"]=="DEFECT_OR_WRONG"
+    assert store.customer_orders(CUSTOMER)[0]["cases"][0]["shipping_fee_payer"]=="SELLER"
+
+
+def test_customer_change_request_is_denied_after_shipment_starts(tmp_path):
+    clock=[1000.0];store,_=fixture(tmp_path,clock)
+    store.confirm_payment(ORDER);store.mark_shipped(ORDER,"CJ대한통운","1234567890")
+    order=store.customer_orders(CUSTOMER)[0]
+    assert not order["cancel_request_available"] and not order["order_change_available"]
+    with pytest.raises(ValueError,match="ORDER_CHANGE_CLOSED"):
+        store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"ORDER_CHANGE","reason":"주소 변경","target_variation_id":None})
+
+
+def test_existing_case_database_adds_nullable_fee_fields_without_losing_cases(tmp_path):
+    clock=[1000.0];store,_=fixture(tmp_path,clock)
+    case=store.create_case(CUSTOMER,{"order_id":ORDER,"kind":"ORDER_CHANGE","reason":"주소 수정 요청","target_variation_id":None})
+    import sqlite3
+    with sqlite3.connect(store.path) as db:
+        db.execute("ALTER TABLE cases DROP COLUMN shipping_fee_payer")
+        db.execute("ALTER TABLE cases DROP COLUMN reason_type")
+    migrated=DevAftersalesStore(store.path,store.attachments,ledger=store.ledger,checkout=store.checkout,catalog=store.catalog,clock=lambda:clock[0])
+    restored=migrated.case(CUSTOMER,case["id"])
+    assert restored["kind"]=="ORDER_CHANGE" and restored["shipping_fee_payer"] is None and restored["reason_type"] is None
 
 
 def test_delivery_replay_after_restart_preserves_original_receipt(tmp_path):

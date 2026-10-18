@@ -8,6 +8,10 @@ Next: use the authenticated DEV admin page to enter an actual product draft, upl
 
 Immutable DEV API release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8` is active. `/dev-order/admin` combines orders, on-demand delivery details, aftersales/inquiries and operator chat. Same-origin requests are required; Caddy Basic Auth protects the external DEV route. Order chat uses the existing explicit confirmation path. Product intake queues Codex in an isolated worktree; only a schema-checked JSON proposal is shown, with no catalog, WooCommerce, order, or PROD write. A synthetic Codex request generated a review draft. Checks: 60 focused tests passed; page 200, unauthenticated public page 401, same-origin read-only chat 200, health reports `poller=EXTERNAL`. Backup at `AIControlCenterRuntime/dev-order/backups/dev-order-admin-20261017-095343` (private runtime). Existing release 534 remains preserved. Next: activate the reviewed registration flow in isolated DEV and smoke-test without pressing the final registration button. Product creation requires exact-name confirmation; storefront projection review remains a separate step.
 
+## 2026-10-18 — DEV 고객 주문 취소·변경·반품/교환 요청
+
+주문내역에 미발송 취소/환불 요청과 주문 변경 요청, 배송완료 후 반품/환불 및 교환 요청을 추가했습니다. 발송 후에는 취소/일반 변경을 막고 배송완료 후 신청할 수 있게 안내합니다. 요청은 운영자 검토 큐에 기록되며 승인만으로 주문/결제/송금이 자동 변경되지는 않습니다. 배송완료 후 단순 변심·사이즈 변경은 배송비 고객 부담, 하자·오배송은 판매자 부담으로 유형과 부담 주체를 서버에 저장합니다. 법령상 청약철회 사유에 따른 비용 부담 구분을 반영했습니다. 관련 42개 백엔드 테스트와 격리 Chrome 브라우저 검증을 통과했고 PROD 및 실제 주문은 변경하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+
 # Non-SMS order workflow progress
 
 Updated: 2026-10-11 (Asia/Seoul). Current completed stage: 4 (code/tests). Stage-4 DEV API/presentation is active at 4473f1a (verified during this stage-5 preparation). Stage 5-1 shared relay is active at 0289213 (old-PROD-based isolated relay branch); actual human Telegram and stage 5-2 full order workflow remain pending.

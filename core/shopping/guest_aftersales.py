@@ -11,8 +11,9 @@ MEDIA={"image/jpeg":(".jpg",b"\xff\xd8\xff"),"image/png":(".png",b"\x89PNG\r\n\x
 class CaseCreate(BaseModel):
     model_config=ConfigDict(extra="forbid",hide_input_in_errors=True)
     order_id:int=Field(gt=0)
-    kind:str=Field(pattern=r"^(RETURN|SIZE_EXCHANGE)$")
+    kind:str=Field(pattern=r"^(RETURN|SIZE_EXCHANGE|ORDER_CHANGE)$")
     reason:str=Field(strict=True,min_length=2,max_length=1000)
+    reason_type:str|None=Field(default=None,pattern=r"^(CHANGE_OF_MIND|DEFECT_OR_WRONG)$")
     target_variation_id:str|None=Field(default=None,pattern=r"^[1-9][0-9]*$")
 from core.shopping.guest_returns import ReturnWorkflow
 from core.shopping.manual_refunds import ManualRefundRecords
@@ -30,7 +31,11 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
                 order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,carrier TEXT,tracking TEXT,shipped REAL,delivered REAL,updated REAL NOT NULL)""")
             c.execute("""CREATE TABLE IF NOT EXISTS cases(
                 id TEXT PRIMARY KEY,order_id INTEGER NOT NULL,customer TEXT NOT NULL,kind TEXT NOT NULL,target_variation_id TEXT,
-                target_option TEXT,reason TEXT NOT NULL,state TEXT NOT NULL,created REAL NOT NULL,updated REAL NOT NULL)""")
+                target_option TEXT,reason TEXT NOT NULL,state TEXT NOT NULL,created REAL NOT NULL,updated REAL NOT NULL,
+                reason_type TEXT,shipping_fee_payer TEXT)""")
+            case_columns={row[1] for row in c.execute("PRAGMA table_info(cases)")}
+            if "reason_type" not in case_columns:c.execute("ALTER TABLE cases ADD COLUMN reason_type TEXT")
+            if "shipping_fee_payer" not in case_columns:c.execute("ALTER TABLE cases ADD COLUMN shipping_fee_payer TEXT")
             c.execute("""CREATE TABLE IF NOT EXISTS attachments(
                 id TEXT PRIMARY KEY,case_id TEXT NOT NULL,media_type TEXT NOT NULL,size INTEGER NOT NULL,sha256 TEXT NOT NULL,
                 stored_name TEXT NOT NULL,created REAL NOT NULL)""")
@@ -51,7 +56,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         if not row:return {"state":"NOT_SHIPPED","carrier":None,"tracking":None,"shipped":None,"delivered":None,"updated":None}
         return dict(zip(("state","carrier","tracking","shipped","delivered","updated"),row))
     def _case_rows(self,order_id=None,customer=None,limit=100,case_id=None):
-        q="SELECT id,order_id,customer,kind,target_variation_id,target_option,reason,state,created,updated FROM cases"
+        q="SELECT id,order_id,customer,kind,target_variation_id,target_option,reason,state,created,updated,reason_type,shipping_fee_payer FROM cases"
         where=[];args=[]
         if order_id is not None:where.append("order_id=?");args.append(order_id)
         if customer is not None:where.append("customer=?");args.append(customer)
@@ -84,8 +89,10 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             order_number=public_order_number(requested_at=row["requested_at"],phone=draft["body"]["billing"]["phone"],entropy=row.get("reference") or row["operation_key"])
             result.append({"order_id":row["provider_order_id"],"order_number":order_number,"review_state":row["review_state"],"requested_at":row["requested_at"],
                 "items":draft["body"]["quote"]["line_items"],"total":draft["body"]["quote"]["final_total"],"currency":draft["body"]["quote"]["currency"],
-                "fulfillment":f,"refund":self.refund(row["provider_order_id"]),"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active),
-                "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active),"cases":cases})
+                "fulfillment":f,"refund":self.refund(row["provider_order_id"]),"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),
+                "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),
+                "cancel_request_available":bool(row["review_state"]=="CONFIRMED" and f["state"]=="NOT_SHIPPED" and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),
+                "order_change_available":bool(row["review_state"]=="CONFIRMED" and f["state"]=="NOT_SHIPPED" and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),"cases":cases})
         return result
     def payment(self,order_id):
         with connection(self.path) as c:
@@ -198,6 +205,8 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
                 "return_status":self.return_status(order_id),
                 "return_available":False,
                 "exchange_available":False,
+                "cancel_request_available":False,
+                "order_change_available":False,
                 "cases":[],
                 "public_only":True,
             }
@@ -212,8 +221,15 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         return options
     def create_case(self,customer,data):
         data=CaseCreate.model_validate(data);row,draft=self._customer_order(customer,data.order_id);f=self._fulfillment(data.order_id);now=self.clock()
-        if row["review_state"]!="CONFIRMED" or f["state"]!="DELIVERED" or not f["delivered"] or not f["delivered"]<=now<f["delivered"]+RETURN_WINDOW:
-            raise ValueError("RETURN_WINDOW_CLOSED")
+        if not data.reason.strip():raise ValueError("REASON_REQUIRED")
+        if row["review_state"]!="CONFIRMED" or self.cancellation(data.order_id)["state"]!="NONE":raise ValueError("ORDER_NOT_ACTIONABLE")
+        if f["state"]=="NOT_SHIPPED":
+            if data.kind not in ("RETURN","ORDER_CHANGE"):raise ValueError("DELIVERY_REQUIRED")
+            if data.reason_type is not None:raise ValueError("REASON_TYPE_INVALID")
+        elif data.kind in ("RETURN","SIZE_EXCHANGE"):
+            if f["state"]!="DELIVERED" or not f["delivered"] or not f["delivered"]<=now<f["delivered"]+RETURN_WINDOW:raise ValueError("RETURN_WINDOW_CLOSED")
+            if data.reason_type is None:raise ValueError("REASON_TYPE_REQUIRED")
+        else:raise ValueError("ORDER_CHANGE_CLOSED")
         if any(v["state"]!="REJECTED" for v in self._case_rows(order_id=data.order_id,customer=customer)):
             raise ValueError("CASE_ALREADY_ACTIVE")
         target=None
@@ -222,11 +238,13 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             opts={v["variation_id"]:v["option"] for v in self.exchange_options(customer,data.order_id)}
             target=opts.get(data.target_variation_id)
             if target is None:raise ValueError("TARGET_SIZE_UNAVAILABLE")
+        fee_payer={"CHANGE_OF_MIND":"CUSTOMER","DEFECT_OR_WRONG":"SELLER"}.get(data.reason_type)
         identifier=secrets.token_hex(4)
         with connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             if c.execute("SELECT 1 FROM cases WHERE order_id=? AND state!='REJECTED'",(data.order_id,)).fetchone():raise ValueError("CASE_ALREADY_ACTIVE")
-            c.execute("INSERT INTO cases VALUES(?,?,?,?,?,?,?,?,?,?)",(identifier,data.order_id,customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",now,now))
+            c.execute("INSERT INTO cases(id,order_id,customer,kind,target_variation_id,target_option,reason,state,created,updated,reason_type,shipping_fee_payer) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                (identifier,data.order_id,customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",now,now,data.reason_type,fee_payer))
         return self.case(customer,identifier)
     def admin_exchange_options(self,order_id):
         row=self._operator_order(int(order_id))
@@ -256,8 +274,8 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
                 raise ValueError("CASE_ALREADY_ACTIVE")
             if c.execute("SELECT 1 FROM manual_refunds WHERE order_id=?",(int(order_id),)).fetchone():
                 raise ValueError("REFUND_ALREADY_RECORDED")
-            c.execute("INSERT INTO cases VALUES(?,?,?,?,?,?,?,?,?,?)",
-                (identifier,int(order_id),customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",stamp,stamp))
+            c.execute("INSERT INTO cases(id,order_id,customer,kind,target_variation_id,target_option,reason,state,created,updated,reason_type,shipping_fee_payer) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
+                (identifier,int(order_id),customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",stamp,stamp,data.reason_type,{"CHANGE_OF_MIND":"CUSTOMER","DEFECT_OR_WRONG":"SELLER"}.get(data.reason_type)))
         matches=self._case_rows(case_id=identifier)
         if not matches:raise ValueError("CASE_NOT_FOUND")
         return matches[0]
@@ -323,9 +341,9 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             if row is None:raise ValueError("CASE_NOT_FOUND")
             kind,state=row
             if state=="REQUESTED":
-                state=("RETURN_APPROVED" if kind=="RETURN" else "EXCHANGE_APPROVED") if approve else "REJECTED"
+                state=("RETURN_APPROVED" if kind=="RETURN" else "EXCHANGE_APPROVED" if kind=="SIZE_EXCHANGE" else "ORDER_CHANGE_APPROVED") if approve else "REJECTED"
                 c.execute("UPDATE cases SET state=?,updated=? WHERE id=?",(state,self.clock(),case_id))
-            elif state!="REJECTED" and not state.startswith("RETURN_") and state!="EXCHANGE_APPROVED":
+            elif state!="REJECTED" and not state.startswith("RETURN_") and state not in ("EXCHANGE_APPROVED","ORDER_CHANGE_APPROVED"):
                 raise ValueError("CASE_STATE_INVALID")
             elif (state=="REJECTED")==approve:
                 # A later opposite decision cannot change history or claim success.

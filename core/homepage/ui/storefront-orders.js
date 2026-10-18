@@ -37,8 +37,9 @@
       return "현재 주문은 아직 발송 전입니다. 주문 확인과 입금 상태를 함께 확인해 주세요. 발송이 시작되면 배송 정보가 표시됩니다.";
     }
     if(/환불|반품|교환|사이즈/.test(q)){
-      const options=[];if(order.return_available)options.push("환불");if(order.exchange_available)options.push("사이즈 교환");
-      return options.length?"이 주문은 "+options.join(" 및 ")+" 요청이 가능합니다. 주문 카드의 해당 버튼에서 접수해 주세요.":"현재 주문 상태에서는 환불·교환 요청을 온라인으로 접수할 수 없습니다. 고객 문의로 주문 상태를 확인해 주세요.";
+      const options=[];if(order.cancel_request_available)options.push("취소/환불");if(order.order_change_available)options.push("주문 변경");if(order.return_available)options.push("반품/환불");if(order.exchange_available)options.push("교환");
+      const fee=" 단순 변심·사이즈 변경은 배송비 고객 부담, 상품 하자·오배송은 판매자 부담으로 접수합니다.";
+      return options.length?"이 주문은 "+options.join(" 및 ")+" 요청이 가능합니다. 주문 카드에서 접수해 주세요."+(order.return_available||order.exchange_available?fee:""):"현재 배송 상태에서는 요청할 수 없습니다. 발송 전에는 주문 카드에서 취소·변경을 요청하고, 배송완료 후 14일 이내 반품·교환을 신청할 수 있습니다.";
     }
     if(/입금|결제|은행/.test(q))return order.payment?.state==="PAID"?"입금 확인이 완료됐습니다.":"현재 입금 확인 전 상태입니다. 입금 확인 후 주문 상태가 갱신됩니다.";
     const review={CONFIRMED:"주문 확인이 완료됐습니다.",PENDING_REVIEW:"주문 확인을 기다리고 있습니다.",REJECTED:"주문 확인이 완료되지 않았습니다. 고객 문의로 확인해 주세요.",STOCK_BLOCKED:"상품 재고를 확인하고 있습니다."}[order.review_state]||"주문이 접수되어 확인 중입니다.";
@@ -53,24 +54,38 @@
   const requestCaseForm=async(card,order,kind)=>{
     if(card.querySelector(".orders-request"))return;
     const box=document.createElement("div");box.className="orders-request";
-    let select=null;
+    let select=null,reasonType=null;
     if(kind==="SIZE_EXCHANGE"){
       const response=await fetch(commercePath('/aftersales/orders/')+order.order_id+"/exchange-options",{credentials:"same-origin",headers:headers()});
       const data=await response.json();
-      if(!response.ok||!Array.isArray(data.options)||!data.options.length){message("현재 교환 가능한 사이즈가 없습니다.");return;}
-      const label=document.createElement("label");label.textContent="교환할 사이즈";
+      if(!response.ok||!Array.isArray(data.options)||!data.options.length){message("현재 교환 가능한 옵션이 없습니다.");return;}
+      const label=document.createElement("label");label.textContent="교환할 옵션";
       select=document.createElement("select");
       for(const value of data.options){const option=document.createElement("option");option.value=value.variation_id;option.textContent=value.option;select.appendChild(option);}
       label.appendChild(select);box.appendChild(label);
     }
-    const reason=document.createElement("textarea");reason.maxLength=1000;reason.placeholder=kind==="RETURN"?"환불 사유를 입력해 주세요.":"교환 사유를 입력해 주세요.";
+    if((kind==="RETURN"||kind==="SIZE_EXCHANGE")&&(order.fulfillment?.state||"NOT_SHIPPED")==="DELIVERED"){
+      const label=document.createElement("label");label.textContent="신청 사유";
+      reasonType=document.createElement("select");
+      reasonType.innerHTML='<option value="">사유를 선택해 주세요</option><option value="CHANGE_OF_MIND">단순 변심·사이즈 변경</option><option value="DEFECT_OR_WRONG">상품 하자·오배송</option>';
+      label.appendChild(reasonType);box.appendChild(label);
+      const feeNote=document.createElement("p");feeNote.className="orders-fee-notice";
+      feeNote.textContent="단순 변심·사이즈 변경은 반품·교환 배송비를 고객님이 부담합니다. 상품 하자·오배송은 판매자가 부담합니다. 최종 확인 후 접수해 주세요.";
+      box.appendChild(feeNote);
+    }
+    const reason=document.createElement("textarea");reason.maxLength=1000;
+    reason.placeholder=kind==="RETURN"?(order.fulfillment?.state==="NOT_SHIPPED"?"취소/환불 요청 사유를 적어 주세요.":"반품/환불 사유를 적어 주세요."):kind==="ORDER_CHANGE"?"변경할 상품·옵션·배송정보를 적어 주세요.":"교환 사유를 적어 주세요.";
     const file=document.createElement("input");file.type="file";file.accept="image/jpeg,image/png,image/webp";file.multiple=true;
-    const note=document.createElement("p");note.className="field-note";note.textContent="필요한 경우 사진을 최대 5개 첨부할 수 있습니다.";
-    const submit=document.createElement("button");submit.type="button";submit.className="solid-button";submit.textContent=kind==="RETURN"?"환불 요청 접수":"사이즈교환 요청 접수";
+    const note=document.createElement("p");note.className="field-note";note.textContent=kind==="ORDER_CHANGE"?"발송 전 변경 요청입니다. 운영자가 확인 후 주문 정보를 별도로 수정하며, 이 요청만으로 주문이 바뀌지는 않습니다.":kind==="RETURN"&&order.fulfillment?.state==="NOT_SHIPPED"?"취소/환불은 운영자 확인 후 처리됩니다. 입금된 주문은 환불 송금이 자동 실행되지 않습니다.":"필요한 경우 사진을 최대 5개 첨부할 수 있습니다.";
+    const submit=document.createElement("button");submit.type="button";submit.className="solid-button";
+    submit.textContent=kind==="RETURN"?(order.fulfillment?.state==="NOT_SHIPPED"?"취소/환불 요청 접수":"반품/환불 요청 접수"):kind==="ORDER_CHANGE"?"주문 변경 요청 접수":"교환 요청 접수";
     submit.onclick=async()=>{
+      if(reasonType&&!reasonType.value){message("신청 사유를 선택해 주세요.");reasonType.focus();return;}
+      const confirmCopy=reasonType?.value==="CHANGE_OF_MIND"?"단순 변심 또는 사이즈 변경으로 접수합니다. 반품·교환 배송비는 고객 부담입니다. 계속할까요?":reasonType?.value==="DEFECT_OR_WRONG"?"상품 하자 또는 오배송으로 접수합니다. 확인 후 판매자 부담 여부를 검토합니다. 계속할까요?":kind==="ORDER_CHANGE"?"발송 전 주문 변경 요청을 접수할까요? 운영자가 확인 후 별도로 처리합니다.":"취소/환불 요청을 접수할까요? 실제 취소와 환불은 운영자 확인 후 처리됩니다.";
+      if(!window.confirm(confirmCopy))return;
       submit.disabled=true;message("");
       try{
-        const payload={order_id:order.order_id,kind,reason:reason.value,target_variation_id:select?select.value:null};
+        const payload={order_id:order.order_id,kind,reason:reason.value,target_variation_id:select?select.value:null,reason_type:reasonType?.value||null};
         const response=await fetch(commercePath('/aftersales/cases'),{method:"POST",credentials:"same-origin",headers:headers(),body:JSON.stringify(payload)});
         const data=await response.json();if(!response.ok)throw new Error(data.message||"요청을 접수하지 못했습니다.");
         for(const current of Array.from(file.files).slice(0,5)){
@@ -78,7 +93,7 @@
             headers:{"Content-Type":current.type,"X-CSRF-Token":csrf},body:current});
           if(!uploaded.ok)throw new Error("요청은 접수됐지만 일부 첨부파일을 저장하지 못했습니다.");
         }
-        message("요청이 접수됐습니다.");await load();
+        message("요청이 접수됐습니다. 운영자 확인 후 상태가 업데이트됩니다.");await load();
       }catch(error){message(error?.message||"요청을 접수하지 못했습니다.");}
       finally{submit.disabled=false;}
     };
@@ -117,16 +132,20 @@
     if(order.fulfillment?.carrier||order.fulfillment?.tracking){
       const shipping=document.createElement("p");shipping.className="field-note";shipping.textContent=[order.fulfillment.carrier,order.fulfillment.tracking].filter(Boolean).join(" · ");card.appendChild(shipping);
     }
-    const caseLabels={REQUESTED:"접수",REJECTED:"거절",RETURN_APPROVED:"반품승인",RETURN_RECEIVED:"회수완료",RETURN_RESTOCK_PENDING:"재고 처리 확인중",RETURN_RESTOCK_UNKNOWN:"재고 처리 확인중",RETURN_RESTOCKED:"검수완료 · 환불검토",EXCHANGE_APPROVED:"교환승인"};
+    const caseLabels={REQUESTED:"운영자 확인 대기",REJECTED:"거절",RETURN_APPROVED:"반품승인",RETURN_RECEIVED:"회수완료",RETURN_RESTOCK_PENDING:"재고 처리 확인중",RETURN_RESTOCK_UNKNOWN:"재고 처리 확인중",RETURN_RESTOCKED:"검수완료 · 환불검토",EXCHANGE_APPROVED:"교환승인",ORDER_CHANGE_APPROVED:"변경 승인 · 주문 정보 수정 대기"};
     for(const current of order.cases||[]){
       const row=document.createElement("div");row.className="order-case";
-      row.textContent=(current.kind==="RETURN"?"환불":"사이즈교환")+" #"+current.id+" · "+(refundRecorded&&current.kind==="RETURN"?"환불완료":caseLabels[current.state]||"상태 확인중")+(current.target_option?" · "+current.target_option:"")+" · 첨부 "+current.attachments+"개";
+      row.textContent=(current.kind==="RETURN"?(fulfillment==="NOT_SHIPPED"?"취소/환불":"반품/환불"):current.kind==="ORDER_CHANGE"?"주문 변경":"사이즈교환")+" #"+current.id+" · "+(refundRecorded&&current.kind==="RETURN"?"환불완료":caseLabels[current.state]||"상태 확인중")+(current.shipping_fee_payer==="CUSTOMER"?" · 배송비 고객 부담":current.shipping_fee_payer==="SELLER"?" · 배송비 판매자 부담":"")+(current.target_option?" · "+current.target_option:"")+" · 첨부 "+current.attachments+"개";
       card.appendChild(row);
+      if(current.kind==="ORDER_CHANGE"&&current.state==="ORDER_CHANGE_APPROVED"){const note=document.createElement("p");note.className="field-note";note.textContent="운영자가 실제 주문 정보를 별도로 수정해야 변경이 완료됩니다.";card.appendChild(note);}
     }
+    if(fulfillment==="SHIPPED"){const note=document.createElement("p");note.className="field-note";note.textContent="배송이 시작되어 취소·주문 변경은 접수할 수 없습니다. 반품·교환은 배송완료 후 신청할 수 있습니다.";card.appendChild(note);}
     for(const notice of order.customer_messages||[]){const p=document.createElement("p");p.className="order-customer-message";p.style.whiteSpace="pre-wrap";p.textContent=notice.message;card.appendChild(p);}
     const actions=document.createElement("div");actions.className="order-actions";
-    if(order.return_available){const button=document.createElement("button");button.type="button";button.textContent="환불 요청";button.onclick=()=>requestCaseForm(card,order,"RETURN");actions.appendChild(button);}
-    if(order.exchange_available){const button=document.createElement("button");button.type="button";button.textContent="사이즈 교환";button.onclick=()=>requestCaseForm(card,order,"SIZE_EXCHANGE");actions.appendChild(button);}
+    if(order.cancel_request_available){const button=document.createElement("button");button.type="button";button.textContent=order.payment?.state==="PAID"?"취소/환불 요청":"주문 취소 요청";button.onclick=()=>requestCaseForm(card,order,"RETURN");actions.appendChild(button);}
+    if(order.order_change_available){const button=document.createElement("button");button.type="button";button.textContent="주문 변경 요청";button.onclick=()=>requestCaseForm(card,order,"ORDER_CHANGE");actions.appendChild(button);}
+    if(order.return_available){const button=document.createElement("button");button.type="button";button.textContent="반품/환불 요청";button.onclick=()=>requestCaseForm(card,order,"RETURN");actions.appendChild(button);}
+    if(order.exchange_available){const button=document.createElement("button");button.type="button";button.textContent="교환 요청";button.onclick=()=>requestCaseForm(card,order,"SIZE_EXCHANGE");actions.appendChild(button);}
     if(actions.childElementCount)card.appendChild(actions);
     return card;
   };

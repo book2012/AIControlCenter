@@ -83,7 +83,7 @@ def mount_aftersales(app,*,store,boundary,phone_cfg):
             if len(raw)>8192:raise ValueError()
             data=CaseCreate.model_validate_json(raw);case=store.create_case(projection.customer_id,data)
             return JSONResponse({"case":case},status_code=201,headers={"Cache-Control":"no-store"})
-        except Exception:return JSONResponse({"message":"환불/교환 가능 기간과 입력 내용을 확인해 주세요."},status_code=422,headers={"Cache-Control":"no-store"})
+        except Exception:return JSONResponse({"message":"배송 상태, 신청 사유와 필수 입력을 확인해 주세요. 반품·교환은 배송완료 후 14일 이내 가능합니다."},status_code=422,headers={"Cache-Control":"no-store"})
     @app.post("/__order-dev/aftersales/cases/{case_id}/attachments",include_in_schema=False)
     async def attachment(case_id:str,request:Request):
         try:

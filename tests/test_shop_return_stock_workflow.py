@@ -7,7 +7,7 @@ from ops.macos.shopping.dev_aftersales import DevAftersalesStore
 def delivered(tmp_path):
     clock=[1000.0];store,draft=fixture(tmp_path,clock);store.confirm_payment(ORDER)
     store.mark_shipped(ORDER,'CJ대한통운','1234567890');store.mark_delivered(ORDER)
-    case=store.create_case(CUSTOMER,{'order_id':ORDER,'kind':'RETURN','reason':'반품 요청'})
+    case=store.create_case(CUSTOMER,{'order_id':ORDER,'kind':'RETURN','reason':'반품 요청','reason_type':'CHANGE_OF_MIND'})
     return store,case,clock
 
 def provider(calls):
@@ -30,7 +30,7 @@ def test_approval_and_receipt_do_not_restock_inspection_does_once(tmp_path):
     assert restarted.payment(ORDER)['state']=='PAID'
     order=restarted.customer_orders(CUSTOMER)[0]
     assert not order['return_available'] and not order['exchange_available']
-    with pytest.raises(ValueError,match='CASE_ALREADY_ACTIVE'):restarted.create_case(CUSTOMER,{'order_id':ORDER,'kind':'RETURN','reason':'다시 반품'})
+    with pytest.raises(ValueError,match='CASE_ALREADY_ACTIVE'):restarted.create_case(CUSTOMER,{'order_id':ORDER,'kind':'RETURN','reason':'다시 반품','reason_type':'CHANGE_OF_MIND'})
 
 def test_unknown_return_is_read_only_reconciled_not_replayed(tmp_path):
     store,case,_=delivered(tmp_path);store.decide(case['id'],True);store.receive_return(case['id'])
@@ -62,7 +62,7 @@ def test_exchange_case_cannot_restore_return_stock(tmp_path):
 def test_concurrent_return_case_creation_admits_one(tmp_path):
     store,case,_=delivered(tmp_path);store.decide(case['id'],False)
     def create(_):
-        try:return store.create_case(CUSTOMER,{'order_id':ORDER,'kind':'RETURN','reason':'새 반품 요청'})['id']
+        try:return store.create_case(CUSTOMER,{'order_id':ORDER,'kind':'RETURN','reason':'새 반품 요청','reason_type':'CHANGE_OF_MIND'})['id']
         except ValueError:return None
     with ThreadPoolExecutor(max_workers=2) as pool:results=list(pool.map(create,range(2)))
     assert sum(x is not None for x in results)==1

@@ -12,6 +12,33 @@ status, aftersales requests, inquiry records, and a chat panel. Order chat calls
 the existing `OperatorConversation`, preserving its bounded intent parsing,
 actor-scoped dialogue, and explicit confirmation step before mutations.
 
+## Customer order aftersales
+
+The DEV storefront order-history screen exposes request actions from fulfillment
+state. A confirmed order that has not shipped can submit a cancellation/refund
+request or an order-change request. Shipping start closes both actions. Delivery
+completion opens return/refund and exchange requests during the existing 14-day
+window. Exchange options remain limited to the existing supported single-line
+order path.
+
+These are review requests, not direct customer mutations of WooCommerce. An
+admin decision records approval/rejection; it does not itself alter the order,
+transfer money, restore inventory, or finish an exchange. Approved order-change
+requests require an operator to update the order separately.
+
+For delivered return/exchange requests, the customer must select change of
+mind/size change or defect/wrong item. The server stores the selected basis and
+fee payer on each case, deriving CUSTOMER for change of mind and SELLER for
+defect/wrong item. The screen shows this inline and in a confirmation prompt.
+This follows the Korean E-Commerce Consumer Protection Act distinction between
+consumer-paid ordinary withdrawal costs and seller-paid costs for seller-fault
+withdrawals; the exact case and policy still require operator review:
+https://www.law.go.kr/LSW/lsLawLinkInfo.do?chrClsCd=010202&lsId=011357&lsJoLnkSeq=900078940
+
+Existing DEV case databases are upgraded additively with nullable reason type
+and shipping-fee-payer columns; historical rows remain readable. No PROD order,
+customer, payment, or catalog data is connected by this feature.
+
 ## Product intake
 
 Messages beginning with “상품 등록”, “상품 추가”, or “신규 상품” are queued

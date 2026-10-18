@@ -20,12 +20,14 @@ def main():
         @app.post("/__order-dev/orders/lookup")
         async def lookup(request:Request):
             data=await request.json()
-            if data not in [{"order_number":n,"phone":"01012345678"} for n in ("15","16","17","18","19")]:return JSONResponse({"message":"주문번호와 인증한 휴대폰 번호를 확인해 주세요."},status_code=403)
+            if data not in [{"order_number":n,"phone":"01012345678"} for n in ("15","16","17","18","19","20","21")]:return JSONResponse({"message":"주문번호와 인증한 휴대폰 번호를 확인해 주세요."},status_code=403)
             response={"order":{"order_id":15,"review_state":"CONFIRMED","items":[{"name":"테스트 블라우스","option":"화이트 / M","quantity":2}],"total":"58000","currency":"KRW","payment":{"state":"PAID"},"fulfillment":{"state":"SHIPPED","carrier":"테스트 택배","tracking":"TEST12345"},"delivery":{"first_name":"테스트 고객","postcode":"12345","address_1":"테스트 배송주소"},"cases":[],"return_available":False,"exchange_available":False}}
             if data["order_number"]!="15":
                 response["order"].update(order_id=int(data["order_number"]),payment={"state":"AWAITING_DEPOSIT"},fulfillment={"state":"NOT_SHIPPED"},cancellation={"state":"CANCELLED" if data["order_number"]=="16" else "UNKNOWN"})
             if data["order_number"] in ("18","19"):
                 response["order"].update(cancellation={"state":"NONE"},return_status={"state":"RETURN_RESTOCKED" if data["order_number"]=="18" else "RETURN_RESTOCK_UNKNOWN"},payment={"state":"PAID"},fulfillment={"state":"DELIVERED"})
+            if data["order_number"]=="20":response["order"].update(order_id=20,cancellation={"state":"NONE"},payment={"state":"AWAITING_DEPOSIT"},fulfillment={"state":"NOT_SHIPPED"},cancel_request_available=True,order_change_available=True)
+            if data["order_number"]=="21":response["order"].update(order_id=21,cancellation={"state":"NONE"},payment={"state":"PAID"},fulfillment={"state":"DELIVERED"},return_available=True,exchange_available=True)
             return JSONResponse(response)
         @app.get("/{path:path}")
         def page(path:str,request:Request):
@@ -72,11 +74,26 @@ try{
   await wait(`document.querySelector(".order-state")?.textContent==="${label}"`);
   if(!await js('document.querySelector(".order-card").textContent.includes("환불 안내는 별도로")&&!document.querySelector(".order-card").textContent.includes("환불완료")'))throw Error('return/refund state');
  }
+ await js(`window.__casePayload=null;const f=window.fetch.bind(window);window.fetch=(u,i={})=>{if(String(u).includes("/aftersales/cases")&&i.method==="POST"){window.__casePayload=JSON.parse(i.body);return Promise.resolve(new Response(JSON.stringify({case:{id:"deadbeef"}}),{status:201,headers:{"Content-Type":"application/json"}}))}return f(u,i)};window.confirm=t=>(window.__confirm=t,true);`);
+ await js('document.getElementById("orders-number").value="20";document.getElementById("orders-lookup").click()');await wait('!!document.querySelector(".order-card")');
+ if(!await js('[...document.querySelectorAll(".order-actions button")].some(b=>b.textContent==="주문 취소 요청")&&[...document.querySelectorAll(".order-actions button")].some(b=>b.textContent==="주문 변경 요청")'))throw Error('pre-shipment customer actions');
+ await js('[...document.querySelectorAll(".order-actions button")].find(b=>b.textContent==="주문 변경 요청").click()');
+ await js('document.querySelector(".orders-request textarea").value="배송지 변경 요청"');
+ await js('[...document.querySelectorAll(".orders-request button")].at(-1).click()');
+ await wait('window.__casePayload?.kind==="ORDER_CHANGE"');
+ if(!await js('window.__casePayload.reason.includes("배송지 변경")&&window.__confirm.includes("발송 전")'))throw Error('order change request confirmation');
+ await js('document.getElementById("orders-number").value="21";document.getElementById("orders-lookup").click()');await wait('!!document.querySelector(".order-card")');
+ if(!await js('[...document.querySelectorAll(".order-actions button")].some(b=>b.textContent==="반품/환불 요청")&&[...document.querySelectorAll(".order-actions button")].some(b=>b.textContent==="교환 요청")'))throw Error('delivered customer actions');
+ await js('[...document.querySelectorAll(".order-actions button")].find(b=>b.textContent==="반품/환불 요청").click()');
+ if(!await js('document.querySelector(".orders-fee-notice").textContent.includes("고객님이 부담")'))throw Error('return shipping fee notice');
+ await js('document.querySelector(".orders-request select").value="CHANGE_OF_MIND";document.querySelector(".orders-request textarea").value="단순 변심";[...document.querySelectorAll(".orders-request button")].at(-1).click()');
+ await wait('window.__casePayload?.reason_type==="CHANGE_OF_MIND"');
+ if(!await js('window.__confirm.includes("배송비는 고객 부담")'))throw Error('return fee confirmation');
  await js('document.getElementById("orders-number").value="999";document.getElementById("orders-lookup").click()');
  await wait('!document.querySelector(".order-card")&&document.getElementById("order-chat").hidden&&document.getElementById("orders-message").textContent.includes("주문번호")');
  await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
  if(!await js('document.documentElement.scrollWidth<=innerWidth'))throw Error('mobile overflow');
- console.log(JSON.stringify({passed:true,checks:['주문내역 header','orange chat','number and phone lookup','payment and shipment','delivery and item detail','cancelled and unknown states suppress deposit','return stock and refund states separated','verified order assistant answer','invalid lookup clears detail and assistant context','mobile'],external_provider_requests:0,prod_mutation:false}));
+ console.log(JSON.stringify({passed:true,checks:['주문내역 header','orange chat','number and phone lookup','payment and shipment','delivery and item detail','cancelled and unknown states suppress deposit','return stock and refund states separated','verified order assistant answer','pre-shipment cancel/change actions','operator review confirmation','delivered return/exchange actions','shipping-fee reason selector and customer-fee modal','invalid lookup clears detail and assistant context','mobile'],external_provider_requests:0,prod_mutation:false}));
 }finally{s.close();}
 """
             r=subprocess.run(["/opt/homebrew/bin/node","--input-type=module","-e",driver,target["webSocketDebuggerUrl"]],capture_output=True,text=True,timeout=65)
