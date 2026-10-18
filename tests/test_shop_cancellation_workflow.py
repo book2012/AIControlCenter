@@ -54,3 +54,33 @@ def test_ambiguous_provider_commit_is_reconciled_read_only(tmp_path):
     assert store.reconcile_cancellation(ORDER)['state']=='CANCELLED'
     assert store.cancel_order(ORDER)['state']=='CANCELLED'
     assert provider.writes==1 and provider.reads==2
+
+
+def test_admin_paid_pre_shipment_cancel_requires_approved_refund_case(tmp_path):
+    store,_=fixture(tmp_path,[1000.0])
+    with pytest.raises(ValueError,match='REFUND_PAYMENT_REQUIRED'):
+        store.admin_create_case(ORDER,{'order_id':ORDER,'kind':'RETURN','reason':'주문 취소 환불'})
+    store.confirm_payment(ORDER)
+    case=store.admin_create_case(ORDER,{'order_id':ORDER,'kind':'RETURN','reason':'주문 취소 환불'})
+    assert case['state']=='REQUESTED'
+    store.decide(case['id'],True)
+    calls=[]
+    store.stock_cancellation=lambda row,draft:(calls.append(row['provider_order_id']) or {'outcome':'STOCK_CANCELLED','order_id':ORDER})
+    with pytest.raises(ValueError,match='REQUIRES_REFUND_REVIEW'):
+        store.cancel_order(ORDER)
+    result=store.cancel_order(ORDER,refund_case_id=case['id'])
+    assert result['state']=='CANCELLED' and calls==[ORDER]
+    assert store.payment(ORDER)['state']=='PAID'
+    with pytest.raises(ValueError,match='ORDER_CANCELLATION_ACTIVE'):
+        store.admin_create_case(ORDER,{'order_id':ORDER,'kind':'RETURN','reason':'중복 환불'})
+
+
+def test_approved_paid_order_cannot_be_cancelled_after_shipment(tmp_path):
+    store,_=fixture(tmp_path,[1000.0]);store.confirm_payment(ORDER)
+    store.mark_shipped(ORDER,'CJ대한통운','1234567890')
+    case=store.admin_create_case(ORDER,{'order_id':ORDER,'kind':'RETURN','reason':'배송 중 환불 문의'})
+    store.decide(case['id'],True)
+    store.stock_cancellation=lambda *a:pytest.fail('shipped order stock must not be cancelled')
+    with pytest.raises(ValueError,match='SHIPPED_CANCELLATION_DENIED'):
+        store.cancel_order(ORDER,refund_case_id=case['id'])
+    assert store.cancellation(ORDER)['state']=='NONE'

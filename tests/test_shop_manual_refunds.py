@@ -2,7 +2,7 @@ import sqlite3
 from concurrent.futures import ThreadPoolExecutor
 import pytest
 from test_shop_return_stock_workflow import delivered,provider
-from test_shop_aftersales_dev import CUSTOMER,ORDER
+from test_shop_aftersales_dev import CUSTOMER,ORDER,fixture as dev_fixture
 from test_shop_telegram_fulfillment_sms import adapter
 from core.shopping.operator_conversation import OperatorConversation
 from core.shopping.customer_order_notices import order_notices
@@ -91,3 +91,19 @@ def test_customer_http_refund_projection_is_owned_and_evidence_private(tmp_path)
         assert response.json()['order']['refund']['state']=='RECORDED' and '환불완료' in response.text
         assert EVIDENCE not in response.text and ACTOR not in response.text
         assert client.post('/__order-dev/orders/lookup',json={**data,'phone':'01099999999'},headers=headers).status_code==403
+
+
+def test_admin_cancelled_paid_order_records_only_actual_full_refund(tmp_path):
+    store,_=dev_fixture(tmp_path,[1000.0])
+    store.confirm_payment(ORDER)
+    case=store.admin_create_case(ORDER,{'order_id':ORDER,'kind':'RETURN','reason':'미발송 주문 취소'})
+    store.decide(case['id'],True)
+    store.stock_cancellation=lambda row,draft:{'outcome':'STOCK_CANCELLED','order_id':ORDER}
+    store.cancel_order(ORDER,refund_case_id=case['id'])
+    store.manual_refund_records_enabled=True
+    _,draft=store._customer_order(CUSTOMER,ORDER)
+    amount=int(draft['body']['quote']['final_total'])
+    result=store.record_refund(case['id'],amount,'BANK-CANCEL-001','admin-web-dev',12345)
+    assert result['state']=='RECORDED' and int(result['amount'])==amount
+    assert store.payment(ORDER)['state']=='PAID'
+    assert store.record_refund(case['id'],amount,'BANK-CANCEL-001','admin-web-dev',12346)==result

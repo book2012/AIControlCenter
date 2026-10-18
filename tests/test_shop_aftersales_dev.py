@@ -111,3 +111,16 @@ def test_delivery_replay_after_restart_preserves_original_receipt(tmp_path):
     from core.shopping.customer_order_notices import order_notices
     messages=order_notices(restarted.customer_orders(CUSTOMER)[0],None)
     assert messages[-1]["kind"]=="DELIVERED"
+
+
+def test_admin_can_open_and_approve_exchange_case_while_shipment_is_in_progress(tmp_path):
+    clock=[1000.0];store,_=fixture(tmp_path,clock);store.confirm_payment(ORDER)
+    store.mark_shipped(ORDER,'한진택배','1234567890')
+    options=store.admin_exchange_options(ORDER)
+    assert options==[{'variation_id':'12','option':'M'}]
+    case=store.admin_create_case(ORDER,{'order_id':ORDER,'kind':'SIZE_EXCHANGE','reason':'배송 중 사이즈 교환 요청','target_variation_id':'12'})
+    assert case['state']=='REQUESTED' and case['target_option']=='M'
+    approved=store.decide(case['id'],True)
+    assert approved['state']=='EXCHANGE_APPROVED'
+    assert store.admin_fulfillment(ORDER)['state']=='SHIPPED'
+    assert store.payment(ORDER)['state']=='PAID'

@@ -66,3 +66,27 @@ returns 200 and includes the review form, exact-name registration confirmation,
 and all five media roles. External unauthenticated access returns 401. No
 WooCommerce product/order write or PROD change occurred. Rollback files are
 stored at `AIControlCenterRuntime/dev-order/backups/product-intake-20261018-152525`.
+
+
+## Admin cancellation, refunds, and exchanges
+
+The order detail exposes a guarded cancellation only while fulfillment is
+NOT_SHIPPED. An unpaid cancellation uses the existing serialized Woo stock
+restoration receipt. A paid cancellation requires a separately approved RETURN
+case before stock restoration; that action does not transfer funds or change
+the payment state. The operator records the full KRW refund only after the
+external transfer has actually completed and an evidence reference is supplied.
+
+A shipped order cannot be cancelled. A refund case can be approved while the
+order is in progress, but physical receipt and inspection remain delivery-gated.
+Only the existing return inspection workflow restores stock, and only after a
+bound provider receipt. Unknown writes remain frozen for read-only reconciliation.
+
+An administrator may create and approve a size-exchange case while shipment is
+in progress. The selected target must be a currently available variation.
+Approval is case approval only; physical return, inventory movement, and
+replacement shipment are not automated or represented as completed by this
+release. Partial refunds and partial returns are unsupported.
+
+The API routes remain DEV-only behind the existing Basic Auth edge and enforce
+same-origin POSTs. No real order or money transfer is performed by the tests.

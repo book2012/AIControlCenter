@@ -13,7 +13,10 @@ def test_admin_console_lists_orders_without_address_and_detail_on_demand():
             "delivery":{"recipient":"테스트 고객","postcode":"12345","address1":"서울 테스트로 1","address2":"101호"}} if order_id==15 else None)
     queue=SimpleNamespace(admin_rows=lambda limit:[{"id":"abcdef12","product":"10","question":"교환 기간?","answer":"14일 이내입니다.",
         "state":"APPROVED","delivery":"SENT","created":1.0,"answered":2.0,"approved":2.0}])
-    aftersales=SimpleNamespace(admin_fulfillment=lambda order_id:{"state":"DELIVERED"},admin_cases=lambda:[{"id":"deadbeef","order_id":15,"kind":"RETURN","state":"REQUESTED","reason":"변심","target_option":None,"attachments":1}])
+    aftersales=SimpleNamespace(admin_fulfillment=lambda order_id:{"state":"DELIVERED"},
+        payment=lambda order_id:{"state":"PAID"},cancellation=lambda order_id:{"state":"NONE"},
+        refund=lambda order_id:{"state":"NOT_RECORDED"},
+        admin_cases=lambda:[{"id":"deadbeef","order_id":15,"kind":"RETURN","state":"REQUESTED","reason":"변심","target_option":None,"attachments":1}])
     app=FastAPI();mount_admin(app,operator_adapter=adapter,inquiry_queue=queue,aftersales=aftersales)
     with TestClient(app) as client:
         page=client.get("/dev-order/admin")
@@ -117,3 +120,39 @@ def test_codex_product_intake_is_queued_without_woocommerce_write(tmp_path):
         status=client.get("/__order-dev/admin/product-drafts/"+job)
         assert status.status_code==200 and status.json()["draft"]["job_id"]==job
         assert client.get("/__order-dev/admin/product-drafts/../bad").status_code in {404,422}
+
+
+def test_admin_order_actions_are_same_origin_and_require_explicit_cancel_phrase(tmp_path):
+    class Aftersales:
+        def __init__(self): self.calls=[]
+        def cancel_order(self,order_id,*,refund_case_id=None):
+            self.calls.append(('cancel',order_id,refund_case_id));return {'state':'CANCELLED'}
+        def payment(self,order_id): return {'state':'PAID'}
+        def refund(self,order_id): return {'state':'NOT_RECORDED'}
+        def admin_create_case(self,order_id,data):
+            self.calls.append(('create_case',order_id,data));return {'id':'deadbeef','state':'REQUESTED'}
+        def admin_exchange_options(self,order_id): return [{'variation_id':'12','option':'M'}]
+        def decide(self,case_id,approve): self.calls.append(('decide',case_id,approve));return {'id':case_id,'state':'RETURN_APPROVED'}
+        def receive_return(self,case_id): self.calls.append(('receive',case_id));return {'state':'RETURN_RECEIVED'}
+        def inspect_return(self,case_id): self.calls.append(('inspect',case_id));return {'state':'RETURN_RESTOCKED'}
+        def reconcile_return(self,case_id): self.calls.append(('reconcile',case_id));return {'state':'RETURN_RESTOCKED'}
+        def record_refund(self,*args): self.calls.append(('refund',*args));return {'state':'RECORDED'}
+    aftersales=Aftersales()
+    adapter=SimpleNamespace(admin_orders=lambda limit:[],admin_detail=lambda order_id:None)
+    queue=SimpleNamespace(admin_rows=lambda limit:[])
+    app=FastAPI();mount_admin(app,operator_adapter=adapter,inquiry_queue=queue,aftersales=aftersales)
+    origin={'Origin':'https://dev.bokstory.duckdns.org'}
+    with TestClient(app) as client:
+        assert client.get('/__order-dev/admin/orders/15/exchange-options').json()['options'][0]['option']=='M'
+        denied=client.post('/__order-dev/admin/orders/15/cancel',json={'confirmation':'취소 #15'},headers={'Origin':'https://evil.example'})
+        assert denied.status_code==403 and not aftersales.calls
+        wrong=client.post('/__order-dev/admin/orders/15/cancel',json={'confirmation':'취소 #16'},headers=origin)
+        assert wrong.status_code==422 and not aftersales.calls
+        case=client.post('/__order-dev/admin/orders/15/cases',json={'kind':'RETURN','reason':'취소 환불','target_variation_id':None},headers=origin)
+        assert case.status_code==201 and aftersales.calls[-1][0]=='create_case'
+        cancel=client.post('/__order-dev/admin/orders/15/cancel',json={'confirmation':'취소 #15','refund_case_id':'deadbeef'},headers=origin)
+        assert cancel.status_code==200 and aftersales.calls[-1]==('cancel',15,'deadbeef')
+        decision=client.post('/__order-dev/admin/cases/deadbeef/decision',json={'approve':True},headers=origin)
+        assert decision.status_code==200 and aftersales.calls[-1]==('decide','deadbeef',True)
+        refund=client.post('/__order-dev/admin/cases/deadbeef/refund',json={'amount':29000,'evidence':'BANK-TEST-123'},headers=origin)
+        assert refund.status_code==200 and aftersales.calls[-1][0]=='refund'

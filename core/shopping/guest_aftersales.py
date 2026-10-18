@@ -99,7 +99,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
     def _deny_cancelled(c,order_id):
         if c.execute("SELECT 1 FROM cancellations WHERE order_id=?",(order_id,)).fetchone():
             raise ValueError("ORDER_CANCELLATION_ACTIVE")
-    def cancel_order(self,order_id):
+    def cancel_order(self,order_id,*,refund_case_id=None):
         rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
         if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
         row=rows[0]
@@ -113,7 +113,12 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
                 if old[0]=="CANCELLED":return self.cancellation(order_id)
                 raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
             payment=c.execute("SELECT state FROM payments WHERE order_id=?",(order_id,)).fetchone()
-            if payment and payment[0]=="PAID":raise ValueError("PAID_CANCELLATION_REQUIRES_REFUND_REVIEW")
+            if payment and payment[0]=="PAID":
+                if type(refund_case_id) is not str or not re.fullmatch(r"[a-f0-9]{8}",refund_case_id):
+                    raise ValueError("PAID_CANCELLATION_REQUIRES_REFUND_REVIEW")
+                case=c.execute("SELECT order_id,kind,state FROM cases WHERE id=?",(refund_case_id,)).fetchone()
+                if not case or case!=(order_id,"RETURN","RETURN_APPROVED"):
+                    raise ValueError("PAID_CANCELLATION_REQUIRES_REFUND_REVIEW")
             shipment=c.execute("SELECT state FROM fulfillment WHERE order_id=?",(order_id,)).fetchone()
             if shipment and shipment[0] in ("SHIPPED","DELIVERED"):raise ValueError("SHIPPED_CANCELLATION_DENIED")
             c.execute("INSERT INTO cancellations VALUES(?,?,?)",(order_id,"SENDING",self.clock()))
@@ -223,6 +228,39 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             if c.execute("SELECT 1 FROM cases WHERE order_id=? AND state!='REJECTED'",(data.order_id,)).fetchone():raise ValueError("CASE_ALREADY_ACTIVE")
             c.execute("INSERT INTO cases VALUES(?,?,?,?,?,?,?,?,?,?)",(identifier,data.order_id,customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",now,now))
         return self.case(customer,identifier)
+    def admin_exchange_options(self,order_id):
+        row=self._operator_order(int(order_id))
+        return self.exchange_options(row["customer_id"],int(order_id))
+    def admin_create_case(self,order_id,data):
+        data=CaseCreate.model_validate(data)
+        if data.order_id!=int(order_id):raise ValueError("ORDER_BINDING_INVALID")
+        row=self._operator_order(int(order_id));customer=row["customer_id"]
+        if self.cancellation(int(order_id))["state"]!="NONE":raise ValueError("ORDER_CANCELLATION_ACTIVE")
+        if data.kind=="RETURN" and self.payment(int(order_id))["state"]!="PAID":
+            raise ValueError("REFUND_PAYMENT_REQUIRED")
+        target=None
+        if data.kind=="SIZE_EXCHANGE":
+            if not data.target_variation_id:raise ValueError("TARGET_SIZE_REQUIRED")
+            options={v["variation_id"]:v["option"] for v in self.exchange_options(customer,int(order_id))}
+            target=options.get(data.target_variation_id)
+            if target is None:raise ValueError("TARGET_SIZE_UNAVAILABLE")
+        identifier=secrets.token_hex(4);stamp=self.clock()
+        with connection(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            if c.execute("SELECT 1 FROM cancellations WHERE order_id=?",(int(order_id),)).fetchone():
+                raise ValueError("ORDER_CANCELLATION_ACTIVE")
+            if data.kind=="RETURN":
+                payment=c.execute("SELECT state FROM payments WHERE order_id=?",(int(order_id),)).fetchone()
+                if not payment or payment[0]!="PAID":raise ValueError("REFUND_PAYMENT_REQUIRED")
+            if c.execute("SELECT 1 FROM cases WHERE order_id=? AND state!='REJECTED'",(int(order_id),)).fetchone():
+                raise ValueError("CASE_ALREADY_ACTIVE")
+            if c.execute("SELECT 1 FROM manual_refunds WHERE order_id=?",(int(order_id),)).fetchone():
+                raise ValueError("REFUND_ALREADY_RECORDED")
+            c.execute("INSERT INTO cases VALUES(?,?,?,?,?,?,?,?,?,?)",
+                (identifier,int(order_id),customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",stamp,stamp))
+        matches=self._case_rows(case_id=identifier)
+        if not matches:raise ValueError("CASE_NOT_FOUND")
+        return matches[0]
     def case(self,customer,case_id):
         rows=self._case_rows(customer=customer,case_id=case_id)
         if len(rows)!=1:raise ValueError("CASE_NOT_OWNED")

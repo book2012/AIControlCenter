@@ -104,3 +104,13 @@ Remaining: explicit manual refund-completion record with amount/evidence and cus
 Independent DEV bridge cursor hardening: reads/aftersales no longer advance legacy ledger cursor. Order review decisions allocate a monotonic local ledger ID at or above the historical offset, while authenticated bridge original update IDs govern replay. No cursor rewind; restored/new bot commands cannot be incorrectly suppressed by an old shared-bot diagnostic offset. Real isolated SQLite ledger regression verifies confirmation guard once across retry/restart.
 
 Final related regression: 161 passed after independent cursor fix; immutable DEV API and DEV homepage refund UI verified, no live refund records created. SMS remains disabled with latest test3113.
+
+
+## 2026-10-18 — DEV 관리자 취소·환불·교환 작업 후보
+
+- 미발송 미입금 주문은 기존 재고복원 취소 흐름을 관리자 주문 상세에서 명시적 확인 후 실행할 수 있습니다.
+- 입금된 미발송 주문은 환불 케이스를 별도로 승인한 뒤에만 취소할 수 있습니다. 취소는 재고복원이지 송금이 아니며, 실제 전액 송금 후 증빙번호를 입력해 환불 완료를 기록합니다.
+- 배송 시작 후에는 취소 경로를 차단합니다. 환불은 반품 승인, 배송완료 후 실물 회수, 검수·재고복원 순서를 따릅니다.
+- 사이즈 교환 요청과 승인은 배송 중에도 가능하며, 선택 옵션은 현재 판매 가능 변형으로 제한합니다. 교환 승인만으로 회수·재고변경·재출고가 완료된 것으로 표시하지 않습니다.
+- 관리자 POST는 DEV storefront Origin을 확인하고 취소는 정확한 취소 #주문번호 문구를 요구합니다. UNKNOWN 취소·재고 결과는 재시도하지 않고 조회 조정만 허용합니다.
+- 49개 관련 테스트, Python compilation, git diff --check 통과. DEV 실행 서비스 활성화 전 후보이며 실제 주문/결제/송금은 수행하지 않았습니다. PROD 변경 없음.

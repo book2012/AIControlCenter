@@ -1,3 +1,7 @@
+## 2026-10-18 — DEV 관리자 취소·환불·교환 작업 후보
+
+주문 상세와 요청 목록에 관리자 취소, 환불/교환 케이스 생성·승인·거절, 반품 회수·검수·복원 확인, 실제 송금 후 전액 환불 기록을 연결했습니다. 취소는 미발송 주문만 가능하며 입금 주문은 승인된 환불 케이스가 필요합니다. 배송 중 환불은 반품 케이스로 이어지고, 교환 요청은 배송 중에도 생성·승인할 수 있습니다. 실제 송금은 실행하지 않습니다. 교환 실물 회수·재고 이동·재출고 자동화는 이번 후보에 포함하지 않고 화면에도 미완료로 표시합니다. 관련 회귀 49개 통과; DEV 런타임 활성화 전. PROD와 실제 주문 데이터 변경 없음.
+
 ## 2026-10-18 — DEV 관리자 Codex 상품 등록 흐름 구현
 
 관리자 상품 intake를 검토·등록 단계까지 확장했습니다. 운영자가 상품 사실/가격/옵션/재고와 이미지 5종을 입력하면 private review packet과 고유 DEV catalog ID를 만들고 read-only 사전검증을 합니다. 사전검증 성공 뒤 운영자가 상품명을 다시 입력해 별도 등록을 확정해야 DEV WooCommerce 쓰기가 실행됩니다. 등록 결과가 불명확하면 자동 재시도하지 않습니다. WooCommerce 등록과 storefront projection 활성화는 분리되어 있습니다. 81개 관련 테스트 통과. 실제 상품 등록 및 PROD 변경은 하지 않았습니다. DEV immutable API release `da1d2095361a3559b798584a21286ebb703cde1b`로 활성화했습니다. 런타임 health와 관리자 페이지 200, 새 폼/이미지 역할 문구 존재, 외부 비인증 401을 확인했습니다. WooCommerce 등록은 실행하지 않았습니다. 백업은 `AIControlCenterRuntime/dev-order/backups/product-intake-20261018-152525`입니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
