@@ -1,3 +1,12 @@
+## 2026-10-19 — DEV Papachichi 주문 버튼
+
+- 단일 pending 주문 메시지에 **주문 확인** / **주문 상세** inline buttons를 표시합니다.
+- callback는 private chat, allowlisted human operator, Papachichi 원본 메시지와 동일 주문번호·전화번호로 검증합니다.
+- 확인은 기존 DEV bridge로 전달돼 재고 검증 및 중복 방지 경계를 유지합니다.
+- DEV bot 전용 immutable release; PROD bot/API/data untouched.
+- Focused tests and live DEV bot validation pending.
+- Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+
 ## 2026-10-18 — DEV 고객 주문 취소·변경·반품/교환 요청
 
 주문내역에 미발송 취소/환불 요청과 주문 변경 요청, 배송완료 후 반품/환불 및 교환 요청을 추가했습니다. 발송 후에는 취소/일반 변경을 막고 배송완료 후 신청할 수 있게 안내합니다. 요청은 운영자 검토 큐에 기록되며 승인만으로 주문/결제/송금이 자동 변경되지는 않습니다. 배송완료 후 단순 변심·사이즈 변경은 배송비 고객 부담, 하자·오배송은 판매자 부담으로 유형과 부담 주체를 서버에 저장합니다. 법령상 청약철회 사유에 따른 비용 부담 구분을 반영했습니다. 관련 백엔드 테스트 43개와 격리 Chrome 브라우저 검증을 통과했습니다. DEV API와 Homepage immutable release `a1bbf8678dc6962cde3facb6ad49c89e4ae4f23c`에 적용했습니다. 실제 주문·송금과 PROD는 변경하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
