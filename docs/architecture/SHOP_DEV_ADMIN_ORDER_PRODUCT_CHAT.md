@@ -90,3 +90,14 @@ release. Partial refunds and partial returns are unsupported.
 
 The API routes remain DEV-only behind the existing Basic Auth edge and enforce
 same-origin POSTs. No real order or money transfer is performed by the tests.
+
+
+## Admin aftersales DEV activation
+
+The guarded order actions were validated by 49 focused regression tests,
+Python compilation, inline JavaScript syntax validation, and whitespace checks.
+Immutable DEV API release 031ad09cc60887063283d2cf98e93147e6c85fa8 is active.
+Read-only checks confirmed DEV health, the internal admin page (HTTP 200), and
+external unauthenticated admin access (HTTP 401). The release rollback snapshot
+is stored in AIControlCenterRuntime/dev-order/backups/admin-aftersales-20261019-061700.
+No real order action, payment/refund transfer, or PROD change was performed.

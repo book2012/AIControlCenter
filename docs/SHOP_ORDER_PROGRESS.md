@@ -113,4 +113,4 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 - 배송 시작 후에는 취소 경로를 차단합니다. 환불은 반품 승인, 배송완료 후 실물 회수, 검수·재고복원 순서를 따릅니다.
 - 사이즈 교환 요청과 승인은 배송 중에도 가능하며, 선택 옵션은 현재 판매 가능 변형으로 제한합니다. 교환 승인만으로 회수·재고변경·재출고가 완료된 것으로 표시하지 않습니다.
 - 관리자 POST는 DEV storefront Origin을 확인하고 취소는 정확한 취소 #주문번호 문구를 요구합니다. UNKNOWN 취소·재고 결과는 재시도하지 않고 조회 조정만 허용합니다.
-- 49개 관련 테스트, Python compilation, git diff --check 통과. DEV 실행 서비스 활성화 전 후보이며 실제 주문/결제/송금은 수행하지 않았습니다. PROD 변경 없음.
+- 49개 관련 테스트, Python compilation, Node JavaScript syntax check, git diff --check 통과. Immutable DEV API release 031ad09cc60887063283d2cf98e93147e6c85fa8 활성화; health 정상, 내부 관리자 200, 외부 무인증 401. 백업은 AIControlCenterRuntime/dev-order/backups/admin-aftersales-20261019-061700입니다. 실제 주문/결제/송금 수행 없음. PROD 변경 없음.
