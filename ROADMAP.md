@@ -3,8 +3,11 @@
 - [x] 단일 미확인 주문 결과에 클릭 가능한 주문 확인/상세 인라인 버튼 표시.
 - [x] callback 원본 메시지, private operator, 허용 사용자, 전화번호·주문번호를 검증.
 - [x] 확인과 상세 동작은 기존 DEV operator bridge에 전달; 임의 callback 명령은 거부.
-- [ ] Focused tests, immutable DEV bot release, launchd health, 실제 callback 검증을 마무리.
-- [ ] PROD bot은 변경하지 않음.
+- [x] Focused tests (36) and Python compilation pass.
+- [x] Activate immutable DEV bot release `a31157aa4f6d273bc9bca9b169a14425b68ff169` and verify LaunchAgent running / DEV API health.
+- [x] Deliver the provided DEV order reply with clickable buttons to operator chat.
+- [ ] Verify one callback by operator click; no order mutation occurs until clicked.
+- [x] PROD bot은 변경하지 않음.
 
 Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
 

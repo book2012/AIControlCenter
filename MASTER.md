@@ -4,7 +4,10 @@
 - callback는 private chat, allowlisted human operator, Papachichi 원본 메시지와 동일 주문번호·전화번호로 검증합니다.
 - 확인은 기존 DEV bridge로 전달돼 재고 검증 및 중복 방지 경계를 유지합니다.
 - DEV bot 전용 immutable release; PROD bot/API/data untouched.
-- Focused tests and live DEV bot validation pending.
+- Focused 36 tests and Python compilation pass; immutable DEV bot release `a31157aa4f6d273bc9bca9b169a14425b68ff169` is active.
+- Papachichi LaunchAgent is running; DEV API health and operator bridge pass.
+- The order reply with buttons was delivered to the operator chat (message 67); no button click or order mutation has occurred yet.
+- PROD bot, API, data, and real-order records were not changed.
 - Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
 
 ## 2026-10-18 — DEV 고객 주문 취소·변경·반품/교환 요청

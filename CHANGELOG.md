@@ -1,6 +1,6 @@
 ## 2026-10-19 — DEV Papachichi 주문 인라인 버튼
 
-단일 미확인 주문 답변에 주문 확인·주문 상세 버튼을 붙이고 callback query 수신, 확인, 정확한 원본 주문 검증 및 기존 브리지 전달을 구현했습니다. 허용된 private 운영자만 누를 수 있으며, 확인 클릭은 기존 재고 확인/주문 상태 처리 경로를 사용합니다. 관련 테스트와 DEV bot release/가동 검증 후 기록합니다. PROD와 실제 주문 변경은 별도입니다. 상세: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+단일 미확인 주문 답변에 주문 확인·주문 상세 버튼을 붙이고 callback query 수신, 확인, 정확한 원본 주문 검증 및 기존 브리지 전달을 구현했습니다. 허용된 private 운영자만 누를 수 있으며, 확인 클릭은 기존 재고 확인/주문 상태 처리 경로를 사용합니다. 관련 36개 테스트와 Python compile 검사를 통과했습니다. Immutable DEV bot release `a31157aa4f6d273bc9bca9b169a14425b68ff169` 활성, LaunchAgent running, DEV API health 정상입니다. 주문 정보 버튼 메시지 ID 67 전송을 확인했습니다. 버튼 클릭 전이므로 주문 변경은 없습니다. PROD는 변경하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
 
 ## 2026-10-18 — DEV 고객 주문 취소·변경·반품/교환 요청
 

@@ -1,6 +1,6 @@
 ## 2026-10-19 — DEV Papachichi 주문 버튼
 
-`papachichi_bot`의 단일 주문 확인 답변에 `주문 확인`·`주문 상세` 인라인 버튼을 추가했습니다. 클릭 시 private 운영자 채팅/허용 사용자, 봇 원본 메시지, 전화번호와 공개 주문번호를 검증한 뒤 기존 DEV 주문 브리지로 전달합니다. 업데이트 커서와 중복 방지·재고 확인은 그대로 사용합니다. PROD 봇과 운영 주문은 변경하지 않습니다. 상세: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+`papachichi_bot`의 단일 주문 확인 답변에 `주문 확인`·`주문 상세` 인라인 버튼을 추가했습니다. 클릭 시 private 운영자 채팅/허용 사용자, 봇 원본 메시지, 전화번호와 공개 주문번호를 검증한 뒤 기존 DEV 주문 브리지로 전달합니다. 업데이트 커서와 중복 방지·재고 확인은 그대로 사용합니다. focused 36개 테스트 통과, immutable DEV bot release `a31157aa4f6d273bc9bca9b169a14425b68ff169` 및 LaunchAgent 적용/health 확인. 주문 정보와 버튼 메시지(ID 67)를 운영자 채팅에 보냈으며 클릭 전이라 주문은 변경되지 않았습니다. PROD 봇과 운영 주문은 변경하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
 
 ## 2026-10-18 — DEV 고객 주문 취소·변경·반품/교환 요청
 
