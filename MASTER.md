@@ -4,7 +4,9 @@
 - Five role-specific images and per-file AI provenance are validated and hashed; private review state reserves unique catalog IDs.
 - Read-only preflight must pass before a separate exact product-name confirmation can invoke the DEV registrar.
 - Unknown apply outcomes block retry. WooCommerce publication is separate from storefront projection activation.
-- 81 related tests passed. No product write or PROD change has occurred. Deployment and read-only runtime smoke are next.
+- 81 related tests passed. DEV release `da1d2095361a3559b798584a21286ebb703cde1b` is active; health shows `DEV`, `product_management=RUNNING`, `operator_bridge=RUNNING`, `codex_website_drafts=ENABLED`, `poller=EXTERNAL`.
+- Local admin page returned 200 and included review, explicit registration and all five image roles. External unauthenticated access returned 401.
+- No WooCommerce product was created and PROD was unchanged. Backup: `AIControlCenterRuntime/dev-order/backups/product-intake-20261018-152525`.
 - See `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
 
 ## 2026-10-17 — DEV admin order/chat candidate

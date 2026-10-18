@@ -57,12 +57,12 @@ for a matching product-intake job.
 
 ## Validation
 
-Focused tests cover address-on-demand behavior, same-origin chat requests,
-product job queuing without Commerce writes, Codex prompt bounds, and review-only
-job completion. DEV API immutable release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8`
-is active. The external unauthenticated admin route returned 401, the local page
-returned 200, and a same-origin read-only order-list chat returned 200. A
-synthetic product request completed through the live Codex worker and produced
-schema-valid JSON in an isolated worktree. No order mutation, WooCommerce
-registration, or PROD write was performed. The rollback backup is stored under
-`AIControlCenterRuntime/dev-order/backups/dev-order-admin-20261017-095343`.
+81 focused order/admin, operator, draft-worker, and intake tests pass. Python
+compilation and diff checks pass. Immutable DEV API release
+`da1d2095361a3559b798584a21286ebb703cde1b` is active. Runtime health reports
+`DEV`, `product_management=RUNNING`, `operator_bridge=RUNNING`,
+`codex_website_drafts=ENABLED`, and `poller=EXTERNAL`. The local admin page
+returns 200 and includes the review form, exact-name registration confirmation,
+and all five media roles. External unauthenticated access returns 401. No
+WooCommerce product/order write or PROD change occurred. Rollback files are
+stored at `AIControlCenterRuntime/dev-order/backups/product-intake-20261018-152525`.

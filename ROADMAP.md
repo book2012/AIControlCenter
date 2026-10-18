@@ -1,3 +1,17 @@
+## 2026-10-18 — DEV reviewed Codex product registration active
+
+- [x] Add editable product review fields, five validated media roles, and per-image AI provenance.
+- [x] Reserve unique DEV catalog IDs; materialize a private registration packet from the pinned feature revision.
+- [x] Require read-only preflight success and exact product-name confirmation before DEV WooCommerce apply.
+- [x] Block retries after ambiguous apply outcomes; keep storefront projection activation separate.
+- [x] Pass 81 focused tests, Python compilation, and diff checks.
+- [x] Activate immutable DEV API release `da1d2095361a3559b798584a21286ebb703cde1b`; health and admin page pass, external no-auth returns 401.
+- [x] Keep PROD and live WooCommerce products unchanged.
+
+Next: review one real product packet in DEV, inspect its read-only preflight, then intentionally submit registration if desired. Review storefront projection separately.
+
+Architecture: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+
 ## 2026-10-17 — DEV order admin and Codex product intake active
 
 - [x] Run 60 order/admin, operator conversation, bridge, and Codex scope tests plus Python/JavaScript syntax checks.
@@ -7,7 +21,7 @@
 - [x] Run a synthetic live Codex intake; validated DEV JSON draft returned in the isolated worktree. No order or WooCommerce write.
 - [x] Keep PROD unchanged.
 
-Next: push and activate this feature on the isolated DEV API. Verify page/auth/health and product-registration preflight UI without submitting the final registration action. Real product creation remains an operator-confirmed separate action; storefront projection review follows WooCommerce registration.
+The reviewed registration flow was completed and activated in the 2026-10-18 checkpoint above. Actual product registration remains an operator-confirmed separate action; storefront projection review follows WooCommerce registration.
 
 Architecture: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
 

@@ -1,6 +1,6 @@
 ## 2026-10-18 — DEV 관리자 Codex 상품 등록 흐름 구현
 
-관리자 상품 intake를 검토·등록 단계까지 확장했습니다. 운영자가 상품 사실/가격/옵션/재고와 이미지 5종을 입력하면 private review packet과 고유 DEV catalog ID를 만들고 read-only 사전검증을 합니다. 사전검증 성공 뒤 운영자가 상품명을 다시 입력해 별도 등록을 확정해야 DEV WooCommerce 쓰기가 실행됩니다. 등록 결과가 불명확하면 자동 재시도하지 않습니다. WooCommerce 등록과 storefront projection 활성화는 분리되어 있습니다. 81개 관련 테스트 통과. 실제 상품 등록 및 PROD 변경은 하지 않았습니다. DEV 배포 후 화면과 비등록 smoke test를 이어갑니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+관리자 상품 intake를 검토·등록 단계까지 확장했습니다. 운영자가 상품 사실/가격/옵션/재고와 이미지 5종을 입력하면 private review packet과 고유 DEV catalog ID를 만들고 read-only 사전검증을 합니다. 사전검증 성공 뒤 운영자가 상품명을 다시 입력해 별도 등록을 확정해야 DEV WooCommerce 쓰기가 실행됩니다. 등록 결과가 불명확하면 자동 재시도하지 않습니다. WooCommerce 등록과 storefront projection 활성화는 분리되어 있습니다. 81개 관련 테스트 통과. 실제 상품 등록 및 PROD 변경은 하지 않았습니다. DEV immutable API release `da1d2095361a3559b798584a21286ebb703cde1b`로 활성화했습니다. 런타임 health와 관리자 페이지 200, 새 폼/이미지 역할 문구 존재, 외부 비인증 401을 확인했습니다. WooCommerce 등록은 실행하지 않았습니다. 백업은 `AIControlCenterRuntime/dev-order/backups/product-intake-20261018-152525`입니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
 
 ## 2026-10-17 — DEV 주문 관리자와 Codex 상품 초안
 
