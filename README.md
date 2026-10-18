@@ -1,3 +1,7 @@
+## 2026-10-18 — DEV 관리자 Codex 상품 등록 흐름 구현
+
+관리자 상품 intake를 검토·등록 단계까지 확장했습니다. 운영자가 상품 사실/가격/옵션/재고와 이미지 5종을 입력하면 private review packet과 고유 DEV catalog ID를 만들고 read-only 사전검증을 합니다. 사전검증 성공 뒤 운영자가 상품명을 다시 입력해 별도 등록을 확정해야 DEV WooCommerce 쓰기가 실행됩니다. 등록 결과가 불명확하면 자동 재시도하지 않습니다. WooCommerce 등록과 storefront projection 활성화는 분리되어 있습니다. 81개 관련 테스트 통과. 실제 상품 등록 및 PROD 변경은 하지 않았습니다. DEV 배포 후 화면과 비등록 smoke test를 이어갑니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+
 ## 2026-10-17 — DEV 주문 관리자와 Codex 상품 초안
 
 DEV 주문 관리자에 주문·상세, 환불/교환 요청, 문의, 대화형 운영 챗봇을 결합했습니다. 주문 챗봇은 기존 DEV OperatorConversation을 사용하며 변경은 기존 확인 단계를 유지합니다. “상품 등록/추가” 요청은 Codex가 별도 격리 브랜치에서 등록 초안 JSON 한 파일만 작성합니다. 초안은 검토 자료이며 WooCommerce 등록·공개, 카탈로그 변경을 하지 않습니다. 같은 출처 POST만 허용합니다. 관련 회귀 테스트 60개 통과. DEV API immutable release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8`에 활성화했습니다. 외부 비인증 관리자 요청은 401, 같은 출처 주문 챗봇 읽기는 200, 합성 Codex 작업은 스키마 검증된 검토 초안을 만들었습니다. 주문/상품 쓰기는 하지 않았고 PROD에는 연결하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.

@@ -52,6 +52,47 @@ def test_admin_chat_is_same_origin_and_routes_to_dev_operator(tmp_path):
         assert conversation.calls[0][2]=="telegram-user-9223372036854775807"
 
 
+def test_product_review_and_registration_routes_require_same_origin_and_explicit_name(tmp_path):
+    db=tmp_path/"dialogue.sqlite3"
+    with sqlite3.connect(db) as c:
+        c.execute("CREATE TABLE website_jobs(id TEXT PRIMARY KEY,actor TEXT NOT NULL,request TEXT NOT NULL,state TEXT NOT NULL,created REAL NOT NULL)")
+        c.execute("INSERT INTO website_jobs VALUES('deadbeef','operator','PRODUCT_INTAKE::test','PRODUCT_REVIEW_REQUIRED',1)")
+    class ProductIntake:
+        def __init__(self): self.calls=[]
+        def status(self,job): return {"job_id":job,"state":"COLLECTING","media":{}}
+        def upload_media(self,*args,**kwargs): self.calls.append(("media",args,kwargs));return {"role":args[1],"sha256":"a"*64}
+        def save_review(self,job,fields): self.calls.append(("review",job,fields));return {"job_id":job,"state":"REVIEW_SAVED"}
+        def preflight(self,job): self.calls.append(("preflight",job));return {"job_id":job,"state":"READY_TO_REGISTER","catalog_id":"ag-upload-top-0001"}
+        def register(self,job,confirmation):
+            self.calls.append(("register",job,confirmation))
+            if confirmation!="검토 상품": raise ValueError("PRODUCT_CONFIRMATION_MISMATCH")
+            return {"job_id":job,"state":"REGISTERED","catalog_id":"ag-upload-top-0001"}
+    product_intake=ProductIntake()
+    conversation=SimpleNamespace(path=db)
+    codex=SimpleNamespace(root=tmp_path/"codex")
+    adapter=SimpleNamespace(admin_orders=lambda limit:[],admin_detail=lambda order_id:None)
+    queue=SimpleNamespace(admin_rows=lambda limit:[])
+    app=FastAPI()
+    mount_admin(app,operator_adapter=adapter,inquiry_queue=queue,conversation=conversation,
+        codex_drafts=codex,product_intake=product_intake)
+    with TestClient(app) as client:
+        denied=client.post("/__order-dev/admin/product-drafts/deadbeef/preflight")
+        assert denied.status_code==403
+        origin={"Origin":"https://dev.bokstory.duckdns.org"}
+        media=client.put("/__order-dev/admin/product-drafts/deadbeef/media/hero",content=b"fake",
+            headers={**origin,"Content-Type":"image/jpeg","X-Filename":"photo.jpg","X-AI-Generated":"false"})
+        assert media.status_code==200 and media.json()["role"]=="hero"
+        review=client.post("/__order-dev/admin/product-drafts/deadbeef/review",json={"fields":{"name":"검토 상품"}},headers=origin)
+        assert review.status_code==200 and review.json()["state"]=="REVIEW_SAVED"
+        preflight=client.post("/__order-dev/admin/product-drafts/deadbeef/preflight",headers=origin)
+        assert preflight.status_code==200 and preflight.json()["state"]=="READY_TO_REGISTER"
+        wrong=client.post("/__order-dev/admin/product-drafts/deadbeef/register",json={"confirmation":"틀린 이름"},headers=origin)
+        assert wrong.status_code==422
+        success=client.post("/__order-dev/admin/product-drafts/deadbeef/register",json={"confirmation":"검토 상품"},headers=origin)
+        assert success.status_code==200 and success.json()["state"]=="REGISTERED"
+        assert [v[0] for v in product_intake.calls]==["media","review","preflight","register","register"]
+
+
 def test_codex_product_intake_is_queued_without_woocommerce_write(tmp_path):
     db=tmp_path/"dialogue.sqlite3"
     with sqlite3.connect(db) as c:

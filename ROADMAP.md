@@ -7,7 +7,7 @@
 - [x] Run a synthetic live Codex intake; validated DEV JSON draft returned in the isolated worktree. No order or WooCommerce write.
 - [x] Keep PROD unchanged.
 
-Next: add reviewed image upload and verified spec handoff to `dev_upload_product_register.py` before end-to-end product registration.
+Next: push and activate this feature on the isolated DEV API. Verify page/auth/health and product-registration preflight UI without submitting the final registration action. Real product creation remains an operator-confirmed separate action; storefront projection review follows WooCommerce registration.
 
 Architecture: `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
 

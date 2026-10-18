@@ -198,7 +198,7 @@ def validate_registration(repo: Path, catalog_id: str) -> dict:
         expected_relative = f"brands/agachichi/assets/media/uploads/gallery/{stem}{extension}"
         if row.get("path") != expected_relative:
             _fail("PRODUCT_GALLERY_PATH_INVALID")
-        if type(row.get("ai_generated")) is not bool or row["ai_generated"] != (kind != "original"):
+        if type(row.get("ai_generated")) is not bool or (kind == "original" and row["ai_generated"]):
             _fail("PRODUCT_GALLERY_PROVENANCE_INVALID")
         asset_path = _verified_file(repo, upload_root / "gallery", row["path"], row.get("sha256"), "PRODUCT_GALLERY_HASH_INVALID")
         gallery.append({"kind": kind, "color_id": color_id, "path": str(asset_path), "sha256": row["sha256"], "ai_generated": row["ai_generated"]})

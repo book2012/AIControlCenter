@@ -114,6 +114,27 @@ class ProductRegistrationValidationTests(unittest.TestCase):
         self.assertEqual(len(product["variants"]), 4)
         self.assertEqual(product["variants"][0]["attributes"].keys(), {"color", "size"})
 
+    def test_user_supplied_gallery_provenance_is_preserved(self):
+        pid = fixture(self.root)
+        manifest = self.root / "brands/agachichi/assets/media/uploads/gallery.json"
+        doc = json.loads(manifest.read_text())
+        for row in doc["assets"]:
+            if row["kind"] == "model-front":
+                row["ai_generated"] = False
+        manifest.write_text(json.dumps(doc), encoding="utf-8")
+        product = VALIDATOR.validate_registration(self.root, pid)
+        model_front = next(row for row in product["media"] if row.get("kind") == "model-front")
+        self.assertFalse(model_front["ai_generated"])
+
+    def test_original_gallery_cannot_be_marked_ai_generated(self):
+        pid = fixture(self.root)
+        manifest = self.root / "brands/agachichi/assets/media/uploads/gallery.json"
+        doc = json.loads(manifest.read_text())
+        next(row for row in doc["assets"] if row["kind"] == "original")["ai_generated"] = True
+        manifest.write_text(json.dumps(doc), encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "PRODUCT_GALLERY_PROVENANCE_INVALID"):
+            VALIDATOR.validate_registration(self.root, pid)
+
     def test_gallery_requires_full_visual_set(self):
         pid = fixture(self.root)
         manifest = self.root / "brands/agachichi/assets/media/uploads/gallery.json"

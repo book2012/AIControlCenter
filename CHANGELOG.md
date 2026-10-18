@@ -1,3 +1,7 @@
+## 2026-10-18 — DEV Codex-assisted product registration review
+
+Admin product intake now supports reviewed product fields, five verified image roles, private packet materialization, unique DEV catalog ID reservation, read-only registrar preflight, and a separate exact-name confirmation before a DEV WooCommerce write. Uncertain apply outcomes are non-retryable. WooCommerce publication and storefront projection remain separate. 81 focused tests passed. No product was registered and PROD was unchanged.
+
 ## 2026-10-17 — DEV 주문 관리자와 Codex 상품 intake
 
 주문 관리자 화면에 기존 DEV 운영 대화 기능을 연결하고, 신규 상품 설명을 Codex의 격리된 JSON intake 초안으로 보내는 기능을 추가했습니다. Codex는 지정된 초안 파일 외에는 변경할 수 없고, 결과는 WooCommerce 미등록·비공개 상태입니다. Cross-origin POST는 거부합니다. 관련 회귀 테스트 60개 통과. Immutable DEV API release `9c0784cdcb71c1bee8e4d6a98c3e3520d6106cf8`에 활성화했으며, 비인증 외부 요청은 401이고 합성 Codex 상품 초안은 검토 전용으로 생성됐습니다. WooCommerce 상품 등록/공개와 PROD 변경은 없습니다.

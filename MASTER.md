@@ -1,3 +1,12 @@
+## 2026-10-18 — DEV product intake registration path
+
+- Admin Codex drafts now continue into an editable operator review form.
+- Five role-specific images and per-file AI provenance are validated and hashed; private review state reserves unique catalog IDs.
+- Read-only preflight must pass before a separate exact product-name confirmation can invoke the DEV registrar.
+- Unknown apply outcomes block retry. WooCommerce publication is separate from storefront projection activation.
+- 81 related tests passed. No product write or PROD change has occurred. Deployment and read-only runtime smoke are next.
+- See `docs/architecture/SHOP_DEV_ADMIN_ORDER_PRODUCT_CHAT.md`.
+
 ## 2026-10-17 — DEV admin order/chat candidate
 
 - DEV-only `/dev-order/admin` now includes orders, details, aftersales/inquiries, and the existing operator conversation.

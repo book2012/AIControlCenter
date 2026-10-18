@@ -233,9 +233,14 @@ def create_app():
     if conversation is not None and conversation_cfg.get('codex_drafts_enabled') is True:
         from ops.macos.shopping.dev_codex_website_jobs import CodexWebsiteDraftWorker
         codex_drafts=CodexWebsiteDraftWorker(conversation,revision=REPO.name,data=DATA)
+    product_intake=None
+    if codex_drafts is not None:
+        from ops.macos.shopping.dev_codex_product_intake import DevProductIntake
+        product_intake=DevProductIntake(root=DATA/'product-intake-reviews',source=codex_drafts.source,revision=codex_drafts.revision)
     if operator_adapter is not None:
         from ops.macos.shopping.dev_order_admin import mount_admin
-        mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue,aftersales=aftersales,conversation=conversation,codex_drafts=codex_drafts)
+        mount_admin(app,operator_adapter=operator_adapter,inquiry_queue=inquiry_queue,aftersales=aftersales,
+            conversation=conversation,codex_drafts=codex_drafts,product_intake=product_intake)
     stop=threading.Event();health={'codex_website_drafts':'ENABLED' if codex_drafts else 'DISABLED','operator_conversation':'QWEN_DEV' if conversation else 'DISABLED','operator_bridge':'CONFIGURED' if command_bridge else 'DISABLED','poller':'STARTING','product_management':'STARTING','environment':'DEV','auth_mode':'DEV phone verification and isolated test-account fixture'}
     def worker():
         last_sync=0

@@ -26,11 +26,25 @@ list missing category, price, variant, stock, and image information. Codex must
 not invent factual fields. User text is treated as task data, and the candidate
 is shown as untrusted review material.
 
-This path does not update the DEV catalog or media manifests, call WooCommerce,
-register a product, publish a listing, or create images. Completing product
-registration requires a reviewed image upload and verified spec handoff to the
-existing `ops/macos/shopping/dev_upload_product_register.py --apply-dev`
-workflow. Those steps remain a release gate for end-to-end product registration.
+## Reviewed DEV registration
+
+The admin page now turns a Codex draft into an editable review form. The operator
+must complete required product facts, choose inventory/price/options, and upload
+five role-specific images: hero, original, model-front, garment-cutout, and
+model-other. Each image has validated MIME/signature, size limits, SHA-256
+recording, and a per-file AI provenance checkbox; the original image cannot be
+marked AI-generated.
+
+Saving the review reserves a unique DEV catalog ID in a private SQLite database.
+A read-only preflight builds a temporary candidate packet and invokes the
+existing registrar without WooCommerce writes. Only after preflight succeeds can
+the operator type the exact product name and submit the separate DEV registration
+action. An ambiguous outcome becomes non-retryable until an operator checks the
+DEV catalog. No production endpoint or credentials are configured in this path.
+
+Successful registration publishes a product in DEV WooCommerce. Homepage
+catalog mapping/projection remains a separate review and activation step, so a
+WooCommerce product may not immediately appear on the storefront.
 
 ## Request protection
 
