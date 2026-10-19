@@ -137,13 +137,15 @@ def test_order_list_without_internal_page_marker_still_splits_each_order_card():
         assert markup["inline_keyboard"][0][0]["callback_data"]=="aicc:item:detail:"+number
 
 
-def test_order_selector_has_all_and_status_buttons():
-    all_markup=reply_markup("주문 목록 보기를 선택해 주세요.")
-    assert all_markup["inline_keyboard"][0][0]=={"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}
-    filters=reply_markup("조회할 주문 상태를 선택해 주세요.")
-    all_callbacks=[button["callback_data"] for row in filters["inline_keyboard"] for button in row]
-    assert "aicc:orders:status:PENDING_REVIEW:0" in all_callbacks
-    assert "aicc:orders:status:AWAITING_DEPOSIT:0" in all_callbacks
+def test_order_selector_has_all_and_each_status_button_on_one_screen():
+    markup=reply_markup("주문 목록 보기를 선택해 주세요.")
+    buttons=[button for row in markup["inline_keyboard"] for button in row]
+    callbacks=[button["callback_data"] for button in buttons]
+    assert buttons[0]=={"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}
+    assert "aicc:orders:status:PENDING_REVIEW:0" in callbacks
+    assert "aicc:orders:status:AWAITING_DEPOSIT:0" in callbacks
+    assert len(callbacks)==13
+    assert all(len(button["callback_data"].encode())<=64 for button in buttons)
 
 
 def test_status_action_callback_is_order_and_state_bound():

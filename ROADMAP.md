@@ -1,3 +1,10 @@
+## 2026-10-20 — One-screen DEV order filters
+
+- [x] Show 전체 보기 and each supported status filter immediately after selecting 주문목록.
+- [x] Load the latest available order data for 전체 보기 and show current state per order.
+- [x] Pass 52 focused Telegram/order tests.
+- [ ] Deploy and verify updated immutable DEV bot release.
+
 ## 2026-10-20 — DEV Telegram order card fallback
 
 - [x] Split every multi-order reply into one message per order, with or without pagination metadata.

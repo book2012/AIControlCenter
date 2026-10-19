@@ -1,3 +1,7 @@
+## 2026-10-20 — One-screen DEV order filters
+
+The order-list selector now shows **전체 보기** and every supported order status together. Selecting **전체 보기** fetches the latest orders and renders the current state on each individual order card. Fifty-two focused order tests pass.
+
 ## 2026-10-20 — DEV Telegram order cards fix
 
 Order lists are split into one Telegram message per order even when an internal pagination marker is absent. Every message carries only that order's state-appropriate inline actions. Marker-based pages retain next-page navigation. Fifty-two focused tests pass; DEV bot rollout follows.

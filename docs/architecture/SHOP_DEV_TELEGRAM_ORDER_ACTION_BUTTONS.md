@@ -54,9 +54,11 @@ The callbacks dispatch existing read/help commands through the DEV operator brid
 
 ## Per-order buttons and paged order browser
 
-The private DEV Papachichi order browser starts with **전체 보기** and
-**상태별 보기**. Status choices cover pending review, deposit, shipping,
-completion, return/refund, cancellation, rejection, and stock review. Results
+The private DEV Papachichi order browser shows **전체 보기** and every
+supported status filter on the first order-list keyboard. The statuses cover
+pending review, deposit, shipping, completion, return/refund, cancellation,
+rejection, and stock review. Selecting 전체 보기 queries the latest available
+order state. Results
 are paged at five orders per page. Each order is delivered as a separate
 Telegram message, followed by a next-page control when more results remain.
 Messages are paced to avoid flooding the operator chat. The bot also splits

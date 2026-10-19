@@ -32,16 +32,10 @@ def reply_markup(text):
         return menu_markup()
     if type(text) is not str:
         return None
-    if text.strip()=="주문 목록 보기를 선택해 주세요.":
-        return {"inline_keyboard":[
-            [{"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}],
-            [{"text":"🏷 상태별 보기","callback_data":"aicc:orders:filters"}],
-        ]}
-    if text.strip()=="조회할 주문 상태를 선택해 주세요.":
-        states=list(_FILTER_STATES.items());rows=[]
+    if text.strip() in ("주문 목록 보기를 선택해 주세요.","조회할 주문 상태를 선택해 주세요."):
+        states=list(_FILTER_STATES.items());rows=[[{"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}]]
         for i in range(0,len(states),2):
             rows.append([{"text":"🏷 "+label,"callback_data":"aicc:orders:status:"+code+":0"} for code,label in states[i:i+2]])
-        rows.append([{"text":"⬅️ 주문 목록","callback_data":"aicc:orders:back"}])
         return {"inline_keyboard":rows}
     nav=_ORDER_NAV.fullmatch(text.strip())
     if nav:
@@ -116,7 +110,7 @@ def callback_command(update,cfg):
     if data=="aicc:orders:all:0" and message["text"].strip()=="주문 목록 보기를 선택해 주세요.":
         return query["id"],actor["id"],"주문목록 전체 ALL 0"
     status=re.fullmatch(r"aicc:orders:status:([A-Z_]+):([0-9]{1,6})",data)
-    if status and message["text"].strip()=="조회할 주문 상태를 선택해 주세요." and status[1] in _FILTER_STATES:
+    if status and message["text"].strip() in ("주문 목록 보기를 선택해 주세요.","조회할 주문 상태를 선택해 주세요.") and status[1] in _FILTER_STATES:
         return query["id"],actor["id"],"주문목록 상태 "+status[1]+" "+status[2]
     next_page=re.fullmatch(r"aicc:orders:next:(ALL|[A-Z_]+):([1-9][0-9]{0,5})",data)
     nav=_ORDER_NAV.fullmatch(message["text"].strip())

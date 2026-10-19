@@ -1,3 +1,7 @@
+## 2026-10-20 — One-screen DEV order filters
+
+Changed the Papachichi order-list picker to show all-orders and every status filter on one screen. All-orders queries current order data; per-order messages display each order's current state. Fifty-two focused tests pass.
+
 ## 2026-10-20 — DEV Telegram order card fallback
 
 Fixed markerless order-list replies that grouped multiple orders under the first order's buttons. The bot now emits one message per order with order-bound actions, whether or not page metadata is present. Fifty-two focused tests pass.

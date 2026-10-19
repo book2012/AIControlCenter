@@ -1,3 +1,7 @@
+## 2026-10-20 — One-screen DEV order filters
+
+The order-list menu now presents 전체 보기 and all supported status choices in one keyboard. 전체 보기 queries current order data and keeps the order-per-message cards with their matching buttons. Fifty-two focused order tests pass.
+
 ## 2026-10-20 — DEV Telegram order card fallback
 
 Markerless Telegram order-list replies now split into separate per-order messages with each order's own inline keyboard. Pagination controls remain for marked pages. Focused validation: 52 tests passed; rollout is DEV-only.
