@@ -214,3 +214,57 @@ def test_authenticated_bridge_dialogue_asks_before_payment_and_scopes_actor(tmp_
         call_dev_bridge(server.path,request,codec)
         assert payments==["입금확인 #15"]
     finally:server.close()
+
+
+
+def test_phone_bound_order_button_commands_bypass_conversation(tmp_path, monkeypatch):
+    os.chmod(tmp_path, 0o700)
+    from core.shopping import operator_conversation, operator_intent
+    monkeypatch.setattr(operator_intent, "LocalOperatorJudge", lambda **_: object())
+    conversation_calls = []
+    class FakeConversation:
+        def __init__(self, **_): pass
+        def handle(self, text, update_id, actor):
+            conversation_calls.append((text, update_id, actor))
+            return "대화 처리"
+    monkeypatch.setattr(operator_conversation, "OperatorConversation", FakeConversation)
+
+    adapter_calls = []
+    adapter = SimpleNamespace(
+        resolve=lambda text, update_id, actor=None: (
+            adapter_calls.append((text, update_id, actor)) or ("f" * 24, "CONFIRMED", None)
+        ),
+        admin_orders=lambda _limit: [],
+    )
+    ledger_calls = []
+    telegram = SimpleNamespace(
+        _ledger=SimpleNamespace(process_operator_update=lambda *a, **kw: (
+            ledger_calls.append((a, kw)) or {"outcome": "CONFIRMED"}
+        )),
+        _chat=CHAT, _users=frozenset({USER}), _confirmation_guard="guard",
+    )
+    products = SimpleNamespace(records=[], command=lambda *_: None)
+    server = compose_dev_bridge(
+        cfg={"enabled": True, "environment": "DEV", "hmac_key_hex": KEY.hex()},
+        data=tmp_path, telegram=telegram, adapter=adapter, products=products,
+        conversation_cfg={"enabled": True, "environment": "DEV", "model": "qwen3:4b"},
+    )
+    server.start()
+    try:
+        import time
+        codec = BridgeCodec(KEY)
+        button_command = "01092838321 고객 주문확인 #2610192105"
+        reply = call_dev_bridge(server.path, envelope(codec, text=button_command,
+            timestamp=int(time.time())), codec)
+        assert "주문 상태: 확인완료" in reply
+        assert adapter_calls == [(button_command, 10, "telegram-user-456")]
+        assert ledger_calls and ledger_calls[0][1]["decision"] == "CONFIRMED"
+        assert conversation_calls == []
+
+        natural = "15번 입금했어"
+        reply = call_dev_bridge(server.path, envelope(codec, text=natural, update_id=11,
+            timestamp=int(time.time()), nonce="b" * 32), codec)
+        assert reply.endswith("대화 처리")
+        assert conversation_calls == [(natural, 11, "telegram-user-456")]
+    finally:
+        server.close()

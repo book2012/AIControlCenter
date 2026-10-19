@@ -1,3 +1,7 @@
+## 2026-10-20 — Route Telegram order buttons through the deterministic DEV handler
+
+Fixed the DEV order API bridge allowlist: phone-bound 주문 확인, 주문 취소, 주문 상세, payment, and shipping button commands now bypass conversational interpretation and use the existing validated order adapter. Natural-language follow-ups remain in the conversation handler. Added a fake-ledger regression test proving the routing split without mutating any real order. Focused order/bridge tests: 79 passed. Live buttons have not been replayed; orders remain read-only.
+
 ## 2026-10-20 — Typed order-list command opens selector
 
 Typing `주문목록` or `주문 목록` now opens the same one-screen picker as the menu button. The DEV API bridge's `[개발]` response prefix is normalized for button rendering and callback validation, so **전체 보기**, status filters, and next-page controls work on real bridged replies. Fifty-two focused tests pass.

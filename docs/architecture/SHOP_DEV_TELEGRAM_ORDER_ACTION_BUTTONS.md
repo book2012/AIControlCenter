@@ -1,3 +1,18 @@
+## DEV API command routing
+
+Phone-bound commands emitted by per-order Telegram callbacks must be recognized
+by the bridge's deterministic-command allowlist before conversational intent
+handling. The allowlist is deliberately limited to supported callback forms
+(주문 확인, 주문 상세, 주문 취소, 입금 확인, and shipping actions) with
+a domestic phone identifier and a numeric public order ID. This preserves the
+existing adapter's identity, state, stock, replay, and cancellation checks.
+Natural-language messages continue through the conversational handler.
+
+Regression coverage uses a fake ledger and verifies both paths. It does not
+replay a live callback or mutate a real order. After a DEV API release, verify
+with read-only order detail before asking an operator to use a newly displayed
+button.
+
 # DEV Papachichi inline order buttons
 
 ## Scope
