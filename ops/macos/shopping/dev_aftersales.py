@@ -83,7 +83,11 @@ def mount_aftersales(app,*,store,boundary,phone_cfg):
         try:
             projection=auth(request,write=True);raw=await request.body()
             if len(raw)>8192:raise ValueError()
-            data=CaseCreate.model_validate_json(raw);case=store.create_case(projection.customer_id,data)
+            body=json.loads(raw)
+            if type(body) is not dict:raise ValueError("REQUEST_INVALID")
+            refund_account=body.pop("refund_account",None)
+            refund_consent=body.pop("refund_account_consent",False)
+            data=CaseCreate.model_validate(body);case=store.create_case(projection.customer_id,data,refund_account=refund_account,refund_account_consent=refund_consent)
             return JSONResponse({"case":case},status_code=201,headers={"Cache-Control":"no-store"})
         except Exception:return JSONResponse({"message":"배송 상태, 신청 사유와 필수 입력을 확인해 주세요. 반품·교환은 배송완료 후 14일 이내 가능합니다."},status_code=422,headers={"Cache-Control":"no-store"})
     @app.post("/__order-dev/aftersales/cases/{case_id}/attachments",include_in_schema=False)

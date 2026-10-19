@@ -3,8 +3,10 @@ from core.shopping.sqlite_resource import connection
 from pathlib import Path
 import hashlib,json,os,re,secrets,sqlite3,time
 from pydantic import BaseModel,ConfigDict,Field
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 RETURN_WINDOW=14*86400
+REFUND_ACCOUNT_NOTICE_VERSION="refund-account-dev-001"
 MAX_ATTACHMENT=5*1024*1024
 MEDIA={"image/jpeg":(".jpg",b"\xff\xd8\xff"),"image/png":(".png",b"\x89PNG\r\n\x1a\n"),"image/webp":(".webp",b"RIFF")}
 
@@ -15,13 +17,21 @@ class CaseCreate(BaseModel):
     reason:str=Field(strict=True,min_length=2,max_length=1000)
     reason_type:str|None=Field(default=None,pattern=r"^(CHANGE_OF_MIND|DEFECT_OR_WRONG)$")
     target_variation_id:str|None=Field(default=None,pattern=r"^[1-9][0-9]*$")
+
+class RefundAccountDetails(BaseModel):
+    model_config=ConfigDict(extra="forbid",hide_input_in_errors=True)
+    bank_name:str=Field(strict=True,min_length=2,max_length=40,pattern=r"^[가-힣A-Za-z0-9 ._-]+$")
+    account_holder:str=Field(strict=True,min_length=2,max_length=40,pattern=r"^[가-힣A-Za-z ._-]+$")
+    account_number:str=Field(strict=True,min_length=7,max_length=32,pattern=r"^[0-9-]+$")
+
 from core.shopping.guest_returns import ReturnWorkflow
 from core.shopping.manual_refunds import ManualRefundRecords
 from core.shopping.public_order_number import public_order_number, is_public_order_number
 
 class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
-    def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time,stock_cancellation=None,stock_return=None):
+    def __init__(self,path,attachments,*,ledger,checkout,catalog,clock=time.time,stock_cancellation=None,stock_return=None,refund_account_key=None):
         self.path=Path(path);self.attachments=Path(attachments);self.ledger=ledger;self.checkout=checkout;self.catalog=catalog;self.clock=clock
+        self.refund_account_key=refund_account_key
         self.stock_return=stock_return
         self.stock_cancellation=stock_cancellation
         if self.path.is_symlink() or self.attachments.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
@@ -36,6 +46,8 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             case_columns={row[1] for row in c.execute("PRAGMA table_info(cases)")}
             if "reason_type" not in case_columns:c.execute("ALTER TABLE cases ADD COLUMN reason_type TEXT")
             if "shipping_fee_payer" not in case_columns:c.execute("ALTER TABLE cases ADD COLUMN shipping_fee_payer TEXT")
+            if "refund_account_consent_version" not in case_columns:c.execute("ALTER TABLE cases ADD COLUMN refund_account_consent_version TEXT")
+            if "refund_account_consent_at" not in case_columns:c.execute("ALTER TABLE cases ADD COLUMN refund_account_consent_at REAL")
             c.execute("""CREATE TABLE IF NOT EXISTS attachments(
                 id TEXT PRIMARY KEY,case_id TEXT NOT NULL,media_type TEXT NOT NULL,size INTEGER NOT NULL,sha256 TEXT NOT NULL,
                 stored_name TEXT NOT NULL,created REAL NOT NULL)""")
@@ -48,6 +60,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             c.execute("CREATE TABLE IF NOT EXISTS cancellations(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS payments(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS manual_refunds(case_id TEXT PRIMARY KEY,order_id INTEGER UNIQUE NOT NULL,amount TEXT NOT NULL,currency TEXT NOT NULL,evidence TEXT UNIQUE NOT NULL,actor TEXT NOT NULL,update_id INTEGER NOT NULL,recorded REAL NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS refund_destinations(case_id TEXT PRIMARY KEY,ciphertext BLOB NOT NULL,notice_version TEXT NOT NULL,created REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
     def _fulfillment(self,order_id):
@@ -87,12 +100,14 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             now=self.clock();within=f["state"]=="DELIVERED" and type(f["delivered"]) in (int,float) and f["delivered"]<=now<f["delivered"]+RETURN_WINDOW
             active=any(v["state"]!="REJECTED" for v in cases)
             order_number=public_order_number(requested_at=row["requested_at"],phone=draft["body"]["billing"]["phone"],entropy=row.get("reference") or row["operation_key"])
+            payment=self.payment(row["provider_order_id"])
+            pre_ship=row["review_state"] in ("PENDING_REVIEW","CONFIRMED") and f["state"]=="NOT_SHIPPED" and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"
             result.append({"order_id":row["provider_order_id"],"order_number":order_number,"review_state":row["review_state"],"requested_at":row["requested_at"],
                 "items":draft["body"]["quote"]["line_items"],"total":draft["body"]["quote"]["final_total"],"currency":draft["body"]["quote"]["currency"],
-                "fulfillment":f,"refund":self.refund(row["provider_order_id"]),"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),
+                "fulfillment":f,"payment":payment,"refund":self.refund(row["provider_order_id"]),"cancellation":self.cancellation(row["provider_order_id"]),"return_status":self.return_status(row["provider_order_id"]),"return_available":bool(row["review_state"]=="CONFIRMED" and within and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),
                 "exchange_available":bool(row["review_state"]=="CONFIRMED" and within and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),
-                "cancel_request_available":bool(row["review_state"]=="CONFIRMED" and f["state"]=="NOT_SHIPPED" and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),
-                "order_change_available":bool(row["review_state"]=="CONFIRMED" and f["state"]=="NOT_SHIPPED" and not active and self.cancellation(row["provider_order_id"])["state"]=="NONE"),"cases":cases})
+                "cancel_request_available":bool(pre_ship),
+                "order_change_available":bool(pre_ship),"cases":cases})
         return result
     def payment(self,order_id):
         with connection(self.path) as c:
@@ -121,6 +136,9 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
                 raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
             payment=c.execute("SELECT state FROM payments WHERE order_id=?",(order_id,)).fetchone()
             if payment and payment[0]=="PAID":
+                if refund_case_id is None:
+                    approved=c.execute("SELECT id FROM cases WHERE order_id=? AND kind='RETURN' AND state='RETURN_APPROVED'",(order_id,)).fetchall()
+                    if len(approved)==1:refund_case_id=approved[0][0]
                 if type(refund_case_id) is not str or not re.fullmatch(r"[a-f0-9]{8}",refund_case_id):
                     raise ValueError("PAID_CANCELLATION_REQUIRES_REFUND_REVIEW")
                 case=c.execute("SELECT order_id,kind,state FROM cases WHERE id=?",(refund_case_id,)).fetchone()
@@ -223,10 +241,19 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         for v in product["variants"]:
             if v.available and v.id!=line["variation_id"]:options.append({"variation_id":v.id,"option":v.label})
         return options
-    def create_case(self,customer,data):
+    def create_case(self,customer,data,*,refund_account=None,refund_account_consent=False):
         data=CaseCreate.model_validate(data);row,draft=self._customer_order(customer,data.order_id);f=self._fulfillment(data.order_id);now=self.clock()
+        paid=self.payment(data.order_id)["state"]=="PAID"
+        refund_required=data.kind=="RETURN" and f["state"]=="NOT_SHIPPED" and paid
+        if refund_account is not None:
+            refund_account=RefundAccountDetails.model_validate(refund_account)
+            if not paid or data.kind!="RETURN" or f["state"]!="NOT_SHIPPED":raise ValueError("REFUND_ACCOUNT_NOT_APPLICABLE")
+            if refund_account_consent is not True:raise ValueError("REFUND_ACCOUNT_CONSENT_REQUIRED")
+            if not isinstance(self.refund_account_key,bytes) or len(self.refund_account_key)!=32:raise ValueError("REFUND_ACCOUNT_STORAGE_UNAVAILABLE")
+        if refund_required and refund_account is None:raise ValueError("REFUND_ACCOUNT_REQUIRED")
+        if refund_account is None and refund_account_consent is True:raise ValueError("REFUND_ACCOUNT_NOT_APPLICABLE")
         if not data.reason.strip():raise ValueError("REASON_REQUIRED")
-        if row["review_state"]!="CONFIRMED" or self.cancellation(data.order_id)["state"]!="NONE":raise ValueError("ORDER_NOT_ACTIONABLE")
+        if row["review_state"] not in ("PENDING_REVIEW","CONFIRMED") or self.cancellation(data.order_id)["state"]!="NONE":raise ValueError("ORDER_NOT_ACTIONABLE")
         if f["state"]=="NOT_SHIPPED":
             if data.kind not in ("RETURN","ORDER_CHANGE"):raise ValueError("DELIVERY_REQUIRED")
             if data.reason_type is not None:raise ValueError("REASON_TYPE_INVALID")
@@ -249,7 +276,26 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             if c.execute("SELECT 1 FROM cases WHERE order_id=? AND state!='REJECTED'",(data.order_id,)).fetchone():raise ValueError("CASE_ALREADY_ACTIVE")
             c.execute("INSERT INTO cases(id,order_id,customer,kind,target_variation_id,target_option,reason,state,created,updated,reason_type,shipping_fee_payer) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)",
                 (identifier,data.order_id,customer,data.kind,data.target_variation_id,target,data.reason.strip(),"REQUESTED",now,now,data.reason_type,fee_payer))
+            if refund_account is not None:
+                c.execute("UPDATE cases SET refund_account_consent_version=?,refund_account_consent_at=? WHERE id=?",(REFUND_ACCOUNT_NOTICE_VERSION,now,identifier))
+                nonce=secrets.token_bytes(12)
+                plaintext=json.dumps(refund_account.model_dump(),ensure_ascii=False,separators=(",",":")).encode()
+                aad=("aicc-dev-refund-account:"+identifier).encode()
+                cipher=nonce+AESGCM(self.refund_account_key).encrypt(nonce,plaintext,aad)
+                c.execute("INSERT INTO refund_destinations VALUES(?,?,?,?)",(identifier,cipher,REFUND_ACCOUNT_NOTICE_VERSION,now))
         return self.case(customer,identifier)
+    def admin_refund_account(self,case_id):
+        rows=self._case_rows(case_id=case_id)
+        if len(rows)!=1 or rows[0]["kind"]!="RETURN" or rows[0]["state"]!="RETURN_APPROVED":raise ValueError("REFUND_ACCOUNT_NOT_AVAILABLE")
+        if self.payment(rows[0]["order_id"])["state"]!="PAID" or self.cancellation(rows[0]["order_id"])["state"]!="CANCELLED":raise ValueError("REFUND_ACCOUNT_NOT_AVAILABLE")
+        if not isinstance(self.refund_account_key,bytes) or len(self.refund_account_key)!=32:raise ValueError("REFUND_ACCOUNT_STORAGE_UNAVAILABLE")
+        with connection("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+            row=c.execute("SELECT ciphertext FROM refund_destinations WHERE case_id=?",(case_id,)).fetchone()
+        if not row:raise ValueError("REFUND_ACCOUNT_NOT_AVAILABLE")
+        blob=bytes(row[0]);aad=("aicc-dev-refund-account:"+case_id).encode()
+        try:value=json.loads(AESGCM(self.refund_account_key).decrypt(blob[:12],blob[12:],aad))
+        except Exception:raise ValueError("REFUND_ACCOUNT_UNAVAILABLE") from None
+        return RefundAccountDetails.model_validate(value).model_dump()
     def admin_exchange_options(self,order_id):
         row=self._operator_order(int(order_id))
         return self.exchange_options(row["customer_id"],int(order_id))
@@ -347,6 +393,7 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             if state=="REQUESTED":
                 state=("RETURN_APPROVED" if kind=="RETURN" else "EXCHANGE_APPROVED" if kind=="SIZE_EXCHANGE" else "ORDER_CHANGE_APPROVED") if approve else "REJECTED"
                 c.execute("UPDATE cases SET state=?,updated=? WHERE id=?",(state,self.clock(),case_id))
+                if state=="REJECTED":c.execute("DELETE FROM refund_destinations WHERE case_id=?",(case_id,))
             elif state!="REJECTED" and not state.startswith("RETURN_") and state not in ("EXCHANGE_APPROVED","ORDER_CHANGE_APPROVED"):
                 raise ValueError("CASE_STATE_INVALID")
             elif (state=="REJECTED")==approve:

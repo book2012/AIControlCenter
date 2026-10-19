@@ -465,8 +465,8 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
 .order-card-head h2{font-size:18px}
 .order-state{padding:7px 11px;border-radius:999px;background:#f5e7dc;color:#81553f;font-size:12px}
 .orders-status-summary{margin:20px 0 12px;color:#57473e;font-weight:650}
-.orders-progress{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;margin:22px 0 25px;padding:0;list-style:none;counter-reset:step}
-.orders-progress li{position:relative;padding-top:28px;color:#9a9088;font-size:11px;text-align:center}
+.orders-progress{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin:22px 0 25px;padding:0;list-style:none;counter-reset:step}
+.orders-progress li{position:relative;padding-top:28px;color:#9a9088;font-size:10px;text-align:center;white-space:nowrap}
 .orders-progress li:before{position:absolute;top:0;left:calc(50% - 9px);display:grid;place-items:center;width:18px;height:18px;border:2px solid #ded5cc;border-radius:50%;background:#fff;content:"";z-index:1}
 .orders-progress li:after{position:absolute;top:9px;left:calc(-50% + 9px);width:calc(100% - 18px);height:2px;background:#e7dfd8;content:""}
 .orders-progress li:first-child:after{display:none}
@@ -500,8 +500,8 @@ h2 { font-size: clamp(22px, 2.5vw, 28px); line-height: 1.4; letter-spacing: -.03
  .orders-trust{gap:8px 12px;font-size:11px}
  .orders-fields{grid-template-columns:1fr;gap:13px}
  .orders-panel,.order-card,.order-chat{border-radius:16px}
- .orders-progress{gap:2px}
- .orders-progress li{font-size:10px}
+ .orders-progress{gap:1px}
+ .orders-progress li{font-size:9px}
  .order-card-head{align-items:center}
  .order-chat-form button{min-width:64px}
 }

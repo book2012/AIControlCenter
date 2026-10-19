@@ -123,14 +123,20 @@ try {
  $receipt=$order->get_meta('_aicc_stock_cancellation');
  if($receipt!=='' && $receipt!==$cfg['tag']){throw new Exception('RECEIPT_BINDING');}
  if($receipt===''){
-  if(!in_array($order->get_status(),['pending','on-hold'],true)){throw new Exception('STATUS');}
-  if($order->get_meta('_aicc_stock_confirmation')!==$cfg['tag']){throw new Exception('NOT_CONFIRMED');}
-  if(!$order->get_data_store()->get_stock_reduced($order->get_id())){throw new Exception('NOT_REDUCED');}
-  foreach($items as $item){if((int)$item->get_meta('_reduced_stock',true)!==$item->get_quantity()){throw new Exception('REDUCED_BINDING');}}
-  wc_maybe_increase_stock_levels($order->get_id());
-  foreach($items as $item){$item->read_meta_data(true);if($item->get_meta('_reduced_stock',true)!==''){throw new Exception('RESTORATION_UNVERIFIED');}}
-  if($order->get_data_store()->get_stock_reduced($order->get_id())){throw new Exception('RESTORATION_FLAG');}
-  $order->update_status('cancelled','DEV cancellation; stock restored; no payment refund.');
+  $status=$order->get_status();$stock_reduced=(bool)$order->get_data_store()->get_stock_reduced($order->get_id());
+  $confirmed=$order->get_meta('_aicc_stock_confirmation')===$cfg['tag'];
+  if(!$confirmed){
+   // A waiting-review order may be cancelled only while Woo has not reduced stock.
+   if($status!=='pending' || $stock_reduced){throw new Exception('PENDING_ORDER_STATE');}
+   foreach($items as $item){if($item->get_meta('_reduced_stock',true)!==''){throw new Exception('UNCONFIRMED_REDUCED_STOCK');}}
+  } else {
+   if(!in_array($status,['pending','on-hold'],true) || !$stock_reduced){throw new Exception('CONFIRMED_ORDER_STATE');}
+   foreach($items as $item){if((int)$item->get_meta('_reduced_stock',true)!==$item->get_quantity()){throw new Exception('REDUCED_BINDING');}}
+   wc_maybe_increase_stock_levels($order->get_id());
+   foreach($items as $item){$item->read_meta_data(true);if($item->get_meta('_reduced_stock',true)!==''){throw new Exception('RESTORATION_UNVERIFIED');}}
+   if($order->get_data_store()->get_stock_reduced($order->get_id())){throw new Exception('RESTORATION_FLAG');}
+  }
+  $order->update_status('cancelled','DEV cancellation; verified stock handling; no automatic payment refund.');
   $order->update_meta_data('_aicc_stock_cancellation',$cfg['tag']);$order->save();
  } elseif($order->get_status()!=='cancelled'){throw new Exception('RECEIPT_STATUS');}
  $wpdb->query('COMMIT');$stocks=[];

@@ -25,7 +25,7 @@ def main():
     journal=Path('/Users/kyouhan/AIControlCenterRuntime/dev-order/data')/(token+'.json')
     setup=HEADER+"$token="+json.dumps(token)+";"+r'''
 $p=new WC_Product_Simple();$p->set_name($token);$p->set_sku($token);$p->set_status('private');$p->set_regular_price('1000');$p->set_manage_stock(true);$p->set_stock_quantity(1);$p->set_backorders('no');$p->save();
-$orders=[];for($i=0;$i<2;$i++){
+$orders=[];for($i=0;$i<3;$i++){
  $o=wc_create_order(['status'=>'pending']);$o->add_product($p,1);
  $o->update_meta_data('_aicc_probe',$token);$o->update_meta_data('_aicc_order_operation',$token.'-'.$i);$o->update_meta_data('_aicc_delivery_digest',$token);$o->calculate_totals();$o->save();$orders[]=$o->get_id();
 }echo json_encode(['product'=>$p->get_id(),'orders'=>$orders]);
@@ -39,6 +39,10 @@ $orders=[];for($i=0;$i<2;$i++){
     def quantity():
         return php(HEADER+'$p=wc_get_product('+str(ids['product'])+');echo json_encode($p->get_stock_quantity());')
     try:
+        assert quantity()==1,'pending orders must not reduce stock before review'
+        receipt=cancel.apply(payloads[0])
+        assert receipt['outcome']=='STOCK_CANCELLED' and quantity()==1,'unconfirmed cancellation changed stock'
+        assert cancel.apply(payloads[0])['outcome']=='STOCK_CANCELLED' and quantity()==1,'pending cancellation replay changed stock'
         with ThreadPoolExecutor(max_workers=2) as pool:results=list(pool.map(attempt,payloads))
         assert sum(x is not None for x in results)==1, 'expected one winner'
         winner=payloads[next(i for i,x in enumerate(results) if x is not None)]
@@ -64,7 +68,7 @@ $orders=[];for($i=0;$i<2;$i++){
         assert quantity()==1
         assert attempt(winner) is None and quantity()==1,'cancelled order re-confirmed'
         # The previously blocked synthetic order becomes a separate physical return fixture.
-        returned=next(p for p in payloads if p['order_id']!=winner['order_id'])
+        returned=next(p for p in payloads[1:] if p['order_id']!=winner['order_id'])
         confirm.apply(returned);assert quantity()==0
         case_id='a1b2c3d4'
         expected={**returned,'case_id':case_id,'return_receipt':hashlib.sha256((returned['tag']+':return:'+case_id).encode()).hexdigest()}
@@ -81,7 +85,7 @@ $orders=[];for($i=0;$i<2;$i++){
         except RuntimeError:pass
         else:raise AssertionError('returned order cancelled again')
         assert attempt(returned) is None and quantity()==1,'returned order re-reduced'
-        print(json.dumps({'passed':True,'checks':['one stock / two concurrent orders','confirmation replay','binding denial','processing cancellation denied','concurrent cancellation restores once','cancellation replay','cancelled confirmation denied','read-only cancellation reconciliation','concurrent return restoration once','return replay and reconciliation','wrong case denied','return reconfirmation and cancellation denied'],'environment':'DEV','external_messages':0,'prod_mutation':False}),flush=True)
+        print(json.dumps({'passed':True,'checks':['pending review cancellation without stock reduction','one stock / two concurrent orders','confirmation replay','binding denial','processing cancellation denied','concurrent cancellation restores once','cancellation replay','cancelled confirmation denied','read-only cancellation reconciliation','concurrent return restoration once','return replay and reconciliation','wrong case denied','return reconfirmation and cancellation denied'],'environment':'DEV','external_messages':0,'prod_mutation':False}),flush=True)
     finally:
         encoded=base64.b64encode(json.dumps(ids).encode()).decode()
         cleanup=HEADER+'$token='+json.dumps(token)+';$ids=json_decode(base64_decode('+json.dumps(encoded)+'),true);'+r'''

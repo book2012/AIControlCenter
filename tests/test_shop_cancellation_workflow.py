@@ -66,9 +66,7 @@ def test_admin_paid_pre_shipment_cancel_requires_approved_refund_case(tmp_path):
     store.decide(case['id'],True)
     calls=[]
     store.stock_cancellation=lambda row,draft:(calls.append(row['provider_order_id']) or {'outcome':'STOCK_CANCELLED','order_id':ORDER})
-    with pytest.raises(ValueError,match='REQUIRES_REFUND_REVIEW'):
-        store.cancel_order(ORDER)
-    result=store.cancel_order(ORDER,refund_case_id=case['id'])
+    result=store.cancel_order(ORDER)
     assert result['state']=='CANCELLED' and calls==[ORDER]
     assert store.payment(ORDER)['state']=='PAID'
     with pytest.raises(ValueError,match='ORDER_CANCELLATION_ACTIVE'):

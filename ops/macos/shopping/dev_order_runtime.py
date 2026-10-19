@@ -165,7 +165,14 @@ def create_app():
         from ops.macos.shopping.dev_aftersales import DevAftersalesStore
         from ops.macos.shopping.dev_return_stock import DevReturnStock
         from ops.macos.shopping.dev_order_operator import DevStockCancellation
-        aftersales=DevAftersalesStore(DATA/'aftersales.sqlite3',DATA/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog,stock_cancellation=DevStockCancellation(store=checkout),stock_return=DevReturnStock())
+        key_path=PRIVATE/'refund-account.key'
+        if key_path.is_symlink() or (key_path.exists() and (key_path.stat().st_mode&0o077 or key_path.stat().st_size!=32)):
+            raise RuntimeError('REFUND_ACCOUNT_KEY_UNSAFE')
+        if not key_path.exists():
+            fd=os.open(key_path,os.O_WRONLY|os.O_CREAT|os.O_EXCL,0o600)
+            with os.fdopen(fd,'wb') as key_file:key_file.write(secrets.token_bytes(32));key_file.flush();os.fsync(key_file.fileno())
+        refund_key=key_path.read_bytes()
+        aftersales=DevAftersalesStore(DATA/'aftersales.sqlite3',DATA/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog,stock_cancellation=DevStockCancellation(store=checkout),stock_return=DevReturnStock(),refund_account_key=refund_key)
         aftersales.manual_refund_records_enabled=True
     from ops.macos.shopping.dev_order_operator import DevOperatorAdapter,DevStockConfirmation
     operator_adapter=DevOperatorAdapter(ledger=ledger,store=checkout,inquiry_queue=inquiry_queue,aftersales=aftersales) if checkout else None

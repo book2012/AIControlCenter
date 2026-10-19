@@ -18,9 +18,9 @@
   const showProgress=(card,order)=>{
     const fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
     const cancelled=order.cancellation?.state&&order.cancellation.state!=="NONE";
-    const step=fulfillment==="DELIVERED"?3:fulfillment==="SHIPPED"?2:order.review_state==="CONFIRMED"?1:0;
+    const step=fulfillment==="DELIVERED"?4:fulfillment==="SHIPPED"?3:order.payment?.state==="PAID"?2:order.review_state==="CONFIRMED"?1:0;
     const list=document.createElement("ol");list.className="orders-progress";list.setAttribute("aria-label","주문 진행 단계");
-    const names=["주문 접수","주문 확인","배송 중","배송 완료"];
+    const names=["주문 접수","주문 확인","입금 확인","배송 중","배송 완료"];
     names.forEach((name,index)=>{const item=document.createElement("li");item.textContent=name;if(index<step)item.classList.add("is-complete");if(index===step){item.classList.add("is-current");item.setAttribute("aria-current","step");}list.appendChild(item);});
     if(cancelled){const note=document.createElement("p");note.className="order-delivery-address";note.textContent=order.cancellation.state==="CANCELLED"?"이 주문은 취소 처리되었습니다.":"취소 상태를 확인하고 있습니다.";card.appendChild(note);}
     card.appendChild(list);
@@ -64,6 +64,16 @@
       for(const value of data.options){const option=document.createElement("option");option.value=value.variation_id;option.textContent=value.option;select.appendChild(option);}
       label.appendChild(select);box.appendChild(label);
     }
+    const paidCancellation=kind==="RETURN"&&(order.fulfillment?.state||"NOT_SHIPPED")==="NOT_SHIPPED"&&order.payment?.state==="PAID";
+    let refundBank=null,refundHolder=null,refundAccountNumber=null,refundConsent=null;
+    if(paidCancellation){
+      const bankLabel=document.createElement("label");bankLabel.textContent="환불 은행 *";refundBank=document.createElement("input");refundBank.autocomplete="off";refundBank.maxLength=40;refundBank.required=true;refundBank.placeholder="예: 국민은행";bankLabel.appendChild(refundBank);
+      const holderLabel=document.createElement("label");holderLabel.textContent="예금주 *";refundHolder=document.createElement("input");refundHolder.autocomplete="off";refundHolder.maxLength=40;refundHolder.required=true;refundHolder.placeholder="예금주 이름";holderLabel.appendChild(refundHolder);
+      const accountLabel=document.createElement("label");accountLabel.textContent="환불 계좌번호 *";refundAccountNumber=document.createElement("input");refundAccountNumber.type="text";refundAccountNumber.inputMode="numeric";refundAccountNumber.autocomplete="off";refundAccountNumber.maxLength=32;refundAccountNumber.required=true;refundAccountNumber.placeholder="숫자와 하이픈만 입력";accountLabel.appendChild(refundAccountNumber);
+      box.append(bankLabel,holderLabel,accountLabel);
+      const privacy=document.createElement("p");privacy.className="field-note";privacy.textContent="환불 계좌 수집·이용 안내: 은행명, 계좌번호, 예금주를 환불 송금 목적으로 수집합니다. 계좌정보는 암호화 보관하고 환불 완료 기록 또는 요청 거절 시 삭제합니다. 동의를 거부하면 환불 요청을 접수할 수 없습니다.";box.appendChild(privacy);
+      const consentLabel=document.createElement("label");refundConsent=document.createElement("input");refundConsent.type="checkbox";refundConsent.required=true;consentLabel.append(refundConsent,document.createTextNode(" [필수] 환불 계좌 수집·이용에 동의합니다."));box.appendChild(consentLabel);
+    }
     if((kind==="RETURN"||kind==="SIZE_EXCHANGE")&&(order.fulfillment?.state||"NOT_SHIPPED")==="DELIVERED"){
       const label=document.createElement("label");label.textContent="신청 사유";
       reasonType=document.createElement("select");
@@ -76,16 +86,18 @@
     const reason=document.createElement("textarea");reason.maxLength=1000;
     reason.placeholder=kind==="RETURN"?(order.fulfillment?.state==="NOT_SHIPPED"?"취소/환불 요청 사유를 적어 주세요.":"반품/환불 사유를 적어 주세요."):kind==="ORDER_CHANGE"?"변경할 상품·옵션·배송정보를 적어 주세요.":"교환 사유를 적어 주세요.";
     const file=document.createElement("input");file.type="file";file.accept="image/jpeg,image/png,image/webp";file.multiple=true;
-    const note=document.createElement("p");note.className="field-note";note.textContent=kind==="ORDER_CHANGE"?"발송 전 변경 요청입니다. 운영자가 확인 후 주문 정보를 별도로 수정하며, 이 요청만으로 주문이 바뀌지는 않습니다.":kind==="RETURN"&&order.fulfillment?.state==="NOT_SHIPPED"?"취소/환불은 운영자 확인 후 처리됩니다. 입금된 주문은 환불 송금이 자동 실행되지 않습니다.":"필요한 경우 사진을 최대 5개 첨부할 수 있습니다.";
+    const note=document.createElement("p");note.className="field-note";note.textContent=kind==="ORDER_CHANGE"?"발송 전 변경 요청입니다. 운영자가 확인 후 주문 정보를 별도로 수정하며, 이 요청만으로 주문이 바뀌지는 않습니다.":kind==="RETURN"&&order.fulfillment?.state==="NOT_SHIPPED"?(paidCancellation?"입금된 주문은 환불 요청과 계좌를 접수합니다. 운영자가 승인하고 실제 송금한 뒤 완료 처리합니다.":"확인 대기 중에도 주문 취소를 요청할 수 있습니다. 운영자가 취소와 재고 상태를 확인합니다."):"필요한 경우 사진을 최대 5개 첨부할 수 있습니다.";
     const submit=document.createElement("button");submit.type="button";submit.className="solid-button";
     submit.textContent=kind==="RETURN"?(order.fulfillment?.state==="NOT_SHIPPED"?"취소/환불 요청 접수":"반품/환불 요청 접수"):kind==="ORDER_CHANGE"?"주문 변경 요청 접수":"교환 요청 접수";
     submit.onclick=async()=>{
       if(reasonType&&!reasonType.value){message("신청 사유를 선택해 주세요.");reasonType.focus();return;}
-      const confirmCopy=reasonType?.value==="CHANGE_OF_MIND"?"단순 변심 또는 사이즈 변경으로 접수합니다. 반품·교환 배송비는 고객 부담입니다. 계속할까요?":reasonType?.value==="DEFECT_OR_WRONG"?"상품 하자 또는 오배송으로 접수합니다. 확인 후 판매자 부담 여부를 검토합니다. 계속할까요?":kind==="ORDER_CHANGE"?"발송 전 주문 변경 요청을 접수할까요? 운영자가 확인 후 별도로 처리합니다.":"취소/환불 요청을 접수할까요? 실제 취소와 환불은 운영자 확인 후 처리됩니다.";
+      if(paidCancellation&&(!refundConsent.checked||!refundBank.value.trim()||!refundHolder.value.trim()||!refundAccountNumber.value.trim())){message("환불 계좌 정보와 필수 동의를 확인해 주세요.");return;}
+      const confirmCopy=reasonType?.value==="CHANGE_OF_MIND"?"단순 변심 또는 사이즈 변경으로 접수합니다. 반품·교환 배송비는 고객 부담입니다. 계속할까요?":reasonType?.value==="DEFECT_OR_WRONG"?"상품 하자 또는 오배송으로 접수합니다. 확인 후 판매자 부담 여부를 검토합니다. 계속할까요?":kind==="ORDER_CHANGE"?"발송 전 주문 변경 요청을 접수할까요? 운영자가 확인 후 별도로 처리합니다.":paidCancellation?"입금된 주문의 환불 요청과 환불 계좌를 접수할까요? 실제 송금은 운영자가 확인 후 별도로 진행합니다.":"확인 대기 주문의 취소 요청을 접수할까요? 운영자가 취소와 재고 상태를 확인합니다.";
       if(!window.confirm(confirmCopy))return;
       submit.disabled=true;message("");
       try{
         const payload={order_id:order.order_id,kind,reason:reason.value,target_variation_id:select?select.value:null,reason_type:reasonType?.value||null};
+        if(paidCancellation){payload.refund_account={bank_name:refundBank.value.trim(),account_holder:refundHolder.value.trim(),account_number:refundAccountNumber.value.trim()};payload.refund_account_consent=true;}
         const response=await fetch(commercePath('/aftersales/cases'),{method:"POST",credentials:"same-origin",headers:headers(),body:JSON.stringify(payload)});
         const data=await response.json();if(!response.ok)throw new Error(data.message||"요청을 접수하지 못했습니다.");
         for(const current of Array.from(file.files).slice(0,5)){
@@ -111,7 +123,7 @@
     const refundRecorded=order.refund?.state==="RECORDED";
     const returnLabels={RETURN_APPROVED:"반품승인",RETURN_RECEIVED:"반품회수 · 검수대기",RETURN_RESTOCK_PENDING:"반품 처리 확인중",RETURN_RESTOCK_UNKNOWN:"반품 처리 확인중",RETURN_RESTOCKED:"반품검수완료 · 환불검토"};
     const cancellationLabel=cancellation==="CANCELLED"?"취소완료":"취소 확인중";
-    state.textContent=refundRecorded?"환불완료":cancellation!=="NONE"?cancellationLabel:returned!=="NONE"?(returnLabels[returned]||"반품 처리중"):fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.review_state==="CONFIRMED"?(order.payment?.state==="PAID"?"배송준비":"입금대기"):order.review_state==="REJECTED"?"거절":"확인대기";
+    state.textContent=refundRecorded?"환불완료":cancellation!=="NONE"?cancellationLabel:returned!=="NONE"?(returnLabels[returned]||"반품 처리중"):fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.payment?.state==="PAID"?"입금 확인":order.review_state==="CONFIRMED"?"입금대기":order.review_state==="REJECTED"?"거절":"확인대기";
     head.append(title,state);card.appendChild(head);showProgress(card,order);
     const details=document.createElement("p");details.className="orders-status-summary";
     const labels={CONFIRMED:"주문확인 완료",PENDING_REVIEW:"주문확인 대기",REJECTED:"주문 거절",STOCK_BLOCKED:"재고확인 중"};
@@ -156,7 +168,8 @@
     const title=document.createElement("h2");title.textContent="주문 "+order.order_number;
     const state=document.createElement("strong");state.className="order-state";
     const fulfillment=order.fulfillment?.state||"NOT_SHIPPED";
-    state.textContent=fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.payment?.state==="PAID"?"배송준비":order.review_state==="CONFIRMED"?"입금대기":"확인대기";
+    const cancellation=order.cancellation?.state||"NONE";
+    state.textContent=cancellation==="CANCELLED"?"취소완료":cancellation!=="NONE"?"취소 확인중":fulfillment==="DELIVERED"?"배송완료":fulfillment==="SHIPPED"?"배송중":order.payment?.state==="PAID"?"입금 확인":order.review_state==="CONFIRMED"?"입금대기":"확인대기";
     head.append(title,state);card.appendChild(head);showProgress(card,order);
     const date=document.createElement("p");date.textContent="주문일: "+(order.requested_at||"일자 미확인");card.appendChild(date);
     const items=document.createElement("div");items.className="order-items";

@@ -112,6 +112,14 @@ async function load(){
   if(x.kind==="RETURN"&&["RETURN_RESTOCK_PENDING","RETURN_RESTOCK_UNKNOWN"].includes(x.state)){
    act("재고 복원 결과 확인",()=>post("/__order-dev/admin/cases/"+x.id+"/return/reconcile",{}));
   }
+  if(x.kind==="RETURN"&&x.payment?.state==="PAID"&&x.state==="RETURN_APPROVED"&&x.cancellation?.state==="CANCELLED"&&x.refund?.state!=="RECORDED"){
+   act("환불 계좌 확인",async()=>{
+    try{
+     const r=await fetch("/__order-dev/admin/cases/"+x.id+"/refund-account",{credentials:"same-origin"});const d=await r.json();if(!r.ok)throw new Error(d.message||"환불 계좌를 확인하지 못했습니다.");
+     const a=d.refund_account;const view=document.createElement("div");view.className="detail";view.textContent="환불 계좌 (송금 후 화면을 닫으세요)\n은행: "+a.bank_name+"\n예금주: "+a.account_holder+"\n계좌번호: "+a.account_number;wrap.appendChild(view);
+    }catch(error){alert(error.message);}
+   });
+  }
   const canRecord=x.kind==="RETURN"&&x.refund?.state!=="RECORDED"&&(
     x.state==="RETURN_RESTOCKED"||
     (x.state==="RETURN_APPROVED"&&x.cancellation?.state==="CANCELLED"&&x.payment?.state==="PAID"&&x.fulfillment?.state==="NOT_SHIPPED"));
@@ -446,6 +454,13 @@ def mount_admin(app,*,operator_adapter,inquiry_queue,aftersales=None,conversatio
             return JSONResponse({"case":case},status_code=201,headers={"Cache-Control":"no-store"})
         except (ValueError,json.JSONDecodeError) as exc:
             return JSONResponse({"message":"환불·교환 요청 조건을 확인해 주세요.","code":str(exc)},status_code=422)
+
+    @app.get("/__order-dev/admin/cases/{case_id}/refund-account",include_in_schema=False)
+    def admin_refund_account(request:Request,case_id:str):
+        if not same_origin(request):return JSONResponse({"message":"관리자 페이지에서 다시 요청해 주세요."},status_code=403)
+        if aftersales is None or not re.fullmatch(r"[a-f0-9]{8}",case_id):return JSONResponse({"message":"환불 계좌를 찾지 못했습니다."},status_code=404,headers={"Cache-Control":"no-store"})
+        try:return JSONResponse({"refund_account":aftersales.admin_refund_account(case_id)},headers={"Cache-Control":"no-store","Pragma":"no-cache","X-Robots-Tag":"noindex, nofollow"})
+        except ValueError:return JSONResponse({"message":"환불 계좌가 없거나 이미 삭제됐습니다."},status_code=404,headers={"Cache-Control":"no-store"})
 
     @app.post("/__order-dev/admin/cases/{case_id}/decision",include_in_schema=False)
     async def admin_case_decision(request:Request,case_id:str):

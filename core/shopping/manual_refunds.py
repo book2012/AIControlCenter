@@ -57,4 +57,5 @@ class ManualRefundRecords:
                 if c.execute('SELECT 1 FROM manual_refunds WHERE evidence=?',(evidence,)).fetchone():raise ValueError('REFUND_EVIDENCE_REUSED')
                 if c.execute('SELECT 1 FROM manual_refunds WHERE order_id=?',(case['order_id'],)).fetchone():raise ValueError('REFUND_RECORD_CONFLICT')
                 c.execute('INSERT INTO manual_refunds VALUES(?,?,?,?,?,?,?,?)',(case_id,case['order_id'],str(amount),'KRW',evidence,actor,update_id,self.clock()))
+            c.execute('DELETE FROM refund_destinations WHERE case_id=?',(case_id,))
         return self.refund(case['order_id'])
