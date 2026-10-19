@@ -146,3 +146,8 @@ Typing `주문목록` or `주문 목록` opens the one-screen selector; explicit
 include the authenticated `[개발]` header, so the bot strips that exact header
 when matching selector/navigation messages and validating those callbacks. Tests
 cover the actual prefixed selector and navigation message shape.
+
+
+## Callback feedback
+
+When an operator taps a Telegram inline button, the callback acknowledgement names the selected action. The resulting reply repeats that button label and includes the public order number for order-specific actions, so it remains clear which command produced the result. For order-list responses, this context is attached to the first order card.

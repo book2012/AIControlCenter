@@ -151,7 +151,29 @@ def callback_command(update,cfg):
     return query.get("id"),actor["id"],phone+" 고객 "+action+" #"+number
 
 
-def _send_reply(transport,text):
+def _callback_label(data):
+    menu_labels={"orders":"📦 주문 목록","order_help":"🔎 주문 조회 안내","products":"🛍 상품 목록",
+                 "stock":"📊 재고 확인","product_help":"➕ 상품 등록 안내"}
+    menu=re.fullmatch(r"aicc:menu:([a-z_]+)",data or "")
+    if menu:return menu_labels.get(menu[1],"메뉴")
+    if data=="aicc:orders:filters":return "🏷 상태별 보기"
+    if data=="aicc:orders:back":return "⬅️ 상태 선택으로 돌아가기"
+    if re.fullmatch(r"aicc:orders:all:[0-9]{1,6}",data or ""):return "📋 전체 보기"
+    status=re.fullmatch(r"aicc:orders:status:([A-Z_]+):[0-9]{1,6}",data or "")
+    if status:return "🏷 "+_FILTER_STATES.get(status[1],status[1])
+    if re.fullmatch(r"aicc:orders:next:(?:ALL|[A-Z_]+):[0-9]{1,6}",data or ""):return "➡️ 다음 주문 보기"
+    item=re.fullmatch(r"aicc:item:(detail|confirm|cancel|payment|ship|delivered):([0-9]{10})",data or "")
+    legacy=re.fullmatch(r"aicc:(confirm|detail|cancel):([0-9]{10})",data or "")
+    match=item or legacy
+    if match:
+        action=match[1];number=match[2]
+        labels={"detail":"📋 상세 보기","confirm":"✅ 주문 확인","cancel":"❌ 주문 취소",
+                "payment":"💳 입금 확인","ship":"🚚 배송 등록","delivered":"📦 배송 완료"}
+        return labels[action]+" · 주문 #"+number
+    return "선택한 작업"
+
+
+def _send_reply(transport,text,*,context=None):
     if type(text) is str:
         page=_ORDER_PAGE.search(text)
         body=_ORDER_PAGE.sub("",text,count=1).strip() if page else text.strip()
@@ -170,11 +192,13 @@ def _send_reply(transport,text):
                 end=matches[index+1].start() if index+1<len(matches) else len(body)
                 card=body[match.start():end].strip()
                 card=re.sub(r"\n{2,}","\n",card)
+                if index==0 and context:card=context+"\n"+card
                 send_card(card,reply_markup(card))
             if page and int(page[3])+1<int(page[4]):
                 nav="주문 더 보기 · "+page[1]+":"+page[2]+":"+page[3]
                 send_card(nav,reply_markup(nav))
             return True
+    if context:text=context+"\n\n"+text
     markup=reply_markup(text)
     if markup is None:
         return transport.send_message(text)
@@ -195,7 +219,7 @@ def poll_once(transport,client,cfg,path):
                 callback_id,user_id,text=callback
                 try:
                     callback_data=query.get("data","")
-                    status_text="요청을 처리하고 있습니다." if callback_data.startswith(("aicc:menu:","aicc:orders:")) else ("주문을 취소하고 있습니다." if ":cancel:" in callback_data else "주문을 확인하고 있습니다.")
+                    status_text=_callback_label(callback_data)+" 선택 · 처리 중"
                     transport.answer_callback_query(callback_id,text=status_text)
                 except Exception as error:
                     # Callback acknowledgement is cosmetic; a transport failure must not skip the command.
@@ -206,12 +230,12 @@ def poll_once(transport,client,cfg,path):
                     # Do not retry a possibly ambiguous order mutation. Log type only, never message/PII.
                     LOGGER.warning("callback_command_failed error_type=%s",type(error).__name__)
                     try:
-                        _send_reply(transport,'처리 결과 확인이 필요합니다. 같은 버튼을 다시 누르지 말고 주문상세로 현재 상태를 확인해 주세요.')
+                        _send_reply(transport,'처리 결과 확인이 필요합니다. 같은 버튼을 다시 누르지 말고 주문상세로 현재 상태를 확인해 주세요.',context="🔘 선택한 버튼: "+_callback_label(query.get("data","")))
                     except Exception as send_error:
                         LOGGER.warning("callback_error_reply_failed error_type=%s",type(send_error).__name__)
                 else:
                     try:
-                        _send_reply(transport,reply)
+                        _send_reply(transport,reply,context="🔘 선택한 버튼: "+_callback_label(query.get("data","")))
                     except Exception as error:
                         # The command may have completed; never call it again after delivery fails.
                         LOGGER.warning("callback_result_delivery_failed error_type=%s",type(error).__name__)

@@ -2,6 +2,8 @@
 
 Restored **주문 취소** on each eligible order card in order lists and new-order notifications. Corrected state precedence so a saved cancellation overrides pending operator-review state in detail and status filters. The **전체 보기** list excludes orders already in CANCELLED; the CANCELLED status filter and phone-specific order list still show them. Applicable action states are validated per order, including 확인대기, 확인완료, 입금대기, and 배송준비. Order detail shows timestamped order review and after-sales transitions; new after-sales transitions are captured in append-only SQLite history. Existing past transitions are not reconstructed. No live cancellation was executed.
 
+Telegram button callbacks now label their in-progress acknowledgement and result with the selected button name and, for order actions, the public order number.
+
 ## 2026-10-20 — Route Telegram order buttons through the deterministic DEV handler
 
 Fixed the DEV order API bridge allowlist: phone-bound 주문 확인, 주문 취소, 주문 상세, payment, and shipping button commands now bypass conversational interpretation and use the existing validated order adapter. Natural-language follow-ups remain in the conversation handler. Added a fake-ledger regression test proving the routing split without mutating any real order. Focused order/bridge tests: 79 passed. Live buttons have not been replayed; orders remain read-only.

@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 from pydantic import SecretStr
 from core.shopping.order_core.telegram import OrderTelegramTransport, TelegramDeliveryRejected
-from ops.macos.shopping.dev_split_bot import callback_command, poll_once, reply_markup, menu_markup, _send_reply
+from ops.macos.shopping.dev_split_bot import callback_command, poll_once, reply_markup, menu_markup, _send_reply, _callback_label
 
 CHAT = 771122
 USER = 884433
@@ -240,13 +240,28 @@ def test_poll_sends_keyboard_and_button_dispatches_same_order(tmp_path):
 
     transport.updates = [callback_update(update_id=4)]
     poll_once(transport, client, CFG, path)
-    assert transport.answered == [("callback-10", "주문을 확인하고 있습니다.")]
+    assert transport.answered == [("callback-10", "✅ 주문 확인 · 주문 #"+NUMBER+" 선택 · 처리 중")]
     assert calls[-1] == (
         PHONE + " 고객 주문확인 #" + NUMBER, 4 + (1 << 60), "telegram-user-" + str(USER)
     )
-    assert transport.messages[-1] == (PENDING, reply_markup(PENDING))
+    assert transport.messages[-1] == ("🔘 선택한 버튼: ✅ 주문 확인 · 주문 #"+NUMBER+"\n\n"+PENDING, reply_markup(PENDING))
     with sqlite3.connect(path) as connection:
         assert connection.execute("SELECT offset FROM cursor WHERE id=1").fetchone()[0] == 5
+
+
+
+def test_callback_labels_show_exact_button_and_order_number():
+    assert _callback_label("aicc:item:cancel:2610192106")=="❌ 주문 취소 · 주문 #2610192106"
+    assert _callback_label("aicc:item:payment:2610192106")=="💳 입금 확인 · 주문 #2610192106"
+    assert _callback_label("aicc:orders:status:CANCELLED:0")=="🏷 취소 완료"
+    assert _callback_label("aicc:orders:all:0")=="📋 전체 보기"
+
+
+def test_callback_order_list_reply_marks_the_selected_button_on_first_card():
+    transport=FakeTransport()
+    assert _send_reply(transport,ORDER_LIST,context="🔘 선택한 버튼: 📋 전체 보기")
+    assert transport.messages[0][0].startswith("🔘 선택한 버튼: 📋 전체 보기\n2610192105 ·")
+    assert transport.messages[0][1]["inline_keyboard"][0][0]["callback_data"]=="aicc:item:detail:2610192105"
 
 
 def test_invalid_callback_never_reaches_operator_bridge(tmp_path):
@@ -305,7 +320,7 @@ def test_callback_ack_failure_does_not_skip_single_command_dispatch(tmp_path, ca
     calls=[]
     poll_once(transport,lambda *args:calls.append(args) or PENDING,CFG,path)
     assert len(calls)==1 and calls[0][0]==PHONE+" 고객 주문확인 #"+NUMBER
-    assert transport.messages==[(PENDING,reply_markup(PENDING))]
+    assert transport.messages==[("🔘 선택한 버튼: ✅ 주문 확인 · 주문 #"+NUMBER+"\n\n"+PENDING,reply_markup(PENDING))]
     assert "callback_ack_failed error_type=TimeoutError" in caplog.text
     assert "private detail" not in caplog.text
 
@@ -361,7 +376,7 @@ def test_menu_command_shows_order_and_product_buttons_and_routes_shortcuts(tmp_p
     transport.updates=[menu_update(action="products")]
     poll_once(transport,lambda *args:calls.append(args) or "상품 목록",CFG,path)
     assert calls==[("/products",20+(1<<60),"telegram-user-"+str(USER))]
-    assert transport.messages[-1]==("상품 목록",None)
+    assert transport.messages[-1]==("🔘 선택한 버튼: 🛍 상품 목록\n\n상품 목록",None)
 
 
 def test_menu_callback_rejects_wrong_operator_or_non_menu_message():
