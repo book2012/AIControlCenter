@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 from pydantic import SecretStr
 from core.shopping.order_core.telegram import OrderTelegramTransport, TelegramDeliveryRejected
-from ops.macos.shopping.dev_split_bot import callback_command, poll_once, reply_markup
+from ops.macos.shopping.dev_split_bot import callback_command, poll_once, reply_markup, menu_markup
 
 CHAT = 771122
 USER = 884433
@@ -211,3 +211,42 @@ def test_callback_result_delivery_failure_never_replays_command(tmp_path, caplog
     poll_once(transport,lambda *args:calls.append(args) or PENDING,CFG,path)
     assert len(calls)==1
     assert "callback_result_delivery_failed error_type=TimeoutError" in caplog.text
+
+
+def menu_update(update_id=20, *, user=USER, chat=CHAT, bot=BOT, action="orders"):
+    return {
+        "update_id": update_id,
+        "callback_query": {
+            "id": "menu-callback-20",
+            "from": {"id": user, "is_bot": False},
+            "data": "aicc:menu:" + action,
+            "message": {
+                "chat": {"id": chat, "type": "private"},
+                "from": {"is_bot": True, "username": bot},
+                "text": "안녕하세요 agachichi 입니다\n[DEV] 관리자 메뉴\n주문·상품 관리 작업을 선택하세요.",
+            },
+        },
+    }
+
+
+def test_menu_command_shows_order_and_product_buttons_and_routes_shortcuts(tmp_path):
+    path=tmp_path/"cursor.sqlite3";cursor_db(path)
+    transport=FakeTransport([{"update_id":19,"message":{"chat":{"id":CHAT,"type":"private"},"from":{"id":USER,"is_bot":False},"text":"메뉴"}}])
+    calls=[]
+    poll_once(transport,lambda *args:"unused",CFG,path)
+    assert transport.messages[0][1]==menu_markup()
+    assert [button["text"] for row in menu_markup()["inline_keyboard"] for button in row]==[
+        "📦 주문 목록","🔎 주문 조회 안내","🛍 상품 목록","📊 재고 확인","➕ 상품 등록 안내"]
+    transport.updates=[menu_update(action="products")]
+    poll_once(transport,lambda *args:calls.append(args) or "상품 목록",CFG,path)
+    assert calls==[("/products",20+(1<<60),"telegram-user-"+str(USER))]
+    assert transport.messages[-1]==("상품 목록",None)
+
+
+def test_menu_callback_rejects_wrong_operator_or_non_menu_message():
+    update=menu_update(action="product_help")
+    assert callback_command(update,CFG)==("menu-callback-20",USER,"상품관리 도움말")
+    assert callback_command(menu_update(user=USER+1),CFG) is None
+    assert callback_command(menu_update(bot="other_bot"),CFG) is None
+    update=menu_update();update["callback_query"]["message"]["text"]="다른 메시지"
+    assert callback_command(update,CFG) is None

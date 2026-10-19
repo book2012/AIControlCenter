@@ -11,8 +11,20 @@ LOGGER=logging.getLogger("aicc.dev.telegram")
 _ORDER_LINE=re.compile(r"(?m)^([0-9]{11}) 고객님 주문\n주문 ([0-9]{10}) ·")
 
 
+def menu_markup():
+    return {"inline_keyboard":[
+        [{"text":"📦 주문 목록","callback_data":"aicc:menu:orders"},
+         {"text":"🔎 주문 조회 안내","callback_data":"aicc:menu:order_help"}],
+        [{"text":"🛍 상품 목록","callback_data":"aicc:menu:products"},
+         {"text":"📊 재고 확인","callback_data":"aicc:menu:stock"}],
+        [{"text":"➕ 상품 등록 안내","callback_data":"aicc:menu:product_help"}],
+    ]}
+
+
 def reply_markup(text):
-    """Offer order actions only on an explicit, single pending-order result."""
+    """Offer trusted admin shortcuts or order-bound actions."""
+    if type(text) is str and "[DEV] 관리자 메뉴" in text:
+        return menu_markup()
     match=_ORDER_LINE.search(text) if type(text) is str else None
     if match is None:
         return None
@@ -46,6 +58,14 @@ def callback_command(update,cfg):
         return None
     if type(query.get("id")) is not str or type(query.get("data")) is not str:
         return None
+    menu_commands={"orders":"주문목록","order_help":"주문조회 도움말",
+                   "products":"/products","stock":"재고관리",
+                   "product_help":"상품관리 도움말"}
+    menu=re.fullmatch(r"aicc:menu:([a-z_]+)",query["data"])
+    if menu is not None:
+        if menu[1] not in menu_commands or type(message.get("text")) is not str or "[DEV] 관리자 메뉴" not in message["text"]:
+            return None
+        return query["id"],actor["id"],menu_commands[menu[1]]
     match=re.fullmatch(r"aicc:(confirm|detail):([0-9]{10})",query["data"])
     if match is None or type(message.get("text")) is not str:
         return None
@@ -79,7 +99,7 @@ def poll_once(transport,client,cfg,path):
             if callback is not None:
                 callback_id,user_id,text=callback
                 try:
-                    transport.answer_callback_query(callback_id,text="주문을 확인하고 있습니다.")
+                    transport.answer_callback_query(callback_id,text=("요청을 처리하고 있습니다." if text.startswith("aicc:menu:") else "주문을 확인하고 있습니다."))
                 except Exception as error:
                     # Callback acknowledgement is cosmetic; a transport failure must not skip the command.
                     LOGGER.warning("callback_ack_failed error_type=%s",type(error).__name__)
@@ -112,8 +132,8 @@ def poll_once(transport,client,cfg,path):
                 and type(msg.get('text')) is str):
                 text=msg['text']
                 try:
-                    if text in ('/start','/help'):
-                        reply='안녕하세요 agachichi 입니다\n[개발]\n개발 전용 봇입니다. 주문목록, 상품목록, 할일을 물어보세요.'
+                    if text.strip().lower() in ('/start','/help','/menu','메뉴','menu'):
+                        reply='안녕하세요 agachichi 입니다\n[DEV] 관리자 메뉴\n주문·상품 관리 작업을 선택하세요.'
                     else:
                         # Separate bot IDs must never collide with historical shared-bot updates.
                         reply=client(text,i+(1<<60),'telegram-user-'+str(user['id']))
