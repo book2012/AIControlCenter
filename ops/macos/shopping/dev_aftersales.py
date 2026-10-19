@@ -41,9 +41,11 @@ def mount_aftersales(app,*,store,boundary,phone_cfg):
                 raw.extend(chunk)
             data=json.loads(raw)
             from core.shopping.public_order_number import is_public_order_number
-            if type(data) is not dict or set(data)!={"order_number"} or type(data["order_number"]) is not str or not is_public_order_number(data["order_number"]):
+            if (type(data) is not dict or set(data)!={"order_number","phone"}
+                or any(type(value) is not str for value in data.values())
+                or not is_public_order_number(data["order_number"])):
                 raise ValueError("INVALID_PUBLIC_LOOKUP")
-            order=store.public_lookup(data["order_number"])
+            order=store.public_lookup(data["order_number"],data["phone"])
             return JSONResponse({"order":order,"phone_verification_required_for_private_details":True},
                 headers={"Cache-Control":"no-store","X-Robots-Tag":"noindex, nofollow"})
         except Exception:

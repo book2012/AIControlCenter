@@ -33,14 +33,20 @@ class FakeTransport:
         self.updates = list(updates)
         self.messages = []
         self.answered = []
+        self.ack_error = None
+        self.send_error = None
 
     def get_updates(self, offset):
         return self.updates
 
     def send_message(self, text, *, reply_markup=None):
+        if self.send_error:
+            raise self.send_error
         self.messages.append((text, reply_markup))
 
     def answer_callback_query(self, callback_id, *, text=None):
+        if self.ack_error:
+            raise self.ack_error
         self.answered.append((callback_id, text))
 
 
@@ -169,3 +175,39 @@ def test_telegram_transport_rejects_arbitrary_reply_markup_shape():
     with pytest.raises(TelegramDeliveryRejected, match="REPLY_MARKUP_INVALID"):
         transport.send_message("safe", reply_markup={"remove_keyboard": True})
     session.post.assert_not_called()
+
+
+def test_callback_ack_failure_does_not_skip_single_command_dispatch(tmp_path, caplog):
+    path=tmp_path/"cursor.sqlite3";cursor_db(path)
+    transport=FakeTransport([callback_update(update_id=12)])
+    transport.ack_error=TimeoutError("private detail must not be logged")
+    calls=[]
+    poll_once(transport,lambda *args:calls.append(args) or PENDING,CFG,path)
+    assert len(calls)==1 and calls[0][0]==PHONE+" 고객 주문확인 #"+NUMBER
+    assert transport.messages==[(PENDING,reply_markup(PENDING))]
+    assert "callback_ack_failed error_type=TimeoutError" in caplog.text
+    assert "private detail" not in caplog.text
+
+
+def test_callback_bridge_failure_is_logged_without_retry_or_sensitive_error(tmp_path, caplog):
+    path=tmp_path/"cursor.sqlite3";cursor_db(path)
+    transport=FakeTransport([callback_update(update_id=13)])
+    calls=[]
+    def fail(*args):
+        calls.append(args)
+        raise RuntimeError("phone 01000000000 order 1234567890")
+    poll_once(transport,fail,CFG,path)
+    assert len(calls)==1
+    assert len(transport.messages)==1 and "같은 버튼을 다시 누르지" in transport.messages[0][0]
+    assert "callback_command_failed error_type=RuntimeError" in caplog.text
+    assert "01000000000" not in caplog.text and "1234567890" not in caplog.text
+
+
+def test_callback_result_delivery_failure_never_replays_command(tmp_path, caplog):
+    path=tmp_path/"cursor.sqlite3";cursor_db(path)
+    transport=FakeTransport([callback_update(update_id=14)])
+    transport.send_error=TimeoutError("transport offline")
+    calls=[]
+    poll_once(transport,lambda *args:calls.append(args) or PENDING,CFG,path)
+    assert len(calls)==1
+    assert "callback_result_delivery_failed error_type=TimeoutError" in caplog.text

@@ -174,14 +174,16 @@
     activeOrder=null;by("orders-list").replaceChildren();by("order-chat").hidden=true;by("order-chat-log").replaceChildren();
     const number=by("orders-number").value.trim().replace(/^#/,"");
     if(/^\d{10}$/.test(number)){
+      const phone=by("lookup-phone").value.trim();
+      if(!phone){message("주문 시 입력한 휴대폰 번호를 함께 입력해 주세요.");by("lookup-phone").focus();return;}
       const publicResponse=await fetch(commercePath('/orders/public-lookup'),{method:"POST",credentials:"same-origin",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({order_number:number})});
+        body:JSON.stringify({order_number:number,phone})});
       const publicData=await publicResponse.json();
       if(publicResponse.ok){
         activeOrder=publicData.order;by("orders-auth").hidden=true;by("orders-list").appendChild(renderPublicOrder(activeOrder));by("order-chat").hidden=false;
-        message("주문번호만으로 기본 상태를 확인했습니다. 상세 기능은 휴대폰 인증 후 이용할 수 있습니다.");return;
+        message("주문번호와 휴대폰 번호가 일치해 기본 상태를 확인했습니다. 배송주소 등 상세 정보는 휴대폰 인증 후 이용할 수 있습니다.");return;
       }
-      message(publicResponse.status===404?"주문번호를 찾을 수 없습니다. 10자리 주문번호를 확인해 주세요.":"주문조회 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.");
+      message(publicResponse.status===404?"주문을 찾을 수 없습니다. 주문번호와 주문 시 입력한 휴대폰 번호를 확인해 주세요.":"주문조회 서비스에 연결하지 못했습니다. 잠시 후 다시 시도해 주세요.");
       return;
     }
     if(!(await session())){by("orders-phone").value=by("lookup-phone").value;by("orders-auth").hidden=false;message("상세 주문 조회는 휴대폰 인증 후 이용할 수 있습니다.");return;}

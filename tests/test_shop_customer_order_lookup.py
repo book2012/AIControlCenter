@@ -35,12 +35,14 @@ def test_lookup_requires_verified_session_origin_csrf_number_and_phone(tmp_path)
 def test_public_order_lookup_needs_only_public_order_number_and_redacts_delivery(tmp_path):
     client,store=client_for(tmp_path)
     number=store.customer_orders(CUSTOMER)[0]["order_number"]
-    response=client.post("/__order-dev/orders/public-lookup",json={"order_number":number})
+    response=client.post("/__order-dev/orders/public-lookup",json={"order_number":number,"phone":"01012345678"})
     assert response.status_code==200
     order=response.json()["order"]
     assert order["order_number"]==number and order["public_only"] is True
     assert "delivery" not in order and "phone" not in order
-    assert client.post("/__order-dev/orders/public-lookup",json={"order_number":"15"}).status_code==404
+    assert client.post("/__order-dev/orders/public-lookup",json={"order_number":number,"phone":"01099999999"}).status_code==404
+    assert client.post("/__order-dev/orders/public-lookup",json={"order_number":number}).status_code==404
+    assert client.post("/__order-dev/orders/public-lookup",json={"order_number":"15","phone":"01012345678"}).status_code==404
 def config(tmp_path):
     p=tmp_path/"sms.json";p.write_text(json.dumps({"environment":"DEV","enabled":True,"bank":{"name":"TEST BANK","account":"TEST ACCOUNT","holder":"TEST HOLDER"},"credentials":{"account_sid":"AC"+"a"*32,"auth_token":"TEST","messaging_service_sid":"MG"+"b"*32}}));p.chmod(0o600);return p
 def sms_fixture(tmp_path,transport):
@@ -72,3 +74,16 @@ def test_missing_private_bank_config_does_not_claim_or_send(tmp_path):
     with sqlite3.connect(sms.path) as c:c.execute("DELETE FROM notices WHERE order_id=?",(ORDER,))
     cfg=json.loads(sms.config_path.read_text());cfg["bank"]["account"]="";sms.config_path.write_text(json.dumps(cfg))
     assert sms.dispatch_one()=="CONFIGURATION_REQUIRED" and sms.state(ORDER)=="PENDING"
+
+
+def test_public_lookup_includes_pending_review_orders_only_for_matching_phone(tmp_path):
+    client,store=client_for(tmp_path)
+    number=store.customer_orders(CUSTOMER)[0]["order_number"]
+    rows=store.ledger.operator_orders()
+    rows[0]["state"]="PENDING_REVIEW"
+    store.ledger.operator_orders=lambda:rows
+    response=client.post("/__order-dev/orders/public-lookup",json={"order_number":number,"phone":"+82 10-1234-5678"})
+    assert response.status_code==200
+    assert response.json()["order"]["review_state"]=="PENDING_REVIEW"
+    assert "phone" not in response.json()["order"] and "delivery" not in response.json()["order"]
+    assert client.post("/__order-dev/orders/public-lookup",json={"order_number":number,"phone":"01000000000"}).status_code==404

@@ -1,5 +1,5 @@
 """DEV-only bot consumer; private bridge, independent cursor, no PROD handler."""
-import fcntl,json,re,sqlite3,time
+import fcntl,json,logging,re,sqlite3,time
 from pathlib import Path
 from pydantic import SecretStr
 from core.shopping.order_core.telegram import OrderTelegramTransport
@@ -7,6 +7,7 @@ from ops.macos.shopping.dev_operator_bridge_client import compose_dev_command_cl
 
 PRIVATE=Path('/Users/kyouhan/.config/aicontrolcenter-dev-order')
 DATA=Path('/Users/kyouhan/AIControlCenterRuntime/dev-order/data')
+LOGGER=logging.getLogger("aicc.dev.telegram")
 _ORDER_LINE=re.compile(r"(?m)^([0-9]{11}) 고객님 주문\n주문 ([0-9]{10}) ·")
 
 
@@ -79,13 +80,24 @@ def poll_once(transport,client,cfg,path):
                 callback_id,user_id,text=callback
                 try:
                     transport.answer_callback_query(callback_id,text="주문을 확인하고 있습니다.")
+                except Exception as error:
+                    # Callback acknowledgement is cosmetic; a transport failure must not skip the command.
+                    LOGGER.warning("callback_ack_failed error_type=%s",type(error).__name__)
+                try:
                     reply=client(text,i+(1<<60),'telegram-user-'+str(user_id))
-                    _send_reply(transport,reply)
-                except Exception:
+                except Exception as error:
+                    # Do not retry a possibly ambiguous order mutation. Log type only, never message/PII.
+                    LOGGER.warning("callback_command_failed error_type=%s",type(error).__name__)
                     try:
                         _send_reply(transport,'처리 결과 확인이 필요합니다. 같은 버튼을 다시 누르지 말고 주문상세로 현재 상태를 확인해 주세요.')
-                    except Exception:
-                        pass
+                    except Exception as send_error:
+                        LOGGER.warning("callback_error_reply_failed error_type=%s",type(send_error).__name__)
+                else:
+                    try:
+                        _send_reply(transport,reply)
+                    except Exception as error:
+                        # The command may have completed; never call it again after delivery fails.
+                        LOGGER.warning("callback_result_delivery_failed error_type=%s",type(error).__name__)
             else:
                 # Stop the spinner only for a trusted operator in this private chat.
                 actor=query.get("from",{})
@@ -136,7 +148,8 @@ def main():
         fcntl.flock(lease,fcntl.LOCK_EX|fcntl.LOCK_NB)
         while True:
             try:poll_once(transport,client,cfg,path)
-            except Exception:pass
+            except Exception as error:
+                LOGGER.warning("poller_cycle_failed error_type=%s",type(error).__name__)
             time.sleep(2)
 
 if __name__=='__main__':

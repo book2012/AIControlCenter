@@ -1,3 +1,7 @@
+## 2026-10-19 — DEV 주문 조회 및 Telegram 확인 버튼 복구
+
+주문조회가 주문번호만 보내고 화면의 휴대폰 번호를 누락하던 문제를 고쳤습니다. 이제 10자리 주문번호와 주문 시 입력한 휴대폰 번호가 일치해야 기본 상태를 보여주며, 운영자 확인 대기 주문도 조회됩니다. 배송주소·개인정보는 계속 숨깁니다. Papachichi callback은 Telegram 확인 응답 오류와 주문 브리지 호출을 분리해 버튼 처리가 불필요하게 중단되지 않도록 했고, 오류 때는 주문 명령을 재시도하지 않으며 비식별 오류 유형만 기록합니다. DEV 배포 및 실서비스 검증 진행 중입니다. 실제 주문 확정, SMS, 상품·결제·재고 변경과 PROD 접근은 하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_ORDER_LOOKUP_CALLBACK_RECOVERY.md`.
+
 ## 2026-10-19 — DEV Papachichi 주문 인라인 버튼
 
 단일 미확인 주문 답변에 주문 확인·주문 상세 버튼을 붙이고 callback query 수신, 확인, 정확한 원본 주문 검증 및 기존 브리지 전달을 구현했습니다. 허용된 private 운영자만 누를 수 있으며, 확인 클릭은 기존 재고 확인/주문 상태 처리 경로를 사용합니다. 관련 36개 테스트와 Python compile 검사를 통과했습니다. Immutable DEV bot release `a31157aa4f6d273bc9bca9b169a14425b68ff169` 활성, LaunchAgent running, DEV API health 정상입니다. 주문 정보 버튼 메시지 ID 67 전송을 확인했습니다. 버튼 클릭 전이므로 주문 변경은 없습니다. PROD는 변경하지 않았습니다. 상세: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.

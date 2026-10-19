@@ -179,15 +179,19 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         order["payment"]=self.payment(order_id)
         if getattr(self,"sms",None):order["notification_state"]=self.sms.state(order_id)
         return order
-    def public_lookup(self,order_number):
+    def public_lookup(self,order_number,phone):
+        from core.shopping.guest_operator import local_phone
         number=str(order_number).strip().removeprefix("#")
-        if not is_public_order_number(number):raise ValueError("ORDER_NOT_FOUND")
+        if not is_public_order_number(number) or type(phone) is not str:raise ValueError("ORDER_NOT_FOUND")
+        try:submitted_phone=local_phone(phone)
+        except ValueError as error:raise ValueError("ORDER_NOT_FOUND") from error
         for row in self.ledger.operator_orders():
-            if row.get("state")!="CONFIRMED":continue
+            if row.get("state") not in ("PENDING_REVIEW","CONFIRMED"):continue
             try:draft=self.checkout.by_customer_operation(row["operation_key"],row["customer_id"],allow_expired=True)
             except Exception:continue
             if draft.get("state")!="CONFIRMED":continue
-            phone=draft["body"]["billing"]["phone"]
+            phone=local_phone(draft["body"]["billing"]["phone"])
+            if phone!=submitted_phone:continue
             expected=public_order_number(requested_at=row.get("requested_at"),phone=phone,entropy=row.get("reference") or row["operation_key"])
             if expected!=number:continue
             order_id=row["provider_order_id"]
