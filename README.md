@@ -6126,3 +6126,7 @@ Product detail chat now starts with that product's public information and no pro
 The member header routes 주문내역 to WooCommerce order history and 내 정보 to the account dashboard. The dashboard links to orders, cart, account/password editing, and address editing. ID/password recovery by SMS remains gated on a customer-wide phone recovery flow and an AIControlCenter-owned outbound SMS adapter; the current DEV verification bridge permits only one allowlisted test phone and sends OTP challenges only.
 
 Telegram customer bot requirements are tracked in [SHOP_TELEGRAM_CUSTOMER_BOT.md](docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md). This is a separate Shopping/Sales Bot; the current Telegram order bot remains operator-only. Linked members are classified as first-purchase when they have no prior successful paid order.
+
+
+### PROD Telegram order controls (2026-10-20)
+The `mommychichi_bot` production operator now has a button-first order browser with status filters, individual order cards/actions, cancellation reconciliation and timestamped append-only state history. Prices print on a separate aligned line. PROD and DEV bot credentials, cursors, databases and commerce bindings remain isolated. See [PROD Telegram order controls](docs/architecture/SHOP_PROD_TELEGRAM_ORDER_BUTTONS.md).

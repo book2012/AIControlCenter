@@ -6615,3 +6615,7 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 ## 2026-10-13 — Telegram customer bot requirements
 - Recorded a separate customer-facing Telegram Shopping/Sales Bot requirement: guests remain unlinked; members link through an authenticated account challenge; members are marked first-purchase until a successful paid order exists.
 - Kept current papachichi operator bot and mommychichi production operator bot isolated. No customer bot runtime was activated.
+
+
+## 2026-10-20 — PROD Telegram order controls
+Added status selection, per-order Telegram cards and state-appropriate buttons to `mommychichi_bot`; all-orders excludes cancelled orders while the cancellation filter retains them. Added button identity/order labels to callback results, separate-line price formatting, production-bound stock cancellation with receipt reconciliation, and append-only timestamped order status history. PROD/DEV storage and bot credentials remain isolated. Focused tests use fake providers and temporary SQLite databases; no live order action is used for validation. See `docs/architecture/SHOP_PROD_TELEGRAM_ORDER_BUTTONS.md`.

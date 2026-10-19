@@ -6078,3 +6078,12 @@ Current DEV Twilio Verify remains restricted to one configured test phone. Its p
 
 ## Next Telegram milestone — customer Shopping/Sales Bot
 Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
+
+
+## 2026-10-20 — PROD order bot parity
+- [x] Add status selector and per-order action cards to `mommychichi_bot`.
+- [x] Keep cancelled orders out of all-orders while exposing the cancellation-complete filter.
+- [x] Record state-change timestamps append-only and align printed prices on a dedicated line.
+- [x] Bind cancellation to the PROD Woo site/database and verify idempotent stock restoration/reconciliation.
+- [x] Test callbacks, state filtering, history immutability and provider guards without live order writes.
+- [ ] Validate deployed Telegram UI with the operator after release; never use a customer order as a smoke test.

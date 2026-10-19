@@ -14,6 +14,57 @@ class CaseCreate(BaseModel):
     kind:str=Field(pattern=r"^(RETURN|SIZE_EXCHANGE)$")
     reason:str=Field(strict=True,min_length=2,max_length=1000)
     target_variation_id:str|None=Field(default=None,pattern=r"^[1-9][0-9]*$")
+_STATUS_HISTORY_TRIGGERS=(
+    """CREATE TRIGGER IF NOT EXISTS order_status_payment_insert AFTER INSERT ON payments BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'payment',CAST(NEW.order_id AS TEXT),'AWAITING_DEPOSIT',NEW.state,NEW.updated,
+       'payment:'||NEW.order_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_payment_update AFTER UPDATE OF state ON payments
+       WHEN OLD.state<>NEW.state BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'payment',CAST(NEW.order_id AS TEXT),OLD.state,NEW.state,NEW.updated,
+       'payment:'||NEW.order_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_fulfillment_insert AFTER INSERT ON fulfillment BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'fulfillment',CAST(NEW.order_id AS TEXT),'NOT_SHIPPED',NEW.state,NEW.updated,
+       'fulfillment:'||NEW.order_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_fulfillment_update AFTER UPDATE OF state ON fulfillment
+       WHEN OLD.state<>NEW.state BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'fulfillment',CAST(NEW.order_id AS TEXT),OLD.state,NEW.state,NEW.updated,
+       'fulfillment:'||NEW.order_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_cancellation_insert AFTER INSERT ON cancellations BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'cancellation',CAST(NEW.order_id AS TEXT),'NONE',NEW.state,NEW.updated,
+       'cancellation:'||NEW.order_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_cancellation_update AFTER UPDATE OF state ON cancellations
+       WHEN OLD.state<>NEW.state BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'cancellation',CAST(NEW.order_id AS TEXT),OLD.state,NEW.state,NEW.updated,
+       'cancellation:'||NEW.order_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_case_insert AFTER INSERT ON cases BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'case',NEW.id,'NONE',NEW.state,NEW.created,
+       'case:'||NEW.id||':'||NEW.state||':'||NEW.created); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_case_update AFTER UPDATE OF state ON cases
+       WHEN OLD.state<>NEW.state BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'case',NEW.id,OLD.state,NEW.state,NEW.updated,
+       'case:'||NEW.id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_return_insert AFTER INSERT ON return_stock_operations BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'return_stock',NEW.case_id,'RETURN_RECEIVED',NEW.state,NEW.updated,
+       'return_stock:'||NEW.case_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_return_update AFTER UPDATE OF state ON return_stock_operations
+       WHEN OLD.state<>NEW.state BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'return_stock',NEW.case_id,OLD.state,NEW.state,NEW.updated,
+       'return_stock:'||NEW.case_id||':'||NEW.state||':'||NEW.updated); END""",
+    """CREATE TRIGGER IF NOT EXISTS order_status_refund_insert AFTER INSERT ON manual_refunds BEGIN
+       INSERT INTO order_status_history(order_id,entity,entity_key,from_state,to_state,changed_at,event_key)
+       VALUES(NEW.order_id,'refund',NEW.case_id,'NOT_RECORDED','REFUND_RECORDED',NEW.recorded,
+       'refund:'||NEW.case_id||':'||NEW.recorded); END""",
+)
 from core.shopping.guest_returns import ReturnWorkflow
 from core.shopping.manual_refunds import ManualRefundRecords
 from core.shopping.public_order_number import public_order_number, is_public_order_number
@@ -43,6 +94,11 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             c.execute("CREATE TABLE IF NOT EXISTS cancellations(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS payments(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL,updated REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS manual_refunds(case_id TEXT PRIMARY KEY,order_id INTEGER UNIQUE NOT NULL,amount TEXT NOT NULL,currency TEXT NOT NULL,evidence TEXT UNIQUE NOT NULL,actor TEXT NOT NULL,update_id INTEGER NOT NULL,recorded REAL NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS order_status_history(event_id INTEGER PRIMARY KEY AUTOINCREMENT,order_id INTEGER NOT NULL,entity TEXT NOT NULL,entity_key TEXT NOT NULL,from_state TEXT,to_state TEXT NOT NULL,changed_at REAL NOT NULL,event_key TEXT NOT NULL UNIQUE)")
+            c.execute("CREATE INDEX IF NOT EXISTS order_status_history_order ON order_status_history(order_id,changed_at,event_id)")
+            for trigger in _STATUS_HISTORY_TRIGGERS:c.execute(trigger)
+            c.execute("CREATE TRIGGER IF NOT EXISTS order_status_history_immutable BEFORE UPDATE ON order_status_history BEGIN SELECT RAISE(ABORT,'order status history is append-only'); END")
+            c.execute("CREATE TRIGGER IF NOT EXISTS order_status_history_no_delete BEFORE DELETE ON order_status_history BEGIN SELECT RAISE(ABORT,'order status history cannot be deleted'); END")
             c.execute("CREATE TABLE IF NOT EXISTS operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
     def _fulfillment(self,order_id):
@@ -95,13 +151,19 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         with connection(self.path) as c:
             row=c.execute("SELECT state,updated FROM cancellations WHERE order_id=?",(order_id,)).fetchone()
         return {"state":row[0] if row else "NONE","updated":row[1] if row else None}
+    def order_status_history(self,order_id):
+        with connection("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+            c.row_factory=sqlite3.Row
+            return [dict(row) for row in c.execute(
+                "SELECT entity,entity_key,from_state,to_state,changed_at FROM order_status_history WHERE order_id=? ORDER BY changed_at,event_id",
+                (order_id,))]
     @staticmethod
     def _deny_cancelled(c,order_id):
         if c.execute("SELECT 1 FROM cancellations WHERE order_id=?",(order_id,)).fetchone():
             raise ValueError("ORDER_CANCELLATION_ACTIVE")
     def cancel_order(self,order_id):
-        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
-        if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
+        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"] in ("PENDING_REVIEW","CONFIRMED")]
+        if len(rows)!=1:raise ValueError("CANCELLATION_ORDER_REQUIRED")
         row=rows[0]
         draft=self.checkout.by_customer_operation(row["operation_key"],row["customer_id"],allow_expired=True)
         if draft["state"]!="CONFIRMED":raise ValueError("ORDER_NOT_CONFIRMED")
@@ -133,8 +195,8 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
         if current["state"]=="CANCELLED":return current
         if current["state"] not in ("SENDING","UNKNOWN") or not hasattr(self.stock_cancellation,"reconcile"):
             raise ValueError("CANCELLATION_RECONCILIATION_REQUIRED")
-        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
-        if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
+        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"] in ("PENDING_REVIEW","CONFIRMED")]
+        if len(rows)!=1:raise ValueError("CANCELLATION_ORDER_REQUIRED")
         row=rows[0];draft=self.checkout.by_customer_operation(row["operation_key"],row["customer_id"],allow_expired=True)
         receipt=self.stock_cancellation.reconcile(row,draft)
         if not receipt or receipt.get("outcome")!="STOCK_CANCELLED" or receipt.get("order_id")!=order_id:
@@ -143,8 +205,8 @@ class GuestAftersalesStore(ReturnWorkflow,ManualRefundRecords):
             c.execute("UPDATE cancellations SET state='CANCELLED',updated=? WHERE order_id=? AND state IN ('SENDING','UNKNOWN')",(self.clock(),order_id))
         return self.cancellation(order_id)
     def confirm_payment(self,order_id):
-        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"]=="CONFIRMED"]
-        if len(rows)!=1:raise ValueError("CONFIRMED_ORDER_REQUIRED")
+        rows=[r for r in self.ledger.operator_orders() if r["provider_order_id"]==order_id and r["state"] in ("PENDING_REVIEW","CONFIRMED")]
+        if len(rows)!=1:raise ValueError("CANCELLATION_ORDER_REQUIRED")
         with connection(self.path) as c:
             c.execute("BEGIN IMMEDIATE")
             self._deny_cancelled(c,order_id)

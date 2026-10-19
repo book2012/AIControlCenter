@@ -36,12 +36,16 @@ class OrderTelegramTransport:
     def _url(self, method):
         return "https://api.telegram.org/bot" + self._token.get_secret_value() + "/" + method
 
-    def send_message(self, text):
+    def send_message(self, text, *, reply_markup=None):
         if type(text) is not str or not 1 <= len(text) <= 4096:
             raise TelegramDeliveryRejected("MESSAGE_BOUNDS")
+        payload={"chat_id":self.chat_id,"text":text}
+        if reply_markup is not None:
+            if type(reply_markup) is not dict or set(reply_markup)!={"inline_keyboard"}:raise TelegramDeliveryRejected("REPLY_MARKUP_INVALID")
+            payload["reply_markup"]=reply_markup
         try:
             response = self._session.post(self._url("sendMessage"),
-                json={"chat_id":self.chat_id,"text":text},timeout=15,allow_redirects=False)
+                json=payload,timeout=15,allow_redirects=False)
             if response.status_code in (400,401,403,404,429):
                 raise TelegramDeliveryRejected("TELEGRAM_REJECTED")
             if response.status_code != 200:
@@ -61,9 +65,25 @@ class OrderTelegramTransport:
             # requests exception strings can include the credential-bearing URL.
             raise TelegramDeliveryUnknown("TELEGRAM_OUTCOME_UNKNOWN") from None
 
+    def answer_callback_query(self, callback_query_id, *, text=None):
+        if type(callback_query_id) is not str or not 1 <= len(callback_query_id) <= 128:raise TelegramDeliveryRejected("CALLBACK_ID_INVALID")
+        payload={"callback_query_id":callback_query_id}
+        if text is not None:
+            if type(text) is not str or len(text)>200:raise TelegramDeliveryRejected("CALLBACK_TEXT_INVALID")
+            payload["text"]=text
+        try:
+            response=self._session.post(self._url("answerCallbackQuery"),json=payload,timeout=15,allow_redirects=False)
+            if response.status_code in (400,401,403,404,429):raise TelegramDeliveryRejected("TELEGRAM_REJECTED")
+            if response.status_code!=200:raise TelegramDeliveryUnknown("TELEGRAM_OUTCOME_UNKNOWN")
+            value=response.json()
+            if type(value) is not dict or value.get("ok") is not True:raise TelegramDeliveryUnknown("TELEGRAM_RECEIPT_INVALID")
+            return True
+        except (TelegramDeliveryRejected,TelegramDeliveryUnknown):raise
+        except Exception:raise TelegramDeliveryUnknown("TELEGRAM_OUTCOME_UNKNOWN") from None
+
     def get_updates(self, offset):
         try:
-            response = self._session.get(self._url("getUpdates"),params={"offset":offset,"limit":100,"timeout":0},
+            response = self._session.get(self._url("getUpdates"),params={"offset":offset,"limit":100,"timeout":0,"allowed_updates":'["message","callback_query"]'},
                 timeout=15,allow_redirects=False)
             if response.status_code != 200: raise ValueError()
             value = response.json()

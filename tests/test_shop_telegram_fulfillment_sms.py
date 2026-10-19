@@ -36,9 +36,12 @@ def test_all_orders_and_phone_query_are_complete_and_phone_mutation_is_unambiguo
     store,draft=fixture(tmp_path,[1000.0]);op=adapter(store,draft);base=op.rows()[0]
     op.rows=lambda:[{**base,"provider_order_id":i} for i in range(1,27)]+[{**base,"provider_order_id":90,"phone":"01099999999"}]
     reply=op.resolve("주문내역",1)[2]
-    assert "전체 주문 27건" in reply and "#26" in reply and "#90" in reply
+    assert "전체 주문 27건 · 1/6" in reply and "AICC_ORDER_PAGE:ALL:ALL:0:6:27" in reply
+    assert "#26" not in reply and "#90" not in reply
+    next_page=op.resolve("주문목록 전체 ALL 5",10)[2]
+    assert "#26" not in next_page and "AICC_ORDER_PAGE:ALL:ALL:5:6:27" in next_page
     mine=op.resolve("01012345678",2)[2]
-    assert "주문 26건" in mine and "#26" in mine and "#90" not in mine
+    assert "주문 26건" in mine and "#26" not in mine and "#90" not in mine
     assert "주문번호를 함께" in op.resolve("01012345678 입금확인",3)[2]
     assert store.payment(ORDER)["state"]=="AWAITING_DEPOSIT"
     assert "해당 고객 주문" in op.resolve("01099999999 배송완료 #15",4)[2]

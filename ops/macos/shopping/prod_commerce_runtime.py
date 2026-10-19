@@ -13,6 +13,7 @@ from core.shopping.operator_environment import DurableOperatorEnvironmentRouter
 from core.shopping.order_core.telegram import OrderTelegramTransport,OrderTelegramIntegration
 from ops.macos.shopping.prod_woo_port import ProductionCatalog,production_quote,writer_factory,assert_production
 from ops.macos.shopping.prod_stock_confirmation import ProductionStockConfirmation
+from ops.macos.shopping.prod_stock_cancellation import ProductionStockCancellation
 from ops.macos.shopping.prod_product_operator import ProductionProductOperator,ProductionProductProvider
 ROOT=Path('/Users/kyouhan/AIControlCenterRuntime/prod-commerce/data')
 PRIVATE=Path('/Users/kyouhan/.config/aicontrolcenter-prod-commerce')
@@ -23,17 +24,24 @@ def private(name):
     if p.is_symlink() or p.stat().st_mode&0o077:raise ValueError('PRIVATE_CONFIGURATION_PERMISSIONS')
     return json.loads(p.read_text())
 class TaggedTransport(OrderTelegramTransport):
-    def send_message(self,text):
+    def send_message(self,text,*,reply_markup=None):
         greeting='안녕하세요 agachichi 입니다'
-        if not text.startswith(greeting):text=greeting+'\n[운영]\n'+text
-        return super().send_message(text)
+        text=text.replace('\n[개발]\n','\n[운영]\n').replace('[DEV] 관리자 메뉴','관리자 메뉴')
+        text=text.replace('개발 전용 봇입니다.','운영 전용 봇입니다.')
+        text=text.replace('개발 명령은 @papachichi_bot에서 보내주세요. 변경은 실행하지 않았습니다.','이 운영 메뉴에서 사용할 수 없는 명령입니다. 변경은 실행하지 않았습니다.')
+        if not text.startswith(greeting):text=greeting+'\n'+text
+        lines=text.splitlines()
+        if len(lines)<2 or lines[1] not in ('[운영]','[운영] 관리자 메뉴'):
+            lines.insert(1,'[운영]')
+        text='\n'.join(lines)
+        return super().send_message(text,reply_markup=reply_markup)
 def create_app():
     assert_production();cfg=private('runtime.private.json');phone=private('phone.private.json');tg=private('telegram.private.json')
     if cfg['environment']!='PROD' or cfg['shipping_policy']!='PROD_INCLUDED_SHIPPING':raise ValueError('PRODUCTION_CONFIGURATION_REQUIRED')
     ROOT.mkdir(mode=0o700,parents=True,exist_ok=True);catalog=ProductionCatalog(cfg['bindings'])
     transport=TaggedTransport(token=SecretStr(tg['bot_token']),chat_id=tg['operator_chat_id'])
     queue=GuestInquiryQueue(ROOT/'inquiries.sqlite3',transport)
-    def lookup(ledger,checkout,catalog):return GuestAftersalesStore(ROOT/'aftersales.sqlite3',ROOT/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog)
+    def lookup(ledger,checkout,catalog):return GuestAftersalesStore(ROOT/'aftersales.sqlite3',ROOT/'aftersales-files',ledger=ledger,checkout=checkout,catalog=catalog,stock_cancellation=ProductionStockCancellation(store=checkout))
     from ops.macos.shopping.dev_local_inquiry import LocalInquiryJudge
     app=create_guest_commerce_app(private_root=ROOT,origin='https://agachichi.duckdns.org',phone_cfg=phone,binding_key=bytes.fromhex(cfg['binding_key']),csrf_key=bytes.fromhex(cfg['csrf_key']),catalog=catalog,quote=production_quote,writer_factory=writer_factory(tuple(cfg['port_credentials']),now),lookup_store_factory=lookup,clock=now,intent_classifier=LocalInquiryJudge(),inquiry_queue=queue,storefront_bindings={b['demo_id']:str(b['product_id']) for b in cfg['bindings']},bank_provider=lambda:private('bank.private.json').get('bank'))
     source=REPO/'brands/agachichi/catalog/dev-upload-products.json'
@@ -72,16 +80,39 @@ def create_app():
         else:
             c.execute('INSERT OR IGNORE INTO bot_cursor VALUES(1,?)',(dev_integration._ledger.telegram_offset(),))
     state={'environment':'PROD','poller':'STARTING','product_management':'STARTING','transaction_sms':False};stop=threading.Event()
+    from ops.macos.shopping.prod_order_buttons import callback_command,send_reply,menu_markup
     def poll():
         with sqlite3.connect(router.path) as c:offset=c.execute('SELECT offset FROM bot_cursor WHERE id=1').fetchone()[0]
         for item in sorted(transport.get_updates(offset),key=lambda v:v.get('update_id',-1)):
             i=item.get('update_id');msg=item.get('message',{});chat=msg.get('chat',{});sender=msg.get('from',{})
             if type(i) is not int or i<offset:continue
-            if chat.get('id')==tg['operator_chat_id'] and sender.get('id') in tg['operator_user_ids'] and sender.get('is_bot') is False and type(msg.get('text')) is str:
+            query=item.get('callback_query')
+            callback=callback_command(item,tg)
+            if type(query) is dict:
+                if callback is not None:
+                    callback_id,user_id,command,label=callback
+                    try:transport.answer_callback_query(callback_id,text=label+' · 처리 중')
+                    except Exception:pass
+                    try:
+                        actor[0]='telegram-user-'+str(user_id)
+                        reply=router.dispatch(command,chat_id=tg['operator_chat_id'],user_id=user_id,update_id=i)
+                        send_reply(transport,reply,context='🔘 선택한 버튼: '+label)
+                    except Exception:
+                        try:send_reply(transport,'처리 결과 확인이 필요합니다. 같은 버튼을 다시 누르지 말고 주문상세로 현재 상태를 확인해 주세요.',context='🔘 선택한 버튼: '+label)
+                        except Exception:pass
+                else:
+                    try:transport.answer_callback_query(query.get('id',''),text='이 주문에 사용할 수 없는 버튼입니다.')
+                    except Exception:pass
+            elif chat.get('id')==tg['operator_chat_id'] and chat.get('type')=='private' and sender.get('id') in tg['operator_user_ids'] and sender.get('is_bot') is False and type(msg.get('text')) is str:
                 try:
                     actor[0]='telegram-user-'+str(sender['id'])
-                    reply=router.dispatch(msg['text'],chat_id=chat['id'],user_id=sender['id'],update_id=i);transport.send_message(reply)
-                except Exception:pass # CLAIMED updates are never implicitly redispatched.
+                    if msg['text'].strip().lower() in ('/start','/help','/menu','메뉴','menu'):
+                        reply='안녕하세요 agachichi 입니다\n[운영] 관리자 메뉴\n주문·상품 관리 작업을 선택하세요.'
+                    else:reply=router.dispatch(msg['text'],chat_id=chat['id'],user_id=sender['id'],update_id=i)
+                    send_reply(transport,reply)
+                except Exception:
+                    try:send_reply(transport,'처리 결과 확인이 필요합니다. 같은 명령을 다시 실행하지 말고 주문상세에서 현재 상태를 확인해 주세요.')
+                    except Exception:pass
             with sqlite3.connect(router.path) as c:c.execute('UPDATE bot_cursor SET offset=? WHERE id=1',(i+1,))
             offset=i+1
     def worker():

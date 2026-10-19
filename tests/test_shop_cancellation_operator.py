@@ -15,8 +15,10 @@ def test_operator_cancel_duplicate_phone_selection_and_customer_notices(tmp_path
     assert '취소완료' in first and op.resolve('주문취소 #15',1)[2]==first
     assert op.resolve('주문취소 #15',2)[2]==first and calls==[ORDER]
     assert op.display_state(op.rows()[0])=='CANCELLED'
-    assert '취소완료' in op.resolve('주문내역',3)[2]
-    assert '입금대기' not in op.resolve('주문내역',4)[2]
+    assert '취소완료' not in op.resolve('주문내역',3)[2]
+    assert '취소완료' in op.resolve('주문목록 상태 CANCELLED 0',4)[2]
+    assert '입금대기' not in op.resolve('주문내역',5)[2]
+    assert any(e['entity']=='cancellation' and e['to_state']=='CANCELLED' for e in store.order_status_history(ORDER))
     app=FastAPI();boundary=Boundary();phone=draft['body']['billing']['phone']
     def auth(request):
         boundary.check_origin(request,required=True)

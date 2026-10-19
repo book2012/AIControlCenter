@@ -7107,3 +7107,7 @@ Logged-in header has dedicated 주문내역 and 내 정보 destinations. The acc
 
 ## Telegram customer bot boundary
 Customer member/guest identification and first-purchase classification belong in a future separate Shopping/Sales Bot backed by AIControlCenter account linking and order history. Current papachichi/mommychichi bots remain operator-only. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
+
+
+## 2026-10-20 — PROD Telegram order management
+PROD `mommychichi_bot` now mirrors the DEV button-first order workflow on a strictly PROD-bound runtime. Status filters, one-order messages, status-specific actions, cancellation-only state visibility, action labels, aligned price rows and timestamped append-only history are implemented. Woo cancellation checks production identity and exact order binding, restores stock once, records a receipt, and never issues a refund. See `docs/architecture/SHOP_PROD_TELEGRAM_ORDER_BUTTONS.md`.
