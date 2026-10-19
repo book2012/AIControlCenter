@@ -3,7 +3,7 @@
 - [x] Interpret bare 10–18 digit non-phone values as order identifiers.
 - [x] Return all orders when the input is a compact or hyphenated domestic phone number.
 - [x] Test multiple matching orders and order-detail routing.
-- [ ] Deploy the bot-only immutable DEV release and verify LaunchAgent health.
+- [x] Activate bot-only immutable DEV release `7b53371def0a3acbb059792959f016d5adf73930`; verify LaunchAgent health.
 
 Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
 
@@ -12,8 +12,8 @@ Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
 - [x] Add one order-specific detail button for every order row in `주문목록`.
 - [x] Keep confirmation and cancellation actions on the same order row and gate them by displayed state.
 - [x] Bind callback to the exact source message row, phone, and public order number.
-- [x] Pass 35 focused Telegram/order tests, Python compilation, and diff check.
-- [ ] Deploy the bot-only immutable DEV release and verify its LaunchAgent health.
+- [x] Pass 46 focused Telegram/order tests, Python compilation, and diff check.
+- [x] Activate bot-only immutable DEV release `7b53371def0a3acbb059792959f016d5adf73930`; verify its LaunchAgent process working directory.
 - [x] Keep PROD bot, orders, and data unchanged.
 
 Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.

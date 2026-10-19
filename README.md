@@ -4,7 +4,7 @@ Bare 10–18 digit identifiers now open order detail unless the input matches a 
 
 ## 2026-10-19 — per-order Telegram detail and action buttons
 
-DEV Papachichi order lists now attach a matching detail button to each order. Confirmation appears only for `확인대기`; cancellation appears only for the allowed pre-shipment states. Callbacks are bound to the exact order row and routed through the existing DEV operator bridge. Thirty-five focused tests pass; no live Telegram click or PROD change. See `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+DEV Papachichi order lists now attach a matching detail button to each order. Confirmation appears only for `확인대기`; cancellation appears only for the allowed pre-shipment states. Bare 10–18 digit non-phone inputs open order detail; domestic phone input shows every matching order. Callbacks are bound to the exact order row and routed through the existing DEV operator bridge. 46 focused tests pass. Bot-only immutable DEV release `7b53371def0a3acbb059792959f016d5adf73930` is active and LaunchAgent is running. No live Telegram click or PROD change. See `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
 
 ## 2026-10-19 — DEV Telegram order menu buttons
 

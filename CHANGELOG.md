@@ -4,7 +4,7 @@ A bare 10–18 digit non-phone identifier opens matching order detail. A bare do
 
 ## 2026-10-19 — DEV Telegram per-order detail buttons
 
-Added a row-specific detail button to every DEV order-list entry, plus state-gated confirm/cancel actions. Callback dispatch revalidates the order against the original bot-authored list message and uses the existing DEV bridge. 35 focused tests, Python compilation, and `git diff --check` pass. No real Telegram action, order mutation, or PROD change.
+Added a row-specific detail button to every DEV order-list entry, plus state-gated confirm/cancel actions. Callback dispatch revalidates the order against the original bot-authored list message and uses the existing DEV bridge. 46 focused tests, Python compilation, and `git diff --check` pass. Bot-only immutable DEV release `7b53371def0a3acbb059792959f016d5adf73930` is active; Papachichi LaunchAgent is running. No live Telegram action, order mutation, or PROD change.
 
 ## 2026-10-19 — DEV Telegram order menu buttons
 

@@ -8,8 +8,9 @@
 
 - Every order row has its own detail button routed by public order number and phone through the read-only DEV bridge.
 - Confirm/cancel buttons are state-gated and callback-bound to the source list message; existing API idempotency and cancellation/refund checks remain authoritative.
-- Fake Telegram regressions: 35 passed; syntax and diff checks pass.
-- PROD remains untouched.
+- Focused Telegram/order regressions: 46 passed; syntax and diff checks pass.
+- Immutable bot-only DEV release `7b53371def0a3acbb059792959f016d5adf73930` is active; Papachichi LaunchAgent is running from that release.
+- No real Telegram action or order mutation; PROD remains untouched.
 
 ## 2026-10-19 — DEV Telegram order menu buttons
 

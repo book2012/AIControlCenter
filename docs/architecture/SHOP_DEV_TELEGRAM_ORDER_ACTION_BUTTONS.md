@@ -8,17 +8,9 @@ customer-facing bot. The DEV order API remains the authority for order state.
 
 ## Operator experience
 
-A single pending-order reply that matches the expected format receives two
-Telegram inline buttons:
+A pending-order reply receives inline **주문 확인**, **주문 상세**, and **주문 취소** actions. The actions dispatch to the existing DEV operator bridge with the displayed 10-digit public order number and phone. Confirmation retains the stock check and duplicate/update protections; detail is read-only; cancellation remains subject to the DEV API's current state and refund guards.
 
-- **주문 확인** submits the order's displayed 10-digit public order number and
-  phone to the existing DEV operator bridge. The existing stock check, order
-  state transition, and duplicate/update protections remain in effect.
-- **주문 상세** opens the existing read-only detail response, scoped to that
-  same order and phone.
-
-No buttons are attached to unrelated text, order lists, completed orders, or
-messages whose order identifier does not match the callback.
+Every order row in a `주문목록` reply receives its own **상세** button. The row also receives **주문 확인** while `확인대기`, and **주문 취소** only for the allowed pre-shipment states `확인대기`, `확인완료`, and `입금대기`. Callbacks must match an order identifier in the exact source message. Unrelated text and unsupported order states receive no action buttons.
 
 ## Callback validation
 
