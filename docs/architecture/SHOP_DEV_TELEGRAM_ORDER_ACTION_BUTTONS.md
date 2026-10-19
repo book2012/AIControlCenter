@@ -52,22 +52,25 @@ Sending `메뉴`, `/menu`, `/start`, or `/help` to the private DEV `papachichi_b
 
 The callbacks dispatch existing read/help commands through the DEV operator bridge, preserving update idempotency. Tests use a fake Telegram transport and do not send a live message or change orders/products.
 
-## Per-order buttons on order lists
+## Per-order buttons and paged order browser
 
-Every 10-digit order row in a DEV `주문목록` response now receives its own
-inline **상세** button. Its callback is bound to the public order number and
-phone parsed from that exact bot-authored list message, then routed to the
-existing read-only `주문상세` bridge command. Each row also receives **주문 확인**
-only while `확인대기`, and **주문 취소** only for `확인대기`, `확인완료`, or
-`입금대기`. The callback rechecks that the order row and permitted state still
-exist in the source message before dispatch. Rows in shipment, completion, or
-other aftersales states expose details only. The list response is capped at 30
-button rows per Telegram message.
+The private DEV Papachichi order browser starts with **전체 보기** and
+**상태별 보기**. Status choices cover pending review, deposit, shipping,
+completion, return/refund, cancellation, rejection, and stock review. Results
+are paged at five orders per page. Each order is delivered as a separate
+Telegram message, followed by a next-page control when more results remain.
+Messages are paced to avoid flooding the operator chat.
 
-The confirm/cancel callbacks dispatch to the existing DEV operator bridge;
-they do not perform commerce logic in the Telegram process. Cancellation remains
-subject to the API's current unpaid/unshipped/refund review and idempotency
-guards. Button tests use a fake transport and do not click real orders.
+Each order card has its own inline keyboard. Detail is read-only. Confirmation
+is offered for `확인대기`; deposit confirmation for `입금대기`; shipping
+registration for `배송준비`; delivery completion for `배송중`; cancellation is
+shown only for the allowed pre-shipment states. Each callback is checked against
+the exact bot-authored source card and the existing DEV operator bridge/API
+continues to enforce current state, idempotency, and cancellation/refund guards.
+
+Fake-transport regressions cover cards, pagination, state filters, callback
+identity, and cursor handling. No real Telegram callback or order mutation was
+used during these tests.
 
 ## Numeric and phone lookup input
 

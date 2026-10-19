@@ -1,3 +1,11 @@
+## 2026-10-20 — DEV Telegram order browser
+
+- Operators can choose all orders or filter by status.
+- Results show five orders per page; each order is sent in its own message with its own detail and eligible action buttons.
+- The next-page button continues the selected view. Buttons remain bound to the bot-authored source card and existing DEV bridge.
+- Focused validation: 51 tests passed, Python compilation passed, and deployment preflight passed.
+- Immutable DEV release `1630874ca21a6dc5b3c68cc8b218b566d1b327e9` is active; Papachichi LaunchAgent is running from it. PROD and order data were unchanged.
+
 ## 2026-10-19 — DEV order lookup shortcuts
 
 - Bare 10–18 digit non-phone values open order detail.

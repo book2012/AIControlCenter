@@ -1,3 +1,7 @@
+## 2026-10-20 — DEV Telegram order browser
+
+Papachichi now offers **전체 보기** or **상태별 보기**, shows five orders per page, and sends each order as its own message with its own detail and state-eligible action buttons. A next-page button continues the list. The DEV bot runs from immutable release `1630874ca21a6dc5b3c68cc8b218b566d1b327e9`. Fifty-one focused Telegram/order tests pass. No order or PROD data was changed.
+
 ## 2026-10-19 — order lookup input shortcuts
 
 Bare 10–18 digit identifiers now open order detail unless the input matches a domestic mobile format. A phone number returns every matching order in one response. Added coverage for multiple orders on one phone and both hyphenated/unhyphenated forms; see `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.

@@ -1,3 +1,14 @@
+## 2026-10-20 — DEV Papachichi order browser
+
+- [x] Add all-orders and status-filter selectors.
+- [x] Show five orders per page and send one separate Telegram message per order.
+- [x] Bind detail and state-eligible actions to each order card; add next-page navigation.
+- [x] Pass 51 focused Telegram/order tests and Python compilation.
+- [x] Activate immutable DEV bot release `1630874ca21a6dc5b3c68cc8b218b566d1b327e9`; verify its LaunchAgent process path.
+- [x] Keep PROD and live order data unchanged.
+
+Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+
 ## 2026-10-19 — DEV Telegram lookup shortcuts
 
 - [x] Interpret bare 10–18 digit non-phone values as order identifiers.

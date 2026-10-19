@@ -1,3 +1,7 @@
+## 2026-10-20 — DEV Papachichi order browser
+
+Added all-orders and status-filter selectors, five-order pages, one Telegram message per order, state-gated confirm/payment/shipping/cancellation actions, and a next-page control. Callback routing remains bound to the source card and DEV operator bridge. Fifty-one focused tests pass. Activated immutable DEV bot release `1630874ca21a6dc5b3c68cc8b218b566d1b327e9`; PROD unchanged.
+
 ## 2026-10-19 — DEV order number and phone lookup shortcuts
 
 A bare 10–18 digit non-phone identifier opens matching order detail. A bare domestic mobile number returns all matching orders. Hyphenated and compact phone formats are covered by tests.
