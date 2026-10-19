@@ -19,6 +19,18 @@ PENDING = (
     "카멜 숄카라 벨티드 코트 / 카멜 / S / 1개\n"
     "229000.00 KRW"
 )
+ORDER_LIST = (
+    "전체 주문 3건\n"
+    "2610192105 · 01092838321 · 확인대기 · 229000 KRW\n"
+    "고객: 한경복 · 주문일: 2026-10-19 08:45\n"
+    "- 카멜 숄카라 벨티드 코트 / 카멜 / S / 1개\n"
+    "2610192106 · 01012345678 · 입금대기 · 59000 KRW\n"
+    "고객: 홍길동 · 주문일: 2026-10-19 09:00\n"
+    "- 셔츠 / 기본 / 1개\n"
+    "2610192107 · 01011112222 · 배송준비 · 79000 KRW\n"
+    "고객: 김고객 · 주문일: 2026-10-19 09:10\n"
+    "- 스커트 / 기본 / 1개"
+)
 CFG = {
     "operator_chat_id": CHAT,
     "operator_user_ids": [USER],
@@ -78,11 +90,64 @@ def test_pending_order_reply_has_order_bound_inline_buttons():
         "inline_keyboard": [[
             {"text": "✅ 주문 확인", "callback_data": "aicc:confirm:" + NUMBER},
             {"text": "📋 주문 상세", "callback_data": "aicc:detail:" + NUMBER},
+        ], [
+            {"text": "❌ 주문 취소", "callback_data": "aicc:cancel:" + NUMBER},
         ]]
     }
     assert len(markup["inline_keyboard"][0][0]["callback_data"].encode()) <= 64
     assert reply_markup(PENDING.replace("고객님 주문\n", "고객님 주문확인 완료\n")) is None
     assert reply_markup("현재 확인 가능한 주문이 없습니다.") is None
+
+
+def test_order_list_has_individual_detail_and_state_appropriate_action_buttons():
+    markup = reply_markup(ORDER_LIST)
+    rows = markup["inline_keyboard"]
+    assert len(rows) == 3
+    assert rows[0] == [
+        {"text": "📋 2610192105 상세", "callback_data": "aicc:item:detail:2610192105"},
+        {"text": "✅ 주문 확인", "callback_data": "aicc:item:confirm:2610192105"},
+        {"text": "❌ 주문 취소", "callback_data": "aicc:item:cancel:2610192105"},
+    ]
+    assert rows[1] == [
+        {"text": "📋 2610192106 상세", "callback_data": "aicc:item:detail:2610192106"},
+        {"text": "❌ 주문 취소", "callback_data": "aicc:item:cancel:2610192106"},
+    ]
+    assert rows[2] == [
+        {"text": "📋 2610192107 상세", "callback_data": "aicc:item:detail:2610192107"},
+    ]
+    assert all(len(button["callback_data"].encode()) <= 64 for row in rows for button in row)
+
+
+def list_callback(number, action, text=ORDER_LIST, *, user=USER, chat=CHAT, bot=BOT):
+    return {
+        "update_id": 31,
+        "callback_query": {
+            "id": "list-callback-31",
+            "from": {"id": user, "is_bot": False},
+            "data": f"aicc:item:{action}:{number}",
+            "message": {
+                "chat": {"id": chat, "type": "private"},
+                "from": {"is_bot": True, "username": bot},
+                "text": text,
+            },
+        },
+    }
+
+
+def test_order_list_detail_button_routes_to_matching_order_only():
+    assert callback_command(list_callback("2610192106", "detail"), CFG) == (
+        "list-callback-31", USER, "01012345678 고객 주문상세 #2610192106"
+    )
+    assert callback_command(list_callback("2610192105", "confirm"), CFG) == (
+        "list-callback-31", USER, "01092838321 고객 주문확인 #2610192105"
+    )
+    assert callback_command(list_callback("2610192106", "cancel"), CFG) == (
+        "list-callback-31", USER, "01012345678 고객 주문 취소 #2610192106"
+    )
+    assert callback_command(list_callback("2610192107", "cancel"), CFG) is None
+    assert callback_command(list_callback("2610192107", "confirm"), CFG) is None
+    assert callback_command(list_callback("2610192199", "detail"), CFG) is None
+    assert callback_command(list_callback("2610192105", "cancel", text=ORDER_LIST.replace("확인대기", "배송준비", 1)), CFG) is None
 
 
 def test_callback_is_bound_to_trusted_private_bot_message():

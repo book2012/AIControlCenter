@@ -1,3 +1,14 @@
+## 2026-10-19 — DEV Papachichi per-order buttons
+
+- [x] Add one order-specific detail button for every order row in `주문목록`.
+- [x] Keep confirmation and cancellation actions on the same order row and gate them by displayed state.
+- [x] Bind callback to the exact source message row, phone, and public order number.
+- [x] Pass 35 focused Telegram/order tests, Python compilation, and diff check.
+- [ ] Deploy the bot-only immutable DEV release and verify its LaunchAgent health.
+- [x] Keep PROD bot, orders, and data unchanged.
+
+Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+
 ## 2026-10-19 — DEV Telegram order menu buttons
 
 - DEV Papachichi now returns menu buttons for order list/lookup guidance, product list, inventory, and product-registration guidance.

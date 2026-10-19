@@ -9,6 +9,8 @@ PRIVATE=Path('/Users/kyouhan/.config/aicontrolcenter-dev-order')
 DATA=Path('/Users/kyouhan/AIControlCenterRuntime/dev-order/data')
 LOGGER=logging.getLogger("aicc.dev.telegram")
 _ORDER_LINE=re.compile(r"(?m)^([0-9]{11}) 고객님 주문\n주문 ([0-9]{10}) ·")
+_ORDER_LIST_LINE=re.compile(r"(?m)^([0-9]{10}) · (010[0-9]{8}) · ([^·\n]+) ·")
+_LIST_CANCEL_STATES={"확인대기","확인완료","입금대기"}
 
 
 def menu_markup():
@@ -22,21 +24,38 @@ def menu_markup():
 
 
 def reply_markup(text):
-    """Offer trusted admin shortcuts or order-bound actions."""
+    """Offer order-scoped admin actions, including buttons on each order-list row."""
     if type(text) is str and "[DEV] 관리자 메뉴" in text:
         return menu_markup()
-    match=_ORDER_LINE.search(text) if type(text) is str else None
+    if type(text) is not str:
+        return None
+    list_rows=list(_ORDER_LIST_LINE.finditer(text))
+    if list_rows:
+        keyboard=[]
+        for index,match in enumerate(list_rows):
+            if index>=30:
+                break
+            number,phone,state=(v.strip() for v in match.groups())
+            row=[{"text":"📋 "+number+" 상세","callback_data":"aicc:item:detail:"+number}]
+            if state=="확인대기":
+                row.append({"text":"✅ 주문 확인","callback_data":"aicc:item:confirm:"+number})
+            if state in _LIST_CANCEL_STATES:
+                row.append({"text":"❌ 주문 취소","callback_data":"aicc:item:cancel:"+number})
+            keyboard.append(row)
+        return {"inline_keyboard":keyboard} if keyboard else None
+    match=_ORDER_LINE.search(text)
     if match is None:
         return None
     phone,number=match.groups()
     confirm=f"aicc:confirm:{number}"
     detail=f"aicc:detail:{number}"
-    if max(len(confirm.encode()),len(detail.encode()))>64:
+    cancel=f"aicc:cancel:{number}"
+    if max(len(v.encode()) for v in (confirm,detail,cancel))>64:
         return None
     return {"inline_keyboard":[[
         {"text":"✅ 주문 확인","callback_data":confirm},
         {"text":"📋 주문 상세","callback_data":detail},
-    ]]}
+    ],[{"text":"❌ 주문 취소","callback_data":cancel}]]}
 
 
 def callback_command(update,cfg):
@@ -66,8 +85,19 @@ def callback_command(update,cfg):
         if menu[1] not in menu_commands or type(message.get("text")) is not str or "[DEV] 관리자 메뉴" not in message["text"]:
             return None
         return query["id"],actor["id"],menu_commands[menu[1]]
-    match=re.fullmatch(r"aicc:(confirm|detail):([0-9]{10})",query["data"])
-    if match is None or type(message.get("text")) is not str:
+    if type(message.get("text")) is not str:
+        return None
+    item=re.fullmatch(r"aicc:item:(detail|confirm|cancel):([0-9]{10})",query["data"])
+    if item is not None:
+        source=next((m for m in _ORDER_LIST_LINE.finditer(message["text"]) if m[1]==item[2]),None)
+        if source is None:return None
+        number,phone,state=(v.strip() for v in source.groups())
+        if item[1]=="confirm" and state!="확인대기":return None
+        if item[1]=="cancel" and state not in _LIST_CANCEL_STATES:return None
+        action={"detail":"주문상세","confirm":"주문확인","cancel":"주문 취소"}[item[1]]
+        return query["id"],actor["id"],phone+" 고객 "+action+" #"+number
+    match=re.fullmatch(r"aicc:(confirm|detail|cancel):([0-9]{10})",query["data"])
+    if match is None:
         return None
     source=_ORDER_LINE.search(message["text"])
     if source is None:
@@ -75,7 +105,7 @@ def callback_command(update,cfg):
     phone,number=source.groups()
     if number!=match[2]:
         return None
-    action="주문확인" if match[1]=="confirm" else "주문상세"
+    action={"confirm":"주문확인","detail":"주문상세","cancel":"주문 취소"}[match[1]]
     return query.get("id"),actor["id"],phone+" 고객 "+action+" #"+number
 
 
@@ -99,7 +129,9 @@ def poll_once(transport,client,cfg,path):
             if callback is not None:
                 callback_id,user_id,text=callback
                 try:
-                    transport.answer_callback_query(callback_id,text=("요청을 처리하고 있습니다." if text.startswith("aicc:menu:") else "주문을 확인하고 있습니다."))
+                    callback_data=query.get("data","")
+                    status_text="요청을 처리하고 있습니다." if callback_data.startswith("aicc:menu:") else ("주문을 취소하고 있습니다." if ":cancel:" in callback_data else "주문을 확인하고 있습니다.")
+                    transport.answer_callback_query(callback_id,text=status_text)
                 except Exception as error:
                     # Callback acknowledgement is cosmetic; a transport failure must not skip the command.
                     LOGGER.warning("callback_ack_failed error_type=%s",type(error).__name__)

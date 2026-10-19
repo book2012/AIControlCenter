@@ -59,3 +59,20 @@ The callback acknowledgement and operator bridge dispatch now use separate error
 Sending `메뉴`, `/menu`, `/start`, or `/help` to the private DEV `papachichi_bot` chat returns an inline keyboard for order list, order-lookup guidance, product list, inventory, and product-registration guidance. Button callbacks are accepted only from the configured operator in the configured private chat and only on the bot's own DEV menu message. Product registration remains an instruction/draft flow; the menu does not directly create or mutate a product.
 
 The callbacks dispatch existing read/help commands through the DEV operator bridge, preserving update idempotency. Tests use a fake Telegram transport and do not send a live message or change orders/products.
+
+## Per-order buttons on order lists
+
+Every 10-digit order row in a DEV `주문목록` response now receives its own
+inline **상세** button. Its callback is bound to the public order number and
+phone parsed from that exact bot-authored list message, then routed to the
+existing read-only `주문상세` bridge command. Each row also receives **주문 확인**
+only while `확인대기`, and **주문 취소** only for `확인대기`, `확인완료`, or
+`입금대기`. The callback rechecks that the order row and permitted state still
+exist in the source message before dispatch. Rows in shipment, completion, or
+other aftersales states expose details only. The list response is capped at 30
+button rows per Telegram message.
+
+The confirm/cancel callbacks dispatch to the existing DEV operator bridge;
+they do not perform commerce logic in the Telegram process. Cancellation remains
+subject to the API's current unpaid/unshipped/refund review and idempotency
+guards. Button tests use a fake transport and do not click real orders.

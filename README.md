@@ -1,3 +1,7 @@
+## 2026-10-19 — per-order Telegram detail and action buttons
+
+DEV Papachichi order lists now attach a matching detail button to each order. Confirmation appears only for `확인대기`; cancellation appears only for the allowed pre-shipment states. Callbacks are bound to the exact order row and routed through the existing DEV operator bridge. Thirty-five focused tests pass; no live Telegram click or PROD change. See `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+
 ## 2026-10-19 — DEV Telegram order menu buttons
 
 Added a private DEV Papachichi `/menu`/`메뉴` keyboard for order and product operations, with trusted callback validation and safe bridge commands. Product registration remains a guided draft flow; no product/order write is triggered by a menu button. Eleven focused tests pass. No live Telegram message or PROD change. See `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.

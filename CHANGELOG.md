@@ -1,3 +1,7 @@
+## 2026-10-19 — DEV Telegram per-order detail buttons
+
+Added a row-specific detail button to every DEV order-list entry, plus state-gated confirm/cancel actions. Callback dispatch revalidates the order against the original bot-authored list message and uses the existing DEV bridge. 35 focused tests, Python compilation, and `git diff --check` pass. No real Telegram action, order mutation, or PROD change.
+
 ## 2026-10-19 — DEV Telegram order menu buttons
 
 Added a private DEV Papachichi `/menu`/`메뉴` keyboard for order and product operations, with trusted callback validation and safe bridge commands. Product registration remains a guided draft flow; no product/order write is triggered by a menu button. Eleven focused tests pass. No live Telegram message or PROD change. See `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
