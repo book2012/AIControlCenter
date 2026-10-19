@@ -4,7 +4,7 @@ import sys
 sys.path.insert(0,str(Path(__file__).resolve().parents[3]))
 from datetime import datetime, timedelta, timezone
 from html import escape as html_escape
-import asyncio, hashlib, json, secrets, subprocess, threading, time, uuid
+import asyncio, hashlib, json, os, secrets, subprocess, threading, time, uuid
 import requests
 import uvicorn
 from fastapi import Request
