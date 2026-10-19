@@ -110,7 +110,7 @@ def test_each_order_card_gets_its_own_state_appropriate_action_buttons():
     assert all(len(button["callback_data"].encode()) <= 64 for row in rows for button in row)
 
 
-def test_order_list_is_sent_as_one_message_per_order_with_next_button():
+def test_order_list_with_page_marker_is_sent_as_one_message_per_order_with_next_button():
     page=("AICC_ORDER_PAGE:ALL:ALL:0:2:6\n"+ORDER_LIST)
     transport=FakeTransport()
     assert _send_reply(transport,page)
@@ -125,6 +125,16 @@ def test_order_list_is_sent_as_one_message_per_order_with_next_button():
     assert transport.messages[2][1]["inline_keyboard"][0][1]["callback_data"]=="aicc:item:ship:2610192107"
     assert transport.messages[3][0]=="주문 더 보기 · ALL:ALL:0"
     assert transport.messages[3][1]["inline_keyboard"][0][0]["callback_data"]=="aicc:orders:next:ALL:1"
+
+
+def test_order_list_without_internal_page_marker_still_splits_each_order_card():
+    transport=FakeTransport()
+    assert _send_reply(transport,ORDER_LIST)
+    assert len(transport.messages)==3
+    for (text,markup),number in zip(transport.messages,("2610192105","2610192106","2610192107")):
+        assert text.startswith(number+" · ")
+        assert len(list(__import__("re").finditer(r"(?m)^[0-9]{10} · ",text)))==1
+        assert markup["inline_keyboard"][0][0]["callback_data"]=="aicc:item:detail:"+number
 
 
 def test_order_selector_has_all_and_status_buttons():

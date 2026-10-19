@@ -1,3 +1,10 @@
+## 2026-10-20 — DEV Telegram order card fallback
+
+- [x] Split every multi-order reply into one message per order, with or without pagination metadata.
+- [x] Keep each detail and eligible state action attached to the matching order message.
+- [x] Verify with 52 focused Telegram/order tests.
+- [ ] Activate and verify the immutable DEV bot release.
+
 ## 2026-10-20 — DEV Papachichi order browser
 
 - [x] Add all-orders and status-filter selectors.

@@ -1,3 +1,7 @@
+## 2026-10-20 — DEV Telegram order card fallback
+
+Markerless Telegram order-list replies now split into separate per-order messages with each order's own inline keyboard. Pagination controls remain for marked pages. Focused validation: 52 tests passed; rollout is DEV-only.
+
 ## 2026-10-20 — DEV Telegram order browser
 
 - Operators can choose all orders or filter by status.

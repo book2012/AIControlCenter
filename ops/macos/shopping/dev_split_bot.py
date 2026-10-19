@@ -153,29 +153,27 @@ def callback_command(update,cfg):
 def _send_reply(transport,text):
     if type(text) is str:
         page=_ORDER_PAGE.search(text)
-        if page:
-            body=_ORDER_PAGE.sub("",text, count=1).strip()
-            matches=list(_ORDER_LIST_LINE.finditer(body))
-            if matches:
-                last_sent=None
-                def send_card(value,markup=None):
-                    nonlocal last_sent
-                    if last_sent is not None:
-                        delay=1.05-(time.monotonic()-last_sent)
-                        if delay>0:time.sleep(delay)
-                    result=transport.send_message(value,reply_markup=markup) if markup else transport.send_message(value)
-                    last_sent=time.monotonic()
-                    return result
-                for index,match in enumerate(matches):
-                    end=matches[index+1].start() if index+1<len(matches) else len(body)
-                    card=body[match.start():end].strip()
-                    card=re.sub(r"\n{2,}","\n",card)
-                    markup=reply_markup(card)
-                    send_card(card,markup)
-                if int(page[3])+1<int(page[4]):
-                    nav="주문 더 보기 · "+page[1]+":"+page[2]+":"+page[3]
-                    send_card(nav,reply_markup(nav))
-                return True
+        body=_ORDER_PAGE.sub("",text,count=1).strip() if page else text.strip()
+        matches=list(_ORDER_LIST_LINE.finditer(body))
+        if matches:
+            last_sent=None
+            def send_card(value,markup=None):
+                nonlocal last_sent
+                if last_sent is not None:
+                    delay=1.05-(time.monotonic()-last_sent)
+                    if delay>0:time.sleep(delay)
+                result=transport.send_message(value,reply_markup=markup) if markup else transport.send_message(value)
+                last_sent=time.monotonic()
+                return result
+            for index,match in enumerate(matches):
+                end=matches[index+1].start() if index+1<len(matches) else len(body)
+                card=body[match.start():end].strip()
+                card=re.sub(r"\n{2,}","\n",card)
+                send_card(card,reply_markup(card))
+            if page and int(page[3])+1<int(page[4]):
+                nav="주문 더 보기 · "+page[1]+":"+page[2]+":"+page[3]
+                send_card(nav,reply_markup(nav))
+            return True
     markup=reply_markup(text)
     if markup is None:
         return transport.send_message(text)

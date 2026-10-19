@@ -1,3 +1,7 @@
+## 2026-10-20 — DEV Telegram order cards fix
+
+Order lists are split into one Telegram message per order even when an internal pagination marker is absent. Every message carries only that order's state-appropriate inline actions. Marker-based pages retain next-page navigation. Fifty-two focused tests pass; DEV bot rollout follows.
+
 ## 2026-10-20 — DEV Telegram order browser
 
 Papachichi now offers **전체 보기** or **상태별 보기**, shows five orders per page, and sends each order as its own message with its own detail and state-eligible action buttons. A next-page button continues the list. The DEV bot runs from immutable release `1630874ca21a6dc5b3c68cc8b218b566d1b327e9`. Fifty-one focused Telegram/order tests pass. No order or PROD data was changed.

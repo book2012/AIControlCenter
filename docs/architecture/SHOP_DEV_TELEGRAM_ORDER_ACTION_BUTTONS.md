@@ -59,7 +59,9 @@ The private DEV Papachichi order browser starts with **전체 보기** and
 completion, return/refund, cancellation, rejection, and stock review. Results
 are paged at five orders per page. Each order is delivered as a separate
 Telegram message, followed by a next-page control when more results remain.
-Messages are paced to avoid flooding the operator chat.
+Messages are paced to avoid flooding the operator chat. The bot also splits
+markerless list replies into one message per detected order, so pagination
+metadata cannot cause multiple orders to inherit the first order's buttons.
 
 Each order card has its own inline keyboard. Detail is read-only. Confirmation
 is offered for `확인대기`; deposit confirmation for `입금대기`; shipping

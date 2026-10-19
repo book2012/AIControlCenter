@@ -1,3 +1,7 @@
+## 2026-10-20 — DEV Telegram order card fallback
+
+Fixed markerless order-list replies that grouped multiple orders under the first order's buttons. The bot now emits one message per order with order-bound actions, whether or not page metadata is present. Fifty-two focused tests pass.
+
 ## 2026-10-20 — DEV Papachichi order browser
 
 Added all-orders and status-filter selectors, five-order pages, one Telegram message per order, state-gated confirm/payment/shipping/cancellation actions, and a next-page control. Callback routing remains bound to the source card and DEV operator bridge. Fifty-one focused tests pass. Activated immutable DEV bot release `1630874ca21a6dc5b3c68cc8b218b566d1b327e9`; PROD unchanged.
