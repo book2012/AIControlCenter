@@ -166,7 +166,7 @@ def test_compound_shipping_question_never_auto_answers_just_stock():
     assert result["action"]=="OPERATOR_REQUIRED" and called==[]
 
 
-def test_cancellation_category_contains_only_cancelable_orders_and_marks_each_card():
+def test_all_orders_hides_cancelled_but_cancelled_status_filter_shows_them():
     adapter=DevOperatorAdapter(ledger=None,store=None,aftersales=None)
     base=dict(phone="01011112222",reference="a"*24,requested_at="2026-10-06T01:00:00Z",
         quote={"final_total":"29000","currency":"KRW","line_items":[{"name":"블라우스","option":"S","quantity":1}]},
@@ -175,7 +175,7 @@ def test_cancellation_category_contains_only_cancelable_orders_and_marks_each_ca
           {**base,"reference":"b"*24,"state":"CONFIRMED","provider_order_id":16,"order_number":"2610060016"}]
     adapter.rows=lambda:rows
     class Aftersales:
-        def cancellation(self,order_id):return {"state":"NONE" if order_id==15 else "CANCELLED"}
+        def cancellation(self,order_id):return {"state":"CANCELLED" if order_id==16 else "NONE"}
         def admin_fulfillment(self,order_id):return {"state":"NOT_SHIPPED","tracking":None,"carrier":None}
         def admin_cases(self):return []
         def payment(self,order_id):return {"state":"AWAITING_DEPOSIT"}
@@ -183,10 +183,11 @@ def test_cancellation_category_contains_only_cancelable_orders_and_marks_each_ca
         def return_status(self,order_id):return {"state":"NONE"}
         def order_status_history(self,order_id):return []
     adapter.aftersales=Aftersales()
-    result=adapter.resolve("주문목록 상태 CANCELLATION_ACTIONABLE 0")[2]
-    assert "2610060015" in result and "2610060016" not in result
-    assert "분류: 주문 취소" in result
-    assert "상태 변경: 2026-10-06 10:00" in result
+    all_orders=adapter.resolve("주문목록 전체 ALL 0")[2]
+    cancelled=adapter.resolve("주문목록 상태 CANCELLED 0")[2]
+    assert "2610060015" in all_orders and "2610060016" not in all_orders
+    assert "2610060016" in cancelled and "2610060015" not in cancelled
+    assert "2610060016" in adapter.resolve("01011112222 고객 주문목록")[2]
 
 
 def test_order_detail_includes_timestamped_status_history():

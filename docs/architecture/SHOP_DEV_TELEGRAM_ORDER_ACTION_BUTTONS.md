@@ -1,12 +1,13 @@
-## Dedicated cancellation category
+## Cancellation controls and order list visibility
 
-The all-orders view and ordinary new-order notifications do not show a cancel
-button. The one-screen order selector has a dedicated 주문 취소 category. Its
-query includes only pre-shipment orders whose cancellation preconditions are
-currently satisfied. Each result card carries an internal-to-the-workflow
-visible category marker; callback validation requires that marker and the
-matching order row before forwarding the command. This also rejects stale
-cancel buttons from older all-orders and notification messages.
+Each eligible order card in an order list and each ordinary new-order
+notification can show **주문 취소**. The button is validated against the
+specific order and its current state; unsupported or stale states are rejected.
+
+The **전체 보기** list omits orders whose current state is CANCELLED.
+The CANCELLED status filter and phone-specific order list continue to show
+those orders. This keeps cancelled orders out of the default overview while
+preserving a way to inspect their history.
 
 Cancellation supports both 확인대기 and 확인완료 review states. For an
 unconfirmed Woo order it requires pending provider status and no stock
@@ -51,7 +52,7 @@ customer-facing bot. The DEV order API remains the authority for order state.
 
 A pending-order reply receives inline **주문 확인**, **주문 상세**, and **주문 취소** actions. The actions dispatch to the existing DEV operator bridge with the displayed 10-digit public order number and phone. Confirmation retains the stock check and duplicate/update protections; detail is read-only; cancellation remains subject to the DEV API's current state and refund guards.
 
-Every order row in a `주문목록` reply receives its own **상세** button. The row also receives **주문 확인** while `확인대기`, and **주문 취소** only for the allowed pre-shipment states `확인대기`, `확인완료`, and `입금대기`. Callbacks must match an order identifier in the exact source message. Unrelated text and unsupported order states receive no action buttons.
+Every order row in a `주문목록` reply receives its own **상세** button. The row also receives **주문 확인** while `확인대기`, and **주문 취소** for the allowed pre-shipment states `확인대기`, `확인완료`, `입금대기`, and `배송준비`. Callbacks must match an order identifier in the exact source message. Unrelated text and unsupported order states receive no action buttons.
 
 ## Callback validation
 

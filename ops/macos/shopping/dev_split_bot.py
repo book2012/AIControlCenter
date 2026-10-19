@@ -17,7 +17,7 @@ _OPERATOR_PREFIX="안녕하세요 agachichi 입니다\n[개발]\n"
 def _operator_body(text):
     return text.strip().removeprefix(_OPERATOR_PREFIX).strip() if type(text) is str else ""
 _LIST_CANCEL_STATES={"확인대기","확인완료","입금대기","배송준비"}
-_FILTER_STATES={"PENDING_REVIEW":"확인 대기","AWAITING_DEPOSIT":"입금 대기","READY_TO_SHIP":"배송 준비","SHIPPED":"배송 중","COMPLETED":"배송 완료","RETURN_APPROVED":"환불 승인","RETURN_RECEIVED":"환불 회수","RETURN_RESTOCKED":"환불 검수","REFUND_RECORDED":"환불 완료","CANCELLED":"취소 완료","REJECTED":"주문 거절","STOCK_BLOCKED":"재고 확인","CANCELLATION_ACTIONABLE":"주문 취소"}
+_FILTER_STATES={"PENDING_REVIEW":"확인 대기","AWAITING_DEPOSIT":"입금 대기","READY_TO_SHIP":"배송 준비","SHIPPED":"배송 중","COMPLETED":"배송 완료","RETURN_APPROVED":"환불 승인","RETURN_RECEIVED":"환불 회수","RETURN_RESTOCKED":"환불 검수","REFUND_RECORDED":"환불 완료","CANCELLED":"취소 완료","REJECTED":"주문 거절","STOCK_BLOCKED":"재고 확인"}
 
 
 def menu_markup():
@@ -62,7 +62,7 @@ def reply_markup(text):
         if state=="입금대기":row.append({"text":"💳 입금 확인","callback_data":"aicc:item:payment:"+number})
         if state=="배송준비":row.append({"text":"🚚 배송 등록","callback_data":"aicc:item:ship:"+number})
         if state=="배송중":row.append({"text":"📦 배송 완료","callback_data":"aicc:item:delivered:"+number})
-        if state in _LIST_CANCEL_STATES and "분류: 주문 취소" in text:row.append({"text":"❌ 주문 취소","callback_data":"aicc:item:cancel:"+number})
+        if state in _LIST_CANCEL_STATES:row.append({"text":"❌ 주문 취소","callback_data":"aicc:item:cancel:"+number})
         return {"inline_keyboard":[row]}
     match=_ORDER_LINE.search(text)
     if match is None:
@@ -72,10 +72,12 @@ def reply_markup(text):
     detail=f"aicc:detail:{number}"
     if max(len(v.encode()) for v in (confirm,detail))>64:
         return None
+    cancel=f"aicc:cancel:{number}"
+    if len(cancel.encode())>64:return None
     return {"inline_keyboard":[[
         {"text":"✅ 주문 확인","callback_data":confirm},
         {"text":"📋 주문 상세","callback_data":detail},
-    ]]}
+    ],[{"text":"❌ 주문 취소","callback_data":cancel}]]}
 
 
 def callback_command(update,cfg):
@@ -130,7 +132,7 @@ def callback_command(update,cfg):
         if source is None:return None
         number,phone,state=(v.strip() for v in source.groups())
         if item[1]=="confirm" and state!="확인대기":return None
-        if item[1]=="cancel" and (state not in _LIST_CANCEL_STATES or "분류: 주문 취소" not in message_text):return None
+        if item[1]=="cancel" and state not in _LIST_CANCEL_STATES:return None
         if item[1]=="payment" and state!="입금대기":return None
         if item[1]=="ship" and state!="배송준비":return None
         if item[1]=="delivered" and state!="배송중":return None
@@ -145,8 +147,7 @@ def callback_command(update,cfg):
     phone,number=source.groups()
     if number!=match[2]:
         return None
-    if match[1]=="cancel":return None
-    action={"confirm":"주문확인","detail":"주문상세"}[match[1]]
+    action={"confirm":"주문확인","detail":"주문상세","cancel":"주문 취소"}[match[1]]
     return query.get("id"),actor["id"],phone+" 고객 "+action+" #"+number
 
 

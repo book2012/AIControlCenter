@@ -78,16 +78,6 @@ class GuestOperatorAdapter:
         return {"order_id":r["provider_order_id"],"order_number":self._order_number(r),"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]],
             "delivery":{"recipient":d.get("first_name",""),"postcode":d.get("postcode",""),"address1":d.get("address_1",""),"address2":d.get("address_2","")}}
-    def cancellation_available(self,row):
-        if self.aftersales is None or row.get("state") not in ("PENDING_REVIEW","CONFIRMED"):
-            return False
-        order_id=row["provider_order_id"]
-        if self.aftersales.cancellation(order_id)["state"]!="NONE":return False
-        if self.aftersales.admin_fulfillment(order_id)["state"] in ("SHIPPED","DELIVERED"):return False
-        active=[case for case in self.aftersales.admin_cases() if case["order_id"]==order_id and case["state"]!="REJECTED"]
-        if self.aftersales.payment(order_id)["state"]=="PAID":
-            return len(active)==1 and active[0]["kind"]=="RETURN" and active[0]["state"]=="RETURN_APPROVED"
-        return not active
     @staticmethod
     def _history_epoch(value):
         from datetime import datetime,timezone
@@ -125,13 +115,14 @@ class GuestOperatorAdapter:
         return sorted(events,key=lambda event:event[0])
     def list_message(self,limit=None,phone=None,state=None,page=0,scope="ALL"):
         rows=[r for r in self.rows() if phone is None or r["phone"]==phone]
-        if state=="CANCELLATION_ACTIONABLE":rows=[r for r in rows if self.cancellation_available(r)]
+        if state is None and phone is None and scope=="ALL":
+            rows=[r for r in rows if self.display_state(r)!="CANCELLED"]
         elif state is not None:rows=[r for r in rows if self.display_state(r)==state]
         if limit is not None:rows=rows[:max(1,min(int(limit),100))]
         page=max(0,min(int(page),100000));page_size=5;total=len(rows);pages=max(1,(total+page_size-1)//page_size)
         if page>=pages:page=pages-1
         if not rows:return "현재 확인 가능한 주문이 없습니다."
-        labels={"REFUND_RECORDED":"환불완료 기록","RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인","CANCELLATION_ACTIONABLE":"주문 취소 대상"}
+        labels={"REFUND_RECORDED":"환불완료 기록","RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
         lines=["AICC_ORDER_PAGE:"+scope+":"+(state or "ALL")+":"+str(page)+":"+str(pages)+":"+str(total),
                ("고객 "+phone+" 주문 " if phone else (labels.get(state,state)+" 주문 " if state else "전체 주문 "))+str(total)+"건 · "+str(page+1)+"/"+str(pages)]
         for r in rows[page*page_size:(page+1)*page_size]:
@@ -141,7 +132,6 @@ class GuestOperatorAdapter:
             lines.extend("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
             history=self.status_history(r)
             if history:lines.append("상태 변경: "+self._history_time(history[-1][1]))
-            if state=="CANCELLATION_ACTIONABLE":lines.append("분류: 주문 취소")
             if self.aftersales:
                 refund=self.aftersales.refund(r["provider_order_id"])
                 if refund["state"]=="RECORDED":lines.append("환불완료 기록: "+refund["amount"]+" "+refund["currency"])
@@ -205,7 +195,7 @@ class GuestOperatorAdapter:
         mlist_page=re.fullmatch(r"주문목록 (전체|상태) ([A-Z_]+) ([0-9]{1,6})",clean)
         if mlist_page:
             mode,value,page=mlist_page.groups()
-            allowed={"PENDING_REVIEW","AWAITING_DEPOSIT","READY_TO_SHIP","SHIPPED","COMPLETED","RETURN_APPROVED","RETURN_RECEIVED","RETURN_RESTOCKED","REFUND_RECORDED","CANCELLED","REJECTED","STOCK_BLOCKED","CANCELLATION_ACTIONABLE"}
+            allowed={"PENDING_REVIEW","AWAITING_DEPOSIT","READY_TO_SHIP","SHIPPED","COMPLETED","RETURN_APPROVED","RETURN_RECEIVED","RETURN_RESTOCKED","REFUND_RECORDED","CANCELLED","REJECTED","STOCK_BLOCKED"}
             if mode=="전체" and value=="ALL":return None,None,self.list_message(state=None,page=int(page),scope="ALL")
             if mode=="상태" and value in allowed:return None,None,self.list_message(state=value,page=int(page),scope="STATUS")
             return None,None,"선택한 주문 상태를 조회할 수 없습니다."

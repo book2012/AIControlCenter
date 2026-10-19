@@ -87,10 +87,13 @@ def callback_update(update_id=10, *, number=NUMBER, user=USER, chat=CHAT, bot=BO
 def test_pending_order_reply_has_order_bound_inline_buttons():
     markup = reply_markup(PENDING)
     assert markup == {
-        "inline_keyboard": [[
-            {"text": "✅ 주문 확인", "callback_data": "aicc:confirm:" + NUMBER},
-            {"text": "📋 주문 상세", "callback_data": "aicc:detail:" + NUMBER},
-        ]]
+        "inline_keyboard": [
+            [
+                {"text": "✅ 주문 확인", "callback_data": "aicc:confirm:" + NUMBER},
+                {"text": "📋 주문 상세", "callback_data": "aicc:detail:" + NUMBER},
+            ],
+            [{"text": "❌ 주문 취소", "callback_data": "aicc:cancel:" + NUMBER}],
+        ]
     }
     assert len(markup["inline_keyboard"][0][0]["callback_data"].encode()) <= 64
     assert reply_markup(PENDING.replace("고객님 주문\n", "고객님 주문확인 완료\n")) is None
@@ -103,19 +106,20 @@ def test_each_order_card_gets_its_own_state_appropriate_action_buttons():
     assert rows[0] == [
         {"text": "📋 상세 보기", "callback_data": "aicc:item:detail:2610192105"},
         {"text": "✅ 주문 확인", "callback_data": "aicc:item:confirm:2610192105"},
+        {"text": "❌ 주문 취소", "callback_data": "aicc:item:cancel:2610192105"},
     ]
     assert all(len(button["callback_data"].encode()) <= 64 for row in rows for button in row)
 
 
-def test_cancel_button_is_shown_and_accepted_only_in_cancel_category():
-    all_card=ORDER_LIST.split("2610192106")[0].strip()
-    assert all(button["text"]!="❌ 주문 취소" for row in reply_markup(all_card)["inline_keyboard"] for button in row)
-    cancel_card=all_card+"\n분류: 주문 취소"
-    buttons=reply_markup(cancel_card)["inline_keyboard"][0]
+def test_cancel_button_is_shown_on_eligible_order_cards_in_any_list():
+    card=ORDER_LIST.split("2610192106")[0].strip()
+    buttons=reply_markup(card)["inline_keyboard"][0]
     assert buttons[-1]=={"text":"❌ 주문 취소","callback_data":"aicc:item:cancel:2610192105"}
-    assert callback_command(list_callback("2610192105","cancel",text=all_card),CFG) is None
-    assert callback_command(list_callback("2610192105","cancel",text=cancel_card),CFG)==(
+    assert callback_command(list_callback("2610192105","cancel",text=card),CFG)==(
         "list-callback-31",USER,"01092838321 고객 주문 취소 #2610192105")
+    cancelled=card.replace("확인대기","취소완료")
+    assert all(button["text"]!="❌ 주문 취소" for row in reply_markup(cancelled)["inline_keyboard"] for button in row)
+    assert callback_command(list_callback("2610192105","cancel",text=cancelled),CFG) is None
 
 
 def test_order_list_with_page_marker_is_sent_as_one_message_per_order_with_next_button():
@@ -152,8 +156,9 @@ def test_order_selector_has_all_and_each_status_button_on_one_screen():
     assert buttons[0]=={"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}
     assert "aicc:orders:status:PENDING_REVIEW:0" in callbacks
     assert "aicc:orders:status:AWAITING_DEPOSIT:0" in callbacks
-    assert "aicc:orders:status:CANCELLATION_ACTIONABLE:0" in callbacks
-    assert len(callbacks)==14
+    assert "aicc:orders:status:CANCELLED:0" in callbacks
+    assert not any("CANCELLATION_ACTIONABLE" in value for value in callbacks)
+    assert len(callbacks)==13
     assert all(len(button["callback_data"].encode())<=64 for button in buttons)
 
 
@@ -188,18 +193,17 @@ def test_order_list_detail_button_routes_to_matching_order_only():
     assert callback_command(list_callback("2610192105", "confirm"), CFG) == (
         "list-callback-31", USER, "01092838321 고객 주문확인 #2610192105"
     )
-    assert callback_command(list_callback("2610192106", "cancel"), CFG) is None
-    cancel_view="분류: 주문 취소\n"+ORDER_LIST
-    assert callback_command(list_callback("2610192106", "cancel", text=cancel_view), CFG) == (
+    assert callback_command(list_callback("2610192106", "cancel"), CFG) == (
         "list-callback-31", USER, "01012345678 고객 주문 취소 #2610192106"
     )
-    assert callback_command(list_callback("2610192107", "cancel"), CFG) is None
+    assert callback_command(list_callback("2610192107", "cancel"), CFG) == (
+        "list-callback-31", USER, "01011112222 고객 주문 취소 #2610192107"
+    )
+    wrong_state=ORDER_LIST.replace("배송준비","배송중",1)
+    assert callback_command(list_callback("2610192107","cancel",text=wrong_state),CFG) is None
     assert callback_command(list_callback("2610192107", "confirm"), CFG) is None
     assert callback_command(list_callback("2610192199", "detail"), CFG) is None
-    cancel_card="분류: 주문 취소\n"+ORDER_LIST.replace("확인대기", "배송준비", 1)
-    assert callback_command(list_callback("2610192105", "cancel", text=cancel_card), CFG) == (
-        "list-callback-31", USER, "01092838321 고객 주문 취소 #2610192105"
-    )
+
 
 
 def test_callback_is_bound_to_trusted_private_bot_message():

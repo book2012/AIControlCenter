@@ -1,6 +1,6 @@
-## 2026-10-20 — Dedicated cancellation view and order status timeline
+## 2026-10-20 — Correct DEV cancellation visibility and order status timeline
 
-Removed 주문 취소 from 전체 보기 and ordinary order notifications. The order selector now includes a dedicated 주문 취소 category; it lists only pre-shipment orders currently eligible for safe cancellation, and its marked cards alone expose the cancel button. Fixed the order-state mismatch that blocked cancellation while review was still 확인대기; cancellation retains the DEV Woo status and stock-restoration checks. Order detail now shows timestamped order review and after-sales transitions. New after-sales state transitions are captured in an append-only SQLite history with timestamps. Existing past transitions are not reconstructed; the existing immutable order ledger supplies prior confirmation/rejection times. 101 focused tests passed. No live cancellation was executed.
+Restored **주문 취소** on each eligible order card in order lists and new-order notifications. The **전체 보기** list excludes orders already in CANCELLED; the CANCELLED status filter and phone-specific order list still show them. Applicable action states are validated per order, including 확인대기, 확인완료, 입금대기, and 배송준비. Order detail shows timestamped order review and after-sales transitions; new after-sales transitions are captured in append-only SQLite history. Existing past transitions are not reconstructed. No live cancellation was executed.
 
 ## 2026-10-20 — Route Telegram order buttons through the deterministic DEV handler
 
