@@ -47,3 +47,8 @@ The code is published only as a commit-addressed DEV bot release and the
 Papachichi launch agent is restarted on that release. The DEV order API and its
 database are not migrated or restarted for this feature. The old bot runtime
 and launch-agent file are retained for rollback.
+
+
+## 2026-10-19 callback recovery
+
+The callback acknowledgement and operator bridge dispatch now use separate error handling. The bot logs only sanitized exception types, preserves single-dispatch behavior, and never retries after uncertain command/result delivery. Regression coverage includes acknowledgement failure, bridge failure and result-send failure. See `SHOP_DEV_ORDER_LOOKUP_CALLBACK_RECOVERY.md` for the DEV rollout and order-preservation checks.
