@@ -10,7 +10,10 @@ DATA=Path('/Users/kyouhan/AIControlCenterRuntime/dev-order/data')
 LOGGER=logging.getLogger("aicc.dev.telegram")
 _ORDER_LINE=re.compile(r"(?m)^([0-9]{11}) 고객님 주문\n주문 ([0-9]{10}) ·")
 _ORDER_LIST_LINE=re.compile(r"(?m)^([0-9]{10}) · (010[0-9]{8}) · ([^·\n]+) ·")
-_LIST_CANCEL_STATES={"확인대기","확인완료","입금대기"}
+_ORDER_PAGE=re.compile(r"(?m)^AICC_ORDER_PAGE:(ALL|STATUS):([A-Z_]+):([0-9]{1,6}):([0-9]{1,6}):([0-9]{1,9})$")
+_ORDER_NAV=re.compile(r"^주문 더 보기 · (ALL|STATUS):([A-Z_]+):([0-9]{1,6})$")
+_LIST_CANCEL_STATES={"확인대기","확인완료","입금대기","배송준비"}
+_FILTER_STATES={"PENDING_REVIEW":"확인 대기","AWAITING_DEPOSIT":"입금 대기","READY_TO_SHIP":"배송 준비","SHIPPED":"배송 중","COMPLETED":"배송 완료","RETURN_APPROVED":"환불 승인","RETURN_RECEIVED":"환불 회수","RETURN_RESTOCKED":"환불 검수","REFUND_RECORDED":"환불 완료","CANCELLED":"취소 완료","REJECTED":"주문 거절","STOCK_BLOCKED":"재고 확인"}
 
 
 def menu_markup():
@@ -24,25 +27,44 @@ def menu_markup():
 
 
 def reply_markup(text):
-    """Offer order-scoped admin actions, including buttons on each order-list row."""
+    """Offer a button-first order browser and actions bound to one order card."""
     if type(text) is str and "[DEV] 관리자 메뉴" in text:
         return menu_markup()
     if type(text) is not str:
         return None
+    if text.strip()=="주문 목록 보기를 선택해 주세요.":
+        return {"inline_keyboard":[
+            [{"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}],
+            [{"text":"🏷 상태별 보기","callback_data":"aicc:orders:filters"}],
+        ]}
+    if text.strip()=="조회할 주문 상태를 선택해 주세요.":
+        states=list(_FILTER_STATES.items());rows=[]
+        for i in range(0,len(states),2):
+            rows.append([{"text":"🏷 "+label,"callback_data":"aicc:orders:status:"+code+":0"} for code,label in states[i:i+2]])
+        rows.append([{"text":"⬅️ 주문 목록","callback_data":"aicc:orders:back"}])
+        return {"inline_keyboard":rows}
+    nav=_ORDER_NAV.fullmatch(text.strip())
+    if nav:
+        scope,state,page=nav.groups()
+        token="ALL" if scope=="ALL" else state
+        return {"inline_keyboard":[[{"text":"다음 주문 보기 ➡️","callback_data":"aicc:orders:next:"+token+":"+str(int(page)+1)}]]}
+    page_match=_ORDER_PAGE.search(text)
+    if page_match:
+        _,state,page,pages,_=page_match.groups(); page=int(page);pages=int(pages)
+        if page+1<pages:
+            scope="ALL" if page_match[1]=="ALL" else state
+            return {"inline_keyboard":[[{"text":"다음 주문 보기 ➡️","callback_data":"aicc:orders:next:"+scope+":"+str(page+1)}]]}
+        return None
     list_rows=list(_ORDER_LIST_LINE.finditer(text))
     if list_rows:
-        keyboard=[]
-        for index,match in enumerate(list_rows):
-            if index>=30:
-                break
-            number,phone,state=(v.strip() for v in match.groups())
-            row=[{"text":"📋 "+number+" 상세","callback_data":"aicc:item:detail:"+number}]
-            if state=="확인대기":
-                row.append({"text":"✅ 주문 확인","callback_data":"aicc:item:confirm:"+number})
-            if state in _LIST_CANCEL_STATES:
-                row.append({"text":"❌ 주문 취소","callback_data":"aicc:item:cancel:"+number})
-            keyboard.append(row)
-        return {"inline_keyboard":keyboard} if keyboard else None
+        number,phone,state=(v.strip() for v in list_rows[0].groups())
+        row=[{"text":"📋 상세 보기","callback_data":"aicc:item:detail:"+number}]
+        if state=="확인대기":row.append({"text":"✅ 주문 확인","callback_data":"aicc:item:confirm:"+number})
+        if state=="입금대기":row.append({"text":"💳 입금 확인","callback_data":"aicc:item:payment:"+number})
+        if state=="배송준비":row.append({"text":"🚚 배송 등록","callback_data":"aicc:item:ship:"+number})
+        if state=="배송중":row.append({"text":"📦 배송 완료","callback_data":"aicc:item:delivered:"+number})
+        if state in _LIST_CANCEL_STATES:row.append({"text":"❌ 주문 취소","callback_data":"aicc:item:cancel:"+number})
+        return {"inline_keyboard":[row]}
     match=_ORDER_LINE.search(text)
     if match is None:
         return None
@@ -77,7 +99,7 @@ def callback_command(update,cfg):
         return None
     if type(query.get("id")) is not str or type(query.get("data")) is not str:
         return None
-    menu_commands={"orders":"주문목록","order_help":"주문조회 도움말",
+    menu_commands={"orders":"주문목록 메뉴","order_help":"주문조회 도움말",
                    "products":"/products","stock":"재고관리",
                    "product_help":"상품관리 도움말"}
     menu=re.fullmatch(r"aicc:menu:([a-z_]+)",query["data"])
@@ -85,16 +107,35 @@ def callback_command(update,cfg):
         if menu[1] not in menu_commands or type(message.get("text")) is not str or "[DEV] 관리자 메뉴" not in message["text"]:
             return None
         return query["id"],actor["id"],menu_commands[menu[1]]
-    if type(message.get("text")) is not str:
+    if type(message.get("text")) is not str:return None
+    data=query["data"]
+    if data=="aicc:orders:filters" and message.get("text","").strip()=="주문 목록 보기를 선택해 주세요.":
+        return query["id"],actor["id"],"주문목록 상태 메뉴"
+    if data=="aicc:orders:back" and message["text"].strip()=="조회할 주문 상태를 선택해 주세요.":
+        return query["id"],actor["id"],"주문목록 메뉴"
+    if data=="aicc:orders:all:0" and message["text"].strip()=="주문 목록 보기를 선택해 주세요.":
+        return query["id"],actor["id"],"주문목록 전체 ALL 0"
+    status=re.fullmatch(r"aicc:orders:status:([A-Z_]+):([0-9]{1,6})",data)
+    if status and message["text"].strip()=="조회할 주문 상태를 선택해 주세요." and status[1] in _FILTER_STATES:
+        return query["id"],actor["id"],"주문목록 상태 "+status[1]+" "+status[2]
+    next_page=re.fullmatch(r"aicc:orders:next:(ALL|[A-Z_]+):([1-9][0-9]{0,5})",data)
+    nav=_ORDER_NAV.fullmatch(message["text"].strip())
+    if next_page and nav and int(next_page[2])==int(nav[3])+1:
+        scope=next_page[1]
+        if scope=="ALL" and nav[1]=="ALL":return query["id"],actor["id"],"주문목록 전체 ALL "+next_page[2]
+        if scope==nav[2] and nav[1]=="STATUS":return query["id"],actor["id"],"주문목록 상태 "+scope+" "+next_page[2]
         return None
-    item=re.fullmatch(r"aicc:item:(detail|confirm|cancel):([0-9]{10})",query["data"])
+    item=re.fullmatch(r"aicc:item:(detail|confirm|cancel|payment|ship|delivered):([0-9]{10})",data)
     if item is not None:
         source=next((m for m in _ORDER_LIST_LINE.finditer(message["text"]) if m[1]==item[2]),None)
         if source is None:return None
         number,phone,state=(v.strip() for v in source.groups())
         if item[1]=="confirm" and state!="확인대기":return None
         if item[1]=="cancel" and state not in _LIST_CANCEL_STATES:return None
-        action={"detail":"주문상세","confirm":"주문확인","cancel":"주문 취소"}[item[1]]
+        if item[1]=="payment" and state!="입금대기":return None
+        if item[1]=="ship" and state!="배송준비":return None
+        if item[1]=="delivered" and state!="배송중":return None
+        action={"detail":"주문상세","confirm":"주문확인","cancel":"주문 취소","payment":"입금 확인","ship":"배송","delivered":"배송 완료"}[item[1]]
         return query["id"],actor["id"],phone+" 고객 "+action+" #"+number
     match=re.fullmatch(r"aicc:(confirm|detail|cancel):([0-9]{10})",query["data"])
     if match is None:
@@ -110,6 +151,31 @@ def callback_command(update,cfg):
 
 
 def _send_reply(transport,text):
+    if type(text) is str:
+        page=_ORDER_PAGE.search(text)
+        if page:
+            body=_ORDER_PAGE.sub("",text, count=1).strip()
+            matches=list(_ORDER_LIST_LINE.finditer(body))
+            if matches:
+                last_sent=None
+                def send_card(value,markup=None):
+                    nonlocal last_sent
+                    if last_sent is not None:
+                        delay=1.05-(time.monotonic()-last_sent)
+                        if delay>0:time.sleep(delay)
+                    result=transport.send_message(value,reply_markup=markup) if markup else transport.send_message(value)
+                    last_sent=time.monotonic()
+                    return result
+                for index,match in enumerate(matches):
+                    end=matches[index+1].start() if index+1<len(matches) else len(body)
+                    card=body[match.start():end].strip()
+                    card=re.sub(r"\n{2,}","\n",card)
+                    markup=reply_markup(card)
+                    send_card(card,markup)
+                if int(page[3])+1<int(page[4]):
+                    nav="주문 더 보기 · "+page[1]+":"+page[2]+":"+page[3]
+                    send_card(nav,reply_markup(nav))
+                return True
     markup=reply_markup(text)
     if markup is None:
         return transport.send_message(text)
@@ -130,7 +196,7 @@ def poll_once(transport,client,cfg,path):
                 callback_id,user_id,text=callback
                 try:
                     callback_data=query.get("data","")
-                    status_text="요청을 처리하고 있습니다." if callback_data.startswith("aicc:menu:") else ("주문을 취소하고 있습니다." if ":cancel:" in callback_data else "주문을 확인하고 있습니다.")
+                    status_text="요청을 처리하고 있습니다." if callback_data.startswith(("aicc:menu:","aicc:orders:")) else ("주문을 취소하고 있습니다." if ":cancel:" in callback_data else "주문을 확인하고 있습니다.")
                     transport.answer_callback_query(callback_id,text=status_text)
                 except Exception as error:
                     # Callback acknowledgement is cosmetic; a transport failure must not skip the command.

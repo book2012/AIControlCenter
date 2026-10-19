@@ -5,7 +5,7 @@ from unittest.mock import Mock
 import pytest
 from pydantic import SecretStr
 from core.shopping.order_core.telegram import OrderTelegramTransport, TelegramDeliveryRejected
-from ops.macos.shopping.dev_split_bot import callback_command, poll_once, reply_markup, menu_markup
+from ops.macos.shopping.dev_split_bot import callback_command, poll_once, reply_markup, menu_markup, _send_reply
 
 CHAT = 771122
 USER = 884433
@@ -99,23 +99,49 @@ def test_pending_order_reply_has_order_bound_inline_buttons():
     assert reply_markup("현재 확인 가능한 주문이 없습니다.") is None
 
 
-def test_order_list_has_individual_detail_and_state_appropriate_action_buttons():
+def test_each_order_card_gets_its_own_state_appropriate_action_buttons():
     markup = reply_markup(ORDER_LIST)
     rows = markup["inline_keyboard"]
-    assert len(rows) == 3
     assert rows[0] == [
-        {"text": "📋 2610192105 상세", "callback_data": "aicc:item:detail:2610192105"},
+        {"text": "📋 상세 보기", "callback_data": "aicc:item:detail:2610192105"},
         {"text": "✅ 주문 확인", "callback_data": "aicc:item:confirm:2610192105"},
         {"text": "❌ 주문 취소", "callback_data": "aicc:item:cancel:2610192105"},
     ]
-    assert rows[1] == [
-        {"text": "📋 2610192106 상세", "callback_data": "aicc:item:detail:2610192106"},
-        {"text": "❌ 주문 취소", "callback_data": "aicc:item:cancel:2610192106"},
-    ]
-    assert rows[2] == [
-        {"text": "📋 2610192107 상세", "callback_data": "aicc:item:detail:2610192107"},
-    ]
     assert all(len(button["callback_data"].encode()) <= 64 for row in rows for button in row)
+
+
+def test_order_list_is_sent_as_one_message_per_order_with_next_button():
+    page=("AICC_ORDER_PAGE:ALL:ALL:0:2:6\n"+ORDER_LIST)
+    transport=FakeTransport()
+    assert _send_reply(transport,page)
+    assert len(transport.messages)==4
+    assert [m[0].splitlines()[0] for m in transport.messages[:3]]==[
+        "2610192105 · 01092838321 · 확인대기 · 229000 KRW",
+        "2610192106 · 01012345678 · 입금대기 · 59000 KRW",
+        "2610192107 · 01011112222 · 배송준비 · 79000 KRW",
+    ]
+    assert transport.messages[0][1]["inline_keyboard"][0][1]["callback_data"]=="aicc:item:confirm:2610192105"
+    assert transport.messages[1][1]["inline_keyboard"][0][1]["callback_data"]=="aicc:item:payment:2610192106"
+    assert transport.messages[2][1]["inline_keyboard"][0][1]["callback_data"]=="aicc:item:ship:2610192107"
+    assert transport.messages[3][0]=="주문 더 보기 · ALL:ALL:0"
+    assert transport.messages[3][1]["inline_keyboard"][0][0]["callback_data"]=="aicc:orders:next:ALL:1"
+
+
+def test_order_selector_has_all_and_status_buttons():
+    all_markup=reply_markup("주문 목록 보기를 선택해 주세요.")
+    assert all_markup["inline_keyboard"][0][0]=={"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}
+    filters=reply_markup("조회할 주문 상태를 선택해 주세요.")
+    all_callbacks=[button["callback_data"] for row in filters["inline_keyboard"] for button in row]
+    assert "aicc:orders:status:PENDING_REVIEW:0" in all_callbacks
+    assert "aicc:orders:status:AWAITING_DEPOSIT:0" in all_callbacks
+
+
+def test_status_action_callback_is_order_and_state_bound():
+    text="2610192106 · 01012345678 · 입금대기 · 59000 KRW\n고객: 홍길동 · 주문일: 2026-10-19 09:00\n- 셔츠 / 기본 / 1개"
+    update=list_callback("2610192106","payment",text=text)
+    assert callback_command(update,CFG)==("list-callback-31",USER,"01012345678 고객 입금 확인 #2610192106")
+    update["callback_query"]["data"]="aicc:item:payment:2610192105"
+    assert callback_command(update,CFG) is None
 
 
 def list_callback(number, action, text=ORDER_LIST, *, user=USER, chat=CHAT, bot=BOT):
@@ -144,10 +170,14 @@ def test_order_list_detail_button_routes_to_matching_order_only():
     assert callback_command(list_callback("2610192106", "cancel"), CFG) == (
         "list-callback-31", USER, "01012345678 고객 주문 취소 #2610192106"
     )
-    assert callback_command(list_callback("2610192107", "cancel"), CFG) is None
+    assert callback_command(list_callback("2610192107", "cancel"), CFG) == (
+        "list-callback-31", USER, "01011112222 고객 주문 취소 #2610192107"
+    )
     assert callback_command(list_callback("2610192107", "confirm"), CFG) is None
     assert callback_command(list_callback("2610192199", "detail"), CFG) is None
-    assert callback_command(list_callback("2610192105", "cancel", text=ORDER_LIST.replace("확인대기", "배송준비", 1)), CFG) is None
+    assert callback_command(list_callback("2610192105", "cancel", text=ORDER_LIST.replace("확인대기", "배송준비", 1)), CFG) == (
+        "list-callback-31", USER, "01092838321 고객 주문 취소 #2610192105"
+    )
 
 
 def test_callback_is_bound_to_trusted_private_bot_message():
@@ -311,7 +341,23 @@ def test_menu_command_shows_order_and_product_buttons_and_routes_shortcuts(tmp_p
 def test_menu_callback_rejects_wrong_operator_or_non_menu_message():
     update=menu_update(action="product_help")
     assert callback_command(update,CFG)==("menu-callback-20",USER,"상품관리 도움말")
+    assert callback_command(menu_update(),CFG)==("menu-callback-20",USER,"주문목록 메뉴")
     assert callback_command(menu_update(user=USER+1),CFG) is None
     assert callback_command(menu_update(bot="other_bot"),CFG) is None
     update=menu_update();update["callback_query"]["message"]["text"]="다른 메시지"
     assert callback_command(update,CFG) is None
+
+
+def test_all_and_status_filter_callbacks_are_bound_to_selector_or_current_page():
+    selector={"update_id":2,"callback_query":{"id":"c","from":{"id":USER,"is_bot":False},
+        "data":"aicc:orders:all:0","message":{"chat":{"id":CHAT,"type":"private"},
+        "from":{"is_bot":True,"username":BOT},"text":"주문 목록 보기를 선택해 주세요."}}}
+    assert callback_command(selector,CFG)==("c",USER,"주문목록 전체 ALL 0")
+    filter_update={**selector,"callback_query":{**selector["callback_query"],"data":"aicc:orders:status:AWAITING_DEPOSIT:0",
+        "message":{**selector["callback_query"]["message"],"text":"조회할 주문 상태를 선택해 주세요."}}}
+    assert callback_command(filter_update,CFG)==("c",USER,"주문목록 상태 AWAITING_DEPOSIT 0")
+    nav={**selector,"callback_query":{**selector["callback_query"],"data":"aicc:orders:next:ALL:2",
+        "message":{**selector["callback_query"]["message"],"text":"주문 더 보기 · ALL:ALL:1"}}}
+    assert callback_command(nav,CFG)==("c",USER,"주문목록 전체 ALL 2")
+    nav["callback_query"]["message"]["text"]="주문 더 보기 · STATUS:AWAITING_DEPOSIT:1"
+    assert callback_command(nav,CFG) is None

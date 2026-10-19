@@ -63,6 +63,23 @@ def test_operator_order_list_and_detail_separate_address():
     assert adapter.admin_orders()[0]["order_id"]==21 and "delivery" not in adapter.admin_orders()[0]
     assert adapter.admin_detail(21)["delivery"]["address1"]=="서울 테스트로 1"
 
+def test_operator_order_list_filters_status_and_pages_five_orders():
+    adapter=DevOperatorAdapter(ledger=None,store=None)
+    base=dict(phone="01011112222",state="PENDING_REVIEW",reference="a"*24,requested_at="2026-10-06T01:00:00Z",
+        quote={"final_total":"29000","currency":"KRW","line_items":[{"name":"블라우스","option":"S","quantity":1}]},
+        delivery={"first_name":"김고객"})
+    rows=[{**base,"reference":hex(i+1)[2:].zfill(24),"provider_order_id":i+1,"order_number":f"261006{i:04d}"} for i in range(6)]
+    rows.append({**base,"reference":"f"*24,"provider_order_id":7,"order_number":"2610060007","state":"AWAITING_DEPOSIT"})
+    adapter.rows=lambda:rows
+    first=adapter.resolve("주문목록 상태 PENDING_REVIEW 0")[2]
+    assert first.startswith("AICC_ORDER_PAGE:STATUS:PENDING_REVIEW:0:2:6")
+    assert "2610060004" in first and "2610060005" not in first and "2610060006" not in first and "2610060007" not in first
+    second=adapter.resolve("주문목록 상태 PENDING_REVIEW 1")[2]
+    assert second.startswith("AICC_ORDER_PAGE:STATUS:PENDING_REVIEW:1:2:6")
+    assert "2610060005" in second and "2610060001" not in second
+    all_orders=adapter.resolve("주문목록 전체 ALL 0")[2]
+    assert all_orders.startswith("AICC_ORDER_PAGE:ALL:ALL:0:2:7")
+
 def test_inquiry_escalation_answer_approval_expiry_and_exclusion(tmp_path):
     clock=[100.];t=Transport();q=DevInquiryQueue(tmp_path/"inquiries.sqlite3",t,clock=lambda:clock[0])
     ticket=q.submit("10","세탁 방법이 궁금해요")

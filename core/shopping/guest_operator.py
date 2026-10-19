@@ -78,13 +78,17 @@ class GuestOperatorAdapter:
         return {"order_id":r["provider_order_id"],"order_number":self._order_number(r),"phone":r["phone"],"customer_name":r["delivery"].get("first_name",""),"state":r["state"],"display_state":self.display_state(r),"requested_at":r.get("requested_at"),
             "total":r["quote"]["final_total"],"currency":r["quote"]["currency"],"items":[{"name":v["name"],"option":v.get("option"),"quantity":v["quantity"]} for v in r["quote"]["line_items"]],
             "delivery":{"recipient":d.get("first_name",""),"postcode":d.get("postcode",""),"address1":d.get("address_1",""),"address2":d.get("address_2","")}}
-    def list_message(self,limit=None,phone=None):
+    def list_message(self,limit=None,phone=None,state=None,page=0,scope="ALL"):
         rows=[r for r in self.rows() if phone is None or r["phone"]==phone]
+        if state is not None:rows=[r for r in rows if self.display_state(r)==state]
         if limit is not None:rows=rows[:max(1,min(int(limit),100))]
+        page=max(0,min(int(page),100000));page_size=5;total=len(rows);pages=max(1,(total+page_size-1)//page_size)
+        if page>=pages:page=pages-1
         if not rows:return "현재 확인 가능한 주문이 없습니다."
         labels={"REFUND_RECORDED":"환불완료 기록","RETURN_APPROVED":"반품승인","RETURN_RECEIVED":"반품회수·검수대기","RETURN_RESTOCK_PENDING":"반품재고 확인중","RETURN_RESTOCK_UNKNOWN":"반품재고 확인중","RETURN_RESTOCKED":"반품검수완료·환불검토","CANCELLED":"취소완료","CANCELLATION_PENDING":"취소 확인중","PENDING_REVIEW":"확인대기","CONFIRMED":"확인완료","READY_TO_SHIP":"배송준비","AWAITING_DEPOSIT":"입금대기","SHIPPED":"배송중","COMPLETED":"배송완료","REJECTED":"거절","STOCK_BLOCKED":"재고확인"}
-        lines=[("고객 "+phone+" 주문 " if phone else "전체 주문 ")+str(len(rows))+"건"]
-        for r in rows:
+        lines=["AICC_ORDER_PAGE:"+scope+":"+(state or "ALL")+":"+str(page)+":"+str(pages)+":"+str(total),
+               ("고객 "+phone+" 주문 " if phone else (labels.get(state,state)+" 주문 " if state else "전체 주문 "))+str(total)+"건 · "+str(page+1)+"/"+str(pages)]
+        for r in rows[page*page_size:(page+1)*page_size]:
             display=self.display_state(r)
             lines.append(self._order_number(r)+" · "+r["phone"]+" · "+labels.get(display,display)+" · "+str(r["quote"]["final_total"])+" "+str(r["quote"]["currency"]))
             lines.append("고객: "+str(r["delivery"].get("first_name") or "이름 미등록")+" · 주문일: "+order_date(r.get("requested_at")))
@@ -99,7 +103,6 @@ class GuestOperatorAdapter:
                 lines.append("입금: "+("확인완료" if self.aftersales.payment(r["provider_order_id"])["state"]=="PAID" else "대기"))
                 if shipment["tracking"]:lines.append(shipment["carrier"]+" · "+shipment["tracking"])
             lines.append("")
-        lines.append("상세보기: 주문상세 #주문번호(10자리)")
         return "\n".join(lines)
     def _identifier_rows(self, identifier, phone=None):
         token=str(identifier).strip().removeprefix("#")
@@ -145,6 +148,15 @@ class GuestOperatorAdapter:
             if action=="배송" and not mphone_action[4]:return None,None,"배송 #"+number+" 택배사 운송장번호 형식으로 입력해 주세요."
             command=action+" #"+str(rows[0]["provider_order_id"])+((" "+mphone_action[4]+" "+mphone_action[5]) if action=="배송" else "")
             return None,None,self.aftersales.operator_command(command,update_id)
+        if clean in ("주문목록 메뉴","주문 목록 메뉴"):return None,None,"주문 목록 보기를 선택해 주세요."
+        if clean in ("주문목록 상태 메뉴","주문 상태 메뉴"):return None,None,"조회할 주문 상태를 선택해 주세요."
+        mlist_page=re.fullmatch(r"주문목록 (전체|상태) ([A-Z_]+) ([0-9]{1,6})",clean)
+        if mlist_page:
+            mode,value,page=mlist_page.groups()
+            allowed={"PENDING_REVIEW","AWAITING_DEPOSIT","READY_TO_SHIP","SHIPPED","COMPLETED","RETURN_APPROVED","RETURN_RECEIVED","RETURN_RESTOCKED","REFUND_RECORDED","CANCELLED","REJECTED","STOCK_BLOCKED"}
+            if mode=="전체" and value=="ALL":return None,None,self.list_message(state=None,page=int(page),scope="ALL")
+            if mode=="상태" and value in allowed:return None,None,self.list_message(state=value,page=int(page),scope="STATUS")
+            return None,None,"선택한 주문 상태를 조회할 수 없습니다."
         mlist=re.fullmatch(r"주문\s*목록(?:\s+([1-9][0-9]?))?",clean)
         if mlist:return None,None,self.list_message(int(mlist[1]) if mlist[1] else None)
         mdetail=re.fullmatch(r"(?:주문\s*상세|주문번호\s*확인)\s*#?([1-9][0-9]*)",clean)

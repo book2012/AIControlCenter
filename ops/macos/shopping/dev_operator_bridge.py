@@ -75,7 +75,7 @@ def compose_dev_bridge(*, cfg, data, telegram, adapter, products, conversation_c
             orders=lambda:adapter.admin_orders(100),products=lambda:products.records,
             validate_product=lambda text:parse_command(text,products.records),executor=execute_checked)
     def conversational_handle(text,update_id,actor):
-        if conversation is None or re.fullmatch(r"(?:문의\s*#[a-f0-9]{8}.*|/order_(?:status|confirm|reject) [0-9a-f]{24}|(?:환불|교환)(?:목록|(?:승인|거절)\s*#[a-f0-9]{8})|주문목록(?:\s+[1-9][0-9]?)?|주문\s*상세\s*#?[1-9][0-9]*|주문번호\s*확인\s*#?[1-9][0-9]*|상품관리(?: 도움말)?|재고관리|/products)",text,re.S):
+        if conversation is None or re.fullmatch(r"(?:문의\s*#[a-f0-9]{8}.*|/order_(?:status|confirm|reject) [0-9a-f]{24}|(?:환불|교환)(?:목록|(?:승인|거절)\s*#[a-f0-9]{8})|주문목록(?:\s+(?:메뉴|상태 메뉴|(?:전체|상태)\s+[A-Z_]+\s+[0-9]{1,6}|[1-9][0-9]?))?|주문\s*상세\s*#?[1-9][0-9]*|주문번호\s*확인\s*#?[1-9][0-9]*|상품관리(?: 도움말)?|재고관리|/products)",text,re.S):
             return handle(text,update_id,actor)
         return conversation.handle(text,update_id,actor)
     bridge = DevOperatorBridge(database_path=root/"operator-bridge.sqlite3",
