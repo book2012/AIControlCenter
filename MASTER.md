@@ -1,3 +1,9 @@
+## 2026-10-19 — DEV order lookup shortcuts
+
+- Bare 10–18 digit non-phone values open order detail.
+- Domestic phone input (compact or hyphenated) returns all matching orders.
+- Tests cover multiple orders for one phone and protect phone/order disambiguation.
+
 ## 2026-10-19 — DEV Papachichi order-list buttons
 
 - Every order row has its own detail button routed by public order number and phone through the read-only DEV bridge.

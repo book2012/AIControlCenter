@@ -1,3 +1,12 @@
+## 2026-10-19 — DEV Telegram lookup shortcuts
+
+- [x] Interpret bare 10–18 digit non-phone values as order identifiers.
+- [x] Return all orders when the input is a compact or hyphenated domestic phone number.
+- [x] Test multiple matching orders and order-detail routing.
+- [ ] Deploy the bot-only immutable DEV release and verify LaunchAgent health.
+
+Architecture: `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+
 ## 2026-10-19 — DEV Papachichi per-order buttons
 
 - [x] Add one order-specific detail button for every order row in `주문목록`.

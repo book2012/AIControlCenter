@@ -20,6 +20,8 @@ def order_identity(row):
     products=", ".join(str(v.get("name","상품 미확인"))+" / "+str(v.get("option") or "기본")+" / "+str(v.get("quantity",0))+"개" for v in items)
     return str(name)+" · "+str(row.get("phone") or "번호 미등록")+"\n주문일: "+order_date(row.get("requested_at"))+"\n"+products
 
+PHONE_PATTERN=r"(?:010[0-9]{8}|010-[0-9]{4}-[0-9]{4})"
+
 def local_phone(value):
     value=re.sub(r"[^0-9+]","",value)
     if value.startswith("+82"):value="0"+value[3:]
@@ -127,11 +129,13 @@ class GuestOperatorAdapter:
             reply=self.aftersales.operator_command(text,update_id,actor=actor)
             if reply is not None:return None,None,reply
         clean=text.strip()
-        if re.fullmatch(r"010[0-9]{8}|010-[0-9]{4}-[0-9]{4}",clean):return None,None,self.list_message(phone=local_phone(clean))
-        mphone_list=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(?:주문\s*)?(?:상태|목록|내역)",clean)
+        if re.fullmatch(PHONE_PATTERN,clean):return None,None,self.list_message(phone=local_phone(clean))
+        mphone_list=re.fullmatch(r"("+PHONE_PATTERN+r")\s*(?:고객(?:님)?\s*)?(?:주문\s*)?(?:상태|목록|내역)",clean)
         if mphone_list:return None,None,self.list_message(phone=local_phone(mphone_list[1]))
         if clean in ("주문내역","주문 내역","전체 주문","전체 주문내역","전체 주문 목록"):return None,None,self.list_message()
-        mphone_action=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*(?:고객(?:님)?\s*)?(입금\s*확인|배송\s*완료|배송|주문\s*취소|취소\s*확인)(?:\s*#([0-9]{1,18}))?(?:\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40}))?",clean)
+        mnumeric_order=re.fullmatch(r"#?([0-9]{10,18})",clean)
+        if mnumeric_order:return None,None,self.detail_message(mnumeric_order[1])
+        mphone_action=re.fullmatch(r"("+PHONE_PATTERN+r")\s*(?:고객(?:님)?\s*)?(입금\s*확인|배송\s*완료|배송|주문\s*취소|취소\s*확인)(?:\s*#([0-9]{1,18}))?(?:\s+([가-힣A-Za-z0-9 ._-]{2,40})\s+([A-Za-z0-9-]{5,40}))?",clean)
         if mphone_action and self.aftersales is not None and update_id is not None:
             phone=local_phone(mphone_action[1]);rows=[r for r in self.rows() if r["phone"]==phone]
             if mphone_action[3]:rows=self._identifier_rows(mphone_action[3],phone)
@@ -145,9 +149,9 @@ class GuestOperatorAdapter:
         if mlist:return None,None,self.list_message(int(mlist[1]) if mlist[1] else None)
         mdetail=re.fullmatch(r"(?:주문\s*상세|주문번호\s*확인)\s*#?([1-9][0-9]*)",clean)
         if mdetail:return None,None,self.detail_message(int(mdetail[1]))
-        mphone_detail=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*주문\s*상세\s*#?([1-9][0-9]*)",clean)
+        mphone_detail=re.fullmatch(r"("+PHONE_PATTERN+r")\s*고객(?:님)?\s*주문\s*상세\s*#?([1-9][0-9]*)",clean)
         if mphone_detail:return None,None,self.detail_message(int(mphone_detail[2]),local_phone(mphone_detail[1]))
-        match=re.fullmatch(r"(010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*주문\s*(확인|확정|거절|상태)(?:\s*#([0-9]{1,18}))?\s*",text)
+        match=re.fullmatch(r"("+PHONE_PATTERN+r")\s*고객(?:님)?\s*주문\s*(확인|확정|거절|상태)(?:\s*#([0-9]{1,18}))?\s*",text)
         if not match:return None,None,None
         phone=local_phone(match[1]);decision={"확인":"CONFIRMED","확정":"CONFIRMED","거절":"REJECTED","상태":"STATUS"}[match[2]]
         rows=[r for r in self.rows() if r["phone"]==phone]

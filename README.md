@@ -1,3 +1,7 @@
+## 2026-10-19 — order lookup input shortcuts
+
+Bare 10–18 digit identifiers now open order detail unless the input matches a domestic mobile format. A phone number returns every matching order in one response. Added coverage for multiple orders on one phone and both hyphenated/unhyphenated forms; see `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.
+
 ## 2026-10-19 — per-order Telegram detail and action buttons
 
 DEV Papachichi order lists now attach a matching detail button to each order. Confirmation appears only for `확인대기`; cancellation appears only for the allowed pre-shipment states. Callbacks are bound to the exact order row and routed through the existing DEV operator bridge. Thirty-five focused tests pass; no live Telegram click or PROD change. See `docs/architecture/SHOP_DEV_TELEGRAM_ORDER_ACTION_BUTTONS.md`.

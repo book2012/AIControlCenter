@@ -76,3 +76,12 @@ The confirm/cancel callbacks dispatch to the existing DEV operator bridge;
 they do not perform commerce logic in the Telegram process. Cancellation remains
 subject to the API's current unpaid/unshipped/refund review and idempotency
 guards. Button tests use a fake transport and do not click real orders.
+
+## Numeric and phone lookup input
+
+A bare domestic mobile number (`010xxxxxxxx` or `010-xxxx-xxxx`) returns all
+orders for that phone number in one response. A bare 10-to-18-digit number
+that does not match the mobile-number format is treated as an order identifier
+and opens its detail response. An explicit phone-number order-list command
+continues to work. This preserves phone/order disambiguation for the Telegram
+operator bridge.

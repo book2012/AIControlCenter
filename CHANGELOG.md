@@ -1,3 +1,7 @@
+## 2026-10-19 — DEV order number and phone lookup shortcuts
+
+A bare 10–18 digit non-phone identifier opens matching order detail. A bare domestic mobile number returns all matching orders. Hyphenated and compact phone formats are covered by tests.
+
 ## 2026-10-19 — DEV Telegram per-order detail buttons
 
 Added a row-specific detail button to every DEV order-list entry, plus state-gated confirm/cancel actions. Callback dispatch revalidates the order against the original bot-authored list message and uses the existing DEV bridge. 35 focused tests, Python compilation, and `git diff --check` pass. No real Telegram action, order mutation, or PROD change.

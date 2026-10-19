@@ -53,6 +53,13 @@ def test_operator_order_list_and_detail_separate_address():
     assert "이고객" in detail and "54321" in detail and "서울 샘플길 2 202호" in detail
     alias=adapter.resolve("주문번호 확인 #22")[2]
     assert alias == detail
+    # A 10-digit public order number is a detail lookup; a phone-shaped input lists all matching orders.
+    assert adapter.resolve("2610064444")[2] == detail
+    rows[1]["phone"]="01011112222"
+    rows[1]["order_number"]="2610064444"
+    phone_orders=adapter.resolve("01011112222")[2]
+    assert "2610062277" in phone_orders and "2610064444" in phone_orders
+    assert adapter.resolve("010-1111-2222")[2] == phone_orders
     assert adapter.admin_orders()[0]["order_id"]==21 and "delivery" not in adapter.admin_orders()[0]
     assert adapter.admin_detail(21)["delivery"]["address1"]=="서울 테스트로 1"
 
