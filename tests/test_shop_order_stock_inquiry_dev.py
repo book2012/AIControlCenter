@@ -175,7 +175,7 @@ def test_all_orders_hides_cancelled_but_cancelled_status_filter_shows_them():
           {**base,"reference":"b"*24,"state":"CONFIRMED","provider_order_id":16,"order_number":"2610060016"}]
     adapter.rows=lambda:rows
     class Aftersales:
-        def cancellation(self,order_id):return {"state":"CANCELLED" if order_id==16 else "NONE"}
+        def cancellation(self,order_id):return {"state":"CANCELLED" if order_id==15 else "NONE"}
         def admin_fulfillment(self,order_id):return {"state":"NOT_SHIPPED","tracking":None,"carrier":None}
         def admin_cases(self):return []
         def payment(self,order_id):return {"state":"AWAITING_DEPOSIT"}
@@ -185,9 +185,10 @@ def test_all_orders_hides_cancelled_but_cancelled_status_filter_shows_them():
     adapter.aftersales=Aftersales()
     all_orders=adapter.resolve("주문목록 전체 ALL 0")[2]
     cancelled=adapter.resolve("주문목록 상태 CANCELLED 0")[2]
-    assert "2610060015" in all_orders and "2610060016" not in all_orders
-    assert "2610060016" in cancelled and "2610060015" not in cancelled
-    assert "2610060016" in adapter.resolve("01011112222 고객 주문목록")[2]
+    assert "2610060016" in all_orders and "2610060015" not in all_orders
+    assert "2610060015" in cancelled and "2610060016" not in cancelled
+    assert "2610060015" in adapter.resolve("01011112222 고객 주문목록")[2]
+    assert "취소완료" in adapter.detail_message("2610060015")
 
 
 def test_order_detail_includes_timestamped_status_history():
@@ -200,6 +201,7 @@ def test_order_detail_includes_timestamped_status_history():
         def operator_status_history(self,_order_id):
             return [{"event_type":"OPERATOR_CONFIRMED","reason_code":"CONFIRMED","occurred_at":"2026-10-06T02:00:00Z"}]
     class Aftersales:
+        def cancellation(self,_order_id):return {"state":"NONE"}
         def order_status_history(self,_order_id):
             return [{"entity":"fulfillment","entity_key":"15","from_state":"NOT_SHIPPED","to_state":"SHIPPED","changed_at":1791252300.0}]
     adapter.ledger=Ledger();adapter.aftersales=Aftersales();adapter.rows=lambda:[row]

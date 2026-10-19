@@ -1,7 +1,8 @@
 ## Cancellation controls and order list visibility
 
-Each eligible order card in an order list and each ordinary new-order
-notification can show **주문 취소**. The button is validated against the
+A recorded cancellation takes precedence over pending operator-review state
+when computing the displayed status. Each eligible order card in an order list
+and each ordinary new-order notification can show **주문 취소**. The button is validated against the
 specific order and its current state; unsupported or stale states are rejected.
 
 The **전체 보기** list omits orders whose current state is CANCELLED.

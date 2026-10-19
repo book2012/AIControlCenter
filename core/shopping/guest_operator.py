@@ -59,10 +59,11 @@ class GuestOperatorAdapter:
         text+="\n상세: 주문상세 #"+self._order_number(r)+" · 전체: 주문목록"
         return text
     def display_state(self,row):
-        if row["state"]!="CONFIRMED" or self.aftersales is None:return row["state"]
-        if self.aftersales.refund(row["provider_order_id"])["state"]=="RECORDED":return "REFUND_RECORDED"
+        if self.aftersales is None:return row["state"]
         cancellation=self.aftersales.cancellation(row["provider_order_id"])["state"]
         if cancellation!="NONE":return "CANCELLED" if cancellation=="CANCELLED" else "CANCELLATION_PENDING"
+        if row["state"]!="CONFIRMED":return row["state"]
+        if self.aftersales.refund(row["provider_order_id"])["state"]=="RECORDED":return "REFUND_RECORDED"
         returned=self.aftersales.return_status(row["provider_order_id"])["state"]
         if returned!="NONE":return returned
         fulfillment=self.aftersales.admin_fulfillment(row["provider_order_id"])
