@@ -687,6 +687,21 @@ class SQLiteOrderCreateLedger:
                 "JOIN shopping_order_create_operations o ON o.operation_key=r.operation_key ORDER BY o.requested_at DESC")]
         finally: connection.close()
 
+    def operator_status_history(self, provider_order_id):
+        """Read immutable order-review transitions for the private operator timeline."""
+        if type(provider_order_id) is not int or provider_order_id <= 0:
+            raise OrderLedgerError("provider order id invalid")
+        connection = self._connect(read_only=True)
+        try:
+            self._validate(connection)
+            return [dict(row) for row in connection.execute(
+                "SELECT a.event_type,a.occurred_at,a.reason_code FROM shopping_order_create_audit a "
+                "JOIN shopping_order_create_operations o ON o.operation_key=a.operation_key "
+                "WHERE o.provider_order_id=? AND a.event_type IN ('OPERATOR_CONFIRMED','OPERATOR_REJECTED') "
+                "ORDER BY a.occurred_at,a.event_id", (provider_order_id,))]
+        finally:
+            connection.close()
+
     def customer_orders(self, customer_id):
         """Authenticated customer projection for private after-sales composition only."""
         if type(customer_id) is not str or not customer_id:

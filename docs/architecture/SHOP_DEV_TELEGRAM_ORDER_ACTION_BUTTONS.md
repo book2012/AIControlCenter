@@ -1,3 +1,29 @@
+## Dedicated cancellation category
+
+The all-orders view and ordinary new-order notifications do not show a cancel
+button. The one-screen order selector has a dedicated 주문 취소 category. Its
+query includes only pre-shipment orders whose cancellation preconditions are
+currently satisfied. Each result card carries an internal-to-the-workflow
+visible category marker; callback validation requires that marker and the
+matching order row before forwarding the command. This also rejects stale
+cancel buttons from older all-orders and notification messages.
+
+Cancellation supports both 확인대기 and 확인완료 review states. For an
+unconfirmed Woo order it requires pending provider status and no stock
+reduction. For a confirmed order it verifies the stock receipt and restores
+stock through the isolated DEV provider. Payment and shipment guards remain in
+force.
+
+## Timestamped status history
+
+Order detail combines immutable order-ledger confirmation/rejection audit
+entries with append-only after-sales status events. Database triggers record
+payment, shipment, delivery, cancellation, return/exchange case, return-stock,
+and manual refund transitions with their timestamps. The order list also shows
+the most recent recorded state-change time. Historical after-sales transitions
+before this history table was deployed are not inferred; new transitions are
+recorded from activation onward.
+
 ## DEV API command routing
 
 Phone-bound commands emitted by per-order Telegram callbacks must be recognized

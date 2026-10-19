@@ -82,3 +82,64 @@ def test_approved_paid_order_cannot_be_cancelled_after_shipment(tmp_path):
     with pytest.raises(ValueError,match='SHIPPED_CANCELLATION_DENIED'):
         store.cancel_order(ORDER,refund_case_id=case['id'])
     assert store.cancellation(ORDER)['state']=='NONE'
+
+
+def test_pending_review_order_can_be_cancelled_without_stock_reduction(tmp_path):
+    store,_=fixture(tmp_path,[1000.0])
+    store.ledger.review_state="PENDING_REVIEW"
+    rows=store.ledger.operator_orders()
+    for row in rows:row["state"]="PENDING_REVIEW"
+    store.ledger.operator_orders=lambda:rows
+    calls=[]
+    store.stock_cancellation=lambda row,draft:(calls.append(row["state"]) or {"outcome":"STOCK_CANCELLED","order_id":ORDER})
+    result=store.cancel_order(ORDER)
+    assert result["state"]=="CANCELLED" and calls==["PENDING_REVIEW"]
+    history=store.order_status_history(ORDER)
+    assert [(event["from_state"],event["to_state"]) for event in history if event["entity"]=="cancellation"]==[
+        ("NONE","SENDING"),("SENDING","CANCELLED")]
+    assert [event["changed_at"] for event in history if event["entity"]=="cancellation"]==[1000.0,1000.0]
+
+
+def test_order_status_history_records_each_payment_delivery_and_case_transition(tmp_path):
+    clock=[1000.0]
+    store,_=fixture(tmp_path,clock)
+    store.confirm_payment(ORDER)
+    clock[0]+=1;store.mark_shipped(ORDER,"CJ대한통운","1234567890")
+    clock[0]+=1;store.mark_delivered(ORDER)
+    case=store.create_case("customer",{"order_id":ORDER,"kind":"RETURN","reason":"단순 변심","reason_type":"CHANGE_OF_MIND"})
+    clock[0]+=1;store.decide(case["id"],True)
+    clock[0]+=1;store.receive_return(case["id"])
+    store.stock_return=lambda row,draft,case:{"outcome":"STOCK_RETURNED","order_id":ORDER,"case_id":case["id"]}
+    clock[0]+=1;store.inspect_return(case["id"])
+    history=store.order_status_history(ORDER)
+    assert [(event["entity"],event["from_state"],event["to_state"]) for event in history]==[
+        ("payment","AWAITING_DEPOSIT","PAID"),
+        ("fulfillment","NOT_SHIPPED","SHIPPED"),
+        ("fulfillment","SHIPPED","DELIVERED"),
+        ("case","NONE","REQUESTED"),
+        ("case","REQUESTED","RETURN_APPROVED"),
+        ("case","RETURN_APPROVED","RETURN_RECEIVED"),
+        ("return_stock","RETURN_RECEIVED","SENDING"),
+        ("case","RETURN_RECEIVED","RETURN_RESTOCK_PENDING"),
+        ("return_stock","SENDING","RESTORED"),
+        ("case","RETURN_RESTOCK_PENDING","RETURN_RESTOCKED"),
+    ]
+    assert all(event["changed_at"] is not None for event in history)
+    assert store.order_status_history(999)==[]
+
+
+def test_phone_bound_order_cancel_command_handles_pending_review_safely(tmp_path):
+    from core.shopping.guest_operator import GuestOperatorAdapter
+    store,_=fixture(tmp_path,[1000.0])
+    rows=store.ledger.operator_orders()
+    for row in rows:row["state"]="PENDING_REVIEW"
+    store.ledger.operator_orders=lambda:rows
+    provider_calls=[]
+    store.stock_cancellation=lambda row,draft:(provider_calls.append(row["state"]) or {"outcome":"STOCK_CANCELLED","order_id":ORDER})
+    adapter=GuestOperatorAdapter(ledger=store.ledger,store=store.checkout,aftersales=store)
+    order=adapter.admin_orders(10)[0]
+    command=order["phone"]+" 고객 주문 취소 #"+order["order_number"]
+    _,decision,reply=adapter.resolve(command,update_id=551,actor="telegram-user-test")
+    assert decision is None and "취소완료" in reply
+    assert provider_calls==["PENDING_REVIEW"]
+    assert store.cancellation(ORDER)["state"]=="CANCELLED"

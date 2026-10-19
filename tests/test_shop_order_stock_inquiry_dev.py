@@ -164,3 +164,46 @@ def test_compound_shipping_question_never_auto_answers_just_stock():
     def classifier(m,p):called.append(m);return "STOCK"
     result=GuestShoppingChat(Catalog(),intent_classifier=classifier).answer({"product_id":"10","message":"재고 있나요 그리고 배송은 언제 되나요?"})
     assert result["action"]=="OPERATOR_REQUIRED" and called==[]
+
+
+def test_cancellation_category_contains_only_cancelable_orders_and_marks_each_card():
+    adapter=DevOperatorAdapter(ledger=None,store=None,aftersales=None)
+    base=dict(phone="01011112222",reference="a"*24,requested_at="2026-10-06T01:00:00Z",
+        quote={"final_total":"29000","currency":"KRW","line_items":[{"name":"블라우스","option":"S","quantity":1}]},
+        delivery={"first_name":"김고객"})
+    rows=[{**base,"state":"PENDING_REVIEW","provider_order_id":15,"order_number":"2610060015"},
+          {**base,"reference":"b"*24,"state":"CONFIRMED","provider_order_id":16,"order_number":"2610060016"}]
+    adapter.rows=lambda:rows
+    class Aftersales:
+        def cancellation(self,order_id):return {"state":"NONE" if order_id==15 else "CANCELLED"}
+        def admin_fulfillment(self,order_id):return {"state":"NOT_SHIPPED","tracking":None,"carrier":None}
+        def admin_cases(self):return []
+        def payment(self,order_id):return {"state":"AWAITING_DEPOSIT"}
+        def refund(self,order_id):return {"state":"NOT_RECORDED"}
+        def return_status(self,order_id):return {"state":"NONE"}
+        def order_status_history(self,order_id):return []
+    adapter.aftersales=Aftersales()
+    result=adapter.resolve("주문목록 상태 CANCELLATION_ACTIONABLE 0")[2]
+    assert "2610060015" in result and "2610060016" not in result
+    assert "분류: 주문 취소" in result
+    assert "상태 변경: 2026-10-06 10:00" in result
+
+
+def test_order_detail_includes_timestamped_status_history():
+    adapter=DevOperatorAdapter(ledger=None,store=None,aftersales=None)
+    row=dict(phone="01011112222",state="PENDING_REVIEW",reference="a"*24,provider_order_id=15,
+        requested_at="2026-10-06T01:00:00Z",order_number="2610060015",
+        quote={"final_total":"29000","currency":"KRW","line_items":[{"name":"블라우스","option":"S","quantity":1}]},
+        delivery={"first_name":"김고객","postcode":"12345","address_1":"서울 테스트로 1","address_2":""})
+    class Ledger:
+        def operator_status_history(self,_order_id):
+            return [{"event_type":"OPERATOR_CONFIRMED","reason_code":"CONFIRMED","occurred_at":"2026-10-06T02:00:00Z"}]
+    class Aftersales:
+        def order_status_history(self,_order_id):
+            return [{"entity":"fulfillment","entity_key":"15","from_state":"NOT_SHIPPED","to_state":"SHIPPED","changed_at":1791252300.0}]
+    adapter.ledger=Ledger();adapter.aftersales=Aftersales();adapter.rows=lambda:[row]
+    detail=adapter.detail_message("2610060015")
+    assert "상태 변경 기록:" in detail
+    assert "2026-10-06 10:00 · 주문 접수" in detail
+    assert "2026-10-06 11:00 · 주문 확인완료" in detail
+    assert "배송: 배송 전 → 배송 중" in detail
