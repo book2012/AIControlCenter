@@ -12,6 +12,10 @@ _ORDER_LINE=re.compile(r"(?m)^([0-9]{11}) 고객님 주문\n주문 ([0-9]{10}) �
 _ORDER_LIST_LINE=re.compile(r"(?m)^([0-9]{10}) · (010[0-9]{8}) · ([^·\n]+) ·")
 _ORDER_PAGE=re.compile(r"(?m)^AICC_ORDER_PAGE:(ALL|STATUS):([A-Z_]+):([0-9]{1,6}):([0-9]{1,6}):([0-9]{1,9})$")
 _ORDER_NAV=re.compile(r"^주문 더 보기 · (ALL|STATUS):([A-Z_]+):([0-9]{1,6})$")
+_OPERATOR_PREFIX="안녕하세요 agachichi 입니다\n[개발]\n"
+
+def _operator_body(text):
+    return text.strip().removeprefix(_OPERATOR_PREFIX).strip() if type(text) is str else ""
 _LIST_CANCEL_STATES={"확인대기","확인완료","입금대기","배송준비"}
 _FILTER_STATES={"PENDING_REVIEW":"확인 대기","AWAITING_DEPOSIT":"입금 대기","READY_TO_SHIP":"배송 준비","SHIPPED":"배송 중","COMPLETED":"배송 완료","RETURN_APPROVED":"환불 승인","RETURN_RECEIVED":"환불 회수","RETURN_RESTOCKED":"환불 검수","REFUND_RECORDED":"환불 완료","CANCELLED":"취소 완료","REJECTED":"주문 거절","STOCK_BLOCKED":"재고 확인"}
 
@@ -32,6 +36,7 @@ def reply_markup(text):
         return menu_markup()
     if type(text) is not str:
         return None
+    text=_operator_body(text)
     if text.strip() in ("주문 목록 보기를 선택해 주세요.","조회할 주문 상태를 선택해 주세요."):
         states=list(_FILTER_STATES.items());rows=[[{"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}]]
         for i in range(0,len(states),2):
@@ -103,17 +108,18 @@ def callback_command(update,cfg):
         return query["id"],actor["id"],menu_commands[menu[1]]
     if type(message.get("text")) is not str:return None
     data=query["data"]
-    if data=="aicc:orders:filters" and message.get("text","").strip()=="주문 목록 보기를 선택해 주세요.":
+    message_text=_operator_body(message.get("text",""))
+    if data=="aicc:orders:filters" and message_text=="주문 목록 보기를 선택해 주세요.":
         return query["id"],actor["id"],"주문목록 상태 메뉴"
-    if data=="aicc:orders:back" and message["text"].strip()=="조회할 주문 상태를 선택해 주세요.":
+    if data=="aicc:orders:back" and message_text=="조회할 주문 상태를 선택해 주세요.":
         return query["id"],actor["id"],"주문목록 메뉴"
-    if data=="aicc:orders:all:0" and message["text"].strip()=="주문 목록 보기를 선택해 주세요.":
+    if data=="aicc:orders:all:0" and message_text=="주문 목록 보기를 선택해 주세요.":
         return query["id"],actor["id"],"주문목록 전체 ALL 0"
     status=re.fullmatch(r"aicc:orders:status:([A-Z_]+):([0-9]{1,6})",data)
-    if status and message["text"].strip() in ("주문 목록 보기를 선택해 주세요.","조회할 주문 상태를 선택해 주세요.") and status[1] in _FILTER_STATES:
+    if status and message_text in ("주문 목록 보기를 선택해 주세요.","조회할 주문 상태를 선택해 주세요.") and status[1] in _FILTER_STATES:
         return query["id"],actor["id"],"주문목록 상태 "+status[1]+" "+status[2]
     next_page=re.fullmatch(r"aicc:orders:next:(ALL|[A-Z_]+):([1-9][0-9]{0,5})",data)
-    nav=_ORDER_NAV.fullmatch(message["text"].strip())
+    nav=_ORDER_NAV.fullmatch(message_text)
     if next_page and nav and int(next_page[2])==int(nav[3])+1:
         scope=next_page[1]
         if scope=="ALL" and nav[1]=="ALL":return query["id"],actor["id"],"주문목록 전체 ALL "+next_page[2]

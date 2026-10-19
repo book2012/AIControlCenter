@@ -47,7 +47,11 @@ def test_operator_order_list_and_detail_separate_address():
            quote={"final_total":"58000","currency":"KRW","line_items":[{"name":"블라우스","option":"M","quantity":2}]},
            delivery={"first_name":"이고객","postcode":"54321","address_1":"서울 샘플길 2","address_2":"202호"})]
     adapter.rows=lambda:rows
-    listing=adapter.resolve("주문목록")[2]
+    selector=adapter.resolve("주문목록")[2]
+    assert selector=="주문 목록 보기를 선택해 주세요."
+    spaced_selector=adapter.resolve("주문 목록")[2]
+    assert spaced_selector==selector
+    listing=adapter.resolve("주문목록 2")[2]
     assert "2610062277" in listing and "2610064444" in listing and "#21" not in listing and "#22" not in listing and "테스트로" not in listing and "샘플길" not in listing
     detail=adapter.resolve("주문상세 #22")[2]
     assert "이고객" in detail and "54321" in detail and "서울 샘플길 2 202호" in detail

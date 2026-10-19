@@ -95,3 +95,11 @@ callbacks timed out, the bridge ledger was checked for incomplete operations;
 all were complete. The API and bot were then restarted on the same immutable
 release without a database migration. Read-only bridge checks returned the menu
 and a current order page quickly. PROD remains unchanged.
+
+## Typed order-list command and bridge response validation
+
+Typing `주문목록` or `주문 목록` opens the one-screen selector; explicit
+`주문목록 N` remains available for a limited list lookup. DEV bridge responses
+include the authenticated `[개발]` header, so the bot strips that exact header
+when matching selector/navigation messages and validating those callbacks. Tests
+cover the actual prefixed selector and navigation message shape.

@@ -132,6 +132,8 @@ class GuestOperatorAdapter:
             reply=self.aftersales.operator_command(text,update_id,actor=actor)
             if reply is not None:return None,None,reply
         clean=text.strip()
+        if clean in ("주문목록","주문 목록","주문목록 메뉴","주문 목록 메뉴"):
+            return None,None,"주문 목록 보기를 선택해 주세요."
         if re.fullmatch(PHONE_PATTERN,clean):return None,None,self.list_message(phone=local_phone(clean))
         mphone_list=re.fullmatch(r"("+PHONE_PATTERN+r")\s*(?:고객(?:님)?\s*)?(?:주문\s*)?(?:상태|목록|내역)",clean)
         if mphone_list:return None,None,self.list_message(phone=local_phone(mphone_list[1]))
@@ -148,7 +150,6 @@ class GuestOperatorAdapter:
             if action=="배송" and not mphone_action[4]:return None,None,"배송 #"+number+" 택배사 운송장번호 형식으로 입력해 주세요."
             command=action+" #"+str(rows[0]["provider_order_id"])+((" "+mphone_action[4]+" "+mphone_action[5]) if action=="배송" else "")
             return None,None,self.aftersales.operator_command(command,update_id)
-        if clean in ("주문목록 메뉴","주문 목록 메뉴"):return None,None,"주문 목록 보기를 선택해 주세요."
         if clean in ("주문목록 상태 메뉴","주문 상태 메뉴"):return None,None,"조회할 주문 상태를 선택해 주세요."
         mlist_page=re.fullmatch(r"주문목록 (전체|상태) ([A-Z_]+) ([0-9]{1,6})",clean)
         if mlist_page:

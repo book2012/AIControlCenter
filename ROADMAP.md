@@ -1,3 +1,7 @@
+## 2026-10-20 — Typed order-list command opens selector
+
+Typing `주문목록` or `주문 목록` now opens the same one-screen picker as the menu button. The DEV API bridge's `[개발]` response prefix is normalized for button rendering and callback validation, so **전체 보기**, status filters, and next-page controls work on real bridged replies. Fifty-two focused tests pass.
+
 ## 2026-10-20 — Align DEV bot and order API releases
 
 The order keyboard callbacks were not rendering because Papachichi had been updated while the DEV order API stayed on an older release that did not recognize the new menu/page commands. The commands were diverted into the conversational handler and timed out. Restarted the DEV order API and Papachichi on immutable release `3b92d72e6624746a4dcd37d5722b61476bc2ea8e`; no database migration was needed. The bridge had no incomplete operations before restart. Read-only live bridge checks returned the order menu in 0.02s and a current five-order page in 0.03s. 52 focused tests pass. No order or PROD state changed.

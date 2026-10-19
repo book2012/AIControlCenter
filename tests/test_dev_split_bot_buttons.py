@@ -138,7 +138,7 @@ def test_order_list_without_internal_page_marker_still_splits_each_order_card():
 
 
 def test_order_selector_has_all_and_each_status_button_on_one_screen():
-    markup=reply_markup("주문 목록 보기를 선택해 주세요.")
+    markup=reply_markup("안녕하세요 agachichi 입니다\n[개발]\n주문 목록 보기를 선택해 주세요.")
     buttons=[button for row in markup["inline_keyboard"] for button in row]
     callbacks=[button["callback_data"] for button in buttons]
     assert buttons[0]=={"text":"📋 전체 보기","callback_data":"aicc:orders:all:0"}
@@ -363,7 +363,7 @@ def test_menu_callback_rejects_wrong_operator_or_non_menu_message():
 def test_all_and_status_filter_callbacks_are_bound_to_selector_or_current_page():
     selector={"update_id":2,"callback_query":{"id":"c","from":{"id":USER,"is_bot":False},
         "data":"aicc:orders:all:0","message":{"chat":{"id":CHAT,"type":"private"},
-        "from":{"is_bot":True,"username":BOT},"text":"주문 목록 보기를 선택해 주세요."}}}
+        "from":{"is_bot":True,"username":BOT},"text":"안녕하세요 agachichi 입니다\n[개발]\n주문 목록 보기를 선택해 주세요."}}}
     assert callback_command(selector,CFG)==("c",USER,"주문목록 전체 ALL 0")
     filter_update={**selector,"callback_query":{**selector["callback_query"],"data":"aicc:orders:status:AWAITING_DEPOSIT:0",
         "message":{**selector["callback_query"]["message"],"text":"조회할 주문 상태를 선택해 주세요."}}}
