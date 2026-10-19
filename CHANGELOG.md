@@ -1,3 +1,7 @@
+## 2026-10-20 — Align DEV bot and order API releases
+
+The order keyboard callbacks were not rendering because Papachichi had been updated while the DEV order API stayed on an older release that did not recognize the new menu/page commands. The commands were diverted into the conversational handler and timed out. Restarted the DEV order API and Papachichi on immutable release `3b92d72e6624746a4dcd37d5722b61476bc2ea8e`; no database migration was needed. The bridge had no incomplete operations before restart. Read-only live bridge checks returned the order menu in 0.02s and a current five-order page in 0.03s. 52 focused tests pass. No order or PROD state changed.
+
 ## 2026-10-20 — One-screen DEV order filters
 
 Changed the Papachichi order-list picker to show all-orders and every status filter on one screen. All-orders queries current order data; per-order messages display each order's current state. Fifty-two focused tests pass.

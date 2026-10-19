@@ -84,3 +84,14 @@ that does not match the mobile-number format is treated as an order identifier
 and opens its detail response. An explicit phone-number order-list command
 continues to work. This preserves phone/order disambiguation for the Telegram
 operator bridge.
+
+## 2026-10-20 DEV bot/API release alignment
+
+The callback bot and order API must run compatible immutable releases because
+menu, page, and status-filter callbacks are resolved by the API's DEV operator
+bridge. A bot-only rollout can leave a newer callback command unrecognized by
+an older API runtime and route it into the conversational handler. After
+callbacks timed out, the bridge ledger was checked for incomplete operations;
+all were complete. The API and bot were then restarted on the same immutable
+release without a database migration. Read-only bridge checks returned the menu
+and a current order page quickly. PROD remains unchanged.
