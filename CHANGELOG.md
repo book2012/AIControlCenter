@@ -6685,3 +6685,7 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 ## 2026-10-13 — Telegram customer bot requirements
 - Recorded a separate customer-facing Telegram Shopping/Sales Bot requirement: guests remain unlinked; members link through an authenticated account challenge; members are marked first-purchase until a successful paid order exists.
 - Kept current papachichi operator bot and mommychichi production operator bot isolated. No customer bot runtime was activated.
+
+## 2026-10-20 — DEV charcoal pleated pants
+- Added `ag-upload-bottom-0003` with price 70,000 KRW and S/M/L quantity two each, source photo plus labelled AI reference images. Existing charcoal trousers remain separate.
+- Updated catalog/media hashes and storefront count expectations; 30 focused tests passed. Isolated DEV WooCommerce product #200 registered, with no PROD mutation or Homepage activation.

@@ -3,6 +3,49 @@
   "environment": "DEV",
   "products": [
     {
+      "id": "ag-upload-bottom-0003",
+      "source": "user_upload",
+      "name": "차콜 핀턱 와이드 팬츠",
+      "slug": "ag-upload-bottom-0003",
+      "category": "bottom",
+      "category_label": "BOTTOM",
+      "description": "차콜 그레이 색상의 하이웨이스트 와이드 팬츠입니다. 허리 앞 단추와 앞면 핀턱, 발등까지 여유롭게 떨어지는 넓은 실루엣이 특징입니다. 실제 소재와 상세 치수는 확인되지 않았습니다. AI 생성 착용 및 상품 단독 이미지는 색감과 디테일이 실제 상품과 다를 수 있으니 원본 사진을 함께 확인해 주세요.",
+      "style_tip": "심플한 상의와 매치해 팬츠의 볼륨감 있는 실루엣을 강조해 보세요. 사진 속 상의·가방·신발은 포함되지 않습니다.",
+      "tags": [
+        "차콜",
+        "핀턱",
+        "와이드팬츠",
+        "팬츠"
+      ],
+      "collections": [
+        "new"
+      ],
+      "image_id": "ag-upload-bottom-0003",
+      "price_status": "READY",
+      "price": 70000,
+      "sale_price": null,
+      "price_basis": "user_set",
+      "currency": "KRW",
+      "option_type": "size",
+      "size_options": [
+        "S",
+        "M",
+        "L"
+      ],
+      "inventory": {
+        "S": 2,
+        "M": 2,
+        "L": 2
+      },
+      "inventory_pending": false,
+      "enabled": true,
+      "registered_at": "2026-10-20",
+      "source_files": [
+        "01-71478.jpg"
+      ],
+      "registration_method": "single_product"
+    },
+    {
       "id": "ag-upload-bottom-0002",
       "source": "user_upload",
       "name": "베이지 플라워 레이스 롱 스커트",
