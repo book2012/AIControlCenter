@@ -77,6 +77,9 @@ def test_full_dev_http_order_telegram_confirm_and_customer_status(api,composed):
         assert REFERENCE in transport.messages[0]
         transport.updates=[update()]
         assert telegram.poll_once()['results'][0]['outcome']=='CONFIRMED'
+        provider_id=store.operator_orders()[0]['provider_order_id']
+        history=store.operator_status_history(provider_id)
+        assert len(history)==1 and history[0]['event_type']=='OPERATOR_CONFIRMED' and history[0]['occurred_at']
         assert client.get(status_path,headers=headers).json()['review_state']=='CONFIRMED'
         assert telegram.dispatch_one()['outcome']=='SENT'
         assert '운영자 확인 완료' in transport.messages[-1]
