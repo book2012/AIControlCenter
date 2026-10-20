@@ -7,9 +7,10 @@ from ops.macos.shopping.dev_order_operator import local_phone
 from ops.macos.shopping.dev_customer_messages import greeting
 
 class DevOrderSMS:
-    def __init__(self,path,*,aftersales,phone_cfg,config_path,transport=None,solapi_config_path=None):
+    def __init__(self,path,*,aftersales,phone_cfg,config_path,transport=None,solapi_config_path=None,sens_config_path=None):
         self.path=Path(path);self.store=aftersales;self.phone_cfg=phone_cfg;self.config_path=Path(config_path);self.transport=transport
         self.solapi_config_path=Path(solapi_config_path) if solapi_config_path else None
+        self.sens_config_path=Path(sens_config_path) if sens_config_path else None
         if self.path.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
         with connection(self.path) as c:
             c.execute("CREATE TABLE IF NOT EXISTS notices(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL)")
@@ -47,7 +48,16 @@ class DevOrderSMS:
             if value.get("enabled") is not True or bank!={"name":"가상 테스트은행","account":"DEV-0000-0000","holder":"아가치치 DEV"}:
                 raise ValueError("DEV_PREVIEW_CONFIGURATION_REQUIRED")
             return value
-        if bank["account"].strip()=="123456":raise ValueError("REAL_BANK_REQUIRED")
+        if bank["account"].strip() in {"123456","DEV-0000-0000"}:raise ValueError("REAL_BANK_REQUIRED")
+        if self.sens_config_path and self.sens_config_path.exists():
+            if self.sens_config_path.is_symlink() or self.sens_config_path.stat().st_mode&0o077:raise ValueError("PRIVATE_CONFIG_REQUIRED")
+            sens=json.loads(self.sens_config_path.read_text())
+            if sens.get("enabled") is True and value.get("provider")=="NCP_SENS":
+                if value.get("enabled") is not True:raise ValueError("SMS_DISABLED")
+                from ops.macos.shopping.dev_sens_sms import SensSMS
+                client=SensSMS(sens);client.session.close()
+                return {**value,"provider":"NCP_SENS","sens":sens,"enabled":True}
+        if value.get("provider")=="NCP_SENS":raise ValueError("SENS_CONFIGURATION_REQUIRED")
         if self.solapi_config_path and self.solapi_config_path.exists():
             if self.solapi_config_path.is_symlink() or self.solapi_config_path.stat().st_mode&0o077:raise ValueError("PRIVATE_CONFIG_REQUIRED")
             solapi=json.loads(self.solapi_config_path.read_text())
@@ -76,18 +86,27 @@ class DevOrderSMS:
         elif cfg.get("provider")=="SOLAPI":
             from ops.macos.shopping.dev_solapi_sms import SolapiSMS
             receipt=SolapiSMS(cfg["solapi"]).send(self.phone_cfg["test_phone"],text,event)
+        elif cfg.get("provider")=="NCP_SENS":
+            from ops.macos.shopping.dev_sens_sms import SensSMS
+            receipt=SensSMS(cfg["sens"]).send(self.phone_cfg["test_phone"],text)
         else:receipt=self.send(cfg,self.phone_cfg["test_phone"],text)
-        if isinstance(receipt,dict) and receipt.get("provider")=="SOLAPI":
+        if isinstance(receipt,dict) and receipt.get("provider") in {"SOLAPI","NCP_SENS"}:
             with connection(self.path) as c:c.execute("INSERT INTO provider_receipts VALUES(?,?,?,?,?,?)",(event,kind,oid,json.dumps(receipt),"ACCEPTED",time.time()+30))
 
     def reconcile_one(self,cfg):
-        if cfg.get("provider")!="SOLAPI":return None
+        if cfg.get("provider") not in {"SOLAPI","NCP_SENS"}:return None
         with connection(self.path) as c:
             row=c.execute("SELECT event_key,kind,order_id,receipt FROM provider_receipts WHERE state='ACCEPTED' AND next_check<=? ORDER BY next_check LIMIT 1",(time.time(),)).fetchone()
             if row:c.execute("UPDATE provider_receipts SET next_check=? WHERE event_key=?",(time.time()+30,row[0]))
         if not row:return None
-        from ops.macos.shopping.dev_solapi_sms import SolapiSMS
-        result=SolapiSMS(cfg["solapi"]).status(json.loads(row[3]))
+        receipt=json.loads(row[3])
+        if receipt.get("provider")!=cfg.get("provider"):return None
+        if cfg.get("provider")=="SOLAPI":
+            from ops.macos.shopping.dev_solapi_sms import SolapiSMS
+            result=SolapiSMS(cfg["solapi"]).status(receipt)
+        else:
+            from ops.macos.shopping.dev_sens_sms import SensSMS
+            result=SensSMS(cfg["sens"]).status(receipt)
         if result["state"] in {"DELIVERED","FAILED"}:
             with connection(self.path) as c:
                 c.execute("UPDATE provider_receipts SET state=? WHERE event_key=?",(result["state"],row[0]))
@@ -108,12 +127,13 @@ class DevOrderSMS:
         else:text+="\n입금계좌: "+bank["name"]+" "+bank["account"]+" ("+bank["holder"]+")"
         text+="\n주문조회: https://dev.bokstory.duckdns.org/homepage/storefront/my-orders"
         text=greeting(text)
-        if cfg.get("provider")=="SOLAPI":
+        if cfg.get("provider") in {"SOLAPI","NCP_SENS"}:
             if len(text.encode("euc-kr"))>2000:
                 suffix=text[text.index("총액:"):]
                 text=greeting("주문확인 및 입금 안내\n주문번호: "+str(order["order_number"])+"\n상품 "+str(len(order["items"]))+"종 · 상세내역은 주문조회에서 확인해 주세요.\n"+suffix)
-            from ops.macos.shopping.dev_solapi_sms import payload
-            payload(cfg["solapi"]["sender_number"],self.phone_cfg["test_phone"],text,"order:"+str(oid))
+            if cfg.get("provider")=="SOLAPI":
+                from ops.macos.shopping.dev_solapi_sms import payload
+                payload(cfg["solapi"]["sender_number"],self.phone_cfg["test_phone"],text,"order:"+str(oid))
         elif len(text)>1600:raise ValueError("SMS_TOO_LARGE")
         return text
 

@@ -96,10 +96,19 @@ class FixedDevTwilioPort:
             phone_binding=request.phone_binding,status=status,verified_at=self.provider_timestamp(raw["date_updated"]))
 
 class DevPhoneBridge:
-    def __init__(self,*,cfg,binding_key,customer_path,bridge_path,clock=utc,port=None):
+    def __init__(self,*,cfg,binding_key,customer_path,bridge_path,clock=utc,port=None,sens_config_path=None):
         self.cfg=cfg;self.clock=clock;self.customer_path=Path(customer_path);self.path=Path(bridge_path);self.lock=threading.Lock();self.binding_key=binding_key
-        self.port=port or FixedDevTwilioPort(cfg,binding_key)
-        self.service=PhoneVerificationService(self.port,clock=clock,binding_key=binding_key,provider_source=SOURCE,database_path=self.customer_path)
+        if port is not None:self.port=port
+        elif cfg.get("provider")=="sens_sms":
+            from ops.macos.shopping.dev_sens_phone import FixedDevSensPort
+            config_path=Path(sens_config_path) if sens_config_path else None
+            if config_path is None or not config_path.exists() or config_path.is_symlink() or config_path.stat().st_mode&0o077:
+                raise ValueError("PRIVATE_SENS_CONFIG_REQUIRED")
+            self.port=FixedDevSensPort(json.loads(config_path.read_text()),cfg,binding_key,
+                                      self.path.with_name("sens-phone.sqlite3"),clock=clock)
+        else:self.port=FixedDevTwilioPort(cfg,binding_key)
+        source=getattr(self.port,"source",SOURCE)
+        self.service=PhoneVerificationService(self.port,clock=clock,binding_key=binding_key,provider_source=source,database_path=self.customer_path)
         self.customer_id=cfg["guest_customer_id"]
         with sqlite3.connect(self.path) as c:
             c.execute("CREATE TABLE IF NOT EXISTS dev_phone_browser(token_hash TEXT PRIMARY KEY,challenge TEXT NOT NULL,replay TEXT NOT NULL,browser TEXT NOT NULL,state TEXT NOT NULL,created REAL NOT NULL,expires REAL NOT NULL)")

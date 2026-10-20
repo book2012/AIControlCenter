@@ -7224,3 +7224,6 @@ Customer member/guest identification and first-purchase classification belong in
 
 ### DEV 문자 미리보기
 DEV_PREVIEW 공급자는 고정 가상 계좌만 승인한다. 주문확인 및 명시적 재전송 시 원문을 별도 로컬 기록에 저장하고 재전송 버튼 응답에 실제 발송 아님을 표시한다. 정상 발신 구성으로 전환할 때는 실제 계좌/발신 서비스를 검증하고 과거 주문의 자동 발송을 계속 차단한다.
+
+## 2026-10-20 DEV Korean sender SMS pilot
+AIControlCenter now has a staged Naver Cloud SENS transport shared by fixed-recipient phone verification and order notices. OTP state is private, short-lived and replay resistant; order messages preserve the no-backfill outbox. Activation awaits an approved, unblocked owned sender, SENS keys and real deposit details. See `docs/shopping/DEV_SENS_SMS.md`.

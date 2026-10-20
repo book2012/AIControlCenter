@@ -196,7 +196,7 @@ def create_app():
     if phone_cfg.get('enabled') is True:
         from ops.macos.shopping.dev_guest_phone import DevPhoneBridge,mount_phone_routes
         phone=DevPhoneBridge(cfg=phone_cfg,binding_key=bytes.fromhex(phone_cfg['binding_key']),
-            customer_path=customer_path,bridge_path=DATA/'guest-phone.sqlite3')
+            customer_path=customer_path,bridge_path=DATA/'guest-phone.sqlite3',sens_config_path=PRIVATE/'sens.private.json')
         def register_phone_evidence(value):
             with lock:
                 public_receipt=public_reference("VRF");public_challenge=public_reference("CHL")
@@ -215,7 +215,7 @@ def create_app():
     if phone is not None and aftersales is not None:
         from ops.macos.shopping.dev_order_sms import DevOrderSMS
         order_sms=DevOrderSMS(DATA/"order-sms.sqlite3",aftersales=aftersales,phone_cfg=phone_cfg,
-            config_path=Path("/Users/kyouhan/.config/aicontrolcenter-dev-order/order-notification.private.json"),solapi_config_path=PRIVATE/"solapi.private.json")
+            config_path=Path("/Users/kyouhan/.config/aicontrolcenter-dev-order/order-notification.private.json"),solapi_config_path=PRIVATE/"solapi.private.json",sens_config_path=PRIVATE/"sens.private.json")
     if order_sms is not None:aftersales.sms=order_sms
     history_store=None
     if phone is not None and checkout is not None:

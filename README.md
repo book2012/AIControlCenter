@@ -6205,3 +6205,6 @@ The new `ag-upload-bottom-0003` pants use the operator's KRW 70,000 price and S/
 상세 보기에는 현재 상태에 맞는 다음 단계, 취소 가능 상태의 주문취소, 명시적 안내문자 재전송 버튼이 붙는다. 재전송은 발신 설정 및 실제 계좌 검증, 수신번호 확인, 60초 중복 방지와 결과 불명 시 정지 정책을 적용한다.
 
 DEV 문자 미리보기 모드는 가상 테스트은행 / DEV-0000-0000 / 아가치치 DEV로만 동작한다. 외부 SMS API를 호출하지 않고 접근 권한을 제한한 로컬 런타임 영역에 결과를 기록하며, 주문상세의 안내문자 재전송 버튼은 실제 발송 없음 표시와 함께 문장을 보여준다.
+
+## DEV Korean SMS sender pilot
+The staged Naver Cloud SENS adapter supports the fixed DEV test phone for six-digit OTP and order/fulfillment notices. It is not active until an owned sender number and private credentials are provisioned. See [DEV SENS setup](docs/shopping/DEV_SENS_SMS.md).

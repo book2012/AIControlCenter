@@ -289,3 +289,6 @@ Natural operator text is locally classified into bounded order/product actions. 
 ## 2026-10-12 — SOLAPI order SMS prepared; carrier blocker remains
 
 Added pinned SOLAPI order-confirmation and shipping transport, domestic-number normalization, byte-bounded SMS/LMS and bound final delivery-status receipts. Existing Twilio OTP stays unchanged. DEV activation is explicit/future-only, skips other recipients and never replays failed/unknown sends. 225 targeted regressions passed. One real connection test was accepted but finally failed with carrier code 3113; automatic SMS flags stay disabled pending sender-carrier resolution. See [SMS architecture](architecture/SHOP_SOLAPI_ORDER_SMS_DEV.md).
+
+## DEV Korean SMS provider boundary
+The Mac AIControlCenter owns OTP issuance/verification and order notification state. The replaceable Naver Cloud SENS transport only sends and reports delivery. Private fixed-recipient configuration, HMAC OTP storage, and historical outbox sealing prevent provider ambiguity and backfill. The production phone provider and runtime are untouched. Activation steps: `docs/shopping/DEV_SENS_SMS.md`.

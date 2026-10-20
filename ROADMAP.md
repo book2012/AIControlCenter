@@ -6223,3 +6223,8 @@ Build a separately credentialed customer bot. Guests remain unlinked. Members li
 - [x] DEV 발신 미설정 기간의 주문을 HISTORICAL로 봉인하여 향후 문자 발송 설정 시 자동 소급 전송 방지.
 
 - [x] 가상 계좌와 DEV 문자 미리보기로 발신 비용 없이 주문확인/재전송 UI 검증.
+
+## DEV Korean-origin SMS gate (2026-10-20)
+- [x] Implement SENS adapter, fixed-recipient OTP port, order receipt reconciliation and offline tests.
+- [ ] Register an owned, unblocked Korean sender and provide private SENS service ID/keys on the Mac.
+- [ ] Verify a single DEV OTP, then one paid-order SMS with carrier delivery result. Keep PROD isolated and historical orders unsent.

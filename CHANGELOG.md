@@ -6695,3 +6695,5 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 
 - 2026-10-20 DEV: 외부 발신번호 없이 주문확인·입금 안내 문구를 검증할 수 있는 전용 문자 미리보기 모드 추가. 가상 계좌만 허용하며 실 SMS 발신 차단.
 - 2026-10-20 DEV: 문자 미리보기의 주문번호를 내부 WooCommerce ID에서 고객 공개 주문번호로 수정.
+
+- 2026-10-20 DEV: Added an inactive Korean SENS sender path for the fixed-recipient OTP and order SMS flows, with receipt-bound delivery reconciliation. The Twilio Verify and DEV_PREVIEW runtime remain active until sender registration and credentials are available.
