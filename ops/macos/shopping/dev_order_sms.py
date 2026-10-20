@@ -101,7 +101,7 @@ class DevOrderSMS:
             row=c.execute("SELECT state FROM notices WHERE order_id=?",(order_id,)).fetchone()
         return row[0] if row else "WAITING_CONFIRMATION"
     def confirmation_text(self,cfg,order,oid):
-        text="주문확인 및 입금 안내\n주문번호: "+str(oid)+"\n"+"\n".join(v["name"]+" / "+v.get("option","기본")+" / "+str(v["quantity"])+"개" for v in order["items"])
+        text="주문확인 및 입금 안내\n주문번호: "+str(order["order_number"])+"\n"+"\n".join(v["name"]+" / "+v.get("option","기본")+" / "+str(v["quantity"])+"개" for v in order["items"])
         bank=cfg["bank"]
         text+="\n총액: "+order["total"]+"원"
         if order.get("payment",{}).get("state")=="PAID":text+="\n입금 확인 완료"
@@ -111,7 +111,7 @@ class DevOrderSMS:
         if cfg.get("provider")=="SOLAPI":
             if len(text.encode("euc-kr"))>2000:
                 suffix=text[text.index("총액:"):]
-                text=greeting("주문확인 및 입금 안내\n주문번호: "+str(oid)+"\n상품 "+str(len(order["items"]))+"종 · 상세내역은 주문조회에서 확인해 주세요.\n"+suffix)
+                text=greeting("주문확인 및 입금 안내\n주문번호: "+str(order["order_number"])+"\n상품 "+str(len(order["items"]))+"종 · 상세내역은 주문조회에서 확인해 주세요.\n"+suffix)
             from ops.macos.shopping.dev_solapi_sms import payload
             payload(cfg["solapi"]["sender_number"],self.phone_cfg["test_phone"],text,"order:"+str(oid))
         elif len(text)>1600:raise ValueError("SMS_TOO_LARGE")
@@ -197,7 +197,7 @@ class DevOrderSMS:
                 with connection(self.store.path) as c:c.execute("UPDATE shipping_notices SET state='SUPPRESSED' WHERE order_id=? AND state='PENDING'",(oid,))
                 continue
             if order["review_state"]!="CONFIRMED" or order["payment"]["state"]!="PAID" or order["fulfillment"]["state"]!="SHIPPED":continue
-            text=greeting("주문번호: "+str(oid)+"\n주문하신 상품의 배송이 시작되었습니다.\n택배사: "+carrier+"\n운송장번호: "+tracking+"\n주문조회: https://dev.bokstory.duckdns.org/homepage/storefront/my-orders")
+            text=greeting("주문번호: "+str(order["order_number"])+"\n주문하신 상품의 배송이 시작되었습니다.\n택배사: "+carrier+"\n운송장번호: "+tracking+"\n주문조회: https://dev.bokstory.duckdns.org/homepage/storefront/my-orders")
             if cfg.get("provider")=="SOLAPI":
                 from ops.macos.shopping.dev_solapi_sms import payload
                 payload(cfg["solapi"]["sender_number"],self.phone_cfg["test_phone"],text,"shipping:"+str(oid))

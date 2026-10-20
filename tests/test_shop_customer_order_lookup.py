@@ -59,7 +59,7 @@ def test_historical_orders_never_backfill_and_new_confirmation_sends_once(tmp_pa
     assert sms.dispatch_one()=="IDLE" and not sent
     rows[0]["review_state"]="CONFIRMED"
     assert sms.dispatch_one()=="ACCEPTED" and len(sent)==1
-    assert "주문확인 및 입금 안내" in sent[0][1] and "주문번호: 15" in sent[0][1] and "TEST ACCOUNT" in sent[0][1] and sent[0][0]==PHONE
+    assert "주문확인 및 입금 안내" in sent[0][1] and "주문번호: "+store.customer_orders(CUSTOMER)[0]["order_number"] in sent[0][1] and "TEST ACCOUNT" in sent[0][1] and sent[0][0]==PHONE
     assert sms.dispatch_one()=="IDLE" and len(sent)==1
 def test_ambiguous_sms_is_not_retried_after_restart(tmp_path):
     def failing(*args):raise TimeoutError()
@@ -126,6 +126,7 @@ def test_dev_preview_order_and_resend_are_visible_without_external_sms(tmp_path)
         body=c.execute("SELECT body FROM sms_previews WHERE event_key=?",(f"order:{ORDER}",)).fetchone()[0]
     assert body.startswith("안녕하세요 agachichi 입니다\n주문확인 및 입금 안내")
     assert "가상 테스트은행 DEV-0000-0000 (아가치치 DEV)" in body
+    assert "주문번호: "+store.customer_orders(CUSTOMER)[0]["order_number"] in body
     preview=sms.resend_notice(ORDER,9001)
     assert preview.startswith("[DEV 문자 미리보기 · 실제 발송 없음]\n")
     assert "주문확인 및 입금 안내" in preview
