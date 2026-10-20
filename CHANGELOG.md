@@ -6619,3 +6619,6 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 
 ## 2026-10-20 — PROD Telegram order controls
 Added status selection, per-order Telegram cards and state-appropriate buttons to `mommychichi_bot`; all-orders excludes cancelled orders while the cancellation filter retains them. Added button identity/order labels to callback results, separate-line price formatting, production-bound stock cancellation with receipt reconciliation, and append-only timestamped order status history. PROD/DEV storage and bot credentials remain isolated. Focused tests use fake providers and temporary SQLite databases; no live order action is used for validation. See `docs/architecture/SHOP_PROD_TELEGRAM_ORDER_BUTTONS.md`.
+
+
+Follow-up: order-review confirmation and rejection times now come from the immutable ledger audit. The order card labels only real transitions as status changes; it does not mislabel the original receipt timestamp.

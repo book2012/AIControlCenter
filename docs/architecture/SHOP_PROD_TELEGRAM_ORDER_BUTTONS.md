@@ -14,7 +14,7 @@ The cancellation provider calls `assert_production()` for every apply/reconcile 
 
 ## Audit history
 
-The PROD aftersales SQLite store records payment, fulfillment, cancellation, case, return-stock and refund state changes in append-only `order_status_history`. Each entry has an event key and timestamp. Existing data is not backfilled; timestamps begin recording when the schema is installed. Order details and cards display the recorded timeline/latest change where available.
+The PROD aftersales SQLite store records payment, fulfillment, cancellation, case, return-stock and refund state changes in append-only `order_status_history`. Each entry has an event key and timestamp. Existing status transitions are not backfilled; timestamps begin recording when the schema is installed. Older orders show their known receipt time until a new transition is recorded. Order details and cards display the recorded timeline/latest change where available.
 
 ## Verification and rollout
 

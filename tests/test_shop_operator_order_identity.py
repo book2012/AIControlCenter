@@ -6,6 +6,8 @@ def test_operator_list_detail_and_admin_keep_identity_and_korean_order_date():
     a.rows=lambda:[row]
     for text in [a.list_message(),a.detail_message(901)]:
         assert '테스트고객' in text and '01000000000' in text and '테스트 코트' in text and '2026-10-12 08:30' in text
+    assert '최근 상태 변경' not in a.list_message()
+    assert '주문 접수' in a.detail_message(901)
     admin=a.admin_orders()[0];assert admin['customer_name']=='테스트고객'
     assert '테스트 코트' in order_identity(admin)
     row['requested_at']=None;row['delivery']={}

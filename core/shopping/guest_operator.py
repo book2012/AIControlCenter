@@ -133,7 +133,8 @@ class GuestOperatorAdapter:
             lines.append("고객: "+str(r["delivery"].get("first_name") or "이름 미등록")+" · 주문일: "+order_date(r.get("requested_at")))
             lines.extend("- "+v["name"]+" / "+str(v.get("option") or "기본")+" / "+str(v["quantity"])+"개" for v in r["quote"]["line_items"])
             history=self.status_history(r)
-            if history:lines.append("상태 변경: "+self._history_time(history[-1][1]))
+            if history and history[-1][2]!="주문 접수":
+                lines.append("최근 상태 변경: "+self._history_time(history[-1][1]))
             if self.aftersales:
                 refund=self.aftersales.refund(r["provider_order_id"])
                 if refund["state"]=="RECORDED":lines.append("환불완료 기록: "+refund["amount"]+" "+refund["currency"])
