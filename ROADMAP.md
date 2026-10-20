@@ -6220,3 +6220,4 @@ Build a separately credentialed customer bot. Guests remain unlinked. Members li
 
 - [ ] DEV 고객 주문확인·입금 안내 SMS 활성화: 실제 은행/계좌/예금주, Twilio Messaging Service 발신 구성을 검증한 다음 신규 주문에만 활성화. 기존 주문은 자동 소급 발송하지 않음.
 - [x] DEV 주문 상세 상태별 버튼 및 명시적 문자 재전송의 중복 방지 흐름 구현.
+- [x] DEV 발신 미설정 기간의 주문을 HISTORICAL로 봉인하여 향후 문자 발송 설정 시 자동 소급 전송 방지.

@@ -73,7 +73,7 @@ def test_missing_private_bank_config_does_not_claim_or_send(tmp_path):
     sms,store,rows=sms_fixture(tmp_path,lambda *a:pytest.fail("not configured"))
     with sqlite3.connect(sms.path) as c:c.execute("DELETE FROM notices WHERE order_id=?",(ORDER,))
     cfg=json.loads(sms.config_path.read_text());cfg["bank"]["account"]="";sms.config_path.write_text(json.dumps(cfg))
-    assert sms.dispatch_one()=="CONFIGURATION_REQUIRED" and sms.state(ORDER)=="PENDING"
+    assert sms.dispatch_one()=="CONFIGURATION_REQUIRED" and sms.state(ORDER)=="HISTORICAL"
 
 
 def test_public_lookup_includes_pending_review_orders_only_for_matching_phone(tmp_path):
@@ -101,3 +101,13 @@ def test_explicit_notice_resend_requires_real_configuration_and_never_autoretrie
     assert "주문확인 및 입금 안내" in sent[0][1]
     assert "중복 발송" in sms.resend_notice(ORDER,125) and len(sent)==1
     assert "중복 발송" in sms.resend_notice(ORDER,126) and len(sent)==1
+
+
+def test_disabled_sms_cannot_backfill_old_confirmation_when_enabled_later(tmp_path):
+    sent=[];sms,store,rows=sms_fixture(tmp_path,lambda cfg,to,text:sent.append(text))
+    with sqlite3.connect(sms.path) as c:c.execute("DELETE FROM notices WHERE order_id=?",(ORDER,))
+    cfg=json.loads(sms.config_path.read_text());cfg["enabled"]=False;sms.config_path.write_text(json.dumps(cfg))
+    assert sms.dispatch_one()=="CONFIGURATION_REQUIRED"
+    assert sms.state(ORDER)=="HISTORICAL"
+    cfg["enabled"]=True;sms.config_path.write_text(json.dumps(cfg))
+    assert sms.dispatch_one()=="IDLE" and not sent

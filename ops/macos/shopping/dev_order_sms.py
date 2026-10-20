@@ -137,10 +137,17 @@ class DevOrderSMS:
 
     def dispatch_one(self):
         rows=self.store.ledger.customer_orders(self.phone_cfg["guest_customer_id"])
+        try:cfg=self.config()
+        except Exception:
+            # No sender/bank is available: every order observed during this
+            # disabled interval is historical, including pre-existing pending rows.
+            # An explicit operator resend remains the only later send path.
+            with connection(self.path) as c:
+                for row in rows:c.execute("INSERT OR IGNORE INTO notices VALUES(?,?)",(row["provider_order_id"],"HISTORICAL"))
+                c.execute("UPDATE notices SET state='HISTORICAL' WHERE state='PENDING'")
+            return "CONFIGURATION_REQUIRED"
         with connection(self.path) as c:
             for row in rows:c.execute("INSERT OR IGNORE INTO notices VALUES(?,?)",(row["provider_order_id"],"PENDING"))
-        try:cfg=self.config()
-        except Exception:return "CONFIGURATION_REQUIRED"
         try:
             reconciled=self.reconcile_one(cfg)
             if reconciled:return reconciled
