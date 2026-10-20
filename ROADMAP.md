@@ -6078,3 +6078,9 @@ Current DEV Twilio Verify remains restricted to one configured test phone. Its p
 
 ## Next Telegram milestone — customer Shopping/Sales Bot
 Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
+
+## 2026-10-20 — Charcoal pleated pants
+- [x] Stage reviewed DEV catalog and five media roles; validate price/option/stock and SKU uniqueness.
+- [x] Register isolated DEV WooCommerce product #200, read back three variations and unchanged order count.
+- [ ] Commit/push immutable source and activate DEV Homepage/API with staged mapping/projection, then verify product detail, gallery and stock in a browser.
+- [ ] Consider PROD promotion only after DEV acceptance.

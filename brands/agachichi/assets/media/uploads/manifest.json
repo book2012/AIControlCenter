@@ -3,6 +3,23 @@
   "environment": "DEV",
   "assets": [
     {
+      "id": "ag-upload-bottom-0003",
+      "product_id": "ag-upload-bottom-0003",
+      "category": "BOTTOM",
+      "status": "READY",
+      "target_path": "brands/agachichi/assets/media/uploads/ag-upload-bottom-0003.jpg",
+      "photo_route": "/homepage/assets/storefront/catalog/bottom/ag-upload-bottom-0003.jpg",
+      "sha256": "f7f77c120bc748af9987aa23285bc5477aa341cfcd415fef3d63b26afd16f4ff",
+      "source": {
+        "type": "user_upload",
+        "original_file_names": [
+          "01-71478.jpg"
+        ],
+        "processing": "AI generated clean front wearing reference from user screenshot; original retained under uploads/source; AI references labelled in gallery",
+        "model_edit": true
+      }
+    },
+    {
       "id": "ag-upload-bottom-0002",
       "product_id": "ag-upload-bottom-0002",
       "category": "BOTTOM",

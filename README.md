@@ -6126,3 +6126,6 @@ Product detail chat now starts with that product's public information and no pro
 The member header routes 주문내역 to WooCommerce order history and 내 정보 to the account dashboard. The dashboard links to orders, cart, account/password editing, and address editing. ID/password recovery by SMS remains gated on a customer-wide phone recovery flow and an AIControlCenter-owned outbound SMS adapter; the current DEV verification bridge permits only one allowlisted test phone and sends OTP challenges only.
 
 Telegram customer bot requirements are tracked in [SHOP_TELEGRAM_CUSTOMER_BOT.md](docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md). This is a separate Shopping/Sales Bot; the current Telegram order bot remains operator-only. Linked members are classified as first-purchase when they have no prior successful paid order.
+
+### DEV charcoal pleated pants intake
+The new `ag-upload-bottom-0003` pants use the operator's KRW 70,000 price and S/M/L stock of two each. DEV WooCommerce product #200 was registered; storefront activation and live checks are tracked in [single product registration](docs/architecture/SHOP-DEV-SINGLE-PRODUCT-REGISTRATION.md).

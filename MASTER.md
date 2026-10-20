@@ -7107,3 +7107,6 @@ Logged-in header has dedicated 주문내역 and 내 정보 destinations. The acc
 
 ## Telegram customer bot boundary
 Customer member/guest identification and first-purchase classification belong in a future separate Shopping/Sales Bot backed by AIControlCenter account linking and order history. Current papachichi/mommychichi bots remain operator-only. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
+
+## 2026-10-20 — DEV pants registration
+`ag-upload-bottom-0003` is an isolated DEV WooCommerce product #200, KRW 70,000, S/M/L stock two each. Source screenshot and labelled generated assets are hash-bound. Homepage/API runtime still needs an immutable release to serve it; PROD is outside scope. See [registration record](docs/architecture/SHOP-DEV-SINGLE-PRODUCT-REGISTRATION.md).
