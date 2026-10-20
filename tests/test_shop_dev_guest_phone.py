@@ -164,3 +164,13 @@ def test_expired_unknown_cookie_allows_explicit_new_request_without_replaying(se
  new_token,sent=bridge.start("01012345678",old_token)
  assert sent and new_token!=old_token and port.calls==["start","start"]
  with sqlite3.connect(bridge.path) as c:assert c.execute("SELECT count(*) FROM dev_phone_browser WHERE state='UNKNOWN'").fetchone()[0]==1
+
+def test_dev_verify_requests_agachichi_brand_with_korean_locale():
+ c=cfg();s=Session(document(c));p=FixedDevTwilioPort(c,b"binding",session=s)
+ from types import SimpleNamespace
+ request=SimpleNamespace(provider_source=ProviderSourceIdentifier(value=SOURCE),subject=SimpleNamespace(phone_binding=p.binding),
+     purpose="SESSION_ISSUANCE",challenge_reference=ChallengeReference(value="AG-CHL-"+uuid.uuid4().hex),
+     replay_reference=ReplayReference(value="AG-RPL-"+uuid.uuid4().hex))
+ p.start_challenge(request)
+ assert s.calls[0][1]["data"]["CustomFriendlyName"]=="agachichi"
+ assert s.calls[0][1]["data"]["Locale"]=="ko"

@@ -7217,3 +7217,7 @@ Customer member/guest identification and first-purchase classification belong in
 
 ## 2026-10-20 — DEV pants registration
 `ag-upload-bottom-0003` is an isolated DEV WooCommerce product #200, KRW 70,000, S/M/L stock two each. Source screenshot and labelled generated assets are hash-bound. Homepage/API runtime still needs an immutable release to serve it; PROD is outside scope. See [registration record](docs/architecture/SHOP-DEV-SINGLE-PRODUCT-REGISTRATION.md).
+
+### DEV 주문 알림과 인증 브랜드 (2026-10-20)
+신규 주문 알림은 주문번호에 결속된 확인/상세/취소 버튼으로 처리한다. 인증 문자 브랜드는 Twilio Verify 요청의 CustomFriendlyName=agachichi이며 최종 문장은 Verify 템플릿이 결정한다. 고객 주문확인 SMS는 입금계좌 안내를 포함하는 단일 outbox 이벤트이고, 실제 계좌 및 발신 서비스 확정 전에는 보내지 않는다.
+상세 화면의 버튼은 Bot API 원본 메시지의 주문번호·상태·운영자 신원을 확인한다. 문자 재전송은 같은 고객의 확인 주문을 조회하고, 취소/환불 중에는 거절하며, 과거 발송을 자동 소급하지 않는다.

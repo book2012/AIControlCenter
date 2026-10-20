@@ -14,7 +14,9 @@ def chunks(text):
         current+=char;units+=size
     if current:yield prefix+current
 class DevTelegramTransport(OrderTelegramTransport):
-    def send_message(self,text):
+    def send_message(self,text,*,reply_markup=None):
+        parts=list(chunks(text))
+        if reply_markup is not None and len(parts)!=1:raise TelegramDeliveryRejected("MARKUP_MESSAGE_TOO_LARGE")
         receipt=None
-        for chunk in chunks(text):receipt=super().send_message(chunk)
+        for chunk in parts:receipt=super().send_message(chunk,reply_markup=reply_markup)
         return receipt

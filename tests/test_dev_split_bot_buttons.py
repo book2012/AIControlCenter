@@ -402,3 +402,26 @@ def test_all_and_status_filter_callbacks_are_bound_to_selector_or_current_page()
     assert callback_command(nav,CFG)==("c",USER,"주문목록 전체 ALL 2")
     nav["callback_query"]["message"]["text"]="주문 더 보기 · STATUS:AWAITING_DEPOSIT:1"
     assert callback_command(nav,CFG) is None
+
+def test_order_detail_shows_next_action_cancel_and_resend_bound_to_same_order():
+    detail=("안녕하세요 agachichi 입니다\n[개발]\n주문 "+NUMBER+" 상세\n"
+            "상태: 배송준비\n고객: "+PHONE+"\n주문일: 2026-10-20 11:53")
+    markup=reply_markup(detail)["inline_keyboard"]
+    assert {b["callback_data"] for row in markup for b in row}=={
+        "aicc:detail:detail:"+NUMBER,"aicc:detail:ship:"+NUMBER,
+        "aicc:detail:cancel:"+NUMBER,"aicc:detail:resend:"+NUMBER}
+    def update(action,number=NUMBER,body=detail):
+        return {"callback_query":{"id":"detail-callback","from":{"id":USER,"is_bot":False},
+            "data":"aicc:detail:"+action+":"+number,
+            "message":{"chat":{"id":CHAT,"type":"private"},"from":{"is_bot":True,"username":BOT},"text":body}}}
+    assert callback_command(update("resend"),CFG)==(
+        "detail-callback",USER,PHONE+" 고객 안내문자 재전송 #"+NUMBER)
+    assert callback_command(update("ship"),CFG)==(
+        "detail-callback",USER,PHONE+" 고객 배송 #"+NUMBER)
+    assert callback_command(update("cancel"),CFG)==(
+        "detail-callback",USER,PHONE+" 고객 주문 취소 #"+NUMBER)
+    assert callback_command(update("resend",number="2610209999"),CFG) is None
+    assert callback_command(update("payment"),CFG) is None
+    cancelled=detail.replace("배송준비","취소완료")
+    buttons=reply_markup(cancelled)["inline_keyboard"]
+    assert all(b["callback_data"].split(":")[-2] not in ("cancel","resend") for row in buttons for b in row)

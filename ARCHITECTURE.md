@@ -6122,3 +6122,7 @@ composition over the existing `DemoCommerceCatalogAdapter`, not a Shopping
 schema or production catalog change. `storefront_media.py` validates local
 manifest records and provides only local image routes; no browser request can
 reach WooCommerce or WordPress directly.
+
+### DEV 주문 알림 버튼과 인증 브랜드 (2026-10-20)
+OrderTelegramIntegration의 내구성 있는 ORDER_CREATED outbox가 기존 고정 관리자 채팅에 메시지와 해당 주문의 인라인 버튼을 원자적으로 전달한다. callback consumer는 메시지의 주문번호와 허용 사용자·봇을 검증한 뒤 운영자 브리지로 전달한다. 인증 문구의 상호명은 DEV Twilio Verify 요청에 고정하며, 고객 주문확인/입금 안내는 별도 SMS outbox에서 신규 확인 주문만 처리한다.
+상세 버튼은 Bot이 보낸 원본 상세 메시지의 주문번호/상태를 확인한 다음 브리지 명령으로 번역한다. 재전송 outbox는 주문별 claim을 먼저 기록하고 결과가 불명일 때 재전송을 금지한다. 주문확인 SMS 자동 outbox와 분리하고 실제 계좌/발신 서비스 미설정이면 송신을 거부한다.

@@ -15,6 +15,8 @@ class DevOrderSMS:
             c.execute("CREATE TABLE IF NOT EXISTS notices(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS provider_receipts(event_key TEXT PRIMARY KEY,kind TEXT,order_id INTEGER,receipt TEXT,state TEXT,next_check REAL)")
             c.execute("CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS resend_notices(order_id INTEGER PRIMARY KEY,update_id INTEGER NOT NULL,state TEXT NOT NULL,claimed_at REAL NOT NULL)")
+            c.execute("UPDATE resend_notices SET state='UNKNOWN' WHERE state='SENDING'")
             if not c.execute("SELECT 1 FROM settings WHERE key='seeded'").fetchone():
                 # Historical orders are visible but must not receive surprise backfill SMS.
                 for row in self.store.ledger.customer_orders(phone_cfg["guest_customer_id"]):
@@ -40,6 +42,7 @@ class DevOrderSMS:
         bank=value["bank"]
         for k in ("name","account","holder"):
             if type(bank.get(k)) is not str or not bank[k].strip() or len(bank[k])>100 or any(ch in bank[k] for ch in "\n\r"):raise ValueError("BANK_REQUIRED")
+        if bank["account"].strip()=="123456":raise ValueError("REAL_BANK_REQUIRED")
         if self.solapi_config_path and self.solapi_config_path.exists():
             if self.solapi_config_path.is_symlink() or self.solapi_config_path.stat().st_mode&0o077:raise ValueError("PRIVATE_CONFIG_REQUIRED")
             solapi=json.loads(self.solapi_config_path.read_text())
@@ -87,6 +90,51 @@ class DevOrderSMS:
         with connection(self.path) as c:
             row=c.execute("SELECT state FROM notices WHERE order_id=?",(order_id,)).fetchone()
         return row[0] if row else "WAITING_CONFIRMATION"
+    def confirmation_text(self,cfg,order,oid):
+        text="주문확인 및 입금 안내\n주문번호: "+str(oid)+"\n"+"\n".join(v["name"]+" / "+v.get("option","기본")+" / "+str(v["quantity"])+"개" for v in order["items"])
+        bank=cfg["bank"]
+        text+="\n총액: "+order["total"]+"원"
+        if order.get("payment",{}).get("state")=="PAID":text+="\n입금 확인 완료"
+        else:text+="\n입금계좌: "+bank["name"]+" "+bank["account"]+" ("+bank["holder"]+")"
+        text+="\n주문조회: https://dev.bokstory.duckdns.org/homepage/storefront/my-orders"
+        text=greeting(text)
+        if cfg.get("provider")=="SOLAPI":
+            if len(text.encode("euc-kr"))>2000:
+                suffix=text[text.index("총액:"):]
+                text=greeting("주문확인 및 입금 안내\n주문번호: "+str(oid)+"\n상품 "+str(len(order["items"]))+"종 · 상세내역은 주문조회에서 확인해 주세요.\n"+suffix)
+            from ops.macos.shopping.dev_solapi_sms import payload
+            payload(cfg["solapi"]["sender_number"],self.phone_cfg["test_phone"],text,"order:"+str(oid))
+        elif len(text)>1600:raise ValueError("SMS_TOO_LARGE")
+        return text
+
+    def resend_notice(self,order_id,update_id):
+        if type(order_id) is not int or order_id<=0 or type(update_id) is not int or update_id<0:
+            return "문자 재전송 요청이 올바르지 않습니다."
+        try:cfg=self.config()
+        except Exception:return "문자 발송 설정이 필요합니다. 실제 입금계좌와 발신 서비스를 확인해 주세요."
+        rows=[r for r in self.store.ledger.customer_orders(self.phone_cfg["guest_customer_id"]) if r["provider_order_id"]==order_id]
+        if len(rows)!=1 or rows[0]["review_state"]!="CONFIRMED":return "주문확인 완료 후 문자 재전송이 가능합니다."
+        try:order=self.store.lookup(self.phone_cfg["guest_customer_id"],str(order_id),self.phone_cfg["test_phone"],self.phone_cfg["test_phone"])
+        except ValueError:return "이 주문의 인증된 수신번호를 확인할 수 없습니다."
+        if order.get("cancellation",{}).get("state","NONE")!="NONE" or order.get("return_status",{}).get("state","NONE")!="NONE":
+            return "취소·환불 처리 중인 주문에는 안내문자를 재전송하지 않습니다."
+        now=time.time()
+        with connection(self.path) as c:
+            c.execute("BEGIN IMMEDIATE")
+            previous=c.execute("SELECT update_id,state,claimed_at FROM resend_notices WHERE order_id=?",(order_id,)).fetchone()
+            if previous:
+                if previous[1] in ("SENDING","UNKNOWN"):return "이전 문자 발송 결과 확인이 필요합니다. 다시 보내지 않았습니다."
+                if previous[0]==update_id or now-previous[2]<60:return "최근 재전송 요청이 있습니다. 중복 발송하지 않았습니다."
+            c.execute("INSERT OR REPLACE INTO resend_notices VALUES(?,?,?,?)",(order_id,update_id,"SENDING",now))
+        try:
+            text=self.confirmation_text(cfg,order,order_id)
+            self._send_notice(cfg,text,"order-resend-"+str(update_id),order_id)
+            result="ACCEPTED"
+        except Exception:result="UNKNOWN"
+        with connection(self.path) as c:c.execute("UPDATE resend_notices SET state=? WHERE order_id=? AND update_id=?",(result,order_id,update_id))
+        return ("주문확인·입금 안내 문자 재전송을 요청했습니다. 발송 상태를 확인해 주세요."
+                if result=="ACCEPTED" else "문자 발송 결과 확인이 필요합니다. 재전송을 멈췄습니다.")
+
     def dispatch_one(self):
         rows=self.store.ledger.customer_orders(self.phone_cfg["guest_customer_id"])
         with connection(self.path) as c:
@@ -108,20 +156,7 @@ class DevOrderSMS:
             if order.get("cancellation",{}).get("state","NONE")!="NONE" or order.get("return_status",{}).get("state","NONE")!="NONE":
                 with connection(self.path) as c:c.execute("UPDATE notices SET state='SUPPRESSED' WHERE order_id=? AND state='PENDING'",(oid,))
                 continue
-            text="주문확인\n주문번호: "+str(oid)+"\n"+"\n".join(v["name"]+" / "+v.get("option","기본")+" / "+str(v["quantity"])+"개" for v in order["items"])
-            bank=cfg["bank"]
-            text+="\n총액: "+order["total"]+"원"
-            if order.get("payment",{}).get("state")=="PAID":text+="\n입금 확인 완료"
-            else:text+="\n입금계좌: "+bank["name"]+" "+bank["account"]+" ("+bank["holder"]+")"
-            text+="\n주문조회: https://dev.bokstory.duckdns.org/homepage/storefront/my-orders"
-            text=greeting(text)
-            if cfg.get("provider")=="SOLAPI":
-                if len(text.encode("euc-kr"))>2000:
-                    suffix=text[text.index("총액:"):]
-                    text=greeting("주문확인\n주문번호: "+str(oid)+"\n상품 "+str(len(order["items"]))+"종 · 상세내역은 주문조회에서 확인해 주세요.\n"+suffix)
-                from ops.macos.shopping.dev_solapi_sms import payload
-                payload(cfg["solapi"]["sender_number"],self.phone_cfg["test_phone"],text,"order:"+str(oid))
-            elif len(text)>1600:raise ValueError("SMS_TOO_LARGE")
+            text=self.confirmation_text(cfg,order,oid)
             with connection(self.path) as c:
                 if c.execute("UPDATE notices SET state='SENDING' WHERE order_id=? AND state='PENDING'",(oid,)).rowcount!=1:continue
             try:

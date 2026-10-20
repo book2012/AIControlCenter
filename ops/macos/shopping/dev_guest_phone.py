@@ -78,7 +78,7 @@ class FixedDevTwilioPort:
         return stamp
     def start_challenge(self,request):
         if str(request.provider_source)!=SOURCE or request.subject.phone_binding!=self.binding:raise PhoneDenied("REJECTED")
-        raw=self.invoke("Verifications",{"To":self.phone.value,"Channel":"sms","Locale":"ko"})
+        raw=self.invoke("Verifications",{"To":self.phone.value,"Channel":"sms","Locale":"ko","CustomFriendlyName":"agachichi"})
         if raw.get("status")!="pending":raise PhoneDenied()
         return ChallengeStartResult(provider_source=request.provider_source,provider_verification_id=ProviderVerificationIdentifier(value=raw["sid"]),
             purpose=request.purpose,challenge_reference=request.challenge_reference,replay_reference=request.replay_reference,

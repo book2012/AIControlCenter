@@ -6199,3 +6199,7 @@ Telegram customer bot requirements are tracked in [SHOP_TELEGRAM_CUSTOMER_BOT.md
 
 ### DEV charcoal pleated pants intake
 The new `ag-upload-bottom-0003` pants use the operator's KRW 70,000 price and S/M/L stock of two each. DEV WooCommerce product #200 was registered; storefront activation and live checks are tracked in [single product registration](docs/architecture/SHOP-DEV-SINGLE-PRODUCT-REGISTRATION.md).
+
+### 2026-10-20 DEV 주문 알림·인증 브랜드
+새 주문 Telegram 알림은 주문번호에 묶인 확인·상세·취소 버튼을 함께 전송한다. Twilio Verify 발송 요청의 브랜드명을 agachichi로 고정한다. 주문확인 후 고객 문자에는 주문확인과 입금 안내를 한 통으로 묶는다. DEV 문자 발송은 실제 계좌와 Twilio Messaging Service가 설정되기 전까지 비활성이다.
+상세 보기에는 현재 상태에 맞는 다음 단계, 취소 가능 상태의 주문취소, 명시적 안내문자 재전송 버튼이 붙는다. 재전송은 발신 설정 및 실제 계좌 검증, 수신번호 확인, 60초 중복 방지와 결과 불명 시 정지 정책을 적용한다.

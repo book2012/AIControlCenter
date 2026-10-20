@@ -6217,3 +6217,6 @@ Build a separately credentialed customer bot. Guests remain unlinked. Members li
 - [x] Register isolated DEV WooCommerce product #200, read back three variations and unchanged order count.
 - [ ] Commit/push immutable source and activate DEV Homepage/API with staged mapping/projection, then verify product detail, gallery and stock in a browser.
 - [ ] Consider PROD promotion only after DEV acceptance.
+
+- [ ] DEV 고객 주문확인·입금 안내 SMS 활성화: 실제 은행/계좌/예금주, Twilio Messaging Service 발신 구성을 검증한 다음 신규 주문에만 활성화. 기존 주문은 자동 소급 발송하지 않음.
+- [x] DEV 주문 상세 상태별 버튼 및 명시적 문자 재전송의 중복 방지 흐름 구현.

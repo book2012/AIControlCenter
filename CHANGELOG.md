@@ -6689,3 +6689,6 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 ## 2026-10-20 — DEV charcoal pleated pants
 - Added `ag-upload-bottom-0003` with price 70,000 KRW and S/M/L quantity two each, source photo plus labelled AI reference images. Existing charcoal trousers remain separate.
 - Updated catalog/media hashes and storefront count expectations; 30 focused tests passed. Isolated DEV WooCommerce product #200 registered, with no PROD mutation or Homepage activation.
+
+- 2026-10-20 DEV: 새 주문 Telegram 알림에 주문별 인라인 버튼을 부착하고 Verify 인증 브랜드명을 agachichi로 지정. 고객 주문확인 SMS 제목을 입금 안내와 통합. 발송 설정 미완료 상태는 유지.
+- 2026-10-20 DEV: 주문 상세에 상태별 다음 작업·주문취소·안내문자 재전송 버튼 추가. 재전송은 별도 지속 기록과 중복 방지/불명 결과 차단을 사용하며 비활성 발송 설정에서는 안내만 표시.

@@ -157,7 +157,11 @@ class OrderTelegramIntegration:
         try:
             if self._transport.chat_id != self._chat:
                 raise TelegramDeliveryRejected("RECIPIENT_MISMATCH")
-            receipt = self._transport.send_message(self._operator_adapter.message(event['payload']) if self._operator_adapter else self._message(event['payload']))
+            message = self._operator_adapter.message(event['payload']) if self._operator_adapter else self._message(event['payload'])
+            markup = (self._operator_adapter.notification_markup(event['payload'])
+                      if self._operator_adapter and hasattr(self._operator_adapter,"notification_markup") else None)
+            receipt = (self._transport.send_message(message,reply_markup=markup)
+                       if markup else self._transport.send_message(message))
             self._ledger.finish_notification(key,message_id=receipt)
             return {"outcome":"SENT","event_key":key}
         except TelegramDeliveryRejected:

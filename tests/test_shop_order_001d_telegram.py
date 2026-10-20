@@ -262,3 +262,22 @@ def test_explicit_v1_migration_preserves_completed_and_is_idempotent(api,compose
     old.migrate_v1();old.migrate_v1()
     assert old.inspect_operation('order-session-001')['command_digest']==result.command_digest
     assert len(old.notification_statuses())==1 and old.notification_statuses()[0]['state']=='PENDING'
+
+def test_order_notification_dispatch_passes_order_buttons_atomically(api,composed):
+    _,ledger,_=composed
+    complete(api,composed)
+    class ButtonTransport(Transport):
+        def send_message(self,text,*,reply_markup=None):
+            self.messages.append((text,reply_markup))
+            return len(self.messages)
+    class Adapter:
+        def message(self,payload):
+            return "pending "+payload["reference"]
+        def notification_markup(self,payload):
+            return {"inline_keyboard":[[{"text":"상세 보기","callback_data":"aicc:detail:2610202177"}]]}
+    transport=ButtonTransport()
+    consumer=OrderTelegramIntegration(ledger=ledger,transport=transport,
+        operator_chat_id=CHAT,operator_user_ids=frozenset({OPERATOR}),operator_adapter=Adapter())
+    assert consumer.dispatch_one()["outcome"]=="SENT"
+    assert transport.messages[0][1]["inline_keyboard"][0][0]["callback_data"]=="aicc:detail:2610202177"
+    assert consumer.dispatch_one()["outcome"]=="IDLE"

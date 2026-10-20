@@ -8,6 +8,7 @@ from ops.macos.shopping.dev_operator_bridge_client import compose_dev_command_cl
 PRIVATE=Path('/Users/kyouhan/.config/aicontrolcenter-dev-order')
 DATA=Path('/Users/kyouhan/AIControlCenterRuntime/dev-order/data')
 LOGGER=logging.getLogger("aicc.dev.telegram")
+_ORDER_DETAIL_LINE=re.compile(r"(?m)^주문 ([0-9]{10}) 상세\n상태: ([^\n]+)\n고객: (010[0-9]{8})$")
 _ORDER_LINE=re.compile(r"(?m)^([0-9]{11}) 고객님 주문\n주문 ([0-9]{10}) ·")
 _ORDER_LIST_LINE=re.compile(r"(?m)^([0-9]{10}) · (010[0-9]{8}) · ([^·\n]+) ·")
 _ORDER_PAGE=re.compile(r"(?m)^AICC_ORDER_PAGE:(ALL|STATUS):([A-Z_]+):([0-9]{1,6}):([0-9]{1,6}):([0-9]{1,9})$")
@@ -63,6 +64,17 @@ def reply_markup(text):
         if state=="배송준비":row.append({"text":"🚚 배송 등록","callback_data":"aicc:item:ship:"+number})
         if state=="배송중":row.append({"text":"📦 배송 완료","callback_data":"aicc:item:delivered:"+number})
         if state in _LIST_CANCEL_STATES:row.append({"text":"❌ 주문 취소","callback_data":"aicc:item:cancel:"+number})
+        return {"inline_keyboard":[row]}
+    detail=_ORDER_DETAIL_LINE.search(text)
+    if detail:
+        number,state,_=detail.groups()
+        row=[{"text":"📋 상세 새로고침","callback_data":"aicc:detail:detail:"+number}]
+        next_action={"확인대기":("✅ 주문 확인","confirm"),"입금대기":("💳 입금 확인","payment"),
+                     "배송준비":("🚚 배송 등록","ship"),"배송중":("📦 배송 완료","delivered")}.get(state)
+        if next_action:row.append({"text":next_action[0],"callback_data":"aicc:detail:"+next_action[1]+":"+number})
+        if state in _LIST_CANCEL_STATES:row.append({"text":"❌ 주문 취소","callback_data":"aicc:detail:cancel:"+number})
+        if state not in ("확인대기","취소완료","취소 확인중","거절"):
+            return {"inline_keyboard":[row,[{"text":"📨 안내문자 재전송","callback_data":"aicc:detail:resend:"+number}]]}
         return {"inline_keyboard":[row]}
     match=_ORDER_LINE.search(text)
     if match is None:
@@ -138,6 +150,18 @@ def callback_command(update,cfg):
         if item[1]=="delivered" and state!="배송중":return None
         action={"detail":"주문상세","confirm":"주문확인","cancel":"주문 취소","payment":"입금 확인","ship":"배송","delivered":"배송 완료"}[item[1]]
         return query["id"],actor["id"],phone+" 고객 "+action+" #"+number
+    detail_action=re.fullmatch(r"aicc:detail:(detail|confirm|cancel|payment|ship|delivered|resend):([0-9]{10})",data)
+    if detail_action:
+        source=_ORDER_DETAIL_LINE.search(message_text)
+        if source is None or source[1]!=detail_action[2]:return None
+        number,state,phone=source.groups();action=detail_action[1]
+        expected={"confirm":"확인대기","payment":"입금대기","ship":"배송준비","delivered":"배송중"}
+        if action in expected and state!=expected[action]:return None
+        if action=="cancel" and state not in _LIST_CANCEL_STATES:return None
+        if action=="resend" and state in ("확인대기","취소완료","취소 확인중","거절"):return None
+        label={"detail":"주문상세","confirm":"주문확인","cancel":"주문 취소",
+               "payment":"입금 확인","ship":"배송","delivered":"배송 완료","resend":"안내문자 재전송"}[action]
+        return query["id"],actor["id"],phone+" 고객 "+label+" #"+number
     match=re.fullmatch(r"aicc:(confirm|detail|cancel):([0-9]{10})",query["data"])
     if match is None:
         return None
@@ -163,12 +187,13 @@ def _callback_label(data):
     if status:return "🏷 "+_FILTER_STATES.get(status[1],status[1])
     if re.fullmatch(r"aicc:orders:next:(?:ALL|[A-Z_]+):[0-9]{1,6}",data or ""):return "➡️ 다음 주문 보기"
     item=re.fullmatch(r"aicc:item:(detail|confirm|cancel|payment|ship|delivered):([0-9]{10})",data or "")
+    detailed=re.fullmatch(r"aicc:detail:(detail|confirm|cancel|payment|ship|delivered|resend):([0-9]{10})",data or "")
     legacy=re.fullmatch(r"aicc:(confirm|detail|cancel):([0-9]{10})",data or "")
-    match=item or legacy
+    match=item or detailed or legacy
     if match:
         action=match[1];number=match[2]
         labels={"detail":"📋 상세 보기","confirm":"✅ 주문 확인","cancel":"❌ 주문 취소",
-                "payment":"💳 입금 확인","ship":"🚚 배송 등록","delivered":"📦 배송 완료"}
+                "payment":"💳 입금 확인","ship":"🚚 배송 등록","delivered":"📦 배송 완료","resend":"📨 안내문자 재전송"}
         return labels[action]+" · 주문 #"+number
     return "선택한 작업"
 

@@ -15,3 +15,19 @@ def test_order_date_preserves_unknown_and_converts_timezone():
     assert order_date('broken')=='일자 미확인'
     assert order_date(None)=='일자 미확인'
     assert order_date('2026-10-11T23:30:00+00:00')=='2026-10-12 08:30'
+
+def test_new_order_notification_buttons_bind_to_exact_pending_order():
+    a=GuestOperatorAdapter(ledger=None,store=None)
+    row={"provider_order_id":200,"phone":"01092838321","state":"PENDING_REVIEW",
+         "reference":"a"*24,"requested_at":"2026-10-20T02:53:00Z",
+         "delivery":{"first_name":"홍"},"quote":{"line_items":[{"name":"차콜 핀턱 와이드 팬츠","option":"S","quantity":1}]}}
+    a.rows=lambda:[row]
+    payload={"reference":"a"*24,"provider_order_id":200,"review_state":"PENDING_REVIEW"}
+    number=a._order_number(row)
+    assert a.notification_markup(payload)=={"inline_keyboard":[
+        [{"text":"✅ 주문 확인","callback_data":"aicc:confirm:"+number},
+         {"text":"📋 주문 상세","callback_data":"aicc:detail:"+number}],
+        [{"text":"❌ 주문 취소","callback_data":"aicc:cancel:"+number}],
+    ]}
+    assert a.notification_markup({**payload,"review_state":"CONFIRMED"}) is None
+    assert a.notification_markup({**payload,"reference":"b"*24}) is None

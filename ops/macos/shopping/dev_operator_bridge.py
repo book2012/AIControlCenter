@@ -7,7 +7,7 @@ from core.shopping.operator_intent import ALLOWED_LOCAL_MODELS
 
 _DIRECT_ORDER_BUTTON_COMMAND = re.compile(
     r"(?:010[0-9]{8}|010-[0-9]{4}-[0-9]{4})\s*고객(?:님)?\s*"
-    r"(?:주문\s*(?:확인|상세|취소)|입금\s*확인|배송(?:\s*완료)?)\s*#?[1-9][0-9]*"
+    r"(?:주문\s*(?:확인|상세|취소)|입금\s*확인|배송(?:\s*완료)?|안내문자\s*재전송)\s*#?[1-9][0-9]*"
 )
 
 def compose_dev_bridge(*, cfg, data, telegram, adapter, products, conversation_cfg=None):

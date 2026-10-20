@@ -58,6 +58,17 @@ class GuestOperatorAdapter:
             text+="\n답장: "+phone+" 고객 주문확인\n여러 주문은: "+phone+" 고객 주문확인 #"+self._order_number(r)
         text+="\n상세: 주문상세 #"+self._order_number(r)+" · 전체: 주문목록"
         return text
+    def notification_markup(self,payload):
+        if payload.get("review_state")!="PENDING_REVIEW":return None
+        matches=[r for r in self.rows() if r["reference"]==payload.get("reference") and r["provider_order_id"]==payload.get("provider_order_id")]
+        if len(matches)!=1:return None
+        number=self._order_number(matches[0])
+        if not re.fullmatch(r"[0-9]{10}",number):return None
+        return {"inline_keyboard":[
+            [{"text":"✅ 주문 확인","callback_data":"aicc:confirm:"+number},
+             {"text":"📋 주문 상세","callback_data":"aicc:detail:"+number}],
+            [{"text":"❌ 주문 취소","callback_data":"aicc:cancel:"+number}],
+        ]}
     def display_state(self,row):
         if self.aftersales is None:return row["state"]
         cancellation=self.aftersales.cancellation(row["provider_order_id"])["state"]
@@ -174,6 +185,13 @@ class GuestOperatorAdapter:
             reply=self.aftersales.operator_command(text,update_id,actor=actor)
             if reply is not None:return None,None,reply
         clean=text.strip()
+        resend=re.fullmatch(r"("+PHONE_PATTERN+r")\s*고객(?:님)?\s*안내문자\s*재전송\s*#([0-9]{10})",clean)
+        if resend and update_id is not None:
+            rows=self._identifier_rows(resend[2],local_phone(resend[1]))
+            if len(rows)!=1:return None,None,"해당 고객 주문을 찾지 못했습니다."
+            sms=getattr(self.aftersales,"sms",None)
+            if sms is None:return None,None,"문자 발송 설정이 필요합니다."
+            return None,None,sms.resend_notice(rows[0]["provider_order_id"],update_id)
         if clean in ("주문목록","주문 목록","주문목록 메뉴","주문 목록 메뉴"):
             return None,None,"주문 목록 보기를 선택해 주세요."
         if re.fullmatch(PHONE_PATTERN,clean):return None,None,self.list_message(phone=local_phone(clean))

@@ -59,7 +59,7 @@ def test_historical_orders_never_backfill_and_new_confirmation_sends_once(tmp_pa
     assert sms.dispatch_one()=="IDLE" and not sent
     rows[0]["review_state"]="CONFIRMED"
     assert sms.dispatch_one()=="ACCEPTED" and len(sent)==1
-    assert "주문번호: 15" in sent[0][1] and "TEST ACCOUNT" in sent[0][1] and sent[0][0]==PHONE
+    assert "주문확인 및 입금 안내" in sent[0][1] and "주문번호: 15" in sent[0][1] and "TEST ACCOUNT" in sent[0][1] and sent[0][0]==PHONE
     assert sms.dispatch_one()=="IDLE" and len(sent)==1
 def test_ambiguous_sms_is_not_retried_after_restart(tmp_path):
     def failing(*args):raise TimeoutError()
@@ -87,3 +87,17 @@ def test_public_lookup_includes_pending_review_orders_only_for_matching_phone(tm
     assert response.json()["order"]["review_state"]=="PENDING_REVIEW"
     assert "phone" not in response.json()["order"] and "delivery" not in response.json()["order"]
     assert client.post("/__order-dev/orders/public-lookup",json={"order_number":number,"phone":"01000000000"}).status_code==404
+
+def test_explicit_notice_resend_requires_real_configuration_and_never_autoretries(tmp_path):
+    sent=[];sms,store,rows=sms_fixture(tmp_path,lambda cfg,to,text:sent.append((to,text)))
+    cfg=json.loads(sms.config_path.read_text());cfg["enabled"]=False
+    sms.config_path.write_text(json.dumps(cfg))
+    assert "설정이 필요" in sms.resend_notice(ORDER,123) and not sent
+    cfg["enabled"]=True;cfg["bank"]["account"]="123456"
+    sms.config_path.write_text(json.dumps(cfg))
+    assert "설정이 필요" in sms.resend_notice(ORDER,124) and not sent
+    cfg["bank"]["account"]="TEST ACCOUNT";sms.config_path.write_text(json.dumps(cfg))
+    assert "재전송을 요청" in sms.resend_notice(ORDER,125) and len(sent)==1
+    assert "주문확인 및 입금 안내" in sent[0][1]
+    assert "중복 발송" in sms.resend_notice(ORDER,125) and len(sent)==1
+    assert "중복 발송" in sms.resend_notice(ORDER,126) and len(sent)==1
