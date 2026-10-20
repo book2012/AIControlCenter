@@ -6211,3 +6211,9 @@ Current DEV Twilio Verify remains restricted to one configured test phone. Its p
 
 ## Next Telegram milestone — customer Shopping/Sales Bot
 Build a separately credentialed customer bot. Guests remain unlinked. Members link from an authenticated agachichi account, then AIControlCenter classifies first purchase (no prior successful paid order) versus returning purchaser. Keep the existing operator bot fixed-recipient and operator-allowlisted. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
+
+## 2026-10-20 — Telegram 상품 등록 흐름
+- [x] DEV 봇 텍스트 접수와 Codex 상품 초안 큐/상태/알림 소스 구현 및 단위 검증.
+- [ ] 깨끗한 DEV 릴리스에서 봇과 API를 활성화하고 합성 상품 1건으로 접수·알림 검증.
+- [ ] Telegram 이미지 수집, 원본·AI 출처 표시, 옵션/재고 검토, 등록 전 검증과 명시적 DEV 승인 버튼 구현.
+- [ ] DEV WooCommerce 등록 후 읽기 검증과 별도 Homepage 릴리스; PROD 승격은 별도 검증.

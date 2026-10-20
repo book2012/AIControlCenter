@@ -101,7 +101,7 @@ def callback_command(update,cfg):
         return None
     menu_commands={"orders":"주문목록 메뉴","order_help":"주문조회 도움말",
                    "products":"/products","stock":"재고관리",
-                   "product_help":"상품관리 도움말"}
+                   "product_help":"상품 등록"}
     menu=re.fullmatch(r"aicc:menu:([a-z_]+)",query["data"])
     if menu is not None:
         if menu[1] not in menu_commands or type(message.get("text")) is not str or "[DEV] 관리자 메뉴" not in message["text"]:

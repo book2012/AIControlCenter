@@ -381,7 +381,7 @@ def test_menu_command_shows_order_and_product_buttons_and_routes_shortcuts(tmp_p
 
 def test_menu_callback_rejects_wrong_operator_or_non_menu_message():
     update=menu_update(action="product_help")
-    assert callback_command(update,CFG)==("menu-callback-20",USER,"상품관리 도움말")
+    assert callback_command(update,CFG)==("menu-callback-20",USER,"상품 등록")
     assert callback_command(menu_update(),CFG)==("menu-callback-20",USER,"주문목록 메뉴")
     assert callback_command(menu_update(user=USER+1),CFG) is None
     assert callback_command(menu_update(bot="other_bot"),CFG) is None

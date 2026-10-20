@@ -6196,3 +6196,6 @@ Product detail chat now starts with that product's public information and no pro
 The member header routes 주문내역 to WooCommerce order history and 내 정보 to the account dashboard. The dashboard links to orders, cart, account/password editing, and address editing. ID/password recovery by SMS remains gated on a customer-wide phone recovery flow and an AIControlCenter-owned outbound SMS adapter; the current DEV verification bridge permits only one allowlisted test phone and sends OTP challenges only.
 
 Telegram customer bot requirements are tracked in [SHOP_TELEGRAM_CUSTOMER_BOT.md](docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md). This is a separate Shopping/Sales Bot; the current Telegram order bot remains operator-only. Linked members are classified as first-purchase when they have no prior successful paid order.
+
+### DEV Telegram 상품 초안 접수 (준비 중)
+`papachichi_bot`에서 `상품 등록: ...`을 보내면 기존 Codex 검토 초안 작업으로 접수하고 `상품초안 #ID`로 상태를 볼 수 있는 소스가 준비됐습니다. 아직 DEV에 활성화하지 않았으며 사진·등록 확인은 `/dev-order/admin`에서 진행합니다. [설계와 범위](docs/architecture/SHOP_TELEGRAM_CODEX_PRODUCT_INTAKE_DEV.md).

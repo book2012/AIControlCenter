@@ -7214,3 +7214,6 @@ Logged-in header has dedicated 주문내역 and 내 정보 destinations. The acc
 
 ## Telegram customer bot boundary
 Customer member/guest identification and first-purchase classification belong in a future separate Shopping/Sales Bot backed by AIControlCenter account linking and order history. Current papachichi/mommychichi bots remain operator-only. See `docs/architecture/SHOP_TELEGRAM_CUSTOMER_BOT.md`.
+
+## 2026-10-20 — DEV Telegram 상품 초안 경계
+DEV `papachichi_bot` → 인증된 operator bridge → actor별 Codex 초안 대기열 → 검토 통지. 상품사진 검토와 DEV WooCommerce 등록은 기존 관리자 경계이며, PROD 상품 등록이나 자동 공개로 연결하지 않습니다. [세부 설계](docs/architecture/SHOP_TELEGRAM_CODEX_PRODUCT_INTAKE_DEV.md).

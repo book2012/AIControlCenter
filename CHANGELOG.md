@@ -6685,3 +6685,7 @@ Final related regression: 161 passed after independent cursor fix; immutable DEV
 ## 2026-10-13 — Telegram customer bot requirements
 - Recorded a separate customer-facing Telegram Shopping/Sales Bot requirement: guests remain unlinked; members link through an authenticated account challenge; members are marked first-purchase until a successful paid order exists.
 - Kept current papachichi operator bot and mommychichi production operator bot isolated. No customer bot runtime was activated.
+
+## 2026-10-20 — DEV Telegram Codex 상품 초안 접수 준비
+- DEV 운영 봇의 상품 등록 안내 버튼을 Codex 초안 접수 안내로 연결하고, 텍스트 접수·작업 상태 조회·완료 알림을 추가했습니다.
+- 기존 웹 관리자 상품 검토·등록 경계와 PROD 격리를 유지했습니다. 아직 활성화하지 않았습니다.

@@ -68,7 +68,10 @@ class CodexWebsiteDraftWorker:
                 "CODEX_INTERRUPTED":"실행 중단 · 재실행 전 확인 필요"}[state]
             with connection(self.conversation.path) as c:
                 c.execute("UPDATE website_jobs SET state=? WHERE id=?",(state,job))
-                if not request.startswith("PRODUCT_INTAKE::"):
+                if request.startswith("PRODUCT_INTAKE::") and actor != "telegram-user-9223372036854775807":
+                    c.execute("INSERT OR IGNORE INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",
+                        ("product:"+job,actor,"DEV 상품 초안 #"+job+" · "+label+"\n‘상품초안 #"+job+"’으로 상태를 확인하세요. 상품정보·사진 검토 전에는 등록되지 않습니다.",self.conversation.clock()))
+                elif not request.startswith("PRODUCT_INTAKE::"):
                     c.execute("INSERT OR IGNORE INTO dialogue_notices VALUES(?,?,?,'PENDING',?)",
                         ("website:"+job,actor,"홈페이지 개선 #"+job+" · "+label+"\n‘개선목록’으로 확인해 주세요. 운영 반영은 하지 않았습니다.",self.conversation.clock()))
         finally:self.busy.release()

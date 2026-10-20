@@ -127,6 +127,30 @@ class OperatorConversation:
                 return self._finish(update_id,self.todo(actor))
             if clean in {"개선목록","홈페이지 개선목록"}:
                 return self._finish(update_id,self.website_list(actor))
+            if clean in {"상품 등록","상품등록","신규 상품"}:
+                return self._finish(update_id,"새 상품 내용을 ‘상품 등록: 상품명, 가격, 색상, 사이즈, 재고’처럼 보내주세요. Codex가 DEV 초안을 작성하며 실제 등록은 검토 후 진행합니다. 사진은 현재 DEV 관리자 페이지에서 원본과 필수 이미지별로 올립니다.")
+            product_request=re.fullmatch(r"(?:상품\s*등록(?:\s*초안)?|상품\s*추가|신규\s*상품)\s*[:：]\s*(.+)",clean,re.S)
+            if product_request:
+                request=product_request[1].strip()
+                if not 1<=len(request)<=1400:
+                    return self._finish(update_id,"상품 내용을 1400자 이내로 보내주세요.")
+                job=secrets.token_hex(4)
+                with connection(self.path) as c:
+                    c.execute("INSERT INTO website_jobs VALUES(?,?,?,'WAITING_CODEX',?)",
+                              (job,actor,"PRODUCT_INTAKE::"+request,self.clock()))
+                return self._finish(update_id,"Codex DEV 상품 초안 #"+job+"을 접수했습니다. 준비되면 여기서 알려드릴게요. 가격·옵션·재고·사진 검토 전에는 상품이 등록되지 않습니다. 상태 확인: 상품초안 #"+job)
+            product_status=re.fullmatch(r"상품\s*초안\s*#?([a-f0-9]{8})",clean)
+            if product_status:
+                with connection(self.path) as c:
+                    row=c.execute("SELECT state FROM website_jobs WHERE id=? AND actor=? AND request LIKE 'PRODUCT_INTAKE::%'",
+                                  (product_status[1],actor)).fetchone()
+                if row is None:return self._finish(update_id,"해당 상품 초안을 찾지 못했습니다.")
+                labels={"WAITING_CODEX":"Codex 대기","CODEX_RUNNING":"Codex 작성 중","PRODUCT_REVIEW_REQUIRED":"초안 준비 · 검토 대기","CODEX_FAILED":"작성 실패 · 상태 확인 필요","CODEX_INTERRUPTED":"작업 중단 · 상태 확인 필요","SCOPE_REJECTED":"검증 실패 · 상태 확인 필요"}
+                return self._finish(update_id,"상품 초안 #"+product_status[1]+" · "+labels.get(row[0],"상태 확인 필요")+"\n검토: https://dev.bokstory.duckdns.org/dev-order/admin\n사진과 상품정보 확인 후에만 DEV 등록할 수 있습니다.")
+            if clean in {"상품초안 목록","상품 초안 목록"}:
+                with connection(self.path) as c:
+                    rows=c.execute("SELECT id,state FROM website_jobs WHERE actor=? AND request LIKE 'PRODUCT_INTAKE::%' ORDER BY created DESC LIMIT 10",(actor,)).fetchall()
+                return self._finish(update_id,"최근 DEV 상품 초안:\n"+"\n".join("#"+job+" · "+state for job,state in rows) if rows else "접수한 상품 초안이 없습니다.")
             if clean in {"응","네","예","확인","진행해","좋아","처리해","맞아"}:
                 if session.get("state") not in {"WAITING_APPROVAL","WAITING_INFO"}:
                     return self._finish(update_id,"확인 대기 중인 요청이 없습니다. 처리할 내용을 알려주세요.")
