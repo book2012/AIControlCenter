@@ -111,3 +111,33 @@ def test_disabled_sms_cannot_backfill_old_confirmation_when_enabled_later(tmp_pa
     assert sms.state(ORDER)=="HISTORICAL"
     cfg["enabled"]=True;sms.config_path.write_text(json.dumps(cfg))
     assert sms.dispatch_one()=="IDLE" and not sent
+
+
+def test_dev_preview_order_and_resend_are_visible_without_external_sms(tmp_path):
+    sms,store,rows=sms_fixture(tmp_path,lambda *args:pytest.fail("external SMS forbidden"))
+    sms.transport=None
+    cfg=json.loads(sms.config_path.read_text())
+    cfg.update(provider="DEV_PREVIEW",enabled=True,
+        bank={"name":"가상 테스트은행","account":"DEV-0000-0000","holder":"아가치치 DEV"})
+    sms.config_path.write_text(json.dumps(cfg,ensure_ascii=False))
+    with sqlite3.connect(sms.path) as c:c.execute("DELETE FROM notices WHERE order_id=?",(ORDER,))
+    assert sms.dispatch_one()=="PREVIEW" and sms.state(ORDER)=="PREVIEW"
+    with sqlite3.connect(sms.path) as c:
+        body=c.execute("SELECT body FROM sms_previews WHERE event_key=?",(f"order:{ORDER}",)).fetchone()[0]
+    assert body.startswith("안녕하세요 agachichi 입니다\n주문확인 및 입금 안내")
+    assert "가상 테스트은행 DEV-0000-0000 (아가치치 DEV)" in body
+    preview=sms.resend_notice(ORDER,9001)
+    assert preview.startswith("[DEV 문자 미리보기 · 실제 발송 없음]\n")
+    assert "주문확인 및 입금 안내" in preview
+    assert "중복 발송" in sms.resend_notice(ORDER,9001)
+    with sqlite3.connect(sms.path) as c:
+        assert c.execute("SELECT count(*) FROM sms_previews").fetchone()[0]==2
+
+
+def test_dev_preview_rejects_real_or_unlabelled_bank(tmp_path):
+    sms,store,rows=sms_fixture(tmp_path,lambda *args:pytest.fail("external SMS forbidden"))
+    cfg=json.loads(sms.config_path.read_text())
+    cfg.update(provider="DEV_PREVIEW",enabled=True)
+    sms.config_path.write_text(json.dumps(cfg))
+    assert sms.dispatch_one()=="CONFIGURATION_REQUIRED"
+    assert sms.state(ORDER)=="HISTORICAL"

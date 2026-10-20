@@ -15,6 +15,7 @@ class DevOrderSMS:
             c.execute("CREATE TABLE IF NOT EXISTS notices(order_id INTEGER PRIMARY KEY,state TEXT NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS provider_receipts(event_key TEXT PRIMARY KEY,kind TEXT,order_id INTEGER,receipt TEXT,state TEXT,next_check REAL)")
             c.execute("CREATE TABLE IF NOT EXISTS settings(key TEXT PRIMARY KEY,value TEXT NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS sms_previews(event_key TEXT PRIMARY KEY,order_id INTEGER NOT NULL,body TEXT NOT NULL,created_at REAL NOT NULL)")
             c.execute("CREATE TABLE IF NOT EXISTS resend_notices(order_id INTEGER PRIMARY KEY,update_id INTEGER NOT NULL,state TEXT NOT NULL,claimed_at REAL NOT NULL)")
             c.execute("UPDATE resend_notices SET state='UNKNOWN' WHERE state='SENDING'")
             if not c.execute("SELECT 1 FROM settings WHERE key='seeded'").fetchone():
@@ -42,6 +43,10 @@ class DevOrderSMS:
         bank=value["bank"]
         for k in ("name","account","holder"):
             if type(bank.get(k)) is not str or not bank[k].strip() or len(bank[k])>100 or any(ch in bank[k] for ch in "\n\r"):raise ValueError("BANK_REQUIRED")
+        if value.get("provider")=="DEV_PREVIEW":
+            if value.get("enabled") is not True or bank!={"name":"가상 테스트은행","account":"DEV-0000-0000","holder":"아가치치 DEV"}:
+                raise ValueError("DEV_PREVIEW_CONFIGURATION_REQUIRED")
+            return value
         if bank["account"].strip()=="123456":raise ValueError("REAL_BANK_REQUIRED")
         if self.solapi_config_path and self.solapi_config_path.exists():
             if self.solapi_config_path.is_symlink() or self.solapi_config_path.stat().st_mode&0o077:raise ValueError("PRIVATE_CONFIG_REQUIRED")
@@ -62,6 +67,11 @@ class DevOrderSMS:
 
     def _send_notice(self,cfg,text,kind,oid):
         event=kind+":"+str(oid)
+        if cfg.get("provider")=="DEV_PREVIEW":
+            if self.transport is not None:raise ValueError("DEV_PREVIEW_EXTERNAL_TRANSPORT_DENIED")
+            with connection(self.path) as c:
+                c.execute("INSERT INTO sms_previews VALUES(?,?,?,?)",(event,oid,text,time.time()))
+            return
         if self.transport:receipt=self.transport(cfg,self.phone_cfg["test_phone"],text)
         elif cfg.get("provider")=="SOLAPI":
             from ops.macos.shopping.dev_solapi_sms import SolapiSMS
@@ -129,9 +139,10 @@ class DevOrderSMS:
         try:
             text=self.confirmation_text(cfg,order,order_id)
             self._send_notice(cfg,text,"order-resend-"+str(update_id),order_id)
-            result="ACCEPTED"
+            result="PREVIEW" if cfg.get("provider")=="DEV_PREVIEW" else "ACCEPTED"
         except Exception:result="UNKNOWN"
         with connection(self.path) as c:c.execute("UPDATE resend_notices SET state=? WHERE order_id=? AND update_id=?",(result,order_id,update_id))
+        if result=="PREVIEW":return "[DEV 문자 미리보기 · 실제 발송 없음]\n"+text
         return ("주문확인·입금 안내 문자 재전송을 요청했습니다. 발송 상태를 확인해 주세요."
                 if result=="ACCEPTED" else "문자 발송 결과 확인이 필요합니다. 재전송을 멈췄습니다.")
 
@@ -168,7 +179,7 @@ class DevOrderSMS:
                 if c.execute("UPDATE notices SET state='SENDING' WHERE order_id=? AND state='PENDING'",(oid,)).rowcount!=1:continue
             try:
                 self._send_notice(cfg,text,"order",oid)
-                state="ACCEPTED"
+                state="PREVIEW" if cfg.get("provider")=="DEV_PREVIEW" else "ACCEPTED"
             except Exception:state="UNKNOWN"
             with connection(self.path) as c:c.execute("UPDATE notices SET state=? WHERE order_id=?",(state,oid))
             return state
@@ -194,7 +205,7 @@ class DevOrderSMS:
                 if c.execute("UPDATE shipping_notices SET state='SENDING' WHERE order_id=? AND state='PENDING'",(oid,)).rowcount!=1:continue
             try:
                 self._send_notice(cfg,text,"shipping",oid)
-                state="ACCEPTED"
+                state="PREVIEW" if cfg.get("provider")=="DEV_PREVIEW" else "ACCEPTED"
             except Exception:state="UNKNOWN"
             with connection(self.store.path) as c:c.execute("UPDATE shipping_notices SET state=? WHERE order_id=?",(state,oid))
             return state
