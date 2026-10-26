@@ -1,0 +1,174 @@
+[
+  {
+    "file": "database.sql",
+    "state": "CREATED",
+    "bytes": 1237770,
+    "sha256": "99eb29080b6c6295659003821fdcac7872448d4381d48c7a97bcca92a2ee9544"
+  },
+  {
+    "file": "wp-content.tar.gz",
+    "state": "CREATED",
+    "bytes": 112043845,
+    "sha256": "59ec2de62b89d3bafd14ce2720c6aa46db0ce268f4c59ca3e6a18a93e357b54b"
+  },
+  {
+    "file": "prod-commerce/orders.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 53248
+  },
+  {
+    "file": "prod-commerce/aftersales.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 106496
+  },
+  {
+    "file": "prod-commerce/inquiries.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 20480
+  },
+  {
+    "file": "prod-commerce/phone-browser.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 28672
+  },
+  {
+    "file": "prod-commerce/chat-history.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 20480
+  },
+  {
+    "file": "prod-commerce/checkout.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 16384
+  },
+  {
+    "file": "prod-commerce/customers.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 172032
+  },
+  {
+    "file": "prod-commerce/telegram-router.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 28672
+  },
+  {
+    "file": "prod-commerce/product-commands.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 8192
+  },
+  {
+    "file": "dev-order/papachichi-cursor.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 8192
+  },
+  {
+    "file": "dev-order/orders.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 143360
+  },
+  {
+    "file": "dev-order/aftersales.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 114688
+  },
+  {
+    "file": "dev-order/inquiries.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 20480
+  },
+  {
+    "file": "dev-order/chat-history.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 45056
+  },
+  {
+    "file": "dev-order/order-sms.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 36864
+  },
+  {
+    "file": "dev-order/operator-dialogue.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 65536
+  },
+  {
+    "file": "dev-order/operator-bridge.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 90112
+  },
+  {
+    "file": "dev-order/customers.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 204800
+  },
+  {
+    "file": "dev-order/product-commands.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 8192
+  },
+  {
+    "file": "dev-order/guest-phone.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 28672
+  },
+  {
+    "file": "dev-order/guest-checkout.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 32768
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/orders.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 53248
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/aftersales.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 77824
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/inquiries.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 20480
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/chat-history.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 20480
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/order-sms.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 24576
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/operator-dialogue.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 32768
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/operator-bridge.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 8192
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/customers.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 172032
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/product-commands.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 8192
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/guest-phone.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 20480
+  },
+  {
+    "file": "dev-order/.xxl0khmuh/guest-checkout.sqlite3",
+    "state": "SQLITE_BACKUP_OK",
+    "bytes": 16384
+  }
+]

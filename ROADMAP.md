@@ -1,5 +1,15 @@
 ## 2026-10-20 — Correct DEV cancellation visibility and order status timeline
 
+## 2026-10-27 — Stabilization priorities
+
+- Completed: live service-version inventory; same-release DEV recovery; old and fresh SQL isolated restore; fresh media restore; SQLite backup integrity.
+- Source validated: deterministic checkout/operator SQLite closure, 92 focused tests.
+- Next: activate only the scoped DEV fix and observe health/descriptor counts; reconcile service-specific release metadata.
+- Blocked externally: agachichi.com registration/delegation verification; configured and approved domestic SMS sender.
+- Pending: cross-store consistent recovery, off-device/periodic backups, authenticated DEV E2E, full regression, Ubuntu services and shadow API exit 78 diagnosis.
+- Production activation remains a separate authorization gate.
+
+
 Restored **주문 취소** on each eligible order card in order lists and new-order notifications. Corrected state precedence so a saved cancellation overrides pending operator-review state in detail and status filters. The **전체 보기** list excludes orders already in CANCELLED; the CANCELLED status filter and phone-specific order list still show them. Applicable action states are validated per order, including 확인대기, 확인완료, 입금대기, and 배송준비. Order detail shows timestamped order review and after-sales transitions; new after-sales transitions are captured in append-only SQLite history. Existing past transitions are not reconstructed. No live cancellation was executed.
 
 Telegram button callbacks now label their in-progress acknowledgement and result with the selected button name and, for order actions, the public order number.

@@ -1,0 +1,140 @@
+[
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/prod-commerce/backups/products-registration-20261015-aicc_shopping.sql.gz",
+    "bytes": 136324,
+    "sha256": "bca3686f1ff18dc467b11b36f0aadec5a835c61ec4b4cb459ac8176874dc587c",
+    "status": "GZIP_READ_OK_SQL_RESTORE_PENDING"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/prod-commerce/backups/conversation-scope-20261012-072905/telegram-router.sqlite3",
+    "bytes": 12288,
+    "sha256": "24f110e6b4aa1c266cebd59c0ee16d929b23c973639051e3087c63d998ee31d3",
+    "integrity_ok": true,
+    "table_count": 2,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/prod-commerce/backups/dev-relay-20261012-064125/telegram-router.sqlite3",
+    "bytes": 12288,
+    "sha256": "20eb72b356de254f1f1863ee5477db620c626ae9ddeee2fa7a9530246a55c567",
+    "integrity_ok": true,
+    "table_count": 2,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/prod-commerce/backups/20261010-112204/database.sql",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "status": "INVALID_EMPTY"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/prod-commerce/backups/20261010-112230/wp-content.tar.gz",
+    "bytes": 107932095,
+    "sha256": "82530c12d3694c6f03f7598dd2e0a35a5fc6ad3cf6bc7a07c451c27a8bd54336",
+    "status": "ARCHIVE_READ_OK",
+    "member_count": 8319,
+    "unsafe_member_paths": 0
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/prod-commerce/backups/20261010-112230/database.sql",
+    "bytes": 4167957,
+    "sha256": "c3cb0dcba25834cdbee0e0d52ae07f768bd253109664ca92a4b7a3fa01f34a81",
+    "status": "NONEMPTY_SQL_RESTORE_PENDING"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/orders-dev-validation.sqlite3",
+    "bytes": 57344,
+    "sha256": "18858b0ac0b3b9efef1462c4ce2a1486a760ab52330cd0d0535d29e7d8a882a6",
+    "integrity_ok": true,
+    "table_count": 7,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/aftersales-before-customer-request-migration-20261018T213412Z.sqlite3",
+    "bytes": 77824,
+    "sha256": "fac317413d4c6af5482a00cb117309c16769c90c010883ba32044fb26e45369c",
+    "integrity_ok": true,
+    "table_count": 10,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/customers-dev-validation.sqlite3",
+    "bytes": 172032,
+    "sha256": "07057212094834e36dc51c10487fcd3ae6feb0f1ae3053cac9cc004b6dbf255c",
+    "integrity_ok": true,
+    "table_count": 14,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/stock-inquiry-20261005T233529Z/orders.sqlite3",
+    "bytes": 61440,
+    "sha256": "e71b22280f59f9a6449a31152f586b78fc102dcddf40a97e5a9a1dd6f1520689",
+    "integrity_ok": true,
+    "table_count": 7,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/stock-inquiry-20261005T233529Z/inquiries.sqlite3",
+    "bytes": 20480,
+    "sha256": "7d93062cfa963608710b0fa08578aa877031e8cf68299ff3457a50d0ddf32dfd",
+    "integrity_ok": true,
+    "table_count": 2,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/stock-inquiry-20261005T233529Z/customers.sqlite3",
+    "bytes": 172032,
+    "sha256": "4df178e64d05fd16e65f593f8b8695fa3c8651d1c9f7f8f829f57b854201ee90",
+    "integrity_ok": true,
+    "table_count": 14,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/stock-inquiry-20261005T233529Z/guest-phone.sqlite3",
+    "bytes": 12288,
+    "sha256": "d5249ddfeed0265941daf737a8ca4bc94a37362bc54d3ea6bc0b6e7ac6d0e09c",
+    "integrity_ok": true,
+    "table_count": 1,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/stock-inquiry-20261005T233529Z/guest-checkout.sqlite3",
+    "bytes": 16384,
+    "sha256": "9e73c4c1aafc77869c3253249d97d6b58086c64659865f4be5670f77abb3d316",
+    "integrity_ok": true,
+    "table_count": 1,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/guest-checkout-20261005T231933Z/orders.sqlite3",
+    "bytes": 61440,
+    "sha256": "3e866f7c7f5cdce491611cc38fe57ad6552cc7fee89438b442f4ab5b83cd30a2",
+    "integrity_ok": true,
+    "table_count": 7,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/guest-checkout-20261005T231933Z/customers.sqlite3",
+    "bytes": 172032,
+    "sha256": "4df178e64d05fd16e65f593f8b8695fa3c8651d1c9f7f8f829f57b854201ee90",
+    "integrity_ok": true,
+    "table_count": 14,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/guest-checkout-20261005T231933Z/guest-phone.sqlite3",
+    "bytes": 12288,
+    "sha256": "d5249ddfeed0265941daf737a8ca4bc94a37362bc54d3ea6bc0b6e7ac6d0e09c",
+    "integrity_ok": true,
+    "table_count": 1,
+    "status": "SQLITE_INTEGRITY_OK"
+  },
+  {
+    "path": "/Users/kyouhan/AIControlCenterRuntime/dev-order/backups/guest-checkout-20261005T231933Z/guest-checkout.sqlite3",
+    "bytes": 16384,
+    "sha256": "9e73c4c1aafc77869c3253249d97d6b58086c64659865f4be5670f77abb3d316",
+    "integrity_ok": true,
+    "table_count": 1,
+    "status": "SQLITE_INTEGRITY_OK"
+  }
+]

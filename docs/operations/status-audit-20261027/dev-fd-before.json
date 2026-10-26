@@ -1,0 +1,7 @@
+{
+  "before_fd_entries": 311,
+  "sqlite_handles": {
+    "guest-checkout.sqlite3": 242,
+    "inquiries.sqlite3": 2
+  }
+}

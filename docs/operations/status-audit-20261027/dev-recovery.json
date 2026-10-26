@@ -1,0 +1,17 @@
+{
+  "restart_rc": 0,
+  "last_error": "URLError",
+  "health": {
+    "http": 200,
+    "state": {
+      "operator_bridge": "RUNNING",
+      "poller": "EXTERNAL",
+      "product_management": "RUNNING",
+      "environment": "DEV",
+      "order_sms": "IDLE"
+    }
+  },
+  "dev_service": [
+    "34677\t-15\tcom.aicontrolcenter.dev-order-api"
+  ]
+}

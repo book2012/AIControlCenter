@@ -1,4 +1,5 @@
 """Customer-aware order/operator presentation over private Core state; no live writes."""
+from contextlib import closing
 import hashlib,json,re,sqlite3
 from core.shopping.order_core.guest_checkout import fingerprint
 from core.shopping.order_core.telegram import OrderTelegramIntegration
@@ -31,7 +32,7 @@ def local_phone(value):
 class GuestOperatorAdapter:
     def __init__(self,*,ledger,store,inquiry_queue=None,aftersales=None):self.ledger=ledger;self.store=store;self.inquiry_queue=inquiry_queue;self.aftersales=aftersales
     def rows(self):
-        with sqlite3.connect("file:"+str(self.store.path.resolve())+"?mode=ro",uri=True) as c:
+        with closing(sqlite3.connect("file:"+str(self.store.path.resolve())+"?mode=ro",uri=True)) as c, c:
             drafts={r[0]: (r[1],r[2]) for r in c.execute("SELECT operation_key,body,digest FROM checkout_delivery WHERE state='CONFIRMED'")}
         result=[]
         for row in self.ledger.operator_orders():

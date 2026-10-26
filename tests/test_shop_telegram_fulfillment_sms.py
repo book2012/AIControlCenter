@@ -33,12 +33,32 @@ def test_paid_shipping_delivery_state_machine_and_durable_receipt(tmp_path):
         assert c.execute("SELECT tracking FROM shipping_notices").fetchone()[0]=="1234567890"
 
 def test_all_orders_and_phone_query_are_complete_and_phone_mutation_is_unambiguous(tmp_path):
+    import re
+
     store,draft=fixture(tmp_path,[1000.0]);op=adapter(store,draft);base=op.rows()[0]
-    op.rows=lambda:[{**base,"provider_order_id":i} for i in range(1,27)]+[{**base,"provider_order_id":90,"phone":"01099999999"}]
+    # Distinct public identifiers model real orders after public-number rollout.
+    rows=[{**base,"provider_order_id":i,"order_number":f"261020{i:04d}"} for i in range(1,27)]
+    other={**base,"provider_order_id":90,"order_number":"2610200090","phone":"01099999999"}
+    op.rows=lambda:rows+[other]
+    def numbers(reply):
+        return re.findall(r"^([0-9]{10}) ·",reply,re.MULTILINE)
+
     reply=op.resolve("주문내역",1)[2]
-    assert "전체 주문 27건" in reply and "#26" in reply and "#90" in reply
+    assert "전체 주문 27건" in reply and numbers(reply)==[r["order_number"] for r in rows[:5]]
+    all_numbers=[]
+    for page in range(6):
+        page_reply=op.resolve(f"주문목록 전체 ALL {page}",10+page)[2]
+        all_numbers.extend(numbers(page_reply))
+    assert all_numbers==[r["order_number"] for r in rows]+[other["order_number"]]
+    assert len(set(all_numbers))==27
+
     mine=op.resolve("01012345678",2)[2]
-    assert "주문 26건" in mine and "#26" in mine and "#90" not in mine
+    assert "주문 26건" in mine and numbers(mine)==[r["order_number"] for r in rows[:5]]
+    mine_numbers=[]
+    for page in range(6):
+        mine_numbers.extend(numbers(op.list_message(phone="01012345678",page=page)))
+    assert mine_numbers==[r["order_number"] for r in rows]
+    assert other["order_number"] not in mine_numbers
     assert "주문번호를 함께" in op.resolve("01012345678 입금확인",3)[2]
     assert store.payment(ORDER)["state"]=="AWAITING_DEPOSIT"
     assert "해당 고객 주문" in op.resolve("01099999999 배송완료 #15",4)[2]

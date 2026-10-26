@@ -1,5 +1,10 @@
 ## 2026-10-20 — Correct DEV cancellation visibility and order status timeline
 
+## 2026-10-27 — Close checkout SQLite connections deterministically
+
+Close checkout persistence and operator-polling connections after commit/rollback, including exceptions. Add five GC-independent lifecycle regressions; update order-list regression for public IDs and complete pagination. Focused current-runtime baseline: 92 passed. Document live DEV recovery, isolated SQL/media restore, and domain/SMS blockers. No production activation.
+
+
 Restored **주문 취소** on each eligible order card in order lists and new-order notifications. Corrected state precedence so a saved cancellation overrides pending operator-review state in detail and status filters. The **전체 보기** list excludes orders already in CANCELLED; the CANCELLED status filter and phone-specific order list still show them. Applicable action states are validated per order, including 확인대기, 확인완료, 입금대기, and 배송준비. Order detail shows timestamped order review and after-sales transitions; new after-sales transitions are captured in append-only SQLite history. Existing past transitions are not reconstructed. No live cancellation was executed.
 
 Telegram button callbacks now label their in-progress acknowledgement and result with the selected button name and, for order actions, the public order number.

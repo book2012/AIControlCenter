@@ -1,0 +1,23 @@
+{
+  "observed_date_kst": "2026-10-27",
+  "dev_api_before_fix": "76dd8d49582f0027d7f4128c43d1549429cbbbe0",
+  "dev_homepage": "fc0817bdf07bd5d78a1b874183dbc809ed97673b",
+  "dev_bot_launch_directory": "9f8403da1da8297110f9d35a935aff3e13fb5cba",
+  "prod_api": "3bf63c045c22fa332e176ae6703e4e71423ea84e",
+  "prod_homepage": "78ac5c570039a6e0cbb0c04a3a722fce2371ecdd",
+  "prod_wordpress_plugin": "7dda8c9e012208977cf26ed2b563d8111c56c27e",
+  "dns_agachichi_com": "NXDOMAIN",
+  "bokstory_http": 200,
+  "dev_unauthenticated_http": 401,
+  "prod_health": {
+    "http": 200,
+    "poller": "RUNNING",
+    "product_management": "RUNNING"
+  },
+  "dev_phone_provider": "twilio_verify",
+  "dev_order_sms_provider": "DEV_PREVIEW",
+  "sens_private_config_present": false,
+  "base_repo_dirty_entries": 26,
+  "full_suite": "NOT_RUN",
+  "ubuntu": "NOT_INSPECTED"
+}
