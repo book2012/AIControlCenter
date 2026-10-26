@@ -1,0 +1,19 @@
+{
+  "unload_rc": 0,
+  "deployed_commit": "954614edbc7f6956c07a3fa6a6d7b7c7b1701a62",
+  "previous_commit": "4a096375bed46bdab278bbdc9060cdb318c2db39",
+  "load_rc": 0,
+  "health": {
+    "http": 200,
+    "state": {
+      "operator_bridge": "RUNNING",
+      "poller": "EXTERNAL",
+      "product_management": "RUNNING",
+      "environment": "DEV",
+      "order_sms": "IDLE"
+    }
+  },
+  "activation": "PASS",
+  "pid": 35790,
+  "running_cwd": "/Users/kyouhan/AIControlCenterRuntime/dev-order/releases/954614edbc7f6956c07a3fa6a6d7b7c7b1701a62"
+}

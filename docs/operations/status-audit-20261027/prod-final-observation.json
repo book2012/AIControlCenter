@@ -1,0 +1,22 @@
+{
+  "prod_api_fd_entries": 213,
+  "prod_sqlite_handle_counts": {
+    "inquiries.sqlite3": 52,
+    "telegram-router.sqlite3": 95
+  },
+  "prod_health": {
+    "http": 200,
+    "state": {
+      "environment": "PROD",
+      "poller": "RUNNING",
+      "product_management": "RUNNING"
+    }
+  },
+  "running_containers": [
+    "shopping-wordpress Up 11 days (healthy)",
+    "aicc-order-dev-wordpress-1 Up 10 days",
+    "aicc-order-dev-database-1 Up 2 weeks (healthy)",
+    "shopping-db Up 2 weeks (healthy)"
+  ],
+  "audit_containers_remaining": []
+}

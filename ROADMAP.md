@@ -1,5 +1,9 @@
 ## 2026-10-20 — Correct DEV cancellation visibility and order status timeline
 
+## 2026-10-27 — DEV recovery verified; PROD candidate awaiting approval
+
+DEV API `954614e` is active: 95 focused tests passed; 13 health samples over 120 seconds all HTTP 200, constant 63 file entries and zero checkout/inquiry handles. Production remains on `3bf63c0`; separate scoped candidate `8077c98` passes 75 tests and is not deployed. [Final audit, backups, limitations and next actions](docs/operations/STATUS_AUDIT_20261027.md).
+
 ## 2026-10-27 — Inquiry polling follow-up
 
 Checkout-only DEV observation exposed a second descriptor leak in inquiry polling. Close all eleven inquiry queue connection paths and preserve delivery claims and UNKNOWN_OUTCOME non-retry behavior. Eight new lifecycle regressions now pass; total focused regression: **95 passed**. See [audit and evidence](docs/operations/STATUS_AUDIT_20261027.md). Follow-up DEV activation/observation remains to be recorded; production is unchanged.

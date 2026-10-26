@@ -19,5 +19,13 @@
   "sens_private_config_present": false,
   "base_repo_dirty_entries": 26,
   "full_suite": "NOT_RUN",
-  "ubuntu": "NOT_INSPECTED"
+  "ubuntu": "NOT_INSPECTED",
+  "dev_api_after_fix": "954614edbc7f6956c07a3fa6a6d7b7c7b1701a62",
+  "dev_observation_samples": 13,
+  "dev_observation_seconds": 120,
+  "dev_fd_entries": 63,
+  "dev_checkout_handles": 0,
+  "dev_inquiry_handles": 0,
+  "prod_candidate": "8077c98",
+  "prod_activation": "NOT_PERFORMED"
 }

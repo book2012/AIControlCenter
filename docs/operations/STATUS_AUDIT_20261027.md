@@ -1,5 +1,17 @@
 # AI Home Datacenter 상태 점검 — 2026-10-27
 
+## 최종 상태 — DEV 적용 완료 / PROD 승인 대기
+
+- 실제 DEV API 릴리스: `954614edbc7f6956c07a3fa6a6d7b7c7b1701a62`. launchd 등록, 실제 PID/cwd, current.json과 HTTP health를 확인했다.
+- 최종 관찰: 10초 간격 13회, 약 120초 동안 HTTP 200. 파일 항목은 전 구간 63개, checkout/inquiry 핸들은 전 구간 0개였다. 장기 관찰과 전체 테스트를 대신하지 않는다.
+- DEV 집중 회귀 95개 통과. 수정은 활성 DEV baseline에서 분리하여 SENS 기능을 포함하지 않았다. 문자 설정은 Twilio Verify / DEV_PREVIEW 그대로다.
+- PROD API는 기존 `3bf63c0` 그대로이며 health HTTP 200, poller/product management RUNNING. 점검 시 파일 항목 213개, inquiries 핸들 52개, router 핸들 95개가 관찰되어 동일 계열의 수정 후보를 준비했다. 이는 해당 시점의 관찰이며 미래 고장 시각을 예측하지 않는다.
+- PROD 후보: `8077c98`, `feature/prod-connection-candidate-20261027`. 실제 PROD baseline에서 4개 모듈의 연결 종료만 변경했고 75개 집중 테스트 통과. **배포하지 않았다.**
+- [PROD 적용 범위·사전 점검·재시작·롤백 계획](https://github.com/book2012/AIControlCenter/blob/feature/prod-connection-candidate-20261027/docs/operations/PROD_CONNECTION_CANDIDATE_20261027.md).
+- 최초 checkout-only 관찰과 92개 테스트는 중간 이력이다. 현재 DEV 최종 근거는 본 절과 final-dev JSON 파일들이다.
+- 새 작업 브랜치만 커밋·push했다. 기본 저장소의 기존 26개 dirty 항목과 기록한 파일 해시를 보존했다. 임시 복원 컨테이너는 남아 있지 않다.
+- DNS, PROD runtime, WordPress, DB schema, 실제 주문·재고·환불·문자 발송은 변경하지 않았다. Notion 동기화와 Ubuntu 내부 점검은 수행하지 않았다.
+
 ## 추가 진단 — 문의 큐 연결 누수
 
 Checkout 수정 `4a09637` DEV 적용 후 60초 동안 checkout 핸들은 0개였으나 전체 파일 항목은 72→101로 증가했다. 추가 관찰에서 inquiries.sqlite3 핸들 31개를 확인했다. 빈 문의 큐 dispatch도 connection context만 종료하고 연결을 닫지 않았다.
