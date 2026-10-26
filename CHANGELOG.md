@@ -1,5 +1,9 @@
 ## 2026-10-20 — Correct DEV cancellation visibility and order status timeline
 
+## 2026-10-27 — Inquiry polling follow-up
+
+Checkout-only DEV observation exposed a second descriptor leak in inquiry polling. Close all eleven inquiry queue connection paths and preserve delivery claims and UNKNOWN_OUTCOME non-retry behavior. Eight new lifecycle regressions now pass; total focused regression: **95 passed**. See [audit and evidence](docs/operations/STATUS_AUDIT_20261027.md). Follow-up DEV activation/observation remains to be recorded; production is unchanged.
+
 ## 2026-10-27 — Close checkout SQLite connections deterministically
 
 Close checkout persistence and operator-polling connections after commit/rollback, including exceptions. Add five GC-independent lifecycle regressions; update order-list regression for public IDs and complete pagination. Focused current-runtime baseline: 92 passed. Document live DEV recovery, isolated SQL/media restore, and domain/SMS blockers. No production activation.

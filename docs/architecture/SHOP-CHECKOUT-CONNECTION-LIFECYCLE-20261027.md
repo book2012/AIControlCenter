@@ -7,3 +7,5 @@ Checkout persistence and operator polling own each SQLite connection for one ope
 This addresses the observed DEV descriptor exhaustion: 242 checkout handles and Errno 24 while the process still existed. Health must be checked with an HTTP request, not PID presence alone. Recovery and a later source fix are distinct evidence.
 
 Regression retains every connection reference to prevent GC from masking a leak, exercises repeated lookup/polling and injected read/write errors, and verifies rollback. No production deployment is included. See [status and evidence](../operations/STATUS_AUDIT_20261027.md).
+
+The same lifecycle rule also applies to all eleven DEV inquiry queue connection sites. Post-checkout observation isolated an independent idle-inquiry leak; three further regressions cover idle polling, ambiguous delivery without retry, and response/export reads. Final focused validation is 95 passed. Production remains unchanged.

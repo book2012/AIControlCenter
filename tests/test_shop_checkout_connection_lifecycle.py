@@ -80,3 +80,46 @@ def test_failed_write_rolls_back_and_closes_connection(tmp_path,tracked):
     with closing(original(store.path)) as check:
         assert check.execute("SELECT COUNT(*) FROM checkout_delivery").fetchone()==(1,)
     assert all(c.closed for c in opened)
+
+
+def test_idle_inquiry_polling_closes_every_connection(tmp_path,tracked):
+    from ops.macos.shopping.dev_inquiry_queue import DevInquiryQueue
+    opened,_,_=tracked
+    queue=DevInquiryQueue(tmp_path/"inquiries.sqlite3",SimpleNamespace(
+        send_message=lambda *_:pytest.fail("idle queue must not send")))
+    for _ in range(100):
+        assert queue.dispatch_one() is None
+    assert opened and all(c.closed for c in opened)
+
+
+def test_inquiry_unknown_delivery_is_not_retried_and_connections_close(tmp_path,tracked):
+    from ops.macos.shopping.dev_inquiry_queue import DevInquiryQueue
+    opened,_,_=tracked
+    calls=[]
+    def send(text):
+        calls.append(text)
+        raise TimeoutError("synthetic ambiguous delivery")
+    queue=DevInquiryQueue(tmp_path/"inquiries.sqlite3",SimpleNamespace(send_message=send))
+    receipt=queue.submit("product-1","재고 문의")
+    queue.dispatch_one()
+    queue.dispatch_one()
+    assert len(calls)==1
+    assert queue.admin_rows()[0]["delivery"]=="UNKNOWN_OUTCOME"
+    assert queue.status(receipt["inquiry_token"])["state"]=="PENDING"
+    assert all(c.closed for c in opened)
+
+
+def test_inquiry_answer_and_export_close_connections(tmp_path,tracked):
+    from ops.macos.shopping.dev_inquiry_queue import DevInquiryQueue
+    opened,_,_=tracked
+    sent=[]
+    queue=DevInquiryQueue(tmp_path/"inquiries.sqlite3",SimpleNamespace(
+        send_message=lambda text:sent.append(text) or 123))
+    receipt=queue.submit("product-1","색상 문의")
+    queue.dispatch_one()
+    assert len(sent)==1 and queue.admin_rows()[0]["delivery"]=="SENT"
+    queue.command("문의 #"+receipt["inquiry_id"]+" 답변 베이지 색상입니다",1)
+    assert queue.lookup("product-1","색상 문의")=="베이지 색상입니다"
+    assert queue.history_answer(receipt["inquiry_token"])=="베이지 색상입니다"
+    assert queue.export(tmp_path/"faq.jsonl")==1
+    assert all(c.closed for c in opened)

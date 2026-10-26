@@ -1,0 +1,23 @@
+{
+  "unload_rc": 0,
+  "deployed_commit": "4a096375bed46bdab278bbdc9060cdb318c2db39",
+  "previous_commit": "76dd8d49582f0027d7f4128c43d1549429cbbbe0",
+  "activation_method": "launchctl unload/load in current session",
+  "load_rc": 0,
+  "health": {
+    "http": 200,
+    "state": {
+      "operator_bridge": "RUNNING",
+      "poller": "EXTERNAL",
+      "product_management": "RUNNING",
+      "environment": "DEV",
+      "order_sms": "IDLE"
+    }
+  },
+  "service": [
+    "35341\t0\tcom.aicontrolcenter.dev-order-api"
+  ],
+  "activation": "PASS",
+  "pid": 35341,
+  "running_cwd": "/Users/kyouhan/AIControlCenterRuntime/dev-order/releases/4a096375bed46bdab278bbdc9060cdb318c2db39"
+}

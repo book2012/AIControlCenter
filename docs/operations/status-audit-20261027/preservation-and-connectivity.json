@@ -1,0 +1,13 @@
+{
+  "ubuntu_ssh": {
+    "tcp": "UNAVAILABLE",
+    "reason": "OSError"
+  },
+  "agachichi_duckdns": {
+    "rc": 0,
+    "http_tls": "200 0"
+  },
+  "base_status_preserved": true,
+  "base_file_hashes_preserved": true,
+  "temporary_worktree_cleanup_rc": 0
+}

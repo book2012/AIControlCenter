@@ -1,5 +1,9 @@
 ## 2026-10-20 — Correct DEV cancellation visibility and order status timeline
 
+## 2026-10-27 — Inquiry polling follow-up
+
+Checkout-only DEV observation exposed a second descriptor leak in inquiry polling. Close all eleven inquiry queue connection paths and preserve delivery claims and UNKNOWN_OUTCOME non-retry behavior. Eight new lifecycle regressions now pass; total focused regression: **95 passed**. See [audit and evidence](docs/operations/STATUS_AUDIT_20261027.md). Follow-up DEV activation/observation remains to be recorded; production is unchanged.
+
 ## 2026-10-27 — Observed runtime and recovery checkpoint
 
 [Authoritative dated observation](docs/operations/STATUS_AUDIT_20261027.md): PROD API `3bf63c0`, PROD homepage `78ac5c5`, DEV API baseline `76dd8d4`, DEV homepage `fc0817b`. DEV PID presence concealed descriptor exhaustion; same-release DEV restart restored HTTP 200. A scoped connection-close fix passes 92 focused tests. Fresh backup SQL and media restored in isolation. Full platform production readiness remains unproven.

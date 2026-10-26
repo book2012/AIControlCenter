@@ -1,5 +1,9 @@
 ## 2026-10-20 — Correct DEV cancellation visibility and order status timeline
 
+## 2026-10-27 — Inquiry polling follow-up
+
+Checkout-only DEV observation exposed a second descriptor leak in inquiry polling. Close all eleven inquiry queue connection paths and preserve delivery claims and UNKNOWN_OUTCOME non-retry behavior. Eight new lifecycle regressions now pass; total focused regression: **95 passed**. See [audit and evidence](docs/operations/STATUS_AUDIT_20261027.md). Follow-up DEV activation/observation remains to be recorded; production is unchanged.
+
 ## 2026-10-27 — Stabilization priorities
 
 - Completed: live service-version inventory; same-release DEV recovery; old and fresh SQL isolated restore; fresh media restore; SQLite backup integrity.

@@ -1,0 +1,44 @@
+[
+  {
+    "at_utc": "2026-10-26T21:39:09.025064+00:00",
+    "http": 200,
+    "fd_entries": 72,
+    "checkout_handles": 0
+  },
+  {
+    "at_utc": "2026-10-26T21:39:19.049691+00:00",
+    "http": 200,
+    "fd_entries": 76,
+    "checkout_handles": 0
+  },
+  {
+    "at_utc": "2026-10-26T21:39:29.102935+00:00",
+    "http": 200,
+    "fd_entries": 81,
+    "checkout_handles": 0
+  },
+  {
+    "at_utc": "2026-10-26T21:39:39.166132+00:00",
+    "http": 200,
+    "fd_entries": 85,
+    "checkout_handles": 0
+  },
+  {
+    "at_utc": "2026-10-26T21:39:49.223883+00:00",
+    "http": 200,
+    "fd_entries": 90,
+    "checkout_handles": 0
+  },
+  {
+    "at_utc": "2026-10-26T21:39:59.286623+00:00",
+    "http": 200,
+    "fd_entries": 94,
+    "checkout_handles": 0
+  },
+  {
+    "at_utc": "2026-10-26T21:40:09.351958+00:00",
+    "http": 200,
+    "fd_entries": 101,
+    "checkout_handles": 0
+  }
+]
