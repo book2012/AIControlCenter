@@ -1,4 +1,5 @@
 """DEV inquiry escalation and explicitly approved FAQ reuse, not model fine tuning."""
+from contextlib import closing
 import hashlib,json,os,re,secrets,sqlite3,time
 from pathlib import Path
 from fastapi import Request
@@ -23,39 +24,39 @@ class DevInquiryQueue:
     def __init__(self,path,transport,clock=time.time):
         self.path=Path(path);self.transport=transport;self.clock=clock
         if self.path.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
-        with sqlite3.connect(self.path) as c:
+        with closing(sqlite3.connect(self.path)) as c, c:
             c.execute("CREATE TABLE IF NOT EXISTS inquiries(id TEXT PRIMARY KEY,token TEXT UNIQUE NOT NULL,product TEXT NOT NULL,question TEXT NOT NULL,answer TEXT,state TEXT NOT NULL,delivery TEXT NOT NULL,created REAL NOT NULL,answered REAL,approved REAL,message_id INTEGER)")
             c.execute("CREATE TABLE IF NOT EXISTS inquiry_operator_updates(update_id INTEGER PRIMARY KEY,reply TEXT NOT NULL)")
         os.chmod(self.path,0o600)
     def lookup(self,product,question):
         q=normalized(question)
-        with sqlite3.connect(self.path) as c:
+        with closing(sqlite3.connect(self.path)) as c, c:
             rows=c.execute("SELECT question,answer,approved FROM inquiries WHERE product=? AND state='APPROVED' AND approved>?",(product,self.clock()-30*86400)).fetchall()
         matches=[r for r in rows if normalized(r[0])==q]
         if not matches:return None
         return max(matches,key=lambda r:r[2])[1]
     def submit(self,product,question):
         q=sanitize(question);identifier=secrets.token_hex(4);token=secrets.token_hex(24)
-        with sqlite3.connect(self.path) as c:
+        with closing(sqlite3.connect(self.path)) as c, c:
             c.execute("BEGIN IMMEDIATE")
             if c.execute("SELECT COUNT(*) FROM inquiries WHERE created>?",(self.clock()-60,)).fetchone()[0]>=10:raise ValueError("INQUIRY_RATE_LIMIT")
             if c.execute("SELECT COUNT(*) FROM inquiries WHERE created>?",(self.clock()-86400,)).fetchone()[0]>=100:raise ValueError("INQUIRY_DAILY_LIMIT")
             c.execute("INSERT INTO inquiries VALUES(?,?,?,?,NULL,'PENDING','PENDING',?,NULL,NULL,NULL)",(identifier,token,product,q,self.clock()))
         return {"inquiry_id":identifier,"inquiry_token":token}
     def dispatch_one(self):
-        with sqlite3.connect(self.path) as c:
+        with closing(sqlite3.connect(self.path)) as c, c:
             c.execute("BEGIN IMMEDIATE");r=c.execute("SELECT id,product,question FROM inquiries WHERE delivery='PENDING' ORDER BY created LIMIT 1").fetchone()
             if not r:return
             c.execute("UPDATE inquiries SET delivery='CLAIMED' WHERE id=?",(r[0],))
         try:
             receipt=self.transport.send_message("고객 문의 #"+r[0]+" · 상품 "+r[1]+"\n"+r[2]+"\n답장: 문의 #"+r[0]+" 답변 답변내용\n재사용 승인: 문의 #"+r[0]+" 학습승인\n개인정보·주문확정·결제 안내는 학습하지 않습니다.")
-            with sqlite3.connect(self.path) as c:c.execute("UPDATE inquiries SET delivery='SENT',message_id=? WHERE id=?",(receipt,r[0]))
+            with closing(sqlite3.connect(self.path)) as c, c:c.execute("UPDATE inquiries SET delivery='SENT',message_id=? WHERE id=?",(receipt,r[0]))
         except Exception:
-            with sqlite3.connect(self.path) as c:c.execute("UPDATE inquiries SET delivery='UNKNOWN_OUTCOME' WHERE id=?",(r[0],))
+            with closing(sqlite3.connect(self.path)) as c, c:c.execute("UPDATE inquiries SET delivery='UNKNOWN_OUTCOME' WHERE id=?",(r[0],))
     def command(self,text,update_id):
         m=re.fullmatch(r"문의\s*#([a-f0-9]{8})\s*(답변\s+(.{1,1000})|학습승인|학습제외)",text,re.S)
         if not m:return None
-        with sqlite3.connect(self.path) as c:
+        with closing(sqlite3.connect(self.path)) as c, c:
             c.execute("BEGIN IMMEDIATE")
             old=c.execute("SELECT reply FROM inquiry_operator_updates WHERE update_id=?",(update_id,)).fetchone()
             if old:return old[0]
@@ -81,21 +82,21 @@ class DevInquiryQueue:
         return reply
     def admin_rows(self,limit=50):
         limit=max(1,min(int(limit),100))
-        with sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True) as c:
+        with closing(sqlite3.connect("file:"+str(self.path.resolve())+"?mode=ro",uri=True)) as c, c:
             c.row_factory=sqlite3.Row
             rows=c.execute("SELECT id,product,question,answer,state,delivery,created,answered,approved FROM inquiries ORDER BY created DESC LIMIT ?",(limit,)).fetchall()
         return [dict(r) for r in rows]
     def status(self,token):
         if not re.fullmatch(r"[a-f0-9]{48}",token):return None
-        with sqlite3.connect(self.path) as c:r=c.execute("SELECT answer,state FROM inquiries WHERE token=? AND created>?",(token,self.clock()-86400)).fetchone()
+        with closing(sqlite3.connect(self.path)) as c, c:r=c.execute("SELECT answer,state FROM inquiries WHERE token=? AND created>?",(token,self.clock()-86400)).fetchone()
         if not r:return None
         return {"state":r[1],"answer":r[0]}
     def history_answer(self,token):
         if not re.fullmatch(r"[a-f0-9]{48}",token):return None
-        with sqlite3.connect(self.path) as c:r=c.execute("SELECT answer FROM inquiries WHERE token=? AND created>?",(token,self.clock()-30*86400)).fetchone()
+        with closing(sqlite3.connect(self.path)) as c, c:r=c.execute("SELECT answer FROM inquiries WHERE token=? AND created>?",(token,self.clock()-30*86400)).fetchone()
         return r[0] if r and r[0] else None
     def export(self,path):
-        with sqlite3.connect(self.path) as c:rows=c.execute("SELECT product,question,answer FROM inquiries WHERE state='APPROVED' AND approved>?",(self.clock()-30*86400,)).fetchall()
+        with closing(sqlite3.connect(self.path)) as c, c:rows=c.execute("SELECT product,question,answer FROM inquiries WHERE state='APPROVED' AND approved>?",(self.clock()-30*86400,)).fetchall()
         p=Path(path);p.write_text("".join(json.dumps({"product_id":r[0],"question":r[1],"answer":r[2]},ensure_ascii=False)+"\n" for r in rows));os.chmod(p,0o600)
         return len(rows)
 

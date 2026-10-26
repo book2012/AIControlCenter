@@ -1,4 +1,5 @@
 """One authorized Telegram consumer, explicit environment-bound command dispatch."""
+from contextlib import closing
 from dataclasses import dataclass
 import re
 
@@ -49,10 +50,10 @@ class DurableOperatorEnvironmentRouter(OperatorEnvironmentRouter):
         import sqlite3,os
         self.path=Path(database_path)
         if self.path.is_symlink():raise ValueError("PRIVATE_STORAGE_REQUIRED")
-        with sqlite3.connect(self.path) as c:
+        with closing(sqlite3.connect(self.path)) as c, c:
             c.execute("CREATE TABLE IF NOT EXISTS environment_updates(update_id INTEGER PRIMARY KEY,digest TEXT NOT NULL,environment TEXT NOT NULL,state TEXT NOT NULL,reply TEXT)")
         if conversation_seconds:
-            with sqlite3.connect(self.path) as c:c.execute("CREATE TABLE IF NOT EXISTS operator_environment_sessions(chat_id INTEGER,user_id INTEGER,environment TEXT,expires REAL,PRIMARY KEY(chat_id,user_id))")
+            with closing(sqlite3.connect(self.path)) as c, c:c.execute("CREATE TABLE IF NOT EXISTS operator_environment_sessions(chat_id INTEGER,user_id INTEGER,environment TEXT,expires REAL,PRIMARY KEY(chat_id,user_id))")
         os.chmod(self.path,0o600)
     def dispatch(self,text,*,chat_id,user_id,update_id):
         import sqlite3,hashlib,json
@@ -62,7 +63,7 @@ class DurableOperatorEnvironmentRouter(OperatorEnvironmentRouter):
         expired=False
         if type(update_id) is not int or update_id<0:raise ValueError("UPDATE_ID_REQUIRED")
         fingerprint=hashlib.sha256(json.dumps([chat_id,user_id,text],ensure_ascii=False).encode()).hexdigest()
-        with sqlite3.connect(self.path) as c:
+        with closing(sqlite3.connect(self.path)) as c, c:
             c.execute("BEGIN IMMEDIATE")
             row=c.execute("SELECT digest,environment,state,reply FROM environment_updates WHERE update_id=?",(update_id,)).fetchone()
             if row:
@@ -80,5 +81,5 @@ class DurableOperatorEnvironmentRouter(OperatorEnvironmentRouter):
         reply=("대화 시간이 지났습니다. ‘개발’ 또는 ‘운영’을 붙여 새 대화를 시작해 주세요. 변경은 실행하지 않았습니다." if expired else self.handlers[environment](command,update_id))
         if type(reply) is not str:raise ValueError("OPERATOR_REPLY_INVALID")
         reply=format_operator_reply(environment,reply)
-        with sqlite3.connect(self.path) as c:c.execute("UPDATE environment_updates SET state='COMPLETED',reply=? WHERE update_id=? AND state='CLAIMED'",(reply,update_id))
+        with closing(sqlite3.connect(self.path)) as c, c:c.execute("UPDATE environment_updates SET state='COMPLETED',reply=? WHERE update_id=? AND state='CLAIMED'",(reply,update_id))
         return reply

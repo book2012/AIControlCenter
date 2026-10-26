@@ -1,0 +1,12 @@
+{
+  "create_rc": 0,
+  "ready": true,
+  "copy_rc": 0,
+  "restore_rc": 0,
+  "table_count": 50,
+  "table_check_rc": 0,
+  "container_cleanup_rc": 0,
+  "media_member_count": 8396,
+  "media_restored_regular_files": 7193,
+  "media_restore": "PASS"
+}

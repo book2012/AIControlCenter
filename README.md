@@ -1,5 +1,9 @@
 ## 2026-10-15 — skirt activated in immutable DEV releases
 
+## 2026-10-27 — PROD connection closure candidate
+
+[Approval-ready scope and rollback](docs/operations/PROD_CONNECTION_CANDIDATE_20261027.md). Based on actual PROD API `3bf63c0`; 75 focused tests passed. Close checkout/operator/inquiry/router SQLite connections deterministically. Production activation and runtime changes have not been performed.
+
 Activated Homepage and order API on immutable release `c010f1d78ba0752b9d59cb0e6fcf89d36457b8fb`. Live checks return 21 catalog items; product #186 appears at KRW 79,000, with beige stock zero and unavailable. PDP and all three gallery images return HTTP 200. The DEV API is healthy with the Telegram poller still external; order SMS remains configuration-required. No order was created and PROD was untouched. Updated the search-page regression expectation to 21 products.
 
 ## 2026-10-15 — skirt intake and isolated DEV registration

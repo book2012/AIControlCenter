@@ -1,5 +1,9 @@
 ## 2026-10-15 — skirt activated in DEV
 
+## 2026-10-27 — PROD connection closure candidate
+
+[Approval-ready scope and rollback](docs/operations/PROD_CONNECTION_CANDIDATE_20261027.md). Based on actual PROD API `3bf63c0`; 75 focused tests passed. Close checkout/operator/inquiry/router SQLite connections deterministically. Production activation and runtime changes have not been performed.
+
 - WooCommerce DEV product #186 is live at temporary KRW 79,000.
 - Homepage and order API are active on immutable release `c010f1d78ba0752b9d59cb0e6fcf89d36457b8fb`.
 - The 21-item listing, product detail, and three gallery images return HTTP 200.
