@@ -30,3 +30,6 @@ Transport tests cover config modes, destination allowlist, fixed local API, prov
 Existing local conversation tests cover validation, origin, size, timeout/error and concurrency boundaries.
 Site SQLite tests cover tenant isolation, duplicate request IDs, owner/global caps, lease races, stale completion, expiry and purge.
 Live deployment validation must record sanitized heartbeat and fixed synthetic request results; visitor-session authenticated conversation needs its own browser session verification.
+
+## Live verification — 2026-11-03
+Owner-private Site version 254ae392aace5272801b8cf234490748315c5fbd published successfully. The launchd worker was running, loopback health passed, and a fixed synthetic Site queue request completed with Qwen response “연결 성공.” through the deployed worker endpoint. Browser QA verified software 3D rotation; cloud GPU is disabled, so GPU rendering and signed-in visitor chat were not visually tested. Runtime evidence: site-bridge/verification.json.
