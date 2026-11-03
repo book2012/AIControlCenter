@@ -6590,3 +6590,8 @@ Adapter package extraction verified: three reproducible wheel builds, individual
 ## 2026-11-03 — shopping domain package 0.2.0
 
 Shopping domain extraction 0.2.0 complete for Product/ProductVariant and order_core models/ports/service. Current installed-package + related isolated regressions: 555 passed. Shared environment/original source preserved; no production activation or actual authenticated provider binding.
+
+
+## 2026-11-03 — shopping catalog package 0.3.0
+
+Shopping 0.3.0 catalog extraction verified: 855 focused/related checks passed. Preserved product/order/error/enum identity and strict response bytes. Corrected a pre-existing variants fixture mismatch reproduced at ae54f0b. No production/service/auth configuration changes.

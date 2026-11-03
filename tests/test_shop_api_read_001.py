@@ -33,6 +33,7 @@ CANONICAL = {
     "id": "42", "name": "코튼 셔츠", "slug": "cotton-shirt", "description": "<p>Cotton</p>",
     "price": "25000", "currency": "KRW", "category": "Shirts", "in_stock": True,
     "source": "woocommerce", "image_url": "https://images.example.test/shirt.jpg",
+    "variants": [],
 }
 
 
@@ -276,3 +277,25 @@ def test_optional_presentation_fields_and_stock_mapping(stock_status, expected):
     assert response.json() == {**CANONICAL, "name": "Basic", "slug": "", "description": "",
                                "price": "0", "category": "Uncategorized", "image_url": None,
                                "in_stock": expected}
+
+
+def test_current_canonical_contract_preserves_nonempty_variants_for_list_and_detail():
+    from decimal import Decimal
+    from core.shopping.models import Product, ProductVariant
+    variant = ProductVariant("42-s", "S", "size", True)
+    product = Product("42", "코튼 셔츠", "cotton-shirt", "<p>Cotton</p>", Decimal("25000"),
+        "KRW", "Shirts", True, "woocommerce", "https://images.example.test/shirt.jpg", (variant,))
+    class Catalog:
+        def list_products(self, page, page_size):
+            return [product], 1
+        def get_product(self, product_id):
+            return product
+    service = ShoppingService(settings=SETTINGS, catalog=Catalog())
+    app = FastAPI()
+    app.include_router(router)
+    app.dependency_overrides[get_shopping_service] = lambda: service
+    with TestClient(app) as client:
+        expected = {**CANONICAL, "variants": [{"id": "42-s", "label": "S", "option_type": "size", "available": True}]}
+        assert client.get("/shopping/products/42").content == canonical_bytes(expected)
+        listing = client.get("/shopping/products")
+        assert listing.content == canonical_bytes({"items": [expected], "total": 1, "page": 1, "page_size": 20})

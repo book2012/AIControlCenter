@@ -6060,3 +6060,8 @@ Extracted Shopping/Creative Notes/Personal Assistant adapters into separately in
 ## 2026-11-03 — shopping domain package 0.2.0
 
 Moved Product/ProductVariant, order models, OrderReadPort and OrderService to the optional Shopping 0.2.0 wheel. Kept exact compatibility class identity and lazy plugin exports. Updated reviewed wheel version map; isolated domain/package/security/provider verification totals 555 passed.
+
+
+## 2026-11-03 — shopping catalog package 0.3.0
+
+Extracted catalog logic into Shopping 0.3.0 and retained a host-owned legacy composition bridge. Public settings omit provider URL/credentials; standalone mock preview verified without host code. Exact current variants fixtures repaired without API behavior change. Final related verification: 855 passed.

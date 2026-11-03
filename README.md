@@ -5627,3 +5627,8 @@ Optional adapters now have separate installable wheel distributions under `plugi
 ## 2026-11-03 — shopping domain package 0.2.0
 
 Shopping 0.2.0 now owns the pure product/order models, OrderReadPort and OrderService. Host imports preserve exact class identity. [Source ownership, install order and 555 passing checks](docs/architecture/SHOPPING_DOMAIN_PACKAGE_02.md).
+
+
+## 2026-11-03 — shopping catalog package 0.3.0
+
+Shopping 0.3.0 now owns the catalog service, schemas, read ports, mock adapter and bounded read health/telemetry. Host composition supplies public settings and the catalog port. [Ownership, compatibility and 855 passing checks](docs/architecture/SHOPPING_CATALOG_PACKAGE_03.md).

@@ -6147,3 +6147,8 @@ Runnable plugin adapters moved out of core/modules into optional aicc_plugin_* p
 ## 2026-11-03 — shopping domain package 0.2.0
 
 Pure product/order definitions and read-domain logic moved from core.shopping to aicc_plugin_shopping 0.2.0. Host files are identity-preserving compatibility exports. The package root no longer eagerly imports HTTP bindings. Session/persistence, full catalog service and provider/governance composition remain in their existing host boundaries.
+
+
+## 2026-11-03 — shopping catalog package 0.3.0
+
+Catalog behavior moved to the plugin; core.shopping.service is now a legacy constructor/composition subclass bridge. Only public configuration enters the catalog service. Real provider selection, secret resolution, authenticated storage and platform authority stay host-owned. Mock preview and catalog operations need no host tree.

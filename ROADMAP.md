@@ -5559,3 +5559,8 @@ Completed: runnable adapter-source ownership per plugin, reproducible installabl
 ## 2026-11-03 — shopping domain package 0.2.0
 
 Completed: extract pure product/order models and OrderService into Shopping 0.2.0 with stdlib-only domain imports and compatible host aliases. Remaining: catalog-service/provider dependency extraction, session/persistence ownership and lifecycle, real authenticated connections, full package install/rollback and governed deployment gates.
+
+
+## 2026-11-03 — shopping catalog package 0.3.0
+
+Completed: catalog service/response validation, read contract, mock adapter and bounded health/telemetry extraction with explicit public-settings/port injection. Remaining: real provider adapter boundary, session/inquiry persistence and job ownership, authenticated external bindings, restore and governed production migration.

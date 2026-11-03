@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = {"shopping": "aicc_plugin_shopping", "creative-notes": "aicc_plugin_creative_notes",
             "personal-assistant": "aicc_plugin_personal_assistant"}
 
-VERSIONS = {"shopping": "0.2.0", "creative-notes": "0.1.0", "personal-assistant": "0.1.0"}
+VERSIONS = {"shopping": "0.3.0", "creative-notes": "0.1.0", "personal-assistant": "0.1.0"}
 
 
 def build_wheel(plugin_id, output, *, root=ROOT):
@@ -25,7 +25,7 @@ def build_wheel(plugin_id, output, *, root=ROOT):
     plugin = Path(root) / "plugins" / plugin_id
     config = json.loads((plugin / "distribution.json").read_text())
     expected = {"distribution": package.replace("_", "-"), "version": VERSIONS[plugin_id],
-                "import_package": package, "requires": ["fastapi"], "platform_plugin_api": 1}
+                "import_package": package, "requires": (["fastapi", "pydantic>=2,<3"] if plugin_id == "shopping" else ["fastapi"]), "platform_plugin_api": 1}
     if config != expected:
         raise ValueError("distribution must match the reviewed build allowlist")
     version = config["version"]
@@ -43,7 +43,7 @@ def build_wheel(plugin_id, output, *, root=ROOT):
     info = package + "-" + version + ".dist-info"
     metadata = ("Metadata-Version: 2.1\nName: " + config["distribution"] +
                 "\nVersion: " + version + "\nSummary: Optional AIControlCenter platform adapter\n" +
-                "Requires-Python: >=3.11\nRequires-Dist: fastapi\n\n" +
+                "Requires-Python: >=3.11\n" + "".join("Requires-Dist: " + item + "\n" for item in config["requires"]) + "\n" +
                 "Requires a compatible AIControlCenter host API v1; not a standalone server.\n")
     members[info + "/METADATA"] = metadata.encode()
     members[info + "/WHEEL"] = b"Wheel-Version: 1.0\nGenerator: aicc-stdlib-plugin-builder\nRoot-Is-Purelib: true\nTag: py3-none-any\n"

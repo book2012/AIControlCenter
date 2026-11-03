@@ -29,3 +29,7 @@ The runnable adapter source now lives under `src/aicc_plugin_shopping`. Build it
 ## Domain package 0.2.0
 
 Product/ProductVariant and the pure order domain, read port and OrderService now live in this package. `core.shopping.models` and `core.shopping.order_core` re-export the identical classes for compatibility. Domain imports require no host/HTTP framework; HTTP adapters still use explicit host services. See [ownership and verification](../../docs/architecture/SHOPPING_DOMAIN_PACKAGE_02.md).
+
+## Catalog package 0.3.0
+
+Catalog service, read ports, public settings, response models, mock adapter and bounded read health/telemetry now live here. Construct the service with explicit public settings and catalog port; it does not read host settings or credentials. The host keeps provider/secret composition and authenticated storage. See [catalog extraction and evidence](../../docs/architecture/SHOPPING_CATALOG_PACKAGE_03.md).

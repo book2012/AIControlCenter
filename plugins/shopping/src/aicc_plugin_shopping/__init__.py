@@ -10,4 +10,10 @@ def __getattr__(name):
     if name in {"ShoppingBindings", "create_bound_shopping"}:
         from .bindings import ShoppingBindings, create_bound_shopping
         return {"ShoppingBindings": ShoppingBindings, "create_bound_shopping": create_bound_shopping}[name]
+    if name == "ShoppingService":
+        from .catalog_service import ShoppingService
+        return ShoppingService
+    if name == "CatalogSettings":
+        from .catalog_settings import CatalogSettings
+        return CatalogSettings
     raise AttributeError(name)

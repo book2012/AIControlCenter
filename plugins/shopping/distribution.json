@@ -1,9 +1,10 @@
 {
   "distribution": "aicc-plugin-shopping",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "import_package": "aicc_plugin_shopping",
   "requires": [
-    "fastapi"
+    "fastapi",
+    "pydantic>=2,<3"
   ],
   "platform_plugin_api": 1
 }
