@@ -6565,3 +6565,8 @@ The next Shopping milestone is read-only-first WooCommerce order data
 integration: `READ_ORDER` (monitoring, then validation, with writes only later
 under separate governance). This storefront closeout is not a claim that the
 entire platform is production-ready.
+
+
+## MODULE-ATTACH-DETACH-01 — 2026-11-03
+
+Implemented isolated startup composition and a real ShoppingService mock-catalog read adapter. All modules default DETACHED; unavailable/blocked states remain explicit. Focused plus related regression: 238 passed, one existing deprecation warning. Not deployed; legacy main app, transaction flows, Creative Notes and Personal Assistant extraction remain pending. [Evidence](docs/architecture/MODULE_ATTACH_DETACH_01.md).

@@ -6035,3 +6035,8 @@ evidence locator.
 - Next Shopping milestone: read-only-first WooCommerce order data integration,
   `READ_ORDER`, progressing from monitoring to validation before any separately
   governed write operation. The overall platform is not claimed production-ready.
+
+
+## 2026-11-03 — modular attachment preview
+
+Added strict data-only module selection, dependency ordering and isolated startup composition; read-only namespaces and no imports for detached Shopping. Added real mock-catalog read adapter and honest unavailable placeholders for Creative Notes/Personal Assistant. Added plan-only CLI, boundary inventory, 39 new cases and related regression (238 passed total). Existing service/runtime, data and original dirty worktree were not changed.

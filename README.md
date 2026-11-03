@@ -5602,3 +5602,8 @@ The next Shopping milestone is the read-only-first WooCommerce order data
 integration: `READ_ORDER` (monitoring, then validation, with write operations
 deferred to a separately governed phase). This closeout does not claim that the
 entire platform is production-ready.
+
+
+## Modular attach/detach preview — 2026-11-03
+
+A separate startup-only, all-detached-by-default application factory is available at `core.api.modular:create_app`. Shopping has an isolated read-only mock-catalog adapter; Creative Notes and Personal Assistant are registered but not integrated. The existing service entry point and production deployment remain unchanged. See [contract, commands, evidence and migration gates](docs/architecture/MODULE_ATTACH_DETACH_01.md).

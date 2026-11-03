@@ -5528,3 +5528,14 @@ The next Shopping Platform milestone is `READ_ORDER`. Keep the path
 read-only-first: monitoring, then validation, followed by write operations only
 if separately governed. Unrelated future milestones remain open, and this
 closeout does not claim that the entire platform is production-ready.
+
+
+## Modular services — next gates (2026-11-03)
+
+- [x] Isolated all-detached startup factory, explicit module selection, dependency validation and read-only boundary.
+- [x] Shopping catalog preview seam; 238 focused/related checks passed.
+- [ ] Shopping domain/source and lifecycle extraction, authenticated transaction E2E.
+- [ ] Locate and integrate Creative Notes and Personal Assistant sources/providers.
+- [ ] Governed resource drain/restart, durable data recovery, full operator shell and production activation gates.
+
+[Detailed scope](docs/architecture/MODULE_ATTACH_DETACH_01.md).

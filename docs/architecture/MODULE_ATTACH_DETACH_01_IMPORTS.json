@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "scope": "static absolute Python imports; relative/dynamic/runtime references not complete",
+  "baseline_commit": "29a40dc6f22b2b436a91c08532cb61387dc6d634",
+  "entries": [
+    {
+      "file": "core/api/app.py",
+      "imports": [
+        "core.shopping.inquiries",
+        "core.shopping.runtime_composition"
+      ]
+    },
+    {
+      "file": "core/api/dependencies/customer_session.py",
+      "imports": [
+        "core.shopping.customer_auth",
+        "core.shopping.customer_identity",
+        "core.shopping.customer_session_service",
+        "core.shopping.customer_sessions"
+      ]
+    },
+    {
+      "file": "core/api/dependencies/inquiries.py",
+      "imports": [
+        "core.shopping.customer_persistence",
+        "core.shopping.customer_session_service",
+        "core.shopping.inquiries",
+        "core.shopping.ports",
+        "core.shopping.service"
+      ]
+    },
+    {
+      "file": "core/api/dependencies/shopping.py",
+      "imports": [
+        "core.shopping.product_drafts.read",
+        "core.shopping.runtime_composition",
+        "core.shopping.service"
+      ]
+    },
+    {
+      "file": "core/api/routes/customer_sessions.py",
+      "imports": [
+        "core.shopping.customer_persistence",
+        "core.shopping.customer_session_service",
+        "core.shopping.customer_sessions"
+      ]
+    },
+    {
+      "file": "core/api/routes/dashboard.py",
+      "imports": [
+        "core.shopping.application.management_source",
+        "core.shopping.product_drafts.read",
+        "core.shopping.service"
+      ]
+    },
+    {
+      "file": "core/api/routes/homepage.py",
+      "imports": [
+        "core.shopping.service"
+      ]
+    },
+    {
+      "file": "core/api/routes/shopping.py",
+      "imports": [
+        "core.shopping.customer_persistence",
+        "core.shopping.inquiries",
+        "core.shopping.models",
+        "core.shopping.ports",
+        "core.shopping.product_drafts.read",
+        "core.shopping.schemas",
+        "core.shopping.service"
+      ]
+    },
+    {
+      "file": "core/dashboard/api.py",
+      "imports": [
+        "core.shopping.observability.read_telemetry",
+        "core.shopping.product_drafts.read"
+      ]
+    },
+    {
+      "file": "core/dashboard/shopping_management.py",
+      "imports": [
+        "core.shopping.application.management_read_model"
+      ]
+    },
+    {
+      "file": "core/dashboard/shopping_read_telemetry.py",
+      "imports": [
+        "core.shopping.observability.read_telemetry"
+      ]
+    },
+    {
+      "file": "core/homepage/preview.py",
+      "imports": [
+        "core.shopping.adapters.demo_commerce",
+        "core.shopping.config",
+        "core.shopping.inquiries",
+        "core.shopping.service"
+      ]
+    },
+    {
+      "file": "core/homepage/storefront.py",
+      "imports": [
+        "core.shopping.ports",
+        "core.shopping.schemas",
+        "core.shopping.service"
+      ]
+    },
+    {
+      "file": "core/shopping/adapters/phone_verification.py",
+      "imports": [
+        "core.secrets.ports"
+      ]
+    },
+    {
+      "file": "core/shopping/adapters/twilio_authenticated_read_offline_transport.py",
+      "imports": [
+        "core.secrets.ports"
+      ]
+    },
+    {
+      "file": "core/shopping/adapters/twilio_authenticated_read_secret_delivery.py",
+      "imports": [
+        "core.secrets.ports"
+      ]
+    },
+    {
+      "file": "core/shopping/config.py",
+      "imports": [
+        "core.config.loader",
+        "core.secrets.ports"
+      ]
+    },
+    {
+      "file": "core/shopping/control_plane_read/provider.py",
+      "imports": [
+        "core.secrets.mariadb_continuity_trusted_mac_account_home_runtime_resolver",
+        "core.secrets.mariadb_continuity_trusted_ownership_expectation"
+      ]
+    },
+    {
+      "file": "core/shopping/ports/provider_activation.py",
+      "imports": [
+        "core.secrets.ports"
+      ]
+    },
+    {
+      "file": "core/shopping/product_drafts/application/generation.py",
+      "imports": [
+        "core.providers.contracts"
+      ]
+    },
+    {
+      "file": "core/shopping/product_drafts/persistence/path_policy.py",
+      "imports": [
+        "core.runtime.data_paths"
+      ]
+    },
+    {
+      "file": "core/shopping/product_drafts/runtime.py",
+      "imports": [
+        "core.runtime.data_paths"
+      ]
+    },
+    {
+      "file": "core/shopping/runtime_composition.py",
+      "imports": [
+        "core.secrets.ports"
+      ]
+    },
+    {
+      "file": "core/shopping/runtime_cutover_secret_source.py",
+      "imports": [
+        "core.secrets.mariadb_continuity_trusted_mac_account_home_runtime_resolver",
+        "core.secrets.mariadb_continuity_trusted_ownership_expectation"
+      ]
+    },
+    {
+      "file": "core/shopping/wordpress_port_reconciliation.py",
+      "imports": [
+        "core.secrets.mariadb_continuity_trusted_mac_account_home_runtime_resolver",
+        "core.secrets.mariadb_continuity_trusted_ownership_expectation"
+      ]
+    }
+  ]
+}

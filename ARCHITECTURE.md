@@ -6122,3 +6122,8 @@ composition over the existing `DemoCommerceCatalogAdapter`, not a Shopping
 schema or production catalog change. `storefront_media.py` validates local
 manifest records and provides only local image routes; no browser request can
 reach WooCommerce or WordPress directly.
+
+
+## Module boundary pilot — 2026-11-03
+
+AI Home Datacenter remains the umbrella; AIControlCenter retains policy, approval, audit and deployment control. A separate modular preview composes explicit domain IDs under `/extensions/{module_id}`, imports no detached Shopping runtime and creates no detached domain DB. Selection is immutable per app generation; detach requires a governed process replacement, not data deletion. This does not supersede the current production composition. [Design and limits](docs/architecture/MODULE_ATTACH_DETACH_01.md).
