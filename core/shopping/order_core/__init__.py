@@ -1,21 +1,12 @@
-from .domain import (
+"""Identity-preserving compatibility exports for the optional shopping domain."""
+from aicc_plugin_shopping.order_core import (
     OrderContractError,
     OrderLineItem,
     OrderListQuery,
+    OrderNotFoundError,
+    OrderReadPort,
+    OrderService,
     OrderSnapshot,
 )
-from .ports import OrderReadPort
-from .service import (
-    OrderNotFoundError,
-    OrderService,
-)
 
-__all__ = [
-    "OrderContractError",
-    "OrderLineItem",
-    "OrderListQuery",
-    "OrderNotFoundError",
-    "OrderReadPort",
-    "OrderService",
-    "OrderSnapshot",
-]
+__all__ = ('OrderContractError', 'OrderLineItem', 'OrderListQuery', 'OrderNotFoundError', 'OrderReadPort', 'OrderService', 'OrderSnapshot')

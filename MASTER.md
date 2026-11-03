@@ -6585,3 +6585,8 @@ Plugin catalog organization complete for shopping, creative-notes and personal-a
 ## 2026-11-03 — optional plugin packages
 
 Adapter package extraction verified: three reproducible wheel builds, individual offline installations and missing-package isolation. Installed-plugin suite: 101 passed. No-package core suite: 85 passed / 5 optional groups or cases skipped. Production and real authenticated service connections unchanged.
+
+
+## 2026-11-03 — shopping domain package 0.2.0
+
+Shopping domain extraction 0.2.0 complete for Product/ProductVariant and order_core models/ports/service. Current installed-package + related isolated regressions: 555 passed. Shared environment/original source preserved; no production activation or actual authenticated provider binding.

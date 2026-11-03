@@ -1,22 +1,6 @@
-from __future__ import annotations
-
-from typing import Protocol, Sequence
-
-from .domain import (
-    OrderListQuery,
-    OrderSnapshot,
+"""Identity-preserving compatibility exports for the optional shopping domain."""
+from aicc_plugin_shopping.order_core.ports import (
+    OrderReadPort,
 )
 
-
-class OrderReadPort(Protocol):
-    def list_orders(
-        self,
-        query: OrderListQuery,
-    ) -> Sequence[OrderSnapshot]:
-        ...
-
-    def read_order(
-        self,
-        provider_order_id: int,
-    ) -> OrderSnapshot | None:
-        ...
+__all__ = ('OrderReadPort',)

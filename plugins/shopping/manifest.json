@@ -43,7 +43,7 @@
   "data_owner": "WooCommerce 및 기존 쇼핑몰 저장소; 신규 검증 구성은 실제 데이터 미연결",
   "detach_effect": "새 플랫폼 요청 차단, 등록 작업 drain, 등록 자원 close; WooCommerce 데이터·독립 매장은 유지",
   "schema_version": 1,
-  "plugin_version": "0.1.0",
+  "plugin_version": "0.2.0",
   "module_id": "shopping",
   "requires": [],
   "control_plane": "AIControlCenter",

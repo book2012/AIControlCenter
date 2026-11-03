@@ -5554,3 +5554,8 @@ Completed: per-plugin manifest/README folders and read-only lifecycle-aware cata
 ## 2026-11-03 — optional plugin packages
 
 Completed: runnable adapter-source ownership per plugin, reproducible installable wheels, host API-version gate and package absence/reattach verification. Remaining: full legacy Shopping domain extraction, real service/auth bindings and reviewed production-generation migration.
+
+
+## 2026-11-03 — shopping domain package 0.2.0
+
+Completed: extract pure product/order models and OrderService into Shopping 0.2.0 with stdlib-only domain imports and compatible host aliases. Remaining: catalog-service/provider dependency extraction, session/persistence ownership and lifecycle, real authenticated connections, full package install/rollback and governed deployment gates.

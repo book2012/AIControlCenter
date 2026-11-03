@@ -5622,3 +5622,8 @@ Platform plugins are grouped under `plugins/shopping`, `plugins/creative-notes` 
 ## 2026-11-03 — optional plugin packages
 
 Optional adapters now have separate installable wheel distributions under `plugins/*/src`. Build and validate them without modifying the shared interpreter; [instructions and limitations](docs/architecture/PLATFORM_PLUGIN_PACKAGES.md). The platform starts without these optional packages.
+
+
+## 2026-11-03 — shopping domain package 0.2.0
+
+Shopping 0.2.0 now owns the pure product/order models, OrderReadPort and OrderService. Host imports preserve exact class identity. [Source ownership, install order and 555 passing checks](docs/architecture/SHOPPING_DOMAIN_PACKAGE_02.md).

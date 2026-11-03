@@ -25,3 +25,7 @@ The manifest is descriptive data, never executable configuration or authorizatio
 새 플랫폼 요청 차단, 등록 작업 drain, 등록 자원 close; WooCommerce 데이터·독립 매장은 유지
 
 The runnable adapter source now lives under `src/aicc_plugin_shopping`. Build its installable wheel with `python -m scripts.build_plugin_wheels`. It requires the compatible AIControlCenter host; it is not a standalone application or a complete legacy-domain extraction. See docs/architecture/PLATFORM_PLUGIN_PACKAGES.md.
+
+## Domain package 0.2.0
+
+Product/ProductVariant and the pure order domain, read port and OrderService now live in this package. `core.shopping.models` and `core.shopping.order_core` re-export the identical classes for compatibility. Domain imports require no host/HTTP framework; HTTP adapters still use explicit host services. See [ownership and verification](../../docs/architecture/SHOPPING_DOMAIN_PACKAGE_02.md).

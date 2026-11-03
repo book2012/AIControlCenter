@@ -6,9 +6,14 @@
     {
       "id": "shopping",
       "source": "AIControlCenter/core/shopping",
-      "adapter": "core/modules/shopping_bindings.py",
+      "adapter": "plugins/shopping/src/aicc_plugin_shopping/bindings.py",
       "theme_source": "AgachichiCommerce/product/agachichi-atelier",
-      "live_binding": "NOT_CONFIGURED"
+      "live_binding": "NOT_CONFIGURED",
+      "plugin_package": "aicc_plugin_shopping",
+      "package_version": "0.2.0",
+      "pure_domain": "plugins/shopping/src/aicc_plugin_shopping/order_core",
+      "product_models": "plugins/shopping/src/aicc_plugin_shopping/models.py",
+      "legacy_host_scope": "core/shopping services, persistence and governance remain"
     },
     {
       "id": "creative-notes",
@@ -16,14 +21,15 @@
       "project_id": "appgprj_6ad80723fd208191b3617a9dac8ca392",
       "observed_version": 10,
       "website": "https://bok-creative-notes.kyouhan.chatgpt.site",
-      "adapter": "core/modules/service_adapters.py",
+      "adapter": "plugins/creative-notes/src/aicc_plugin_creative_notes/adapter.py",
       "private_api": "NOT_CONNECTED"
     },
     {
       "id": "personal-assistant",
       "source": "integrations/openclaw",
       "composition": "integrations/module_composition.py",
-      "provider_transport": "NOT_CONNECTED"
+      "provider_transport": "NOT_CONNECTED",
+      "adapter": "plugins/personal-assistant/src/aicc_plugin_personal_assistant/adapter.py"
     }
   ]
 }

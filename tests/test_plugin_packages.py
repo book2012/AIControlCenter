@@ -37,7 +37,7 @@ def test_wheel_is_reproducible_and_record_matches_exact_files(tmp_path, plugin_i
             assert digest == "sha256=" + actual
             assert int(size) == len(data)
         assert not any(x.endswith((".env", ".db", ".pyc")) for x in names)
-        assert all(x.startswith((PACKAGES[plugin_id] + "/", PACKAGES[plugin_id] + "-0.1.0.dist-info/")) for x in names)
+        assert all(x.startswith((PACKAGES[plugin_id] + "/", PACKAGES[plugin_id] + "-" + first["version"] + ".dist-info/")) for x in names)
         assert not any(x.startswith("core/") for x in names)
 
 

@@ -6055,3 +6055,8 @@ Added three platform plugin definition folders, strict descriptive manifest vali
 ## 2026-11-03 — optional plugin packages
 
 Extracted Shopping/Creative Notes/Personal Assistant adapters into separately installable 0.1.0 wheel packages. Added lazy allowlisted loader, integer API-version gate and compatibility facades. Offline installs and absent-package startup verified; 101 installed-plugin tests passed.
+
+
+## 2026-11-03 — shopping domain package 0.2.0
+
+Moved Product/ProductVariant, order models, OrderReadPort and OrderService to the optional Shopping 0.2.0 wheel. Kept exact compatibility class identity and lazy plugin exports. Updated reviewed wheel version map; isolated domain/package/security/provider verification totals 555 passed.

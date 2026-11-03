@@ -6142,3 +6142,8 @@ The plugin catalog defines three business-facing boundaries and keeps common aut
 ## 2026-11-03 — optional plugin packages
 
 Runnable plugin adapters moved out of core/modules into optional aicc_plugin_* packages. A reviewed lazy package loader enforces host API v1. Compatibility facades preserve callers/class identity. Shopping domain services remain in the host pending full legacy-domain extraction; this is not a production replacement.
+
+
+## 2026-11-03 — shopping domain package 0.2.0
+
+Pure product/order definitions and read-domain logic moved from core.shopping to aicc_plugin_shopping 0.2.0. Host files are identity-preserving compatibility exports. The package root no longer eagerly imports HTTP bindings. Session/persistence, full catalog service and provider/governance composition remain in their existing host boundaries.
