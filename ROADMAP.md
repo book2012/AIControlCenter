@@ -5544,3 +5544,8 @@ closeout does not claim that the entire platform is production-ready.
 ## 2026-11-03 — managed module lifecycle
 
 Completed: request/job lease drain, timeout/cancellation/cleanup recovery, explicit order/session/notification read bindings, external-service ownership inventory and inward Twilio contract. Remaining: full independent package extraction, real authenticated provider binding, legacy-job enrollment, complete operator-shell migration, durable restore/E2E and governed deployment.
+
+
+## 2026-11-03 — platform plugin catalog
+
+Completed: per-plugin manifest/README folders and read-only lifecycle-aware catalog. Next: source/package extraction and reviewed live bindings from MODULE_ATTACH_DETACH_02; independently activated subplugins are not implemented.

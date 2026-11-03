@@ -148,4 +148,6 @@ def create_module_app(
         return {"schema_version": 1, "activation": "startup_only", "read_only": True,
                 "modules": [dict(item) for item in snapshot]}
 
+    from .plugin_catalog import add_plugin_catalog_route
+    add_plugin_catalog_route(app, lambda: [dict(item) for item in snapshot])
     return app

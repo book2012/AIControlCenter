@@ -217,4 +217,6 @@ def create_managed_app(attached=(), *, providers=None, descriptors=DESCRIPTORS):
         return {"schema_version": 1, "activation": "operator_in_process", "read_only": True,
                 "modules": manager.snapshot()}
 
+    from .plugin_catalog import add_plugin_catalog_route
+    add_plugin_catalog_route(app, manager.snapshot)
     return app

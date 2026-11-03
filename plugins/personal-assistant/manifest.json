@@ -1,0 +1,36 @@
+{
+  "plugin_id": "personal-assistant",
+  "display_name": "Personal Assistant",
+  "purpose": "AI 개인비서 서비스",
+  "components": [
+    {
+      "id": "provider-status",
+      "label": "OpenClaw 상태 계약",
+      "readiness": "BINDING_REQUIRED"
+    },
+    {
+      "id": "assistant-execution",
+      "label": "대화·도구 실행",
+      "readiness": "NOT_CONNECTED"
+    },
+    {
+      "id": "memory-scheduling",
+      "label": "기억·일정 서비스 연결",
+      "readiness": "NOT_CONNECTED"
+    }
+  ],
+  "source_paths": [
+    "core/modules/service_adapters.py",
+    "integrations/openclaw",
+    "integrations/module_composition.py"
+  ],
+  "data_owner": "비서 서비스 및 명시적으로 연결한 저장소; 검증 구성에는 실제 기억·대화 미연결",
+  "detach_effect": "AIControlCenter 비서 어댑터만 분리; 독립 실행 환경과 기존 데이터 유지",
+  "schema_version": 1,
+  "plugin_version": "0.1.0",
+  "module_id": "personal-assistant",
+  "requires": [],
+  "control_plane": "AIControlCenter",
+  "lifecycle": "MANAGED_ADAPTER",
+  "data_deletion_on_detach": false
+}

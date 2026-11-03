@@ -147,7 +147,7 @@ subprocess.Popen = forbidden
 from core.api.modular import create_app
 app = create_app()
 assert not any(n.startswith('core.shopping') for n in sys.modules)
-assert len(app.routes) == 2
+assert {route.path for route in app.routes} == {"/health", "/platform/modules", "/platform/plugins"}
 """
     result = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, cwd=Path(__file__).resolve().parents[1])
     assert result.returncode == 0, result.stderr

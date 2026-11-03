@@ -1,0 +1,34 @@
+{
+  "plugin_id": "creative-notes",
+  "display_name": "Creative Notes",
+  "purpose": "창작노트와 개인 글쓰기 서비스",
+  "components": [
+    {
+      "id": "site-reference",
+      "label": "독립 사이트 연결 정보",
+      "readiness": "REFERENCE_ONLY"
+    },
+    {
+      "id": "entries-images",
+      "label": "글·사진·공개 범위 관리",
+      "readiness": "EXTERNAL_SERVICE"
+    },
+    {
+      "id": "account-api",
+      "label": "계정별 인증 API",
+      "readiness": "NOT_CONNECTED"
+    }
+  ],
+  "source_paths": [
+    "core/modules/service_adapters.py"
+  ],
+  "data_owner": "기존 창작노트 Sites 서비스의 D1/R2 및 계정별 소유권",
+  "detach_effect": "AIControlCenter 연결만 해제; 독립 사이트·글·사진·공개 범위 유지",
+  "schema_version": 1,
+  "plugin_version": "0.1.0",
+  "module_id": "creative-notes",
+  "requires": [],
+  "control_plane": "AIControlCenter",
+  "lifecycle": "MANAGED_ADAPTER",
+  "data_deletion_on_detach": false
+}

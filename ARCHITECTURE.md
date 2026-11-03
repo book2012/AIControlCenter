@@ -6132,3 +6132,8 @@ AI Home Datacenter remains the umbrella; AIControlCenter retains policy, approva
 ## 2026-11-03 — managed module lifecycle
 
 ModuleManager closes admission and drains leased work before resource cleanup. Order/session/notification objects are injected with existing authority; no default live credentials or writes. Creative Notes remains an independent Sites service, OpenClaw a replaceable outer provider. A pure Twilio composition was moved inward with identity-preserving compatibility exports. This does not supersede the legacy production composition.
+
+
+## 2026-11-03 — platform plugin catalog
+
+The plugin catalog defines three business-facing boundaries and keeps common authorization/audit/deployment/AI-routing/scheduling in AIControlCenter. Descriptive manifests do not execute code or grant activation authority. Existing source remains at documented paths; independent package extraction is not claimed. [Contract](docs/architecture/PLATFORM_PLUGINS.md).

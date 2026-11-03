@@ -6045,3 +6045,8 @@ Added strict data-only module selection, dependency ordering and isolated startu
 ## 2026-11-03 — managed module lifecycle
 
 Added managed module admission/drain/cleanup, explicit existing Shopping order/session/notification read bindings, Creative Notes reference and injected assistant status adapters. Fixed lost route dependency overrides and removed the existing core-to-ops Twilio dependency with strict class-identity compatibility. Final focused/related verification: 514 passed; no production or Site changes.
+
+
+## 2026-11-03 — platform plugin catalog
+
+Added three platform plugin definition folders, strict descriptive manifest validation and lifecycle-aware GET /platform/plugins in isolated modular shells. Metadata failure does not activate plugins or break the core. Related validation: 88 passed.

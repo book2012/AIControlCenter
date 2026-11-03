@@ -5612,3 +5612,8 @@ A separate startup-only, all-detached-by-default application factory is availabl
 ## 2026-11-03 — managed module lifecycle
 
 Managed attach/drain/detach and explicit service bindings are available in the isolated validation shell. Three adapter identities are wired; live private APIs and production migration remain gated. See [MODULE-ATTACH-DETACH-02](docs/architecture/MODULE_ATTACH_DETACH_02.md).
+
+
+## 2026-11-03 — platform plugin catalog
+
+Platform plugins are grouped under `plugins/shopping`, `plugins/creative-notes` and `plugins/personal-assistant`. Each has a manifest and scope README. The modular shells expose read-only `GET /platform/plugins`, separating attachment state from actual capability readiness. [Catalog and boundaries](docs/architecture/PLATFORM_PLUGINS.md).
