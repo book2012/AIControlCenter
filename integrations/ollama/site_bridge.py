@@ -28,6 +28,8 @@ def load_config(path):
         raise ValueError("invalid_config")
     if value["site"] == SITE and (not isinstance(value.get("site_access"), str) or len(value["site_access"]) < 32):
         raise ValueError("private_site_access_required")
+    if value.get("site_access") and (not isinstance(value["site_access"], str) or len(value["site_access"]) < 32 or value.get("site_access_for", SITE) != value["site"]):
+        raise ValueError("service_access_host_mismatch")
     return value
 
 def request_json(url, *, payload=None, headers=None, timeout=15):
@@ -36,7 +38,7 @@ def request_json(url, *, payload=None, headers=None, timeout=15):
     if not allowed or target.query or target.fragment or target.username:
         raise ValueError("destination_denied")
     data = None if payload is None else json.dumps(payload).encode()
-    request = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json", **(headers or {})})
+    request = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json", "User-Agent": "AIControlCenter-QwenBridge/1.0", **(headers or {})})
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), NoRedirect())
     with opener.open(request, timeout=timeout) as response:
         raw = response.read(131073)
@@ -49,7 +51,7 @@ def bridge_call(config, payload):
     if site not in {SITE, NOTEBOOK_SITE}:
         raise ValueError("destination_denied")
     headers = {"Authorization": "Bearer " + config["bridge_key"]}
-    if site == SITE:
+    if config.get("site_access") and config.get("site_access_for", SITE) == site:
         headers["OAI-Sites-Authorization"] = "Bearer " + config["site_access"]
     return request_json(site + "/api/assistant/worker", payload=payload, headers=headers)
 

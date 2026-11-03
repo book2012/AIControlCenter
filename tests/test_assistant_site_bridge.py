@@ -67,3 +67,21 @@ def test_public_notebook_profile_does_not_receive_private_site_access():
 def test_transport_rejects_other_paths_schemes_and_credential_urls():
     for url in [bridge.NOTEBOOK_SITE+"/mcp",bridge.NOTEBOOK_SITE.replace("https:","http:")+"/api/assistant/worker","http://127.0.0.1:58090/admin","https://user@bok-creative-notes.kyouhan.chatgpt.site/api/assistant/worker"]:
         with pytest.raises(ValueError): bridge.request_json(url)
+
+
+def test_public_site_service_access_is_bound_to_its_exact_host():
+    config={"site":bridge.NOTEBOOK_SITE,"bridge_key":"a"*64,"site_access":"notebook-token-"+"b"*64,"site_access_for":bridge.NOTEBOOK_SITE}
+    with patch.object(bridge,"request_json",return_value={"job":None}) as call:
+        bridge.bridge_call(config,{"action":"claim","ready":False})
+        assert call.call_args.kwargs["headers"]["OAI-Sites-Authorization"]=="Bearer "+config["site_access"]
+    config["site_access_for"]=bridge.SITE
+    with patch.object(bridge,"request_json",return_value={"job":None}) as call:
+        bridge.bridge_call(config,{"action":"claim","ready":False})
+        assert "OAI-Sites-Authorization" not in call.call_args.kwargs["headers"]
+
+def test_config_rejects_reusing_private_service_access_on_public_site():
+    with tempfile.TemporaryDirectory() as directory:
+        path=Path(directory)/"config.json"
+        path.write_text(json.dumps({"site":bridge.NOTEBOOK_SITE,"bridge_key":"a"*64,"site_access":"b"*64}))
+        path.chmod(0o600)
+        with pytest.raises(ValueError):bridge.load_config(path)

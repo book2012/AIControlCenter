@@ -5,3 +5,6 @@ Saved answers create new non-public drafts; source notes are never edited or pub
 A separate lightweight outbound notebook bridge uses a fixed second allowlisted Site and its own 0600 configuration. The private assistant Site credential is never sent to this public host. No Mac ingress, Caddy, DNS, Ubuntu, Shopping activation or model installation changes.
 Runtime: com.aicontrolcenter.notebook-qwen-bridge. Config: /Users/kyouhan/AIControlCenterRuntime/personal-assistant/notebook-site-bridge/config.json. Never print secrets.
 Site tests: 44 passed; Mac transport/local API: 26 passed. Signed-in visitor/mobile checks remain separate. No billing, paid skins, subscription or marketplace launch yet.
+
+## Service authentication repair
+The public notebook host also requires its own Sites service access for this machine client. Its token is separately bound to the exact notebook host by site_access_for; a mismatched private-Site token is rejected or omitted. The client identifies itself as AIControlCenter-QwenBridge/1.0. No browser impersonation or security setting changes. Tests: 28 Mac transport/local API cases.
