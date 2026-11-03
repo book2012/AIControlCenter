@@ -1,5 +1,16 @@
 # AI Home Datacenter Architecture
 
+## 2026-11-03 — current modularization candidate boundary
+
+AI Home Datacenter is the umbrella; AIControlCenter remains the sole Mac control
+plane and authority owner. Shopping 0.5.0 candidate owns domain/storage/provider
+mapping code. Host composition retains signing, secrets, real transport, schema
+catalog, verifier policy, workflow/bot and deployment authority. Managed attachment
+does not create or migrate a DB; leases drain before resource release. Notes and
+Assistant still lack private authenticated APIs. This is a separate candidate
+shell, not a production replacement. Related validation: 2,415 passed.
+[Contract and evidence](docs/architecture/SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
+
 ## Current authoritative platform state — 2026-09-27
 
 This section is the current architectural authority. Older sections remain

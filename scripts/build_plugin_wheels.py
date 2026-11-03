@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parents[1]
 PACKAGES = {"shopping": "aicc_plugin_shopping", "creative-notes": "aicc_plugin_creative_notes",
             "personal-assistant": "aicc_plugin_personal_assistant"}
 
-VERSIONS = {"shopping": "0.4.0", "creative-notes": "0.1.0", "personal-assistant": "0.1.0"}
+VERSIONS = {"shopping": "0.5.0", "creative-notes": "0.1.0", "personal-assistant": "0.1.0"}
 
 
 def build_wheel(plugin_id, output, *, root=ROOT):

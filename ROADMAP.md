@@ -1,5 +1,18 @@
 # Roadmap
 
+## 2026-11-03 — current modularization gates
+
+- [x] Shopping catalog/product/order/session/inquiry source package boundaries.
+- [x] Explicit existing-store lifecycle, leased-work drain, reattach and synthetic backup/restore.
+- [x] Remaining WooCommerce read scopes and canonical validation behind explicit host authority.
+- [x] Three reproducible wheels; fresh isolated install and 185 focused tests.
+- [x] Historical regression test composition reconciled; 2,415 related tests pass with no failures/skips.
+- [ ] Register remaining legacy jobs and migrate the complete operator shell.
+- [ ] Complete authenticated Notes/Assistant service bindings.
+- [ ] Production DB inventory, restore/rollback, authenticated E2E and separately approved generation switch.
+
+[Authoritative candidate scope and remaining gates](docs/architecture/SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
+
 ## STOREFRONT-PROMOTION-01 — candidate review
 
 - [x] Port the accepted `SHOP_MEDIA_003_AGACHICHI` presentation into the

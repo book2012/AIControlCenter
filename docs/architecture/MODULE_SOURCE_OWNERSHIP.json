@@ -5,17 +5,20 @@
   "modules": [
     {
       "id": "shopping",
-      "source": "AIControlCenter/core/shopping",
+      "source": "plugins/shopping/src/aicc_plugin_shopping",
       "adapter": "plugins/shopping/src/aicc_plugin_shopping/bindings.py",
       "theme_source": "AgachichiCommerce/product/agachichi-atelier",
       "live_binding": "NOT_CONFIGURED",
       "plugin_package": "aicc_plugin_shopping",
-      "package_version": "0.4.0",
+      "package_version": "0.5.0",
       "pure_domain": "plugins/shopping/src/aicc_plugin_shopping/order_core",
       "product_models": "plugins/shopping/src/aicc_plugin_shopping/models.py",
-      "legacy_host_scope": "provider signing/secret/transport/policy composition; non-product provider reads; session and inquiry persistence; governance",
+      "legacy_host_scope": "secret/signing/transport/policy/schema composition; verifier authority; workflows/bots; operator UI and deployment",
       "catalog_service": "plugins/shopping/src/aicc_plugin_shopping/catalog_service.py",
-      "woocommerce_product_read": "plugins/shopping/src/aicc_plugin_shopping/adapters/woocommerce_product_read.py"
+      "woocommerce_product_read": "plugins/shopping/src/aicc_plugin_shopping/adapters/woocommerce_product_read.py",
+      "storage_resource": "plugins/shopping/src/aicc_plugin_shopping/storage_resource.py",
+      "storage_composition": "core/modules/shopping_storage.py",
+      "release_status": "FEATURE_BRANCH_CANDIDATE_VALIDATED_NOT_DEPLOYED"
     },
     {
       "id": "creative-notes",

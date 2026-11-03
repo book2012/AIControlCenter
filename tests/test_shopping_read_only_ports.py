@@ -143,7 +143,9 @@ def test_legacy_commerce_catalog_port_is_preserved() -> None:
     symbol = getattr(module, "CommerceCatalogPort")
 
     assert symbol.__name__ == "CommerceCatalogPort"
-    assert symbol.__module__ == "core.shopping.ports"
+    from aicc_plugin_shopping.catalog_ports import CommerceCatalogPort
+    assert symbol is CommerceCatalogPort
+    assert symbol.__module__ == "aicc_plugin_shopping.catalog_ports"
     assert Path(module.__file__).name == "__init__.py"
 
 
@@ -196,7 +198,9 @@ def test_imports_have_no_external_side_effects() -> None:
     ])
 
     environment = dict(os.environ)
-    environment["PYTHONPATH"] = str(ROOT)
+    package = importlib.import_module("aicc_plugin_shopping")
+    installed = str(Path(package.__file__).resolve().parent.parent)
+    environment["PYTHONPATH"] = os.pathsep.join([str(ROOT), installed])
     environment["PYTHONDONTWRITEBYTECODE"] = "1"
 
     result = subprocess.run(

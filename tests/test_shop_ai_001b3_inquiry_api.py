@@ -174,7 +174,7 @@ def counts(api):
 
 def test_atomic_creation_commits_inquiry_ownership_and_audit_once(api, monkeypatch):
     traces = []
-    import core.shopping.inquiries as module
+    import aicc_plugin_shopping.inquiries as module
     open_connection = module.open_connection
 
     def traced(path):

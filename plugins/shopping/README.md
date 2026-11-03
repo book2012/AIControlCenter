@@ -37,3 +37,13 @@ Catalog service, read ports, public settings, response models, mock adapter and 
 ## WooCommerce product-read boundary 0.4.0
 
 Product normalization/list/detail/health now use an explicit product-read port and strict authorizer in the plugin. Host signing, credentials, transport and non-product scopes remain outside it. See [ownership and 889 passing checks](../../docs/architecture/WOOCOMMERCE_PRODUCT_PLUGIN_04.md). This Python package version is unrelated to the Atelier theme release.
+
+## Current candidate 0.5.0
+
+Identity/session/auth/persistence/migration/inquiry and remaining WooCommerce read
+mapping now live in this wheel. Existing-store resources support explicit
+start/close after leased-work drain, without attach-time migration. Host contacts,
+credentials, signing/transport, schema loading and authority remain outside it.
+Fresh installed-plugin checks: 185 passed; expanded related checks: 2,415 passed.
+No live provider binding or production switch.
+See [current scope and evidence](../../docs/architecture/SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).

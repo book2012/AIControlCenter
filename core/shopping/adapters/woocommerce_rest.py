@@ -18,6 +18,7 @@ from aicc_plugin_shopping.adapters.woocommerce_product_read import (
 )
 from core.shopping.ports import CatalogReadQueryError, CatalogReadUnavailable
 from core.shopping.observability.health_probe import HealthFailureCode
+from aicc_plugin_shopping.adapters.woocommerce_extended_read import WooCommerceCatalogReadAdapter, WooCommerceOrderReadAdapter
 from core.shopping.adapters.woocommerce_read_transport import WooCommerceReadTransportSession
 from core.shopping.governance.external_read_policy import evaluate_external_read
 
@@ -28,7 +29,7 @@ def _percent_encode(value: Any) -> str:
     return quote(str(value), safe="~-._")
 
 
-class WooCommerceRESTAdapter(WooCommerceProductReadAdapter):
+class WooCommerceRESTAdapter(WooCommerceCatalogReadAdapter, WooCommerceOrderReadAdapter):
     def __init__(
         self,
         base_url: str,
@@ -219,99 +220,3 @@ class WooCommerceRESTAdapter(WooCommerceProductReadAdapter):
         if not decision.allowed:
             raise WooCommerceAPIError("WooCommerce product read denied",
                                       failure_code=HealthFailureCode.AUTHORIZATION)
-
-
-
-
-
-    def get_order_summary_raw(
-        self,
-        order_id: str,
-    ) -> dict[str, Any] | None:
-        try:
-            response = self._request(
-                "/orders/" + str(order_id),
-                params={"context": "view"},
-            )
-        except WooCommerceAPIError as error:
-            if "HTTP 404" in str(error):
-                return None
-            raise
-        payload = response.json()
-        if not isinstance(payload, dict):
-            raise WooCommerceAPIError("invalid order payload")
-        return dict(payload)
-
-
-
-    def list_categories(self) -> list[dict[str, Any]]:
-        response = self._request(
-            "/products/categories",
-            params={
-                "per_page": 100,
-                "hide_empty": "false",
-            },
-        )
-
-        return [
-            {
-                "id": str(item["id"]),
-                "name": str(item.get("name", "")),
-                "slug": str(item.get("slug", "")),
-                "count": int(item.get("count", 0)),
-            }
-            for item in response.json()
-        ]
-
-    def search_products(
-        self,
-        *,
-        query: str | None,
-        category: str | None,
-        minimum_price: float | None,
-        maximum_price: float | None,
-        in_stock: bool | None,
-        page: int,
-        page_size: int,
-    ) -> tuple[list[Product], int]:
-        params: dict[str, Any] = {
-            "page": page,
-            "per_page": page_size,
-            "status": "publish",
-        }
-
-        if query:
-            params["search"] = query
-
-        if category:
-            params["category"] = category
-
-        if minimum_price is not None:
-            params["min_price"] = str(minimum_price)
-
-        if maximum_price is not None:
-            params["max_price"] = str(maximum_price)
-
-        if in_stock is True:
-            params["stock_status"] = "instock"
-        elif in_stock is False:
-            params["stock_status"] = "outofstock"
-
-        response = self._request(
-            "/products",
-            params=params,
-        )
-
-        products = [
-            self._to_product(item)
-            for item in response.json()
-        ]
-
-        total = int(
-            response.headers.get(
-                "X-WP-Total",
-                len(products),
-            )
-        )
-
-        return products, total

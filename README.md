@@ -1,5 +1,14 @@
 # AIControlCenter
 
+## 2026-11-03 — current modularization candidate 0.5.0
+
+Shopping storage/session/inquiry and remaining WooCommerce read-domain extraction
+is implemented in the optional wheel. Fresh installed-plugin checks: 185 passed;
+related regression: 2,415 passed / zero failures/skips. Historical test contracts
+were reconciled with pinned fixtures while current deployment remained unchanged.
+Notes/Assistant authenticated APIs and production migration remain incomplete.
+[Current scope, commands and evidence](docs/architecture/SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
+
 ## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
 
 The repository contains a reviewable agachichi WordPress presentation

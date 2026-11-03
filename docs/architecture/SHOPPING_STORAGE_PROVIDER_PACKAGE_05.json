@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-11-03",
+  "status": "FEATURE_BRANCH_CANDIDATE_VALIDATED_NOT_DEPLOYED",
+  "baseline_commit": "d4263e58546a8a4fb30f31c7cc44d533e3e37c79",
+  "package_versions": {
+    "shopping": "0.5.0",
+    "creative-notes": "0.1.0",
+    "personal-assistant": "0.1.0"
+  },
+  "artifact_directory": "dist/plugins/complete-v05-final",
+  "reproducible_wheels": true,
+  "sha256": {
+    "aicc_plugin_shopping-0.5.0-py3-none-any.whl": "62243a75fbcf678683b43e7053cbc64ec27c7ae62697703dbe838528221172bc",
+    "aicc_plugin_personal_assistant-0.1.0-py3-none-any.whl": "f732cd31621ab2186fd8409d0cea6d434a28ba2cd1f527d7e763362a087cf4ca",
+    "aicc_plugin_creative_notes-0.1.0-py3-none-any.whl": "d638e4332b987f0f72c9a62d5a16012875e12c31daf1fcc3a28977e7dd706fa0"
+  },
+  "fresh_installed_plugin_tests": {
+    "passed": 185,
+    "failed": 0,
+    "skipped": 0
+  },
+  "related_expanded_tests": {
+    "passed": 2415,
+    "failed": 0,
+    "skipped": 0,
+    "unique_files": 106,
+    "groups": [
+      {
+        "group": "plugins",
+        "summary": "185 passed, 1 warning in 2.54s",
+        "files": [
+          "test_woocommerce_plugin_read.py",
+          "test_catalog_plugin_extraction.py",
+          "test_shopping_domain_package.py",
+          "test_plugin_packages.py",
+          "test_plugin_catalog.py",
+          "test_module_attach_detach.py",
+          "test_module_lifecycle.py",
+          "test_module_shopping_bindings.py",
+          "test_shopping_storage_lifecycle.py",
+          "test_shopping_provider_package.py"
+        ]
+      },
+      {
+        "group": "session-api",
+        "summary": "101 passed, 1 warning in 0.73s",
+        "files": [
+          "test_shop_ai_001b3_session_api.py"
+        ]
+      },
+      {
+        "group": "inquiry-api",
+        "summary": "68 passed, 1 warning in 3.14s",
+        "files": [
+          "test_shop_ai_001b3_inquiry_api.py"
+        ]
+      },
+      {
+        "group": "domain-security",
+        "summary": "554 passed, 1 warning in 3.15s",
+        "files": [
+          "test_shop_ai_001a_inquiry_access.py",
+          "test_shop_ai_001b3_auth_contract.py",
+          "test_shop_ai_001b3_migration_contract.py",
+          "test_shop_ai_001b3_session_service.py",
+          "test_shop_ai_001b_identity_sessions.py",
+          "test_shop_ai_001b_persistence.py",
+          "test_shop_ai_001c_c3_destination_resolution.py",
+          "test_shop_ai_001c_c3_provider_boundary.py",
+          "test_shop_ai_001c_c3_runtime_composition.py",
+          "test_shop_ai_001c_c3_secret_resolver.py",
+          "test_shop_ai_001c_c4_authority.py",
+          "test_shop_ai_001c_c4_migration.py",
+          "test_shop_ai_001c_c4_quarantine.py",
+          "test_shop_ai_001c_c4_reconciliation.py",
+          "test_shop_ai_001c_c5_activation_contract.py",
+          "test_shop_ai_001c_c5_authenticated_read_contract.py",
+          "test_shop_ai_001c_c5_c4_integration.py",
+          "test_shop_ai_001c_c5_network_authorization.py",
+          "test_shop_ai_001c_c5_privacy.py",
+          "test_shop_ai_001c_c5_provider_boundary.py",
+          "test_shop_ai_001c_c5_runtime_composition.py",
+          "test_shop_ai_001c_c5_secret_delivery.py",
+          "test_shop_ai_001c_c5c3_authority.py",
+          "test_shop_ai_001c_c5c3_binding.py",
+          "test_shop_ai_001c_c5c3_expiry_one_shot.py",
+          "test_shop_ai_001c_c5c3_h1_authority_hardening.py",
+          "test_shop_ai_001c_c5c3_live_health_runtime.py",
+          "test_shop_ai_001c_c5c3_privacy_runtime.py",
+          "test_shop_ai_001c_c5c3b_offline_runtime.py",
+          "test_shop_ai_001c_c5c3b_secret_delivery.py",
+          "test_shop_ai_001c_c5c3c0_offline_transport.py",
+          "test_shop_ai_001c_c5c3c0_security.py",
+          "test_shop_ai_001c_c5c_twilio_contract.py",
+          "test_shop_ai_001c_c5c_twilio_normalization.py",
+          "test_shop_ai_001c_c5c_twilio_privacy.py",
+          "test_shop_ai_001c_c5c_twilio_runtime_composition.py",
+          "test_shop_ai_001c_contract.py",
+          "test_shop_ai_001c_mock_verifier.py",
+          "test_shop_ai_001c_persistence.py",
+          "test_shop_ai_001c_provider_adapter.py",
+          "test_shop_ai_001c_provider_transport.py",
+          "test_shop_ai_001c_runtime_composition.py",
+          "test_shop_ai_001c_secret_reference.py",
+          "test_shop_ai_001c_security.py"
+        ]
+      },
+      {
+        "group": "shopping-regression",
+        "summary": "1100 passed, 10 warnings in 2.53s",
+        "files": [
+          "test_shopping_adapter_contract_isolation.py",
+          "test_shopping_adapter_health_probe.py",
+          "test_shopping_api.py",
+          "test_shopping_capability_denials.py",
+          "test_shopping_capability_registry.py",
+          "test_shopping_catalog.py",
+          "test_shopping_categories.py",
+          "test_shopping_cms_adapter_contract.py",
+          "test_shopping_commerce_adapter_contract.py",
+          "test_shopping_commerce_bootstrap_deployment.py",
+          "test_shopping_demo_adapter.py",
+          "test_shopping_effective_runtime_attestation.py",
+          "test_shopping_external_read_policy.py",
+          "test_shopping_factory.py",
+          "test_shopping_featured.py",
+          "test_shopping_health_failure_compatibility.py",
+          "test_shopping_health_monitor.py",
+          "test_shopping_management_read_model.py",
+          "test_shopping_management_source.py",
+          "test_shopping_preactivation.py",
+          "test_shopping_read_authorization.py",
+          "test_shopping_read_only_ports.py",
+          "test_shopping_runtime_components.py",
+          "test_shopping_runtime_preproduction_bundle_b.py",
+          "test_shopping_schema_contracts.py",
+          "test_shopping_schema_drift.py",
+          "test_shopping_schema_drift_monitor.py",
+          "test_shopping_schema_validation.py",
+          "test_shopping_schema_validation_drift_isolation.py",
+          "test_shopping_search.py",
+          "test_shopping_secure_runtime.py",
+          "test_shopping_settings.py",
+          "test_shopping_snapshot_isolation.py",
+          "test_shopping_snapshot_normalization.py",
+          "test_shopping_snapshot_queries.py",
+          "test_shopping_woocommerce_commerce_read.py",
+          "test_shopping_woocommerce_normalization.py",
+          "test_shopping_woocommerce_read_transport.py"
+        ]
+      },
+      {
+        "group": "host-regression",
+        "summary": "407 passed, 9 warnings in 3.36s",
+        "files": [
+          "test_shop_api_read_001.py",
+          "test_shop_api_read_002.py",
+          "test_shop_api_read_003.py",
+          "test_capability_manifest_lookup.py",
+          "test_shop_ai_order_core_v1.py",
+          "test_shop_ai_woo_order_read_bridge_v1.py",
+          "test_woocommerce_adapter.py",
+          "test_pa_02_openclaw_adapter.py",
+          "test_pa_04_notification_platform.py",
+          "test_homepage_shopping_dashboard_contracts.py",
+          "test_shop_ui_002_storefront.py",
+          "test_shop_inquiry_001.py"
+        ]
+      }
+    ]
+  },
+  "new_failures_relative_to_baseline": 0,
+  "commit_push": "MANDATORY_FEATURE_BRANCH_WORKFLOW_AFTER_VALIDATION",
+  "production": "UNCHANGED",
+  "real_provider_binding": "NOT_CONFIGURED",
+  "notes_private_api": "NOT_CONNECTED",
+  "assistant_provider_transport": "NOT_CONNECTED",
+  "storage_evidence": "SYNTHETIC_FIXTURE_ONLY; attach/detach hash, drain, reattach and isolated SQLite backup/restore",
+  "limits": [
+    "cooperative process-local lifecycle",
+    "legacy jobs require explicit lease enrollment",
+    "trusted host owns authority/transport/schema composition",
+    "production activation separately gated"
+  ],
+  "initial_baseline_failures": {
+    "test_shopping_preactivation.py": 230,
+    "test_shopping_read_only_ports.py": 2,
+    "test_shop_inquiry_001.py": 2
+  },
+  "baseline_failures_reconciled": true,
+  "test_reconciliation": "Pinned historical preactivation snapshot; separate current-repository fail-closed test; exact package class identity and subprocess install path; explicit inquiry test composition with required token and preview 404 regression"
+}

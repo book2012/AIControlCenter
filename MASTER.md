@@ -1,5 +1,14 @@
 # MASTER
 
+## 2026-11-03 — current plugin separation status
+
+Shopping 0.5.0 candidate owns identity/session/persistence/inquiry and provider read
+normalization, plus explicit existing-store lifecycle composition. Fresh plugin
+checks: 185 passed; related regression: 2,415 passed, zero failures/skips across
+106 files. Repaired historical test-composition assumptions without changing
+current policy/config. Original source worktree and production are preserved.
+Notes/Assistant remain unconnected adapters. [Evidence](docs/architecture/SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
+
 ## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
 
 Added a candidate-only agachichi presentation adapter for the existing

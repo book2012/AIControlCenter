@@ -1,0 +1,119 @@
+name: ai-shopping
+
+services:
+  database:
+    image: mariadb:11.4.12@sha256:a794d9eb009e20de605858a11f32f63b4075cbd197c650436f0e3b457e4caed7
+    container_name: shopping-db
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${SHOPPING_DB_NAME}
+      MARIADB_USER: ${SHOPPING_DB_USER}
+      MARIADB_PASSWORD: ${SHOPPING_DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${SHOPPING_DB_ROOT_PASSWORD}
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - shopping_database:/var/lib/mysql
+    networks:
+      - shopping_internal
+    healthcheck:
+      test:
+        - CMD
+        - healthcheck.sh
+        - --connect
+        - --innodb_initialized
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  wordpress:
+    image: wordpress:php8.3-apache@sha256:9fac4d47b61186131ffefb5d966f0045d0eea94bfd7bd40cafae29b78a709d1b
+    container_name: shopping-wordpress
+    restart: "no"
+    depends_on:
+      database:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:58082:80"
+    environment:
+      WORDPRESS_DB_HOST: database:3306
+      WORDPRESS_DB_NAME: ${SHOPPING_DB_NAME}
+      WORDPRESS_DB_USER: ${SHOPPING_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${SHOPPING_DB_PASSWORD}
+      WORDPRESS_DEBUG: ""
+      WORDPRESS_CONFIG_EXTRA: |
+        if (!defined('WP_DEBUG')) { define('WP_DEBUG', false); }
+        if (WP_DEBUG !== false) { exit('Shopping runtime unavailable.'); }
+        define('WP_DEBUG_LOG', false);
+        define('WP_DEBUG_DISPLAY', false);
+        define('WP_MEMORY_LIMIT', '256M');
+        define('WP_MAX_MEMORY_LIMIT', '512M');
+        define('DISALLOW_FILE_EDIT', true);
+    volumes:
+      - shopping_wordpress:/var/www/html
+      - ./config/shopping-apache-safety.conf:/etc/apache2/sites-available/000-default.conf:ro
+      - ./config/shopping-php-safety.ini:/usr/local/etc/php/conf.d/zz-shopping-safety.ini:ro
+      - ./wordpress/plugins/ai-shopping-storefront:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
+    networks:
+      - shopping_internal
+      - shopping_external
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - php -r '$$s=@fsockopen("127.0.0.1",80,$$e,$$m,3); if(!$$s){exit(1);} fclose($$s);'
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  wordpress-cli:
+    profiles:
+      - activation
+    build:
+      context: .
+      dockerfile: bootstrap/Dockerfile
+    image: aicontrolcenter/wordpress-cli-bootstrap:local
+    pull_policy: build
+    user: "33:33"
+    working_dir: /var/www/html
+    restart: "no"
+    depends_on:
+      database:
+        condition: service_healthy
+      wordpress:
+        condition: service_healthy
+    environment:
+      HOME: "/tmp"
+      WORDPRESS_DB_HOST: "database:3306"
+      WORDPRESS_DB_NAME: "${SHOPPING_DB_NAME}"
+      WORDPRESS_DB_PASSWORD: "${SHOPPING_DB_PASSWORD}"
+      WORDPRESS_DB_USER: "${SHOPPING_DB_USER}"
+      SHOPPING_SITE_URL: "${SHOPPING_SITE_URL}"
+      SHOPPING_SITE_TITLE: "${SHOPPING_SITE_TITLE}"
+      SHOPPING_ADMIN_USER: "${SHOPPING_ADMIN_USER}"
+      SHOPPING_ADMIN_PASSWORD: "${SHOPPING_ADMIN_PASSWORD}"
+      SHOPPING_ADMIN_EMAIL: "${SHOPPING_ADMIN_EMAIL}"
+    volumes:
+      - shopping_wordpress:/var/www/html
+      - ./wordpress/plugins/ai-shopping-storefront:/var/www/html/wp-content/plugins/ai-shopping-storefront:ro
+    networks:
+      - shopping_external
+      - shopping_internal
+networks:
+  shopping_internal:
+    name: ai-shopping-internal
+    internal: true
+
+  shopping_external:
+    name: ai-shopping-network
+
+volumes:
+  shopping_database:
+    name: ai-shopping-database
+
+  shopping_wordpress:
+    name: ai-shopping-wordpress

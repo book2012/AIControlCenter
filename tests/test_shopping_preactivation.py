@@ -1,5 +1,6 @@
 import inspect
 import json
+from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
@@ -8,6 +9,36 @@ from core.shopping.control_plane_read.preactivation import (
     EDGE_CHECKS, LOG_CHECKS, NAMESPACE, _evaluate,
 )
 from ops.macos.shopping import preactivation_observer as observer
+
+
+@pytest.fixture(scope="module")
+def historical_repository(tmp_path_factory):
+    """Pin historical observer checks instead of asserting obsolete active topology."""
+    from pathlib import Path
+    import hashlib
+    import shutil
+    fixture = Path(__file__).parent / "fixtures/preactivation_f4d50eae"
+    provenance = json.loads((fixture / "provenance.json").read_text())
+    root = tmp_path_factory.mktemp("historical-preactivation")
+    for item in provenance["files"]:
+        source = fixture / item["path"]
+        assert hashlib.sha256(source.read_bytes()).hexdigest() == item["sha256"]
+        target = root / item["path"]
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copyfile(source, target)
+    return root
+
+
+@pytest.fixture(autouse=True)
+def historical_observer_root(monkeypatch, historical_repository):
+    monkeypatch.setattr(observer, "ROOT", historical_repository)
+
+
+def test_current_repository_is_not_authorized_by_historical_observer(monkeypatch):
+    from pathlib import Path
+    monkeypatch.setattr(observer, "ROOT", Path(__file__).resolve().parents[1])
+    # Later generation artifacts do not match this historical observer contract.
+    assert observer._repository_facts() is False
 
 
 def safe_facts():
@@ -131,11 +162,11 @@ def test_repository_controls_and_no_machine_identity():
     assert observer._repository_facts() is True
     for relative in ("ops/macos/shopping/preactivation_observer.py",
                      "core/shopping/control_plane_read/preactivation.py"):
-        assert "/Users/" not in (observer.ROOT / relative).read_text()
+        assert "/Users/" not in (Path(__file__).resolve().parents[1] / relative).read_text()
     assert not (observer.ROOT / "ops/macos/shopping/shop_service_start_01f_evidence.json").exists()
 
 
-def test_current_compose_review_preserves_historical_01g1c_contract():
+def test_pinned_compose_review_preserves_historical_01g1c_contract():
     import hashlib
     from core.shopping import wordpress_generation_reconciliation as historical
     from core.shopping import wordpress_recovery_reconciliation as recovery
@@ -261,13 +292,13 @@ def test_stale_port_even_with_updated_digest_rejected(monkeypatch, tmp_path):
 
 
 @pytest.fixture(scope="module")
-def adapted_caddy():
+def adapted_caddy(historical_repository):
     from pathlib import Path
     import subprocess
     caddy = Path('/opt/homebrew/bin/caddy')
     if not caddy.exists():
         pytest.skip('local Caddy adapter unavailable; static assertions still run')
-    result = subprocess.run([str(caddy), 'adapt', '--config', str(observer.ROOT / 'ops/macos/caddy/Caddyfile'),
+    result = subprocess.run([str(caddy), 'adapt', '--config', str(historical_repository / 'ops/macos/caddy/Caddyfile'),
                              '--adapter', 'caddyfile'], stdout=subprocess.PIPE,
                             stderr=subprocess.DEVNULL, timeout=5, check=False)
     assert result.returncode == 0

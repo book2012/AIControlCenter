@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-03 — Shopping 0.5.0 feature candidate
+
+- Extracted customer identity/session/auth/persistence/migration/inquiry implementations with compatibility bridges and host-only contact configuration.
+- Extracted category/search/order reads and canonical normalization with required port, authorizer and validator callbacks.
+- Added no-migration existing-store lifecycle and 36 storage/provider cases including leased-job drain and synthetic backup/restore.
+- Pinned historical preactivation fixtures; corrected read-port identity/subprocess and inquiry test composition while keeping current fail-closed and preview-denial checks.
+- Fresh installed-plugin checks: 185 passed; expanded related checks: 2,415 passed, zero failures/skips. No production activation or real provider connection. [Evidence](docs/architecture/SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
+
 ## 2026-10-03 — STOREFRONT-PROMOTION-01 candidate
 
 - Added the `SHOP_MEDIA_003_AGACHICHI` WordPress presentation candidate at

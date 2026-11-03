@@ -14,7 +14,7 @@ credential, WordPress install, Site or Ubuntu worker was modified.
 | Personal Assistant | aicc_plugin_personal_assistant | adapter.py |
 
 Each plugin owns its `plugins/<id>/src/<package>` source, descriptive manifest,
-distribution metadata and README. Shopping is now 0.4.0; Notes and Assistant remain 0.1.0. These are development plugin
+distribution metadata and README. Shopping is now a local 0.5.0 candidate; Notes and Assistant remain 0.1.0. These are development plugin
 releases. It is separate from Atelier theme 0.4.0 and the existing Creative Notes
 Site/plugin versions. No marketplace package or public release was published.
 
@@ -35,15 +35,15 @@ These are host plugins, not standalone servers. The pure product/order domain is
 host authorities; the catalog service and mock preview now run without host code.
 The assistant uses common capability-status contracts and an externally injected
 provider. Notes packages its independent service reference, without private-account
-API credentials. Full legacy-domain package extraction and real service connectivity
-remain open; moving adapters does not imply those tasks are complete.
+API credentials. Legacy verifier/workflow/operator-shell migration and real service connectivity
+remain open; package extraction does not imply those tasks are complete.
 
 ## Reproducible build and safe verification
 Run from this worktree using its compatible host Python environment:
 
-    python -m scripts.build_plugin_wheels --output dist/plugins/woo-v04-verified
+    python -m scripts.build_plugin_wheels --output dist/plugins/complete-v05-final
 
-Output: dist/plugins/woo-v04-verified/aicc_plugin_<name>-<version>-py3-none-any.whl.
+Output: dist/plugins/complete-v05-final/aicc_plugin_<name>-<version>-py3-none-any.whl.
 The stdlib-only builder reads a reviewed allowlist of source files/metadata, executes
 no plugin/build hooks, and downloads nothing. It emits deterministic ZIP metadata,
 METADATA, WHEEL and SHA-256 RECORD rows according to the wheel specification:
@@ -55,14 +55,14 @@ No third-party build tool or shared-environment installation was needed.
 For isolated validation only (not the production interpreter), install into a new
 empty target directory:
 
-    python -m pip --isolated --disable-pip-version-check install --no-index --no-deps --target .plugin-packages/woo-v04-verified dist/plugins/woo-v04-verified/*.whl
+    python -m pip --isolated --disable-pip-version-check install --no-index --no-deps --target .plugin-packages/complete-v05-final dist/plugins/complete-v05-final/*.whl
 
 The compatible host dependencies must already be present. --no-deps deliberately
 prevents dependency changes. The .plugin-packages target and generated dist/plugins
 files are ignored by Git. Existing launchd/production PYTHONPATH was not changed.
 Run the plugin suites with the target explicitly on the test process path:
 
-    PYTHONPATH="$PWD/.plugin-packages/woo-v04-verified" python -m pytest -q tests/test_plugin_packages.py tests/test_plugin_catalog.py tests/test_module_attach_detach.py tests/test_module_lifecycle.py tests/test_module_shopping_bindings.py tests/test_shopping_domain_package.py tests/test_catalog_plugin_extraction.py tests/test_woocommerce_plugin_read.py
+    PYTHONPATH="$PWD/.plugin-packages/complete-v05-final" python -m pytest -q tests/test_plugin_packages.py tests/test_plugin_catalog.py tests/test_module_attach_detach.py tests/test_module_lifecycle.py tests/test_module_shopping_bindings.py tests/test_shopping_domain_package.py tests/test_catalog_plugin_extraction.py tests/test_woocommerce_plugin_read.py
 
 For a fresh rebuild verification, use a new empty install target instead of layering
 versions onto an existing one. Rebuilds must run relevant plugin tests before any
@@ -70,8 +70,8 @@ reviewed service-generation switch. Runtime detach preserves module data; removi
 an installed wheel is a separate packaging operation and does not replace drain.
 
 ## Evidence
-- 149 package/read-port/domain/catalog/module tests passed with the current wheels installed; no skips.
-- Expanded existing domain/security/provider suites bring this revision to 889 passed; see WOOCOMMERCE_PRODUCT_PLUGIN_04.md.
+- 149 package/read-port/domain/catalog/module tests passed at revision 0.4.0; no skips.
+- Expanded existing domain/security/provider suites brought revision 0.4.0 to 889 passed; see WOOCOMMERCE_PRODUCT_PLUGIN_04.md.
 - Each wheel was also pip-installed alone into its own temporary target, offline
   with no dependency installation. Only that plugin attached; the two missing
   packages reported UNAVAILABLE while core health returned 200.
@@ -86,5 +86,15 @@ an installed wheel is a separate packaging operation and does not replace drain.
 - Python 3.14 host environment tested. Other Python versions/hosting environments
   were not validated. One existing TestClient deprecation warning remains.
 
-See WOOCOMMERCE_PRODUCT_PLUGIN_04.md for current ownership and version compatibility.
+See SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md for current ownership and version compatibility.
 See MODULE_ATTACH_DETACH_02.md for the real-connection and production migration gates.
+
+## Current 0.5.0 candidate status
+
+Shopping also owns customer/session/persistence/inquiry implementations, existing-store
+resource lifecycle, category/search/order mapping and canonical normalization. Host
+policy/secret/signing/transport/schema and verifier/workflow composition remain.
+Fresh installed-plugin checks: 185 passed. Expanded related scope: 2,415 passed,
+zero failures/skips. Historical test assumptions were repaired using pinned fixtures
+and explicit test compositions, preserving current policy/preview denial.
+Earlier passing totals describe earlier revisions. See [current evidence](SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
