@@ -6177,3 +6177,7 @@ Catalog behavior moved to the plugin; core.shopping.service is now a legacy cons
 ## 2026-11-03 — WooCommerce product-read plugin 0.4.0
 
 WooCommerceRESTAdapter is now a compatibility subclass of the plugin product-read implementation. The host retains eight unchanged signing/policy/non-product methods and the byte-identical transport. The new standalone product adapter requires a trusted read port and strict True authorization; it cannot read generic vendor/order paths.
+
+
+## 2026-11-03 — Personal assistant Site bridge
+Outbound-only Mac Qwen bridge and articulated 3D animal web companion. See [bridge architecture](docs/architecture/ASSISTANT_SITE_BRIDGE_01.md). Worker and local conversation tests: 24 passed; live deployment verification recorded separately. Shopping remains paused.

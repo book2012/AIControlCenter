@@ -6086,3 +6086,7 @@ Extracted catalog logic into Shopping 0.3.0 and retained a host-owned legacy com
 ## 2026-11-03 — WooCommerce product-read plugin 0.4.0
 
 Extracted WooCommerce product-read logic into Shopping 0.4.0 with explicit trusted port and strict authorization. Retained host credential/signing/transport/policy and non-product behavior unchanged. Added 34 read-port cases; final related verification 889 passed.
+
+
+## 2026-11-03 — Personal assistant Site bridge
+Outbound-only Mac Qwen bridge and articulated 3D animal web companion. See [bridge architecture](docs/architecture/ASSISTANT_SITE_BRIDGE_01.md). Worker and local conversation tests: 24 passed; live deployment verification recorded separately. Shopping remains paused.

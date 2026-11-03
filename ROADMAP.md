@@ -5594,3 +5594,7 @@ Completed: catalog service/response validation, read contract, mock adapter and 
 ## 2026-11-03 — WooCommerce product-read plugin 0.4.0
 
 Completed: WooCommerce product-read normalization/list/detail/health extraction and explicit read-port authorization. Remaining: non-product vendor scopes, durable session/inquiry ownership, job resource ownership, real external authentication and governed deployment/restore gates.
+
+
+## 2026-11-03 — Personal assistant Site bridge
+Outbound-only Mac Qwen bridge and articulated 3D animal web companion. See [bridge architecture](docs/architecture/ASSISTANT_SITE_BRIDGE_01.md). Worker and local conversation tests: 24 passed; live deployment verification recorded separately. Shopping remains paused.

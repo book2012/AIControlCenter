@@ -6617,3 +6617,7 @@ Shopping 0.3.0 catalog extraction verified: 855 focused/related checks passed. P
 ## 2026-11-03 — WooCommerce product-read plugin 0.4.0
 
 Shopping 0.4.0 product-read boundary validated: 889 related cases passed, no required checks skipped. No live request, credential read or production binding. This Python package is separate from Atelier theme 0.4.0.
+
+
+## 2026-11-03 — Personal assistant Site bridge
+Outbound-only Mac Qwen bridge and articulated 3D animal web companion. See [bridge architecture](docs/architecture/ASSISTANT_SITE_BRIDGE_01.md). Worker and local conversation tests: 24 passed; live deployment verification recorded separately. Shopping remains paused.
