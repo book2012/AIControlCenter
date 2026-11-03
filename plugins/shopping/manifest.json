@@ -35,6 +35,7 @@
     }
   ],
   "source_paths": [
+    "plugins/shopping/src/aicc_plugin_shopping",
     "core/shopping",
     "core/modules/shopping.py",
     "core/modules/shopping_bindings.py"

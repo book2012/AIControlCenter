@@ -6050,3 +6050,8 @@ Added managed module admission/drain/cleanup, explicit existing Shopping order/s
 ## 2026-11-03 — platform plugin catalog
 
 Added three platform plugin definition folders, strict descriptive manifest validation and lifecycle-aware GET /platform/plugins in isolated modular shells. Metadata failure does not activate plugins or break the core. Related validation: 88 passed.
+
+
+## 2026-11-03 — optional plugin packages
+
+Extracted Shopping/Creative Notes/Personal Assistant adapters into separately installable 0.1.0 wheel packages. Added lazy allowlisted loader, integer API-version gate and compatibility facades. Offline installs and absent-package startup verified; 101 installed-plugin tests passed.

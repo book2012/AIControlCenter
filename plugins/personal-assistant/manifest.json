@@ -20,6 +20,7 @@
     }
   ],
   "source_paths": [
+    "plugins/personal-assistant/src/aicc_plugin_personal_assistant",
     "core/modules/service_adapters.py",
     "integrations/openclaw",
     "integrations/module_composition.py"

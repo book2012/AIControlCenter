@@ -16,3 +16,7 @@ production authority. They never supply import paths to execute. Metadata change
 neither attach a module nor authorize it. Existing configuration and lifecycle gates
 remain authoritative. API overview: GET /platform/plugins in the separate modular
 preview/validation shell. The current production app is unchanged.
+
+## Runnable adapter packages
+
+Each plugin now owns `src/aicc_plugin_*` and `distribution.json`. Build with `python -m scripts.build_plugin_wheels`. See [installation, compatibility and validation](../docs/architecture/PLATFORM_PLUGIN_PACKAGES.md). These installable host adapters are not full standalone services; existing domain/API/authentication dependencies remain explicit.

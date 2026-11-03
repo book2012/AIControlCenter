@@ -1,0 +1,9 @@
+{
+  "distribution": "aicc-plugin-creative-notes",
+  "version": "0.1.0",
+  "import_package": "aicc_plugin_creative_notes",
+  "requires": [
+    "fastapi"
+  ],
+  "platform_plugin_api": 1
+}

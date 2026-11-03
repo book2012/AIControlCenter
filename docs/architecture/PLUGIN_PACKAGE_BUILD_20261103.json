@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "scope": "development adapter wheels; local isolated verification only",
+  "artifacts": [
+    {
+      "filename": "aicc_plugin_creative_notes-0.1.0-py3-none-any.whl",
+      "size_bytes": 2785,
+      "sha256": "d638e4332b987f0f72c9a62d5a16012875e12c31daf1fcc3a28977e7dd706fa0"
+    },
+    {
+      "filename": "aicc_plugin_personal_assistant-0.1.0-py3-none-any.whl",
+      "size_bytes": 2846,
+      "sha256": "f732cd31621ab2186fd8409d0cea6d434a28ba2cd1f527d7e763362a087cf4ca"
+    },
+    {
+      "filename": "aicc_plugin_shopping-0.1.0-py3-none-any.whl",
+      "size_bytes": 4896,
+      "sha256": "be95f86b10f993a4a6ab67b8486cfca08401032ee847ab31e38a78e3a64d1994"
+    }
+  ]
+}

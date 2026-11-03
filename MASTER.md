@@ -6580,3 +6580,8 @@ MODULE-ATTACH-DETACH-02: managed lifecycle and explicit read bindings implemente
 ## 2026-11-03 — platform plugin catalog
 
 Plugin catalog organization complete for shopping, creative-notes and personal-assistant; 88 related tests passed. Current attachment and component readiness are distinct. Production app, real connections and full source extraction remain unchanged.
+
+
+## 2026-11-03 — optional plugin packages
+
+Adapter package extraction verified: three reproducible wheel builds, individual offline installations and missing-package isolation. Installed-plugin suite: 101 passed. No-package core suite: 85 passed / 5 optional groups or cases skipped. Production and real authenticated service connections unchanged.

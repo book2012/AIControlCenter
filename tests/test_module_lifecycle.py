@@ -1,3 +1,4 @@
+import importlib.util
 import asyncio
 from pathlib import Path
 
@@ -203,6 +204,7 @@ def test_managed_http_and_other_modules_survive_drain_and_reattach():
     run(scenario())
 
 
+@pytest.mark.skipif(any(importlib.util.find_spec(n) is None for n in ["aicc_plugin_shopping", "aicc_plugin_creative_notes", "aicc_plugin_personal_assistant"]), reason="optional plugin wheels required")
 def test_real_service_adapters_do_not_claim_live_authority(monkeypatch):
     import socket
     import sqlite3
@@ -291,6 +293,7 @@ def test_new_module_core_has_no_outer_imports_at_any_indentation():
             assert not any(n.split(".")[0] in {"ops", "integrations"} for n in names), path
 
 
+@pytest.mark.skipif(importlib.util.find_spec("aicc_plugin_personal_assistant") is None, reason="optional assistant wheel required")
 def test_outer_composition_reuses_openclaw_without_live_access():
     from integrations.module_composition import create_validation_app
     from fastapi.testclient import TestClient

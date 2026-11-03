@@ -1,0 +1,9 @@
+{
+  "distribution": "aicc-plugin-shopping",
+  "version": "0.1.0",
+  "import_package": "aicc_plugin_shopping",
+  "requires": [
+    "fastapi"
+  ],
+  "platform_plugin_api": 1
+}

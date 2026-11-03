@@ -1,0 +1,9 @@
+{
+  "distribution": "aicc-plugin-personal-assistant",
+  "version": "0.1.0",
+  "import_package": "aicc_plugin_personal_assistant",
+  "requires": [
+    "fastapi"
+  ],
+  "platform_plugin_api": 1
+}

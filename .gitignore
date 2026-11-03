@@ -52,3 +52,7 @@ configs/secrets/*.env
 *.bak
 *.old
 *~
+
+# Isolated plugin build/install verification
+.plugin-packages/
+dist/plugins/

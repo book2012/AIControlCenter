@@ -21,4 +21,4 @@ The manifest is descriptive data, never executable configuration or authorizatio
 
 AIControlCenter 비서 어댑터만 분리; 독립 실행 환경과 기존 데이터 유지
 
-Domain code remains at the recorded paths; this folder does not claim independent installability or full source extraction. See docs/architecture/PLATFORM_PLUGINS.md.
+The runnable adapter source now lives under `src/aicc_plugin_personal_assistant`. Build its installable wheel with `python -m scripts.build_plugin_wheels`. It requires the compatible AIControlCenter host; it is not a standalone application or a complete legacy-domain extraction. See docs/architecture/PLATFORM_PLUGIN_PACKAGES.md.

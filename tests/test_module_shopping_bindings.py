@@ -6,6 +6,8 @@ from fastapi.testclient import TestClient
 import pytest
 from pydantic import SecretBytes
 
+pytest.importorskip("aicc_plugin_shopping", reason="optional shopping wheel required")
+
 from core.modules.composition import create_module_app
 from core.modules.shopping_bindings import ShoppingBindings, create_bound_shopping
 from core.shopping.config import ShoppingSettings

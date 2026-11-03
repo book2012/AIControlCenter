@@ -5549,3 +5549,8 @@ Completed: request/job lease drain, timeout/cancellation/cleanup recovery, expli
 ## 2026-11-03 — platform plugin catalog
 
 Completed: per-plugin manifest/README folders and read-only lifecycle-aware catalog. Next: source/package extraction and reviewed live bindings from MODULE_ATTACH_DETACH_02; independently activated subplugins are not implemented.
+
+
+## 2026-11-03 — optional plugin packages
+
+Completed: runnable adapter-source ownership per plugin, reproducible installable wheels, host API-version gate and package absence/reattach verification. Remaining: full legacy Shopping domain extraction, real service/auth bindings and reviewed production-generation migration.

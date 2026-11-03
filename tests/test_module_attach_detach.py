@@ -1,3 +1,4 @@
+import importlib.util
 import json
 from pathlib import Path
 import subprocess
@@ -153,6 +154,7 @@ assert {route.path for route in app.routes} == {"/health", "/platform/modules", 
     assert result.returncode == 0, result.stderr
 
 
+@pytest.mark.skipif(importlib.util.find_spec("aicc_plugin_shopping") is None, reason="optional shopping wheel required")
 def test_real_shopping_preview_reads_without_external_access(monkeypatch):
     import sqlite3
     import socket

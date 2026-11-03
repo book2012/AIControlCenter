@@ -5617,3 +5617,8 @@ Managed attach/drain/detach and explicit service bindings are available in the i
 ## 2026-11-03 — platform plugin catalog
 
 Platform plugins are grouped under `plugins/shopping`, `plugins/creative-notes` and `plugins/personal-assistant`. Each has a manifest and scope README. The modular shells expose read-only `GET /platform/plugins`, separating attachment state from actual capability readiness. [Catalog and boundaries](docs/architecture/PLATFORM_PLUGINS.md).
+
+
+## 2026-11-03 — optional plugin packages
+
+Optional adapters now have separate installable wheel distributions under `plugins/*/src`. Build and validate them without modifying the shared interpreter; [instructions and limitations](docs/architecture/PLATFORM_PLUGIN_PACKAGES.md). The platform starts without these optional packages.

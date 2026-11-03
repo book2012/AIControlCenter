@@ -20,6 +20,7 @@
     }
   ],
   "source_paths": [
+    "plugins/creative-notes/src/aicc_plugin_creative_notes",
     "core/modules/service_adapters.py"
   ],
   "data_owner": "기존 창작노트 Sites 서비스의 D1/R2 및 계정별 소유권",

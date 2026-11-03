@@ -6137,3 +6137,8 @@ ModuleManager closes admission and drains leased work before resource cleanup. O
 ## 2026-11-03 — platform plugin catalog
 
 The plugin catalog defines three business-facing boundaries and keeps common authorization/audit/deployment/AI-routing/scheduling in AIControlCenter. Descriptive manifests do not execute code or grant activation authority. Existing source remains at documented paths; independent package extraction is not claimed. [Contract](docs/architecture/PLATFORM_PLUGINS.md).
+
+
+## 2026-11-03 — optional plugin packages
+
+Runnable plugin adapters moved out of core/modules into optional aicc_plugin_* packages. A reviewed lazy package loader enforces host API v1. Compatibility facades preserve callers/class identity. Shopping domain services remain in the host pending full legacy-domain extraction; this is not a production replacement.

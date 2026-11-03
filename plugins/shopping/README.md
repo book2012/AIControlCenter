@@ -24,4 +24,4 @@ The manifest is descriptive data, never executable configuration or authorizatio
 
 새 플랫폼 요청 차단, 등록 작업 drain, 등록 자원 close; WooCommerce 데이터·독립 매장은 유지
 
-Domain code remains at the recorded paths; this folder does not claim independent installability or full source extraction. See docs/architecture/PLATFORM_PLUGINS.md.
+The runnable adapter source now lives under `src/aicc_plugin_shopping`. Build its installable wheel with `python -m scripts.build_plugin_wheels`. It requires the compatible AIControlCenter host; it is not a standalone application or a complete legacy-domain extraction. See docs/architecture/PLATFORM_PLUGIN_PACKAGES.md.
