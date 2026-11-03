@@ -1,5 +1,13 @@
 # CHANGELOG
 
+## 2026-11-03 — assistant priority and Mongle companion
+
+- Paused the selected Shopping jobs/containers and commerce VM under explicit user direction; preserved resource identities and volumes.
+- Added bounded Mac Ollama conversation, optional production-only Shopping attach and dependency-safe stop plans.
+- Personal Assistant package 0.2.0; 2,435 related checks pass, including 20 new assistant/resource checks.
+- Published the owner-private web companion with animated cloud character and one chat window; 21 web checks, types and build pass.
+- No public Ollama exposure, external-app authority, billing or live Shopping reactivation. [Details](docs/architecture/ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md).
+
 ## 2026-11-03 — Shopping 0.5.0 feature candidate
 
 - Extracted customer identity/session/auth/persistence/migration/inquiry implementations with compatibility bridges and host-only contact configuration.

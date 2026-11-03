@@ -47,3 +47,10 @@ credentials, signing/transport, schema loading and authority remain outside it.
 Fresh installed-plugin checks: 185 passed; expanded related checks: 2,415 passed.
 No live provider binding or production switch.
 See [current scope and evidence](../../docs/architecture/SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
+
+## On-demand runtime
+
+Shopping resources were paused by explicit user instruction on 2026-11-03.
+The reviewed operator-local controller can restore the same production containers
+and launchd generation; DEV/QA remain off. Default commands only print plans.
+[Commands and safeguards](../../docs/architecture/ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md).

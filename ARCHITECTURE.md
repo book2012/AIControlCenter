@@ -1,5 +1,14 @@
 # AI Home Datacenter Architecture
 
+## 2026-11-03 — assistant priority boundary
+
+The Mac remains the sole control plane. Shopping resources are dormant by explicit
+user request, restored only through a trusted local generation-checked controller.
+The local assistant uses fixed loopback Ollama/Qwen3 8B and grants no tool authority.
+The independently hosted owner-private companion stores user-scoped notes/tasks;
+it has no private model gateway or external app connections yet.
+[Ownership and operations](docs/architecture/ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md).
+
 ## 2026-11-03 — current modularization candidate boundary
 
 AI Home Datacenter is the umbrella; AIControlCenter remains the sole Mac control

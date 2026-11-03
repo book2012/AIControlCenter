@@ -1,5 +1,17 @@
 # Roadmap
 
+## 2026-11-03 — assistant-first milestones
+
+- [x] Pause Shopping and preserve its existing data/resources.
+- [x] Explicit on-demand controller, generation checks and lifecycle hook.
+- [x] Mac Qwen3 8B bounded local conversation and synthetic HTTP verification.
+- [x] Animated character + one chat window, owner-private publication, account-scoped notes/tasks.
+- [ ] Live Shopping re-attach validation when reactivation is requested; leave it off now.
+- [ ] Verified private web-to-Mac gateway and authenticated hosted E2E.
+- [ ] Per-account app read integrations; billing/public product launch after verification.
+
+[Current operations and limits](docs/architecture/ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md).
+
 ## 2026-11-03 — current modularization gates
 
 - [x] Shopping catalog/product/order/session/inquiry source package boundaries.

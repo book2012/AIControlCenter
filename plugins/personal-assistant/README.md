@@ -22,3 +22,10 @@ The manifest is descriptive data, never executable configuration or authorizatio
 AIControlCenter 비서 어댑터만 분리; 독립 실행 환경과 기존 데이터 유지
 
 The runnable adapter source now lives under `src/aicc_plugin_personal_assistant`. Build its installable wheel with `python -m scripts.build_plugin_wheels`. It requires the compatible AIControlCenter host; it is not a standalone application or a complete legacy-domain extraction. See docs/architecture/PLATFORM_PLUGIN_PACKAGES.md.
+
+## Local conversation 0.2.0
+
+Pure bounded conversation domain and explicit loopback Ollama composition are
+implemented. Qwen3 8B local chat was verified. The web companion remains a
+separate owner-private Site without an authenticated model/app bridge. No tool
+execution or billing. [Current evidence](../../docs/architecture/ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md).

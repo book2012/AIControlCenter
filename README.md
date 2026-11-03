@@ -1,5 +1,14 @@
 # AIControlCenter
 
+## 2026-11-03 — assistant priority and on-demand Shopping
+
+Shopping is paused by the user's explicit request, retaining containers/data for
+explicit on-demand activation. Personal Assistant 0.2.0 adds bounded Mac-local
+Qwen3 8B chat. The owner-private web app now shows an animated Mongle companion
+and one chat window; its Mac AI and external-app bridges remain unconnected.
+Related validation: 2,435 Python + 21 web checks pass.
+[Operations, commands and limits](docs/architecture/ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md).
+
 ## 2026-11-03 — current modularization candidate 0.5.0
 
 Shopping storage/session/inquiry and remaining WooCommerce read-domain extraction

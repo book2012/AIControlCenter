@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "observed_date": "2026-11-03",
-  "production_changed": false,
+  "production_changed": true,
   "modules": [
     {
       "id": "shopping",
@@ -18,7 +18,9 @@
       "woocommerce_product_read": "plugins/shopping/src/aicc_plugin_shopping/adapters/woocommerce_product_read.py",
       "storage_resource": "plugins/shopping/src/aicc_plugin_shopping/storage_resource.py",
       "storage_composition": "core/modules/shopping_storage.py",
-      "release_status": "FEATURE_BRANCH_CANDIDATE_VALIDATED_NOT_DEPLOYED"
+      "release_status": "FEATURE_BRANCH_CANDIDATE_VALIDATED_NOT_DEPLOYED",
+      "legacy_runtime_state": "PAUSED_ON_DEMAND",
+      "runtime_controller": "ops/macos/modules/shopping_runtime.py"
     },
     {
       "id": "creative-notes",
@@ -34,7 +36,15 @@
       "source": "integrations/openclaw",
       "composition": "integrations/module_composition.py",
       "provider_transport": "NOT_CONNECTED",
-      "adapter": "plugins/personal-assistant/src/aicc_plugin_personal_assistant/adapter.py"
+      "adapter": "plugins/personal-assistant/src/aicc_plugin_personal_assistant/adapter.py",
+      "package_version": "0.2.0",
+      "local_provider": "ollama:qwen3:8b",
+      "local_api": "127.0.0.1:58090",
+      "local_tools_enabled": false,
+      "web_project_id": "appgprj_6ae9581912908191a980fb514434c34e",
+      "web_url": "https://bok-personal-assistant.kyouhan.chatgpt.site",
+      "web_to_mac": "NOT_CONNECTED"
     }
-  ]
+  ],
+  "production_change_scope": "User-authorized Shopping pause; isolated loopback assistant service only"
 }

@@ -98,3 +98,10 @@ Fresh installed-plugin checks: 185 passed. Expanded related scope: 2,415 passed,
 zero failures/skips. Historical test assumptions were repaired using pinned fixtures
 and explicit test compositions, preserving current policy/preview denial.
 Earlier passing totals describe earlier revisions. See [current evidence](SHOPPING_STORAGE_PROVIDER_PACKAGE_05.md).
+
+## Assistant 0.2.0 / current runtime priority
+
+Personal Assistant is now 0.2.0 with a bounded local conversation domain. Shopping
+remains 0.5.0; Creative Notes remains 0.1.0. The user-authorized runtime pause and
+loopback assistant deployment are recorded in ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md.
+Earlier no-production-change statements describe their own revisions.

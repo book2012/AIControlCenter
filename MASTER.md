@@ -1,5 +1,13 @@
 # MASTER
 
+## 2026-11-03 — current assistant priority
+
+Actual Shopping pause completed: six jobs, six containers and the dedicated
+4-CPU/6-GiB commerce VM. IDs/mounts/data preserved. Qwen3 8B local conversation
+verified; Personal Assistant package 0.2.0. Independent web companion version 2
+is owner-private; remote AI/app connections and sales readiness remain open.
+[Evidence](docs/architecture/ASSISTANT_PRIORITY_ON_DEMAND_SHOPPING_01.md).
+
 ## 2026-11-03 — current plugin separation status
 
 Shopping 0.5.0 candidate owns identity/session/persistence/inquiry and provider read
