@@ -6040,3 +6040,8 @@ evidence locator.
 ## 2026-11-03 — modular attachment preview
 
 Added strict data-only module selection, dependency ordering and isolated startup composition; read-only namespaces and no imports for detached Shopping. Added real mock-catalog read adapter and honest unavailable placeholders for Creative Notes/Personal Assistant. Added plan-only CLI, boundary inventory, 39 new cases and related regression (238 passed total). Existing service/runtime, data and original dirty worktree were not changed.
+
+
+## 2026-11-03 — managed module lifecycle
+
+Added managed module admission/drain/cleanup, explicit existing Shopping order/session/notification read bindings, Creative Notes reference and injected assistant status adapters. Fixed lost route dependency overrides and removed the existing core-to-ops Twilio dependency with strict class-identity compatibility. Final focused/related verification: 514 passed; no production or Site changes.

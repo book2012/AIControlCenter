@@ -6570,3 +6570,8 @@ entire platform is production-ready.
 ## MODULE-ATTACH-DETACH-01 — 2026-11-03
 
 Implemented isolated startup composition and a real ShoppingService mock-catalog read adapter. All modules default DETACHED; unavailable/blocked states remain explicit. Focused plus related regression: 238 passed, one existing deprecation warning. Not deployed; legacy main app, transaction flows, Creative Notes and Personal Assistant extraction remain pending. [Evidence](docs/architecture/MODULE_ATTACH_DETACH_01.md).
+
+
+## 2026-11-03 — managed module lifecycle
+
+MODULE-ATTACH-DETACH-02: managed lifecycle and explicit read bindings implemented; 514 focused/related tests passed across isolated processes. Sites Creative Notes version 10 identified. Production replacement, full source extraction, per-account private API connectivity and live transactions remain incomplete.

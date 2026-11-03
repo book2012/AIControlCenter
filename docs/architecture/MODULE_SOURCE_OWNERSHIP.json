@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "observed_date": "2026-11-03",
+  "production_changed": false,
+  "modules": [
+    {
+      "id": "shopping",
+      "source": "AIControlCenter/core/shopping",
+      "adapter": "core/modules/shopping_bindings.py",
+      "theme_source": "AgachichiCommerce/product/agachichi-atelier",
+      "live_binding": "NOT_CONFIGURED"
+    },
+    {
+      "id": "creative-notes",
+      "source_owner": "Sites",
+      "project_id": "appgprj_6ad80723fd208191b3617a9dac8ca392",
+      "observed_version": 10,
+      "website": "https://bok-creative-notes.kyouhan.chatgpt.site",
+      "adapter": "core/modules/service_adapters.py",
+      "private_api": "NOT_CONNECTED"
+    },
+    {
+      "id": "personal-assistant",
+      "source": "integrations/openclaw",
+      "composition": "integrations/module_composition.py",
+      "provider_transport": "NOT_CONNECTED"
+    }
+  ]
+}

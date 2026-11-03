@@ -6127,3 +6127,8 @@ reach WooCommerce or WordPress directly.
 ## Module boundary pilot — 2026-11-03
 
 AI Home Datacenter remains the umbrella; AIControlCenter retains policy, approval, audit and deployment control. A separate modular preview composes explicit domain IDs under `/extensions/{module_id}`, imports no detached Shopping runtime and creates no detached domain DB. Selection is immutable per app generation; detach requires a governed process replacement, not data deletion. This does not supersede the current production composition. [Design and limits](docs/architecture/MODULE_ATTACH_DETACH_01.md).
+
+
+## 2026-11-03 — managed module lifecycle
+
+ModuleManager closes admission and drains leased work before resource cleanup. Order/session/notification objects are injected with existing authority; no default live credentials or writes. Creative Notes remains an independent Sites service, OpenClaw a replaceable outer provider. A pure Twilio composition was moved inward with identity-preserving compatibility exports. This does not supersede the legacy production composition.

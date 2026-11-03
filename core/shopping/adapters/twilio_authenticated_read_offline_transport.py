@@ -22,7 +22,7 @@ from core.shopping.ports.provider_activation import ProviderOperation
 from core.shopping.ports.provider_authenticated_read import (
     ProviderReadResult,
 )
-from ops.macos.shopping.twilio_authenticated_read_secret_composition import (
+from core.shopping.adapters.twilio_authenticated_read_secret_composition import (
     TwilioAuthenticatedReadSecretComposition,
 )
 

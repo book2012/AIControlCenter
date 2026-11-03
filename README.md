@@ -5607,3 +5607,8 @@ entire platform is production-ready.
 ## Modular attach/detach preview — 2026-11-03
 
 A separate startup-only, all-detached-by-default application factory is available at `core.api.modular:create_app`. Shopping has an isolated read-only mock-catalog adapter; Creative Notes and Personal Assistant are registered but not integrated. The existing service entry point and production deployment remain unchanged. See [contract, commands, evidence and migration gates](docs/architecture/MODULE_ATTACH_DETACH_01.md).
+
+
+## 2026-11-03 — managed module lifecycle
+
+Managed attach/drain/detach and explicit service bindings are available in the isolated validation shell. Three adapter identities are wired; live private APIs and production migration remain gated. See [MODULE-ATTACH-DETACH-02](docs/architecture/MODULE_ATTACH_DETACH_02.md).

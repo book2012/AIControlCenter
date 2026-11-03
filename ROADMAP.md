@@ -5539,3 +5539,8 @@ closeout does not claim that the entire platform is production-ready.
 - [ ] Governed resource drain/restart, durable data recovery, full operator shell and production activation gates.
 
 [Detailed scope](docs/architecture/MODULE_ATTACH_DETACH_01.md).
+
+
+## 2026-11-03 — managed module lifecycle
+
+Completed: request/job lease drain, timeout/cancellation/cleanup recovery, explicit order/session/notification read bindings, external-service ownership inventory and inward Twilio contract. Remaining: full independent package extraction, real authenticated provider binding, legacy-job enrollment, complete operator-shell migration, durable restore/E2E and governed deployment.
