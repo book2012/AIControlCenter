@@ -33,3 +33,7 @@ Product/ProductVariant and the pure order domain, read port and OrderService now
 ## Catalog package 0.3.0
 
 Catalog service, read ports, public settings, response models, mock adapter and bounded read health/telemetry now live here. Construct the service with explicit public settings and catalog port; it does not read host settings or credentials. The host keeps provider/secret composition and authenticated storage. See [catalog extraction and evidence](../../docs/architecture/SHOPPING_CATALOG_PACKAGE_03.md).
+
+## WooCommerce product-read boundary 0.4.0
+
+Product normalization/list/detail/health now use an explicit product-read port and strict authorizer in the plugin. Host signing, credentials, transport and non-product scopes remain outside it. See [ownership and 889 passing checks](../../docs/architecture/WOOCOMMERCE_PRODUCT_PLUGIN_04.md). This Python package version is unrelated to the Atelier theme release.

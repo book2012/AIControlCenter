@@ -5564,3 +5564,8 @@ Completed: extract pure product/order models and OrderService into Shopping 0.2.
 ## 2026-11-03 — shopping catalog package 0.3.0
 
 Completed: catalog service/response validation, read contract, mock adapter and bounded health/telemetry extraction with explicit public-settings/port injection. Remaining: real provider adapter boundary, session/inquiry persistence and job ownership, authenticated external bindings, restore and governed production migration.
+
+
+## 2026-11-03 — WooCommerce product-read plugin 0.4.0
+
+Completed: WooCommerce product-read normalization/list/detail/health extraction and explicit read-port authorization. Remaining: non-product vendor scopes, durable session/inquiry ownership, job resource ownership, real external authentication and governed deployment/restore gates.

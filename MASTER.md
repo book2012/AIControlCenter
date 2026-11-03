@@ -6595,3 +6595,8 @@ Shopping domain extraction 0.2.0 complete for Product/ProductVariant and order_c
 ## 2026-11-03 — shopping catalog package 0.3.0
 
 Shopping 0.3.0 catalog extraction verified: 855 focused/related checks passed. Preserved product/order/error/enum identity and strict response bytes. Corrected a pre-existing variants fixture mismatch reproduced at ae54f0b. No production/service/auth configuration changes.
+
+
+## 2026-11-03 — WooCommerce product-read plugin 0.4.0
+
+Shopping 0.4.0 product-read boundary validated: 889 related cases passed, no required checks skipped. No live request, credential read or production binding. This Python package is separate from Atelier theme 0.4.0.

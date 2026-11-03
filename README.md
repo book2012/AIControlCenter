@@ -5632,3 +5632,8 @@ Shopping 0.2.0 now owns the pure product/order models, OrderReadPort and OrderSe
 ## 2026-11-03 — shopping catalog package 0.3.0
 
 Shopping 0.3.0 now owns the catalog service, schemas, read ports, mock adapter and bounded read health/telemetry. Host composition supplies public settings and the catalog port. [Ownership, compatibility and 855 passing checks](docs/architecture/SHOPPING_CATALOG_PACKAGE_03.md).
+
+
+## 2026-11-03 — WooCommerce product-read plugin 0.4.0
+
+Shopping 0.4.0 now owns WooCommerce product normalization/list/detail/health behind an explicit authorized read port. Signing, credentials, real transport and policy stay host-owned. [Boundary and 889 passing checks](docs/architecture/WOOCOMMERCE_PRODUCT_PLUGIN_04.md).

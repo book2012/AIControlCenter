@@ -6152,3 +6152,8 @@ Pure product/order definitions and read-domain logic moved from core.shopping to
 ## 2026-11-03 — shopping catalog package 0.3.0
 
 Catalog behavior moved to the plugin; core.shopping.service is now a legacy constructor/composition subclass bridge. Only public configuration enters the catalog service. Real provider selection, secret resolution, authenticated storage and platform authority stay host-owned. Mock preview and catalog operations need no host tree.
+
+
+## 2026-11-03 — WooCommerce product-read plugin 0.4.0
+
+WooCommerceRESTAdapter is now a compatibility subclass of the plugin product-read implementation. The host retains eight unchanged signing/policy/non-product methods and the byte-identical transport. The new standalone product adapter requires a trusted read port and strict True authorization; it cannot read generic vendor/order paths.

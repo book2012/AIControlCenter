@@ -6065,3 +6065,8 @@ Moved Product/ProductVariant, order models, OrderReadPort and OrderService to th
 ## 2026-11-03 — shopping catalog package 0.3.0
 
 Extracted catalog logic into Shopping 0.3.0 and retained a host-owned legacy composition bridge. Public settings omit provider URL/credentials; standalone mock preview verified without host code. Exact current variants fixtures repaired without API behavior change. Final related verification: 855 passed.
+
+
+## 2026-11-03 — WooCommerce product-read plugin 0.4.0
+
+Extracted WooCommerce product-read logic into Shopping 0.4.0 with explicit trusted port and strict authorization. Retained host credential/signing/transport/policy and non-product behavior unchanged. Added 34 read-port cases; final related verification 889 passed.

@@ -10,11 +10,12 @@
       "theme_source": "AgachichiCommerce/product/agachichi-atelier",
       "live_binding": "NOT_CONFIGURED",
       "plugin_package": "aicc_plugin_shopping",
-      "package_version": "0.3.0",
+      "package_version": "0.4.0",
       "pure_domain": "plugins/shopping/src/aicc_plugin_shopping/order_core",
       "product_models": "plugins/shopping/src/aicc_plugin_shopping/models.py",
-      "legacy_host_scope": "provider/config/secret composition, session and inquiry persistence, governance; catalog implementation moved",
-      "catalog_service": "plugins/shopping/src/aicc_plugin_shopping/catalog_service.py"
+      "legacy_host_scope": "provider signing/secret/transport/policy composition; non-product provider reads; session and inquiry persistence; governance",
+      "catalog_service": "plugins/shopping/src/aicc_plugin_shopping/catalog_service.py",
+      "woocommerce_product_read": "plugins/shopping/src/aicc_plugin_shopping/adapters/woocommerce_product_read.py"
     },
     {
       "id": "creative-notes",
