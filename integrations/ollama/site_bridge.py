@@ -7,9 +7,11 @@ import stat
 import sys
 import time
 import urllib.request
+import urllib.error
 from urllib.parse import urlparse
 
 SITE = "https://bok-personal-assistant.kyouhan.chatgpt.site"
+NOTEBOOK_SITE = "https://bok-creative-notes.kyouhan.chatgpt.site"
 LOCAL = "http://127.0.0.1:58090"
 MODEL = "qwen3:8b"
 
@@ -22,12 +24,16 @@ def load_config(path):
     if info.st_uid != os.getuid() or stat.S_IMODE(info.st_mode) & 0o077:
         raise ValueError("private_config_required")
     value = json.loads(path.read_text())
-    if value.get("site") != SITE or any(not isinstance(value.get(k), str) or len(value[k]) < 32 for k in ("bridge_key", "site_access")):
+    if value.get("site") not in {SITE, NOTEBOOK_SITE} or not isinstance(value.get("bridge_key"), str) or len(value["bridge_key"]) < 32:
         raise ValueError("invalid_config")
+    if value["site"] == SITE and (not isinstance(value.get("site_access"), str) or len(value["site_access"]) < 32):
+        raise ValueError("private_site_access_required")
     return value
 
 def request_json(url, *, payload=None, headers=None, timeout=15):
-    if urlparse(url).netloc not in {urlparse(SITE).netloc, "127.0.0.1:58090"}:
+    target = urlparse(url)
+    allowed = (target.scheme == "https" and target.netloc in {urlparse(SITE).netloc, urlparse(NOTEBOOK_SITE).netloc} and target.path == "/api/assistant/worker") or (target.scheme == "http" and target.netloc == "127.0.0.1:58090" and target.path in {"/health", "/api/chat"})
+    if not allowed or target.query or target.fragment or target.username:
         raise ValueError("destination_denied")
     data = None if payload is None else json.dumps(payload).encode()
     request = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json", **(headers or {})})
@@ -39,10 +45,13 @@ def request_json(url, *, payload=None, headers=None, timeout=15):
     return json.loads(raw)
 
 def bridge_call(config, payload):
-    return request_json(SITE + "/api/assistant/worker", payload=payload, headers={
-        "Authorization": "Bearer " + config["bridge_key"],
-        "OAI-Sites-Authorization": "Bearer " + config["site_access"],
-    })
+    site = config.get("site", SITE)
+    if site not in {SITE, NOTEBOOK_SITE}:
+        raise ValueError("destination_denied")
+    headers = {"Authorization": "Bearer " + config["bridge_key"]}
+    if site == SITE:
+        headers["OAI-Sites-Authorization"] = "Bearer " + config["site_access"]
+    return request_json(site + "/api/assistant/worker", payload=payload, headers=headers)
 
 def local_ready():
     try:
@@ -56,8 +65,15 @@ def process_job(job):
         raise ValueError("invalid_job")
     if not isinstance(job.get("expiresAt"), (int, float)) or job["expiresAt"] < time.time() * 1000:
         raise ValueError("expired_job")
-    response = request_json(LOCAL + "/api/chat", payload={"messages": job["messages"]},
-        headers={"Origin": LOCAL}, timeout=100)
+    for attempt in range(4):
+        try:
+            response = request_json(LOCAL + "/api/chat", payload={"messages": job["messages"]},
+                headers={"Origin": LOCAL}, timeout=100)
+            break
+        except urllib.error.HTTPError as error:
+            if error.code != 429 or attempt == 3:
+                raise
+            time.sleep(2)
     if response.get("model") != MODEL or response.get("provider") != "ollama-local" or response.get("tools_used") != []:
         raise ValueError("invalid_provider")
     content = response.get("content")

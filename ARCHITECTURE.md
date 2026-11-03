@@ -6181,3 +6181,7 @@ WooCommerceRESTAdapter is now a compatibility subclass of the plugin product-rea
 
 ## 2026-11-03 — Personal assistant Site bridge
 Outbound-only Mac Qwen bridge and articulated 3D animal web companion. See [bridge architecture](docs/architecture/ASSISTANT_SITE_BRIDGE_01.md). Worker and local conversation tests: 24 passed; live deployment verification recorded separately. Shopping remains paused.
+
+
+## 2026-11-04 — Qwen creative notebook companion
+Personal notebook Qwen beta with tenant-scoped draft save/search/selected-note continuation. See [architecture](docs/architecture/CREATIVE_NOTEBOOK_QWEN_01.md). Site tests 44; Mac tests 26.

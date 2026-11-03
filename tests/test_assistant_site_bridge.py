@@ -51,3 +51,19 @@ def test_failed_model_delivers_error_and_never_replays_model():
 def test_local_health_rejects_tools_and_unknown_model():
     with patch.object(bridge,"request_json",return_value={"model":bridge.MODEL,"tools_enabled":True}):
         assert bridge.local_ready() is False
+
+
+def test_public_notebook_profile_does_not_receive_private_site_access():
+    with tempfile.TemporaryDirectory() as directory:
+        path = Path(directory) / "config.json"
+        path.write_text(json.dumps({"site":bridge.NOTEBOOK_SITE,"bridge_key":"a"*64}))
+        path.chmod(0o600)
+        config=bridge.load_config(path)
+        with patch.object(bridge,"request_json",return_value={"job":None}) as call:
+            bridge.bridge_call(config,{"action":"claim","ready":True})
+            assert call.call_args.args == (bridge.NOTEBOOK_SITE+"/api/assistant/worker",)
+            assert "OAI-Sites-Authorization" not in call.call_args.kwargs["headers"]
+
+def test_transport_rejects_other_paths_schemes_and_credential_urls():
+    for url in [bridge.NOTEBOOK_SITE+"/mcp",bridge.NOTEBOOK_SITE.replace("https:","http:")+"/api/assistant/worker","http://127.0.0.1:58090/admin","https://user@bok-creative-notes.kyouhan.chatgpt.site/api/assistant/worker"]:
+        with pytest.raises(ValueError): bridge.request_json(url)
