@@ -19,3 +19,11 @@ Next knowledge pilot: explicitly selected sources, hash/version/owner metadata, 
 ## Validation and deployment
 
 Focused runtime/bridge suite: 35 passed. Site: 57 tests and TypeScript. Activate as immutable releases with exact plist backups, launchd unload settling, health and streaming/non-streaming smoke checks, and rollback on failure. Record source commit and controlled latency measurements under runtime deployment records. No credentials or private user records are test inputs.
+
+## Activation and measurement result
+
+Primary API and private bridge release 6f2015a55baf1802316d506ffd306f39c932b988; notebook bridge final release 9cfbf79bd464bdb7b8edbb53698ffc09844d2e1c. All three launch agents active; exact prior plists retained in private deployment checkpoints.
+
+Same fixed synthetic three-sentence question, 4B, two runs per mode, diagnostics observed from Mac every 400ms (not browser paint, not a P95/throughput guarantee). Existing completion-only: first/completion 8.375–10.935s. Final coalesced progress: first 6.096–7.668s, completion 8.275–9.729s, partial observed both runs. Initial synchronous progress caused ~24s completion and was superseded. One background sender with one pending latest snapshot removes that backpressure. First-visible target remains unmet; next work must instrument request discovery/network/browser separately.
+
+Separate short loopback smoke: 9B stream first 2.834s/complete3.544s; 4B nonstream complete0.995s; 4B stream first0.254s/complete0.686s. Different prompt/conditions; do not subtract these from hosted benchmark. Authenticated notebook request succeeded on 4B. No source/user data saved or published by these tests.
