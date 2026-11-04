@@ -2,7 +2,7 @@
 
 ## 2026-11-04 — close companion streaming
 
-Added bounded loopback NDJSON generation and notebook-only leased progress snapshots; preserved the legacy non-streaming bridge. Notebook polls at 1s, fast/quality profiles remain 4B/9B. No idle AI requests or new network ingress. Focused tests: 34 passed. See docs/CLOSE_COMPANION_STREAMING_20261104.md. Selected-source RAG and commercial readiness are next milestones, not delivered billing or fully local data hosting.
+Added bounded loopback NDJSON generation and notebook-only leased progress snapshots; preserved the legacy non-streaming bridge. Notebook polls at 1s, fast/quality profiles remain 4B/9B. No idle AI requests or new network ingress. Focused tests: 35 passed. See docs/CLOSE_COMPANION_STREAMING_20261104.md. Selected-source RAG and commercial readiness are next milestones, not delivered billing or fully local data hosting.
 
 
 ## 2026-11-03 — assistant priority boundary

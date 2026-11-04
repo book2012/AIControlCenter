@@ -113,3 +113,21 @@ def test_progress_stream_is_bounded_and_never_accepts_an_unfinished_reply():
     frames.pop()
     with patch.object(bridge.urllib.request,"build_opener",return_value=Opener()):
         with pytest.raises(ValueError,match="incomplete_stream"):bridge.process_stream({"messages":[]},"fast",lambda text,seq:None)
+
+def test_slow_progress_delivery_is_coalesced_without_blocking_generation():
+    import threading
+    publisher=bridge.LatestProgress();entered=threading.Event();release=threading.Event();latest=threading.Event();seen=[]
+    def slow(config,payload):
+        seen.append(payload["seq"])
+        if payload["seq"]==1:
+            entered.set();assert release.wait(3)
+        if payload["seq"]==12:latest.set()
+    with patch.object(bridge,"bridge_call",side_effect=slow):
+        publisher.offer({}, {"id":"fixture","seq":1});assert entered.wait(3)
+        worker=publisher._thread
+        for seq in range(2,13):publisher.offer({}, {"id":"fixture","seq":seq})
+        assert publisher._thread is worker and publisher._pending[1]["seq"]==12
+        release.set();assert latest.wait(3)
+        assert seen==[1,12]
+        publisher.offer({}, {"id":"discarded","seq":13})
+        publisher.discard("discarded")

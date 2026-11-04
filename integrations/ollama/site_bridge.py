@@ -6,6 +6,7 @@ from pathlib import Path
 import stat
 import sys
 import time
+import threading
 import urllib.request
 import urllib.error
 from urllib.parse import urlparse
@@ -118,6 +119,39 @@ def process_stream(job, profile, on_progress):
     if not completed or not content.strip():raise ValueError("incomplete_stream")
     return content.strip()
 
+class LatestProgress:
+    """One network worker and one latest snapshot; generation never waits for RPC."""
+    def __init__(self):
+        self._condition = threading.Condition()
+        self._pending = None
+        self._thread = None
+
+    def offer(self, config, payload):
+        with self._condition:
+            self._pending = (config, payload)
+            if self._thread is None:
+                self._thread = threading.Thread(target=self._run, daemon=True, name="companion-progress")
+                self._thread.start()
+            self._condition.notify()
+
+    def discard(self, job_id):
+        with self._condition:
+            if self._pending and self._pending[1]["id"] == job_id:
+                self._pending = None
+
+    def _run(self):
+        while True:
+            with self._condition:
+                self._condition.wait_for(lambda: self._pending is not None)
+                config, payload = self._pending
+                self._pending = None
+            try:
+                bridge_call(config, payload)
+            except Exception:
+                pass  # Progress is provisional; final delivery owns success/retry.
+
+PROGRESS = LatestProgress()
+
 def cycle(config):
     result = bridge_call(config, {"action": "claim", "ready": local_ready(), "model": MODEL})
     job = result.get("job")
@@ -127,12 +161,15 @@ def cycle(config):
     try:
         if config.get("site",SITE)==NOTEBOOK_SITE:
             def progress(content,seq):
-                bridge_call(config,{"action":"progress","id":job["id"],"lease":job["lease"],"content":content,"seq":seq})
+                PROGRESS.offer(config,{"action":"progress","id":job["id"],"lease":job["lease"],"content":content,"seq":seq})
             payload["content"]=process_job(job,on_progress=progress)
         else:
             payload["content"] = process_job(job)
     except Exception:
         payload["error"] = "model_unavailable"
+    finally:
+        PROGRESS.discard(job["id"])
+    # An in-flight update can finish later; the server lease/status rejects it.
     # Retry delivery only. Never run the model a second time for a claimed job.
     for attempt in range(3):
         try:
