@@ -28,9 +28,9 @@ def validate_messages(value):
     return output
 
 class ConversationService:
-    def __init__(self, port):
+    def __init__(self, port, *, lock=None):
         self._port = port
-        self._lock = Lock()
+        self._lock = lock if lock is not None else Lock()
 
     def chat(self, messages):
         approved = validate_messages(messages)

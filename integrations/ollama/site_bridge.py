@@ -13,7 +13,8 @@ from urllib.parse import urlparse
 SITE = "https://bok-personal-assistant.kyouhan.chatgpt.site"
 NOTEBOOK_SITE = "https://bok-creative-notes.kyouhan.chatgpt.site"
 LOCAL = "http://127.0.0.1:58090"
-MODEL = "qwen3:8b"
+MODELS = {"fast": "qwen3.5:4b-q4_K_M", "quality": "qwen3.5:9b-q4_K_M"}
+MODEL = MODELS["fast"]
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
     def redirect_request(self, req, fp, code, msg, headers, newurl):
@@ -67,16 +68,19 @@ def process_job(job):
         raise ValueError("invalid_job")
     if not isinstance(job.get("expiresAt"), (int, float)) or job["expiresAt"] < time.time() * 1000:
         raise ValueError("expired_job")
+    profile = job.get("responseMode", "fast")
+    if profile not in MODELS:
+        raise ValueError("invalid_profile")
     for attempt in range(4):
         try:
-            response = request_json(LOCAL + "/api/chat", payload={"messages": job["messages"]},
+            response = request_json(LOCAL + "/api/chat", payload={"messages": job["messages"], "profile": profile},
                 headers={"Origin": LOCAL}, timeout=100)
             break
         except urllib.error.HTTPError as error:
             if error.code != 429 or attempt == 3:
                 raise
             time.sleep(2)
-    if response.get("model") != MODEL or response.get("provider") != "ollama-local" or response.get("tools_used") != []:
+    if response.get("model") != MODELS[profile] or response.get("provider") != "ollama-local" or response.get("tools_used") != []:
         raise ValueError("invalid_provider")
     content = response.get("content")
     if not isinstance(content, str) or not content.strip() or len(content) > 8000:
@@ -84,11 +88,11 @@ def process_job(job):
     return content.strip()
 
 def cycle(config):
-    result = bridge_call(config, {"action": "claim", "ready": local_ready()})
+    result = bridge_call(config, {"action": "claim", "ready": local_ready(), "model": MODEL})
     job = result.get("job")
     if not job:
         return False
-    payload = {"action": "finish", "id": job["id"], "lease": job["lease"]}
+    payload = {"action": "finish", "id": job["id"], "lease": job["lease"], "model": MODELS.get(job.get("responseMode", "fast"), MODEL)}
     try:
         payload["content"] = process_job(job)
     except Exception:

@@ -46,7 +46,7 @@ def test_failed_model_delivers_error_and_never_replays_model():
     with patch.object(bridge,"bridge_call", side_effect=rpc), patch.object(bridge,"local_ready",return_value=True), patch.object(bridge,"process_job",side_effect=OSError()) as model, patch.object(bridge.time,"sleep"):
         assert bridge.cycle({}) is True
         assert model.call_count == 1
-        assert calls[-1] == {"action":"finish","id":"synthetic-id","lease":"synthetic-lease","error":"model_unavailable"}
+        assert calls[-1] == {"action":"finish","id":"synthetic-id","lease":"synthetic-lease","error":"model_unavailable","model":bridge.MODEL}
 
 def test_local_health_rejects_tools_and_unknown_model():
     with patch.object(bridge,"request_json",return_value={"model":bridge.MODEL,"tools_enabled":True}):
@@ -85,3 +85,15 @@ def test_config_rejects_reusing_private_service_access_on_public_site():
         path.write_text(json.dumps({"site":bridge.NOTEBOOK_SITE,"bridge_key":"a"*64,"site_access":"b"*64}))
         path.chmod(0o600)
         with pytest.raises(ValueError):bridge.load_config(path)
+
+
+def test_quality_model_profile_is_pinned():
+    job={"messages":[{"role":"user","content":"fixture"}],"expiresAt":bridge.time.time()*1000+10000,"responseMode":"quality"}
+    def rpc(url,**kwargs):
+        assert kwargs["payload"]["profile"]=="quality"
+        return {"model":bridge.MODELS["quality"],"provider":"ollama-local","tools_used":[],"content":"fixture quality"}
+    with patch.object(bridge,"request_json",side_effect=rpc):
+        assert bridge.process_job(job)=="fixture quality"
+    job["responseMode"]="foreign"
+    with pytest.raises(ValueError,match="invalid_profile"):
+        bridge.process_job(job)

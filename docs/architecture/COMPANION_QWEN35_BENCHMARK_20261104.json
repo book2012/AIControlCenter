@@ -1,0 +1,134 @@
+{
+  "device": "Mac mini M4 24 GiB",
+  "ollama": "0.32.1",
+  "conditions": {
+    "think": false,
+    "num_ctx": 4096,
+    "num_predict": 192,
+    "seed": 17,
+    "synthetic": true,
+    "runs_per_task": 1
+  },
+  "results": [
+    {
+      "model": "qwen3:8b",
+      "case": "warmup",
+      "seconds": 5.522,
+      "ttft": 5.202,
+      "tokens": 7,
+      "tokens_per_s": 21.88,
+      "load_s": 4.743,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3:8b",
+      "case": "plan",
+      "seconds": 4.529,
+      "ttft": 0.528,
+      "tokens": 78,
+      "tokens_per_s": 19.5,
+      "load_s": 0.082,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3:8b",
+      "case": "extract",
+      "seconds": 3.481,
+      "ttft": 0.534,
+      "tokens": 58,
+      "tokens_per_s": 19.68,
+      "load_s": 0.081,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3:8b",
+      "case": "boundary",
+      "seconds": 4.061,
+      "ttft": 0.389,
+      "tokens": 72,
+      "tokens_per_s": 19.61,
+      "load_s": 0.082,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:9b-q4_K_M",
+      "case": "warmup",
+      "seconds": 6.91,
+      "ttft": 6.31,
+      "tokens": 11,
+      "tokens_per_s": 18.33,
+      "load_s": 5.539,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:9b-q4_K_M",
+      "case": "plan",
+      "seconds": 4.713,
+      "ttft": 0.91,
+      "tokens": 65,
+      "tokens_per_s": 17.09,
+      "load_s": 0.134,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:9b-q4_K_M",
+      "case": "extract",
+      "seconds": 4.418,
+      "ttft": 1.017,
+      "tokens": 58,
+      "tokens_per_s": 17.05,
+      "load_s": 0.133,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:9b-q4_K_M",
+      "case": "boundary",
+      "seconds": 5.019,
+      "ttft": 0.964,
+      "tokens": 67,
+      "tokens_per_s": 16.52,
+      "load_s": 0.134,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:4b-q4_K_M",
+      "case": "warmup",
+      "seconds": 2.785,
+      "ttft": 2.592,
+      "tokens": 6,
+      "tokens_per_s": 30.84,
+      "load_s": 2.037,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:4b-q4_K_M",
+      "case": "plan",
+      "seconds": 3.947,
+      "ttft": 0.563,
+      "tokens": 96,
+      "tokens_per_s": 28.37,
+      "load_s": 0.133,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:4b-q4_K_M",
+      "case": "extract",
+      "seconds": 2.324,
+      "ttft": 0.682,
+      "tokens": 47,
+      "tokens_per_s": 28.61,
+      "load_s": 0.135,
+      "done_reason": "stop"
+    },
+    {
+      "model": "qwen3.5:4b-q4_K_M",
+      "case": "boundary",
+      "seconds": 2.738,
+      "ttft": 0.525,
+      "tokens": 63,
+      "tokens_per_s": 28.47,
+      "load_s": 0.136,
+      "done_reason": "stop"
+    }
+  ]
+}

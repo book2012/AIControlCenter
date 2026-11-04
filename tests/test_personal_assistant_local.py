@@ -73,7 +73,7 @@ def test_ollama_fixed_transport_parameters_and_no_redirect_or_proxy(monkeypatch)
         def __exit__(self,*a):pass
         def read(self,size):
             assert size==131073
-            return json.dumps({"done":True,"model":"qwen3:8b","message":{"content":"fixture"}}).encode()
+            return json.dumps({"done":True,"model":"qwen3.5:4b-q4_K_M","message":{"content":"fixture"}}).encode()
     class Opener:
         def open(self,request,timeout):
             observed.update(url=request.full_url,payload=json.loads(request.data),timeout=timeout)
@@ -163,3 +163,23 @@ def test_attach_simulation_starts_only_production_in_dependency_order(monkeypatc
     starts=[x[-1] for x in calls if x[0].endswith("/docker") and x[-2]=="start"]
     assert starts==["shopping-db","shopping-wordpress"]
     assert json.loads(path.read_text())["phase"]=="ATTACHED"
+
+
+def test_two_profiles_share_one_admission_lock():
+    from threading import Lock
+    from integrations.ollama.personal_assistant import MODELS
+    gate=Lock()
+    class Port:
+        def chat(self,messages):return "fixture"
+    fast=ConversationService(Port(),lock=gate)
+    quality=ConversationService(Port(),lock=gate)
+    gate.acquire()
+    try:
+        with pytest.raises(ConversationBusy):fast.chat([{"role":"user","content":"x"}])
+        with pytest.raises(ConversationBusy):quality.chat([{"role":"user","content":"x"}])
+    finally:gate.release()
+    with pytest.raises(ValueError,match="unsupported_model"):OllamaChatPort("foreign")
+    with TestClient(create_app(service=fast),base_url="http://127.0.0.1:58090") as client:
+        h={"Origin":"http://127.0.0.1:58090"}
+        assert client.post("/api/chat",json={"messages":[{"role":"user","content":"x"}],"profile":"quality"},headers=h).json()["model"]==MODELS["quality"]
+        assert client.post("/api/chat",json={"messages":[{"role":"user","content":"x"}],"profile":"foreign"},headers=h).status_code==422
