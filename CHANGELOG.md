@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 2026-11-04 — warm companion communication
+
+Added evidence-informed listening policy and concise Korean instructions shared by both local reply paths. This is prompt configuration, not model-weight training. No background AI calls, new tools or personal-data ingestion. See docs/COMPANION_WARMTH_20261104.md.
+
+
 ## 2026-11-04 — close companion streaming
 
 Added bounded loopback NDJSON generation and notebook-only leased progress snapshots; preserved the legacy non-streaming bridge. Notebook polls at 1s, fast/quality profiles remain 4B/9B. No idle AI requests or new network ingress. Focused tests: 35 passed. Activated and measured: hosted first text 6.096–7.668s vs prior 8.375–10.935s (two runs, not SLA); full measurements in the linked document. See docs/CLOSE_COMPANION_STREAMING_20261104.md. Selected-source RAG and commercial readiness are next milestones, not delivered billing or fully local data hosting.
