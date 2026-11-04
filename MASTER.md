@@ -2,7 +2,7 @@
 
 ## 2026-11-04 — companion core and Qwen3.5
 
-Companion-first direction: persistent identity, explicit memories and optional Creative Notes. Mac runtime candidate adds pinned Qwen3.5 fast 4B / larger 9B profiles and a shared admission lock; 30 Mac checks pass. Measured warm generation: 28.48 vs previous 19.60 tokens/s in one small comparison. Original avatar runtime assets and rollback generations are preserved. GPT/Gemini API, paid cosmetics, subscriptions, fully local enterprise data hosting and native apps remain next milestones.
+Companion-first direction: persistent identity, explicit memories and optional Creative Notes. Activated Mac runtime adds pinned Qwen3.5 fast 4B / larger 9B profiles and a shared admission lock; 30 Mac checks pass; both live model profiles and the two outbound bridges are active. Measured warm generation: 28.48 vs previous 19.60 tokens/s in one small comparison. Original avatar runtime assets and rollback generations are preserved. GPT/Gemini API, paid cosmetics, subscriptions, fully local enterprise data hosting and native apps remain next milestones.
 [Architecture and evidence](docs/architecture/COMPANION_PRODUCT_QWEN35_01.md).
 
 ## 2026-11-03 — current assistant priority

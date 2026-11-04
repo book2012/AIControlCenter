@@ -25,3 +25,6 @@ Candidate source and tests are complete. Production activation and deployed rele
 3. Business fully local data path, recovery and measured capacity before paid pilot (two to three sprints).
 
 References: https://docs.ollama.com/api/chat ; https://ollama.com/library/qwen3.5 ; https://developers.openai.com/plugins/build/app-quickstart ; https://geminicli.com/docs/tools/mcp-server/
+
+## Verified activation — 2026-11-04
+Code release d5bdc23b52fe5c4e9a88a89fa80eb435c1baa8c5 is active under the original loopback-only service and both existing outbound bridges. Both fast and larger live HTTP profiles returned nonempty replies with the pinned model and no tools. Existing avatar assets remain intact. An initial launchd bootstrap returned code 5 during immediate unload/reload; old settings were restored, the old service was explicitly verified/restarted, then a staged transition waiting for removal completed successfully. The private runtime deployment checkpoint retains the previous plists and immutable releases for rollback. The public companion Site version 17 contains profile/memory persistence, behavior preferences and fast/larger selection. Authenticated metadata reports connected=true and qwen3.5:4b-q4_K_M.
