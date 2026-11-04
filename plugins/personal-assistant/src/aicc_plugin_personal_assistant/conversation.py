@@ -46,3 +46,29 @@ class ConversationService:
             return result
         finally:
             self._lock.release()
+
+
+    def stream(self, messages):
+        approved = validate_messages(messages)
+        def generate():
+            if not self._lock.acquire(blocking=False):
+                raise ConversationBusy("assistant_busy")
+            size = 0
+            try:
+                for part in self._port.stream(approved):
+                    if not isinstance(part, str):
+                        raise ConversationError("invalid_model_response")
+                    size += len(part)
+                    if size > 8000:
+                        raise ConversationError("invalid_model_response")
+                    if part:
+                        yield part
+                if not size:
+                    raise ConversationError("invalid_model_response")
+            except ConversationError:
+                raise
+            except Exception:
+                raise ConversationError("model_unavailable") from None
+            finally:
+                self._lock.release()
+        return generate()

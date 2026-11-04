@@ -1,5 +1,10 @@
 # AIControlCenter
 
+## 2026-11-04 — close companion streaming
+
+Added bounded loopback NDJSON generation and notebook-only leased progress snapshots; preserved the legacy non-streaming bridge. Notebook polls at 1s, fast/quality profiles remain 4B/9B. No idle AI requests or new network ingress. Focused tests: 34 passed. See docs/CLOSE_COMPANION_STREAMING_20261104.md. Selected-source RAG and commercial readiness are next milestones, not delivered billing or fully local data hosting.
+
+
 ## 2026-11-04 — companion core and Qwen3.5
 
 Companion-first direction: persistent identity, explicit memories and optional Creative Notes. Activated Mac runtime adds pinned Qwen3.5 fast 4B / larger 9B profiles and a shared admission lock; 30 Mac checks pass; both live model profiles and the two outbound bridges are active. Measured warm generation: 28.48 vs previous 19.60 tokens/s in one small comparison. Original avatar runtime assets and rollback generations are preserved. GPT/Gemini API, paid cosmetics, subscriptions, fully local enterprise data hosting and native apps remain next milestones.

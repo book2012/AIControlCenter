@@ -35,7 +35,7 @@ def load_config(path):
 
 def request_json(url, *, payload=None, headers=None, timeout=15):
     target = urlparse(url)
-    allowed = (target.scheme == "https" and target.netloc in {urlparse(SITE).netloc, urlparse(NOTEBOOK_SITE).netloc} and target.path == "/api/assistant/worker") or (target.scheme == "http" and target.netloc == "127.0.0.1:58090" and target.path in {"/health", "/api/chat"})
+    allowed = (target.scheme == "https" and target.netloc in {urlparse(SITE).netloc, urlparse(NOTEBOOK_SITE).netloc} and target.path == "/api/assistant/worker") or (target.scheme == "http" and target.netloc == "127.0.0.1:58090" and target.path in {"/health", "/api/chat", "/api/chat/stream"})
     if not allowed or target.query or target.fragment or target.username:
         raise ValueError("destination_denied")
     data = None if payload is None else json.dumps(payload).encode()
@@ -63,7 +63,7 @@ def local_ready():
     except Exception:
         return False
 
-def process_job(job):
+def process_job(job, on_progress=None):
     if not isinstance(job, dict) or not isinstance(job.get("messages"), list) or not 1 <= len(job["messages"]) <= 7:
         raise ValueError("invalid_job")
     if not isinstance(job.get("expiresAt"), (int, float)) or job["expiresAt"] < time.time() * 1000:
@@ -71,6 +71,8 @@ def process_job(job):
     profile = job.get("responseMode", "fast")
     if profile not in MODELS:
         raise ValueError("invalid_profile")
+    if on_progress is not None:
+        return process_stream(job, profile, on_progress)
     for attempt in range(4):
         try:
             response = request_json(LOCAL + "/api/chat", payload={"messages": job["messages"], "profile": profile},
@@ -87,6 +89,35 @@ def process_job(job):
         raise ValueError("invalid_content")
     return content.strip()
 
+
+def process_stream(job, profile, on_progress):
+    payload={"messages":job["messages"],"profile":profile}
+    request=urllib.request.Request(LOCAL+"/api/chat/stream",data=json.dumps(payload).encode(),headers={"Content-Type":"application/json","Origin":LOCAL,"User-Agent":"AIControlCenter-QwenBridge/1.0"})
+    opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
+    content,completed,size,last_update,updates="",False,0,0.0,0
+    with opener.open(request,timeout=100) as response:
+        while True:
+            line=response.readline(16385)
+            if not line:break
+            size+=len(line)
+            if len(line)>16384 or size>524288:raise ValueError("oversized_stream")
+            item=json.loads(line)
+            if item.get("error"):raise ValueError("model_unavailable")
+            part=item.get("content","")
+            if not isinstance(part,str):raise ValueError("invalid_content")
+            content+=part
+            if len(content)>8000:raise ValueError("invalid_content")
+            now=time.monotonic()
+            if part and content.strip() and updates<12 and (updates==0 or now-last_update>=.8):
+                updates+=1;last_update=now
+                try:on_progress(content,updates)
+                except Exception:pass
+            if item.get("done") is True:
+                if item.get("model")!=MODELS[profile] or item.get("provider")!="ollama-local" or item.get("tools_used")!=[]:raise ValueError("invalid_provider")
+                completed=True;break
+    if not completed or not content.strip():raise ValueError("incomplete_stream")
+    return content.strip()
+
 def cycle(config):
     result = bridge_call(config, {"action": "claim", "ready": local_ready(), "model": MODEL})
     job = result.get("job")
@@ -94,7 +125,12 @@ def cycle(config):
         return False
     payload = {"action": "finish", "id": job["id"], "lease": job["lease"], "model": MODELS.get(job.get("responseMode", "fast"), MODEL)}
     try:
-        payload["content"] = process_job(job)
+        if config.get("site",SITE)==NOTEBOOK_SITE:
+            def progress(content,seq):
+                bridge_call(config,{"action":"progress","id":job["id"],"lease":job["lease"],"content":content,"seq":seq})
+            payload["content"]=process_job(job,on_progress=progress)
+        else:
+            payload["content"] = process_job(job)
     except Exception:
         payload["error"] = "model_unavailable"
     # Retry delivery only. Never run the model a second time for a claimed job.
@@ -119,7 +155,7 @@ def main():
         try:
             worked = cycle(config)
             status = "connected"
-            delay = 1 if worked else 3
+            delay = .25 if worked else (1 if config.get("site",SITE)==NOTEBOOK_SITE else 3)
         except Exception:
             status, delay = "connection_pending", 10
         if status != last_state:

@@ -97,3 +97,19 @@ def test_quality_model_profile_is_pinned():
     job["responseMode"]="foreign"
     with pytest.raises(ValueError,match="invalid_profile"):
         bridge.process_job(job)
+
+
+def test_progress_stream_is_bounded_and_never_accepts_an_unfinished_reply():
+    import io,json
+    frames=[{"content":"a"} for _ in range(30)]+[{"done":True,"model":bridge.MODEL,"provider":"ollama-local","tools_used":[]}]
+    class Opener:
+        def open(self,request,timeout):
+            assert request.full_url==bridge.LOCAL+"/api/chat/stream"
+            return io.BytesIO(("\n".join(json.dumps(v) for v in frames)+"\n").encode())
+    updates=[]
+    with patch.object(bridge.urllib.request,"build_opener",return_value=Opener()),patch.object(bridge.time,"monotonic",side_effect=range(100)):
+        assert bridge.process_stream({"messages":[{"role":"user","content":"fixture"}]},"fast",lambda text,seq:updates.append((text,seq)))=="a"*30
+    assert len(updates)<=12 and updates[0]==("a",1)
+    frames.pop()
+    with patch.object(bridge.urllib.request,"build_opener",return_value=Opener()):
+        with pytest.raises(ValueError,match="incomplete_stream"):bridge.process_stream({"messages":[]},"fast",lambda text,seq:None)

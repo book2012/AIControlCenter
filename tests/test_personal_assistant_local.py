@@ -183,3 +183,41 @@ def test_two_profiles_share_one_admission_lock():
         h={"Origin":"http://127.0.0.1:58090"}
         assert client.post("/api/chat",json={"messages":[{"role":"user","content":"x"}],"profile":"quality"},headers=h).json()["model"]==MODELS["quality"]
         assert client.post("/api/chat",json={"messages":[{"role":"user","content":"x"}],"profile":"foreign"},headers=h).status_code==422
+
+
+def test_stream_route_produces_provisional_chunks_and_a_validated_terminal_frame():
+    class Port:
+        def stream(self,messages):yield "안녕";yield " 반가워"
+    with TestClient(create_app(service=ConversationService(Port())),base_url="http://127.0.0.1:58090") as client:
+        payload={"messages":[{"role":"user","content":"fixture"}]}
+        assert client.post("/api/chat/stream",json=payload).status_code==403
+        response=client.post("/api/chat/stream",json=payload,headers={"Origin":"http://127.0.0.1:58090"})
+        rows=[json.loads(line) for line in response.text.splitlines()]
+        assert rows[0]=={"content":"안녕"} and rows[1]=={"content":" 반가워"}
+        assert rows[-1]["done"] is True and rows[-1]["tools_used"]==[]
+
+def test_stream_admission_lock_is_released_on_disconnect_and_errors_are_sanitized():
+    class Port:
+        def stream(self,messages):yield "first";yield "second"
+        def chat(self,messages):return "complete"
+    service=ConversationService(Port());stream=service.stream([{"role":"user","content":"fixture"}]);assert next(stream)=="first"
+    with pytest.raises(ConversationBusy):service.chat([{"role":"user","content":"second"}])
+    stream.close();assert service.chat([{"role":"user","content":"again"}])=="complete"
+    class Broken:
+        def stream(self,messages):yield "partial";raise RuntimeError("private fixture detail")
+    broken=ConversationService(Broken());stream=broken.stream([{"role":"user","content":"fixture"}]);assert next(stream)=="partial"
+    with pytest.raises(ConversationError,match="model_unavailable") as error:next(stream)
+    assert "private fixture" not in str(error.value)
+
+def test_ollama_stream_ignores_thinking_and_rejects_truncated_transports(monkeypatch):
+    import io
+    from integrations.ollama.personal_assistant import MODEL
+    frames=[{"model":MODEL,"message":{"thinking":"hidden","content":"visible"},"done":False},{"model":MODEL,"message":{"content":" done"},"done":True}]
+    class Opener:
+        def open(self,request,timeout):
+            assert json.loads(request.data)["stream"] is True
+            return io.BytesIO(("\n".join(json.dumps(v) for v in frames)+"\n").encode())
+    monkeypatch.setattr("integrations.ollama.personal_assistant.urllib.request.build_opener",lambda *handlers:Opener())
+    assert ''.join(OllamaChatPort().stream([{"role":"user","content":"fixture"}]))=="visible done"
+    frames.pop()
+    with pytest.raises(ValueError,match="incomplete_model_response"):list(OllamaChatPort().stream([{"role":"user","content":"fixture"}]))
